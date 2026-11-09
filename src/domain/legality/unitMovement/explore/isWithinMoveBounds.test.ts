@@ -1,7 +1,7 @@
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
-import { createMoveContext } from './moveContext';
+import { createMoveContext } from './createMoveContext';
 import { isWithinMoveBounds } from './isWithinMoveBounds';
 
 /**

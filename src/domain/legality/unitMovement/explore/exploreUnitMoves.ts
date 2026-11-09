@@ -2,7 +2,7 @@ import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
-import { createMoveContext } from './moveContext';
+import { createMoveContext } from './createMoveContext';
 import { getMoveEnding } from './getMoveEnding';
 import { getStepOption } from './getStepOption';
 import { getTurnOptions } from './getTurnOptions';

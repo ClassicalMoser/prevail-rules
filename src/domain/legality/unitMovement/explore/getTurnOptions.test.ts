@@ -2,7 +2,7 @@ import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
 import type { MoveState } from './moveState';
-import { createMoveContext } from './moveContext';
+import { createMoveContext } from './createMoveContext';
 import { getTurnOptions } from './getTurnOptions';
 
 /**

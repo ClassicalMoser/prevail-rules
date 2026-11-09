@@ -1,7 +1,7 @@
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
-import { createMoveContext } from './moveContext';
+import { createMoveContext } from './createMoveContext';
 
 /**
  * A move's budget and start are settled once, where it begins (§5.1.4).
