@@ -1534,11 +1534,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Rule:** §11.4: a player with no units loses. Confirmed as intended (author, 2026-11-08): it will almost never come up, but it is true.
 - **Closed:** `getWinnerFromNoUnits` asks last, after the hand arms, in the rulebook's own order (slice S2). An army still in reserve has not been fielded, so setup never reads as a loss.
 
-<a id="b9"></a>**B9. Melee results are carried out unit by unit; the rule is stage by stage.** _Code lags rule._
+<a id="b9"></a>**B9. Melee results are carried out unit by unit; the rule is stage by stage.** _Closed: S12._
 
 - **Rule:** §7.5.6: both retreats, then both reverses, then both routs, with the first player's unit first in each stage.
 - **Code does:** The engine carries out the first player's unit's results in full (retreat, reverse, rout), then the second player's. A probe on 2026-11-08 confirmed that order; the stage order is read, not probed. The two differ when one unit's retreat would end the other's engagement before its reverse: a first-player unit that only reverses is judged before the second player's unit falls back, so it is still engaged and does not turn, where the rule has it turn.
-- **To settle:** Apply melee results in the stage order, and check the retreat, reverse and rout generators against it (`procedures/defenseResult/`).
+- **Closed:** `getExpectedMeleeResolutionEvent` walks the stages (`attackApplyStages`) across both applies, first player first, asking `getExpectedAttackApplyStageEvent` what each unit still needs; a ranged attack's single apply walks the same stages. The openers and resolvers already choose the first apply in initiative order that has that stage due, so they follow without change. Specs: `getExpectedMeleeResolutionEvent.test.ts`. Not yet played end to end through the engines; a scenario spec is the follow-up.
 
 <a id="b10"></a>**B10. A rear engagement's Morale was never paid.** _Bug — found and closed 2026-11-09._
 

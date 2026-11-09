@@ -1,4 +1,7 @@
+export { attackApplyStages } from './attackApplyStages';
+export type { AttackApplyStage } from './attackApplyStages';
 export { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
+export { getExpectedAttackApplyStageEvent } from './getExpectedAttackApplyStageEvent';
 export { getExpectedEngagementEvent } from './getExpectedEngagementEvent';
 export { getExpectedRallyResolutionEvent } from './getExpectedRallyResolutionEvent';
 export { getExpectedRetreatEvent } from './getExpectedRetreatEvent';

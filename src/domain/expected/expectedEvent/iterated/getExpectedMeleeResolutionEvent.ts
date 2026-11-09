@@ -1,7 +1,11 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
 import { getOtherPlayer } from '@queries';
-import { getExpectedAttackApplyEvent } from '../composable';
+import {
+  attackApplyStages,
+  getExpectedAttackApplyEvent,
+  getExpectedAttackApplyStageEvent,
+} from '../composable';
 
 /**
  * Gets the expected event for melee resolution substeps.
@@ -58,7 +62,24 @@ export function getExpectedMeleeResolutionEvent(
     };
   }
 
-  // Both applies exist, so they resolve in the order the slots are named in.
+  // Both units' results are carried out a stage at a time: both retreats,
+  // then both reverses, then both routs, the first player's unit first in
+  // each (§7.5.6). A unit that has already fallen back no longer keeps the
+  // other engaged, so the other can reverse; a unit still to rout is on the
+  // board until its stage, so the one engaged with it does not.
+  for (const stage of attackApplyStages) {
+    for (const apply of [
+      firstPlayerAttackApplyState,
+      secondPlayerAttackApplyState,
+    ]) {
+      const due = getExpectedAttackApplyStageEvent(apply, stage);
+      if (due !== undefined) {
+        return due;
+      }
+    }
+  }
+
+  // Every stage is done, so each apply only needs closing, in order.
   if (!firstPlayerAttackApplyState.completed) {
     return getExpectedAttackApplyEvent(firstPlayerAttackApplyState);
   }

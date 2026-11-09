@@ -75,18 +75,14 @@ describe('getExpectedAttackApplyEvent function', () => {
       );
     });
 
-    it('a pending rout beats a pending retreat and reverse on the same apply', () => {
+    it('a unit hit past every threshold opens only its rout', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      // Hand-built: all three still pending. Rout is the most severe, so it opens first.
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRetreated: true,
-          unitReversed: true,
-          unitRouted: true,
-        },
-        retreatState: 'pending',
-        reverseState: 'pending',
-        routState: 'pending',
+      // §7.5.3: a unit that routs ignores its own retreat and reverse, so the
+      // factory leaves those two bypassed and only the rout is due.
+      const attackApplyState = createPendingAttackApply(unit, {
+        unitRetreated: true,
+        unitReversed: true,
+        unitRouted: true,
       });
 
       expectGameEffect(
@@ -97,17 +93,18 @@ describe('getExpectedAttackApplyEvent function', () => {
   });
 
   describe('rout priority', () => {
-    it('given prioritize rout over retreat and reverse', () => {
+    it('a routed unit with its lower results bypassed resolves its rout', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement = placed(unit, 'E-5', 'north');
+      // §7.5.3: the rout is open and the retreat and reverse the same blow
+      // reached are bypassed, so the rout is the only thing left to resolve.
       const attackApplyState = createAttackApplyState(unit, {
         attackResult: {
           unitRetreated: true,
           unitReversed: true,
           unitRouted: true,
         },
-        retreatState: createRetreatState(unitPlacement),
-        reverseState: createReverseState(unitPlacement.unit),
+        retreatState: 'bypassed',
+        reverseState: 'bypassed',
         routState: createRoutState('white', unit),
       });
 
