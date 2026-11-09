@@ -49,7 +49,6 @@ export function getMoveEnding(
       state.coordinate,
       state.cameFrom,
       context.start.coordinate,
-      state.facing,
       state.remainingFlexibility,
       context.direction,
     ) && isWithinMoveBounds(context, state.coordinate);
@@ -67,7 +66,6 @@ export function getMoveEnding(
     context.gameState.boardState,
     state.coordinate,
     state.cameFrom,
-    state.facing,
   );
   const endFacing = engagementEnd?.facing ?? state.facing;
   // The squaring turn is written into the path like any other turn, so the

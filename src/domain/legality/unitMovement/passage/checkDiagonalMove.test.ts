@@ -9,24 +9,24 @@ import { checkDiagonalMove } from './checkDiagonalMove';
  * CheckDiagonalMove: whether a diagonal step is legal given the two bracketing orthogonals and occupancy.
  */
 describe('checkDiagonalMove function', () => {
-  describe('non-diagonal facings', () => {
-    it('given the facing is not diagonal, throws', () => {
+  describe('non-diagonal steps', () => {
+    it('an orthogonal step has no corners to pass between, so asking is a fault', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       expect(() =>
-        checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'north'),
-      ).toThrow('Facing must be diagonal');
+        checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6'),
+      ).toThrow('The step is not diagonal');
     });
   });
+  // Every diagonal case steps northEast from E-5 to D-6; the corner spaces
+  // flanking that step are D-5 and E-6.
   describe('diagonal facings with no enemy units', () => {
     it('given both adjacent spaces are empty, returns true', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
       ]);
-      expect(
-        checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
-      ).toBe(true);
+      expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(true);
     });
   });
   describe('diagonal facings with enemy units', () => {
@@ -35,9 +35,7 @@ describe('checkDiagonalMove function', () => {
         { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
       ]);
-      expect(
-        checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
-      ).toBe(true);
+      expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(true);
     });
 
     it('given both adjacent spaces are occupied by enemy units, returns false', () => {
@@ -46,9 +44,9 @@ describe('checkDiagonalMove function', () => {
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
         { coord: 'E-6', facing: 'north', player: 'white', speed: 2 },
       ]);
-      expect(
-        checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
-      ).toBe(false);
+      expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(
+        false,
+      );
     });
   });
   describe('diagonal facings with engaged units', () => {
@@ -78,9 +76,7 @@ describe('checkDiagonalMove function', () => {
 
       const gameState = createEmptyGameState('standard');
       gameState.boardState = board;
-      expect(
-        checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),
-      ).toBe(true);
+      expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(true);
     });
 
     it('given both adjacent spaces are occupied by engaged units, returns false', () => {
@@ -127,9 +123,9 @@ describe('checkDiagonalMove function', () => {
 
       const gameState = createEmptyGameState('standard');
       gameState.boardState = board;
-      expect(
-        checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),
-      ).toBe(false);
+      expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(
+        false,
+      );
     });
   });
   describe('diagonal facings with friendly units', () => {
@@ -150,14 +146,7 @@ describe('checkDiagonalMove function', () => {
         },
       ]);
       expect(
-        checkDiagonalMove(
-          'black',
-          lowFlexibility,
-          gameState,
-          'E-5',
-          'D-6',
-          'northEast',
-        ),
+        checkDiagonalMove('black', lowFlexibility, gameState, 'E-5', 'D-6'),
       ).toBe(true);
     });
 
@@ -184,14 +173,7 @@ describe('checkDiagonalMove function', () => {
         },
       ]);
       expect(
-        checkDiagonalMove(
-          'black',
-          lowFlexibility,
-          gameState,
-          'E-5',
-          'D-6',
-          'northEast',
-        ),
+        checkDiagonalMove('black', lowFlexibility, gameState, 'E-5', 'D-6'),
       ).toBe(false);
     });
 
@@ -218,14 +200,7 @@ describe('checkDiagonalMove function', () => {
         },
       ]);
       expect(
-        checkDiagonalMove(
-          'black',
-          highFlexibility,
-          gameState,
-          'E-5',
-          'D-6',
-          'northEast',
-        ),
+        checkDiagonalMove('black', highFlexibility, gameState, 'E-5', 'D-6'),
       ).toBe(true);
     });
 
@@ -254,14 +229,7 @@ describe('checkDiagonalMove function', () => {
         },
       ]);
       expect(
-        checkDiagonalMove(
-          'black',
-          middleFlexibility,
-          gameState,
-          'E-5',
-          'D-6',
-          'northEast',
-        ),
+        checkDiagonalMove('black', middleFlexibility, gameState, 'E-5', 'D-6'),
       ).toBe(true);
     });
   });

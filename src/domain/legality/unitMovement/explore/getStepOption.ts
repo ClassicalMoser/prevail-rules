@@ -55,7 +55,6 @@ export function getStepOption(
       context.gameState,
       state.coordinate,
       nextCoordinate,
-      state.facing,
     )
   ) {
     return undefined;

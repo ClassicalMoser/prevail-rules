@@ -20,11 +20,13 @@ export {
   getSpacesWithinDistance,
 } from './areas';
 
-// One step forward, forward to the edge, and one step rearward.
+// One step forward, forward to the edge, one step rearward, and the facing a
+// step between two neighbours was taken on.
 export {
   getForwardSpace,
   getForwardSpacesToEdge,
   getRearwardSpace,
+  getStepFacing,
 } from './steps';
 
 // Every coordinate on the board.

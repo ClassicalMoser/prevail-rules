@@ -1,8 +1,9 @@
-import type { Coordinate, PlayerSide, UnitFacing } from '@entities';
+import type { Coordinate, PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import {
   getAdjacentFacings,
   getForwardSpace,
+  getStepFacing,
   isDiagonalFacing,
 } from '@queries';
 import { canMoveThrough } from './canMoveThrough';
@@ -22,8 +23,8 @@ import { canMoveThrough } from './canMoveThrough';
  * @param gameState - The current game state
  * @param currentCoordinate - The current position
  * @param targetCoordinate - The target diagonal space
- * @param currentFacing - The facing direction (must be diagonal)
  * @returns Whether the diagonal step passes the corner test
+ * @throws Error when the two spaces are not diagonal neighbours
  */
 export function checkDiagonalMove(
   unitSide: PlayerSide,
@@ -31,14 +32,22 @@ export function checkDiagonalMove(
   gameState: GameState,
   currentCoordinate: Coordinate,
   targetCoordinate: Coordinate,
-  currentFacing: UnitFacing,
 ): boolean {
-  // Get the board state
   const board = gameState.boardState;
-  // Check if the facing is diagonal
+  // A step goes straight ahead (§5.1.3), so the two spaces fix its facing.
+  // Only a diagonal step has corners to pass between; asking of any other
+  // is a fault in the caller, not a rule.
+  const currentFacing = getStepFacing(
+    board,
+    currentCoordinate,
+    targetCoordinate,
+  );
+  if (currentFacing === undefined) {
+    throw new Error('The two spaces are not neighbours');
+  }
   const { result: isDiagonalFacingResult } = isDiagonalFacing(currentFacing);
   if (!isDiagonalFacingResult) {
-    throw new Error('Facing must be diagonal');
+    throw new Error('The step is not diagonal');
   }
 
   // Get adjacent facings (orthogonal directions)

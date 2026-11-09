@@ -1,4 +1,4 @@
-import type { Board, Coordinate, PlayerSide, UnitFacing } from '@entities';
+import type { Board, Coordinate, PlayerSide } from '@entities';
 import {
   getBoardSpace,
   hasEngagedUnits,
@@ -16,7 +16,6 @@ import { canEngageEnemy } from '../engaging';
  * @param destinationCoordinate - The coordinate to check if we can end our movement at
  * @param adjacentCoordinate - The coordinate at the time of this check (where we're moving from)
  * @param moveStartCoordinate - The coordinate at the beginning of the move
- * @param currentFacing - The facing of the unit at the time of this check
  * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @returns True if the unit can end its movement at this coordinate, false otherwise
  */
@@ -26,7 +25,6 @@ export function canMoveInto(
   destinationCoordinate: Coordinate,
   adjacentCoordinate: Coordinate,
   moveStartCoordinate: Coordinate,
-  currentFacing: UnitFacing,
   remainingFlexibility: number,
   direction: 'advance' | 'retreat',
 ): boolean {
@@ -60,7 +58,6 @@ export function canMoveInto(
           destinationCoordinate,
           adjacentCoordinate,
           moveStartCoordinate,
-          currentFacing,
           remainingFlexibility,
         );
       }

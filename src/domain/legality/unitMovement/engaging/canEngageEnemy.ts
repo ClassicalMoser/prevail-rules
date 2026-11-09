@@ -1,4 +1,4 @@
-import type { Board, Coordinate, PlayerSide, UnitFacing } from '@entities';
+import type { Board, Coordinate, PlayerSide } from '@entities';
 import {
   getBoardSpace,
   getNeighbourSide,
@@ -16,7 +16,6 @@ import { getEngagementEndFacing } from './getEngagementEndFacing';
  * @param destinationCoordinate - The coordinate to check if we can engage an enemy at
  * @param adjacentCoordinate - The coordinate at the time of this check (where we're moving from)
  * @param moveStartCoordinate - The coordinate at the beginning of the move
- * @param currentFacing - The facing of the unit at the time of this check
  * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @returns True if we can engage an enemy at the given coordinate with the given facing, false otherwise
  */
@@ -26,7 +25,6 @@ export function canEngageEnemy(
   destinationCoordinate: Coordinate,
   adjacentCoordinate: Coordinate,
   moveStartCoordinate: Coordinate,
-  currentFacing: UnitFacing,
   remainingFlexibility: number,
 ): boolean {
   try {
@@ -75,7 +73,6 @@ export function canEngageEnemy(
         board,
         destinationCoordinate,
         adjacentCoordinate,
-        currentFacing,
       );
       const canSquareUp =
         squaring !== undefined &&

@@ -17,7 +17,7 @@ describe('canMoveInto function', () => {
       ]);
       const board = gameState.boardState;
       expect(
-        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
+        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
       ).toBe(true);
     });
   });
@@ -40,7 +40,7 @@ describe('canMoveInto function', () => {
         placed(createTestUnit('black'), 'E-5', 'north'),
       );
       expect(
-        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
+        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
       ).toBe(false);
     });
   });
@@ -53,7 +53,7 @@ describe('canMoveInto function', () => {
       ]);
       const board = gameState.boardState;
       expect(
-        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
+        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
       ).toBe(false);
     });
   });
@@ -69,16 +69,7 @@ describe('canMoveInto function', () => {
         ]);
         const board = gameState.boardState;
         expect(
-          canMoveInto(
-            'black',
-            board,
-            'D-5',
-            'E-5',
-            'E-5',
-            'south',
-            0,
-            'advance',
-          ),
+          canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
         ).toBe(true);
       });
 
@@ -89,16 +80,7 @@ describe('canMoveInto function', () => {
         ]);
         const board = gameState.boardState;
         expect(
-          canMoveInto(
-            'black',
-            board,
-            'D-5',
-            'E-5',
-            'D-4', // Flank of enemy
-            'east',
-            0,
-            'advance',
-          ),
+          canMoveInto('black', board, 'D-5', 'E-5', 'D-4', 0, 'advance'),
         ).toBe(false);
       });
     });
@@ -111,16 +93,7 @@ describe('canMoveInto function', () => {
         ]);
         const board = gameState.boardState;
         expect(
-          canMoveInto(
-            'black',
-            board,
-            'D-5',
-            'E-5',
-            'E-5',
-            'north',
-            0,
-            'retreat',
-          ),
+          canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'retreat'),
         ).toBe(false);
       });
     });
@@ -140,7 +113,6 @@ describe('canMoveInto function', () => {
           invalidCoordinate,
           'E-5',
           'E-5',
-          'north',
           0,
           'advance',
         ),
@@ -161,7 +133,7 @@ describe('canMoveInto function', () => {
         presenceType: 'invalid',
       } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
       expect(
-        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
+        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
       ).toBe(false);
     });
   });

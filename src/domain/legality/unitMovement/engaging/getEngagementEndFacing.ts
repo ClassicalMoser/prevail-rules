@@ -3,6 +3,7 @@ import {
   getBoardSpace,
   getNeighbourSide,
   getOppositeFacing,
+  getStepFacing,
   getTurnedFacing,
   hasSingleUnit,
 } from '@queries';
@@ -19,14 +20,12 @@ import {
  * @param board - The board state
  * @param defenderCoordinate - The space being stepped into
  * @param approachCoordinate - The space the last step left
- * @param steppedFacing - The facing the step arrived on
- * @returns The final facing and the squaring turn the move must include (`null` when none is needed, which costs nothing), or `undefined` when the space holds no lone unit to engage
+ * @returns The final facing and the squaring turn the move must include (`null` when none is needed, which costs nothing), or `undefined` when there is no lone unit to engage or the two spaces are not neighbours
  */
 export function getEngagementEndFacing(
   board: Board,
   defenderCoordinate: Coordinate,
   approachCoordinate: Coordinate,
-  steppedFacing: UnitFacing,
 ): { facing: UnitFacing; squaringTurn: MoveTurn | null } | undefined {
   // Only a lone unit can be engaged; open ground and engaged spaces have
   // no defender to square up against.
@@ -35,6 +34,18 @@ export function getEngagementEndFacing(
     return undefined;
   }
   const defenderFacing = destinationSpace.unitPresence.facing;
+
+  // A step only ever goes straight ahead (§5.1.3), so the facing it arrived
+  // on is fixed by the two spaces. Spaces that are not neighbours were not
+  // joined by a step at all.
+  const steppedFacing = getStepFacing(
+    board,
+    approachCoordinate,
+    defenderCoordinate,
+  );
+  if (steppedFacing === undefined) {
+    return undefined;
+  }
 
   // Which of the defender's spaces the step left decides the manner of the
   // engagement (§6.2). Only a front approach forces the facing.

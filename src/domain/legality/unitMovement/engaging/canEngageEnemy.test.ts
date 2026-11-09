@@ -13,9 +13,9 @@ describe('canEngageEnemy function', () => {
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'north', 0),
-      ).toBe(false);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 0)).toBe(
+        false,
+      );
     });
 
     it('given destination has friendly unit, returns false', () => {
@@ -24,47 +24,45 @@ describe('canEngageEnemy function', () => {
         { coord: 'D-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'north', 0),
-      ).toBe(false);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 0)).toBe(
+        false,
+      );
     });
   });
 
   describe('front engagement', () => {
-    it('given unit is already facing opposite to enemy, returns true', () => {
-      // Enemy at D-5 facing north, unit at E-5 facing south (opposite)
+    it('a head-on approach closes with no Flexibility to spare', () => {
+      // Enemy at D-5 facing south; stepping north from E-5, its centre front
+      // space, the unit already faces it head-on (§6.2.3).
       const gameState = createGameState([
-        { coord: 'E-5', facing: 'south', player: 'black', speed: 2 },
-        { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
+        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+        { coord: 'D-5', facing: 'south', player: 'white', speed: 2 },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'south', 0),
-      ).toBe(true);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 0)).toBe(true);
     });
 
-    it('given unit has flexibility to rotate to face opposite, returns true', () => {
-      // Enemy at D-4 facing south, unit at E-5 facing northWest (needs to rotate to south)
+    it('a corner front approach closes with a point left to square up', () => {
+      // Enemy at D-4 facing south; stepping northWest from E-5, a corner
+      // front space, the unit must turn to face north, head-on (§6.2.3).
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northWest', player: 'black' },
         { coord: 'D-4', facing: 'south', player: 'white' },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'D-4', 'E-5', 'E-5', 'east', 1),
-      ).toBe(true);
+      expect(canEngageEnemy('black', board, 'D-4', 'E-5', 'E-5', 1)).toBe(true);
     });
 
-    it('given unit cannot rotate to face opposite, returns false', () => {
-      // Enemy at D-4 facing south, unit at E-5 facing northWest (needs to rotate to south)
+    it('a corner front approach cannot close with no point left to square up', () => {
+      // The same approach, with no Flexibility left for the squaring turn.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northWest', player: 'black' },
         { coord: 'D-4', facing: 'south', player: 'white' },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'D-4', 'E-5', 'E-5', 'east', 0),
-      ).toBe(false);
+      expect(canEngageEnemy('black', board, 'D-4', 'E-5', 'E-5', 0)).toBe(
+        false,
+      );
     });
   });
 
@@ -76,9 +74,7 @@ describe('canEngageEnemy function', () => {
         { coord: 'D-5', facing: 'west', player: 'white' },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'south', 0),
-      ).toBe(true);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 0)).toBe(true);
     });
   });
 
@@ -92,9 +88,7 @@ describe('canEngageEnemy function', () => {
       ]);
       const board = gameState.boardState;
       // Move started at F-5 (behind enemy), adjacent is E-5 (rear space), destination is D-5
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'F-5', 'north', 0),
-      ).toBe(true);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'F-5', 0)).toBe(true);
     });
 
     it('given approaching from rear but move started in front of enemy, returns false', () => {
@@ -106,9 +100,9 @@ describe('canEngageEnemy function', () => {
       ]);
       const board = gameState.boardState;
       // Move started at C-5 (in front of enemy), adjacent is E-5 (rear space), destination is D-5
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'C-6', 'north', 0),
-      ).toBe(false);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'C-6', 0)).toBe(
+        false,
+      );
     });
 
     it('given approaching from rear but move started at flank, returns false', () => {
@@ -120,9 +114,9 @@ describe('canEngageEnemy function', () => {
       ]);
       const board = gameState.boardState;
       // Move started at D-4 (flank of enemy), adjacent is E-5 (rear space), destination is D-5
-      expect(
-        canEngageEnemy('black', board, 'D-5', 'E-5', 'D-4', 'north', 0),
-      ).toBe(false);
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'D-4', 0)).toBe(
+        false,
+      );
     });
   });
 
@@ -134,15 +128,7 @@ describe('canEngageEnemy function', () => {
       const board = gameState.boardState;
       const invalidCoordinate = 'Z-99' as Coordinate;
       expect(
-        canEngageEnemy(
-          'black',
-          board,
-          invalidCoordinate,
-          'E-5',
-          'E-5',
-          'north',
-          0,
-        ),
+        canEngageEnemy('black', board, invalidCoordinate, 'E-5', 'E-5', 0),
       ).toBe(false);
     });
 
@@ -152,9 +138,9 @@ describe('canEngageEnemy function', () => {
         { coord: 'A-1', facing: 'north', player: 'white', speed: 2 },
       ]);
       const board = gameState.boardState;
-      expect(
-        canEngageEnemy('black', board, 'A-1', 'E-5', 'E-5', 'north', 0),
-      ).toBe(false);
+      expect(canEngageEnemy('black', board, 'A-1', 'E-5', 'E-5', 0)).toBe(
+        false,
+      );
     });
   });
 });

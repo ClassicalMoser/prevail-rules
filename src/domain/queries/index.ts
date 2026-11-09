@@ -19,6 +19,7 @@ export {
   getInlineSpaces,
   getOrthogonallyAdjacentSpaces,
   getRearwardSpace,
+  getStepFacing,
   getSingleUnitWithPlacementAtCoordinate,
   getSpacesAhead,
   getSpacesBehind,

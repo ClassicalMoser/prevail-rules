@@ -6,3 +6,6 @@ export { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
 
 // One step back: forward along the opposite facing.
 export { getRearwardSpace } from './getRearwardSpace';
+
+// The facing a step from one space into its neighbour was taken on.
+export { getStepFacing } from './getStepFacing';
