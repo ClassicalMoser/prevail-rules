@@ -265,8 +265,8 @@ Each is marked in its file.
 - `AssignUnitSupportEvent` (`events`): one of five fields documented.
 - `createUnitWithPlacement` (`testing`): fabricates the unit through
   `createTestUnit`, which its name does not say.
-- `createTestUnit` (`testing`): accepts `cost`, `limit` and `morale` and ignores
-  all three.
+- `createTestUnit` (`testing`): accepted `cost`, `limit` and `morale` and
+  ignored all three. Closed 2026-11-09: they narrow the catalog like the stats.
 
 ### Movement (settled 2026-11-08)
 

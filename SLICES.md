@@ -284,6 +284,9 @@ touching that layer are done:
   units on the board" is hand-built in at least four specs
   (`isValidPerformRangedAttackEvent`, `getLegalRangedAttackers`,
   `getLegalPlayerChoiceOptions`, `applyCompleteRangedAttackCommandEvent`).
+  Partly answered 2026-11-09 by `@testing/scenario` (`createPlayableGame`,
+  `resolvingMoveOrder`, `applyEffectsUntilChoice`); a "resolving a Shoot
+  order" transform beside `resolvingMoveOrder` would close it.
 - `getMeleeSupportValue` classifies a neighbour as front or flank by hand;
   `getNeighbourSide` (queries/board/adjacency) now answers that.
 
