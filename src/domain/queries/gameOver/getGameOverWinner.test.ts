@@ -7,8 +7,11 @@ import {
   createRoutState,
   createTestCard,
   createTestUnit,
+  createUnitWithPlacement,
 } from '@testing';
 import {
+  addUnitToBoard,
+  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
   updatePlayerCardState,
@@ -18,9 +21,10 @@ import {
 import { getGameOverWinner } from './getGameOverWinner';
 
 /**
- * Game over asks empty hands first, then an unpayable rout discard.
- * A side wins, both hands empty at once go to the holder of initiative
- * (§11.3), and otherwise the game continues. There is no draw.
+ * Game over asks empty hands first, then an unpayable rout discard, then a
+ * destroyed army (§11.4). A side wins, both hands empty at once go to the
+ * holder of initiative (§11.3), and otherwise the game continues. There is
+ * no draw.
  *
  * The cleanup factory only opens a rout slot. `updateRoutState` will not
  * create one from `'pending'`, so the penalty is written through that transform.
@@ -97,6 +101,22 @@ describe('getGameOverWinner function', () => {
     });
 
     expect(getGameOverWinner(state)).toBe('black');
+  });
+
+  it('white wins when the black army is destroyed, however many cards black holds', () => {
+    const handsOnly = gameOverState({
+      blackHand: [createTestCard()],
+      whiteHand: [createTestCard()],
+    });
+    // White keeps a survivor on the field; black's army is gone (§11.4).
+    const survivor = createUnitWithPlacement({
+      coordinate: 'E-5',
+      playerSide: 'white',
+    });
+    const board = addUnitToBoard(handsOnly.boardState, survivor);
+    const state = updateBoardState(handsOnly, board);
+
+    expect(getGameOverWinner(state)).toBe('white');
   });
 
   it('black wins when white cannot pay a rout of 2', () => {
