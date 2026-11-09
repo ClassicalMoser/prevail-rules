@@ -59,7 +59,9 @@ export function getMoveEnding(
   // An engaging move from the front squares up head-on as it closes, and
   // that turn is part of this move and spends its point (§6.2.3). This is
   // what keeps every engagement square, flank, or rear — never 45° off
-  // (§6.3.1). Open ground keeps the facing the step arrived on.
+  // (§6.3.1). Open ground keeps the facing the step arrived on. Whether the
+  // point is there to spend was settled above: `canEngageEnemy`, inside
+  // `canMoveInto`, refuses a front approach that cannot afford the turn.
   const engagementEnd = getEngagementEndFacing(
     context.gameState.boardState,
     state.coordinate,
@@ -68,10 +70,6 @@ export function getMoveEnding(
   );
   const endFacing = engagementEnd?.facing ?? state.facing;
   const squaringCost = engagementEnd?.flexibilitySpent ?? 0;
-  // Without the point, the frontal approach cannot close.
-  if (squaringCost > state.remainingFlexibility) {
-    return undefined;
-  }
 
   const ending: MoveResult = {
     flexibilityUsed: flexibilityUsed + squaringCost,
