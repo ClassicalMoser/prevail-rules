@@ -6,9 +6,11 @@ import type {
 } from '@entities';
 import type { GameState } from '@game';
 import {
+  getBoardSpace,
   getCommanderSpace,
   getPlayerUnitsWithPlacementOnBoard,
   getSpacesWithinDistance,
+  hasEngagedUnits,
   hasUnitInArray,
   unitTypeMatchesRestrictions,
 } from '@queries';
@@ -70,6 +72,22 @@ export function unitMatchesRestrictions(
   return unitMatchesTraitAndTypeRestrictions(unitWithPlacement, restrictions);
 }
 
+/**
+ * Whether the unit is free of an engagement: a unit locked with an enemy
+ * cannot be ordered (§4.3.4), alone or as a line's start.
+ */
+function notEngaged(
+  unitWithPlacement: UnitWithPlacement,
+  gameState: GameState,
+): boolean {
+  const space = getBoardSpace(
+    gameState.boardState,
+    unitWithPlacement.placement.coordinate,
+  );
+  const free = !hasEngagedUnits(space.unitPresence);
+  return free;
+}
+
 function notAlreadyCommanded(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
@@ -82,7 +100,8 @@ function notAlreadyCommanded(
 
 /**
  * Returns friendly on-board units eligible under full command restrictions
- * (inspiration + traits/types). Excludes already-commanded units.
+ * (inspiration + traits/types). Excludes already-commanded units, and engaged
+ * ones (§4.3.4, A1).
  *
  * For `size: 'units'`: selection atoms.
  * For `size: 'lines'`: legal **line starts** (end may lie outside inspiration
@@ -98,6 +117,10 @@ export function getLegalUnitsForIssueCommand(
 
   for (const unitWithPlacement of onBoard) {
     if (!notAlreadyCommanded(unitWithPlacement, gameState)) {
+      continue;
+    }
+    // An engaged unit cannot be ordered, alone or to begin a line.
+    if (!notEngaged(unitWithPlacement, gameState)) {
       continue;
     }
     if (

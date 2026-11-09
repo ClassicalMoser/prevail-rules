@@ -3,10 +3,7 @@ export {
   getLegalIssueCommands,
   type LegalIssueCommands,
 } from './getLegalIssueCommands';
-export {
-  getLegalLineEndsForIssueCommand,
-  getLineSegmentFromStart,
-} from './getLegalLineEndsForIssueCommand';
+export { getLegalLineEndsForIssueCommand } from './getLegalLineEndsForIssueCommand';
 export {
   getLegalLineStartsForIssueCommand,
   getLegalUnitsForIssueCommand,
@@ -15,4 +12,3 @@ export {
   unitMatchesTraitAndTypeRestrictions,
 } from './getLegalUnitsForIssueCommand';
 export { isCommandIssuable } from './isCommandIssuable';
-export { isValidLine } from './isValidLine';

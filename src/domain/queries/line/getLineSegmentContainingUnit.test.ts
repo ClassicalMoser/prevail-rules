@@ -1,5 +1,8 @@
+import type { Restrictions } from '@entities';
+import { addUnitToBoard } from '@transforms';
 import {
   coordinatesOfSegment,
+  createBoardWithEngagedUnits,
   createBoardWithFacingRow,
   createBoardWithUnits,
   createTestUnit,
@@ -9,6 +12,13 @@ import {
 import type { Trait } from '@ruleValues';
 
 import { getLineSegmentContainingUnit } from './getLineSegmentContainingUnit';
+
+// Inspiration range is not read here, so an order with no limit and no
+// filters is enough for every case that is not about restrictions.
+const unrestricted: Restrictions = {
+  inspirationRangeRestriction: -1,
+  restrictionType: 'none',
+};
 
 /**
  * The segment grows left and right on the perpendicular of the unit's facing.
@@ -21,7 +31,12 @@ describe('getLineSegmentContainingUnit function', () => {
       coordinates: ['E-5'],
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
   });
@@ -31,7 +46,12 @@ describe('getLineSegmentContainingUnit function', () => {
       coordinates: ['E-5', 'E-6'],
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
@@ -41,7 +61,12 @@ describe('getLineSegmentContainingUnit function', () => {
       coordinates: ['E-4', 'E-5', 'E-6'],
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-4', 'E-5', 'E-6']);
   });
@@ -55,7 +80,12 @@ describe('getLineSegmentContainingUnit function', () => {
     ]);
     const anchor = placed(first, 'E-5', 'north');
 
-    const segment = getLineSegmentContainingUnit(board, anchor, [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      anchor,
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
@@ -65,7 +95,12 @@ describe('getLineSegmentContainingUnit function', () => {
       coordinates: ['E-5', 'E-6', 'E-8'],
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
@@ -83,7 +118,12 @@ describe('getLineSegmentContainingUnit function', () => {
     ]);
     const anchor = placed(first, 'E-5', 'north');
 
-    const segment = getLineSegmentContainingUnit(board, anchor, [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      anchor,
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
@@ -99,7 +139,12 @@ describe('getLineSegmentContainingUnit function', () => {
     ]);
     const anchor = placed(first, 'E-5', 'north');
 
-    const segment = getLineSegmentContainingUnit(board, anchor, [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      anchor,
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
@@ -133,7 +178,12 @@ describe('getLineSegmentContainingUnit function', () => {
     const segment = getLineSegmentContainingUnit(
       board,
       anchor,
-      [requiredTrait],
+      // The order allows only cavalry (§4.3.4).
+      {
+        inspirationRangeRestriction: -1,
+        restrictionType: 'trait',
+        traitRestrictions: [requiredTrait],
+      },
       [],
     );
 
@@ -163,8 +213,60 @@ describe('getLineSegmentContainingUnit function', () => {
     const segment = getLineSegmentContainingUnit(
       board,
       anchor,
+      // The order allows only that unit type (§4.3.4).
+      {
+        inspirationRangeRestriction: -1,
+        restrictionType: 'unitType',
+        unitRestrictions: [requiredType.id],
+      },
       [],
-      [requiredType],
+    );
+
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
+  });
+
+  it('a unit already commanded this round ends the segment', () => {
+    const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
+    const commanded = createTestUnit('black', { attack: 3, instanceNumber: 3 });
+    const board = createBoardWithUnits([
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'north'),
+      placed(commanded, 'E-7', 'north'),
+    ]);
+    const anchor = placed(first, 'E-5', 'north');
+
+    // E-7 has been ordered this round, so the rank stops before it (§4.3.6).
+    const segment = getLineSegmentContainingUnit(board, anchor, unrestricted, [
+      commanded,
+    ]);
+
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
+  });
+
+  it('an engaged unit ends the segment', () => {
+    const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const engagedFriend = createTestUnit('black', {
+      attack: 3,
+      instanceNumber: 2,
+    });
+    const enemy = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+    // E-6 is an engaged space: our unit and an enemy stand in it (§2.2.1).
+    const engagedBoard = createBoardWithEngagedUnits(
+      engagedFriend,
+      enemy,
+      'E-6',
+      'north',
+    );
+    const anchor = placed(first, 'E-5', 'north');
+    const board = addUnitToBoard(engagedBoard, anchor);
+
+    // An engaged unit cannot be ordered, so the rank stops before it (§4.3.5, A1).
+    const segment = getLineSegmentContainingUnit(
+      board,
+      anchor,
+      unrestricted,
+      [],
     );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
@@ -175,7 +277,12 @@ describe('getLineSegmentContainingUnit function', () => {
       coordinates: ['A-5'],
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('A-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('A-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['A-5']);
   });
@@ -186,7 +293,12 @@ describe('getLineSegmentContainingUnit function', () => {
       facing: 'east',
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'F-5']);
   });
@@ -197,7 +309,12 @@ describe('getLineSegmentContainingUnit function', () => {
       facing: 'northEast',
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toStrictEqual(['D-4', 'E-5']);
   });
@@ -218,7 +335,12 @@ describe('getLineSegmentContainingUnit function', () => {
       ],
     });
 
-    const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
+    const segment = getLineSegmentContainingUnit(
+      board,
+      unitAt('E-5'),
+      unrestricted,
+      [],
+    );
 
     expect(coordinatesOfSegment(segment)).toHaveLength(10);
   });

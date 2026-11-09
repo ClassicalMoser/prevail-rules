@@ -1,33 +1,38 @@
-import type { Board, UnitType, UnitWithPlacement } from '@entities';
+import type {
+  Board,
+  Restrictions,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
 import { getForwardSpacesToEdge } from '@queries/board';
 import {
   getLeftFacing,
   getOppositeFacing,
   getRightFacing,
 } from '@queries/facings';
-import type { Trait } from '@ruleValues';
 
 import { canJoinLine } from './canJoinLine';
 
 /**
  * Contiguous friendly segment that contains `unit`, along the perpendicular of
  * that unit's facing. Expansion stops at an empty space, an enemy, a wrong
- * facing, or a missed trait/type requirement.
+ * facing, a missed trait/type requirement, a commanded unit or an engaged one
+ * (see {@link canJoinLine}, the one statement of who qualifies).
  *
- * The segment is not capped at line length. Where `unit` sits in the segment,
- * and which windows are valid lines, are separate steps.
+ * The segment is not capped at line length: a line is any run of up to eight
+ * of it, chosen by its two ends (§4.3.5).
  *
  * @param board - The board state
  * @param unit - The unit the segment must include
- * @param traitRequirements - Traits every joining unit must have
- * @param unitTypeRequirements - Unit types a joining unit must be one of
+ * @param restrictions - The order's restrictions; members must match its traits and types
+ * @param commandedUnits - Units already commanded this round
  * @returns The contiguous segment, ordered left to right along the perpendicular
  */
 export function getLineSegmentContainingUnit(
   board: Board,
   unit: UnitWithPlacement,
-  traitRequirements: Trait[],
-  unitTypeRequirements: UnitType[],
+  restrictions: Restrictions,
+  commandedUnits: readonly UnitInstance[],
 ): UnitWithPlacement[] {
   const friendlySide = unit.unit.playerSide;
   const unitFacing = unit.placement.facing;
@@ -54,8 +59,8 @@ export function getLineSegmentContainingUnit(
       friendlySide,
       unitFacing,
       oppositeUnitFacing,
-      traitRequirements,
-      unitTypeRequirements,
+      restrictions,
+      commandedUnits,
     );
     if (joiningUnit === undefined) {
       break;
@@ -76,8 +81,8 @@ export function getLineSegmentContainingUnit(
       friendlySide,
       unitFacing,
       oppositeUnitFacing,
-      traitRequirements,
-      unitTypeRequirements,
+      restrictions,
+      commandedUnits,
     );
     if (joiningUnit === undefined) {
       break;

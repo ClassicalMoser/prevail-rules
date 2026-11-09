@@ -1,6 +1,4 @@
-// Lines that contain a unit: join check, segment, index, windows, then the composed set.
+// The one statement of who may stand in a line (§4.3.5).
 export { canJoinLine } from './canJoinLine';
+// The unbroken rank a line is drawn from; a line is any run of up to eight of it.
 export { getLineSegmentContainingUnit } from './getLineSegmentContainingUnit';
-export { indexOfUnitInSegment } from './indexOfUnitInSegment';
-export { linesIncludingUnitFromSegment } from './linesIncludingUnitFromSegment';
-export { getLinesFromUnit } from './getLinesFromUnit';

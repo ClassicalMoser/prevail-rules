@@ -230,7 +230,7 @@ Blocks: `queries/card`.
 
 Independent of everything above.
 
-**S18. A line is any eight-unit window** — §4.3.5, A7. Keep the window rule,
+**S18. A line is any eight-unit window** — §4.3.5, A7. **Done 2026-11-09.** Keep the window rule,
 retire the greedy left-first cap, and keep one statement of the line shape
 (today there are three). This slice carries its own dedup.
 Files: `legality/choiceOptions/issueCommand/getLegalLineEndsForIssueCommand.ts`,
@@ -238,7 +238,7 @@ Files: `legality/choiceOptions/issueCommand/getLegalLineEndsForIssueCommand.ts`,
 `validation/playerChoice/isValidIssueCommandEvent.ts`.
 Blocks: `queries/line`, `legality/choiceOptions`, `validation`.
 
-**S19. An engaged unit breaks the line** — §4.3.5, A1. Treat an engaged unit
+**S19. An engaged unit breaks the line** — §4.3.5, A1. **Done 2026-11-09.** Treat an engaged unit
 as non-qualifying at issue time everywhere: single-unit orders, line ends,
 and line membership (`canJoin`) — a line stops where an engagement stands.
 Decided 2026-11-08, superseding the same-day counts-toward-eight ruling; the

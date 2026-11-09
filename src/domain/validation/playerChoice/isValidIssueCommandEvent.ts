@@ -6,13 +6,10 @@ import {
   getLegalIssueCommands,
   getLegalLineEndsForIssueCommand,
   getLegalUnitsForIssueCommand,
-  getLineSegmentFromStart,
-  isValidLine,
-  unitMatchesInspirationRange,
-  unitMatchesTraitAndTypeRestrictions,
 } from '@legality';
 import {
   findMatchingCommand,
+  getLineSegmentContainingUnit,
   getPositionOfUnit,
   isSameUnitInstance,
 } from '@queries';
@@ -150,44 +147,8 @@ export function isValidIssueCommandEvent(
       };
     }
 
-    if (
-      !unitMatchesInspirationRange(
-        start,
-        matchingCommand.restrictions,
-        state,
-      ) ||
-      !unitMatchesTraitAndTypeRestrictions(start, matchingCommand.restrictions)
-    ) {
-      return {
-        errorReason: 'Line start is not within commander range / restrictions',
-        result: false,
-      };
-    }
-
-    for (const member of placements) {
-      if (
-        !unitMatchesTraitAndTypeRestrictions(
-          member,
-          matchingCommand.restrictions,
-        )
-      ) {
-        return {
-          errorReason: 'Line member does not match trait/unit restrictions',
-          result: false,
-        };
-      }
-    }
-
-    const lineCheck = isValidLine(state.boardState, {
-      unitPlacements: placements,
-    });
-    if (!lineCheck.result) {
-      return {
-        errorReason: lineCheck.errorReason,
-        result: false,
-      };
-    }
-
+    // The end named second must be one the line may run to from the first
+    // (§4.3.5); that also refuses a start that cannot begin a line.
     const legalEnds = getLegalLineEndsForIssueCommand(
       matchingCommand,
       event.player,
@@ -205,22 +166,23 @@ export function isValidIssueCommandEvent(
       };
     }
 
-    const fullSegment = getLineSegmentFromStart(matchingCommand, state, start);
-    const startIndex = fullSegment.findIndex(
+    // The units submitted must be exactly the rank between the two ends,
+    // named in either direction.
+    const rank = getLineSegmentContainingUnit(
+      state.boardState,
+      start,
+      matchingCommand.restrictions,
+      state.currentRoundState.commandedUnits,
+    );
+    const startIndex = rank.findIndex(
       (uwp) => isSameUnitInstance(uwp.unit, start.unit).result,
     );
-    const endIndex = fullSegment.findIndex(
+    const endIndex = rank.findIndex(
       (uwp) => isSameUnitInstance(uwp.unit, end.unit).result,
     );
-    if (startIndex === -1 || endIndex === -1) {
-      return {
-        errorReason: 'Line start/end not on the contiguous segment',
-        result: false,
-      };
-    }
     const low = Math.min(startIndex, endIndex);
     const high = Math.max(startIndex, endIndex);
-    const expectedKeys = fullSegment
+    const expectedKeys = rank
       .slice(low, high + 1)
       .map((uwp) => unitKey(uwp.unit));
     const eventKeys = event.units.map(unitKey);

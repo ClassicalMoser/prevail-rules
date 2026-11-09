@@ -16,5 +16,5 @@ Failure modes are per function. Do not assume every getter throws, or that every
 - `facings/` — opposite, left, right, adjacent, orthogonal
 - `unit/` and `unitPresence/` — a unit's stats, friendliness, and position (`getPlayerUnitWithPosition`)
 - `unitLocation/` — whether two placements, or two units with their placements, are the same (`isSamePlacement`, `isSameUnitWithPlacement`)
-- `line/` — lines that include a unit (`getLinesFromUnit`)
+- `line/` — who may stand in a line (`canJoinLine`) and the unbroken rank through a unit (`getLineSegmentContainingUnit`)
 - `sequencing/` — the phase, step, and substep currently in progress

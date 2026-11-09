@@ -1,5 +1,9 @@
 import { tempCommandCards } from '@sampleValues';
-import { createUnitWithPlacement } from '@testing';
+import {
+  createBoardWithEngagedUnits,
+  createTestUnit,
+  createUnitWithPlacement,
+} from '@testing';
 
 import {
   addCommanderToBoard,
@@ -84,6 +88,19 @@ describe('getLegalUnitsForIssueCommand function', () => {
       },
     };
 
+    expect(
+      getLegalUnitsForIssueCommand(unrestrictedCommand, 'black', state),
+    ).toStrictEqual([]);
+  });
+
+  it('excludes a unit in an engaged space', () => {
+    const ours = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const theirs = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+    // Our unit and an enemy stand in E-5, locked in a fight (§2.2.1).
+    const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
+    const state = updateBoardState(createEmptyGameState('standard'), board);
+
+    // An engaged unit cannot be ordered (§4.3.4, A1), so nobody is offered.
     expect(
       getLegalUnitsForIssueCommand(unrestrictedCommand, 'black', state),
     ).toStrictEqual([]);

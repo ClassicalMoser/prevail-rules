@@ -1381,11 +1381,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 ## A — Board, setup, orders, movement, engagement
 
-<a id="a1"></a>**A1. Engaged units are offered for orders, then skipped.** _Code lags rule._
+<a id="a1"></a>**A1. Engaged units are offered for orders, then skipped.** _Closed: S19._
 
 - **Rule:** §4.3.4: an engaged unit cannot be ordered. §4.3.5: an engaged unit **breaks the line** (author, 2026-11-08, superseding a same-day ruling that the line runs past it and counts it toward its eight — commanding a line must mean every unit in it is commanded, and the looser rule returns only if play-tests ask for it). Draft 3 §16.13 left it open.
 - **Code does:** Issue-time eligibility never checks engagement, so an engaged unit is offered alone, as a line end and as a line member (`legality/choiceOptions/issueCommand/getLegalUnitsForIssueCommand.ts`; `getLegalLineEndsForIssueCommand.ts`, `canJoin`). Movement skips it at resolve (`getLegalMoveUnits.ts`; filter added in `778f05c`), so a "units" order can be spent on it for nothing. Probe: an engaged unit at E-5 was offered at issue and refused at resolve. A unit engaged inside a rank joins the line and is skipped at resolve; under the rule as now settled, all three offerings are wrong — the line should stop at it.
 - **To settle:** Treat an engaged unit as non-qualifying at issue time everywhere: single-unit orders, line ends, and line membership (`canJoin`), so a line stops where an engagement stands.
+- **Closed:** `getLegalUnitsForIssueCommand` no longer offers a unit in an engaged space, alone or as a line's start, and `canJoinLine` refuses one, so a line stops where an engagement stands. `canJoinLine` also refuses a unit already commanded this round (§4.3.6).
 
 <a id="a2"></a>**A2. One Flexibility reaches any facing; the rule is 45° or 180°.** _Closed 2026-11-08._
 
@@ -1416,11 +1417,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** A negative value (−1, the schema minimum) means unrestricted, which matches — (`entities/card/restrictions.ts`; `getLegalUnitsForIssueCommand.ts`, `unitMatchesInspirationRange`; `queries/unit/getCurrentUnitStat.ts`). But the stand-in deck never uses it: every command and round effect prints 0 to 4 (`sampleValues/tempCommandCards.ts`), so engine play is far more commander-bound than the real cards. There is no "all of a trait" range at all. The commands are checked once, when issued; round effects are checked every time their stat is read, from wherever the unit then stands — for a move's Speed and Flexibility, where the move began (§5.1.4), so the engine's start-space read during the engagement contest is right by design (see A11). The range test is written twice (`TODO(composition)` in `getCurrentUnitStat.ts`).
 - **To settle:** Add an "all" range to round-effect restrictions; keep one copy of the range test.
 
-<a id="a7"></a>**A7. Which eight units a long rank offers depends on where you start; the line rule exists twice.** _Code and rule disagree._
+<a id="a7"></a>**A7. Which eight units a long rank offers depends on where you start; the line rule exists twice.** _Closed: S18._
 
 - **Rule:** A line is 1 to 8 units, named by its two ends.
 - **Code does:** The engine builds the contiguous rank around the start unit, stretching first to the start's left (up to seven units) and then to its right until eight are gathered, so in a rank longer than eight some end units cannot be named from some starts (`getLegalLineEndsForIssueCommand.ts`, `getLineSegmentFromStart`; checked again in `validation/playerChoice/isValidIssueCommandEvent.ts`). A second line rule, which lists **every** eight-unit window that contains a unit, is exported but called by no one (`queries/line/getLinesFromUnit.ts`; `TODO(composition)`). `isValidLine` (`legality/choiceOptions/issueCommand/isValidLine.ts`) is a third statement of the shape.
 - **To settle:** §4.3.5 says you choose which eight, which is the window rule. Keep `getLinesFromUnit`'s windows (or equivalent), retire the greedy cap, and keep one statement of the line shape.
+- **Closed:** One rule: `canJoinLine` says who may stand in a line and `getLineSegmentContainingUnit` gives the unbroken rank; `getLegalLineEndsForIssueCommand` offers every unit within seven places of the start, so any eight can be chosen. Validation checks membership against those ends and the rank between them. The greedy cap, `getLinesFromUnit` and its helpers, and `isValidLine` are gone.
 
 <a id="a8"></a>**A8. The mover never gets to commit.** _Closed 2026-11-09._
 

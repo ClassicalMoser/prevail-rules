@@ -1,100 +1,28 @@
 import type { Command, PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import {
-  getForwardSpacesToEdge,
-  getLeftFacing,
-  getOppositeFacing,
-  getPlayerUnitWithPosition,
-  getRightFacing,
-  hasUnitInArray,
-  isSameUnitInstance,
-} from '@queries';
+import { getLineSegmentContainingUnit, isSameUnitInstance } from '@queries';
 import { MAX_LINE_LENGTH } from '@ruleValues';
 
-import {
-  getLegalLineStartsForIssueCommand,
-  unitMatchesTraitAndTypeRestrictions,
-} from './getLegalUnitsForIssueCommand';
+import { getLegalLineStartsForIssueCommand } from './getLegalUnitsForIssueCommand';
 
 /**
- * Contiguous segment containing `start`, expanding along flanking directions
- * (same geometry as {@link getLinesFromUnit}), capped at {@link MAX_LINE_LENGTH}.
- * Members other than `start` need trait/type match only — not inspiration range.
- */
-export function getLineSegmentFromStart(
-  command: Command,
-  gameState: GameState,
-  start: UnitWithPlacement,
-): UnitWithPlacement[] {
-  const board = gameState.boardState;
-  const player = start.unit.playerSide;
-  const facing = start.placement.facing;
-  const oppositeFacing = getOppositeFacing(facing);
-  const { commandedUnits } = gameState.currentRoundState;
-  const { restrictions } = command;
-
-  const canJoin = (
-    coordinate: UnitWithPlacement['placement']['coordinate'],
-  ): UnitWithPlacement | undefined => {
-    const unit = getPlayerUnitWithPosition(board, coordinate, player);
-    if (unit === undefined) {
-      return;
-    }
-    if (hasUnitInArray(commandedUnits, unit.unit)) {
-      return;
-    }
-    const unitFacing = unit.placement.facing;
-    if (unitFacing !== facing && unitFacing !== oppositeFacing) {
-      return;
-    }
-    if (!unitMatchesTraitAndTypeRestrictions(unit, restrictions)) {
-      return;
-    }
-    return unit;
-  };
-
-  const left: UnitWithPlacement[] = [];
-  for (const coordinate of getForwardSpacesToEdge(
-    board,
-    start.placement.coordinate,
-    getLeftFacing(facing),
-  )) {
-    if (left.length + 1 >= MAX_LINE_LENGTH) {
-      break;
-    }
-    const joining = canJoin(coordinate);
-    if (joining === undefined) {
-      break;
-    }
-    left.unshift(joining);
-  }
-
-  const right: UnitWithPlacement[] = [];
-  for (const coordinate of getForwardSpacesToEdge(
-    board,
-    start.placement.coordinate,
-    getRightFacing(facing),
-  )) {
-    if (left.length + 1 + right.length >= MAX_LINE_LENGTH) {
-      break;
-    }
-    const joining = canJoin(coordinate);
-    if (joining === undefined) {
-      break;
-    }
-    right.push(joining);
-  }
-
-  return [...left, start, ...right];
-}
-
-/**
- * Legal **ends** for a line whose **start** is already chosen: every unit on
- * the contiguous segment from that start (including the start itself — a
- * single-unit line is always legal).
+ * The ends a line may run to from a chosen start (§4.3.5). A line is named
+ * by its two ends; the start must meet the order's full restrictions,
+ * inspiration range included, and the line runs along the unbroken rank
+ * containing it. Every unit within seven places of the start, either way
+ * along that rank, is an end: a line is 1 to 8 units, and in a rank longer
+ * than eight the player chooses which eight (A7). The start itself is always
+ * an end, a line of one.
  *
- * Returns `[]` when `start` is not a legal line start (inspiration + traits,
- * when applicable).
+ * The rank is {@link getLineSegmentContainingUnit}, the one statement of
+ * who qualifies: friendly, facing the line's way or its opposite, matching
+ * the order's traits and types, not yet commanded, and not engaged.
+ *
+ * @param command - The order being issued
+ * @param player - The player issuing it
+ * @param gameState - The current game state
+ * @param start - The end named first
+ * @returns The units the line may end on, in rank order; empty when `start` is not a legal start
  */
 export function getLegalLineEndsForIssueCommand(
   command: Command,
@@ -102,6 +30,7 @@ export function getLegalLineEndsForIssueCommand(
   gameState: GameState,
   start: UnitWithPlacement,
 ): UnitWithPlacement[] {
+  // The end named first must meet the order's full restrictions.
   const legalStarts = getLegalLineStartsForIssueCommand(
     command,
     player,
@@ -113,8 +42,25 @@ export function getLegalLineEndsForIssueCommand(
       candidate.placement.coordinate === start.placement.coordinate,
   );
   if (!startOk) {
-    return [];
+    const none: UnitWithPlacement[] = [];
+    return none;
   }
 
-  return getLineSegmentFromStart(command, gameState, start);
+  // The unbroken rank through the start.
+  const rank = getLineSegmentContainingUnit(
+    gameState.boardState,
+    start,
+    command.restrictions,
+    gameState.currentRoundState.commandedUnits,
+  );
+  const startIndex = rank.findIndex(
+    (member) => isSameUnitInstance(member.unit, start.unit).result,
+  );
+
+  // Any end that keeps the line to eight units, start included.
+  const reach = MAX_LINE_LENGTH - 1;
+  const ends = rank.filter(
+    (_member, index) => Math.abs(index - startIndex) <= reach,
+  );
+  return ends;
 }

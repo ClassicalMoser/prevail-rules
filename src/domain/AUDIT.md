@@ -112,7 +112,7 @@ Walk folders in IDE order (alphabetical).
   - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
   - [ ] `facings/`
   - [ ] `gameOver/` — empty hand, unpayable rout discard, then the composed check
-  - [ ] `line/` — segment, index, windows of at most 8, then `getLinesFromUnit` (`isValidLine` lives in `@legality`)
+  - [ ] `line/` — `canJoinLine` (who qualifies) and `getLineSegmentContainingUnit` (the unbroken rank); windows of up to eight are chosen by the ends in `@legality` (S18)
   - [ ] `player/` — `getOtherPlayer`, `hasInitiative`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
     - [ ] `combatOutcomes/`
@@ -240,9 +240,10 @@ Not marked; for the read:
   with a `TODO(wrong)`: `canEngageEnemy`, `canMoveInto`, `canMoveThrough`.
   The fourth, `isLegalMove`, was removed in S8 (2026-11-09): a move's path is
   judged by `traceMovePath`, which throws and leaves the catch to validation.
-- The fifth, `isValidLine`, keeps the message in `errorReason`, so a fault there
-  is reported rather than answered. That is the shape the other four should take
-  if they keep the catch at all.
+- The fifth, `isValidLine`, kept the message in `errorReason`, so a fault there
+  was reported rather than answered; it was removed in S18 (the line rule is now
+  one segment query). That is the shape the others should take if they keep the
+  catch at all.
 
 ### `transforms`
 

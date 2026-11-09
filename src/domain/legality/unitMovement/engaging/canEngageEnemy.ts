@@ -87,8 +87,8 @@ export function canEngageEnemy(
     // TODO(wrong): this catch wraps the whole body, so a fault in the state
     // (not a rule) is answered as "this engagement is not legal". Settled by
     // listing which throws are expected negatives (off-board lookups) and
-    // letting the rest through, or by reporting the message as `isValidLine`
-    // does. See AUDIT.md `legality`.
+    // letting the rest through, or by reporting the message in an
+    // `errorReason` instead. See AUDIT.md `legality`.
     return false;
   }
 }
