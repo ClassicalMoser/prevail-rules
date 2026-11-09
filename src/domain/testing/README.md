@@ -9,6 +9,7 @@ A fixture does what a factory and a transform cannot. How a spec uses one is [`S
 - `testHelpers` — cards, `updateCardState`, and line coordinate readers
 - `phaseStateHelpers` — phase and substep shells
 - `bootstrapGameState` — a game far enough along to exercise a phase
+- `scenario` — a playable game (units and hands), the phase a rule is met in, and `applyEffectsUntilChoice` to run the engines until a player must decide; for specs that play a rule through end to end rather than hand-building each state it passes through
 
 Catalog entries are fungible. A test must not depend on a particular one —
 use `createTestCard` / `createTestUnit`, or a row reached only by the trait or

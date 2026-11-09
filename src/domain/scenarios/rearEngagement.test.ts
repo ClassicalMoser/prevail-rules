@@ -1,38 +1,16 @@
-import type { UnitType } from '@entities';
 import type { GameStateForVisibility } from '@game';
+import { createChooseRoutDiscardEvent } from '@factories';
 import {
-  createChooseRoutDiscardEvent,
-  createEmptyGameState,
-  createUnitInstance,
-} from '@factories';
-import { getIssueCommandsPhaseState, getOwnedPlayerCardState } from '@queries';
+  getIssueCommandsPhaseState,
+  getOwnedPlayerCardState,
+  getSingleUnitWithPlacementAtCoordinate,
+} from '@queries';
 import {
   applyEffectsUntilChoice,
-  createIssueCommandsPhaseState,
-  createTestCommand,
-  getCardsByCount,
+  createPlayableGame,
+  resolvingMoveOrder,
 } from '@testing';
-import { tempUnits } from '@sampleValues';
-import { throwIfUndefined } from '@utils';
-
-import {
-  addUnitToBoard,
-  applyEvent,
-  updateBoardState,
-  updatePhaseState,
-  updatePlayerCardState,
-} from '@transforms';
-
-// What matters about each defender is the Morale its rout costs (§9.3); the
-// stand-in catalog has both a costly unit and one worth nothing.
-const moraleTwo = throwIfUndefined(
-  tempUnits.find((unitType) => unitType.morale === 2),
-  'The stand-in catalog has a unit with Morale 2',
-);
-const moraleZero = throwIfUndefined(
-  tempUnits.find((unitType) => unitType.morale === 0),
-  'The stand-in catalog has a unit with Morale 0',
-);
+import { applyEvent } from '@transforms';
 
 /**
  * Engaging from the rear (§6.3.3), played through the engines: the defender
@@ -40,56 +18,35 @@ const moraleZero = throwIfUndefined(
  * defender's owner pays its Morale before the move is done.
  *
  * Black on F-5 facing north steps into the back of white on E-5, also facing
- * north. White holds five cards, black two.
+ * north. White holds five cards. What matters about the defender is the
+ * Morale its rout costs (§9.3).
  */
 function rearAttack(options: {
-  defenderType: UnitType;
+  defenderMorale: number;
   whiteHasAnotherUnit: boolean;
 }): GameStateForVisibility<'authoritative'> {
-  const attacker = createUnitInstance('black', moraleTwo, 1);
-  const defender = createUnitInstance('white', options.defenderType, 1);
-  let state = createEmptyGameState('standard');
-
-  // White's hand, to pay the Morale from. Black needs cards too: an empty
-  // hand would lose before the attack resolved (§11.1).
-  state = updatePlayerCardState(state, 'white', {
-    ...state.cardState.white,
-    inHand: getCardsByCount(5),
-  });
-  state = updatePlayerCardState(state, 'black', {
-    ...state.cardState.black,
-    inHand: getCardsByCount(2),
-  });
-
-  // The two units, and — unless the scenario says otherwise — a second white
-  // unit far away, so white still has an army after the rout (§11.4).
-  let board = addUnitToBoard(state.boardState, {
-    placement: { coordinate: 'F-5', facing: 'north' },
-    unit: attacker,
-  });
-  board = addUnitToBoard(board, {
-    placement: { coordinate: 'E-5', facing: 'north' },
-    unit: defender,
-  });
-  if (options.whiteHasAnotherUnit) {
-    board = addUnitToBoard(board, {
-      placement: { coordinate: 'A-1', facing: 'south' },
-      unit: createUnitInstance('white', moraleZero, 2),
-    });
-  }
-  state = updateBoardState(state, board);
-
-  // Black is resolving a move order with this one unit. White has an order
-  // of its own still to give, which is where play waits once black is done.
-  state = updatePhaseState(
-    state,
-    createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: 'pending',
-      remainingCommandsSecondPlayer: [createTestCommand()],
-      remainingUnitsFirstPlayer: [attacker],
-      step: 'firstPlayerResolveCommands',
-    }),
+  const game = createPlayableGame(
+    [
+      { coord: 'F-5', facing: 'north', player: 'black' },
+      {
+        coord: 'E-5',
+        facing: 'north',
+        morale: options.defenderMorale,
+        player: 'white',
+      },
+      // Unless the scenario says otherwise, white keeps a second unit far
+      // away, so it still has an army after the rout (§11.4).
+      ...(options.whiteHasAnotherUnit
+        ? [{ coord: 'A-1', facing: 'south', player: 'white' } as const]
+        : []),
+    ],
+    { hands: { white: 5 }, initiative: 'black' },
   );
+  const attacker = getSingleUnitWithPlacementAtCoordinate(
+    game.boardState,
+    'F-5',
+  );
+  const resolving = resolvingMoveOrder(game, [attacker.unit]);
 
   // One step north, into the defender's back.
   const moved = applyEvent(
@@ -100,21 +57,17 @@ function rearAttack(options: {
       moveCommander: false,
       path: ['step'],
       player: 'black',
-      unit: {
-        placement: { coordinate: 'F-5', facing: 'north' },
-        unit: attacker,
-      },
+      unit: attacker,
     },
-    state,
+    resolving,
   );
   return moved;
 }
 
 describe('a rear engagement', () => {
   it('places the attacker before the defender is asked for its Morale', () => {
-    // A defender whose rout costs 2 Morale.
     const { state, next } = applyEffectsUntilChoice(
-      rearAttack({ defenderType: moraleTwo, whiteHasAnotherUnit: true }),
+      rearAttack({ defenderMorale: 2, whiteHasAnotherUnit: true }),
     );
 
     // Play stops for white to pay...
@@ -135,7 +88,7 @@ describe('a rear engagement', () => {
 
   it("costs the defender's owner its Morale, and then the move is done", () => {
     const { state: awaitingDiscard, next } = applyEffectsUntilChoice(
-      rearAttack({ defenderType: moraleTwo, whiteHasAnotherUnit: true }),
+      rearAttack({ defenderMorale: 2, whiteHasAnotherUnit: true }),
     );
     if (next === 'gameOver') {
       throw new Error('The game should not have ended');
@@ -171,7 +124,7 @@ describe('a rear engagement', () => {
   it('asks nothing of a defender worth no Morale, and the move is done', () => {
     // A defender worth no Morale: the rout closes without a discard.
     const { state } = applyEffectsUntilChoice(
-      rearAttack({ defenderType: moraleZero, whiteHasAnotherUnit: true }),
+      rearAttack({ defenderMorale: 0, whiteHasAnotherUnit: true }),
     );
 
     expect(state.cardState.white.inHand).toHaveLength(5);
@@ -187,7 +140,7 @@ describe('a rear engagement', () => {
   it("ends the game at once when it routs the defender's last unit", () => {
     // §11.4: an army destroyed to the last unit loses before any discard.
     const { state, next } = applyEffectsUntilChoice(
-      rearAttack({ defenderType: moraleTwo, whiteHasAnotherUnit: false }),
+      rearAttack({ defenderMorale: 2, whiteHasAnotherUnit: false }),
     );
 
     expect(next).toBe('gameOver');

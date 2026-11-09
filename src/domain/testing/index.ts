@@ -35,7 +35,6 @@ export {
 } from './phaseStateHelpers';
 export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
 export {
-  applyEffectsUntilChoice,
   coordinatesOfLine,
   coordinatesOfLines,
   coordinatesOfSegment,
@@ -53,3 +52,8 @@ export {
   createNoneUnitPresence,
   createSingleUnitPresence,
 } from './unitPresenceHelpers';
+export {
+  applyEffectsUntilChoice,
+  createPlayableGame,
+  resolvingMoveOrder,
+} from './scenario';
