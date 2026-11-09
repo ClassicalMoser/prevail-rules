@@ -176,14 +176,14 @@ Both units in a fight attack **at the same time**. Both can break. There is no a
 
 For each of them, add up:
 
-|                |                                              |
-| -------------- | -------------------------------------------- |
-| its **Attack** | the number on the unit                       |
-| **support**    | see below                                    |
-| **+1**         | if that player throws away a card to help it |
-| any bonus      | from its own card this round                 |
+|                |                                                 |
+| -------------- | ----------------------------------------------- |
+| its **Attack** | the number on the unit                          |
+| **support**    | see below                                       |
+| **+1**         | if that player throws away a card to help it    |
+| any bonus      | from the card its player has in play this round |
 
-**Support** often tips a fight. Look at each friendly unit standing next to the fighter, as long as it is not behind it:
+**Support** often tips a fight. Look at each friendly unit standing adjacent to the fighter, but not behind it, that isn't in its own fight:
 
 - it is **looking at the fight** → **+2**
 - the fight is **off to its left or right** → **+1**
@@ -203,23 +203,27 @@ The results are carried out a stage at a time: both retreats, then both reverses
 >
 > _Your Legion's thresholds are Retreat 5, Reverse 6, Rout 8. Their 3 reaches none of them. Your Legion is untouched._
 >
-> _The two supporting Legions did nothing but stand in the right place facing the right way, and they doubled the blow._
+> _The two supporting Legions did nothing but stand in the right place facing the right way, but they doubled the pressure._
 
 ### Phase 5 — Clean up
 
-Put your face-up card onto your **played pile**. It is not in your hand any more.
+Put your face-up card onto your **played pile**. It is not in play any more.
 
 Now each player, starting with the first player, decides whether to **rally**. Rallying is the only way to get cards back.
 
-**If you rally:** take one card from your played pile at random and **burn** it — it is gone from the game for good. Take everything else back into your hand: the rest of the played pile, and everything you discarded.
+**If you rally:** shuffle your played pile well, draw a card, and **burn** it — it is gone from the game for good. Take everything else back into your hand: the rest of the played pile, and everything you discarded.
 
-Then check that your cards can still hold your army together. Every card can steady a certain number of units, and says which sort. Add all that up and give each unit on the board one place. Any unit you cannot find a place for **routs**, and you pay its Morale.
+Then check that your cards can still hold your army together. Every card can steady a certain number of units, and says which kind. Add all that up and give each unit on the board one place. Any unit you cannot find a place for **routs**, and you pay its Morale.
 
 **If you do not rally:** nothing happens. Your cards stay where they are and nobody checks your units. You just have fewer cards next round.
 
 That is the central squeeze of the game. You need your cards back, and getting them back costs one card forever and puts your army to the test.
 
-## 6. Go and play
+## 6. How to win
+
+If any player's hand is ever empty at any point, no matter how briefly, that player loses the game; their army has lost its will to fight and flees the field. The other army has prevailed by keeping their fighting spirit and outlasting their foe.
+
+## 7. Go and play
 
 Start the next round. Play three or four before you worry about playing well.
 
@@ -286,7 +290,7 @@ When something comes up that this part does not answer — where exactly a retre
      ·   ·   ·      ← its three back spaces
 ```
 
-**2.3.3 Spaces behind.** Beyond the three back spaces, the phrase _the spaces behind a unit_ means everything on the board on the far side of those three: the line through them, extended edge to edge, and every space beyond it. It is the whole back half of the field, not a narrow wedge. This matters for retreats (§9.1) and rear attacks (§6.2.2).
+**2.3.3 Spaces behind.** Beyond the three back spaces, the phrase _behind a unit_ means everything on the board on the far side of those three: the line through them, extended edge to edge, and every space beyond it. It is the whole back half of the field, not a narrow wedge. This matters for retreats (§9.1) and rear attacks (§6.2.2).
 
 ### 2.4 Adjacency, distance, and the forward arc
 
@@ -297,6 +301,8 @@ When something comes up that this part does not answer — where exactly a retre
 **2.4.3 The forward arc** is used for shooting (§7.4). Begin with the shooter's three front spaces; that is arc 1. For arc 2, add the three front spaces of each of those, and so on out to the shooter's Range. The result is a widening cone. The shooter's own space is not in its arc.
 
 **2.4.4 Blocked diagonals.** Two enemy units standing in both of the orthogonal spaces that flank a diagonal **block** that diagonal. One enemy unit does not. A blocked diagonal cannot be stepped across (§5.4) and cannot carry support (§7.3.2).
+
+Movement asks a **stricter question on top of this one**: a unit stepping across a diagonal must also be able to pass _through_ one of those two corner spaces, so a friend too stiff to pass through — and, later, terrain — can shut a diagonal for a mover (§5.4.5). That stricter test is the mover's alone. Support and commanders ask only the enemy question above; a wall of your own stiff troops never cuts off their reach.<sup>[A10](#a10)</sup>
 
 ```
 @@FIG diagonal@@
@@ -523,7 +529,7 @@ A battle is fought in rounds. Each round has five phases, resolved in order, and
 
 **4.2.7 Why this matters.** A card's command and its round effect each may carry an **inspiration range**, measured from your commander. A range printed as **—** means no restriction. A range of **0** means the same space as your commander. A round effect that applies to **all** of a trait reaches every unit of that trait, wherever it stands. Where a range is printed, your general's position decides which of your troops it reaches.<sup>[A6](#a6)</sup>
 
-**4.2.8 Commander defeat.** A commander is defeated if it stands in a space where a unit routs in combat. A unit that routs at the support check (§10.4) does not defeat it.<sup>[A15](#a15)</sup> What defeat costs the player is not yet written (see Open design questions). A commander absent from the board reaches no unit with an inspiration range.
+**4.2.8 Commander defeat.** A commander is defeated if it stands in a space where **one of its own units** routs in combat. An enemy routing at its feet does not touch it, and a unit that routs at the support check (§10.4) does not defeat it either.<sup>[A15](#a15)</sup> Defeat costs nothing on its face: no cards, no Morale. The commander is simply gone — and with it, every inspiration range on your cards reaches nothing. Roughly half a hand leans on that reach, and some cards go dead outright. The blow is structural, not immediate.
 
 ### 4.3 Phase 3 — Issue Commands
 
@@ -560,11 +566,11 @@ You select a line by naming its two ends. The **near end you name must satisfy t
 
 If an unbroken rank is longer than eight units, you choose which eight.<sup>[A7](#a7)</sup>
 
-**An engaged unit in a rank** does not break the line. The line runs past it, but the engaged unit is not itself commanded: it stays locked in its fight and gets none of the Command's modifiers. That is intended, even though it can look inconsistent.<sup>[A1](#a1)</sup>
+**An engaged unit breaks the line.** It cannot be commanded (§4.3.4), and a line is not allowed to run past it: commanding a line means every unit in it is commanded, with no silent passengers. Its space holds an enemy besides, which the unbroken test already refuses. A looser rule — the line flowing past its engaged members — may come back if play-tests miss it; until then the simple rule stands.<sup>[A1](#a1)</sup>
 
 **4.3.6 One order per unit.** A unit may be commanded only **once per round**, whether as a single unit or as part of a line. Already-commanded units cannot be included in a later line, and a line cannot be drawn _through_ one — it stops there.
 
-**4.3.7 Round Effects are not orders.** A card's Round Effect applies to every one of your units that meets its restrictions, all round, commanded or not. Its restrictions are read separately from the Command's and are usually different — in particular, a round effect's inspiration range is checked again whenever its bonus matters, wherever the unit is standing at that moment, not only when orders are given.<sup>[A6](#a6)</sup>
+**4.3.7 Round Effects are not orders.** A card's Round Effect applies to every one of your units that meets its restrictions, all round, commanded or not. Its restrictions are read separately from the Command's and are usually different — in particular, a round effect's inspiration range is checked again whenever its bonus matters, wherever the unit is standing at that moment, not only when orders are given. For a move, that moment is the moment the move begins, once for the whole move (§5.1.4).<sup>[A6](#a6)</sup>
 
 **4.3.8 Command modifiers apply only to the commanded.** A Command's printed modifiers (e.g. _+1 Attack, −2 Speed_) apply for the whole round, but **only to units that actually received that order**. They stay in force through Phase 4 — a unit ordered to charge still has its bonus when the melee resolves.
 
@@ -581,7 +587,7 @@ If an unbroken rank is longer than eight units, you choose which eight.<sup>[A7]
 
 A commander standing in the unit's space may move with it, and ends in the unit's final space. It may stay behind instead. Otherwise your commander moves only in Phase 2.<sup>[A9](#a9)</sup>
 
-**Not yet settled:** whether a commander may ride along when the unit moves into an engagement.<sup>[A9](#a9)</sup>
+A commander may ride along even when the unit moves **into an engagement**. This is the one way a commander ends in a space holding an enemy: the commander is committed to the fight, and falls with its unit if that unit routs (§4.2.8) — the enemy's rout does not touch it. A huge risk, bought for a general standing at the point of decision.<sup>[A9](#a9)</sup>
 
 **4.3.11 Resolving a ranged attack order** (§7.4):
 
@@ -634,6 +640,8 @@ A move is therefore a short sequence of steps and turns, in whatever order you l
 **5.1.2** Each step into an adjacent space costs **1 Speed**. Diagonal steps cost 1, same as orthogonal.
 
 **5.1.3** A unit only ever steps **in the direction it is currently facing**. To go somewhere else, turn first.
+
+**5.1.4 Sampled where the move begins.** A unit's Speed and Flexibility for a move are read **once, where and when its own move begins** — commit window included — and never again along the way. A round effect's range is measured against the starting space: a unit that sets off inside its general's reach keeps the bonus for the whole move, even if its first step leaves; one that merely passes through the range on its way gets nothing. Everything in this game is read at the moment it binds: a command when it is issued (§4.3.7), a move when it begins, a blow where the fighter stands when it lands (§7), and the ground wherever the unit actually treads (§2.5, §5.5).
 
 ### 5.2 Turning
 
@@ -737,7 +745,7 @@ Read it as a picture: if the two units are looking at each other, that is a Fron
 **6.3.2 Front engagement.** The defender may be offered the chance to fall back:
 
 1. The defender may **commit** a card for +1 Speed or +1 Flexibility (§8). Optional. (The engaging player had their chance before moving, §4.3.10.)
-2. Compare current **Speed**: each unit's full Speed, including round effects, command modifiers and the deficit of the ground it stands on (§2.5.2), not what is left of its move. Ground counts here as it does everywhere. The defender may retreat **only if its Speed is strictly greater** than the engaging unit's.<sup>[A11](#a11)</sup>
+2. Compare current **Speed**: each unit's full Speed, including round effects, command modifiers and the deficit of the ground it stands on (§2.5.2), not what is left of its move. Ground counts here as it does everywhere. Each unit's Speed is the one its own move runs on (§5.1.4): the engaging unit's was sampled where its move began, commitment and all (§4.3.10); the defender samples here and now, where it stands with its commit window open — the start of the retreat it is weighing. The defender may retreat **only if its Speed is strictly greater** than the engaging unit's.<sup>[A11](#a11)</sup>
 3. If it may and chooses to, it makes a retreat move (§9.1). The engagement ends at once; no melee is fought.
 4. Otherwise both units stay locked and fight in Phase 4.
 
@@ -770,7 +778,7 @@ All combat, melee or ranged, works the same way: build an attack value, compare 
 
 **7.1.3** Then add **support** (§7.3).
 
-**7.1.4** The result is the attack value. Modifiers may be negative, and an attack value cannot be reduced below zero.<sup>[B2](#b2)</sup>
+**7.1.4** The result is the attack value. Modifiers may be negative, but **no stat in this game goes below zero** — the attack value included. The floor is applied once, to the finished total: a sum that lands below zero counts as zero. It is never applied mid-sum, so a stat cannot hit the floor early and have a later bonus rebound it above what the raw arithmetic gives.<sup>[B2](#b2)</sup>
 
 **7.1.5** A deficit also lowers all three of the unit's **thresholds** while it stands on that ground (§2.5.2). The same three card sources can change a unit's **thresholds**. A Round Effect or Command modifier that names Defence raises Retreat, Reverse and Rout together, for as long as the card is in play. The same inspiration range and unit restrictions apply as for any Round Effect.
 
@@ -952,7 +960,7 @@ The three things an attack can do to a unit, in the order they are carried out (
 
 **9.1.3** A retreat must be the **smallest legal backward move available**: the fewest facing changes first, then the fewest steps. You do not get to use a retreat as a free repositioning. Where several moves tie for smallest, the owner chooses among them. Speed and Flexibility are the unit's current ones, with any Round Effect or Command modifiers (§7.1.5).
 
-**9.1.4** Before its first step back, a retreating unit may turn by **at most 45°** in all. It may not turn about, so a retreat never begins by facing the other way.<sup>[A14](#a14)</sup>
+**9.1.4** Before its first step back, a retreating unit may turn by **at most 45°** in all. It may not turn about, so a retreat never begins by facing the other way. After the first step, turning follows the ordinary rule (§5.2.1): 45° or about per Flexibility spent, in any order. Only the opening turn is restricted.<sup>[A14](#a14)</sup>
 
 **9.1.5** A unit **cannot retreat at all** if:
 
@@ -1376,9 +1384,9 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 <a id="a1"></a>**A1. Engaged units are offered for orders, then skipped.** _Code lags rule._
 
-- **Rule:** §4.3.4: an engaged unit cannot be ordered. §4.3.5: a line runs past an engaged unit, which is not itself commanded. That is the author's intent; Draft 3 §16.13 left it open.
-- **Code does:** Issue-time eligibility never checks engagement, so an engaged unit is offered alone, as a line end and as a line member (`legality/choiceOptions/issueCommand/getLegalUnitsForIssueCommand.ts`; `getLegalLineEndsForIssueCommand.ts`, `canJoin`). Movement skips it at resolve (`getLegalMoveUnits.ts`; filter added in `778f05c`), so a "units" order can be spent on it for nothing. Probe: an engaged unit at E-5 was offered at issue and refused at resolve. A unit engaged inside a rank joins the line and is skipped at resolve, which is close to the rule for a rank. Offering it alone, or as a line end, is not.
-- **To settle:** Filter engaged units out of single-unit orders and line ends at issue time. Decide whether an engaged unit in a rank still counts toward the line's eight units.
+- **Rule:** §4.3.4: an engaged unit cannot be ordered. §4.3.5: an engaged unit **breaks the line** (author, 2026-11-08, superseding a same-day ruling that the line runs past it and counts it toward its eight — commanding a line must mean every unit in it is commanded, and the looser rule returns only if play-tests ask for it). Draft 3 §16.13 left it open.
+- **Code does:** Issue-time eligibility never checks engagement, so an engaged unit is offered alone, as a line end and as a line member (`legality/choiceOptions/issueCommand/getLegalUnitsForIssueCommand.ts`; `getLegalLineEndsForIssueCommand.ts`, `canJoin`). Movement skips it at resolve (`getLegalMoveUnits.ts`; filter added in `778f05c`), so a "units" order can be spent on it for nothing. Probe: an engaged unit at E-5 was offered at issue and refused at resolve. A unit engaged inside a rank joins the line and is skipped at resolve; under the rule as now settled, all three offerings are wrong — the line should stop at it.
+- **To settle:** Treat an engaged unit as non-qualifying at issue time everywhere: single-unit orders, line ends, and line membership (`canJoin`), so a line stops where an engagement stands.
 
 <a id="a2"></a>**A2. One Flexibility reaches any facing; the rule is 45° or 180°.** _Code lags rule._
 
@@ -1393,11 +1401,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** The terrain list is `plain, rocks, scrub, lightForest, denseForest`, with no numbers attached (`entities/board/terrainTypes.ts`). The terrain step in `getCurrentUnitStat` adds nothing (`queries/unit/getCurrentUnitStat.ts`). `canMoveThrough` answers only yes or no, so a move has no cost to compare (`legality/unitMovement/canMoveThrough.ts`, `checkDiagonalMove.ts`, `exploreUnitMoves.ts`). Retreats already go through `exploreUnitMoves`, so terrain should reach them for free (`getLegalRetreats.ts`).
 - **To settle:** Follow `ROADMAP.md` §6.1 in order: terrain types with their two numbers, then the deficit in `getCurrentUnitStat` (Range included, Flexibility excluded), then movement cost. Add retreat specs for a river at the back. The deficit applies everywhere a stat is read, the front-engagement Speed comparison included (§6.3.2; author, 2026-11-08). The string terrain types and the eight-direction water cover (`entities/board/waterCover.ts`) are placeholders and can go: water is a low corner on a bank or ford.
 
-<a id="a4"></a>**A4. Commanders can share a space with the enemy commander.** _Rule open._
+<a id="a4"></a>**A4. Commanders can share a space with the enemy commander.** _Settled: allowed._
 
-- **Rule:** More than one thing may stand in a space if one is a commander. A commander may not enter a space holding an enemy **unit**.
-- **Code does:** Commander movement only refuses enemy units, so it may end on, or pass through, a space holding the enemy commander (`legality/commanderMovement/exploreCommanderMoves.ts`, `exploreCommanderMoves`, `hasEnemyUnit`). Nothing refers to two commanders in one space.
-- **To settle:** Allow it, or forbid ending a move there. Related: the engine never defeats a commander (A15), so a shared space has no consequence today.
+- **Rule:** More than one thing may stand in a space if one is a commander. A commander may not enter a space holding an enemy **unit**. Two commanders in one space is legal (author, 2026-11-08: "can't really argue against it").
+- **Code does:** Commander movement only refuses enemy units, so it may end on, or pass through, a space holding the enemy commander (`legality/commanderMovement/exploreCommanderMoves.ts`, `exploreCommanderMoves`, `hasEnemyUnit`). That is now the rule; a confirming spec can ride the A15 work.
+- **Still open:** what happens when an enemy **unit** enters a commander's space — see Open design questions.
 
 <a id="a5"></a>**A5. The setup sequence does not exist; the engine gives Black initiative and has White deploy first.** _Code lags rule._
 
@@ -1408,7 +1416,7 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 <a id="a6"></a>**A6. Inspiration range: the stand-in cards print a range almost everywhere.** _Code lags rule._ (Draft §16.3.)
 
 - **Rule:** §4.2.7: a range printed **—** is unrestricted; 0 is the commander's own space; "all" on a round effect reaches every unit of its trait. Most generic commands and many trait commands print —. (Cycle 1 roster, "Generic cards" notes.)
-- **Code does:** A negative value (−1, the schema minimum) means unrestricted, which matches — (`entities/card/restrictions.ts`; `getLegalUnitsForIssueCommand.ts`, `unitMatchesInspirationRange`; `queries/unit/getCurrentUnitStat.ts`). But the stand-in deck never uses it: every command and round effect prints 0 to 4 (`sampleValues/tempCommandCards.ts`), so engine play is far more commander-bound than the real cards. There is no "all of a trait" range at all. The commands are checked once, when issued; round effects are checked every time their stat is read, from wherever the unit then stands (for an engaging unit, its starting space; see A11). The range test is written twice (`TODO(composition)` in `getCurrentUnitStat.ts`).
+- **Code does:** A negative value (−1, the schema minimum) means unrestricted, which matches — (`entities/card/restrictions.ts`; `getLegalUnitsForIssueCommand.ts`, `unitMatchesInspirationRange`; `queries/unit/getCurrentUnitStat.ts`). But the stand-in deck never uses it: every command and round effect prints 0 to 4 (`sampleValues/tempCommandCards.ts`), so engine play is far more commander-bound than the real cards. There is no "all of a trait" range at all. The commands are checked once, when issued; round effects are checked every time their stat is read, from wherever the unit then stands — for a move's Speed and Flexibility, where the move began (§5.1.4), so the engine's start-space read during the engagement contest is right by design (see A11). The range test is written twice (`TODO(composition)` in `getCurrentUnitStat.ts`).
 - **To settle:** Add an "all" range to round-effect restrictions; keep one copy of the range test.
 
 <a id="a7"></a>**A7. Which eight units a long rank offers depends on where you start; the line rule exists twice.** _Code and rule disagree._
@@ -1427,19 +1435,19 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 - **Rule:** §4.3.10 and §9.1.8: a commander in a unit's space may move with it when the unit moves or retreats, and ends in the unit's final space. (Author decision.)
 - **Code does:** The `moveUnit` choice has a `moveCommander` flag. Validation accepts it only when the player's commander shares the unit's space (`validation/playerChoice/isValidMoveUnitEvent.ts`), and the move stores it in the movement state (`transforms/stateTransitions/applyChoices/applyMoveUnitEvent.ts`; `game/substeps/commandResolution/movementResolutionSubstep.ts`), but nothing moves the commander. Retreat choices have no such flag (`events/playerChoices/chooseRetreatOption.ts`). Read, not probed.
-- **To settle:** Apply the flag by moving the commander to the unit's destination, and give retreats the same option. Decide the engagement case, which runs into §2.2.3 and §4.2.4 (a commander may not enter an engaged or enemy-occupied space).
+- **To settle:** Apply the flag by moving the commander to the unit's destination, and give retreats the same option. The engagement case is decided (author, 2026-11-08): the ride into an engagement is allowed, as the one exception to §2.2.3/§4.2.4 — the commander is committed to the fight and falls with its unit if that unit routs (§4.2.8, friendly rout only; the enemy's rout does not touch it).
 
-<a id="a10"></a>**A10. Units and the "blocked diagonal" test do not agree with commanders and support.** _Code and rule disagree._
+<a id="a10"></a>**A10. Units and the "blocked diagonal" test do not agree with commanders and support.** _Settled: two rules, by design._
 
 - **Rule:** §2.4.4: two enemies on the flanking orthogonals block a diagonal.
 - **Code does:** Commanders and melee support use exactly that (`queries/board/diagonalIsClear.ts`; called from `exploreCommanderMoves.ts` and `getMeleeSupportValue.ts`). Units use a stricter test: at least one of the two orthogonals must be passable by that unit, so an enemy, an engaged space, or a friend too stiff to pass through counts against it (`legality/unitMovement/checkDiagonalMove.ts`). Two stiff friends can therefore block a diagonal for a unit, and cannot for a commander or for support. The destination must also be passable by the same test, which forbids ending a diagonal step on an enemy (see A12). A comment on `diagonalIsClear` is marked `TODO(misleading)`.
-- **To settle:** Decide whether units should use the enemy-only rule, or whether commanders and support should use the stricter one.
+- **To settle:** Decided (author, 2026-11-08): both rules are intended. Movement is blocked by what the mover cannot pass through — certain friendlies, and later terrain; support and commanders ask only the enemy question. §2.4.4 now says so, and the engine already plays both. What remains is the `TODO(misleading)` comment on `diagonalIsClear` and, someday, distinct names for the two tests — nomenclature, not design.
 
-<a id="a11"></a>**A11. The mover is not in the shared space until the engagement is set up; its Speed is measured from where it began.** _Rule open._ (`AUDIT.md`, "Movement (not settled)" item 2.)
+<a id="a11"></a>**A11. The mover is not in the shared space until the engagement is set up; its Speed is measured from where it began.** _Code lags rule._ (`AUDIT.md`, "Movement (not settled)" item 2.)
 
-- **Rule:** An engagement exists the moment a unit ends a step in the enemy's space; Speeds are compared as they stand.
-- **Code does:** On a move into an enemy space the mover stays on its start space while its target is stored beside it; the move is applied only when the engagement is set up (`applyMoveUnitEvent.ts`, "the mover has not moved yet"). Any stat that depends on position, such as a round effect's inspiration range, is therefore read from the start space during the front-engagement Speed comparison. No canonical path is stored for animation.
-- **To settle:** Decide whether the Speed race should read the destination, and keep a path on the mover as the audit asks.
+- **Rule:** Decided (author, 2026-11-08; refined the same day). The move event carries the unit's **full trajectory, atomically**, encoded as **deltas** — step, turn 45° either way, turn about. The spaces resolve through one owned fold; a delta list cannot encode an illegal shape, and a raw "manual" client input (turn/reverse/step) produces the identical event an assisted UI does. The mover genuinely advances along its path: before an engagement is set up it stands in the last space of its path before the defender's, which ends the half-applied move. Its **movement stats do not travel with it**: Speed and Flexibility are sampled once, where its move began (§5.1.4) — this supersedes the same-day ruling that the Speed contest reads the penultimate space. One move is one act: no mid-move stat discontinuity, no benefit for clipping an aura en route, and the contest stays symmetric, since the defender samples at the start of its own prospective retreat (§6.3.2). Legal moves reach the client as compound atoms, never an enumeration of whole trajectories; validation folds the submitted deltas through the same step and turn predicates. Terrain, when it lands, binds to the trodden path — worst touched (A3) — and because the worst can only worsen, a partial path once illegal stays illegal, so per-delta validation stays sound.
+- **Code does:** On a move into an enemy space the mover stays on its start space while its target is stored beside it; the move is applied only when the engagement is set up (`applyMoveUnitEvent.ts`, "the mover has not moved yet"). The start-space stat read during the Speed comparison is therefore right by design now; what is missing is the path. No path is stored at all.
+- **To settle:** Put the delta trajectory on the `moveUnit` event — and on the retreat choice, which runs on the same rules — advance the mover along it, and validate by folding. Movement stats stay sampled at move-start, which the engine already does.
 
 <a id="a12"></a>**A12. A diagonal step can never end on an enemy.** _Bug._
 
@@ -1453,17 +1461,17 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `canEngageEnemy.ts` only checks that 1 Flexibility remains; the turn is not applied. Against a diagonal-facing defender a step from an orthogonal front space arrives at 135°, which `isEngagementFromFront` and its siblings do not cover, and `generateStartEngagementEvent` throws (`TODO(wrong)` in `queries/engagement/isEngagementFromFront.ts`). Probe: Flexibility 2 against a SW-facing defender offered 28 such approaches. With Flexibility 0 only rear approaches exist, so no crash. Orthogonal defenders are unaffected. Intent: test titles in `canEngageEnemy.test.ts` ("has flexibility to rotate to face opposite").
 - **To settle:** Apply the turn as part of the engaging move (and spend the point), so 135° cannot arise.
 
-<a id="a14"></a>**A14. Retreat turning after the first step is unrestricted.** _Rule open._
+<a id="a14"></a>**A14. Retreat turning after the first step is unrestricted.** _Code lags rule._
 
-- **Rule:** §9.1.4: a retreat may turn at most 45° at its start. The rule is silent on turns after a step.
+- **Rule:** §9.1.4: a retreat may turn at most 45° at its start; after the first step, turning follows §5.2.1 — 45° or about per spend, repeatable (author, 2026-11-08, with A2: the limited turn is back, so sequential turns are back in).
 - **Code does:** Probe: the start turn is limited to the two adjacent facings, but after a step the search allows any facing. Retreats are the minimal move (fewest turns, then fewest steps; confirmed), so this rarely shows.
-- **To settle:** Decide whether later turns follow §5.2.1 (45°/180°), the 45° retreat limit, or are forbidden.
+- **To settle:** Restrict post-step turns to the same two 45° neighbours and the reverse, the same change A2 makes to `exploreUnitMoves`; retreats go through the same search, so most of the work is A2's.
 
 <a id="a15"></a>**A15. Commanders are never defeated.** _Code lags rule._
 
 - **Rule:** §4.2.8: a commander is defeated if it stands in a space where a unit routs in combat, and not when a unit routs at the support check.
-- **Code does:** The game state carries `lostCommanders`, and `addCommanderToLostCommanders` exists, but nothing in production calls it: a rout never touches a commander (`game/gameState/`; `transforms/pureTransforms/commanders/addCommanderToLostCommanders.ts`). Read, not probed. What a lost commander should change is not written anywhere.
-- **To settle:** Decide what defeat costs, then call the transform from the combat rout path only, keeping the support-check rout out of it.
+- **Code does:** The game state carries `lostCommanders`, and `addCommanderToLostCommanders` exists, but nothing in production calls it: a rout never touches a commander (`game/gameState/`; `transforms/pureTransforms/commanders/addCommanderToLostCommanders.ts`). Read, not probed.
+- **To settle:** Decided (author, 2026-11-08): defeat costs nothing on its face — no discard, no Morale. The commander leaves the board, and every inspiration range in that hand now reaches nothing; §4.2.8 says so. Only the routing unit's **own** commander falls — the enemy routing at its feet does not touch it. So: call the transform from the combat rout path only, for the routing side's commander only, keeping the support-check rout out of it; then make an absent commander survivable everywhere one is read — the author flags that Phase 2 (Move Commanders) may not model an absent commander at all.
 
 <a id="a16"></a>**A16. Elevation is a 0–5 height per corner and nothing reads it.** _Code lags rule._
 
@@ -1491,11 +1499,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `generateResolveRangedAttackEvent` would apply it, but `getLegalCommitToRangedAttackEvents` offers both sides the same list (Range, Attack, Flexibility), so only a two-stat card that happens to name Defence could ever protect a target.
 - **To settle:** Give attacker and defender separate accepted-stat lists: Attack for the attacker, Defence for the defender.
 
-<a id="b2"></a>**B2. Attack value is never clamped at zero.** _Code and rule disagree._
+<a id="b2"></a>**B2. Attack value is never clamped at zero.** _Code lags rule._
 
-- **Rule:** 7.1.4, an attack value cannot be reduced below zero.
+- **Rule:** §7.1.4: **every stat floors at zero**, the attack value included (author, 2026-11-08). The floor is applied once, to the finished total — never mid-sum, so a floored stat cannot be rebounded above its raw arithmetic by a later bonus.
 - **Code does:** sums base, modifiers and support with no floor. `getCurrentUnitStat` returns `baseStat + totalModifier` and `applyAttackValue` compares the raw sum. A negative value fails every threshold, including a printed Reverse of 0, whereas a value of exactly 0 meets it. (`src/domain/queries/unit/getCurrentUnitStat.ts`, `src/domain/queries/attack/applyAttackValue.ts:14`)
-- **To settle:** either add the floor (so a negative attack behaves as 0, and still reverses a 0-threshold unit), or drop the sentence.
+- **To settle:** Floor the finished total in `getCurrentUnitStat` and `applyAttackValue`, so a negative attack behaves as 0 and still reverses a 0-threshold unit. One wrinkle: the engine encodes an **unrestricted** inspiration range as −1 (A6), while the author reads a negative range as _no range_. The sentinel must be exempted from the floor or re-encoded before range is ever modified — today nothing modifies it, so the collision is latent.
 
 <a id="b3"></a>**B3. Defence commitments do nothing in melee.** _Code lags rule._
 
@@ -1510,11 +1518,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Probe:** a unit at the board edge hit to Retreat runs `openRetreat → triggerRoutFromRetreat → resolveRout → chooseRoutDiscard`; the discard throws "No rout state found in attack apply state" (`updateRoutState.ts:113`). With Morale 0, `getExpectedEvent` throws instead. The game stalls either way.
 - **To settle:** a failing spec for a retreat-held rout, then write through `updateRetreatRoutState`. Until then the rulebook states the intent; the engine would crash at the payment.
 
-<a id="b5"></a>**B5. A card with two commit stats applies both.** _Rule open._
+<a id="b5"></a>**B5. A card with two commit stats applies both.** _Settled: both at once._
 
-- **Rule:** §8.2: committing gives +1 to every stat the card names. The roster prints such cards as "attack + defense" (Stand and Fight) and "speed + defense" (Evade), which reads as both at once. Draft 3 offered a choice instead.
+- **Rule:** §8.2: committing gives +1 to every stat the card names, and both of a two-stat card's stats land at once (author, 2026-11-08: if too strong, rework later). The card may be committed at any moment where it can contribute **something**, and it contributes only what that moment uses — the spare stat is simply ignored, which §8.2 already prints.
 - **Code does:** `modifiersFromCompletedCommitment` turns every stat on the card into +1, with no choice (`queries/card/modifiersFromCompletedCommitment.ts`; a card may name one or two, `entities/card/commandCard.ts`). No stand-in card names two, so it is untested in play.
-- **To settle:** Confirm "both". Then decide whether a two-stat card is offered at a moment that accepts only one of its stats. Today it would be, and it would lend both.
+- **To settle:** Nothing but proof: a spec with a two-stat card committed at a moment that uses one stat, and one that uses both.
 
 <a id="b6"></a>**B6. Flexibility and Range commitments are offered and never read.** _Code lags rule._
 
@@ -1530,9 +1538,9 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 <a id="b8"></a>**B8. No-units-left is not a loss.** _Code lags rule._
 
-- **Rule:** §11.4: a player with no units loses. First stated in Draft 3; the old book did not have it, so confidence in intent is moderate.
+- **Rule:** §11.4: a player with no units loses. Confirmed as intended (author, 2026-11-08): it will almost never come up, but it is true.
 - **Code does:** `getGameOverWinner` has two arms, empty hand and unpayable rout; nothing counts units (`queries/gameOver/getGameOverWinner.ts`).
-- **To settle:** Confirm the rule, then add the arm.
+- **To settle:** Add the arm.
 
 <a id="b9"></a>**B9. Melee results are carried out unit by unit; the rule is stage by stage.** _Code lags rule._
 
@@ -1568,12 +1576,14 @@ These do not change how the game plays today, but they are worth the next read o
 - The number of hidden stands per colour (§3.6.1).
 - The scenario card format (§3.2).
 - What a terrain piece is as an entity, and how it relates to the board spaces it covers (§2.8).
+- What an enemy unit entering a commander's space does to the commander. For now a commander is lost only in combat (§4.2.8); play will show whether that is enough. Outright defeat seems harsh but might be fair; a commander retreat is mostly ruled out as overhead with weird side effects. (Author, 2026-11-08.)
 
 ## Open design questions
 
 Not inconsistencies. Decisions the design has not yet made.
 
-- **What commander defeat costs.** A commander is defeated where a unit routs in combat (§4.2.8). The book does not yet say what that costs the player beyond reaching no unit with an inspiration range. (Draft 3 §16.6.)
-- **The rally burn is random.** It is the game's only randomness and the only step that needs a physical shuffle. A chosen or oldest-first burn would make rally timing a cleaner decision. (Draft 3 §16.12.)
-- **Support assignment is your own call** (§10.4.5). You must fill open places, but need not find the arrangement that saves the most units. Confirm that a poor assignment is meant to be allowed to cost you.
-- **Who chooses among equally short retreats** (§9.1.3). The retreating player does, today. Confirm.
+_None open at the moment._
+
+Settled 2026-11-08: commander defeat costs nothing immediate, and a commander falls only where **one of its own** units routs in combat — the enemy's rout does not touch it (§4.2.8); an engaged unit **breaks the line**, superseding a same-day ruling that the line runs past it — the looser rule returns only if play-tests ask for it (§4.3.5); the rally burn is random by design, and the randomness is essential; support assignment is your own call and a poor one is allowed to cost you (§10.4.5); the retreating player chooses among equally short retreats (§9.1.3).
+
+Deferred the same day: what an enemy unit entering a commander's space does — loss in combat may prove to be enough (see Deferred).
