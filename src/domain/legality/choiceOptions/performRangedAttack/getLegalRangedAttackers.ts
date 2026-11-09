@@ -12,17 +12,21 @@ import { isUnengagedUnit } from './canUnitRangedAttackTarget';
 import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
 
 /**
- * Atomic perform-ranged-attack context: which player is resolving a ranged
- * command start, and which remaining units may act as the **sole** attacker.
+ * The units a Shoot order may fire next (`chooseFiringUnit`, §4.3.11 step
+ * 1): which player is carrying out the order, and which of its ordered
+ * units still to act may be named as the shooter.
  *
  * Only units with at least one legal target are included — otherwise the
- * orchestrator would wait forever on an empty target list.
+ * orchestrator would wait forever on an empty target list. That target is
+ * judged at the unit's own Range: a Range card committed afterwards may
+ * widen the choice, but is not counted in deciding whether a unit may fire
+ * at all (author, 2026-11-09: simplified for now; §4.3.11 counts it).
  *
- * Targets / supporters are enumerated per chosen attacker (+ target for
- * supporters) via {@link getLegalRangedAttackTargets} /
+ * Targets / supporters are enumerated once the shooter is named and its card
+ * committed, via {@link getLegalFiringUnitTargets} /
  * {@link getLegalRangedAttackSupporters}.
  *
- * `null` when a performRangedAttack choice is not expected (or no remaining
+ * `null` when a chooseFiringUnit choice is not expected (or no remaining
  * unit can currently fire at anyone).
  */
 export interface LegalRangedAttackers {
@@ -95,6 +99,10 @@ export function getLegalRangedAttackers<S extends GameState>(
     if (getCurrentUnitStat(unit, 'range', gameState) <= 0) {
       continue;
     }
+    // A unit with nothing to shoot at is skipped (§4.3.11 step 1). Asked at
+    // its own Range: a Range card it might commit is not counted, so a
+    // commitment can carry a shot further but never give a unit one
+    // (author, 2026-11-09).
     if (
       getLegalRangedAttackTargets(unitWithPlacement, gameState).length === 0
     ) {

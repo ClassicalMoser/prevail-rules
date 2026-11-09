@@ -198,7 +198,7 @@ commitment as that unit's defending modifiers.
 Files: `procedures/resolveAttack/generateResolveMeleeEvent.ts`.
 Blocks: `procedures`.
 
-**S15. The shot's target may commit Defence; Range extends the arc** — §4.3.11,
+**S15. The shot's target may commit Defence; Range extends the arc** — §4.3.11, **Done 2026-11-09:** a Shoot order asks for the shooter (`chooseFiringUnit`), then the shooter's one commitment, which counts for the whole shot and whose Range is read when the target is chosen, then the target and supporters, then the target's commitment (`commitToRangedDefense`: Defence, Flexibility). A unit fires only with a target at its own Range, and supporters are judged at their own (author, 2026-11-09).
 §7.4.5, §8.4, B1 + B6. Separate accepted-stat lists for attacker and defender;
 offer the Range commitment before the target is chosen and read it when
 building the arc. Flexibility commitments stay offered and dormant until

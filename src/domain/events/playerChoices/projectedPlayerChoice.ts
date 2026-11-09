@@ -17,11 +17,13 @@ import { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
 import { commitToMeleeEventSchema } from './commitToMelee';
 import { commitToMovementEventSchema } from './commitToMovement';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+import { commitToRangedDefenseEventSchema } from './commitToRangedDefense';
 import { assignUnitSupportEventSchema } from './assignUnitSupport';
 import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
+import { chooseFiringUnitEventSchema } from './chooseFiringUnit';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import type { PlayerChoiceEvent } from './playerChoice';
@@ -80,11 +82,13 @@ const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
     commitToMeleeEventSchema,
     commitToMovementEventSchema,
     commitToRangedAttackEventSchema,
+    commitToRangedDefenseEventSchema,
     doneIssuingCommandsEventSchema,
     issueCommandEventSchema,
     moveCommanderEventSchema,
     chooseMovingUnitEventSchema,
     moveUnitEventSchema,
+    chooseFiringUnitEventSchema,
     performRangedAttackEventSchema,
     setupUnitsEventSchema,
   ],

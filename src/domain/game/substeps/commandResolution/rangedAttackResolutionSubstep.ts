@@ -21,17 +21,22 @@ export interface RangedAttackResolutionState {
   substepType: 'commandResolution';
   /** The type of command resolution. */
   commandResolutionType: 'rangedAttack';
-  /** The unit that is attacking. */
+  /** The unit that is firing, named first (§4.3.11 step 1). */
   attackingUnit: UnitInstance;
-  /** The unit that is being attacked. */
-  defendingUnit: UnitInstance;
-  /** The supporting units. */
-  supportingUnits: UnitInstance[];
+  /**
+   * The unit being shot at. `'pending'` from the moment the shooter is named
+   * until its owner, having committed a card or not, names the target: a
+   * Range card reaches one space further, so the commitment comes first
+   * (§4.3.11 steps 2–3).
+   */
+  defendingUnit: UnitInstance | 'pending';
+  /** Units spending their own shots on this one; `'pending'` with the target. */
+  supportingUnits: UnitInstance[] | 'pending';
   /** The state of the attack apply. */
   attackApplyState: AttackApplyState | 'pending';
-  /** The commitment of the attacking player. */
+  /** The shooter's commitment, made before the target is named. */
   attackingCommitment: Commitment;
-  /** The commitment of the defending player. */
+  /** The target's commitment, for Defence, made once it is named (B1). */
   defendingCommitment: Commitment;
   /** Whether the ranged attack resolution substep is complete. */
   completed: boolean;
@@ -45,9 +50,9 @@ const _rangedAttackResolutionStateSchemaObject = z
     commandResolutionType: z.literal('rangedAttack'),
     completed: z.boolean(),
     defendingCommitment: commitmentSchema,
-    defendingUnit: unitInstanceSchema,
+    defendingUnit: unitInstanceSchema.or(z.literal('pending')),
     substepType: z.literal('commandResolution'),
-    supportingUnits: z.array(unitInstanceSchema),
+    supportingUnits: z.array(unitInstanceSchema).or(z.literal('pending')),
   })
   .strict();
 

@@ -28,6 +28,9 @@ export { createCommitToMovementEvent } from './createCommitToMovementEvent';
 // A commitToRangedAttack event with its fixed types filled in.
 export { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEvent';
 
+// A commitToRangedDefense event: the target of a shot commits for Defence.
+export { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseEvent';
+
 // A doneIssuingCommands event with its fixed types filled in.
 export { createDoneIssuingCommandsEvent } from './createDoneIssuingCommandsEvent';
 
@@ -42,6 +45,9 @@ export { createChooseMovingUnitEvent } from './createChooseMovingUnitEvent';
 
 // A moveUnit event with its fixed types filled in.
 export { createMoveUnitEvent } from './createMoveUnitEvent';
+
+// A chooseFiringUnit event, naming the unit a Shoot order fires next.
+export { createChooseFiringUnitEvent } from './createChooseFiringUnitEvent';
 
 // A performRangedAttack event with its fixed types filled in.
 export { createPerformRangedAttackEvent } from './createPerformRangedAttackEvent';

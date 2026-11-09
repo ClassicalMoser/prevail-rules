@@ -8,6 +8,7 @@ import type {
   CommitToMeleeEvent,
   CommitToMovementEvent,
   CommitToRangedAttackEvent,
+  CommitToRangedDefenseEvent,
   DoneIssuingCommandsEvent,
   PlayerSource,
 } from '@events';
@@ -22,11 +23,13 @@ import {
   getLegalCommitToMeleeEvents,
   getLegalCommitToMovementEvents,
   getLegalCommitToRangedAttackEvents,
+  getLegalCommitToRangedDefenseEvents,
   getLegalCommanderMoves,
   getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalMoveUnits,
   getLegalUnitMoves,
+  getLegalFiringUnitTargets,
   getLegalRangedAttackers,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
@@ -95,6 +98,10 @@ export type LegalPlayerChoiceOptions =
       events: CommitToRangedAttackEvent[];
     })
   | (LegalPlayerChoiceOptionsBase & {
+      choiceType: 'commitToRangedDefense';
+      events: CommitToRangedDefenseEvent[];
+    })
+  | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'doneIssuingCommands';
       events: DoneIssuingCommandsEvent[];
     })
@@ -125,8 +132,19 @@ export type LegalPlayerChoiceOptions =
       moves: MoveResult[];
     })
   | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'performRangedAttack';
+      choiceType: 'chooseFiringUnit';
       rangedAttackers: LegalRangedAttackers;
+    })
+  | (LegalPlayerChoiceOptionsBase & {
+      choiceType: 'performRangedAttack';
+      /** The unit whose shot is being aimed; `null` if it cannot be read. */
+      firingUnit: UnitWithPlacement | null;
+      /**
+       * Every enemy it may target, with the card committed for the shot
+       * counted (§4.3.11 steps 2–3). Supporters for a chosen target are
+       * `getLegalRangedAttackSupporters`.
+       */
+      targets: UnitWithPlacement[];
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'setupUnits';
@@ -291,6 +309,13 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         events: softEvents(() => getLegalCommitToRangedAttackEvents(state)),
       };
     }
+    case 'commitToRangedDefense': {
+      return {
+        ...base,
+        choiceType: 'commitToRangedDefense',
+        events: softEvents(() => getLegalCommitToRangedDefenseEvents(state)),
+      };
+    }
     case 'doneIssuingCommands': {
       return {
         ...base,
@@ -383,7 +408,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         moves,
       };
     }
-    case 'performRangedAttack': {
+    case 'chooseFiringUnit': {
       let rangedAttackers: LegalRangedAttackers;
       try {
         rangedAttackers =
@@ -393,8 +418,29 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       }
       return {
         ...base,
-        choiceType: 'performRangedAttack',
+        choiceType: 'chooseFiringUnit',
         rangedAttackers,
+      };
+    }
+    case 'performRangedAttack': {
+      // The shooter was named and its card committed or refused; offer every
+      // target it may reach, the committed card counted.
+      let firingUnit: UnitWithPlacement | null = null;
+      let targets: UnitWithPlacement[] = [];
+      try {
+        const legal = getLegalFiringUnitTargets(state);
+        if (legal !== null) {
+          firingUnit = legal.firingUnit;
+          targets = [...legal.targets];
+        }
+      } catch {
+        targets = [];
+      }
+      return {
+        ...base,
+        choiceType: 'performRangedAttack',
+        firingUnit,
+        targets,
       };
     }
     case 'setupUnits': {

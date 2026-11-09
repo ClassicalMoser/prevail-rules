@@ -4,6 +4,7 @@ import {
   RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
 } from '@events';
 import type { ResolveRangedAttackEvent } from '@events';
+import { throwIfPending } from '@utils';
 import {
   applyAttackValue,
   getCurrentUnitStat,
@@ -46,7 +47,17 @@ export function generateResolveRangedAttackEvent(
   }
 
   const { attackingUnit } = rangedAttackState;
-  const { defendingUnit } = rangedAttackState;
+  // The target and supporters are named before the target's owner commits
+  // (§4.3.11 steps 3–5), and that commitment is complete, so they are
+  // written by now.
+  const defendingUnit = throwIfPending(
+    rangedAttackState.defendingUnit,
+    'The target of the shot has not been named',
+  );
+  const supportingUnits = throwIfPending(
+    rangedAttackState.supportingUnits,
+    'The supporters of the shot have not been named',
+  );
 
   const attackingCommitmentModifiers = modifiersFromCompletedCommitment(
     rangedAttackState.attackingCommitment,
@@ -61,7 +72,7 @@ export function generateResolveRangedAttackEvent(
   );
 
   // Each supporting unit provides 1 support value. Simple as that.
-  const supportValue = rangedAttackState.supportingUnits.length;
+  const supportValue = supportingUnits.length;
 
   // Add the base attack value and the support value to get the total attack value
   const totalAttackValue = baseAttackValue + supportValue;

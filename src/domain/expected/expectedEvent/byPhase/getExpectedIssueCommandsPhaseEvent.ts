@@ -13,7 +13,7 @@ import { getExpectedCommandResolutionEvent } from '../iterated';
 /**
  * When resolving a ranged command with remaining units but none that have a
  * legal target, expect `completeRangedAttackCommand` so apply can clear those
- * units and advance the step instead of stalling on `performRangedAttack`.
+ * units and advance the step instead of stalling on `chooseFiringUnit`.
  */
 function getExpectedRangedResolveStart(
   state: GameState,

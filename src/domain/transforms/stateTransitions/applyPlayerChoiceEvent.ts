@@ -15,11 +15,13 @@ import {
   applyCommitToMeleeEvent,
   applyCommitToMovementEvent,
   applyCommitToRangedAttackEvent,
+  applyCommitToRangedDefenseEvent,
   applyDoneIssuingCommandsEvent,
   applyIssueCommandEvent,
   applyMoveCommanderEvent,
   applyChooseMovingUnitEvent,
   applyMoveUnitEvent,
+  applyChooseFiringUnitEvent,
   applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
 } from './applyChoices';
@@ -67,6 +69,9 @@ export function applyPlayerChoiceEvent<S extends GameState>(
     case 'commitToRangedAttack': {
       return applyCommitToRangedAttackEvent(event, state);
     }
+    case 'commitToRangedDefense': {
+      return applyCommitToRangedDefenseEvent(event, state);
+    }
     case 'doneIssuingCommands': {
       return applyDoneIssuingCommandsEvent(event, state);
     }
@@ -81,6 +86,9 @@ export function applyPlayerChoiceEvent<S extends GameState>(
     }
     case 'moveUnit': {
       return applyMoveUnitEvent(event, state);
+    }
+    case 'chooseFiringUnit': {
+      return applyChooseFiringUnitEvent(event, state);
     }
     case 'performRangedAttack': {
       return applyPerformRangedAttackEvent(event, state);

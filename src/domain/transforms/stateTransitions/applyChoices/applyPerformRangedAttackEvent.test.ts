@@ -1,328 +1,188 @@
 import type { UnitInstance } from '@entities';
-import type { PerformRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import {
-  isSameUnitInstance,
+  createPerformRangedAttackEvent,
+  createEmptyGameState,
+} from '@factories';
+import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
 } from '@queries';
 import {
   createIssueCommandsPhaseState,
+  createRangedAttackResolutionState,
   createUnitWithPlacement,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 
-import { createEmptyGameState } from '@factories';
 import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
+
 /**
- * Starting a ranged resolution: CRS becomes rangedAttack with attacker/defender units, both
- * commitments pending, supporting units recorded, and every participating unit stripped from
- * the active player’s `remainingUnits*` (and defender from the opponent’s set when listed).
+ * Aiming a shot (§4.3.11 steps 3–4): the target and supporters are written
+ * into the shot `chooseFiringUnit` opened, the supporters' shots are spent,
+ * and the target leaves its own side's units still to act.
  */
 describe('applyPerformRangedAttackEvent function', () => {
-  /** IssueCommands at first or second resolve step with the given remaining unit sets. */
-  function createStateInResolveStep(
+  /**
+   * A Shoot order's shot, named and committed, waiting for its target: the
+   * shooter has already left the order's units still to act, and refused to
+   * commit, so nothing about the card is in play here.
+   */
+  function shotAwaitingTarget(
     step: 'firstPlayerResolveCommands' | 'secondPlayerResolveCommands',
+    shooter: UnitInstance,
     remainingUnitsFirstPlayer: UnitInstance[],
     remainingUnitsSecondPlayer: UnitInstance[],
-    currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
+    // Black holds initiative, so black resolves first and white second.
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
-      currentInitiative,
+      'black',
     );
-    return updatePhaseState(
+    const shot = createRangedAttackResolutionState(state, {
+      attackingCommitment: { commitmentType: 'declined' },
+      attackingUnit: shooter,
+      defendingCommitment: { commitmentType: 'pending' },
+      defendingUnit: 'pending',
+      supportingUnits: 'pending',
+    });
+    const awaiting = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
+        currentCommandResolutionState: shot,
         remainingUnitsFirstPlayer,
         remainingUnitsSecondPlayer,
         step,
       }),
     );
+    return awaiting;
   }
 
-  it('given sole black attacker vs white defender, ranged CRS pending both sides and first-player remaining empty', () => {
-    const attacker = createUnitWithPlacement({
+  it('writes the target into the open shot, with no supporters, and leaves its commitments as they were', () => {
+    // Black shoots from E-5 at a white unit; neither placement is judged here.
+    const shooter = createUnitWithPlacement({
       coordinate: 'E-5',
-      facing: 'north',
       playerSide: 'black',
     });
-    const defender = createUnitWithPlacement({
+    const target = createUnitWithPlacement({
       coordinate: 'E-7',
       facing: 'south',
       playerSide: 'white',
     });
-    const state = createStateInResolveStep(
+    const state = shotAwaitingTarget(
       'firstPlayerResolveCommands',
-      [attacker.unit],
+      shooter.unit,
+      [],
       [],
     );
 
-    const event: PerformRangedAttackEvent = {
-      choiceType: 'performRangedAttack',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-      supportingUnits: [],
-      targetUnit: defender,
-      unit: attacker,
-    };
-
-    const newState = applyPerformRangedAttackEvent(event, state);
-    const phaseState = getIssueCommandsPhaseState(newState);
-    const ranged = getRangedAttackResolutionState(newState);
-
-    expect(ranged.commandResolutionType).toBe('rangedAttack');
-    expect(isSameUnitInstance(ranged.attackingUnit, attacker.unit).result).toBe(
-      true,
+    // Black aims at the white unit alone.
+    const aimed = applyPerformRangedAttackEvent(
+      createPerformRangedAttackEvent({
+        eventNumber: 0,
+        player: 'black',
+        supportingUnits: [],
+        targetUnit: target,
+      }),
+      state,
     );
-    expect(isSameUnitInstance(ranged.defendingUnit, defender.unit).result).toBe(
-      true,
-    );
-    expect(ranged.attackingCommitment).toStrictEqual({
+
+    // The shot now knows its target, still waits on the target's
+    // commitment, and keeps the shooter's refusal.
+    const shot = getRangedAttackResolutionState(aimed);
+    expect(shot.defendingUnit).toStrictEqual(target.unit);
+    expect(shot.supportingUnits).toStrictEqual([]);
+    expect(shot.attackingCommitment).toStrictEqual({
+      commitmentType: 'declined',
+    });
+    expect(shot.defendingCommitment).toStrictEqual({
       commitmentType: 'pending',
     });
-    expect(ranged.defendingCommitment).toStrictEqual({
-      commitmentType: 'pending',
-    });
-    expect(ranged.supportingUnits).toHaveLength(0);
-
-    const remainingFirst = phaseState.remainingUnitsFirstPlayer;
-    expect(remainingFirst).toHaveLength(0);
-    expect(
-      [...remainingFirst].some(
-        (u) => isSameUnitInstance(u, attacker.unit).result,
-      ),
-    ).toBe(false);
   });
 
-  it('given two black units in remaining but only one attacks, other black stays in remaining', () => {
-    const attacker = createUnitWithPlacement({
+  it('a named supporter spends its shot: the shot records it and it no longer waits to act', () => {
+    // Two more black units of the same order still wait to fire; one
+    // supports, the other does not.
+    const shooter = createUnitWithPlacement({
       coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const otherUnit = createUnitWithPlacement({
-      coordinate: 'D-4',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'E-7',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = createStateInResolveStep(
-      'firstPlayerResolveCommands',
-      [attacker.unit, otherUnit.unit],
-      [],
-    );
-
-    const event: PerformRangedAttackEvent = {
-      choiceType: 'performRangedAttack',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-      supportingUnits: [],
-      targetUnit: defender,
-      unit: attacker,
-    };
-
-    const newState = applyPerformRangedAttackEvent(event, state);
-    const phaseState = getIssueCommandsPhaseState(newState);
-    const remainingFirst = phaseState.remainingUnitsFirstPlayer;
-
-    expect(remainingFirst).toHaveLength(1);
-    expect(
-      [...remainingFirst].some(
-        (u) => isSameUnitInstance(u, otherUnit.unit).result,
-      ),
-    ).toBe(true);
-    expect(
-      [...remainingFirst].some(
-        (u) => isSameUnitInstance(u, attacker.unit).result,
-      ),
-    ).toBe(false);
-  });
-
-  it('given defender listed in second-player remaining, after attack second-player remaining loses defender', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'E-7',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = createStateInResolveStep(
-      'firstPlayerResolveCommands',
-      [attacker.unit],
-      [defender.unit],
-    );
-
-    const event: PerformRangedAttackEvent = {
-      choiceType: 'performRangedAttack',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-      supportingUnits: [],
-      targetUnit: defender,
-      unit: attacker,
-    };
-
-    const newState = applyPerformRangedAttackEvent(event, state);
-    const phaseState = getIssueCommandsPhaseState(newState);
-
-    expect(phaseState.remainingUnitsSecondPlayer).toHaveLength(0);
-    expect(
-      [...phaseState.remainingUnitsSecondPlayer].some(
-        (u) => isSameUnitInstance(u, defender.unit).result,
-      ),
-    ).toBe(false);
-  });
-
-  it('given attacker plus one supporter in remaining, both cleared and supporter in ranged.supportingUnits', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
       playerSide: 'black',
     });
     const supporter = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'north',
+      coordinate: 'E-4',
       playerSide: 'black',
       unitOptions: { instanceNumber: 2 },
     });
-    const defender = createUnitWithPlacement({
-      coordinate: 'E-7',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = createStateInResolveStep(
-      'firstPlayerResolveCommands',
-      [attacker.unit, supporter.unit],
-      [],
-    );
-
-    const event: PerformRangedAttackEvent = {
-      choiceType: 'performRangedAttack',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-      supportingUnits: [supporter],
-      targetUnit: defender,
-      unit: attacker,
-    };
-
-    const newState = applyPerformRangedAttackEvent(event, state);
-    const phaseState = getIssueCommandsPhaseState(newState);
-    const ranged = getRangedAttackResolutionState(newState);
-
-    expect(ranged.supportingUnits).toHaveLength(1);
-    expect(
-      [...ranged.supportingUnits].some(
-        (u) => isSameUnitInstance(u, supporter.unit).result,
-      ),
-    ).toBe(true);
-    expect(phaseState.remainingUnitsFirstPlayer).toHaveLength(0);
-  });
-
-  it('given two supporters in remaining, ranged holds both and first-player remaining ends empty', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const supporter1 = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2 },
-    });
-    const supporter2 = createUnitWithPlacement({
-      coordinate: 'F-5',
-      facing: 'north',
+    const bystander = createUnitWithPlacement({
+      coordinate: 'E-6',
       playerSide: 'black',
       unitOptions: { instanceNumber: 3 },
     });
-    const defender = createUnitWithPlacement({
-      coordinate: 'E-7',
+    const target = createUnitWithPlacement({
+      coordinate: 'C-5',
       facing: 'south',
       playerSide: 'white',
     });
-    const state = createStateInResolveStep(
+    const state = shotAwaitingTarget(
       'firstPlayerResolveCommands',
-      [attacker.unit, supporter1.unit, supporter2.unit],
+      shooter.unit,
+      [supporter.unit, bystander.unit],
       [],
     );
 
-    const event: PerformRangedAttackEvent = {
-      choiceType: 'performRangedAttack',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-      supportingUnits: [supporter1, supporter2],
-      targetUnit: defender,
-      unit: attacker,
-    };
+    // Black names one supporter (§7.3.4).
+    const aimed = applyPerformRangedAttackEvent(
+      createPerformRangedAttackEvent({
+        eventNumber: 0,
+        player: 'black',
+        supportingUnits: [supporter],
+        targetUnit: target,
+      }),
+      state,
+    );
 
-    const newState = applyPerformRangedAttackEvent(event, state);
-    const phaseState = getIssueCommandsPhaseState(newState);
-    const ranged = getRangedAttackResolutionState(newState);
-
-    expect(ranged.supportingUnits).toHaveLength(2);
-    expect(phaseState.remainingUnitsFirstPlayer).toHaveLength(0);
+    // The supporter is in the shot; only the bystander is left to fire.
+    expect(getRangedAttackResolutionState(aimed).supportingUnits).toStrictEqual(
+      [supporter.unit],
+    );
     expect(
-      [...phaseState.remainingUnitsFirstPlayer].some(
-        (u) => isSameUnitInstance(u, supporter1.unit).result,
-      ),
-    ).toBe(false);
-    expect(
-      [...phaseState.remainingUnitsFirstPlayer].some(
-        (u) => isSameUnitInstance(u, supporter2.unit).result,
-      ),
-    ).toBe(false);
+      getIssueCommandsPhaseState(aimed).remainingUnitsFirstPlayer,
+    ).toStrictEqual([bystander.unit]);
   });
 
-  it('given secondPlayerResolveCommands with white attacker, second-player remaining cleared and ranged set', () => {
-    const attacker = createUnitWithPlacement({
+  it('the target leaves its own side’s units still to act', () => {
+    // White resolves second, so its target sits in the first player's list.
+    const shooter = createUnitWithPlacement({
       coordinate: 'E-6',
       facing: 'south',
       playerSide: 'white',
     });
-    const defender = createUnitWithPlacement({
+    const target = createUnitWithPlacement({
       coordinate: 'E-4',
-      facing: 'north',
       playerSide: 'black',
     });
-    const state = createStateInResolveStep(
+    const state = shotAwaitingTarget(
       'secondPlayerResolveCommands',
+      shooter.unit,
+      [target.unit],
       [],
-      [attacker.unit],
-      'black',
     );
 
-    const event: PerformRangedAttackEvent = {
-      choiceType: 'performRangedAttack',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'white',
-      supportingUnits: [],
-      targetUnit: defender,
-      unit: attacker,
-    };
+    // White aims at the black unit.
+    const aimed = applyPerformRangedAttackEvent(
+      createPerformRangedAttackEvent({
+        eventNumber: 0,
+        player: 'white',
+        supportingUnits: [],
+        targetUnit: target,
+      }),
+      state,
+    );
 
-    const newState = applyPerformRangedAttackEvent(event, state);
-    const phaseState = getIssueCommandsPhaseState(newState);
-
-    expect(phaseState.remainingUnitsSecondPlayer).toHaveLength(0);
+    // The black unit is no longer listed as still to act.
     expect(
-      getRangedAttackResolutionState(newState).attackingUnit,
-    ).toBeDefined();
+      getIssueCommandsPhaseState(aimed).remainingUnitsFirstPlayer,
+    ).toStrictEqual([]);
   });
 });

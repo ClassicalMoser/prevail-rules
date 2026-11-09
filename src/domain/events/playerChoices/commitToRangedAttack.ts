@@ -8,7 +8,20 @@ import { z } from 'zod';
 export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
   'commitToRangedAttack' as const;
 
-const rangedAttackModifierTypes = ['range', 'attack', 'flexibility'] as const;
+/**
+ * The stats a shooter's card may be committed for (§8.4): Range, which
+ * reaches one space further out when the target is chosen (§4.3.11); Attack,
+ * which hits harder; and Flexibility, which will shrink a shooter's terrain
+ * deficit once terrain lands (§2.5.2) and adds nothing until then. Defence is
+ * not here: it belongs to the target, which commits on its own
+ * (`commitToRangedDefense`).
+ */
+export const rangedAttackModifierTypes = [
+  'range',
+  'attack',
+  'flexibility',
+] as const;
+/** A stat the shooter's commitment may apply. */
 export type RangedAttackModifier = (typeof rangedAttackModifierTypes)[number];
 
 // Type-level guarantee that RangedAttackModifier extends StatModifier
@@ -18,13 +31,18 @@ const _assertRangedAttackModifierExtendsStatModifier: [
   ? true
   : never = true;
 
-/** An event to commit a card to a ranged attack — or refuse (`committedCard` null). */
+/**
+ * The shooter's one commitment in a ranged attack (§4.3.11, §7.4.5): after
+ * the firing unit is named and before its target is, its owner may commit a
+ * card, or refuse (`committedCard` null). The card counts for the whole shot:
+ * its Range when the target is chosen, its Attack when the shot lands.
+ */
 export interface CommitToRangedAttackEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE;
-  /** The player who is committing (or refusing). */
+  /** The shooting player, committing (or refusing). */
   player: PlayerSide;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;

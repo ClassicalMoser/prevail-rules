@@ -12,6 +12,7 @@ export { getLegalChooseWhetherToRetreatEvents } from './getLegalChooseWhetherToR
 export { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
 export { getLegalCommitToMovementEvents } from './getLegalCommitToMovementEvents';
 export { getLegalCommitToRangedAttackEvents } from './getLegalCommitToRangedAttackEvents';
+export { getLegalCommitToRangedDefenseEvents } from './getLegalCommitToRangedDefenseEvents';
 export {
   getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
@@ -40,8 +41,10 @@ export {
 } from './setupUnits';
 export {
   canUnitRangedAttackTarget,
+  getLegalFiringUnitTargets,
   getLegalRangedAttackers,
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
+  type LegalFiringUnitTargets,
   type LegalRangedAttackers,
 } from './performRangedAttack';

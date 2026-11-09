@@ -15,8 +15,9 @@ import {
   createEmptyGameState,
 } from '@factories';
 /**
- * Ranged strike commitments: attacker or defender locks in their reaction card; the matching
- * `attackingCommitment` / `defendingCommitment` flips to completed and the card leaves hand.
+ * The shooter's commitment (§4.3.11 step 2): the attacker locks in its card;
+ * `attackingCommitment` flips to completed and the card leaves hand. The
+ * target's commitment is its own event (`applyCommitToRangedDefenseEvent`).
  */
 describe('applyCommitToRangedAttackEvent function', () => {
   it('given pending attackingCommitment and black holds the card, attacking completed and black hand empty', () => {
@@ -52,40 +53,5 @@ describe('applyCommitToRangedAttackEvent function', () => {
       commitmentType: 'completed',
     });
     expect(newState.cardState.black.inHand).toHaveLength(0);
-  });
-
-  it('given pending defendingCommitment and white holds the card, defending completed and white hand empty', () => {
-    const state = createEmptyGameState('standard');
-    const stateWithWhiteCardInHand = updateCardState(state, {
-      ...state.cardState,
-      white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
-    });
-    const rangedState = createRangedAttackResolutionState(
-      stateWithWhiteCardInHand,
-      {
-        defendingCommitment: { commitmentType: 'pending' },
-      },
-    );
-    const stateInPhase = updatePhaseState(
-      stateWithWhiteCardInHand,
-      createIssueCommandsPhaseState(stateWithWhiteCardInHand, {
-        currentCommandResolutionState: rangedState,
-      }),
-    );
-    const event = createCommitToRangedAttackEvent({
-      committedCard: tempCommandCards[0],
-      eventNumber: 0,
-      modifierTypes: [],
-      player: 'white',
-    });
-
-    const newState = applyCommitToRangedAttackEvent(event, stateInPhase);
-    const newRanged = getRangedAttackResolutionState(newState);
-
-    expect(newRanged.defendingCommitment).toStrictEqual({
-      card: tempCommandCards[0],
-      commitmentType: 'completed',
-    });
-    expect(newState.cardState.white.inHand).toHaveLength(0);
   });
 });

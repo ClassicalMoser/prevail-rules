@@ -7,14 +7,12 @@ describe('createPerformRangedAttackEvent function', () => {
     expect.hasAssertions();
     const supportingUnits = [createUnitWithPlacement()];
     const targetUnit = createUnitWithPlacement({ coordinate: 'E-5' });
-    const unit = createUnitWithPlacement({ coordinate: 'E-4' });
 
     const event = createPerformRangedAttackEvent({
       eventNumber: 3,
       player: 'white',
       supportingUnits,
       targetUnit,
-      unit,
     });
 
     expect(event).toStrictEqual({
@@ -24,7 +22,6 @@ describe('createPerformRangedAttackEvent function', () => {
       player: 'white',
       supportingUnits,
       targetUnit,
-      unit,
     });
   });
 });

@@ -591,13 +591,12 @@ A commander may ride along even when the unit moves **into an engagement**. This
 
 **4.3.11 Resolving a ranged attack order** (§7.4):
 
-1. Choose the firing unit. It must be unengaged and have Range of at least 1. A unit with no legal target, even counting a +1 Range commitment (step 2), is skipped. A Range commitment may therefore be what gives a unit its target.
-2. Before choosing a target, the **attacker** may commit a card for **+1 Range**, which extends the forward arc one space further out (§8, §2.4.3). Optional.<sup>[B6](#b6)</sup>
-3. Choose one enemy target within its forward arc (§2.4.3). You cannot shoot into a melee: a unit in an engaged space is never a target.
-4. Optionally name **supporters** — other units you ordered with this same command that have not yet fired, and that could each independently shoot that same target. Each supporter adds **+1**, and naming it spends that unit's own shot (§7.3.4).
-5. The **attacker** may commit a card for **+1 Attack** (§8). Optional.
-6. The **defender** may then commit a card for **+1 Defence** (§8.5). Optional.<sup>[B1](#b1)</sup>
-7. Resolve the attack (§7).
+1. Choose the firing unit. It must be unengaged, have Range of at least 1, and have a legal target at its own Range. A unit with no such target is skipped: a Range commitment can carry a shot further, but it does not give a unit a shot it did not have (author, 2026-11-09: kept simple for now).
+2. Before choosing a target, the **attacker** may commit one card. This is the attacker's only commitment for the shot, and it applies to the whole attack: +1 **Range** extends the forward arc one space further out (§2.4.3), +1 **Attack** adds to the blow, and a card naming both gives both (§8). Optional.<sup>[B6](#b6)</sup>
+3. Choose one enemy target within its forward arc (§2.4.3), counting any Range committed. You cannot shoot into a melee: a unit in an engaged space is never a target.
+4. Optionally name **supporters** — other units you ordered with this same command that have not yet fired, and that could each independently shoot that same target at their own Range; the attacker's card does not reach them. Each supporter adds **+1**, and naming it spends that unit's own shot (§7.3.4).
+5. The **defender** may then commit a card for **+1 Defence** (§8.5). Optional.<sup>[B1](#b1)</sup>
+6. Resolve the attack (§7).
 
 A card naming Flexibility helps a shooter standing at a deficit: +1 Flexibility shrinks the deficit, and with it the penalty to Range and Attack (§2.5.2).
 
@@ -873,7 +872,7 @@ Naming a unit as a supporter **spends its shot**. A command that orders four arc
 
 **7.4.4** Ranged fire is **one way**. The target does not shoot back.
 
-**7.4.5** The attacker commits first, for Range before choosing the target and for Attack after; then the defender, for Defence, raising the target's thresholds against this shot (§8.5).<sup>[B1](#b1)</sup>
+**7.4.5** The attacker commits first, once, before choosing the target; the card counts for the whole attack (Range for the arc, Attack for the blow). Then, with the target named, the defender commits for Defence, raising the target's thresholds against this shot (§8.5).<sup>[B1](#b1)</sup>
 
 **7.4.6 Line of sight.** A shooter can see a target if a straight line can be drawn from **any corner of the shooter's space** to **any corner of the target's space** without touching a blocking space.<sup>[A18](#a18)</sup>
 
@@ -1487,11 +1486,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 ## B — Combat, commitments, cards, endgame
 
-<a id="b1"></a>**B1. The target of a shot is never offered a Defence card.** _Code lags rule._
+<a id="b1"></a>**B1. The target of a shot is never offered a Defence card.** _Closed: S15._
 
 - **Rule:** §4.3.11, §7.4.5: the defender may commit for Defence. (Author decision 2026-11-08.)
 - **Code does:** `generateResolveRangedAttackEvent` would apply it, but `getLegalCommitToRangedAttackEvents` offers both sides the same list (Range, Attack, Flexibility), so only a two-stat card that happens to name Defence could ever protect a target.
-- **To settle:** Give attacker and defender separate accepted-stat lists: Attack for the attacker, Defence for the defender.
+- **Closed:** The shooter and the target now commit through separate events with separate lists: `commitToRangedAttack` (Range, Attack, Flexibility), the shooter's one window before it aims; `commitToRangedDefense` (Defence, Flexibility), the target's, once it is named. A target's Flexibility counts because a deficit penalises its thresholds too (§2.5.2).
 
 <a id="b2"></a>**B2. Attack value is never clamped at zero.** _Code lags rule._
 
@@ -1518,11 +1517,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `modifiersFromCompletedCommitment` turns every stat on the card into +1, with no choice (`queries/card/modifiersFromCompletedCommitment.ts`; a card may name one or two, `entities/card/commandCard.ts`). No stand-in card names two, so it is untested in play.
 - **To settle:** Nothing but proof: a spec with a two-stat card committed at a moment that uses one stat, and one that uses both.
 
-<a id="b6"></a>**B6. Flexibility and Range commitments are offered and never read.** _Code lags rule._
+<a id="b6"></a>**B6. Flexibility and Range commitments are offered and never read.** _Range closed in S15; Flexibility waits for the deficit (A3)._
 
 - **Rule:** §8.4 lists the stats each moment accepts. Flexibility counts before a move (once A8 is fixed). Range extends a shot's forward arc one space further out (§4.3.11, committed before the target is chosen). In a shot or a melee, +1 Flexibility shrinks a deficit (§2.5.2), so it matters only on rough ground.
 - **Code does:** Commitments are read only in the front-engagement Speed contest, the ranged attack value and target thresholds, and the melee attack value (`procedures/movement/generateResolveEngageRetreatOptionEvent.ts`; `resolveAttack/`). The engine still accepts Range and Flexibility in shooting, and Flexibility in melee (`getLegalCommitTo*Events.ts`).
-- **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen. Let a Range commitment count when deciding whether a unit has a target at all. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
+- **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen: the attacker's one window, whose card counts for the whole attack (author, 2026-11-09). A Range commitment does not count when deciding whether a unit has a target at all (author, 2026-11-09: simplified for now), and it reaches the firing unit only, not its supporters. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
+- **Range, closed in S15:** the shooter commits before it aims, and `getLegalFiringUnitTargets` builds the arc with that card's Range counted. Flexibility is still offered (to the shooter and, for its own thresholds, to the target) and read nowhere until the deficit lands (A3).
 
 <a id="b7"></a>**B7. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Closed 2026-11-08._
 

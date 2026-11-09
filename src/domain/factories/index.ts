@@ -40,11 +40,13 @@ export { createChooseWhetherToRetreatEvent } from './playerChoices';
 export { createCommitToMeleeEvent } from './playerChoices';
 export { createCommitToMovementEvent } from './playerChoices';
 export { createCommitToRangedAttackEvent } from './playerChoices';
+export { createCommitToRangedDefenseEvent } from './playerChoices';
 export { createDoneIssuingCommandsEvent } from './playerChoices';
 export { createIssueCommandEvent } from './playerChoices';
 export { createMoveCommanderEvent } from './playerChoices';
 export { createChooseMovingUnitEvent } from './playerChoices';
 export { createMoveUnitEvent } from './playerChoices';
+export { createChooseFiringUnitEvent } from './playerChoices';
 export { createPerformRangedAttackEvent } from './playerChoices';
 export { createSetupUnitsEvent } from './playerChoices';
 

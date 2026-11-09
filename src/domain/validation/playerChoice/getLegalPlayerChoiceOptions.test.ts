@@ -40,6 +40,7 @@ vi.mock(import('@expected'), async (importOriginal) => {
 
 const allChoiceTypes = [
   'chooseCard',
+  'chooseFiringUnit',
   'chooseMeleeResolution',
   'chooseMovingUnit',
   'chooseRally',
@@ -49,6 +50,7 @@ const allChoiceTypes = [
   'commitToMovement',
   'chooseWhetherToRetreat',
   'commitToRangedAttack',
+  'commitToRangedDefense',
   'doneIssuingCommands',
   'issueCommand',
   'moveCommander',
@@ -181,7 +183,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.destinations).toContain('E-5');
   });
 
-  it('packages performRangedAttack root attackers', () => {
+  it('packages chooseFiringUnit root attackers', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -223,13 +225,14 @@ describe('getLegalPlayerChoiceOptions function', () => {
       }),
     );
 
+    // The Shoot order starts by naming its shooter (§4.3.11 step 1).
     const options = getLegalPlayerChoiceOptions(state);
     expect(options).toMatchObject({
-      choiceType: 'performRangedAttack',
+      choiceType: 'chooseFiringUnit',
       playerSource: 'black',
     });
-    if (options?.choiceType !== 'performRangedAttack') {
-      throw new Error('expected performRangedAttack');
+    if (options?.choiceType !== 'chooseFiringUnit') {
+      throw new Error('expected chooseFiringUnit');
     }
     expect(options.rangedAttackers.attackers).toStrictEqual([attacker]);
   });
@@ -256,6 +259,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
           case 'commitToMelee':
           case 'commitToMovement':
           case 'commitToRangedAttack':
+          case 'commitToRangedDefense':
           case 'doneIssuingCommands': {
             expect(options).toHaveProperty('events');
             if (options && 'events' in options) {
@@ -299,10 +303,16 @@ describe('getLegalPlayerChoiceOptions function', () => {
             expect(options).toMatchObject({ movingUnit: null, moves: [] });
             break;
           }
-          case 'performRangedAttack': {
+          case 'chooseFiringUnit': {
             expect(options).toMatchObject({
               rangedAttackers: { attackers: [], player: 'black' },
             });
+            break;
+          }
+          case 'performRangedAttack': {
+            // No shot is open in this state, so there is no shooter and
+            // nothing to aim at.
+            expect(options).toMatchObject({ firingUnit: null, targets: [] });
             break;
           }
           case 'setupUnits': {

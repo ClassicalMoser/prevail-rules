@@ -1,27 +1,27 @@
 import type { ValidationResult } from '@utils';
 import type { PerformRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  getLegalRangedAttackers,
-  getLegalRangedAttackTargets,
-} from '@legality';
-import { isFriendlyUnit, isSameUnitWithPlacement } from '@queries';
+import { getLegalFiringUnitTargets } from '@legality';
+import { isSameUnitWithPlacement } from '@queries';
 import { isValidRangedAttackSupporters } from './isValidRangedAttackSupporters';
 
 /**
- * Validates a PerformRangedAttackEvent as an integral commit over atoms:
- * - exactly one attacker ∈ {@link getLegalRangedAttackers}
- * - exactly one defender ∈ {@link getLegalRangedAttackTargets} for that attacker
+ * Validates a PerformRangedAttackEvent: the target and supporters for the
+ * shooter its `chooseFiringUnit` named, aimed after its commitment
+ * (§4.3.11 steps 3–4).
+ * - the shot is waiting for its target, and it is this player's shooter
+ * - the target ∈ {@link getLegalFiringUnitTargets}, the committed card's
+ *   Range counted
  * - each supporter ∈ {@link getLegalRangedAttackSupporters} for that
- *   attacker+target (must independently be able to hit the same target)
- * - unique supporters; none is the attacker
+ *   shooter and target, at its own Range; unique, and not the shooter
  */
 export function isValidPerformRangedAttackEvent(
   event: PerformRangedAttackEvent,
   state: GameState,
 ): ValidationResult {
   try {
-    const legal = getLegalRangedAttackers(state);
+    // A target is named only once a shooter is named and has committed.
+    const legal = getLegalFiringUnitTargets(state);
     if (legal === null) {
       return {
         errorReason:
@@ -30,6 +30,7 @@ export function isValidPerformRangedAttackEvent(
       };
     }
 
+    // Only the shooter's owner aims it.
     if (event.player !== legal.player) {
       return {
         errorReason: `Expected perform ranged attack from ${legal.player}, got ${event.player}`,
@@ -37,25 +38,8 @@ export function isValidPerformRangedAttackEvent(
       };
     }
 
-    if (!isFriendlyUnit(event.unit.unit, event.player)) {
-      return {
-        errorReason: 'Attacker does not belong to the event player',
-        result: false,
-      };
-    }
-
-    const attacker = legal.attackers.find(
-      (candidate) => isSameUnitWithPlacement(candidate, event.unit).result,
-    );
-    if (attacker === undefined) {
-      return {
-        errorReason: `Unit is not a legal ranged attacker for ${event.player}`,
-        result: false,
-      };
-    }
-
-    const legalTargets = getLegalRangedAttackTargets(attacker, state);
-    const target = legalTargets.find(
+    // The target must be one the shooter can reach, its card counted.
+    const target = legal.targets.find(
       (candidate) =>
         isSameUnitWithPlacement(candidate, event.targetUnit).result,
     );
@@ -70,7 +54,7 @@ export function isValidPerformRangedAttackEvent(
     // Each supporter must be able to make this shot itself (§7.3.4).
     const supportersValid = isValidRangedAttackSupporters(
       event.supportingUnits,
-      attacker,
+      legal.firingUnit,
       target,
       state,
     );

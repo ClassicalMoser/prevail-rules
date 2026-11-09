@@ -46,8 +46,55 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     });
   });
 
-  it('given their commitment is pending, asks the defending player to commit', () => {
+  it('once the shooter has committed, asks it to name its target', () => {
     const gameState = createGameState();
+    // Black refused to commit; nothing is aimed yet (§4.3.11 step 3).
+    const resolutionState = createRangedAttackResolutionState(gameState, {
+      attackingCommitment: { commitmentType: 'declined' },
+      defendingCommitment: { commitmentType: 'pending' },
+      defendingUnit: 'pending',
+      supportingUnits: 'pending',
+    });
+
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'performRangedAttack',
+      playerSource: 'black',
+    });
+  });
+
+  it('asks the shooter for its commitment before its target, even with nothing aimed', () => {
+    const gameState = createGameState();
+    // The shooter is named and nothing else: the card comes first (§4.3.11 step 2).
+    const resolutionState = createRangedAttackResolutionState(gameState, {
+      attackingCommitment: { commitmentType: 'pending' },
+      defendingCommitment: { commitmentType: 'pending' },
+      defendingUnit: 'pending',
+      supportingUnits: 'pending',
+    });
+
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'commitToRangedAttack',
+      playerSource: 'black',
+    });
+  });
+
+  it('once the target is named, asks its owner to commit for Defence', () => {
+    const gameState = createGameState();
+    // Black's shot is aimed at the white unit the fixture names.
     const resolutionState = createRangedAttackResolutionState(gameState, {
       defendingCommitment: { commitmentType: 'pending' },
     });
@@ -60,7 +107,7 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
       ),
     ).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'commitToRangedAttack',
+      choiceType: 'commitToRangedDefense',
       playerSource: 'white',
     });
   });

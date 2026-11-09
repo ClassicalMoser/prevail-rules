@@ -28,9 +28,11 @@ export function getExpectedStartCommandResolutionEvent(
       playerSource: player,
     };
   } else if (activeCard.command.type === 'rangedAttack') {
+    // A Shoot order is carried out one shot at a time, starting by naming
+    // the shooter; its commitment and its target follow (§4.3.11).
     return {
       actionType: 'playerChoice',
-      choiceType: 'performRangedAttack',
+      choiceType: 'chooseFiringUnit',
       playerSource: player,
     };
   }

@@ -21,7 +21,7 @@ describe('getExpectedStartCommandResolutionEvent function', () => {
     });
   });
 
-  it('given ask the player to perform a ranged attack for a ranged attack card', () => {
+  it('a Shoot order starts by asking which unit fires next', () => {
     const state = createEmptyGameState('standard');
     state.cardState.white.inPlay = {
       ...createTestCard(),
@@ -35,7 +35,7 @@ describe('getExpectedStartCommandResolutionEvent function', () => {
       getExpectedStartCommandResolutionEvent(state, 'white'),
     ).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'performRangedAttack',
+      choiceType: 'chooseFiringUnit',
       playerSource: 'white',
     });
   });

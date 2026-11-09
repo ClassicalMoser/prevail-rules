@@ -8,10 +8,12 @@ export { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatE
 export { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 export { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 export { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
+export { applyCommitToRangedDefenseEvent } from './applyCommitToRangedDefenseEvent';
 export { applyDoneIssuingCommandsEvent } from './applyDoneIssuingCommandsEvent';
 export { applyIssueCommandEvent } from './applyIssueCommandEvent';
 export { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 export { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
 export { applyMoveUnitEvent } from './applyMoveUnitEvent';
+export { applyChooseFiringUnitEvent } from './applyChooseFiringUnitEvent';
 export { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 export { applySetupUnitsEvent } from './applySetupUnitsEvent';

@@ -9,10 +9,12 @@ import type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
 import type { CommitToMeleeEvent } from './commitToMelee';
 import type { CommitToMovementEvent } from './commitToMovement';
 import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
+import type { CommitToRangedDefenseEvent } from './commitToRangedDefense';
 import type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
 import type { IssueCommandEvent } from './issueCommand';
 import type { MoveCommanderEvent } from './moveCommander';
 import type { ChooseMovingUnitEvent } from './chooseMovingUnit';
+import type { ChooseFiringUnitEvent } from './chooseFiringUnit';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { SetupUnitsEvent } from './setupUnit';
@@ -29,10 +31,12 @@ import { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
 import { commitToMeleeEventSchema } from './commitToMelee';
 import { commitToMovementEventSchema } from './commitToMovement';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+import { commitToRangedDefenseEventSchema } from './commitToRangedDefense';
 import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
+import { chooseFiringUnitEventSchema } from './chooseFiringUnit';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import { setupUnitsEventSchema } from './setupUnit';
@@ -52,11 +56,13 @@ export type PlayerChoiceEvent =
   | CommitToMeleeEvent
   | CommitToMovementEvent
   | CommitToRangedAttackEvent
+  | CommitToRangedDefenseEvent
   | DoneIssuingCommandsEvent
   | IssueCommandEvent
   | MoveCommanderEvent
   | ChooseMovingUnitEvent
   | MoveUnitEvent
+  | ChooseFiringUnitEvent
   | PerformRangedAttackEvent
   | SetupUnitsEvent;
 
@@ -79,11 +85,13 @@ const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   commitToMeleeEventSchema,
   commitToMovementEventSchema,
   commitToRangedAttackEventSchema,
+  commitToRangedDefenseEventSchema,
   doneIssuingCommandsEventSchema,
   issueCommandEventSchema,
   moveCommanderEventSchema,
   chooseMovingUnitEventSchema,
   moveUnitEventSchema,
+  chooseFiringUnitEventSchema,
   performRangedAttackEventSchema,
   setupUnitsEventSchema,
 ]);

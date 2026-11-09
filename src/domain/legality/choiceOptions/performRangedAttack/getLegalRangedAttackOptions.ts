@@ -1,4 +1,4 @@
-import type { UnitWithPlacement } from '@entities';
+import type { Modifier, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   getBoardCoordinates,
@@ -16,10 +16,14 @@ import { canUnitRangedAttackTarget } from './canUnitRangedAttackTarget';
  * Enemy units the sole attacker may target: enemies inside the attacker's
  * front arc out to their current range (unengaged attacker, range &gt; 0).
  * No line-of-sight check. One defender per attack.
+ *
+ * @param modifiers - The shooter's committed card, when there is one; its
+ * Range reaches one space further (§4.3.11 step 2)
  */
 export function getLegalRangedAttackTargets(
   attacker: UnitWithPlacement,
   gameState: GameState,
+  modifiers?: Modifier[],
 ): UnitWithPlacement[] {
   const enemy = getOtherPlayer(attacker.unit.playerSide);
   const targets: UnitWithPlacement[] = [];
@@ -37,7 +41,7 @@ export function getLegalRangedAttackTargets(
         placement: { coordinate, facing: space.unitPresence.facing },
         unit: space.unitPresence.unit,
       };
-      if (canUnitRangedAttackTarget(attacker, target, gameState)) {
+      if (canUnitRangedAttackTarget(attacker, target, gameState, modifiers)) {
         targets.push(target);
       }
     } catch {
@@ -53,6 +57,9 @@ export function getLegalRangedAttackTargets(
  * the attacking player that can **independently** ranged-attack that same
  * target (unengaged, range &gt; 0, target in their arc). Does not expand
  * support combinations — one atom list for membership / integrity.
+ *
+ * Each supporter is judged at its own Range: the shooter's committed card
+ * helps the shooter alone (§8.4.1), so it does not stretch a supporter's arc.
  */
 export function getLegalRangedAttackSupporters(
   attacker: UnitWithPlacement,

@@ -3,16 +3,17 @@ import type { PerformRangedAttackEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**
- * A performRangedAttack event.
+ * A performRangedAttack event: the target of a shot, and its supporters
+ * (§4.3.11 steps 3–4).
  *
  * `eventType` and `choiceType` are fixed by the event's own type and cannot
  * vary, so they are filled in here. Everything that can vary is required,
  * `eventNumber` included: a default would hide an ordering the caller means.
  *
  * @param fields - `eventNumber` the ordered index of the event in the round,
- * zero-indexed; `player` the player who is performing the ranged attack;
- * `supportingUnits` any supporting units; `targetUnit` the target unit that
- * is being attacked; `unit` the unit that is performing the ranged attack
+ * zero-indexed; `player` the shooting player; `supportingUnits` the units
+ * spending their shots on this one; `targetUnit` the enemy unit being shot
+ * at — the shooter itself was named by `chooseFiringUnit`
  * @returns The event
  */
 export function createPerformRangedAttackEvent(fields: {
@@ -20,7 +21,6 @@ export function createPerformRangedAttackEvent(fields: {
   eventNumber: number;
   supportingUnits: UnitWithPlacement[];
   targetUnit: UnitWithPlacement;
-  unit: UnitWithPlacement;
 }): PerformRangedAttackEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,
@@ -29,6 +29,5 @@ export function createPerformRangedAttackEvent(fields: {
     eventNumber: fields.eventNumber,
     supportingUnits: fields.supportingUnits,
     targetUnit: fields.targetUnit,
-    unit: fields.unit,
   };
 }

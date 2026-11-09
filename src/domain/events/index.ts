@@ -142,12 +142,25 @@ export {
 } from './playerChoices';
 export type { MoveUnitEvent } from './playerChoices';
 export { moveUnitEventSchema } from './playerChoices';
+export type { ChooseFiringUnitEvent } from './playerChoices';
+export {
+  CHOOSE_FIRING_UNIT_CHOICE_TYPE,
+  chooseFiringUnitEventSchema,
+} from './playerChoices';
 export type { PerformRangedAttackEvent } from './playerChoices';
 export { performRangedAttackEventSchema } from './playerChoices';
 export type { CommitToMovementEvent } from './playerChoices';
 export { commitToMovementEventSchema } from './playerChoices';
 export type { CommitToRangedAttackEvent } from './playerChoices';
-export { commitToRangedAttackEventSchema } from './playerChoices';
+export {
+  commitToRangedAttackEventSchema,
+  rangedAttackModifierTypes,
+} from './playerChoices';
+export type { CommitToRangedDefenseEvent } from './playerChoices';
+export {
+  commitToRangedDefenseEventSchema,
+  rangedDefenseModifierTypes,
+} from './playerChoices';
 export type { CommitToMeleeEvent } from './playerChoices';
 export { commitToMeleeEventSchema } from './playerChoices';
 export type { ChooseMeleeResolutionEvent } from './playerChoices';
@@ -165,6 +178,7 @@ export type {
   MeleeModifier,
   MovementModifier,
   RangedAttackModifier,
+  RangedDefenseModifier,
   UnitSupportAssignment,
 } from './playerChoices';
 export {

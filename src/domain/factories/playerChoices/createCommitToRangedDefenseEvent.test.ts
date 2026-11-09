@@ -1,0 +1,26 @@
+import { createTestCard } from '@testing';
+
+import { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseEvent';
+
+describe('createCommitToRangedDefenseEvent function', () => {
+  it('fills in the event and choice types and keeps every other field', () => {
+    // A Defence card, the only stat a target may commit for (B1).
+    const committedCard = createTestCard({ modifiers: ['defense'] });
+
+    const event = createCommitToRangedDefenseEvent({
+      committedCard,
+      eventNumber: 5,
+      modifierTypes: ['defense'],
+      player: 'white',
+    });
+
+    expect(event).toStrictEqual({
+      choiceType: 'commitToRangedDefense',
+      committedCard,
+      eventNumber: 5,
+      eventType: 'playerChoice',
+      modifierTypes: ['defense'],
+      player: 'white',
+    });
+  });
+});

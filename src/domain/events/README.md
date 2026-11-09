@@ -14,12 +14,15 @@ A player's act:
 
 - `ChooseCardEvent` selects a command card
 - `IssueCommandEvent` issues a command to units
-- `MoveUnitEvent` moves a unit
+- `ChooseMovingUnitEvent` names the next unit a Move order moves
+- `CommitToMovementEvent` commits a card to that unit's movement, before it moves
+- `MoveUnitEvent` writes that unit's move, as a path
 - `MoveCommanderEvent` moves a commander
 - `CommitToMeleeEvent` commits a card to melee
-- `CommitToMovementEvent` commits a card to a unit's movement
-- `CommitToRangedAttackEvent` commits a card to a ranged attack
-- `PerformRangedAttackEvent` performs a ranged attack
+- `ChooseFiringUnitEvent` names the next unit a Shoot order fires
+- `CommitToRangedAttackEvent` commits the shooter's one card to the whole shot, before it aims
+- `PerformRangedAttackEvent` names the shot's target and supporters
+- `CommitToRangedDefenseEvent` commits a card for the shot's target, once it is named
 - `ChooseMeleeResolutionEvent` chooses which melee to resolve
 - `ChooseRallyEvent` chooses whether to rally
 - `SetupUnitsEvent` places units on the board

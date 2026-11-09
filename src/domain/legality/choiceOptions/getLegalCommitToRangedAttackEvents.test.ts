@@ -20,7 +20,9 @@ const rangeCard = createTestCard({ modifiers: ['range'] });
 /**
  * GetLegalCommitToRangedAttackEvents: one CommitToRangedAttackEvent per
  * eligible in-hand card (has ≥1 ranged modifier), plus refuse; modifierTypes
- * are all of that card's ranged modifiers.
+ * are all of that card's ranged modifiers. Only the shooter is offered
+ * these (§4.3.11 step 2); the target commits through
+ * `commitToRangedDefense`.
  */
 describe('getLegalCommitToRangedAttackEvents function', () => {
   function statePendingAttackerCommit(hand = [attackCard]) {
@@ -45,7 +47,11 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     );
   }
 
-  function statePendingDefenderCommit(hand = [attackCard]) {
+  /**
+   * The shooter has committed and aimed; the target's owner, white, holding
+   * the given hand, is the one still owed a commitment.
+   */
+  function stateAwaitingTargetCommit(hand = [attackCard]) {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -57,6 +63,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
       },
     });
     const ranged = createRangedAttackResolutionState(withCards, {
+      attackingCommitment: { commitmentType: 'declined' },
       defendingCommitment: { commitmentType: 'pending' },
     });
     return updatePhaseState(
@@ -74,15 +81,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     eventType: 'playerChoice' as const,
     modifierTypes: [] as const,
     player: 'black' as const,
-  };
-
-  const refuseWhite = {
-    choiceType: 'commitToRangedAttack' as const,
-    committedCard: null,
-    eventNumber: 0,
-    eventType: 'playerChoice' as const,
-    modifierTypes: [] as const,
-    player: 'white' as const,
   };
 
   it('returns one event per hand card with all of its ranged modifiers applied, plus refuse', () => {
@@ -117,20 +115,31 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     ]);
   });
 
-  it('enumerates for the defender when defending commitment is pending', () => {
-    const state = statePendingDefenderCommit([attackCard]);
+  it('a card naming Range and Attack is offered with both, since it counts for the whole shot', () => {
+    // One card, two stats (§8.2, B5): its Range for the aim, its Attack for the blow.
+    const rangeAndAttackCard = createTestCard({
+      modifiers: ['range', 'attack'],
+    });
+    const state = statePendingAttackerCommit([rangeAndAttackCard]);
 
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToRangedAttack',
-        committedCard: attackCard,
+        committedCard: rangeAndAttackCard,
         eventNumber: 0,
         eventType: 'playerChoice',
-        modifierTypes: ['attack'],
-        player: 'white',
+        modifierTypes: ['range', 'attack'],
+        player: 'black',
       },
-      refuseWhite,
+      refuseBlack,
     ]);
+  });
+
+  it('offers the target nothing: its commitment is a separate choice, for Defence (B1)', () => {
+    // White holds an Attack card while its commitment is owed.
+    const state = stateAwaitingTargetCommit([attackCard]);
+
+    expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([]);
   });
 
   it('returns empty when not in issueCommands ranged commitment', () => {

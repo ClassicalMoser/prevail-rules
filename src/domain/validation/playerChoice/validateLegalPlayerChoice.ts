@@ -11,11 +11,13 @@ import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetr
 import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
+import { isValidCommitToRangedDefenseEvent } from './isValidCommitToRangedDefenseEvent';
 import { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';
 import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
 import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
+import { isValidChooseFiringUnitEvent } from './isValidChooseFiringUnitEvent';
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
 import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 
@@ -65,6 +67,9 @@ export function validateLegalPlayerChoice(
     case 'commitToRangedAttack': {
       return isValidCommitToRangedAttackEvent(event, state);
     }
+    case 'commitToRangedDefense': {
+      return isValidCommitToRangedDefenseEvent(event, state);
+    }
     case 'chooseMovingUnit': {
       return isValidChooseMovingUnitEvent(event, state);
     }
@@ -79,6 +84,9 @@ export function validateLegalPlayerChoice(
     }
     case 'setupUnits': {
       return isValidSetupUnitsEvent(event, state);
+    }
+    case 'chooseFiringUnit': {
+      return isValidChooseFiringUnitEvent(event, state);
     }
     case 'performRangedAttack': {
       return isValidPerformRangedAttackEvent(event, state);

@@ -27,7 +27,12 @@ export {
 export type { MoveUnitEvent } from './moveUnit';
 export { moveUnitEventSchema } from './moveUnit';
 
-// Declare a ranged attack.
+// Fire one shot of a ranged attack order: name the shooter, then the target.
+export type { ChooseFiringUnitEvent } from './chooseFiringUnit';
+export {
+  CHOOSE_FIRING_UNIT_CHOICE_TYPE,
+  chooseFiringUnitEventSchema,
+} from './chooseFiringUnit';
 export type { PerformRangedAttackEvent } from './performRangedAttack';
 export { performRangedAttackEventSchema } from './performRangedAttack';
 
@@ -37,7 +42,17 @@ export { commitToMovementEventSchema } from './commitToMovement';
 
 // Commit a card to a ranged attack.
 export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
-export { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+export {
+  commitToRangedAttackEventSchema,
+  rangedAttackModifierTypes,
+} from './commitToRangedAttack';
+
+// The target of a shot commits a card for Defence.
+export type { CommitToRangedDefenseEvent } from './commitToRangedDefense';
+export {
+  commitToRangedDefenseEventSchema,
+  rangedDefenseModifierTypes,
+} from './commitToRangedDefense';
 
 // Commit a card to a melee defense or attack.
 export type { CommitToMeleeEvent } from './commitToMelee';
@@ -95,3 +110,4 @@ export {
 export type { MeleeModifier } from './commitToMelee';
 export type { MovementModifier } from './commitToMovement';
 export type { RangedAttackModifier } from './commitToRangedAttack';
+export type { RangedDefenseModifier } from './commitToRangedDefense';

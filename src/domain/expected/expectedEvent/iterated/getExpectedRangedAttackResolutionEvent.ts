@@ -24,7 +24,9 @@ export function getExpectedRangedAttackResolutionEvent(
 
   const defendingPlayer = getOtherPlayer(attackingPlayer);
 
-  // Check attacking player's commitment
+  // The shooter commits first, before it aims: a Range card reaches one
+  // space further, so it must already be committed when the target is
+  // chosen (§4.3.11 step 2, §7.4.5).
   if (resolutionState.attackingCommitment.commitmentType === 'pending') {
     return {
       actionType: 'playerChoice',
@@ -33,11 +35,22 @@ export function getExpectedRangedAttackResolutionEvent(
     };
   }
 
-  // Check defending player's commitment
+  // With the card committed or refused, the shooter names its target and any
+  // supporters (§4.3.11 steps 3–4).
+  if (resolutionState.defendingUnit === 'pending') {
+    return {
+      actionType: 'playerChoice',
+      choiceType: 'performRangedAttack',
+      playerSource: attackingPlayer,
+    };
+  }
+
+  // Then the target's owner, knowing what it faces, may commit for Defence
+  // (§4.3.11 step 5, B1).
   if (resolutionState.defendingCommitment.commitmentType === 'pending') {
     return {
       actionType: 'playerChoice',
-      choiceType: 'commitToRangedAttack',
+      choiceType: 'commitToRangedDefense',
       playerSource: defendingPlayer,
     };
   }

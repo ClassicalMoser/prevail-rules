@@ -1,0 +1,76 @@
+import type { PlayerSide, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
+import { getPositionOfUnit, modifiersFromCompletedCommitment } from '@queries';
+import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
+
+/**
+ * What a named shooter may aim at, once its card is committed or refused:
+ * the shooting player, the shooter where it stands, and every enemy it may
+ * target with that card counted (§4.3.11 step 3).
+ *
+ * Supporters for a chosen target are enumerated by
+ * {@link getLegalRangedAttackSupporters}.
+ */
+export interface LegalFiringUnitTargets {
+  /** The player carrying out the Shoot order. */
+  player: PlayerSide;
+  /** The unit named to fire, and where it stands. */
+  firingUnit: UnitWithPlacement;
+  /** Every enemy in its forward arc, out to its Range with the card counted. */
+  targets: readonly UnitWithPlacement[];
+}
+
+/**
+ * Returns the targets open to the shooter of the shot under way, or `null`
+ * when no shot is waiting for its target: no ranged attack is open, its
+ * shooter has not yet committed or refused, or the target is already named.
+ *
+ * The shooter commits before it aims (§4.3.11 step 2), and its card counts
+ * here: a Range card reaches one space further out, adding any enemy just
+ * beyond its own Range. It never gives a shot to a unit with none: only a
+ * unit with a target at its own Range is named to fire (§4.3.11 step 1).
+ */
+export function getLegalFiringUnitTargets<S extends GameState>(
+  gameState: S,
+): LegalFiringUnitTargets | null {
+  const phaseState = gameState.currentRoundState.currentPhaseState;
+  // Shots are fired only while a Shoot order is being carried out.
+  if (
+    phaseState === 'none' ||
+    phaseState.phase !== 'issueCommands' ||
+    phaseState.currentCommandResolutionState === 'pending'
+  ) {
+    return null;
+  }
+  const resolution = phaseState.currentCommandResolutionState;
+  if (resolution.commandResolutionType !== 'rangedAttack') {
+    return null;
+  }
+
+  // The target is named after the shooter's commitment, and only once.
+  if (
+    resolution.attackingCommitment.commitmentType === 'pending' ||
+    resolution.defendingUnit !== 'pending'
+  ) {
+    return null;
+  }
+
+  // The shooter does not move during its shot, so where the board has it is
+  // where it fires from.
+  const shooter = resolution.attackingUnit;
+  const placement = getPositionOfUnit(gameState.boardState, shooter);
+  const firingUnit: UnitWithPlacement = { placement, unit: shooter };
+
+  // Its committed card, if any, counts toward its Range (§4.3.11 step 2).
+  const committed = modifiersFromCompletedCommitment(
+    resolution.attackingCommitment,
+  );
+  const targets = getLegalRangedAttackTargets(firingUnit, gameState, committed);
+
+  const legal: LegalFiringUnitTargets = {
+    firingUnit,
+    player: shooter.playerSide,
+    targets,
+  };
+  return legal;
+}
