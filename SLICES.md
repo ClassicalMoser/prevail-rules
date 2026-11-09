@@ -274,6 +274,55 @@ touching that layer are done:
   `events`, `entities` — commentary and naming, no rule at stake.
 - The test rework onto `createGameState` / phase-state helpers, and the
   melee/rally specs that name a colour the default initiative supplies.
+  One fixture gap found 2026-11-09: "black has a Shoot card in play, these
+  units on the board" is hand-built in at least four specs
+  (`isValidPerformRangedAttackEvent`, `getLegalRangedAttackers`,
+  `getLegalPlayerChoiceOptions`, `applyCompleteRangedAttackCommandEvent`).
+- `getMeleeSupportValue` classifies a neighbour as front or flank by hand;
+  `getNeighbourSide` (queries/board/adjacency) now answers that.
+
+### Module size and shape (inventory 2026-11-09)
+
+The standard: one primary export per file (STYLE.md), and a module short
+enough to read in one sitting — the movement area was cut to under 100 lines
+a file. `legality/unitMovement` meets it. Elsewhere, outside the declaration
+layers (where a type and its schema share a file by design):
+
+**Split inside the slice that rewrites it** — splitting first would be
+churn: `isValidIssueCommandEvent` (246 lines; S18/S19),
+`getLegalLineEndsForIssueCommand` (120, two exports; S18/S19), `isValidLine`
+(102; S18), `getLegalUnitsForIssueCommand` (119, five exports; S19),
+`findRoutLocation` (219), `updateRoutState` (152) and `updateRetreatState`
+(104; S11), `getExpectedAttackApplyEvent` (109; S12), `getCurrentUnitStat`
+(143; S16/S20), `getLegalCommitToMovementEvents` (125; S9),
+`generateResolveMeleeEvent` (123; S14), `getLegalCommitToRangedAttackEvents`
+(106; S15), `applyMoveUnitEvent` (107) and `applyStartEngagementEvent`
+(111; S8).
+
+**Pass B, layer by layer** — no slice touches them:
+
+- Over 100 lines: `getLegalPlayerChoiceOptions` (377),
+  `getExpectedIssueCommandsPhaseEvent` (217), `isValidAssignUnitSupportEvent`
+  (196), `procedureRegistry` (154), `eachCardPresentOnce` (144),
+  `eachUnitPresentOnce` (140), `applyGameEffectEvent` (135),
+  `applyResolveRallyEvent` (117), `isValidSetupUnitsEvent` (116; setup is
+  deferred, so leave it with the setup work), `getLegalRangedAttackers`
+  (111), `startNewGame` (111, application), `getLegalCommitToMeleeEvents`
+  (109), `getExpectedEngagementEvent` (109), `getMeleeSupportValue` (105),
+  `getLegalMoveUnits` (103).
+- More than one runtime export: `queries/engagement/engagement.ts` (4; AUDIT
+  already says a split is due), `legality/game/refineGameRules` (6),
+  `getLegalRangedAttackOptions` (2), `canUnitRangedAttackTarget` (2),
+  `legality/army/*` (three files of 2), `attackApplyContext` (2),
+  `commitApplyHelpers` (2), `queries/board/deltas` (2),
+  `coordinateLayoutMap` (2), `application/utils/parseStoredGame` (2), and
+  most `@testing` helper files (families of 2–5 builders each).
+- Not counted as violations: catalogs whose many exports are one list —
+  `ruleValues`, `traits`, `gameEffectTypes`, the `sampleValues` stand-ins,
+  `utils/stateSentinels`. **Open question for the author:** a `getLegal*`
+  file that exports its result interface beside the function (twelve
+  files, e.g. `getLegalMoveUnits` with `LegalMoveUnits`) — is the result
+  type a second primary export, or part of the function's own surface?
 
 ## Decision gates, collected
 
