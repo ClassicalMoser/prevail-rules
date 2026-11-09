@@ -1,5 +1,6 @@
-import type { Coordinate, UnitPlacement } from '@entities';
+import { throwIfUndefined } from '@utils';
 import { getPlayerUnitWithPosition } from '@queries';
+import type { Coordinate, UnitPlacement } from '@entities';
 import {
   createGameState,
   createGameStateWithEngagedUnits,
@@ -38,14 +39,10 @@ describe('getLegalUnitMoves function', () => {
   describe('basic functionality', () => {
     it('given context, returns legal moves including starting position', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'D-7',
-        'black',
+      const unit = throwIfUndefined(
+        getPlayerUnitWithPosition(gameState.boardState, 'D-7', 'black'),
+        'Unit not found',
       );
-      if (!unit) {
-        throw new Error('Unit not found');
-      }
 
       const moves = getLegalUnitMoves(unit, gameState);
       const hasStartingPosition = placementHasMatch(moves, {
@@ -59,14 +56,10 @@ describe('getLegalUnitMoves function', () => {
   describe('error cases', () => {
     it('given an error when unit is not present at starting position, throws', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'D-7',
-        'black',
+      const unit = throwIfUndefined(
+        getPlayerUnitWithPosition(gameState.boardState, 'D-7', 'black'),
+        'Unit not found',
       );
-      if (!unit) {
-        throw new Error('Unit not found');
-      }
 
       const differentUnit = {
         ...unit,
@@ -95,14 +88,10 @@ describe('getLegalUnitMoves function', () => {
 
     it('given an error when unit is not at the specified placement coordinate, throws', () => {
       const gameState = createGameState([['E-7', 'black', 'southEast']]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-7',
-        'black',
+      const unit = throwIfUndefined(
+        getPlayerUnitWithPosition(gameState.boardState, 'E-7', 'black'),
+        'Unit not found',
       );
-      if (!unit) {
-        throw new Error('Unit not found');
-      }
 
       // Create a unitWithPlacement with the unit but wrong coordinate
       const unitWithWrongCoordinate = {
@@ -120,14 +109,10 @@ describe('getLegalUnitMoves function', () => {
 
     it('given an error when unit facing is different from specified facing, throws', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'D-7',
-        'black',
+      const unit = throwIfUndefined(
+        getPlayerUnitWithPosition(gameState.boardState, 'D-7', 'black'),
+        'Unit not found',
       );
-      if (!unit) {
-        throw new Error('Unit not found');
-      }
 
       // Create a unitWithPlacement with incorrect facing
       const unitWithWrongFacing = {
