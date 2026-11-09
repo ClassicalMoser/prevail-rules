@@ -1,5 +1,8 @@
+import {
+  getPlayerUnitWithPosition,
+  getSingleUnitWithPlacementAtCoordinate,
+} from '@queries';
 import { throwIfUndefined } from '@utils';
-import { getPlayerUnitWithPosition } from '@queries';
 import type { Coordinate, UnitPlacement } from '@entities';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import {
@@ -51,6 +54,8 @@ describe('getLegalRetreats function', () => {
         'west',
       );
 
+      // The black unit is one of two in an engaged space, which only the
+      // side-aware lookup can pick out.
       const unit = throwIfUndefined(
         getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
@@ -102,6 +107,8 @@ describe('getLegalRetreats function', () => {
       };
       board = addUnitToBoard(board, additionalEnemyUnitWithPlacement);
       gameState.boardState = board;
+      // The black unit is one of two in an engaged space, which only the
+      // side-aware lookup can pick out.
       const unit = throwIfUndefined(
         getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
@@ -131,6 +138,8 @@ describe('getLegalRetreats function', () => {
       };
       board = addUnitToBoard(board, additionalEnemyUnitWithPlacement);
       gameState.boardState = board;
+      // The black unit is one of two in an engaged space, which only the
+      // side-aware lookup can pick out.
       const unit = throwIfUndefined(
         getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
@@ -160,6 +169,8 @@ describe('getLegalRetreats function', () => {
       };
       board = addUnitToBoard(board, additionalEnemyUnitWithPlacement);
       gameState.boardState = board;
+      // The black unit is one of two in an engaged space, which only the
+      // side-aware lookup can pick out.
       const unit = throwIfUndefined(
         getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
@@ -201,9 +212,9 @@ describe('getLegalRetreats function', () => {
       board = addUnitToBoard(board, secondaryUnit2);
       board = addUnitToBoard(board, secondaryUnit3);
       gameState.boardState = board;
-      const unit = throwIfUndefined(
-        getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
-        'Unit not found',
+      const unit = getSingleUnitWithPlacementAtCoordinate(
+        gameState.boardState,
+        'G-8',
       );
       const retreats = getLegalRetreats(unit, gameState);
       expect(retreats.size).toBe(1);
@@ -263,9 +274,9 @@ describe('getLegalRetreats function', () => {
       const gameState = createGameStateWithSingleUnit('G-8', 'black', {
         facing: 'west',
       });
-      const unit = throwIfUndefined(
-        getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
-        'Unit not found',
+      const unit = getSingleUnitWithPlacementAtCoordinate(
+        gameState.boardState,
+        'G-8',
       );
       const absentInstance = {
         ...unit.unit,

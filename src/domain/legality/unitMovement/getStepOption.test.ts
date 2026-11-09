@@ -1,5 +1,4 @@
-import { throwIfUndefined } from '@utils';
-import { getPlayerUnitWithPosition } from '@queries';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
 import type { MoveState } from './moveState';
@@ -15,9 +14,9 @@ describe('getStepOption function', () => {
   it('an advance steps into the space it faces', () => {
     // A lone black unit on E-5 facing north.
     const gameState = createGameState([['E-5', 'black', 'north']]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -47,9 +46,9 @@ describe('getStepOption function', () => {
   it('a retreat steps into the space behind it', () => {
     // A lone black unit on E-5 facing north.
     const gameState = createGameState([['E-5', 'black', 'north']]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of a retreat begun on E-5.
     const context = createMoveContext(gameState, unit, 'retreat');
@@ -79,9 +78,9 @@ describe('getStepOption function', () => {
   it('a unit with no Speed left cannot step', () => {
     // A lone black unit on E-5 facing north.
     const gameState = createGameState([['E-5', 'black', 'north']]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -102,9 +101,9 @@ describe('getStepOption function', () => {
   it('a unit at the edge of the board cannot step off it', () => {
     // A lone black unit on the northern edge, facing north.
     const gameState = createGameState([['A-5', 'black', 'north']]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'A-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'A-5',
     );
     // Build the context of an advance begun on A-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -129,9 +128,9 @@ describe('getStepOption function', () => {
       ['E-5', 'black', 'north'],
       ['D-5', 'white', 'south'],
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -166,9 +165,9 @@ describe('getStepOption function', () => {
       ['D-5', 'white', 'south'],
       ['E-6', 'white', 'north'],
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');

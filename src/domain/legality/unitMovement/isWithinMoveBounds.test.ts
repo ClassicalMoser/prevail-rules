@@ -1,5 +1,4 @@
-import { throwIfUndefined } from '@utils';
-import { getPlayerUnitWithPosition } from '@queries';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
 import { createMoveContext } from './moveContext';
@@ -14,9 +13,9 @@ describe('isWithinMoveBounds function', () => {
   // are the F-and-below rows. One unit is enough, since only the unit's
   // starting rank and facing decide the bounds.
   const gameState = createGameState([['E-5', 'black', 'north']]);
-  const unit = throwIfUndefined(
-    getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-    'Unit not found',
+  const unit = getSingleUnitWithPlacementAtCoordinate(
+    gameState.boardState,
+    'E-5',
   );
 
   it('an advance may use a space in front of its starting rank', () => {

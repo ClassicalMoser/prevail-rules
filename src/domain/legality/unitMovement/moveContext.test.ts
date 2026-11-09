@@ -1,5 +1,4 @@
-import { throwIfUndefined } from '@utils';
-import { getPlayerUnitWithPosition } from '@queries';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
 import { createMoveContext } from './moveContext';
@@ -19,9 +18,9 @@ describe('createMoveContext function', () => {
         speed: 3,
       },
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
 
     const context = createMoveContext(gameState, unit, 'advance');
@@ -33,9 +32,9 @@ describe('createMoveContext function', () => {
   it("the start is the unit's placement", () => {
     // A black unit on E-5 facing northEast.
     const gameState = createGameState([['E-5', 'black', 'northEast']]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
 
     const context = createMoveContext(gameState, unit, 'retreat');
@@ -49,9 +48,9 @@ describe('createMoveContext function', () => {
   it('a move that is neither an advance nor a retreat is refused', () => {
     // A black unit on E-5 facing north.
     const gameState = createGameState([['E-5', 'black', 'north']]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // The type forbids this value; a caller outside the type system (a wire
     // payload) could still send it, and the context must refuse it.

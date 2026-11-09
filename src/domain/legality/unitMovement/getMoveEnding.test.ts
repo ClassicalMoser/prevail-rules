@@ -1,5 +1,4 @@
-import { throwIfUndefined } from '@utils';
-import { getPlayerUnitWithPosition } from '@queries';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
 import type { MoveState } from './moveState';
@@ -24,9 +23,9 @@ describe('getMoveEnding function', () => {
         speed: 2,
       },
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -59,9 +58,9 @@ describe('getMoveEnding function', () => {
         speed: 2,
       },
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of a retreat begun on E-5.
     const context = createMoveContext(gameState, unit, 'retreat');
@@ -90,9 +89,9 @@ describe('getMoveEnding function', () => {
         speed: 2,
       },
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -122,9 +121,9 @@ describe('getMoveEnding function', () => {
         speed: 2,
       },
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -158,9 +157,9 @@ describe('getMoveEnding function', () => {
       },
       ['D-5', 'black', 'north'],
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
     );
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -191,9 +190,9 @@ describe('getMoveEnding function', () => {
       },
       ['D-5', 'white', 'south'],
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-4', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-4',
     );
     // Build the context of an advance begun on E-4.
     const context = createMoveContext(gameState, unit, 'advance');
@@ -227,9 +226,9 @@ describe('getMoveEnding function', () => {
       },
       ['D-5', 'white', 'south'],
     ]);
-    const unit = throwIfUndefined(
-      getPlayerUnitWithPosition(gameState.boardState, 'E-4', 'black'),
-      'Unit not found',
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-4',
     );
     // Build the context of an advance begun on E-4.
     const context = createMoveContext(gameState, unit, 'advance');

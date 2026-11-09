@@ -1,5 +1,4 @@
-import { throwIfUndefined } from '@utils';
-import { getPlayerUnitWithPosition } from '@queries';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
 import type { MoveState } from './moveState';
@@ -14,9 +13,9 @@ describe('getTurnOptions function', () => {
   // A lone black unit on E-5 facing north. Its own Speed and Flexibility are
   // irrelevant here: each case sets the Flexibility left in the state.
   const gameState = createGameState([['E-5', 'black', 'north']]);
-  const unit = throwIfUndefined(
-    getPlayerUnitWithPosition(gameState.boardState, 'E-5', 'black'),
-    'Unit not found',
+  const unit = getSingleUnitWithPlacementAtCoordinate(
+    gameState.boardState,
+    'E-5',
   );
 
   it('an advancing unit with Flexibility left may turn 45° either way or about', () => {
