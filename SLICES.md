@@ -135,7 +135,7 @@ Files: `applyMoveUnitEvent.ts`,
 `expected/.../getExpectedMovementResolutionEvent.ts`, `exploreUnitMoves.ts`.
 Blocks: `transforms`, `legality/choiceOptions`, `expected`.
 
-**S10. A commander rides with its unit** — §4.3.10, §9.1.8, A9. Apply the
+**S10. A commander rides with its unit** — §4.3.10, §9.1.8, A9. **Moves done 2026-11-09** (`df6742f`, `8756c04`, scenario `commanderRides.test.ts`); the retreat half stays open and goes with the retreat-choice path in Cluster 3. The riding into an engagement keeps its commander committed; its fall with a routed unit is S21. Apply the
 `moveCommander` flag; give retreats the same option. The engagement case is
 decided 2026-11-08: the ride into an engagement is allowed — the one way a
 commander ends in an enemy-held space; it is committed to the fight and falls
@@ -158,7 +158,7 @@ already takes `'retreat'`). And as now, a single legal retreat is never
 presented as a choice: it is filled in automatically
 (`applyOpenRetreatFromAttackApplyEvent`), and that stays so.
 
-**S11. A rout held by a retreat can be paid** — §9.1.6, §7.5, B4. _Bug: the
+**S11. A rout held by a retreat can be paid** — §9.1.6, §7.5, B4. **Done 2026-11-09** (`7641417`, `9de3b9a`): ranged, front-engagement and melee parents all pay and close. _Bug: the
 game stalls._ Write through `updateRetreatRoutState`; close the retreat when a
 zero penalty closes its rout. The failing spec is already described in the
 appendix probe.
@@ -167,7 +167,7 @@ Files: `transforms/pureTransforms/sequencing/updateRoutState.ts`,
 `expected/.../getExpectedRetreatEvent`.
 Blocks: `transforms`, `queries/sequencing`, `expected`.
 
-**S12. Melee results run stage by stage** — §7.5.6, B9. Both retreats, then
+**S12. Melee results run stage by stage** — §7.5.6, B9. **Done 2026-11-09** (`683fca5`, `3eb3c2a`, scenario `meleeStages.test.ts`). Author decision 2026-11-09: the first player strikes first, so in each stage the second player's unit suffers first (one order, `getMeleeAppliesInResolutionOrder`; the slots stay named for whose unit holds the result). Both retreats, then
 both reverses, then both routs, first player first within each stage.
 Files: `procedures/defenseResult/`, the melee-resolution sequencing in
 `queries/sequencing/combatOutcomes/` and `expected/`.
@@ -204,7 +204,7 @@ Blocks: `legality/choiceOptions`, `expected`, `procedures`.
 
 **S16. Every stat floors at zero** — §7.1.4, B2. Decided 2026-11-08, and
 wider than the old gate: all stats floor, applied once to the finished total,
-never mid-sum (no floor-and-rebound). Watch the one wrinkle: the engine's −1
+never mid-sum (no floor-and-rebound). Note that modifiers and inspiration range on command cards don't count as unit stats.
 sentinel for an unrestricted inspiration range (A6) must be exempt from the
 floor — latent today, since nothing modifies range.
 Files: `queries/unit/getCurrentUnitStat.ts`,

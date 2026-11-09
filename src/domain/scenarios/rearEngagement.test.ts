@@ -1,10 +1,5 @@
 import type { GameStateForVisibility } from '@game';
-import {
-  createChooseMovingUnitEvent,
-  createChooseRoutDiscardEvent,
-  createCommitToMovementEvent,
-  createMoveUnitEvent,
-} from '@factories';
+import { createChooseRoutDiscardEvent, createMoveUnitEvent } from '@factories';
 import {
   getIssueCommandsPhaseState,
   getOwnedPlayerCardState,
@@ -13,6 +8,7 @@ import {
 import {
   applyEffectsUntilChoice,
   createPlayableGame,
+  readyToWriteMove,
   resolvingMoveOrder,
 } from '@testing';
 import { applyEvent } from '@transforms';
@@ -55,31 +51,15 @@ function rearAttack(options: {
 
   // Black names its attacker, declines to commit, and steps north into
   // the defender's back.
-  const named = applyEvent(
-    createChooseMovingUnitEvent({
-      eventNumber: 0,
-      player: 'black',
-      unit: attacker,
-    }),
-    resolving,
-  );
-  const declined = applyEvent(
-    createCommitToMovementEvent({
-      committedCard: null,
-      eventNumber: 1,
-      modifierTypes: [],
-      player: 'black',
-    }),
-    named,
-  );
+  const ready = readyToWriteMove(resolving, attacker, null);
   const moved = applyEvent(
     createMoveUnitEvent({
-      eventNumber: 2,
+      eventNumber: ready.eventNumber,
       moveCommander: false,
       path: ['step'],
       player: 'black',
     }),
-    declined,
+    ready.state,
   );
   return moved;
 }

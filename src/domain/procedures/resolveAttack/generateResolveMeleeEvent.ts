@@ -48,8 +48,8 @@ export function generateResolveMeleeEvent(
   if (!whiteUnit || !blackUnit) {
     throw new Error('Units not found on board');
   }
-  // Commitments sit in the order the applies resolve in, so each side's own
-  // commitment is found by asking who is first.
+  // Commitments are named for the order they were made in, first player
+  // first, so each side's own commitment is found by asking who is first.
   const whiteIsFirst = hasInitiative(state, 'white');
   const whiteCommitmentModifiers = modifiersFromCompletedCommitment(
     whiteIsFirst

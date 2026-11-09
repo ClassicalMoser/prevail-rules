@@ -6,3 +6,6 @@ export { resolvingMoveOrder } from './resolvingMoveOrder';
 
 // Lets the game run its owed effects until a player must decide.
 export { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
+
+// A Move order played up to the point where the move is written.
+export { readyToWriteMove } from './readyToWriteMove';

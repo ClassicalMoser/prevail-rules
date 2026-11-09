@@ -55,5 +55,6 @@ export {
 export {
   applyEffectsUntilChoice,
   createPlayableGame,
+  readyToWriteMove,
   resolvingMoveOrder,
 } from './scenario';

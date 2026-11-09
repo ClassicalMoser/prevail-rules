@@ -1,9 +1,5 @@
 import type { GameStateForVisibility } from '@game';
-import {
-  createChooseMovingUnitEvent,
-  createCommitToMovementEvent,
-  createMoveUnitEvent,
-} from '@factories';
+import { createChooseMovingUnitEvent, createMoveUnitEvent } from '@factories';
 import {
   getOwnedPlayerCardState,
   getSingleUnitWithPlacementAtCoordinate,
@@ -12,6 +8,7 @@ import {
   applyEffectsUntilChoice,
   createPlayableGame,
   createTestCard,
+  readyToWriteMove,
   resolvingMoveOrder,
 } from '@testing';
 import { applyEvent } from '@transforms';
@@ -41,52 +38,17 @@ function blackReadyToMove(): GameStateForVisibility<'authoritative'> {
   return ready;
 }
 
-/** Plays the unit's choice and its commitment, and returns where play waits. */
-function namedAndCommitted(committedCard: typeof speedCard | null): {
-  state: GameStateForVisibility<'authoritative'>;
-  eventNumber: number;
-} {
-  const start = applyEffectsUntilChoice(blackReadyToMove());
-  if (start.next === 'gameOver') {
-    throw new Error('The game should not have ended');
-  }
-  // Black names its unit...
-  const mover = getSingleUnitWithPlacementAtCoordinate(
-    start.state.boardState,
-    'E-5',
+/** Black names its unit and commits the card for Speed, or declines. */
+function namedAndCommitted(committedCard: typeof speedCard | null) {
+  const ready = blackReadyToMove();
+  const mover = getSingleUnitWithPlacementAtCoordinate(ready.boardState, 'E-5');
+  const waiting = readyToWriteMove(
+    ready,
+    mover,
+    committedCard === null
+      ? null
+      : { card: committedCard, modifierTypes: ['speed'] },
   );
-  const named = applyEffectsUntilChoice(
-    applyEvent(
-      createChooseMovingUnitEvent({
-        eventNumber: start.next.expectedEventNumber,
-        player: 'black',
-        unit: mover,
-      }),
-      start.state,
-    ),
-  );
-  if (named.next === 'gameOver') {
-    throw new Error('The game should not have ended');
-  }
-  // ...then commits the card for Speed, or declines.
-  const committed = applyEffectsUntilChoice(
-    applyEvent(
-      createCommitToMovementEvent({
-        committedCard,
-        eventNumber: named.next.expectedEventNumber,
-        modifierTypes: committedCard === null ? [] : ['speed'],
-        player: 'black',
-      }),
-      named.state,
-    ),
-  );
-  if (committed.next === 'gameOver') {
-    throw new Error('The game should not have ended');
-  }
-  const waiting = {
-    eventNumber: committed.next.expectedEventNumber,
-    state: committed.state,
-  };
   return waiting;
 }
 
