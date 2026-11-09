@@ -9,6 +9,7 @@ import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhase
  *
  * @param state - The game state
  * @returns The next step to transition to
+ * @throws Error when cleanup is not on a resolve-rally step
  */
 export function getNextStepForResolveRally(
   state: GameState,
@@ -19,9 +20,11 @@ export function getNextStepForResolveRally(
     return 'secondPlayerChooseRally';
   }
 
-  // TODO(wrong): any step that is not the first player's resolve lands here,
-  // including steps that are not a resolve at all; the JSDoc assumes a check
-  // the code does not make. Both callers read a throwing getter first, so it is
-  // latent. Settled by a spec on a non-resolve step: throw, or this default.
+  // The second player's resolve is the only other one, and the last step.
+  if (phaseState.step !== 'secondPlayerResolveRally') {
+    throw new Error(
+      `Cleanup is not on a resolve-rally step: ${phaseState.step}`,
+    );
+  }
   return 'complete';
 }

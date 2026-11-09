@@ -218,7 +218,7 @@ Marked in place. Highest weight first:
 
 - `generateResolveMeleeEvent` (`procedures`): no defensive commitment modifiers in melee. `TODO(wrong)`.
 - `isEngagementFromFront`: front/flank/rear cover six of eight facings; 135° throws in `generateStartEngagementEvent`. `TODO(wrong)`.
-- `getNextMeleeRoutState`: returns a paid rout. `getNextStepForResolveRally`: defaults non-resolve steps to `'complete'`. Both `TODO(wrong)`, both latent.
+- `getNextMeleeRoutState` and `getNextStepForResolveRally`: fixed in S13 (a paid rout is passed over; a non-resolve step throws).
 - Seven more sequencing exports with no production caller (`rout/index.ts`).
 - Line rule exists twice: `queries/line` (no caller) and `getLegalLineEndsForIssueCommand`.
 - Duplicates: inspiration range, units-on-board walk, melee defender-to-slot ternary (7 copies), next-open-apply selection (3 variants), `getOtherPlayer` hand-rolled.

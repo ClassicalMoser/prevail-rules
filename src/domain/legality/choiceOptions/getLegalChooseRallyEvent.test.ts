@@ -3,7 +3,7 @@ import type { Event } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
-import { createCleanupPhaseState } from '@testing';
+import { createCleanupPhaseState, updateCardState } from '@testing';
 
 import {
   updatePhaseState,
@@ -30,11 +30,20 @@ describe('getLegalChooseRallyEvent function', () => {
     step: 'firstPlayerChooseRally' | 'secondPlayerChooseRally';
     initiative?: 'black' | 'white';
     eventStream?: readonly Event[];
+    emptyPlayedPile?: boolean;
   }): GameState {
-    const base = updateCurrentInitiative(
+    const initiated = updateCurrentInitiative(
       createEmptyGameState('standard'),
       options.initiative ?? 'black',
     );
+    // By cleanup the round's own card is in each played pile (§4.5.1), so a
+    // rally always has a card to burn unless a case empties the pile.
+    const played = options.emptyPlayedPile ? [] : [tempCommandCards[2]];
+    const base = updateCardState(initiated, {
+      ...initiated.cardState,
+      black: { ...initiated.cardState.black, played },
+      white: { ...initiated.cardState.white, played },
+    });
     const phase = createCleanupPhaseState({ step: options.step });
     let state = updatePhaseState(base, phase);
     if (options.eventStream) {
@@ -78,6 +87,25 @@ describe('getLegalChooseRallyEvent function', () => {
         performRally: true,
         player: 'white',
       },
+      {
+        ...chooseRallyBase,
+        eventNumber: 0,
+        performRally: false,
+        player: 'white',
+      },
+    ]);
+  });
+
+  it('a player with nothing in the played pile may only decline', () => {
+    // §10.3: a rally burns a card from the played pile, so with none there
+    // is nothing to burn and no rally to choose.
+    const state = stateChooseRally({
+      emptyPlayedPile: true,
+      initiative: 'white',
+      step: 'firstPlayerChooseRally',
+    });
+
+    expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
         eventNumber: 0,

@@ -173,7 +173,7 @@ Files: `procedures/defenseResult/`, the melee-resolution sequencing in
 `queries/sequencing/combatOutcomes/` and `expected/`.
 Blocks: `procedures`, `queries/sequencing`, `expected`.
 
-**S13. Sequencing gap fills** — the latent `TODO(wrong)`s that the two slices
+**S13. Sequencing gap fills** — **Done 2026-11-09.** — the latent `TODO(wrong)`s that the two slices
 above walk past: `getNextMeleeRoutState` returns a paid rout;
 `getNextStepForResolveRally` defaults non-resolve steps to complete; rally is
 offered on an empty played pile and then throws. Small, rides after S11/S12.

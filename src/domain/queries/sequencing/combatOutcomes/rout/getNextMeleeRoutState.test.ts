@@ -63,6 +63,48 @@ describe('getNextMeleeRoutState function', () => {
     expect(getNextMeleeRoutState(state)).toBe(rout);
   });
 
+  it("returns the second player's rout first when both are owed (§7.5.6)", () => {
+    // The first player's blow lands first, so the second player's unit routs
+    // first.
+    const firstRout = createRoutState(
+      'black',
+      createTestUnit('black', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const secondRout = createRoutState(
+      'white',
+      createTestUnit('white', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const state = meleeWithRouts('black', {
+      first: firstRout,
+      second: secondRout,
+    });
+
+    expect(getNextMeleeRoutState(state)).toBe(secondRout);
+  });
+
+  it('passes over a rout that is already paid', () => {
+    // The second player's rout resolves first and has been paid; the first
+    // player's is still owed, and is the one asked for next.
+    const firstRout = createRoutState(
+      'black',
+      createTestUnit('black', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const secondRout = createRoutState(
+      'white',
+      createTestUnit('white', { attack: 2 }),
+      { cardsChosen: true, completed: true, numberToDiscard: 1 },
+    );
+    const state = meleeWithRouts('black', {
+      first: firstRout,
+      second: secondRout,
+    });
+
+    expect(getNextMeleeRoutState(state)).toBe(firstRout);
+  });
+
   it('throws when neither apply has a rout', () => {
     const state = meleeWithRouts('white', {});
 

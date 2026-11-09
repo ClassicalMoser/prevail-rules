@@ -21,4 +21,15 @@ describe('getNextStepForResolveRally function', () => {
 
     expect(getNextStepForResolveRally(state)).toBe('complete');
   });
+
+  it('throws on a step that is not a resolve-rally step', () => {
+    // §4.5: cleanup discards the played cards before any rally is resolved,
+    // so nothing follows a resolve there.
+    const phase = createCleanupPhaseState({ step: 'discardPlayedCards' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
+
+    expect(() => getNextStepForResolveRally(state)).toThrow(
+      'Cleanup is not on a resolve-rally step: discardPlayedCards',
+    );
+  });
 });
