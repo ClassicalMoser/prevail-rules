@@ -1,6 +1,5 @@
-import type { UnitPlacement } from '@entities';
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
+import type { GameState, RetreatOption, RetreatState } from '@game';
 import { getLegalRetreats } from '@legality';
 import { getAttackApplyStateAt, getPositionOfUnit } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
@@ -33,11 +32,9 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
     placement,
     unit: apply.defendingUnit,
   };
-  const legalRetreatOptions: UnitPlacement[] = [
-    ...getLegalRetreats(retreatingUnit, state),
-  ];
-  // One legal answer is not a choice — auto-fill the destination.
-  const finalPosition: UnitPlacement | 'pending' =
+  const legalRetreatOptions = getLegalRetreats(retreatingUnit, state);
+  // One legal retreat is not a choice — it is carried out as it stands.
+  const chosenRetreat: RetreatOption | 'pending' =
     legalRetreatOptions.length === 1 ? legalRetreatOptions[0] : 'pending';
 
   // A retreat with somewhere to go will never rout, so that slot is bypassed.
@@ -47,7 +44,7 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
 
   const retreatState: RetreatState = {
     completed: false,
-    finalPosition,
+    chosenRetreat,
     legalRetreatOptions,
     retreatingUnit,
     routState: nestedRoutState,

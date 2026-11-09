@@ -140,10 +140,17 @@ describe('getExpectedEngagementEvent function', () => {
         commitmentType: 'completed',
       },
       retreatState: createRetreatState(retreatingUnit, {
-        finalPosition: 'pending',
+        chosenRetreat: 'pending',
+        // Two tied endings, so the defender has a real choice to make.
         legalRetreatOptions: [
-          { coordinate: 'E-4', facing: 'north' },
-          { coordinate: 'E-6', facing: 'north' },
+          {
+            path: ['turnLeft', 'step'],
+            placement: { coordinate: 'F-6', facing: 'northWest' },
+          },
+          {
+            path: ['turnRight', 'step'],
+            placement: { coordinate: 'F-4', facing: 'northEast' },
+          },
         ],
       }),
     });
@@ -155,7 +162,7 @@ describe('getExpectedEngagementEvent function', () => {
     });
   });
 
-  it('expects resolveRetreat when the accepted retreat already has a finalPosition', () => {
+  it('expects resolveRetreat when the accepted retreat already has its path chosen', () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
@@ -165,8 +172,16 @@ describe('getExpectedEngagementEvent function', () => {
         commitmentType: 'completed',
       },
       retreatState: createRetreatState(retreatingUnit, {
-        finalPosition: { coordinate: 'E-4', facing: 'north' },
-        legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
+        chosenRetreat: {
+          path: ['step'],
+          placement: { coordinate: 'F-5', facing: 'north' },
+        },
+        legalRetreatOptions: [
+          {
+            path: ['step'],
+            placement: { coordinate: 'F-5', facing: 'north' },
+          },
+        ],
       }),
     });
 
@@ -217,8 +232,16 @@ describe('getExpectedEngagementEvent function', () => {
       },
       retreatState: createRetreatState(retreatingUnit, {
         completed: true,
-        finalPosition: { coordinate: 'E-4', facing: 'north' },
-        legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
+        chosenRetreat: {
+          path: ['step'],
+          placement: { coordinate: 'F-5', facing: 'north' },
+        },
+        legalRetreatOptions: [
+          {
+            path: ['step'],
+            placement: { coordinate: 'F-5', facing: 'north' },
+          },
+        ],
       }),
     });
 

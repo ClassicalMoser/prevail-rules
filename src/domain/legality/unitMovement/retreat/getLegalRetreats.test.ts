@@ -19,7 +19,7 @@ import { getLegalRetreats } from './getLegalRetreats';
 
 import { createEmptyGameState } from '@factories';
 /**
- * GetLegalRetreats: legal retreat placements for an engaged unit given speed, flexibility, and board occupancy.
+ * GetLegalRetreats: legal retreat options (path and ending) for an engaged unit given speed, flexibility, and board occupancy.
  */
 describe('getLegalRetreats function', () => {
   // Test helper to check if a placement exists in the set
@@ -62,7 +62,7 @@ describe('getLegalRetreats function', () => {
       );
 
       const retreats = getLegalRetreats(unit, gameState);
-      expect(retreats.size).toBe(1);
+      expect(retreats).toHaveLength(1);
     });
 
     it('given context, returns minimum retreats prioritizing lowest flexibility then speed', () => {
@@ -83,7 +83,7 @@ describe('getLegalRetreats function', () => {
       const retreats = getLegalRetreats(unitWithPlacement, gameState);
       // Should only return retreats with minimum flexibility and speed
       // All returned retreats should have the same (minimum) flexibilityUsed and speedUsed
-      expect(retreats.size).toBeGreaterThan(0);
+      expect(retreats.length).toBeGreaterThan(0);
     });
 
     it('given enemy is facing from directly behind, does not allow retreat', () => {
@@ -114,7 +114,7 @@ describe('getLegalRetreats function', () => {
         'Unit not found',
       );
       const retreats = getLegalRetreats(unit, gameState);
-      expect(retreats.size).toBe(0);
+      expect(retreats).toHaveLength(0);
     });
 
     it('given enemy is facing from indirectly behind, does not allow retreat', () => {
@@ -145,7 +145,7 @@ describe('getLegalRetreats function', () => {
         'Unit not found',
       );
       const retreats = getLegalRetreats(unit, gameState);
-      expect(retreats.size).toBe(0);
+      expect(retreats).toHaveLength(0);
     });
 
     it('given allow retreat when enemy behind is not facing', () => {
@@ -176,7 +176,7 @@ describe('getLegalRetreats function', () => {
         'Unit not found',
       );
       const retreats = getLegalRetreats(unit, gameState);
-      expect(retreats.size).toBeGreaterThan(0);
+      expect(retreats.length).toBeGreaterThan(0);
     });
 
     it('given allow retreat through friendly units', () => {
@@ -217,7 +217,7 @@ describe('getLegalRetreats function', () => {
         'G-8',
       );
       const retreats = getLegalRetreats(unit, gameState);
-      expect(retreats.size).toBe(1);
+      expect(retreats).toHaveLength(1);
     });
   });
 
@@ -307,7 +307,7 @@ describe('getLegalRetreats function', () => {
   });
 
   describe('edge cases', () => {
-    it('returns the legal retreat set for the secondary unit in an engagement', () => {
+    it('returns the legal retreat option for the secondary unit in an engagement', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -325,13 +325,13 @@ describe('getLegalRetreats function', () => {
       );
 
       const retreats = getLegalRetreats(unitWithPlacement, gameState);
-      // Secondary (white) faces east; backward is west — one minimal legal retreat from engaged G-8
-      expect(retreats.size).toBe(1);
-      expect([...retreats]).toStrictEqual([
-        expect.objectContaining({
-          coordinate: 'G-7',
-          facing: 'east',
-        }),
+      // Secondary (white) faces east; backward is west — one minimal legal retreat, a single step, from engaged G-8
+      expect(retreats).toHaveLength(1);
+      expect(retreats).toStrictEqual([
+        {
+          path: ['step'],
+          placement: { coordinate: 'G-7', facing: 'east' },
+        },
       ]);
     });
   });

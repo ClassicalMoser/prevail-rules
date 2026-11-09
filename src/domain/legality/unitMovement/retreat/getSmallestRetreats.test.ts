@@ -26,9 +26,12 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    expect(smallest).toStrictEqual(
-      new Set([{ coordinate: 'G-5', facing: 'north' }]),
-    );
+    expect(smallest).toStrictEqual([
+      {
+        path: ['step', 'step'],
+        placement: { coordinate: 'G-5', facing: 'north' },
+      },
+    ]);
   });
 
   it('among equal turns, the fewest steps win', () => {
@@ -49,9 +52,12 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    expect(smallest).toStrictEqual(
-      new Set([{ coordinate: 'F-5', facing: 'north' }]),
-    );
+    expect(smallest).toStrictEqual([
+      {
+        path: ['step'],
+        placement: { coordinate: 'F-5', facing: 'north' },
+      },
+    ]);
   });
 
   it('a tie offers every smallest retreat, for the owner to choose', () => {
@@ -72,15 +78,51 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    expect(smallest).toStrictEqual(
+    // Each is offered with the path that reaches it, so the choice can be
+    // made, and recorded, by path.
+    expect(smallest).toStrictEqual([
+      {
+        path: ['turnRight', 'step'],
+        placement: { coordinate: 'F-4', facing: 'northEast' },
+      },
+      {
+        path: ['turnLeft', 'step'],
+        placement: { coordinate: 'F-6', facing: 'northWest' },
+      },
+    ]);
+  });
+
+  it('two equally small ways to the same space are one retreat', () => {
+    // §9.1.3: the choice is about where the unit ends. Two endings of equal
+    // cost on the same space, written by hand with different paths (this rule
+    // reads costs and endings, not geometry): the first found is kept, and no
+    // choice is offered between them.
+    const smallest = getSmallestRetreats(
       new Set([
-        { coordinate: 'F-4', facing: 'northEast' },
-        { coordinate: 'F-6', facing: 'northWest' },
+        {
+          flexibilityUsed: 2,
+          path: ['turnLeft', 'step', 'turnRight', 'step'],
+          placement: { coordinate: 'G-5', facing: 'north' },
+          speedUsed: 2,
+        },
+        {
+          flexibilityUsed: 2,
+          path: ['step', 'turnLeft', 'step', 'turnRight'],
+          placement: { coordinate: 'G-5', facing: 'north' },
+          speedUsed: 2,
+        },
       ]),
     );
+
+    expect(smallest).toStrictEqual([
+      {
+        path: ['turnLeft', 'step', 'turnRight', 'step'],
+        placement: { coordinate: 'G-5', facing: 'north' },
+      },
+    ]);
   });
 
   it('no legal ending means no retreat', () => {
-    expect(getSmallestRetreats(new Set())).toStrictEqual(new Set());
+    expect(getSmallestRetreats(new Set())).toStrictEqual([]);
   });
 });

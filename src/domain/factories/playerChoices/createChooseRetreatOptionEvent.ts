@@ -1,4 +1,4 @@
-import type { PlayerSide, UnitPlacement } from '@entities';
+import type { PlayerSide, MoveDelta } from '@entities';
 import type { ChooseRetreatOptionEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
@@ -11,19 +11,19 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  *
  * @param fields - `eventNumber` the ordered index of the event in the round,
  * zero-indexed; `player` the player who is choosing the retreat option;
- * `retreatOption` the retreat option to choose from
+ * `path` the retreat chosen, named by its path
  * @returns The event
  */
 export function createChooseRetreatOptionEvent(fields: {
   player: PlayerSide;
   eventNumber: number;
-  retreatOption: UnitPlacement;
+  path: MoveDelta[];
 }): ChooseRetreatOptionEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,
     choiceType: 'chooseRetreatOption',
     player: fields.player,
     eventNumber: fields.eventNumber,
-    retreatOption: fields.retreatOption,
+    path: fields.path,
   };
 }

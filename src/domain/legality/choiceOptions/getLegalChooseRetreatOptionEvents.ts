@@ -5,7 +5,7 @@ import { createChooseRetreatOptionEvent } from '@factories';
 
 /**
  * Finds a retreat substep that is awaiting a player choice of retreat option
- * (finalPosition still pending, at least one legal option). Soft: returns null
+ * (no retreat chosen yet, at least one legal option). Soft: returns null
  * when none is active under the current phase context.
  */
 function findAwaitingRetreatOptionChoice<S extends GameState>(
@@ -20,7 +20,7 @@ function findAwaitingRetreatOptionChoice<S extends GameState>(
     }
     if (
       !retreatState.completed &&
-      retreatState.finalPosition === 'pending' &&
+      retreatState.chosenRetreat === 'pending' &&
       retreatState.legalRetreatOptions.length > 0
     ) {
       return retreatState;
@@ -31,7 +31,7 @@ function findAwaitingRetreatOptionChoice<S extends GameState>(
 
 /**
  * Returns every legal choose-retreat-option event for an active retreat substep
- * awaiting `finalPosition`: one {@link ChooseRetreatOptionEvent} per entry in
+ * awaiting its `chosenRetreat`: one {@link ChooseRetreatOptionEvent} per entry in
  * `legalRetreatOptions`.
  *
  * Returns `[]` when no such retreat choice is expected (wrong phase context,
@@ -52,7 +52,13 @@ export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   const eventNumber = getNextEventNumber(gameState);
   const player = retreatState.retreatingUnit.unit.playerSide;
 
-  return retreatState.legalRetreatOptions.map((retreatOption) =>
-    createChooseRetreatOptionEvent({ player, eventNumber, retreatOption }),
+  // Each offered retreat is chosen by naming its path.
+  const choices = retreatState.legalRetreatOptions.map((option) =>
+    createChooseRetreatOptionEvent({
+      eventNumber,
+      path: [...option.path],
+      player,
+    }),
   );
+  return choices;
 }

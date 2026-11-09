@@ -21,17 +21,23 @@ import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
 import { createEmptyGameState } from '@factories';
 /**
  * `resolveRetreat` closes a legal retreat: starting placement is the defender on the board,
- * final placement is whatever the retreat substep recorded. Ranged stacks nest retreat under
+ * the way back is whatever path and ending the retreat substep recorded. Ranged stacks nest retreat under
  * one defender’s attack-apply; melee can hold two retreats and the procedure picks the
  * initiative player’s path first.
  */
 describe('generateResolveRetreatEvent function', () => {
-  const finalPos = {
-    coordinate: 'E-6' as const,
-    facing: 'south' as const,
+  // A white unit on E-5 facing north falls straight back one step, to F-5.
+  const chosenWhite = {
+    path: ['step' as const],
+    placement: { coordinate: 'F-5' as const, facing: 'north' as const },
+  };
+  // A black unit on E-5 facing south falls straight back the other way, to D-5.
+  const chosenBlack = {
+    path: ['step' as const],
+    placement: { coordinate: 'D-5' as const, facing: 'south' as const },
   };
 
-  it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
+  it('given ranged attack-apply with retreat substep and a chosen retreat, event carries that path and placement', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
@@ -41,7 +47,7 @@ describe('generateResolveRetreatEvent function', () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
       retreatState: createRetreatState(unitWithPlacement, {
-        finalPosition: finalPos,
+        chosenRetreat: chosenWhite,
       }),
     });
     const ranged = createRangedAttackResolutionState(withBoard, {
@@ -56,7 +62,8 @@ describe('generateResolveRetreatEvent function', () => {
     const event = generateResolveRetreatEvent(full, 0);
     expect(event.effectType).toBe('resolveRetreat');
     expect(event.startingPosition).toStrictEqual(unitWithPlacement);
-    expect(event.finalPosition.placement).toStrictEqual(finalPos);
+    expect(event.path).toStrictEqual(['step']);
+    expect(event.finalPosition.placement).toStrictEqual(chosenWhite.placement);
     expect(event.finalPosition.unit).toBe(retreatingUnit);
   });
 
@@ -73,13 +80,10 @@ describe('generateResolveRetreatEvent function', () => {
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 
     const whiteRetreat = createRetreatState(whiteWp, {
-      finalPosition: finalPos,
+      chosenRetreat: chosenWhite,
     });
     const blackRetreat = createRetreatState(blackWp, {
-      finalPosition: {
-        coordinate: 'E-4',
-        facing: 'south',
-      },
+      chosenRetreat: chosenBlack,
     });
 
     const whiteApply = createAttackApplyStateWithRetreat(whiteWp, {
@@ -99,11 +103,12 @@ describe('generateResolveRetreatEvent function', () => {
     const full = updatePhaseState(s, phase);
 
     // White holds initiative and strikes first, so black's unit, the second
-    // player's, is the one that falls back first: to E-4, facing south.
+    // player's, is the one that falls back first: to D-5, facing south.
     const event = generateResolveRetreatEvent(full, 0);
     expect(event.startingPosition.unit).toBe(blackUnit);
+    expect(event.path).toStrictEqual(['step']);
     expect(event.finalPosition.placement).toStrictEqual({
-      coordinate: 'E-4',
+      coordinate: 'D-5',
       facing: 'south',
     });
   });
@@ -119,7 +124,7 @@ describe('generateResolveRetreatEvent function', () => {
     );
   });
 
-  it('given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement', () => {
+  it('given ranged apply with retreat substep but no retreat chosen yet, throws', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
@@ -138,7 +143,7 @@ describe('generateResolveRetreatEvent function', () => {
     const full = updatePhaseState(withBoard, phase);
 
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      'Retreat state has no final position',
+      'No retreat has been chosen yet',
     );
   });
 });

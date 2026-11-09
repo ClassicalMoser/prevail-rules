@@ -1,4 +1,3 @@
-import type { UnitPlacement } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
@@ -44,20 +43,21 @@ export function generateResolveRetreatEvent(
     );
   }
 
-  if (retreatState.finalPosition === 'pending') {
-    throw new Error('Retreat state has no final position');
+  // The retreat to carry out was chosen, or was the only one.
+  const chosen = retreatState.chosenRetreat;
+  if (chosen === 'pending') {
+    throw new Error('No retreat has been chosen yet');
   }
-
-  const finalPlacement: UnitPlacement = retreatState.finalPosition;
 
   const gameEffectEvent: ResolveRetreatEvent = {
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     finalPosition: {
-      placement: finalPlacement,
+      placement: chosen.placement,
       unit: retreatState.retreatingUnit.unit,
     },
+    path: chosen.path,
     startingPosition: retreatState.retreatingUnit,
   };
 

@@ -1,11 +1,7 @@
-import type {
-  PlayerSide,
-  UnitInstance,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
+import type { PlayerSide, UnitInstance, UnitWithPlacement } from '@entities';
 import type {
   RallyResolutionState,
+  RetreatOption,
   RetreatState,
   ReverseState,
   RoutState,
@@ -18,14 +14,17 @@ export function createRetreatState(
   unit: UnitWithPlacement,
   overrides?: Partial<RetreatState>,
 ): RetreatState {
-  const defaultLegalRetreatOptions: UnitPlacement[] = [
+  // A stand-in tie between two equally small retreats (§9.1.3): the two a
+  // unit on E-5 facing north has when an enemy stands behind it on F-5, as
+  // `getLegalRetreats` finds them.
+  const defaultLegalRetreatOptions: RetreatOption[] = [
     {
-      coordinate: 'E-4' as const,
-      facing: 'north',
+      path: ['turnLeft', 'step'],
+      placement: { coordinate: 'F-6', facing: 'northWest' },
     },
     {
-      coordinate: 'E-6' as const,
-      facing: 'north',
+      path: ['turnRight', 'step'],
+      placement: { coordinate: 'F-4', facing: 'northEast' },
     },
   ];
   const {
@@ -42,7 +41,7 @@ export function createRetreatState(
     (legalRetreatOptions.length === 0 ? 'pending' : 'bypassed');
   return {
     completed: false,
-    finalPosition: 'pending',
+    chosenRetreat: 'pending',
     legalRetreatOptions,
     retreatingUnit: unit,
     routState,

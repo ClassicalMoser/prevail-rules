@@ -13,7 +13,11 @@ import {
  *
  * No Vitest imports.
  */
-import type { GameStateForVisibility, IssueCommandsPhaseState } from '@game';
+import type {
+  GameStateForVisibility,
+  IssueCommandsPhaseState,
+  RetreatOption,
+} from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
@@ -380,13 +384,16 @@ export const procedureRegistryStateFactories: Record<
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    const finalPos = {
-      coordinate: 'E-6' as const,
-      facing: 'south' as const,
+    // On an open board the unit's one retreat is a step straight back to
+    // F-5, still facing north (§9.1.3), and it is already chosen.
+    const onlyRetreat: RetreatOption = {
+      path: ['step'],
+      placement: { coordinate: 'F-5', facing: 'north' },
     };
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
       retreatState: createRetreatState(unitWithPlacement, {
-        finalPosition: finalPos,
+        chosenRetreat: onlyRetreat,
+        legalRetreatOptions: [onlyRetreat],
       }),
     });
     const ranged = createRangedAttackResolutionState(withBoard, {

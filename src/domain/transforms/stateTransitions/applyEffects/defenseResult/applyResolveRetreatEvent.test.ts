@@ -18,7 +18,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addCommanderToBoard,
+  addUnitToBoard,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
 
@@ -28,6 +32,12 @@ import { createEmptyGameState } from '@factories';
  * `finalPosition`, and marks the nested retreat substep completed (ranged or melee side).
  */
 describe('applyResolveRetreatEvent function', () => {
+  // A unit on E-5 facing north falls straight back one step, to F-5.
+  const stepBack = {
+    path: ['step' as const],
+    placement: { coordinate: 'F-5' as const, facing: 'north' as const },
+  };
+
   /** IssueCommands + ranged CRS + retreat substep for white on E-5. */
   function createStateWithRangedAttackRetreat(): GameState {
     const state = createEmptyGameState('standard');
@@ -100,7 +110,7 @@ describe('applyResolveRetreatEvent function', () => {
   }
 
   describe('ranged retreat apply', () => {
-    it('given ranged retreat and event E-4 north, E-5 clears and E-4 holds retreating unit', () => {
+    it('given ranged retreat and event F-5 north, E-5 clears and F-5 holds retreating unit', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRangedAttackRetreatState(state);
 
@@ -108,7 +118,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -119,7 +130,7 @@ describe('applyResolveRetreatEvent function', () => {
       expect(startingSpace?.unitPresence.presenceType).toBe('none');
 
       // Unit should be added to final position
-      const finalSpace = newState.boardState.board['E-4'];
+      const finalSpace = newState.boardState.board['F-5'];
       expect(finalSpace?.unitPresence.presenceType).toBe('single');
       if (finalSpace?.unitPresence.presenceType === 'single') {
         expect(finalSpace.unitPresence.unit).toStrictEqual(
@@ -137,7 +148,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -165,7 +177,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -181,7 +194,7 @@ describe('applyResolveRetreatEvent function', () => {
   });
 
   describe('melee retreat apply', () => {
-    it('given black retreats off E-5 to E-4, retreat completed and both hexes single occupancy', () => {
+    it('given black retreats off E-5 to F-5, retreat completed and both hexes single occupancy', () => {
       const state = createStateWithMeleeRetreat('black');
       const retreatState = getMeleeRetreatState(state, 'black');
 
@@ -189,7 +202,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -200,12 +214,12 @@ describe('applyResolveRetreatEvent function', () => {
       expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
         'single',
       );
-      expect(newState.boardState.board['E-4']?.unitPresence.presenceType).toBe(
+      expect(newState.boardState.board['F-5']?.unitPresence.presenceType).toBe(
         'single',
       );
     });
 
-    it('given white retreats to E-6 south, retreat completed and white on E-6', () => {
+    it('given white retreats to F-5 north, retreat completed and white on F-5', () => {
       const state = createStateWithMeleeRetreat('white');
       const retreatState = getMeleeRetreatState(state, 'white');
 
@@ -213,7 +227,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-6', 'south'),
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -224,9 +239,66 @@ describe('applyResolveRetreatEvent function', () => {
       expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
         'single',
       );
-      expect(newState.boardState.board['E-6']?.unitPresence.presenceType).toBe(
+      expect(newState.boardState.board['F-5']?.unitPresence.presenceType).toBe(
         'single',
       );
+    });
+  });
+
+  describe('commander with the retreating unit', () => {
+    it("the retreating unit's own commander in its space ends in the unit's final space (§9.1.8)", () => {
+      const base = createStateWithRangedAttackRetreat();
+      // White's commander stands in E-5 with the unit about to fall back.
+      const state = {
+        ...base,
+        boardState: addCommanderToBoard(base.boardState, 'white', 'E-5'),
+      };
+      const retreatState = getRangedAttackRetreatState(state);
+
+      const event: ResolveRetreatEvent = {
+        effectType: 'resolveRetreat',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
+        startingPosition: retreatState.retreatingUnit,
+      };
+
+      const newState = applyResolveRetreatEvent(event, state);
+
+      // The commander leaves E-5 and arrives on F-5 with its unit.
+      expect(newState.boardState.board['E-5']?.commanders).toStrictEqual([]);
+      expect(newState.boardState.board['F-5']?.commanders).toStrictEqual([
+        'white',
+      ]);
+    });
+
+    it("an enemy commander in the retreating unit's space stays put (§9.1.8)", () => {
+      const base = createStateWithRangedAttackRetreat();
+      // Black's commander stands in E-5 too, as it would having ridden its own
+      // unit into the fight (§4.3.10). It is not white's to carry off.
+      const state = {
+        ...base,
+        boardState: addCommanderToBoard(base.boardState, 'black', 'E-5'),
+      };
+      const retreatState = getRangedAttackRetreatState(state);
+
+      const event: ResolveRetreatEvent = {
+        effectType: 'resolveRetreat',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
+        startingPosition: retreatState.retreatingUnit,
+      };
+
+      const newState = applyResolveRetreatEvent(event, state);
+
+      // White's unit moved on, but black's commander did not follow it.
+      expect(newState.boardState.board['E-5']?.commanders).toStrictEqual([
+        'black',
+      ]);
+      expect(newState.boardState.board['F-5']?.commanders).toStrictEqual([]);
     });
   });
 
@@ -241,7 +313,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -270,8 +343,8 @@ describe('applyResolveRetreatEvent function', () => {
               engagementState: createFrontEngagementState({
                 defendingUnitRetreats: true,
                 retreatState: createRetreatState(placement, {
-                  finalPosition: { coordinate: 'E-4', facing: 'north' },
-                  legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
+                  chosenRetreat: stepBack,
+                  legalRetreatOptions: [stepBack],
                 }),
               }),
             },
@@ -283,7 +356,8 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(unit, 'E-4', 'north'),
+        finalPosition: placed(unit, 'F-5', 'north'),
+        path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -293,7 +367,7 @@ describe('applyResolveRetreatEvent function', () => {
       expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
         'none',
       );
-      expect(next.boardState.board['E-4']?.unitPresence.presenceType).toBe(
+      expect(next.boardState.board['F-5']?.unitPresence.presenceType).toBe(
         'single',
       );
       expect(getFrontEngagementRetreatState(next).completed).toBe(true);

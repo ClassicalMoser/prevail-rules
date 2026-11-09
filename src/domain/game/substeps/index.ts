@@ -22,6 +22,7 @@ export type { RallyResolutionState } from './rallyResolution';
 export {
   attackResultSchema,
   attackApplyStateSchema,
+  retreatOptionSchema,
   retreatStateSchema,
   reverseStateSchema,
   routStateSchema,
@@ -29,6 +30,7 @@ export {
 export type {
   AttackResult,
   AttackApplyState,
+  RetreatOption,
   RetreatState,
   ReverseState,
   RoutState,

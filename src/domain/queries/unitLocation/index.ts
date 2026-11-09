@@ -1,4 +1,5 @@
 // Two placements are the same space facing the same way.
+export { isSameMovePath } from './isSameMovePath';
 export { isSamePlacement } from './isSamePlacement';
 
 // The same unit, standing the same way on the same space.

@@ -1,16 +1,15 @@
-import { createUnitPlacement } from '@factories/unitLocation';
-
 import { createChooseRetreatOptionEvent } from './createChooseRetreatOptionEvent';
 
 describe('createChooseRetreatOptionEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
     expect.hasAssertions();
-    const retreatOption = createUnitPlacement('E-4', 'north');
+    // The player names the way back by the moves it takes, not by where it ends.
+    const path = ['turnLeft', 'step'] as const;
 
     const event = createChooseRetreatOptionEvent({
       eventNumber: 3,
       player: 'white',
-      retreatOption,
+      path: [...path],
     });
 
     expect(event).toStrictEqual({
@@ -18,7 +17,7 @@ describe('createChooseRetreatOptionEvent function', () => {
       eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
-      retreatOption,
+      path: [...path],
     });
   });
 });

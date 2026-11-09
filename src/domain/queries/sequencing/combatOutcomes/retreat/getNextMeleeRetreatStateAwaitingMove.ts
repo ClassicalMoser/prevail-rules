@@ -4,7 +4,7 @@ import { getMeleeAppliesInResolutionOrder } from '@queries/sequencing/meleeResol
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 
 /**
- * Retreat substep ready for resolveRetreat in melee: finalPosition set, not yet completed.
+ * Retreat substep ready for resolveRetreat in melee: retreat chosen, not yet completed.
  * Resolution order matches attack-apply sequencing: the second player's unit
  * suffers first, since the first player's blow lands first (§7.5.6).
  *
@@ -17,19 +17,17 @@ export function getNextMeleeRetreatStateAwaitingMove(
 ): RetreatState {
   const meleeState = getMeleeResolutionState(state);
   // An attack that reached no threshold leaves retreatState 'bypassed', so
-  // that side has nothing to retreat. Ready means a destination is chosen and
+  // that side has nothing to retreat. Ready means the retreat is chosen and
   // the retreat move is not finished.
   for (const apply of getMeleeAppliesInResolutionOrder(meleeState)) {
     const retreat = apply.retreatState;
     if (
       isOpenSubstep(retreat) &&
-      retreat.finalPosition !== 'pending' &&
+      retreat.chosenRetreat !== 'pending' &&
       !retreat.completed
     ) {
       return retreat;
     }
   }
-  throw new Error(
-    'No retreat state with finalPosition found in melee resolution',
-  );
+  throw new Error('No chosen retreat found in melee resolution');
 }

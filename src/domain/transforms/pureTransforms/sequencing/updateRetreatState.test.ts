@@ -209,7 +209,10 @@ describe('updateRetreatState function', () => {
     });
     const stateInPhase = updatePhaseState(withBoard, phaseState);
     const nextRetreat = createRetreatState(placedUnit, {
-      finalPosition: createUnitPlacement('E-4', 'north'),
+      chosenRetreat: {
+        path: ['step'],
+        placement: createUnitPlacement('F-5', 'north'),
+      },
     });
 
     const next = updateRetreatState(stateInPhase, nextRetreat);
@@ -220,9 +223,9 @@ describe('updateRetreatState function', () => {
     if (retreatState === 'pending') {
       throw new Error('expected retreatState');
     }
-    expect(retreatState.finalPosition).toStrictEqual({
-      coordinate: 'E-4',
-      facing: 'north',
+    expect(retreatState.chosenRetreat).toStrictEqual({
+      path: ['step'],
+      placement: { coordinate: 'F-5', facing: 'north' },
     });
   });
 

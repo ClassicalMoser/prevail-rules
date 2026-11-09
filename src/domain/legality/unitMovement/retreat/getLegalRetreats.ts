@@ -1,5 +1,5 @@
-import type { UnitPlacement, UnitWithPlacement } from '@entities';
-import type { GameState } from '@game';
+import type { UnitWithPlacement } from '@entities';
+import type { GameState, RetreatOption } from '@game';
 import { isAtPlacement } from '@queries';
 import { exploreUnitMoves } from '../explore';
 import { getSmallestRetreats } from './getSmallestRetreats';
@@ -16,13 +16,13 @@ import { isRetreatCutOff } from './isRetreatCutOff';
  *
  * @param unitWithPlacement - The retreating unit and where it stands
  * @param gameState - The current game state
- * @returns The placements the unit may retreat to; empty when it cannot retreat
+ * @returns Where the unit may retreat to, each with its path; empty when it cannot retreat
  * @throws Error when the unit does not stand at the given placement
  */
 export function getLegalRetreats(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
-): Set<UnitPlacement> {
+): RetreatOption[] {
   // The caller names where the unit stands. If the board disagrees, the
   // state is faulty — that is not the rules saying "no retreat".
   const standing = isAtPlacement(gameState.boardState, unitWithPlacement);
@@ -33,7 +33,7 @@ export function getLegalRetreats(
   // An enemy behind, facing the unit, cuts its line of withdrawal: no
   // retreat at all, however much room lies beyond (§9.1.5).
   if (isRetreatCutOff(gameState.boardState, unitWithPlacement)) {
-    const none = new Set<UnitPlacement>();
+    const none: RetreatOption[] = [];
     return none;
   }
 

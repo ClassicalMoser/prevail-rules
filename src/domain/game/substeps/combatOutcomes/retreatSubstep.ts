@@ -1,7 +1,9 @@
-import type { UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitWithPlacement } from '@entities';
+import type { RetreatOption } from './retreatOption';
 import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
-import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
+import { unitWithPlacementSchema } from '@entities';
+import { retreatOptionSchema } from './retreatOption';
 import { z } from 'zod';
 import { routStateSchema } from './routSubstep';
 
@@ -21,10 +23,13 @@ export interface RetreatState {
   substepType: 'retreat';
   /** The unit that is retreating. */
   retreatingUnit: UnitWithPlacement;
-  /** The legal retreat options. */
-  legalRetreatOptions: UnitPlacement[];
-  /** The final position of the retreating unit. */
-  finalPosition: UnitPlacement | 'pending';
+  /** Where the unit may fall back to, each by one path (§9.1.3). */
+  legalRetreatOptions: RetreatOption[];
+  /**
+   * The retreat to be carried out: chosen by the player among several, or
+   * filled in at once when there is only one. `'pending'` until then.
+   */
+  chosenRetreat: RetreatOption | 'pending';
   /**
    * Rout nested under this retreat: `'pending'` when the unit has nowhere to
    * go (a rout is still due), `'bypassed'` when it has legal hexes (a retreat
@@ -37,9 +42,9 @@ export interface RetreatState {
 
 const _retreatStateSchemaObject = z
   .object({
+    chosenRetreat: retreatOptionSchema.or(z.literal('pending')),
     completed: z.boolean(),
-    finalPosition: unitPlacementSchema.or(z.literal('pending')),
-    legalRetreatOptions: z.array(unitPlacementSchema),
+    legalRetreatOptions: z.array(retreatOptionSchema),
     retreatingUnit: unitWithPlacementSchema,
     routState: routStateSchema
       .or(z.literal('pending'))

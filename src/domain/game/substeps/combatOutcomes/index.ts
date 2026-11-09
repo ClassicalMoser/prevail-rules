@@ -7,6 +7,8 @@ export { attackApplyStateSchema } from './attackApplySubstep';
 export type { AttackApplyState } from './attackApplySubstep';
 
 // Retreat
+export { retreatOptionSchema } from './retreatOption';
+export type { RetreatOption } from './retreatOption';
 export { retreatStateSchema } from './retreatSubstep';
 export type { RetreatState } from './retreatSubstep';
 

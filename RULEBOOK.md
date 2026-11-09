@@ -267,7 +267,7 @@ When something comes up that this part does not answer — where exactly a retre
 
 **2.2.1** A space holds **at most one unit**, with one exception: two enemy units may occupy the same space while **engaged** (§6). Such a space is an **engaged space**.
 
-**2.2.2** Commanders do not occupy space. A commander may share a space with a friendly unit, and more than one thing may stand in a space if one of them is a commander. A commander in a unit's space may move with that unit (§4.3.10, §9.1.8).<sup>[A4](#a4)</sup>
+**2.2.2** Commanders do not occupy space. A commander may share a space with a friendly unit, and more than one thing may stand in a space if one of them is a commander. A commander in a unit's space may move with that unit when it moves (§4.3.10), and always goes with it when it retreats (§9.1.8).<sup>[A4](#a4)</sup>
 
 **2.2.3** No unit may enter or pass through an engaged space, for any reason, until that engagement is resolved. Neither may a commander.
 
@@ -958,7 +958,7 @@ The three things an attack can do to a unit, in the order they are carried out (
 
 **9.1.2** A retreating unit must stay within **the region behind its starting position** (§2.3.3) — both the spaces it passes through and the space it ends in. It may not end where it started.
 
-**9.1.3** A retreat must be the **smallest legal backward move available**: the fewest facing changes first, then the fewest steps. You do not get to use a retreat as a free repositioning. Where several moves tie for smallest, the owner chooses among them. Speed and Flexibility are the unit's current ones, with any Round Effect or Command modifiers (§7.1.5).
+**9.1.3** A retreat must be the **smallest legal backward move available**: the fewest facing changes first, then the fewest steps. You do not get to use a retreat as a free repositioning. Where several moves tie for smallest, the owner chooses among them by where they end; two equally small ways to reach the same space are one retreat, not a choice. Speed and Flexibility are the unit's current ones, with any Round Effect or Command modifiers (§7.1.5).
 
 **9.1.4** Before its first step back, a retreating unit may turn by **at most 45°** in all. It may not turn about, so a retreat never begins by facing the other way. After the first step, turning follows the ordinary rule (§5.2.1): 45° or about per Flexibility spent, in any order. Only the opening turn is restricted.<sup>[A14](#a14)</sup>
 
@@ -971,7 +971,7 @@ The three things an attack can do to a unit, in the order they are carried out (
 
 **9.1.7** A retreating unit may not enter an enemy-occupied space, or a hidden stand (§3.6.4). A retreat never creates an engagement.
 
-**9.1.8** A commander standing in the retreating unit's space may retreat with it, and ends in the unit's final space. It may stay behind instead.<sup>[A9](#a9)</sup>
+**9.1.8** A commander standing in the retreating unit's space **always** retreats with it, and ends in the unit's final space. There is no choice to stay behind. Only the unit's own commander goes: an enemy commander that rode into the space is with its own unit (§4.3.10), and stays.<sup>[A9](#a9)</sup>
 
 **9.1.9** A retreat is an ordinary move for terrain (§5.5). A unit that cannot cover the ground behind it has no legal retreat, and routs (§9.1.6). A river at your back is a trap.<sup>[A3](#a3)</sup>
 
@@ -1428,10 +1428,10 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Rule:** §4.3.10: before a unit moves, its owner may commit for +1 Speed or Flexibility; that Speed also counts in a front-engagement contest (§8.4.1). Draft 3 says so, and the engine has a built branch for it.
 - **Closed:** A Move order is now carried out one choice per decision (author, 2026-11-09): `chooseMovingUnit` names the unit and opens its move, `commitToMovement` takes the mover's card or its refusal, and `moveUnit` writes the path (slice S9). The committed card counts toward the move's budget (`createMoveContext`, through `getCurrentUnitStat`'s modifiers), so validation accepts a path only the card makes possible, and the front-engagement Speed contest reads the same commitment. A scenario spec plays the order through the engines.
 
-<a id="a9"></a>**A9. A commander may ride with a unit; the engine checks a flag for it and never moves the commander.** _Code lags rule._
+<a id="a9"></a>**A9. A commander may ride with a unit; the engine checks a flag for it and never moves the commander.** _Closed: S10 (moves, retreats); the fall with a routed unit is S21._
 
-- **Rule:** §4.3.10 and §9.1.8: a commander in a unit's space may move with it when the unit moves or retreats, and ends in the unit's final space. (Author decision.)
-- **Code does:** The `moveUnit` choice has a `moveCommander` flag. Validation accepts it only when the player's commander shares the unit's space (`validation/playerChoice/isValidMoveUnitEvent.ts`), and `carryRidingCommander` (`transforms/pureTransforms/commanders/`) carries the commander to the unit's final space: on open ground in `applyMoveUnitEvent`, into a rear engagement in `applyStartEngagementEvent`, and into a front or flank engagement in `applyCompleteUnitMovementEvent`. Moves are done for A9; retreat choices still have no such flag (`events/playerChoices/chooseRetreatOption.ts`), left to Cluster 3, and the commander's fall with a routed unit is S21.
+- **Rule:** §4.3.10: a commander in a unit's space may move with it when the unit moves, and ends in the unit's final space. §9.1.8: when the unit retreats, its commander always goes with it (author, 2026-11-09: no choice).
+- **Code does:** The `moveUnit` choice has a `moveCommander` flag. Validation accepts it only when the player's commander shares the unit's space (`validation/playerChoice/isValidMoveUnitEvent.ts`), and `carryRidingCommander` (`transforms/pureTransforms/commanders/`) carries the commander to the unit's final space: on open ground in `applyMoveUnitEvent`, into a rear engagement in `applyStartEngagementEvent`, and into a front or flank engagement in `applyCompleteUnitMovementEvent`. Retreats carry the commander too, with no flag: `applyResolveRetreatEvent` moves the retreating unit's own commander with it. The commander's fall with a routed unit is S21.
 - **To settle:** Apply the flag by moving the commander to the unit's destination, and give retreats the same option. The engagement case is decided (author, 2026-11-08): the ride into an engagement is allowed, as the one exception to §2.2.3/§4.2.4 — the commander is committed to the fight and falls with its unit if that unit routs (§4.2.8, friendly rout only; the enemy's rout does not touch it).
 
 <a id="a10"></a>**A10. Units and the "blocked diagonal" test do not agree with commanders and support.** _Settled: two rules, by design._

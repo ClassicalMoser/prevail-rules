@@ -44,13 +44,13 @@ export function getExpectedRetreatEvent(
     );
   }
 
-  // Check if the final position has been determined
-  if (retreatState.finalPosition === 'pending') {
+  // Check whether the retreat to carry out has been chosen
+  if (retreatState.chosenRetreat === 'pending') {
     // Multiple retreat options exist - player must choose
-    // If only one option exists, it should be auto-selected (finalPosition set) when state is created
+    // If only one option exists, it is carried out as it stands (chosen when the retreat opens)
     if (retreatState.legalRetreatOptions.length === 1) {
       throw new Error(
-        'RetreatState with single option should have finalPosition set immediately',
+        'A retreat with a single option should have it chosen when it opens',
       );
     }
     // Multiple options - player must choose
@@ -60,7 +60,7 @@ export function getExpectedRetreatEvent(
       playerSource: retreatState.retreatingUnit.unit.playerSide,
     };
   }
-  // Final position determined (either by player choice or auto-selected if single option)
+  // The retreat is chosen (by the player, or as the only one)
   // Expect resolve retreat effect to move the unit
   return {
     actionType: 'gameEffect',

@@ -1,6 +1,6 @@
-import type { PlayerSide, UnitPlacement } from '@entities';
+import type { MoveDelta, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema, unitPlacementSchema } from '@entities';
+import { moveDeltaSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -15,8 +15,12 @@ export interface ChooseRetreatOptionEvent {
   player: PlayerSide;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The retreat option to choose from. */
-  retreatOption: UnitPlacement;
+  /**
+   * The retreat chosen, named by its path (§9.1.3). Where it ends is read
+   * from the path, as a move's is; a commander in the unit's space always
+   * goes with it (§9.1.8), so there is nothing else to say.
+   */
+  path: MoveDelta[];
 }
 
 const _chooseRetreatOptionEventSchemaObject = z
@@ -25,7 +29,7 @@ const _chooseRetreatOptionEventSchemaObject = z
     choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
     player: playerSideSchema,
     eventNumber: z.number(),
-    retreatOption: unitPlacementSchema,
+    path: z.array(moveDeltaSchema),
   })
   .strict();
 
@@ -44,5 +48,5 @@ export const chooseRetreatOptionEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
   player: typeof playerSideSchema;
   eventNumber: z.ZodNumber;
-  retreatOption: typeof unitPlacementSchema;
+  path: z.ZodArray<typeof moveDeltaSchema>;
 }> = _chooseRetreatOptionEventSchemaObject;

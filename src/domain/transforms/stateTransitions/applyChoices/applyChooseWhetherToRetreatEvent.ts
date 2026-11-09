@@ -1,6 +1,5 @@
-import type { UnitPlacement } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
+import type { GameState, RetreatOption, RetreatState } from '@game';
 import { getLegalRetreats } from '@legality';
 import {
   getFrontEngagementStateFromMovement,
@@ -39,10 +38,8 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
     state.boardState,
     engagementState.targetPlacement.coordinate,
   );
-  const legalRetreatOptions: UnitPlacement[] = [
-    ...getLegalRetreats(retreatingUnit, state),
-  ];
-  const finalPosition: UnitPlacement | 'pending' =
+  const legalRetreatOptions = getLegalRetreats(retreatingUnit, state);
+  const chosenRetreat: RetreatOption | 'pending' =
     legalRetreatOptions.length === 1 ? legalRetreatOptions[0] : 'pending';
 
   // A retreat with somewhere to go will never rout, so that slot is bypassed.
@@ -52,7 +49,7 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
 
   const retreatState: RetreatState = {
     completed: false,
-    finalPosition,
+    chosenRetreat,
     legalRetreatOptions,
     retreatingUnit,
     routState: nestedRoutState,

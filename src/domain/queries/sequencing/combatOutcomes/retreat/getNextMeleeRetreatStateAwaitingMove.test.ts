@@ -1,5 +1,5 @@
 import type { UnitWithPlacement } from '@entities';
-import type { GameState, MeleeResolutionState } from '@game';
+import type { GameState, MeleeResolutionState, RetreatOption } from '@game';
 import { createEmptyGameState, createUnitPlacement } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
@@ -38,16 +38,18 @@ function placed(
 }
 
 describe('getNextMeleeRetreatStateAwaitingMove function', () => {
-  const finalPlacement = {
-    coordinate: 'E-6',
-    facing: 'south',
-  } satisfies UnitWithPlacement['placement'];
+  // A retreat already chosen: one step straight back. Which retreat it is does
+  // not matter here, only that the unit has one waiting to be carried out.
+  const chosen = {
+    path: ['step'],
+    placement: { coordinate: 'F-5', facing: 'north' },
+  } satisfies RetreatOption;
 
-  it('returns the first player retreat whose final placement is set', () => {
+  it('returns the first player retreat whose retreat is chosen', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const retreat = createRetreatState(white, {
-      finalPosition: finalPlacement,
+      chosenRetreat: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
@@ -59,12 +61,12 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     expect(getNextMeleeRetreatStateAwaitingMove(state)).toBe(retreat);
   });
 
-  it('returns the second player retreat when the first final placement is still pending', () => {
+  it('returns the second player retreat when the first retreat is still unchosen', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const black = placed('black', 'south');
     const retreat = createRetreatState(black, {
-      finalPosition: finalPlacement,
+      chosenRetreat: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white),
@@ -77,7 +79,7 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     expect(getNextMeleeRetreatStateAwaitingMove(state)).toBe(retreat);
   });
 
-  it('throws when neither retreat has a final placement', () => {
+  it('throws when neither retreat has been chosen', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const black = placed('black', 'south');
@@ -88,7 +90,7 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     const state = resolveMelee(melee, 'white');
 
     expect(() => getNextMeleeRetreatStateAwaitingMove(state)).toThrow(
-      'No retreat state with finalPosition found in melee resolution',
+      'No chosen retreat found in melee resolution',
     );
   });
 
@@ -98,7 +100,7 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'south');
     const retreat = createRetreatState(black, {
-      finalPosition: finalPlacement,
+      chosenRetreat: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, {

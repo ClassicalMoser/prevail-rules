@@ -160,6 +160,7 @@ export {
 // and where a path of steps and turns leaves a unit.
 export {
   getPlacementAfterPath,
+  isSameMovePath,
   isSamePlacement,
   isSameUnitWithPlacement,
 } from './unitLocation';
