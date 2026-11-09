@@ -749,7 +749,7 @@ Read it as a picture: if the two units are looking at each other, that is a Fron
 3. If it may and chooses to, it makes a retreat move (§9.1). The engagement ends at once; no melee is fought.
 4. Otherwise both units stay locked and fight in Phase 4.
 
-**6.3.3 Rear engagement.** The defender is **routed immediately** (§9.3). No melee, no commitment, no reply. Its owner pays its Morale at once. The engaging unit remains where it stands.
+**6.3.3 Rear engagement.** The defender is **routed immediately** (§9.3). No melee, no commitment, no reply. Its owner pays its Morale at once. The engaging unit remains where it stands.<sup>[B10](#b10)</sup>
 
 **6.3.4 Flank engagement.** The defender is **forced to rotate** to face the engaging unit — its new facing is directly opposite the engaging unit's. It may not retreat. The two fight in Phase 4.
 
@@ -1540,6 +1540,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Rule:** §7.5.6: both retreats, then both reverses, then both routs, with the first player's unit first in each stage.
 - **Code does:** The engine carries out the first player's unit's results in full (retreat, reverse, rout), then the second player's. A probe on 2026-11-08 confirmed that order; the stage order is read, not probed. The two differ when one unit's retreat would end the other's engagement before its reverse: a first-player unit that only reverses is judged before the second player's unit falls back, so it is still engaged and does not turn, where the rule has it turn.
 - **To settle:** Apply melee results in the stage order, and check the retreat, reverse and rout generators against it (`procedures/defenseResult/`).
+
+<a id="b10"></a>**B10. A rear engagement's Morale was never paid.** _Bug — found and closed 2026-11-09._
+
+- **Rule:** §6.3.3: the defender is routed immediately and its owner pays its Morale at once; the engaging unit remains where it stands.
+- **Code did:** The rear engagement routed the defender off the board the moment it was set up, and the movement sequencer then looked at the target space, saw no enemy, and completed the move — clearing the pending rout with it. Probe: after a rear attack on a Morale-2 unit, the defender's hand was still five cards. A rear attack cost the defender the unit and never the cards. Unnoticed because no spec played a rear engagement through from the move to the discard.
+- **Closed:** The sequencer asks an engagement under way what comes next before it looks at the board (`getExpectedMovementResolutionEvent`). The attacker steps into the vacated space as the rout opens, so it stands where it fought before the Morale is asked for (author, 2026-11-09; `applyStartEngagementEvent`). Paying the discard, or a zero-Morale rout with nothing to pay, both end the engagement through one transform (`closeRearEngagementWhenRouted`). A scenario spec (`scenarios/rearEngagement.test.ts`) now plays the rule end to end, including §11.4 ending the game first when the defender was its side's last unit.
 
 ## Changes from Draft 3
 
