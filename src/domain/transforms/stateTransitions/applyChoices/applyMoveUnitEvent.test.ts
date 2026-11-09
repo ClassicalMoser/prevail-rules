@@ -1,93 +1,98 @@
-import type { MoveUnitEvent } from '@events';
-import { getLegalMoveUnits } from '@legality';
+import type { UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
+import { createMoveUnitEvent, createEmptyGameState } from '@factories';
 import { generateStartEngagementEvent } from '@procedures';
-import { getIssueCommandsPhaseState } from '@queries';
+import { getMovementResolutionState } from '@queries';
 import {
   createIssueCommandsPhaseState,
-  createTestCard,
+  createMovementResolutionState,
   createUnitWithPlacement,
-  updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
-import { applyCompleteUnitMovementEvent } from '../applyEffects/movement/applyCompleteUnitMovementEvent';
 
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
- * During command resolution, a commanded unit’s `moveUnit` choice rewrites board
- * presence and opens a movement CRS (mover commitment declined) while removing
- * the unit from remaining resolve units.
+ * The move is written into the movement its unit's `chooseMovingUnit`
+ * opened, once any card has been committed (§4.3.10). Each case starts there:
+ * the unit named, its commitment declined, its move not yet written.
  */
+function awaitingMove(
+  mover: UnitWithPlacement,
+  others: UnitWithPlacement[] = [],
+): GameState {
+  let state = createEmptyGameState('standard');
+  let board = addUnitToBoard(state.boardState, mover);
+  for (const other of others) {
+    board = addUnitToBoard(board, other);
+  }
+  state = updateBoardState(state, board);
+  const movement = createMovementResolutionState(state, {
+    commitment: { commitmentType: 'declined' },
+    moveCommander: 'pending',
+    movingUnit: mover,
+    targetPlacement: 'pending',
+  });
+  const opened = updatePhaseState(
+    state,
+    createIssueCommandsPhaseState(state, {
+      currentCommandResolutionState: movement,
+    }),
+  );
+  return opened;
+}
+
 describe('applyMoveUnitEvent function', () => {
-  it('moves the unit on the board, starts movement CRS, and clears it from remaining', () => {
-    const unitWithPlacement = createUnitWithPlacement({
+  it('a move onto open ground carries the unit there and records where it went', () => {
+    const mover = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState('standard');
-    state = updateBoardState(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: 'pending',
-        remainingUnitsFirstPlayer: [unitWithPlacement.unit],
-        step: 'firstPlayerResolveCommands',
+    const state = awaitingMove(mover);
+
+    // From E-5: wheel right to east, two steps to E-7, wheel back to north.
+    // The transform reads where the path leads; legality was settled before.
+    const moved = applyMoveUnitEvent(
+      createMoveUnitEvent({
+        eventNumber: 2,
+        moveCommander: false,
+        path: [
+          'turnRight',
+          'turnRight',
+          'step',
+          'step',
+          'turnLeft',
+          'turnLeft',
+        ],
+        player: 'black',
       }),
+      state,
     );
 
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      moveCommander: false,
-      player: 'black',
-      // From E-5: wheel right to east, two steps to E-7, wheel back to
-      // north. The transform reads where the path leads; legality was
-      // settled before the event arrived.
-      path: ['turnRight', 'turnRight', 'step', 'step', 'turnLeft', 'turnLeft'],
-      unit: unitWithPlacement,
-    };
-
-    const newState = applyMoveUnitEvent(event, state);
-
-    expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
+    expect(moved.boardState.board['E-5']?.unitPresence.presenceType).toBe(
       'none',
     );
-    expect(newState.boardState.board['E-7']?.unitPresence).toBeDefined();
-    const presence = newState.boardState.board['E-7']?.unitPresence;
-    if (presence?.presenceType !== 'single') {
-      throw new Error('Expected single unit');
-    }
-    expect(presence.unit.playerSide).toBe('black');
-    expect(presence.facing).toBe('north');
-
-    const phase = getIssueCommandsPhaseState(newState);
-    expect(phase.remainingUnitsFirstPlayer).toStrictEqual([]);
-    expect(phase.currentCommandResolutionState).not.toBe('pending');
-    if (phase.currentCommandResolutionState === 'pending') {
-      throw new Error('Expected movement CRS');
-    }
-    const crs = phase.currentCommandResolutionState;
-    if (crs.commandResolutionType !== 'movement') {
-      throw new Error('Expected movement CRS');
-    }
-    expect(crs.commitment.commitmentType).toBe('declined');
-    expect(crs.targetPlacement).toStrictEqual({
+    expect(moved.boardState.board['E-7']?.unitPresence).toMatchObject({
+      facing: 'north',
+      presenceType: 'single',
+      unit: mover.unit,
+    });
+    const movement = getMovementResolutionState(moved);
+    expect(movement.targetPlacement).toStrictEqual({
       coordinate: 'E-7',
       facing: 'north',
     });
+    expect(movement.moveCommander).toBe(false);
   });
 
-  it('entering an enemy hex leaves the mover on its current hex and the defender alone', () => {
+  it('a move into an enemy leaves the mover on its start space until the engagement', () => {
+    // §5.1.4: the mover's stats were read where the move began, and it
+    // waits there until the engagement places it.
     const engager = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -99,124 +104,55 @@ describe('applyMoveUnitEvent function', () => {
       facing: 'south',
       playerSide: 'white',
     });
-    let state = createEmptyGameState('standard');
-    state = updateBoardState(
-      state,
-      addUnitToBoard(addUnitToBoard(state.boardState, engager), defender),
-    );
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: 'pending',
-        remainingUnitsFirstPlayer: [engager.unit],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
+    const state = awaitingMove(engager, [defender]);
 
-    state = applyMoveUnitEvent(
-      {
-        choiceType: 'moveUnit',
-        eventNumber: 0,
-        eventType: 'playerChoice',
+    // One step from E-5 into the enemy on D-5, already head-on.
+    const moved = applyMoveUnitEvent(
+      createMoveUnitEvent({
+        eventNumber: 2,
         moveCommander: false,
-        player: 'black',
-        // One step from E-5 into the enemy on D-5, already head-on.
         path: ['step'],
-        unit: engager,
-      },
+        player: 'black',
+      }),
       state,
     );
 
-    expect(state.boardState.board['E-5']?.unitPresence).toMatchObject({
-      facing: 'north',
+    expect(moved.boardState.board['E-5']?.unitPresence).toMatchObject({
       presenceType: 'single',
       unit: engager.unit,
     });
-    expect(state.boardState.board['D-5']?.unitPresence).toMatchObject({
-      facing: 'south',
+    expect(moved.boardState.board['D-5']?.unitPresence).toMatchObject({
       presenceType: 'single',
       unit: defender.unit,
     });
-
-    const phase = getIssueCommandsPhaseState(state);
-    if (phase.currentCommandResolutionState === 'pending') {
-      throw new Error('Expected movement CRS');
-    }
-    const crs = phase.currentCommandResolutionState;
-    if (crs.commandResolutionType !== 'movement') {
-      throw new Error('Expected movement CRS');
-    }
-    expect(crs.movingUnit.placement).toStrictEqual(engager.placement);
-    expect(crs.targetPlacement).toStrictEqual({
+    const movement = getMovementResolutionState(moved);
+    expect(movement.movingUnit.placement).toStrictEqual(engager.placement);
+    expect(movement.targetPlacement).toStrictEqual({
       coordinate: 'D-5',
       facing: 'north',
     });
-
-    const start = generateStartEngagementEvent(state, 1);
-    expect(start.engagementType).toBe('front');
-    expect(start.defenderWithPlacement.unit).toStrictEqual(defender.unit);
+    // The written move is what the engagement starts from.
+    expect(generateStartEngagementEvent(moved, 3).engagementType).toBe('front');
   });
 
-  it('after movement completes, the moved unit is not a legal move candidate again', () => {
-    const unitWithPlacement = createUnitWithPlacement({
+  it('records whether the commander rides along', () => {
+    const mover = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
       playerSide: 'black',
-      unitOptions: { speed: 2 },
     });
-    const other = createUnitWithPlacement({
-      coordinate: 'E-3',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2, speed: 2 },
-    });
-    let state = createEmptyGameState('standard');
-    state = updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        inPlay: createTestCard(),
-      },
-    });
-    state = updateBoardState(
-      state,
-      addUnitToBoard(
-        addUnitToBoard(state.boardState, unitWithPlacement),
-        other,
-      ),
-    );
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: 'pending',
-        remainingUnitsFirstPlayer: [unitWithPlacement.unit, other.unit],
-        step: 'firstPlayerResolveCommands',
+    const state = awaitingMove(mover);
+
+    const moved = applyMoveUnitEvent(
+      createMoveUnitEvent({
+        eventNumber: 2,
+        moveCommander: true,
+        path: ['step'],
+        player: 'black',
       }),
-    );
-
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      moveCommander: false,
-      player: 'black',
-      // Wheel right, two steps east to E-7, wheel back to north.
-      path: ['turnRight', 'turnRight', 'step', 'step', 'turnLeft', 'turnLeft'],
-      unit: unitWithPlacement,
-    };
-
-    state = applyMoveUnitEvent(event, state);
-    state = applyCompleteUnitMovementEvent(
-      {
-        effectType: 'completeUnitMovement',
-        eventNumber: 1,
-        eventType: 'gameEffect',
-      },
       state,
     );
 
-    const legal = getLegalMoveUnits(state);
-    expect(legal?.units.map((u) => u.unit.instanceNumber)).toStrictEqual([2]);
-    expect(legal?.units.some((u) => u.unit.instanceNumber === 1)).toBe(false);
+    expect(getMovementResolutionState(moved).moveCommander).toBe(true);
   });
 });

@@ -17,6 +17,7 @@ import {
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 /**
  * Applies a StartEngagementEvent to the game state.
@@ -35,6 +36,11 @@ export function applyStartEngagementEvent<S extends GameState>(
   const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
 
+  // The engagement starts from a move already written into the enemy.
+  const targetPlacement = throwIfPending(
+    movementState.targetPlacement,
+    'The move has not been written yet',
+  );
   const defendingUnit = event.defenderWithPlacement.unit;
   const engagingUnit = movementState.movingUnit.unit;
   const defendingPlayer = defendingUnit.playerSide;
@@ -88,7 +94,7 @@ export function applyStartEngagementEvent<S extends GameState>(
     engagementResolutionState,
     engagingUnit,
     substepType: 'engagementResolution' as const,
-    targetPlacement: movementState.targetPlacement,
+    targetPlacement,
   };
 
   // Update movement resolution state
@@ -117,7 +123,7 @@ export function applyStartEngagementEvent<S extends GameState>(
   // The attacker steps into the space it left, so it stands where it
   // fought before the defender's owner is asked for the Morale.
   const arrived = {
-    placement: movementState.targetPlacement,
+    placement: targetPlacement,
     unit: engagingUnit,
   };
   const attackerPlaced = updateBoardState(

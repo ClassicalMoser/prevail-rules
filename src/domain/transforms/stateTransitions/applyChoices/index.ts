@@ -11,6 +11,7 @@ export { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent
 export { applyDoneIssuingCommandsEvent } from './applyDoneIssuingCommandsEvent';
 export { applyIssueCommandEvent } from './applyIssueCommandEvent';
 export { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
+export { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
 export { applyMoveUnitEvent } from './applyMoveUnitEvent';
 export { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 export { applySetupUnitsEvent } from './applySetupUnitsEvent';

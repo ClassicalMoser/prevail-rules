@@ -19,6 +19,11 @@ export type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
 export { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 
 // Move a unit.
+export type { ChooseMovingUnitEvent } from './chooseMovingUnit';
+export {
+  CHOOSE_MOVING_UNIT_CHOICE_TYPE,
+  chooseMovingUnitEventSchema,
+} from './chooseMovingUnit';
 export type { MoveUnitEvent } from './moveUnit';
 export { moveUnitEventSchema } from './moveUnit';
 

@@ -21,6 +21,7 @@ import { assignUnitSupportEventSchema } from './assignUnitSupport';
 import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
+import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import type { PlayerChoiceEvent } from './playerChoice';
@@ -82,6 +83,7 @@ const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
     doneIssuingCommandsEventSchema,
     issueCommandEventSchema,
     moveCommanderEventSchema,
+    chooseMovingUnitEventSchema,
     moveUnitEventSchema,
     performRangedAttackEventSchema,
     setupUnitsEventSchema,

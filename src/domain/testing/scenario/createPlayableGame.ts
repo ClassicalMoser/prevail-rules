@@ -1,4 +1,4 @@
-import type { PlayerSide } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { GameStateForVisibility } from '@game';
 import type { UnitPlacementSpec } from '../bootstrapGameState/unitPlacementSpec';
 import { createGameState } from '@testing/bootstrapGameState';
@@ -14,23 +14,25 @@ import { updatePlayerCardState } from '@transforms';
  * comes from a transform layered on top.
  *
  * @param units - Where each unit stands, as `createGameState` takes them
- * @param options - Cards in each hand (three each unless said otherwise) and who holds initiative
+ * @param options - Each hand, as a count dealt from the stand-in deck (three unless said otherwise) or the very cards a rule needs; and who holds initiative
  * @returns The game, seen as the game itself sees it
  */
 export function createPlayableGame(
   units: UnitPlacementSpec[],
   options?: {
-    hands?: Partial<Record<PlayerSide, number>>;
+    hands?: Partial<Record<PlayerSide, number | CommandCard[]>>;
     initiative?: PlayerSide;
   },
 ): GameStateForVisibility<'authoritative'> {
   const placed = createGameState(units, {
     currentInitiative: options?.initiative,
   });
-  // Both hands dealt from the stand-in deck; the cards are fungible, only the
-  // count matters to a scenario.
-  const whiteHand = getCardsByCount(options?.hands?.white ?? 3);
-  const blackHand = getCardsByCount(options?.hands?.black ?? 3);
+  // A count deals fungible stand-in cards; a list is for a scenario whose
+  // rule turns on a particular card, such as one committed for Speed.
+  const deal = (hand: number | CommandCard[] | undefined): CommandCard[] =>
+    Array.isArray(hand) ? hand : getCardsByCount(hand ?? 3);
+  const whiteHand = deal(options?.hands?.white);
+  const blackHand = deal(options?.hands?.black);
   const withWhite = updatePlayerCardState(placed, 'white', {
     ...placed.cardState.white,
     inHand: whiteHand,

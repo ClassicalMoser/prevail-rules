@@ -1,16 +1,18 @@
-import type { MoveDelta, PlayerSide, UnitWithPlacement } from '@entities';
+import type { MoveDelta, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import {
-  moveDeltaSchema,
-  playerSideSchema,
-  unitWithPlacementSchema,
-} from '@entities';
+import { moveDeltaSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 /** The type of the move unit event. */
 export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit' as const;
 
+/**
+ * The last step of moving one unit under a Move order (§4.3.10): the move
+ * itself. The unit was named by `chooseMovingUnit` and any card committed
+ * by `commitToMovement`, so this event carries only the path, and whether
+ * the commander rides along.
+ */
 export interface MoveUnitEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -20,8 +22,6 @@ export interface MoveUnitEvent {
   player: PlayerSide;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The unit to move, and where it starts. */
-  unit: UnitWithPlacement;
   /**
    * The whole move, step by step and turn by turn (A11). Where the unit
    * ends is wherever the path leaves it; an oblique front approach to an
@@ -41,7 +41,6 @@ const _moveUnitEventSchemaObject = z
     eventNumber: z.number(),
     moveCommander: z.boolean(),
     path: z.array(moveDeltaSchema),
-    unit: unitWithPlacementSchema,
   })
   .strict();
 
@@ -60,5 +59,4 @@ export const moveUnitEventSchema: z.ZodObject<{
   eventNumber: z.ZodNumber;
   moveCommander: z.ZodBoolean;
   path: z.ZodArray<typeof moveDeltaSchema>;
-  unit: typeof unitWithPlacementSchema;
 }> = _moveUnitEventSchemaObject;

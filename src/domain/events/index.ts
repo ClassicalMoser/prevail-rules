@@ -132,6 +132,11 @@ export type { IssueCommandEvent } from './playerChoices';
 export { issueCommandEventSchema } from './playerChoices';
 export type { DoneIssuingCommandsEvent } from './playerChoices';
 export { doneIssuingCommandsEventSchema } from './playerChoices';
+export type { ChooseMovingUnitEvent } from './playerChoices';
+export {
+  CHOOSE_MOVING_UNIT_CHOICE_TYPE,
+  chooseMovingUnitEventSchema,
+} from './playerChoices';
 export type { MoveUnitEvent } from './playerChoices';
 export { moveUnitEventSchema } from './playerChoices';
 export type { PerformRangedAttackEvent } from './playerChoices';

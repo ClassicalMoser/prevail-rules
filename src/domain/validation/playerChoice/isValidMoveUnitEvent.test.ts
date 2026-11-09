@@ -1,11 +1,12 @@
-import { tempCommandCards } from '@sampleValues';
+import type { Commitment } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
+import { createEmptyGameState, createMoveUnitEvent } from '@factories';
 import {
   createIssueCommandsPhaseState,
+  createMovementResolutionState,
+  createTestCard,
   createUnitWithPlacement,
-  updateCardState,
 } from '@testing';
-
 import {
   addCommanderToBoard,
   addUnitToBoard,
@@ -15,104 +16,128 @@ import {
 
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
 
-import { createEmptyGameState, createMoveUnitEvent } from '@factories';
 /**
- * IsValidMoveUnitEvent: unit atom + destination + moveCommander integrity.
+ * The move for a unit already named, with its card committed or declined
+ * (§4.3.10): a legal path, counting the card, and a rider only if the
+ * commander stands with the unit.
+ *
+ * Black's Speed-2 unit stands on E-5 facing north, its move unwritten.
  */
+function stateAwaitingMove(options?: {
+  withCommander?: boolean;
+  commitment?: Commitment;
+}) {
+  const mover = createUnitWithPlacement({
+    coordinate: 'E-5',
+    facing: 'north',
+    playerSide: 'black',
+    unitOptions: { speed: 2 },
+  });
+  let state = createEmptyGameState('standard');
+  let board = addUnitToBoard(state.boardState, mover);
+  if (options?.withCommander) {
+    board = addCommanderToBoard(board, 'black', 'E-5');
+  }
+  state = updateBoardState(state, board);
+  const movement = createMovementResolutionState(state, {
+    commitment: options?.commitment ?? { commitmentType: 'declined' },
+    moveCommander: 'pending',
+    movingUnit: mover,
+    targetPlacement: 'pending',
+  });
+  const awaiting = updatePhaseState(
+    state,
+    createIssueCommandsPhaseState(state, {
+      currentCommandResolutionState: movement,
+    }),
+  );
+  return awaiting;
+}
+
 describe('isValidMoveUnitEvent function', () => {
-  function stateAwaitingMoveUnit(options?: { withCommander?: boolean }) {
-    const unitWithPlacement = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { speed: 2 },
+  it('accepts a legal move without moving the commander', () => {
+    const state = stateAwaitingMove();
+    // One step straight ahead, from E-5 to D-5.
+    const event = createMoveUnitEvent({
+      eventNumber: 2,
+      moveCommander: false,
+      path: ['step'],
+      player: 'black',
     });
-    let state = createEmptyGameState('standard');
-    state = updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        inPlay: tempCommandCards[0],
+
+    expect(isValidMoveUnitEvent(event, state)).toStrictEqual({ result: true });
+  });
+
+  it('counts a card committed for Speed toward the move', () => {
+    // Three steps is one more than the unit's Speed of 2; the card adds it.
+    const state = stateAwaitingMove({
+      commitment: {
+        card: createTestCard({ modifiers: ['speed'] }),
+        commitmentType: 'completed',
       },
     });
-    let board = addUnitToBoard(state.boardState, unitWithPlacement);
-    if (options?.withCommander) {
-      board = addCommanderToBoard(board, 'black', 'E-5');
-    }
-    state = updateBoardState(state, board);
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: 'pending',
-        remainingUnitsFirstPlayer: [unitWithPlacement.unit],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
-    return { state, unitWithPlacement };
-  }
-
-  it('accepts a legal destination without moving the commander', () => {
-    const { state, unitWithPlacement } = stateAwaitingMoveUnit();
     const event = createMoveUnitEvent({
-      eventNumber: 0,
+      eventNumber: 2,
       moveCommander: false,
+      path: ['step', 'step', 'step'],
       player: 'black',
-      // One step straight ahead, from E-5 to D-5.
-      path: ['step'],
-      unit: unitWithPlacement,
     });
 
     expect(isValidMoveUnitEvent(event, state)).toStrictEqual({ result: true });
   });
 
-  it('accepts moveCommander when the commander shares the unit space', () => {
-    const { state, unitWithPlacement } = stateAwaitingMoveUnit({
-      withCommander: true,
-    });
+  it('without a committed card, the longer move is refused', () => {
+    const state = stateAwaitingMove();
     const event = createMoveUnitEvent({
-      eventNumber: 0,
-      moveCommander: true,
+      eventNumber: 2,
+      moveCommander: false,
+      path: ['step', 'step', 'step'],
       player: 'black',
+    });
+
+    expect(isValidMoveUnitEvent(event, state).result).toBe(false);
+  });
+
+  it('accepts a rider when the commander shares the unit space', () => {
+    const state = stateAwaitingMove({ withCommander: true });
+    const event = createMoveUnitEvent({
+      eventNumber: 2,
+      moveCommander: true,
       path: ['step'],
-      unit: unitWithPlacement,
+      player: 'black',
     });
 
     expect(isValidMoveUnitEvent(event, state)).toStrictEqual({ result: true });
   });
 
-  it('rejects moveCommander when the commander is not co-located', () => {
-    const { state, unitWithPlacement } = stateAwaitingMoveUnit();
+  it('refuses a rider when the commander stands elsewhere', () => {
+    const state = stateAwaitingMove();
     const event = createMoveUnitEvent({
-      eventNumber: 0,
+      eventNumber: 2,
       moveCommander: true,
-      player: 'black',
       path: ['step'],
-      unit: unitWithPlacement,
-    });
-
-    expect(isValidMoveUnitEvent(event, state).result).toBe(false);
-  });
-
-  it('rejects a path the unit cannot walk', () => {
-    const { state, unitWithPlacement } = stateAwaitingMoveUnit();
-    const event = createMoveUnitEvent({
-      eventNumber: 0,
-      moveCommander: false,
       player: 'black',
-      // Nine steps: more Speed than any unit has.
-      path: Array.from({ length: 9 }, () => 'step' as const),
-      unit: unitWithPlacement,
     });
 
     expect(isValidMoveUnitEvent(event, state).result).toBe(false);
   });
 
-  it('rejects when moveUnit is not expected', () => {
-    const unitWithPlacement = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
+  it("refuses a move from the side whose unit it isn't", () => {
+    const state = stateAwaitingMove();
+    const event = createMoveUnitEvent({
+      eventNumber: 2,
+      moveCommander: false,
+      path: ['step'],
+      player: 'white',
     });
+
+    expect(isValidMoveUnitEvent(event, state)).toStrictEqual({
+      errorReason: 'Expected the move from black, got white',
+      result: false,
+    });
+  });
+
+  it('refuses a move when no unit is moving', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -120,9 +145,8 @@ describe('isValidMoveUnitEvent function', () => {
     const event = createMoveUnitEvent({
       eventNumber: 0,
       moveCommander: false,
-      player: 'black',
       path: ['step'],
-      unit: unitWithPlacement,
+      player: 'black',
     });
 
     expect(isValidMoveUnitEvent(event, state).result).toBe(false);

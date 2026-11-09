@@ -1,4 +1,4 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { Coordinate, PlayerSide, UnitWithPlacement } from '@entities';
 import type {
   ChooseCardEvent,
   ChooseMeleeResolutionEvent,
@@ -26,6 +26,7 @@ import {
   getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalMoveUnits,
+  getLegalUnitMoves,
   getLegalRangedAttackers,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
@@ -38,8 +39,13 @@ import type {
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
+  MoveResult,
 } from '@legality';
-import { getCommanderSpace } from '@queries';
+import {
+  getCommanderSpace,
+  getMovementResolutionState,
+  modifiersFromCompletedCommitment,
+} from '@queries';
 
 /** Shared fields echoed from {@link getExpectedEvent} for actor presentation. */
 interface LegalPlayerChoiceOptionsBase {
@@ -104,8 +110,19 @@ export type LegalPlayerChoiceOptions =
       destinations: Coordinate[];
     })
   | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'moveUnit';
+      choiceType: 'chooseMovingUnit';
       moveUnits: LegalMoveUnits;
+    })
+  | (LegalPlayerChoiceOptionsBase & {
+      choiceType: 'moveUnit';
+      /** The unit whose move is being written; `null` if it cannot be read. */
+      movingUnit: UnitWithPlacement | null;
+      /**
+       * Every legal ending of the move, each with a path to submit, priced
+       * with the card committed for it (§4.3.10). Step-by-step offering is
+       * `getLegalMoveDeltas`.
+       */
+      moves: MoveResult[];
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'performRangedAttack';
@@ -328,7 +345,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         };
       }
     }
-    case 'moveUnit': {
+    case 'chooseMovingUnit': {
       let moveUnits: LegalMoveUnits;
       try {
         moveUnits = getLegalMoveUnits(state) ?? emptyMoveUnits(player);
@@ -337,8 +354,33 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       }
       return {
         ...base,
-        choiceType: 'moveUnit',
+        choiceType: 'chooseMovingUnit',
         moveUnits,
+      };
+    }
+    case 'moveUnit': {
+      // The unit was named and its card committed or declined; offer every
+      // ending its move may reach, the committed card counted.
+      let movingUnit: UnitWithPlacement | null = null;
+      let moves: MoveResult[] = [];
+      try {
+        const movement = getMovementResolutionState(state);
+        movingUnit = movement.movingUnit;
+        moves = [
+          ...getLegalUnitMoves(
+            movement.movingUnit,
+            state,
+            modifiersFromCompletedCommitment(movement.commitment),
+          ),
+        ];
+      } catch {
+        moves = [];
+      }
+      return {
+        ...base,
+        choiceType: 'moveUnit',
+        movingUnit,
+        moves,
       };
     }
     case 'performRangedAttack': {

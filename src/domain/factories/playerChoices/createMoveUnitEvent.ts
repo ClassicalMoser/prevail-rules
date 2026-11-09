@@ -1,4 +1,4 @@
-import type { MoveDelta, PlayerSide, UnitWithPlacement } from '@entities';
+import type { MoveDelta, PlayerSide } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
@@ -12,7 +12,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @param fields - `eventNumber` the ordered index of the event in the round,
  * zero-indexed; `moveCommander` whether to move the commander with the unit;
  * `player` the player who is moving the unit; `path` the move's steps and
- * turns, in order; `unit` the unit to move, and where it starts
+ * turns, in order — the unit itself was named by `chooseMovingUnit`
  * @returns The event
  */
 export function createMoveUnitEvent(fields: {
@@ -20,7 +20,6 @@ export function createMoveUnitEvent(fields: {
   eventNumber: number;
   moveCommander: boolean;
   path: MoveDelta[];
-  unit: UnitWithPlacement;
 }): MoveUnitEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,
@@ -29,6 +28,5 @@ export function createMoveUnitEvent(fields: {
     eventNumber: fields.eventNumber,
     moveCommander: fields.moveCommander,
     path: fields.path,
-    unit: fields.unit,
   };
 }

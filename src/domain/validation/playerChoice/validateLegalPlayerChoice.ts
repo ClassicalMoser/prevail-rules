@@ -14,6 +14,7 @@ import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackE
 import { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';
 import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
+import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
 import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
@@ -63,6 +64,9 @@ export function validateLegalPlayerChoice(
     }
     case 'commitToRangedAttack': {
       return isValidCommitToRangedAttackEvent(event, state);
+    }
+    case 'chooseMovingUnit': {
+      return isValidChooseMovingUnitEvent(event, state);
     }
     case 'moveUnit': {
       return isValidMoveUnitEvent(event, state);

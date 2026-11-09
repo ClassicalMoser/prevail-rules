@@ -21,12 +21,16 @@ export interface MovementResolutionState {
   substepType: 'commandResolution';
   /** The type of command resolution. */
   commandResolutionType: 'movement';
-  /** The unit that is moving. */
+  /** The unit that is moving, and where it now stands. */
   movingUnit: UnitWithPlacement;
-  /** The target placement of the movement. */
-  targetPlacement: UnitPlacement;
-  /** Whether to move the commander with the unit. */
-  moveCommander: boolean;
+  /**
+   * Where the move ends. `'pending'` from the moment the unit is chosen
+   * until its owner, having committed a card or not, writes the move
+   * (§4.3.10).
+   */
+  targetPlacement: UnitPlacement | 'pending';
+  /** Whether the commander rides along; `'pending'` until the move is written. */
+  moveCommander: boolean | 'pending';
   /** The commitment of the moving player. */
   commitment: Commitment;
   /** The engagement state of the movement. */
@@ -41,10 +45,10 @@ const _movementResolutionStateSchemaObject = z
     commitment: commitmentSchema,
     completed: z.boolean(),
     engagementState: engagementStateSchema.or(z.literal('pending')),
-    moveCommander: z.boolean(),
+    moveCommander: z.boolean().or(z.literal('pending')),
     movingUnit: unitWithPlacementSchema,
     substepType: z.literal('commandResolution'),
-    targetPlacement: unitPlacementSchema,
+    targetPlacement: unitPlacementSchema.or(z.literal('pending')),
   })
   .strict();
 

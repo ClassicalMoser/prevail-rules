@@ -150,7 +150,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
 
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'moveUnit',
+      choiceType: 'chooseMovingUnit',
       playerSource: 'black',
     });
   });
@@ -273,7 +273,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
 
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'moveUnit',
+      choiceType: 'chooseMovingUnit',
       playerSource: 'white',
     });
   });

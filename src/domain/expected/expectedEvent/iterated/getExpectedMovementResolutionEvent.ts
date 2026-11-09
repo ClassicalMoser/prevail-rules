@@ -32,7 +32,17 @@ export function getExpectedMovementResolutionEvent(
     };
   }
 
-  // The commitment has been completed.
+  // With the card committed or declined, the move itself is written next
+  // (§4.3.10): the commitment counts toward it, so it must come first.
+  if (resolutionState.targetPlacement === 'pending') {
+    return {
+      actionType: 'playerChoice',
+      choiceType: 'moveUnit',
+      playerSource: player,
+    };
+  }
+
+  // The move has been written.
   // An engagement already under way decides what comes next, whatever the
   // board now shows: a rear engagement routs its defender off the board the
   // moment it starts, yet its owner still owes the Morale (§6.3.3). Asking

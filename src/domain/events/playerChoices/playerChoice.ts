@@ -12,6 +12,7 @@ import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 import type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
 import type { IssueCommandEvent } from './issueCommand';
 import type { MoveCommanderEvent } from './moveCommander';
+import type { ChooseMovingUnitEvent } from './chooseMovingUnit';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { SetupUnitsEvent } from './setupUnit';
@@ -31,6 +32,7 @@ import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
 import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
+import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import { setupUnitsEventSchema } from './setupUnit';
@@ -53,6 +55,7 @@ export type PlayerChoiceEvent =
   | DoneIssuingCommandsEvent
   | IssueCommandEvent
   | MoveCommanderEvent
+  | ChooseMovingUnitEvent
   | MoveUnitEvent
   | PerformRangedAttackEvent
   | SetupUnitsEvent;
@@ -79,6 +82,7 @@ const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   doneIssuingCommandsEventSchema,
   issueCommandEventSchema,
   moveCommanderEventSchema,
+  chooseMovingUnitEventSchema,
   moveUnitEventSchema,
   performRangedAttackEventSchema,
   setupUnitsEventSchema,

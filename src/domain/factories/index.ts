@@ -43,6 +43,7 @@ export { createCommitToRangedAttackEvent } from './playerChoices';
 export { createDoneIssuingCommandsEvent } from './playerChoices';
 export { createIssueCommandEvent } from './playerChoices';
 export { createMoveCommanderEvent } from './playerChoices';
+export { createChooseMovingUnitEvent } from './playerChoices';
 export { createMoveUnitEvent } from './playerChoices';
 export { createPerformRangedAttackEvent } from './playerChoices';
 export { createSetupUnitsEvent } from './playerChoices';

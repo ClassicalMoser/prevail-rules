@@ -15,6 +15,7 @@ import {
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 /**
  * Finishes a movement command-resolution slice:
@@ -32,7 +33,11 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
 ): S {
   const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
-  const targetPlacement = movementState.targetPlacement;
+  // A move is only completed once it has been written.
+  const targetPlacement = throwIfPending(
+    movementState.targetPlacement,
+    'The move has not been written yet',
+  );
   const targetPresence = getBoardSpace(
     state.boardState,
     targetPlacement.coordinate,

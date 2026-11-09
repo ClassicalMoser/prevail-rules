@@ -18,6 +18,7 @@ import {
   applyDoneIssuingCommandsEvent,
   applyIssueCommandEvent,
   applyMoveCommanderEvent,
+  applyChooseMovingUnitEvent,
   applyMoveUnitEvent,
   applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
@@ -74,6 +75,9 @@ export function applyPlayerChoiceEvent<S extends GameState>(
     }
     case 'moveCommander': {
       return applyMoveCommanderEvent(event, state);
+    }
+    case 'chooseMovingUnit': {
+      return applyChooseMovingUnitEvent(event, state);
     }
     case 'moveUnit': {
       return applyMoveUnitEvent(event, state);

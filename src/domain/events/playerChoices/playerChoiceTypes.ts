@@ -12,6 +12,7 @@ export const playerChoices = [
   'assignUnitSupport',
   'chooseCard',
   'chooseMeleeResolution',
+  'chooseMovingUnit',
   'chooseRally',
   'chooseRoutDiscard',
   'chooseRetreatOption',

@@ -20,7 +20,12 @@ import {
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createChooseMovingUnitEvent,
+  createCommitToMovementEvent,
+  createEmptyGameState,
+  createMoveUnitEvent,
+} from '@factories';
 /**
  * Minimal front-engagement stack: defender on `createFrontEngagementState` default cell (E-5),
  * engager speeds swapped via createUnitByStat; black.inPlay feeds the mover's commitment factory.
@@ -145,23 +150,38 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
         step: 'firstPlayerResolveCommands',
       }),
     );
+    // Black names the engager, declines to commit, then steps from E-5 into
+    // the enemy on D-5, already head-on.
     state = applyEvent(
-      {
-        choiceType: 'moveUnit',
+      createChooseMovingUnitEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
-        moveCommander: false,
         player: 'black',
-        // One step from E-5 into the enemy on D-5, already head-on.
-        path: ['step'],
         unit: engager,
-      },
+      }),
       state,
     );
-    const start = generateStartEngagementEvent(state, 1);
+    state = applyEvent(
+      createCommitToMovementEvent({
+        committedCard: null,
+        eventNumber: 1,
+        modifierTypes: [],
+        player: 'black',
+      }),
+      state,
+    );
+    state = applyEvent(
+      createMoveUnitEvent({
+        eventNumber: 2,
+        moveCommander: false,
+        path: ['step'],
+        player: 'black',
+      }),
+      state,
+    );
+    const start = generateStartEngagementEvent(state, 3);
     state = applyEvent(start, state);
 
-    const event = generateResolveEngageRetreatOptionEvent(state, 2);
+    const event = generateResolveEngageRetreatOptionEvent(state, 4);
 
     // Commander is on E-5. Range 0 reaches that hex and not D-5.
     // Engager 3+1 is not slower than defender 4.

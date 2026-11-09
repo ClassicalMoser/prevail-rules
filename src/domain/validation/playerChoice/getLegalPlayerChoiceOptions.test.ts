@@ -41,6 +41,7 @@ vi.mock(import('@expected'), async (importOriginal) => {
 const allChoiceTypes = [
   'chooseCard',
   'chooseMeleeResolution',
+  'chooseMovingUnit',
   'chooseRally',
   'chooseRoutDiscard',
   'chooseRetreatOption',
@@ -286,10 +287,16 @@ describe('getLegalPlayerChoiceOptions function', () => {
             });
             break;
           }
-          case 'moveUnit': {
+          case 'chooseMovingUnit': {
             expect(options).toMatchObject({
               moveUnits: { player: 'black', units: [] },
             });
+            break;
+          }
+          case 'moveUnit': {
+            // No movement is open in this state, so there is no unit and
+            // nothing to offer.
+            expect(options).toMatchObject({ movingUnit: null, moves: [] });
             break;
           }
           case 'performRangedAttack': {

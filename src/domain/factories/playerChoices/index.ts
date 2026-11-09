@@ -37,6 +37,9 @@ export { createIssueCommandEvent } from './createIssueCommandEvent';
 // A moveCommander event with its fixed types filled in.
 export { createMoveCommanderEvent } from './createMoveCommanderEvent';
 
+// A chooseMovingUnit event, naming the unit a Move order moves next.
+export { createChooseMovingUnitEvent } from './createChooseMovingUnitEvent';
+
 // A moveUnit event with its fixed types filled in.
 export { createMoveUnitEvent } from './createMoveUnitEvent';
 

@@ -8,6 +8,7 @@ import {
   isEngagementFromFront,
   isEngagementFromRear,
 } from '@queries';
+import { throwIfPending } from '@utils';
 /**
  * Generates a StartEngagementEvent by determining the engagement type
  * based on the relative facing of the engaging unit and defending unit.
@@ -25,11 +26,16 @@ export function generateStartEngagementEvent(
   const movementResolutionState = getMovementResolutionState(state);
 
   // Get the engaging unit's facing from its target placement
-  const engagingFacing = movementResolutionState.targetPlacement.facing;
+  // An engagement is only started once the move into the enemy is written.
+  const targetPlacement = throwIfPending(
+    movementResolutionState.targetPlacement,
+    'The move has not been written yet',
+  );
+  const engagingFacing = targetPlacement.facing;
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    movementResolutionState.targetPlacement.coordinate,
+    targetPlacement.coordinate,
   );
   const defendingFacing = defenderWithPlacement.placement.facing;
 

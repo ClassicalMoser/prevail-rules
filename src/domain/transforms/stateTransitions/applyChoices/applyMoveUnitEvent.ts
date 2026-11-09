@@ -1,119 +1,63 @@
-import type { Board, UnitWithPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-} from '@game';
+import type { GameState, MovementResolutionState } from '@game';
 import {
   getBoardSpace,
-  getIssueCommandsPhaseState,
+  getMovementResolutionState,
   getPlacementAfterPath,
   hasEnemyUnit,
-  isSameUnitInstance,
 } from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
-  updatePhaseState,
+  updateCommandResolutionState,
 } from '@transforms/pureTransforms';
 
 /**
- * Empty destination: take the mover off its current hex and set it on the target.
- */
-function boardWithMoverOnEmptyHex(
-  board: Board,
-  from: UnitWithPlacement,
-  to: UnitWithPlacement,
-): Board {
-  const boardWithoutMover = removeUnitFromBoard(board, from);
-  const occupied = addUnitToBoard(boardWithoutMover, to);
-  return occupied;
-}
-
-/**
- * Applies a MoveUnitEvent to the game state.
+ * Applies a MoveUnitEvent: the move is written into the movement its unit's
+ * `chooseMovingUnit` opened (§4.3.10).
  *
- * - Empty destination: the mover leaves its current hex and occupies the target.
- * - Enemy destination: the mover has not moved yet. It stays on its current hex
- *   so stat lookups (inspiration range) still find it. The defender remains the
- *   only unit on the target until movement completes.
- * - Removes the moving unit from that player's `remainingUnits*`
- * - Starts a movement CRS so `advanceEffects` can continue through engagement
- *   (if any) / complete. Mover card commitment is declined by default.
- *   `movingUnit.placement` is where the unit is now. `targetPlacement` is where
- *   the move is going.
+ * - Open ground: the mover leaves its space and stands where the path ends.
+ * - An enemy's space: the mover waits on its start space, where its stats
+ *   were read (§5.1.4), until the engagement places it.
  *
- * Event is assumed pre-validated (legal move, unit at event.unit.placement).
+ * Event is assumed pre-validated (a legal path for the moving unit).
  */
 export function applyMoveUnitEvent<S extends GameState>(
   event: MoveUnitEvent,
   state: S,
 ): S {
-  const originalUnitWithPlacement = event.unit;
-  // The event was validated before it reached here, so the destination is
-  // simply wherever its path leads (A11) — read by geometry, not judged again.
+  const movement = getMovementResolutionState(state);
+  const mover = movement.movingUnit;
+
+  // The destination is wherever the validated path leads (A11), read by
+  // geometry rather than judged again.
   const destination = getPlacementAfterPath(
     state.boardState,
-    originalUnitWithPlacement.placement,
+    mover.placement,
     event.path,
     'advance',
   );
   if (destination === undefined) {
     throw new Error('The move path leaves the board');
   }
-  const movedUnitWithPlacement = {
-    ...originalUnitWithPlacement,
-    placement: destination,
-  };
 
+  // Into an enemy, the mover waits; onto open ground, it moves now.
   const targetSpace = getBoardSpace(state.boardState, destination.coordinate);
   const enteringEnemy = hasEnemyUnit(event.player, targetSpace).result;
-  // An enemy hex is not entered yet. The mover stays where it stands.
-  const movingUnit = enteringEnemy
-    ? originalUnitWithPlacement
-    : movedUnitWithPlacement;
-  const newBoard = enteringEnemy
+  const arrived = { ...mover, placement: destination };
+  const movingUnit = enteringEnemy ? mover : arrived;
+  const board = enteringEnemy
     ? state.boardState
-    : boardWithMoverOnEmptyHex(
-        state.boardState,
-        originalUnitWithPlacement,
-        movedUnitWithPlacement,
-      );
-  const stateWithBoard = updateBoardState(state, newBoard);
+    : addUnitToBoard(removeUnitFromBoard(state.boardState, mover), arrived);
+  const withBoard = updateBoardState(state, board);
 
-  const phaseState = getIssueCommandsPhaseState(stateWithBoard);
-  const isFirstPlayer = event.player === state.currentInitiative;
-  const remaining = isFirstPlayer
-    ? phaseState.remainingUnitsFirstPlayer
-    : phaseState.remainingUnitsSecondPlayer;
-
-  const newRemaining = [...remaining].filter(
-    (unit) => !isSameUnitInstance(unit, event.unit.unit).result,
-  );
-
-  const movementResolutionState: MovementResolutionState = {
-    commandResolutionType: 'movement',
-    commitment: { commitmentType: 'declined' },
-    completed: false,
-    engagementState: 'pending',
+  const written: MovementResolutionState = {
+    ...movement,
     moveCommander: event.moveCommander,
     movingUnit,
-    substepType: 'commandResolution',
     targetPlacement: destination,
   };
-
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: movementResolutionState,
-    remainingUnitsFirstPlayer: isFirstPlayer
-      ? newRemaining
-      : phaseState.remainingUnitsFirstPlayer,
-    remainingUnitsSecondPlayer: isFirstPlayer
-      ? phaseState.remainingUnitsSecondPlayer
-      : newRemaining,
-  };
-
-  return updatePhaseState(stateWithBoard, newPhaseState);
+  const moved = updateCommandResolutionState(withBoard, written);
+  return moved;
 }

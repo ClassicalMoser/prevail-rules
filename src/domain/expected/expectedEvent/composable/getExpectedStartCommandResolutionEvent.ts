@@ -20,9 +20,11 @@ export function getExpectedStartCommandResolutionEvent(
   }
   // Command type determines what action is expected to start resolution
   if (activeCard.command.type === 'movement') {
+    // A Move order is carried out one unit at a time, starting by naming
+    // the unit; its commitment and its move follow (§4.3.10).
     return {
       actionType: 'playerChoice',
-      choiceType: 'moveUnit',
+      choiceType: 'chooseMovingUnit',
       playerSource: player,
     };
   } else if (activeCard.command.type === 'rangedAttack') {

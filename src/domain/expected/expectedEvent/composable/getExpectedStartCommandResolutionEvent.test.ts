@@ -7,7 +7,7 @@ import { createEmptyGameState } from '@factories';
  * GetExpectedStartCommandResolutionEvent: first command-resolution choice from active card command type.
  */
 describe('getExpectedStartCommandResolutionEvent function', () => {
-  it('given ask the player to move a unit for a movement card', () => {
+  it('a Move order starts by asking which unit moves next', () => {
     const state = createEmptyGameState('standard');
     // CreateTestCard() defaults command.type to 'movement'
     state.cardState.black.inPlay = createTestCard();
@@ -16,7 +16,7 @@ describe('getExpectedStartCommandResolutionEvent function', () => {
       getExpectedStartCommandResolutionEvent(state, 'black'),
     ).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'moveUnit',
+      choiceType: 'chooseMovingUnit',
       playerSource: 'black',
     });
   });
