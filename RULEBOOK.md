@@ -1423,11 +1423,10 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** The engine builds the contiguous rank around the start unit, stretching first to the start's left (up to seven units) and then to its right until eight are gathered, so in a rank longer than eight some end units cannot be named from some starts (`getLegalLineEndsForIssueCommand.ts`, `getLineSegmentFromStart`; checked again in `validation/playerChoice/isValidIssueCommandEvent.ts`). A second line rule, which lists **every** eight-unit window that contains a unit, is exported but called by no one (`queries/line/getLinesFromUnit.ts`; `TODO(composition)`). `isValidLine` (`legality/choiceOptions/issueCommand/isValidLine.ts`) is a third statement of the shape.
 - **To settle:** §4.3.5 says you choose which eight, which is the window rule. Keep `getLinesFromUnit`'s windows (or equivalent), retire the greedy cap, and keep one statement of the line shape.
 
-<a id="a8"></a>**A8. The mover never gets to commit.** _Code lags rule._
+<a id="a8"></a>**A8. The mover never gets to commit.** _Closed 2026-11-09._
 
 - **Rule:** §4.3.10: before a unit moves, its owner may commit for +1 Speed or Flexibility; that Speed also counts in a front-engagement contest (§8.4.1). Draft 3 says so, and the engine has a built branch for it.
-- **Code does:** The destination is chosen first, and `applyMoveUnitEvent` records the mover's commitment as declined (`transforms/stateTransitions/applyChoices/applyMoveUnitEvent.ts`, since `d455135`). The pending-commit branch in `getLegalCommitToMovementEvents.ts` and `getExpectedMovementResolutionEvent.ts` is unreachable, though its tests still build it. Only the front-engagement defender is ever asked.
-- **To settle:** Ask for the commitment before the destination, and read it in the move search (`getLegalUnitMoves`, `exploreUnitMoves`) as well as the Speed contest.
+- **Closed:** A Move order is now carried out one choice per decision (author, 2026-11-09): `chooseMovingUnit` names the unit and opens its move, `commitToMovement` takes the mover's card or its refusal, and `moveUnit` writes the path (slice S9). The committed card counts toward the move's budget (`createMoveContext`, through `getCurrentUnitStat`'s modifiers), so validation accepts a path only the card makes possible, and the front-engagement Speed contest reads the same commitment. A scenario spec plays the order through the engines.
 
 <a id="a9"></a>**A9. A commander may ride with a unit; the engine checks a flag for it and never moves the commander.** _Code lags rule._
 

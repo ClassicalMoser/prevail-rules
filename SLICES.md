@@ -124,7 +124,9 @@ engagement setup, the movement state in `game/substeps/commandResolution/`,
 Blocks: `transforms`, `queries` (unit stats), `expected`, `events`, `game`,
 `validation`.
 
-**S9. The mover commits before it moves** — §4.3.10, §8.4.1, A8. Ask for the
+**S9. The mover commits before it moves** — §4.3.10, §8.4.1, A8. **Done 2026-11-09**
+(`cc5fc33`, `5f6d9d2`): `chooseMovingUnit`, then `commitToMovement`, then
+`moveUnit`, one choice per decision (author's call). Original plan: ask for the
 commitment before the destination; read it in the move search and the Speed
 contest. The unreachable pending-commit branch becomes live. Comes after S8 so
 the commitment is read from a settled position model.
