@@ -223,6 +223,38 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
+  openRetreatFromEngagement: (): GameStateForVisibility => {
+    const state = createEmptyGameState('standard');
+    state.cardState.black.inPlay = createTestCard();
+    // A defender engaged from the front, fast enough to get away, that has
+    // chosen to fall back; its retreat is not open yet.
+    const front = createFrontEngagementState({
+      defendingUnitCanRetreat: true,
+      defendingUnitRetreats: true,
+    });
+    const defenderWithPlacement: UnitWithPlacement = {
+      placement: {
+        coordinate: front.targetPlacement.coordinate,
+        facing: 'south',
+      },
+      unit: createTestUnit('white'),
+    };
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
+    };
+    const movement = createMovementResolutionState(withBoard, {
+      engagementState: front,
+      targetPlacement: front.targetPlacement,
+    });
+    return updatePhaseState(
+      withBoard,
+      createIssueCommandsPhaseState(withBoard, {
+        currentCommandResolutionState: movement,
+      }),
+    );
+  },
+
   resolveEngageRetreatOption: (): GameStateForVisibility => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();

@@ -1,7 +1,6 @@
 import type { MoveDelta } from '@entities';
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
-import { getLegalRetreats } from '@legality';
 import { getAttackApplyStateAt, getPositionOfUnit } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
 
@@ -10,7 +9,8 @@ import { updateAttackApplyState } from '@transforms/pureTransforms';
  * pending.
  *
  * The attack already measured a retreat; this writes the substep when that
- * step's turn comes, computing legal options from the board at that moment.
+ * step's turn comes, with the legal retreats its procedure recorded on the
+ * event from the board at that moment.
  *
  * @param event - Resolution context from the procedure (trusted log payload)
  * @param state - The current game state
@@ -33,7 +33,8 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
     placement,
     unit: apply.defendingUnit,
   };
-  const legalRetreatPaths = getLegalRetreats(retreatingUnit, state);
+  // The procedure worked out the legal retreats; they are written as given.
+  const legalRetreatPaths = event.retreatPaths;
   // One legal retreat is not a choice — it is carried out as it stands.
   const chosenRetreatPath: MoveDelta[] | 'pending' =
     legalRetreatPaths.length === 1 ? legalRetreatPaths[0] : 'pending';

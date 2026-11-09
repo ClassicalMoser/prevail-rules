@@ -156,7 +156,12 @@ two-descents problem from AUDIT.md.
 the chosen retreat is a path, judged by the same trace (`traceMovePath`
 already takes `'retreat'`). And as now, a single legal retreat is never
 presented as a choice: it is filled in automatically
-(`applyOpenRetreatFromAttackApplyEvent`), and that stays so.
+(`applyOpenRetreatFromAttackApplyEvent`), and that stays so. **Done 2026-11-09** (`bbe06a9`, `84cf588`, and the
+procedures commit after them): the retreat is its path alone, one per ending
+(two equally small paths to one space are no choice); a commander in the
+unit's space always goes with it (§9.1.8); the legal retreats are worked out
+by procedures and recorded on `openRetreatFromAttackApply` and the new
+`openRetreatFromEngagement`, not by transforms.
 
 **S11. A rout held by a retreat can be paid** — §9.1.6, §7.5, B4. **Done 2026-11-09** (`7641417`, `9de3b9a`): ranged, front-engagement and melee parents all pay and close. _Bug: the
 game stalls._ Write through `updateRetreatRoutState`; close the retreat when a

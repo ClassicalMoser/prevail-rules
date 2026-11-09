@@ -18,6 +18,7 @@ export const gameEffects = [
   'discardPlayedCards',
   'gameOver',
   'openRetreatFromAttackApply',
+  'openRetreatFromEngagement',
   'openReverseFromAttackApply',
   'openRoutFromAttackApply',
   'resolveEngageRetreatOption',

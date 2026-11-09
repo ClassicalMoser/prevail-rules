@@ -130,6 +130,25 @@ describe('getExpectedEngagementEvent function', () => {
     });
   });
 
+  it('opens the retreat once the defender has chosen to fall back', () => {
+    // §6.3.2: the defender accepted, and its retreat is not open yet; the
+    // effect that opens it works out where it may go.
+    const engagementState = createFrontEngagementState({
+      defendingUnitCanRetreat: true,
+      defendingUnitRetreats: true,
+      defensiveCommitment: {
+        card: createTestCard(),
+        commitmentType: 'completed',
+      },
+      retreatState: 'pending',
+    });
+
+    expect(getExpectedEngagementEvent(engagementState)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'openRetreatFromEngagement',
+    });
+  });
+
   it('asks the defender to choose a retreat option after accepting retreat with multiple destinations', () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({

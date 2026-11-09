@@ -1,12 +1,12 @@
 import { throwIfBypassed } from '@utils';
 import type {
-  OpenRetreatFromAttackApplyEvent,
   OpenReverseFromAttackApplyEvent,
   ResolveRetreatEvent,
   TriggerRoutFromRetreatEvent,
 } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
+import { generateEventFromProcedure } from '@procedures';
 import {
   getRangedAttackApplyState,
   getPositionOfUnit,
@@ -41,7 +41,7 @@ describe('attack apply outcome flow', () => {
   function rangedApplyShell(
     defendingUnit: ReturnType<typeof createTestUnit>,
     attackApply: ReturnType<typeof createAttackApplyState>,
-  ): GameState {
+  ): GameStateForVisibility<'authoritative'> {
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const empty = createEmptyGameState('standard');
     const withBoard = {
@@ -71,12 +71,16 @@ describe('attack apply outcome flow', () => {
     );
 
     // Open the retreat first — reverse waits until the unit has a new square.
-    const openRetreat: OpenRetreatFromAttackApplyEvent = {
-      attackResolutionContext: 'rangedAttack',
-      effectType: 'openRetreatFromAttackApply',
-      eventNumber: 0,
-      eventType: 'gameEffect',
-    };
+    // Its procedure works out where the unit may go.
+    const openRetreat = generateEventFromProcedure(
+      start,
+      0,
+      'openRetreatFromAttackApply',
+      { nextFloat: () => 0 },
+    );
+    if (openRetreat.effectType !== 'openRetreatFromAttackApply') {
+      throw new Error('Expected the open-retreat effect');
+    }
     const withRetreatOpen = applyOpenRetreatFromAttackApplyEvent(
       openRetreat,
       start,
@@ -87,7 +91,7 @@ describe('attack apply outcome flow', () => {
       ),
       'the attack applies a retreat',
     );
-    // The engine computed the way back for this unit on an empty board: one
+    // The procedure found the way back for this unit on an empty board: one
     // step straight back. This case takes it.
     expect(retreat.legalRetreatPaths).toStrictEqual([['step']]);
     const chosen = retreat.legalRetreatPaths[0];

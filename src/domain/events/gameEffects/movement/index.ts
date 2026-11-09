@@ -22,3 +22,8 @@ export { resolveFlankEngagementEventSchema } from './resolveFlankEngagement';
 export { RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE } from './resolveEngageRetreatOption';
 export type { ResolveEngageRetreatOptionEvent } from './resolveEngageRetreatOption';
 export { resolveEngageRetreatOptionEventSchema } from './resolveEngageRetreatOption';
+
+// Open the retreat of a front-engaged defender that chose to fall back.
+export { OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE } from './openRetreatFromEngagement';
+export type { OpenRetreatFromEngagementEvent } from './openRetreatFromEngagement';
+export { openRetreatFromEngagementEventSchema } from './openRetreatFromEngagement';

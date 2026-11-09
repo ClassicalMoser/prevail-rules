@@ -95,8 +95,10 @@ export {
   COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
   completeMovementCommandEventSchema,
   completeUnitMovementEventSchema,
+  OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
+  openRetreatFromEngagementEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   START_ENGAGEMENT_EFFECT_TYPE,
@@ -105,6 +107,7 @@ export {
 export type {
   CompleteMovementCommandEvent,
   CompleteUnitMovementEvent,
+  OpenRetreatFromEngagementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
   StartEngagementEvent,

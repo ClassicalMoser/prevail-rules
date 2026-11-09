@@ -24,6 +24,7 @@ export {
 export {
   applyCompleteMovementCommandEvent,
   applyCompleteUnitMovementEvent,
+  applyOpenRetreatFromEngagementEvent,
   applyResolveEngageRetreatOptionEvent,
   applyResolveFlankEngagementEvent,
   applyStartEngagementEvent,

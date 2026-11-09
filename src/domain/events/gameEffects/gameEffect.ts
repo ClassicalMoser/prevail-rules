@@ -41,6 +41,7 @@ import type {
 import type {
   CompleteMovementCommandEvent,
   CompleteUnitMovementEvent,
+  OpenRetreatFromEngagementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
   StartEngagementEvent,
@@ -71,6 +72,7 @@ import {
 import {
   completeMovementCommandEventSchema,
   completeUnitMovementEventSchema,
+  openRetreatFromEngagementEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   startEngagementEventSchema,
@@ -113,6 +115,7 @@ type GameEffectEventUnion =
   | DiscardPlayedCardsEvent
   | GameOverEvent
   | OpenRetreatFromAttackApplyEvent
+  | OpenRetreatFromEngagementEvent
   | OpenReverseFromAttackApplyEvent
   | OpenRoutFromAttackApplyEvent
   | ResolveEngageRetreatOptionEvent
@@ -152,6 +155,7 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   discardPlayedCardsEventSchema,
   gameOverEventSchema,
   openRetreatFromAttackApplyEventSchema,
+  openRetreatFromEngagementEventSchema,
   openReverseFromAttackApplyEventSchema,
   openRoutFromAttackApplyEventSchema,
   resolveEngageRetreatOptionEventSchema,

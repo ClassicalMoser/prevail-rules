@@ -27,6 +27,7 @@ import {
 import {
   generateCompleteMovementCommandEvent,
   generateCompleteUnitMovementEvent,
+  generateOpenRetreatFromEngagementEvent,
   generateResolveEngageRetreatOptionEvent,
   generateResolveFlankEngagementEvent,
   generateStartEngagementEvent,
@@ -106,6 +107,9 @@ export function generateEventFromProcedure(
     }
     case 'openRoutFromAttackApply': {
       return generateOpenRoutFromAttackApplyEvent(state, eventNumber);
+    }
+    case 'openRetreatFromEngagement': {
+      return generateOpenRetreatFromEngagementEvent(state, eventNumber);
     }
     case 'resolveEngageRetreatOption': {
       return generateResolveEngageRetreatOptionEvent(state, eventNumber);

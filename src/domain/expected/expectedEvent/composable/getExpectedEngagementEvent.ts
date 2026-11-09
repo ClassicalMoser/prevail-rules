@@ -91,11 +91,13 @@ export function getExpectedEngagementEvent(
       );
     }
 
-    // Accepted retreat: nested RetreatState drives chooseRetreatOption / resolveRetreat
+    // Accepted retreat: it opens first, with the retreats worked out by its
+    // procedure, then drives chooseRetreatOption / resolveRetreat.
     if (resolutionState.retreatState === 'pending') {
-      throw new Error(
-        'Front engagement accepted retreat but retreatState was not opened',
-      );
+      return {
+        actionType: 'gameEffect',
+        effectType: 'openRetreatFromEngagement',
+      };
     }
     if (!resolutionState.retreatState.completed) {
       return getExpectedRetreatEvent(resolutionState.retreatState);

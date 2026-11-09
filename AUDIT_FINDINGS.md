@@ -157,7 +157,7 @@ production and independently forced one in the fixtures.
 against 65 object spreads and 28 bare `return {`. `phaseStateHelpers/` (19 functions)
 imports neither. The fabricators are not redundant with the transforms — they make
 values, transforms place them — but `createRetreatState` hard-codes
-`legalRetreatOptions` at E-4 and E-6, which `getLegalRetreats` is supposed to compute.
+`legalRetreatOptions` at E-4 and E-6, which `getLegalRetreats` is supposed to compute. (2026-11-09: now `legalRetreatPaths`, the tie `getLegalRetreats` really finds with an enemy behind the unit; still a fabricated stand-in.)
 
 **Testability tracks signature shape.** 184 decomposed parameters against 113
 `GameState` parameters. `eachUnitPresentOnce(whiteArmy, blackArmy, board,

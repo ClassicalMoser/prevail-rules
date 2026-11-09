@@ -35,14 +35,15 @@ export function getSmallestRetreats(endings: Set<MoveResult>): MoveDelta[][] {
 
   // One path per ending: a second path to the same place is no choice.
   const kept: MoveResult[] = [];
+  const paths: MoveDelta[][] = [];
   for (const ending of smallest) {
     const alreadyOffered = kept.some((other) =>
       isSamePlacement(other.placement, ending.placement),
     );
     if (!alreadyOffered) {
       kept.push(ending);
+      paths.push([...ending.path]);
     }
   }
-  const paths = kept.map((ending) => [...ending.path]);
   return paths;
 }

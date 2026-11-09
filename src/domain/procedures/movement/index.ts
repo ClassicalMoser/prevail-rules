@@ -3,3 +3,4 @@ export { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovemen
 export { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 export { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
 export { generateStartEngagementEvent } from './generateStartEngagementEvent';
+export { generateOpenRetreatFromEngagementEvent } from './generateOpenRetreatFromEngagementEvent';

@@ -1,23 +1,48 @@
+import type { MoveDelta } from '@entities';
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
-import type { GameState } from '@game';
+import type { AttackApplyState, GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from '@events';
+import { getLegalRetreats } from '@legality';
 import {
   getMeleeAttackApplyState,
   getRangedAttackApplyState,
   getCurrentPhaseState,
   getOtherPlayer,
+  getPositionOfUnit,
 } from '@queries';
+
+/**
+ * The retreats the apply's defender may make from where it stands now
+ * (§9.1). Read from the board when the retreat opens, since an earlier
+ * result in the same melee may have moved things (§7.5.6).
+ *
+ * @param state - The game state as the retreat opens
+ * @param apply - The attack apply whose defender must retreat
+ * @returns Each legal retreat as its path; empty when the unit must rout
+ */
+function retreatPathsFor(
+  state: GameState,
+  apply: AttackApplyState,
+): MoveDelta[][] {
+  const placement = getPositionOfUnit(state.boardState, apply.defendingUnit);
+  const paths = getLegalRetreats(
+    { placement, unit: apply.defendingUnit },
+    state,
+  );
+  return paths;
+}
 
 /**
  * Builds the open-retreat-from-attack-apply effect with explicit resolution
  * context so apply does not branch on phase or probe players.
  *
  * The attack already measured a retreat; this finds the apply whose retreat
- * slot is still pending and names where that apply lives.
+ * slot is still pending, names where that apply lives, and records the
+ * retreats its defender may make, so the log shows what was legal.
  */
 export function generateOpenRetreatFromAttackApplyEvent(
   state: GameState,
@@ -36,6 +61,7 @@ export function generateOpenRetreatFromAttackApplyEvent(
       effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
       eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
+      retreatPaths: retreatPathsFor(state, apply),
     };
   }
 
@@ -52,6 +78,7 @@ export function generateOpenRetreatFromAttackApplyEvent(
         effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
         eventNumber,
         eventType: GAME_EFFECT_EVENT_TYPE,
+        retreatPaths: retreatPathsFor(state, secondApply),
       };
     }
     const firstApply = getMeleeAttackApplyState(state, firstPlayer);
@@ -62,6 +89,7 @@ export function generateOpenRetreatFromAttackApplyEvent(
         effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
         eventNumber,
         eventType: GAME_EFFECT_EVENT_TYPE,
+        retreatPaths: retreatPathsFor(state, firstApply),
       };
     }
     throw new Error('No pending retreat on either melee attack apply');

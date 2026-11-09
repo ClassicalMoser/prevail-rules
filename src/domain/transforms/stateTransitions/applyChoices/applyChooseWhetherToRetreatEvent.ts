@@ -1,20 +1,16 @@
-import type { MoveDelta } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
-import { getLegalRetreats } from '@legality';
-import {
-  getFrontEngagementStateFromMovement,
-  getSingleUnitWithPlacementAtCoordinate,
-} from '@queries';
+import type { GameState } from '@game';
+import { getFrontEngagementStateFromMovement } from '@queries';
 import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
 
 /**
- * Applies a ChooseWhetherToRetreatEvent to the game state.
- * Updates the defendingUnitRetreats flag in the front engagement resolution state.
+ * Applies a ChooseWhetherToRetreatEvent: the defender engaged from the front,
+ * and fast enough to get away, says whether it falls back (§6.3.2).
  *
- * Accepting retreat opens a nested {@link RetreatState} with
- * `legalRetreatPaths` baked from {@link getLegalRetreats} (same pattern as
- * attack-apply). Declining completes the engagement (units stay for melee).
+ * Declining completes the engagement: the two units stay locked together for
+ * the melee. Accepting only records the choice; the retreat itself is opened
+ * by `openRetreatFromEngagement`, whose procedure works out where the unit
+ * may go.
  *
  * Event is assumed pre-validated (issueCommands phase, movement with front engagement).
  */
@@ -24,8 +20,9 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
 ): S {
   const engagementState = getFrontEngagementStateFromMovement(state);
 
+  // Standing its ground ends the engagement here; the melee comes later.
   if (!event.choosesToRetreat) {
-    return updateEngagementStateInMovement(state, {
+    const stood = updateEngagementStateInMovement(state, {
       ...engagementState,
       completed: true,
       engagementResolutionState: {
@@ -33,36 +30,16 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
         defendingUnitRetreats: false,
       },
     });
+    return stood;
   }
 
-  const retreatingUnit = getSingleUnitWithPlacementAtCoordinate(
-    state.boardState,
-    engagementState.targetPlacement.coordinate,
-  );
-  const legalRetreatPaths = getLegalRetreats(retreatingUnit, state);
-  const chosenRetreatPath: MoveDelta[] | 'pending' =
-    legalRetreatPaths.length === 1 ? legalRetreatPaths[0] : 'pending';
-
-  // A retreat with somewhere to go will never rout, so that slot is bypassed.
-  // Nowhere to go leaves the rout pending until triggerRoutFromRetreat opens it.
-  const nestedRoutState: 'pending' | 'bypassed' =
-    legalRetreatPaths.length === 0 ? 'pending' : 'bypassed';
-
-  const retreatState: RetreatState = {
-    completed: false,
-    chosenRetreatPath,
-    legalRetreatPaths,
-    retreatingUnit,
-    routState: nestedRoutState,
-    substepType: 'retreat',
-  };
-
-  return updateEngagementStateInMovement(state, {
+  // Falling back: the retreat opens next, once its options are worked out.
+  const retreating = updateEngagementStateInMovement(state, {
     ...engagementState,
     engagementResolutionState: {
       ...engagementState.engagementResolutionState,
       defendingUnitRetreats: true,
-      retreatState,
     },
   });
+  return retreating;
 }

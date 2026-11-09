@@ -171,6 +171,7 @@ export {
   RALLY_ROUT_RESOLUTION_SOURCE,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
   REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
+  OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
 } from '@events';
@@ -182,6 +183,7 @@ export {
   RESOLVE_RETREAT_EFFECT_TYPE,
   RESOLVE_REVERSE_EFFECT_TYPE,
   RESOLVE_ROUT_EFFECT_TYPE,
+  openRetreatFromEngagementEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   resolveInitiativeEventSchema,
@@ -256,6 +258,7 @@ export type {
 } from '@events';
 export type {
   GameEffectType,
+  OpenRetreatFromEngagementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
   ResolveInitiativeEvent,

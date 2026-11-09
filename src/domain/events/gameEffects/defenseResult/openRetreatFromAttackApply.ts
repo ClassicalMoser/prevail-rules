@@ -1,6 +1,6 @@
-import type { PlayerSide } from '@entities';
+import type { MoveDelta, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema } from '@entities';
+import { moveDeltaSchema, playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -18,7 +18,8 @@ export const OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE =
  * `'pending'`. The attack already measured a retreat; this event writes the
  * substep (and its legal options) when that step's turn comes.
  *
- * Procedure sets the branch; apply trusts it and computes legal retreats.
+ * The procedure sets the branch and works out the retreats the unit may make,
+ * so the log records what was legal; apply only writes them.
  */
 export type OpenRetreatFromAttackApplyEvent =
   | {
@@ -30,6 +31,8 @@ export type OpenRetreatFromAttackApplyEvent =
       attackResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
       /** The ordered index of the event in the round, zero-indexed. */
       eventNumber: number;
+      /** The retreats the unit may make, each as its path (§9.1.3); empty when it routs instead (§9.1.6). */
+      retreatPaths: MoveDelta[][];
     }
   | {
       /** The type of the event. */
@@ -42,6 +45,8 @@ export type OpenRetreatFromAttackApplyEvent =
       defendingPlayer: PlayerSide;
       /** The ordered index of the event in the round, zero-indexed. */
       eventNumber: number;
+      /** The retreats the unit may make, each as its path (§9.1.3); empty when it routs instead (§9.1.6). */
+      retreatPaths: MoveDelta[][];
     };
 
 const _openRetreatFromAttackApplySharedFieldsSchemaObject: z.ZodObject<{
@@ -63,6 +68,7 @@ const _openRetreatFromAttackApplyRangedAttackSchemaObject: z.ZodObject<{
     typeof RANGED_ATTACK_RESOLUTION_CONTEXT
   >;
   eventNumber: z.ZodNumber;
+  retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _openRetreatFromAttackApplySharedFieldsSchemaObject.merge(
   z
     .object({
@@ -70,6 +76,8 @@ const _openRetreatFromAttackApplyRangedAttackSchemaObject: z.ZodObject<{
       attackResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
       /** The ordered index of the event in the round, zero-indexed. */
       eventNumber: z.number(),
+      /** The retreats the unit may make, each as its path. */
+      retreatPaths: z.array(z.array(moveDeltaSchema)),
     })
     .strict(),
 );
@@ -80,6 +88,7 @@ const _openRetreatFromAttackApplyMeleeSchemaObject: z.ZodObject<{
   attackResolutionContext: z.ZodLiteral<typeof MELEE_ATTACK_RESOLUTION_CONTEXT>;
   defendingPlayer: typeof playerSideSchema;
   eventNumber: z.ZodNumber;
+  retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _openRetreatFromAttackApplySharedFieldsSchemaObject.merge(
   z
     .object({
@@ -89,6 +98,8 @@ const _openRetreatFromAttackApplyMeleeSchemaObject: z.ZodObject<{
       defendingPlayer: playerSideSchema,
       /** The ordered index of the event in the round, zero-indexed. */
       eventNumber: z.number(),
+      /** The retreats the unit may make, each as its path. */
+      retreatPaths: z.array(z.array(moveDeltaSchema)),
     })
     .strict(),
 );

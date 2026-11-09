@@ -20,6 +20,7 @@ import {
   applyOpenRetreatFromAttackApplyEvent,
   applyOpenReverseFromAttackApplyEvent,
   applyOpenRoutFromAttackApplyEvent,
+  applyOpenRetreatFromEngagementEvent,
   applyResolveEngageRetreatOptionEvent,
   applyResolveFlankEngagementEvent,
   applyResolveInitiativeEvent,
@@ -112,6 +113,9 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'resolveRout': {
       return applyResolveRoutEvent(event, state);
+    }
+    case 'openRetreatFromEngagement': {
+      return applyOpenRetreatFromEngagementEvent(event, state);
     }
     case 'resolveEngageRetreatOption': {
       return applyResolveEngageRetreatOptionEvent(event, state);

@@ -18,8 +18,9 @@ import {
   createEmptyGameState,
 } from '@factories';
 /**
- * Front engagement during movement: defender commits whether to attempt retreat.
- * Accepting opens a nested RetreatState with baked legalRetreatPaths.
+ * Front engagement during movement: the defender says whether it falls back
+ * (§6.3.2). Declining ends the engagement; accepting leaves the retreat for
+ * `openRetreatFromEngagement` to open.
  */
 describe('applyChooseWhetherToRetreatEvent function', () => {
   function createStateWithFrontEngagement(defender?: UnitWithPlacement) {
@@ -46,30 +47,9 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     };
   }
 
-  it('accepting retreat opens a nested retreatState and sets defendingUnitRetreats', () => {
-    const { state, defender } = createStateWithFrontEngagement();
-    const event = createChooseWhetherToRetreatEvent({
-      choosesToRetreat: true,
-      eventNumber: 0,
-      player: 'white',
-    });
-
-    const newState = applyChooseWhetherToRetreatEvent(event, state);
-    const engagementState = getFrontEngagementStateFromMovement(newState);
-    const { retreatState } = engagementState.engagementResolutionState;
-
-    expect(
-      engagementState.engagementResolutionState.defendingUnitRetreats,
-    ).toBe(true);
-    expect(retreatState).not.toBe('pending');
-    if (retreatState === 'pending') {
-      throw new Error('expected retreatState');
-    }
-    expect(retreatState.retreatingUnit.unit).toStrictEqual(defender.unit);
-    expect(retreatState.legalRetreatPaths.length).toBeGreaterThan(0);
-  });
-
-  it('accepting a retreat with legal hexes bypasses the nested rout — it will never rout', () => {
+  it('accepting records the choice and leaves the retreat to be opened', () => {
+    // §6.3.2: the defender falls back. Where it may go is worked out by the
+    // effect that opens the retreat next, so nothing is opened here.
     const { state } = createStateWithFrontEngagement();
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
@@ -78,13 +58,15 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     });
 
     const newState = applyChooseWhetherToRetreatEvent(event, state);
-    const { retreatState } =
-      getFrontEngagementStateFromMovement(newState).engagementResolutionState;
-    if (retreatState === 'pending') {
-      throw new Error('expected retreatState');
-    }
-    expect(retreatState.legalRetreatPaths.length).toBeGreaterThan(0);
-    expect(retreatState.routState).toBe('bypassed');
+    const engagementState = getFrontEngagementStateFromMovement(newState);
+
+    expect(
+      engagementState.engagementResolutionState.defendingUnitRetreats,
+    ).toBe(true);
+    expect(engagementState.engagementResolutionState.retreatState).toBe(
+      'pending',
+    );
+    expect(engagementState.completed).toBe(false);
   });
 
   it('declining retreat marks defendingUnitRetreats false and completes engagement', () => {
