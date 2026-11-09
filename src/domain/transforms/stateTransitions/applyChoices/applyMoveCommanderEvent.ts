@@ -2,8 +2,7 @@ import type { MoveCommanderEvent } from '@events';
 import type { GameState, MoveCommandersPhaseState } from '@game';
 import { getMoveCommandersPhaseState } from '@queries';
 import {
-  addCommanderToBoard,
-  removeCommanderFromBoard,
+  moveCommanderOnBoard,
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -27,15 +26,10 @@ export function applyMoveCommanderEvent<S extends GameState>(
   const originalCoordinate = event.from;
   const newCoordinate = event.to;
 
-  // Remove commander from source space, then add at destination
-  const removedCommanderBoard = removeCommanderFromBoard(
+  const addedCommanderBoard = moveCommanderOnBoard(
     state.boardState,
+    side,
     originalCoordinate,
-    side,
-  );
-  const addedCommanderBoard = addCommanderToBoard(
-    removedCommanderBoard,
-    side,
     newCoordinate,
   );
 

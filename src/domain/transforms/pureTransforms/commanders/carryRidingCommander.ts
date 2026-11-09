@@ -1,7 +1,6 @@
 import type { Board, Coordinate } from '@entities';
 import type { MovementResolutionState } from '@game';
-import { addCommanderToBoard } from './addCommanderToBoard';
-import { removeCommanderFromBoard } from './removeCommanderFromBoard';
+import { moveCommanderOnBoard } from './moveCommanderOnBoard';
 
 /**
  * A commander who rides with a moving unit ends in the unit's final space
@@ -20,12 +19,11 @@ export function carryRidingCommander(
   if (movement.moveCommander !== true) {
     return board;
   }
-  const side = movement.movingUnit.unit.playerSide;
-  const lifted = removeCommanderFromBoard(
+  const carried = moveCommanderOnBoard(
     board,
+    movement.movingUnit.unit.playerSide,
     movement.movingUnit.placement.coordinate,
-    side,
+    landing,
   );
-  const carried = addCommanderToBoard(lifted, side, landing);
   return carried;
 }

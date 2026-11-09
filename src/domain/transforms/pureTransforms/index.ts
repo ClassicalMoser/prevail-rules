@@ -28,6 +28,7 @@ export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
   carryRidingCommander,
+  moveCommanderOnBoard,
   removeCommanderFromBoard,
 } from './commanders';
 export {
