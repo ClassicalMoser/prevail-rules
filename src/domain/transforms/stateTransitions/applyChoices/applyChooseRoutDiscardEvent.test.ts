@@ -3,17 +3,21 @@ import type { ChooseRoutDiscardEvent } from '@events';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
   getIssueCommandsPhaseState,
+  getResolveMeleePhaseState,
   getRetreatStateFromAttackApply,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
   createCleanupPhaseState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
+  createMeleeResolutionState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
   createRallyResolutionState,
   createRangedAttackResolutionState,
   createRearEngagementState,
+  createResolveMeleePhaseState,
   createRetreatState,
   createRoutState,
   createTestCard,
@@ -253,6 +257,101 @@ describe('applyChooseRoutDiscardEvent function', () => {
     expect(next.cardState.white.inHand.map((c) => c.id)).toStrictEqual([
       tempCommandCards[3].id,
     ]);
+  });
+
+  /**
+   * White's unit on E-6 had nowhere to retreat and routs from inside the
+   * retreat (§9.1.6); white holds two cards and owes one.
+   */
+  function whiteOwingFromRetreat() {
+    const defender = createUnitWithPlacement({
+      coordinate: 'E-6',
+      facing: 'north',
+      playerSide: 'white',
+    });
+    let state = createEmptyGameState('standard');
+    state = updateCardState(state, {
+      ...state.cardState,
+      white: {
+        ...state.cardState.white,
+        inHand: [tempCommandCards[2], tempCommandCards[3]],
+      },
+    });
+    state = { ...state, routedUnits: [defender.unit] };
+    const retreatState = createRetreatState(defender, {
+      legalRetreatOptions: [],
+      routState: createRoutState('white', defender.unit, {
+        numberToDiscard: 1,
+      }),
+    });
+    return { defender, retreatState, state };
+  }
+
+  const payOneCard = {
+    cardIds: [tempCommandCards[2].id],
+    choiceType: 'chooseRoutDiscard' as const,
+    eventNumber: 0,
+    eventType: 'playerChoice' as const,
+    player: 'white' as const,
+  };
+
+  it('a rout held by a retreat in a front engagement is paid, and the retreat closes', () => {
+    const { retreatState, state: base } = whiteOwingFromRetreat();
+    const state = updatePhaseState(
+      base,
+      createIssueCommandsPhaseState(base, {
+        currentCommandResolutionState: createMovementResolutionState(base, {
+          engagementState: createFrontEngagementState({ retreatState }),
+        }),
+      }),
+    );
+
+    const next = applyChooseRoutDiscardEvent(payOneCard, state);
+
+    const crs = throwIfPending(
+      getIssueCommandsPhaseState(next).currentCommandResolutionState,
+      'crs',
+    );
+    if (crs.commandResolutionType !== 'movement') {
+      throw new Error('movement');
+    }
+    const engagement = throwIfPending(crs.engagementState, 'engagement');
+    if (engagement.engagementResolutionState.engagementType !== 'front') {
+      throw new Error('front');
+    }
+    const retreat = engagement.engagementResolutionState.retreatState;
+    expect(retreat !== 'pending' && retreat.completed).toBe(true);
+    expect(next.cardState.white.inHand).toHaveLength(1);
+  });
+
+  it('a rout held by a retreat in a melee is paid, and the retreat closes', () => {
+    // White holds second place in the melee, so its apply is the second slot.
+    const { defender, retreatState, state: base } = whiteOwingFromRetreat();
+    const state = updatePhaseState(
+      updateCurrentInitiative(base, 'black'),
+      createResolveMeleePhaseState(base, {
+        currentMeleeResolutionState: createMeleeResolutionState(base, {
+          secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+            defender,
+            { retreatState },
+          ),
+        }),
+      }),
+    );
+
+    const next = applyChooseRoutDiscardEvent(payOneCard, state);
+
+    const melee = throwIfPending(
+      getResolveMeleePhaseState(next).currentMeleeResolutionState,
+      'melee',
+    );
+    const apply = throwIfPending(melee.secondPlayerAttackApplyState, 'apply');
+    const retreat = throwIfBypassed(
+      getRetreatStateFromAttackApply(apply),
+      'retreat',
+    );
+    expect(retreat.completed).toBe(true);
+    expect(next.cardState.white.inHand).toHaveLength(1);
   });
 
   it('throws when nothing is routing', () => {
