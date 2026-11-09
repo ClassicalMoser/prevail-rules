@@ -171,21 +171,21 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     const black = createTestUnit('black');
     const white = createTestUnit('white');
 
-    it("the second player's retreat comes before the first player's reverse", () => {
+    it("the first player's retreat comes before the second player's reverse", () => {
       const gameState = createGameState();
-      // The first player's unit is hit only to reverse; the second player's
-      // is hit to retreat. Judged unit by unit, the first would reverse while
-      // still engaged and so not turn; a stage at a time, the second falls
-      // back first, freeing it to turn.
+      // The first player's unit is hit to retreat; the second player's only to
+      // reverse. Judged unit by unit, the second player's unit goes first,
+      // reverses while still engaged, and so does not turn. A stage at a time,
+      // the first player's unit falls back first, and the second turns.
       const meleeState = createMeleeResolutionState(gameState, {
         firstPlayerAttackApplyState: createPendingAttackApply(black, {
-          unitRetreated: false,
-          unitReversed: true,
+          unitRetreated: true,
+          unitReversed: false,
           unitRouted: false,
         }),
         secondPlayerAttackApplyState: createPendingAttackApply(white, {
-          unitRetreated: true,
-          unitReversed: false,
+          unitRetreated: false,
+          unitReversed: true,
           unitRouted: false,
         }),
       });
@@ -198,20 +198,22 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       });
     });
 
-    it("the second player's reverse comes before the first player's rout", () => {
+    it("the first player's reverse comes before the second player's rout", () => {
       const gameState = createGameState();
-      // The first player's unit routs and the second's only reverses: every
-      // reverse is carried out before any rout.
+      // The second player's unit routs and the first player's only reverses.
+      // Unit by unit, the second would rout first; a stage at a time, every
+      // reverse is carried out before any rout, and a unit still to rout is
+      // on the board until then (§7.5.6).
       const meleeState = createMeleeResolutionState(gameState, {
         firstPlayerAttackApplyState: createPendingAttackApply(black, {
           unitRetreated: false,
-          unitReversed: false,
-          unitRouted: true,
+          unitReversed: true,
+          unitRouted: false,
         }),
         secondPlayerAttackApplyState: createPendingAttackApply(white, {
           unitRetreated: false,
-          unitReversed: true,
-          unitRouted: false,
+          unitReversed: false,
+          unitRouted: true,
         }),
       });
 
@@ -223,27 +225,26 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       });
     });
 
-    it('within a stage, the first player is asked first', () => {
+    it("within a stage, the second player's unit is dealt with first", () => {
       const gameState = createGameState();
-      // Both units must retreat, and both retreats are open.
+      // Both units must retreat, and both retreats are open. The second
+      // player's unit has nowhere to go, so it routs from inside its retreat;
+      // that failed retreat is asked for before the first player's retreat.
       const blackPlacement = placed(black, 'E-5', 'north');
       const whitePlacement = placed(white, 'E-5', 'south');
       const meleeState = createMeleeResolutionState(gameState, {
-        firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-          blackPlacement,
+        firstPlayerAttackApplyState:
+          createAttackApplyStateWithRetreat(blackPlacement),
+        secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+          whitePlacement,
           {
-            retreatState: createRetreatState(blackPlacement, {
+            retreatState: createRetreatState(whitePlacement, {
               legalRetreatOptions: [],
             }),
           },
         ),
-        secondPlayerAttackApplyState:
-          createAttackApplyStateWithRetreat(whitePlacement),
       });
 
-      // The first player's unit has nowhere to go, so it routs from inside
-      // its retreat; that is its failed retreat, asked for before the
-      // second player's retreat.
       expect(
         getExpectedMeleeResolutionEvent(gameState, meleeState),
       ).toStrictEqual({

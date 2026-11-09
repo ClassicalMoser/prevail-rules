@@ -45,8 +45,8 @@ export function updateAttackApplyState<S extends GameState>(
     const melee = getMeleeResolutionState(state);
     const player = attackApplyState.defendingUnit.playerSide;
 
-    // The slots are named for the order they resolve in, so the owner has to
-    // be placed in that order first.
+    // The slots are named for whose unit holds the result, so the owner
+    // picks the slot.
     return updatePhaseState(state, {
       ...resolveMelee,
       currentMeleeResolutionState: {

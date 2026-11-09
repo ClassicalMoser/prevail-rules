@@ -1,10 +1,12 @@
 import type { GameState, RetreatState } from '@game';
 import { isOpenSubstep } from '../isOpenSubstep';
+import { getMeleeAppliesInResolutionOrder } from '@queries/sequencing/meleeResolution/getMeleeAppliesInResolutionOrder';
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 
 /**
  * Retreat substep ready for resolveRetreat in melee: finalPosition set, not yet completed.
- * Initiative order matches attack-apply sequencing.
+ * Resolution order matches attack-apply sequencing: the second player's unit
+ * suffers first, since the first player's blow lands first (§7.5.6).
  *
  * @param state - The game state
  * @returns The first retreat in initiative order that has a destination and is not finished
@@ -14,30 +16,17 @@ export function getNextMeleeRetreatStateAwaitingMove(
   state: GameState,
 ): RetreatState {
   const meleeState = getMeleeResolutionState(state);
-  const firstPlayerAttackApply = meleeState.firstPlayerAttackApplyState;
-  const secondPlayerAttackApply = meleeState.secondPlayerAttackApplyState;
-
   // An attack that reached no threshold leaves retreatState 'bypassed', so
-  // that side has nothing to retreat.
-  // Ready means a destination is chosen and the retreat move is not finished.
-  if (firstPlayerAttackApply !== 'pending') {
-    const firstRetreat = firstPlayerAttackApply.retreatState;
+  // that side has nothing to retreat. Ready means a destination is chosen and
+  // the retreat move is not finished.
+  for (const apply of getMeleeAppliesInResolutionOrder(meleeState)) {
+    const retreat = apply.retreatState;
     if (
-      isOpenSubstep(firstRetreat) &&
-      firstRetreat.finalPosition !== 'pending' &&
-      !firstRetreat.completed
+      isOpenSubstep(retreat) &&
+      retreat.finalPosition !== 'pending' &&
+      !retreat.completed
     ) {
-      return firstRetreat;
-    }
-  }
-  if (secondPlayerAttackApply !== 'pending') {
-    const secondRetreat = secondPlayerAttackApply.retreatState;
-    if (
-      isOpenSubstep(secondRetreat) &&
-      secondRetreat.finalPosition !== 'pending' &&
-      !secondRetreat.completed
-    ) {
-      return secondRetreat;
+      return retreat;
     }
   }
   throw new Error(

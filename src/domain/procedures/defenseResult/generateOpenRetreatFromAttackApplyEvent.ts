@@ -40,24 +40,25 @@ export function generateOpenRetreatFromAttackApplyEvent(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    // Initiative order: the first defender still waiting on a retreat opens next.
+    // The first player's blow lands first, so the second player's unit is
+    // the first one still waiting on a retreat to open (§7.5.6).
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
-    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
-    if (firstApply.retreatState === 'pending') {
-      return {
-        attackResolutionContext: 'melee',
-        defendingPlayer: firstPlayer,
-        effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-        eventNumber,
-        eventType: GAME_EFFECT_EVENT_TYPE,
-      };
-    }
     const secondApply = getMeleeAttackApplyState(state, secondPlayer);
     if (secondApply.retreatState === 'pending') {
       return {
         attackResolutionContext: 'melee',
         defendingPlayer: secondPlayer,
+        effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
+        eventNumber,
+        eventType: GAME_EFFECT_EVENT_TYPE,
+      };
+    }
+    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
+    if (firstApply.retreatState === 'pending') {
+      return {
+        attackResolutionContext: 'melee',
+        defendingPlayer: firstPlayer,
         effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
         eventNumber,
         eventType: GAME_EFFECT_EVENT_TYPE,

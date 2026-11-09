@@ -48,9 +48,11 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
   function stateWithMeleePendingRout(
     defendingPlayer: 'white' | 'black',
   ): GameState {
+    // The other side holds initiative, so the defender is the second player,
+    // whose unit suffers first (§7.5.6).
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
-      defendingPlayer,
+      defendingPlayer === 'white' ? 'black' : 'white',
     );
     const defendingUnit = createTestUnit(defendingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
@@ -69,9 +71,9 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
       unitReversed: true,
       unitRouted: true,
     });
-    // The defender was given the initiative above, so its apply resolves first.
+    // The defender's apply is the second player's, and it resolves first.
     const melee = createMeleeResolutionState(s, {
-      firstPlayerAttackApplyState: attackApply,
+      secondPlayerAttackApplyState: attackApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,

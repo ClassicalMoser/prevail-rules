@@ -28,6 +28,7 @@ export { getMovementResolutionState } from './commandResolution';
 export { getRangedAttackResolutionState } from './commandResolution';
 
 // The melee currently being resolved.
+export { getMeleeAppliesInResolutionOrder } from './meleeResolution';
 export { getMeleeResolutionState } from './meleeResolution';
 
 // Both commitments are done, and attack-apply has not opened yet.

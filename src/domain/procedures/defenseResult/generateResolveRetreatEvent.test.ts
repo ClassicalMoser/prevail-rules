@@ -60,7 +60,7 @@ describe('generateResolveRetreatEvent function', () => {
     expect(event.finalPosition.unit).toBe(retreatingUnit);
   });
 
-  it('given white initiative and both sides in retreat substep, uses white final E-6 not black E-4', () => {
+  it("with both retreats ready, the second player's unit falls back first (§7.5.6)", () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -98,9 +98,14 @@ describe('generateResolveRetreatEvent function', () => {
     });
     const full = updatePhaseState(s, phase);
 
+    // White holds initiative and strikes first, so black's unit, the second
+    // player's, is the one that falls back first: to E-4, facing south.
     const event = generateResolveRetreatEvent(full, 0);
-    expect(event.startingPosition.unit).toBe(whiteUnit);
-    expect(event.finalPosition.placement).toStrictEqual(finalPos);
+    expect(event.startingPosition.unit).toBe(blackUnit);
+    expect(event.finalPosition.placement).toStrictEqual({
+      coordinate: 'E-4',
+      facing: 'south',
+    });
   });
 
   it('given playCards phase, throws retreat resolution phase guard', () => {

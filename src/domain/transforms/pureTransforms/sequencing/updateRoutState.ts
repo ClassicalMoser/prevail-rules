@@ -106,8 +106,8 @@ export function updateRoutState<S extends GameState>(
     const melee = getMeleeResolutionState(state);
     const { player } = routState;
 
-    // The slots are named for the order they resolve in, so the owner has to
-    // be placed in that order first.
+    // The slots are named for whose unit holds the result, so the owner
+    // picks the slot.
     const isFirstPlayer = hasInitiative(state, player);
     const apply = throwIfPending(
       isFirstPlayer

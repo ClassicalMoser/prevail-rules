@@ -40,24 +40,25 @@ export function generateOpenRoutFromAttackApplyEvent(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    // Initiative order: the first defender still waiting on a rout opens next.
+    // The first player's blow lands first, so the second player's unit is
+    // the first one still waiting on a rout to open (§7.5.6).
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
-    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
-    if (firstApply.routState === 'pending') {
-      return {
-        attackResolutionContext: 'melee',
-        defendingPlayer: firstPlayer,
-        effectType: OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-        eventNumber,
-        eventType: GAME_EFFECT_EVENT_TYPE,
-      };
-    }
     const secondApply = getMeleeAttackApplyState(state, secondPlayer);
     if (secondApply.routState === 'pending') {
       return {
         attackResolutionContext: 'melee',
         defendingPlayer: secondPlayer,
+        effectType: OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
+        eventNumber,
+        eventType: GAME_EFFECT_EVENT_TYPE,
+      };
+    }
+    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
+    if (firstApply.routState === 'pending') {
+      return {
+        attackResolutionContext: 'melee',
+        defendingPlayer: firstPlayer,
         effectType: OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
         eventNumber,
         eventType: GAME_EFFECT_EVENT_TYPE,

@@ -1,6 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
-import { getOtherPlayer } from '@queries';
+import { getMeleeAppliesInResolutionOrder, getOtherPlayer } from '@queries';
 import {
   attackApplyStages,
   getExpectedAttackApplyEvent,
@@ -63,15 +63,14 @@ export function getExpectedMeleeResolutionEvent(
   }
 
   // Both units' results are carried out a stage at a time: both retreats,
-  // then both reverses, then both routs, the first player's unit first in
-  // each (§7.5.6). A unit that has already fallen back no longer keeps the
-  // other engaged, so the other can reverse; a unit still to rout is on the
-  // board until its stage, so the one engaged with it does not.
+  // then both reverses, then both routs. The first player's blow lands
+  // first, so the second player's unit suffers first in each (§7.5.6). A unit
+  // that has already fallen back no longer keeps the other engaged, so the
+  // other can reverse; a unit still to rout is on the board until its stage,
+  // so the one engaged with it does not.
+  const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
   for (const stage of attackApplyStages) {
-    for (const apply of [
-      firstPlayerAttackApplyState,
-      secondPlayerAttackApplyState,
-    ]) {
+    for (const apply of appliesInOrder) {
       const due = getExpectedAttackApplyStageEvent(apply, stage);
       if (due !== undefined) {
         return due;
@@ -79,12 +78,11 @@ export function getExpectedMeleeResolutionEvent(
     }
   }
 
-  // Every stage is done, so each apply only needs closing, in order.
-  if (!firstPlayerAttackApplyState.completed) {
-    return getExpectedAttackApplyEvent(firstPlayerAttackApplyState);
-  }
-  if (!secondPlayerAttackApplyState.completed) {
-    return getExpectedAttackApplyEvent(secondPlayerAttackApplyState);
+  // Every stage is done, so each apply only needs closing, in the same order.
+  for (const apply of appliesInOrder) {
+    if (!apply.completed) {
+      return getExpectedAttackApplyEvent(apply);
+    }
   }
 
   // Both attack apply states are complete, melee resolution should be complete

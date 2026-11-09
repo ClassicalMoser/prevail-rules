@@ -78,8 +78,8 @@ export function findRetreatState(
     if (isPending(melee)) {
       return undefined;
     }
-    // The slots are named for the order they resolve in, so the owner has to
-    // be placed in that order first.
+    // The slots are named for whose unit holds the result, so the owner
+    // picks the slot.
     const sideApply = hasInitiative(state, player)
       ? melee.firstPlayerAttackApplyState
       : melee.secondPlayerAttackApplyState;

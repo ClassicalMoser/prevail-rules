@@ -94,6 +94,7 @@ export {
   getCurrentCommandResolutionState,
   getMovementResolutionState,
   getRangedAttackResolutionState,
+  getMeleeAppliesInResolutionOrder,
   getMeleeResolutionState,
   getMeleeResolutionReadyForAttackCalculation,
   getRemainingMeleeEngagements,

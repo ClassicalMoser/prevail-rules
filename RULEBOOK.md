@@ -195,7 +195,7 @@ Now take each unit's total and compare it against **the other unit's** three thr
 - reaches its **Reverse** → it is spun round
 - reaches its **Rout** → it is removed, and its owner discards Morale cards
 
-The results are carried out a stage at a time: both retreats, then both reverses, then both routs. In each stage the first player's unit goes first. A unit that is going to rout anyway can ignore its own retreat and reverse.
+The results are carried out a stage at a time: both retreats, then both reverses, then both routs. In each stage the first player's blow lands first, so the second player's unit suffers first. A unit that is going to rout anyway can ignore its own retreat and reverse.
 
 > **A worked fight.** _Your Legion (Attack 4) charges a Spearmen unit (Attack 3). The Spearmen are slower than your Legion (Speed 1 against 2), so they cannot back off and the two of you lock in. Two more of your Legions stand beside the fight: one is looking straight at it, one is side-on. That is +2 and +1, so your total is 4 + 3 = **7**. The Spearmen have nobody beside them: their total is **3**._
 >
@@ -792,7 +792,7 @@ All combat, melee or ranged, works the same way: build an attack value, compare 
 2. The **second player** may then do the same. Optional.
 3. Compute both attack values (§7.1), each including that side's own melee support. Support is counted on the board as it stands now, before either unit is touched.
 4. Compare each unit's attack value against the **other** unit's thresholds.<sup>[B3](#b3)</sup>
-5. Apply the results a stage at a time: both retreats, then both reverses, then both routs. In each stage the **first player's unit goes first** (§7.5.6).
+5. Apply the results a stage at a time: both retreats, then both reverses, then both routs. In each stage the first player's blow lands first, so the **second player's unit suffers first** (§7.5.6).
 
 A card naming Flexibility helps a unit fighting at a deficit: +1 Flexibility shrinks the deficit, and with it the penalty to Attack and thresholds (§2.5.2).
 
@@ -905,7 +905,7 @@ No unit prints a threshold of 0.
 
 **7.5.5** **A unit that is still sharing a space with an enemy does not reverse.** The reverse is checked at the moment it comes due. If the unit is still engaged then, it simply stays as it is. Within an engagement the two units are in the same situation and are suffering similar fatigue, so neither is yet worse off than the other. What the blow did to a unit shows on the battlefield once the engagement is resolved. A unit whose enemy has since fallen back or been removed is no longer engaged, so it does reverse, and that includes a unit that has just driven its enemy back.
 
-**7.5.6** In a melee, both units' results are decided from the same two attack values, then **carried out a stage at a time: both retreats, then both reverses, then both routs.** In each stage the **first player's unit goes first**. The full order is first player's retreat, second player's retreat, first player's reverse, second player's reverse, first player's rout, second player's rout. Alternating at every step is how initiative counts in a melee: the first player's blow takes effect first at each one. This matters in three places. A unit that has already fallen back is no longer there to keep the other engaged, so the other can reverse (§7.5.5). A unit that is going to rout is still on the board until the rout stage, so the unit engaged with it is still engaged at the reverse stage and does not reverse. And if the first player's Morale payment is more than its owner can bear, the game ends there (§11.2), before the second unit's rout is carried out.<sup>[B9](#b9)</sup>
+**7.5.6** In a melee, both units' results are decided from the same two attack values, then **carried out a stage at a time: both retreats, then both reverses, then both routs.** In each stage the **first player's blow lands first**, so the unit it strikes, the second player's, suffers first. The full order is second player's unit retreats, first player's unit retreats, second player's reverses, first player's reverses, second player's routs, first player's routs. Alternating at every step is how initiative counts in a melee: the first player strikes first, and the second player's unit takes the result first at each one. This matters in three places. A unit that has already fallen back is no longer there to keep the other engaged, so the other can reverse (§7.5.5). A unit that is going to rout is still on the board until the rout stage, so the unit engaged with it is still engaged at the reverse stage and does not reverse. And if the second player's Morale payment is more than its owner can bear, the game ends there (§11.2), before the first player's unit's rout is carried out.<sup>[B9](#b9)</sup>
 
 **⚠ Edge case.** A unit that **must** retreat but **has no legal retreat** (§9.1.5) **routs instead** — the one case where a result early in the order escalates into the last one. It is among the most dangerous situations in the game, and the reason a unit's back should never be against something it cannot cross.<sup>[B4](#b4)</sup>
 
@@ -993,7 +993,7 @@ A reverse stands for a unit that has been worn down, thrown into disorder or sha
 
 **9.3.2** Its owner immediately discards cards from hand equal to that unit's **Morale**, chosen freely from their hand. Morale 0 costs nothing.
 
-**9.3.3** If several units of one player rout at the same moment — as happens at the support check (§10.4) — sum their Morale and discard that many at once. In a melee the two sides are separate: each owner pays for their own unit, the first player first.
+**9.3.3** If several units of one player rout at the same moment — as happens at the support check (§10.4) — sum their Morale and discard that many at once. In a melee the two sides are separate: each owner pays for their own unit, the second player first, since that unit routs first (§7.5.6).
 
 **9.3.4** If you cannot pay, you lose (§11.2).
 
@@ -1141,7 +1141,7 @@ DEPLOYMENT   Black, then White · stands in hidden spaces
 4  RESOLVE MELEE     first player picks the order
                      every engagement fights · both sides strike at once
                      results carried out by stage: retreats, reverses, routs
-                     · first player's unit first within each stage
+                     · second player's unit first within each stage
 
 5  CLEANUP           in-play cards → played pile
                      first player: rally? → burn 1 → take back
@@ -1199,7 +1199,7 @@ Supporter must be adjacent, unengaged, not behind the fighter, and not across a 
 | ---------------------- | ----------------------------------- | ------------------- |
 | smallest backward move | turn 180° (not while still engaged) | removed; pay Morale |
 
-A unit that will rout can ignore its own retreat and reverse. A forced retreat with nowhere to go becomes a rout. In each stage of a melee the first player's unit goes first.
+A unit that will rout can ignore its own retreat and reverse. A forced retreat with nowhere to go becomes a rout. In each stage of a melee the first player's blow lands first, so the second player's unit suffers first.
 
 **Commitments** — +1 to each stat the card names, always optional. Each moment accepts only some stats:
 
@@ -1223,7 +1223,7 @@ Things that come up, in the order players tend to hit them.
 
 **"They have a unit in my way and I'm faster."** You can pass through friendlies if the combined Flexibility is 6 or more. You can never pass through an enemy, and you can never pass through a space where two units are engaged. §5.4
 
-**"Both units routed each other in melee."** Yes, that happens. Melee is simultaneous in strength; the routs are carried out first player's unit first, and each owner pays Morale. §7.2.1, §7.5.6
+**"Both units routed each other in melee."** Yes, that happens. Melee is simultaneous in strength; the routs are carried out second player's unit first, since the first player's blow lands first, and each owner pays Morale. §7.2.1, §7.5.6
 
 **"My unit has to retreat but it's against the board edge."** It routs. §7.5, §9.1.6
 
@@ -1536,9 +1536,9 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 <a id="b9"></a>**B9. Melee results are carried out unit by unit; the rule is stage by stage.** _Closed: S12._
 
-- **Rule:** §7.5.6: both retreats, then both reverses, then both routs, with the first player's unit first in each stage.
-- **Code does:** The engine carries out the first player's unit's results in full (retreat, reverse, rout), then the second player's. A probe on 2026-11-08 confirmed that order; the stage order is read, not probed. The two differ when one unit's retreat would end the other's engagement before its reverse: a first-player unit that only reverses is judged before the second player's unit falls back, so it is still engaged and does not turn, where the rule has it turn.
-- **Closed:** `getExpectedMeleeResolutionEvent` walks the stages (`attackApplyStages`) across both applies, first player first, asking `getExpectedAttackApplyStageEvent` what each unit still needs; a ranged attack's single apply walks the same stages. The openers and resolvers already choose the first apply in initiative order that has that stage due, so they follow without change. Specs: `getExpectedMeleeResolutionEvent.test.ts`. Not yet played end to end through the engines; a scenario spec is the follow-up.
+- **Rule:** §7.5.6: both retreats, then both reverses, then both routs, with the first player's blow landing first, so the second player's unit suffers first in each stage.
+- **Code does:** The engine carries out the first player's unit's results in full (retreat, reverse, rout), then the second player's. A probe on 2026-11-08 confirmed that order; the stage order is read, not probed. The two differ when one unit's retreat would end the other's engagement before its reverse: a second-player unit that only reverses is judged before the first player's unit falls back, so it is still engaged and does not turn, where the rule has it turn.
+- **Closed:** `getExpectedMeleeResolutionEvent` walks the stages (`attackApplyStages`) across both applies in the order the blows land (`getMeleeAppliesInResolutionOrder`: the second player's unit first), asking `getExpectedAttackApplyStageEvent` what each unit still needs; a ranged attack's single apply walks the same stages. The openers, the `getNextMelee*` selectors and `findNextMeleeDefendingPlayer` read the same order. The slots stay named for whose unit holds the result, so resolution order is the reverse of the slot names (author, 2026-11-09: the first player strikes first). Specs: `getExpectedMeleeResolutionEvent.test.ts`. Not yet played end to end through the engines; a scenario spec is the follow-up.
 
 <a id="b10"></a>**B10. A rear engagement's Morale was never paid.** _Bug — found and closed 2026-11-09._
 

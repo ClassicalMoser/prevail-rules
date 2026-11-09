@@ -52,7 +52,7 @@ describe('generateResolveReverseEvent function', () => {
     expect(event.newUnitPlacement.placement.coordinate).toBe('E-5');
   });
 
-  it('picks the initiative player and holds the facing of a unit still engaged', () => {
+  it("turns the second player's unit first, and holds the facing of one still engaged", () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -79,10 +79,12 @@ describe('generateResolveReverseEvent function', () => {
     const event = generateResolveReverseEvent(full, 0);
     expect(event.effectType).toBe('resolveReverse');
     expect(event.attackResolutionContext).toBe('melee');
-    expect(event.unitInstance.unit).toBe(whiteUnit);
-    // Both units share E-5, so the white unit is engaged and holds the facing
-    // it had. The reverse still resolves; it just turns nobody.
-    expect(event.newUnitPlacement.placement.facing).toBe('east');
+    // White holds initiative and strikes first, so black's unit is the second
+    // player's and is the one that suffers first (§7.5.6).
+    expect(event.unitInstance.unit).toBe(blackUnit);
+    // Both units share E-5, so the black unit is engaged and holds the facing
+    // it had (§7.5.5). The reverse still resolves; it just turns nobody.
+    expect(event.newUnitPlacement.placement.facing).toBe('west');
   });
 
   it('given empty game with no phase slice, throws no current phase state', () => {

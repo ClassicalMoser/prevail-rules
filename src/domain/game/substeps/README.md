@@ -41,11 +41,14 @@ Active command loop under `issueCommands`. `CommandResolutionState` is the union
 | ---------------------- | ----------------------------------------------- |
 | `MeleeResolutionState` | One melee; nests an `AttackApplyState` per side |
 
-Both units strike at once and their applies resolve one at a time, so the two
-slots and the two commitments are named for the order they resolve in —
-`firstPlayer…` / `secondPlayer…`, as the phase steps already are. Which colour
-holds the initiative is a rule of the version being played; who owns an apply is
-read from its `defendingUnit`.
+Both units strike at once and their applies resolve one at a time. The two
+commitments are named for the order they are made in, and the two applies for
+whose unit holds the result — `firstPlayer…` / `secondPlayer…`, as the phase
+steps already are. The first player's blow lands first (§7.5.6), so the applies
+resolve second player's unit first: the reverse of the slot names, written once
+in `getMeleeAppliesInResolutionOrder`. Which colour holds the initiative is a
+rule of the version being played; who owns an apply is read from its
+`defendingUnit`.
 
 ### Rally (`rallyResolution/`)
 
