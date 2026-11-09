@@ -416,6 +416,49 @@ describe('exploreUnitMoves function', () => {
       expect(hasRearwardMove).toBe(true);
     });
 
+    it('after the first step back a retreat turns by the ordinary rule', () => {
+      // Only the opening turn is restricted (§9.1.4): after one step back,
+      // §5.2.1 applies — about in one spend, a 90° wheel in two.
+      const gameState = createGameState([
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 2,
+          player: 'black',
+          speed: 2,
+        },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const aboutAfterStep = exploreResultHasMatch(moves, {
+        coordinate: 'F-5',
+        facing: 'south',
+        flexibilityUsed: 1,
+        speedUsed: 1,
+      });
+      expect(aboutAfterStep).toBe(true);
+      const wheelAfterStepAtOne = exploreResultHasMatch(moves, {
+        coordinate: 'F-5',
+        facing: 'east',
+        flexibilityUsed: 1,
+      });
+      expect(wheelAfterStepAtOne).toBe(false);
+      const wheelAfterStepAtTwo = exploreResultHasMatch(moves, {
+        coordinate: 'F-5',
+        facing: 'east',
+        flexibilityUsed: 2,
+        speedUsed: 1,
+      });
+      expect(wheelAfterStepAtTwo).toBe(true);
+    });
+
     it('given speed > 1, includes multiple rearward moves', () => {
       expect.hasAssertions();
       const gameState = createGameState([

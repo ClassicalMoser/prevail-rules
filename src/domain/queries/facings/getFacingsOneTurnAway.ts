@@ -17,6 +17,7 @@ export function getFacingsOneTurnAway(facing: UnitFacing): Set<UnitFacing> {
   const adjacents = getAdjacentFacings(facing);
   // The about-turn: drilled troops can face rear in one motion.
   const opposite = getOppositeFacing(facing);
+  // Combined set
   const targets = new Set([...adjacents, opposite]);
   return targets;
 }
