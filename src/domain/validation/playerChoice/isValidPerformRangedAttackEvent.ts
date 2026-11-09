@@ -3,10 +3,10 @@ import type { PerformRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import {
   getLegalRangedAttackers,
-  getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
 } from '@legality';
 import { isFriendlyUnit, isSameUnitWithPlacement } from '@queries';
+import { isValidRangedAttackSupporters } from './isValidRangedAttackSupporters';
 
 /**
  * Validates a PerformRangedAttackEvent as an integral commit over atoms:
@@ -67,39 +67,15 @@ export function isValidPerformRangedAttackEvent(
       };
     }
 
-    const legalSupporters = getLegalRangedAttackSupporters(
+    // Each supporter must be able to make this shot itself (§7.3.4).
+    const supportersValid = isValidRangedAttackSupporters(
+      event.supportingUnits,
       attacker,
       target,
       state,
     );
-    const seenKeys = new Set<string>();
-    for (const supporter of event.supportingUnits) {
-      const key = `${supporter.unit.playerSide}:${supporter.unit.unitType.id}:${supporter.unit.instanceNumber}`;
-      if (seenKeys.has(key)) {
-        return {
-          errorReason: 'Duplicate supporting unit',
-          result: false,
-        };
-      }
-      seenKeys.add(key);
-
-      if (isSameUnitWithPlacement(supporter, event.unit).result) {
-        return {
-          errorReason: 'Attacker cannot also be listed as a supporter',
-          result: false,
-        };
-      }
-
-      const found = legalSupporters.find(
-        (candidate) => isSameUnitWithPlacement(candidate, supporter).result,
-      );
-      if (found === undefined) {
-        return {
-          errorReason:
-            'Supporting unit cannot independently ranged-attack the target',
-          result: false,
-        };
-      }
+    if (!supportersValid.result) {
+      return supportersValid;
     }
 
     return { result: true };
