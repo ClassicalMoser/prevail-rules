@@ -1,4 +1,4 @@
-import type { UnitWithPlacement } from '@entities';
+import type { Modifier, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
@@ -26,14 +26,21 @@ import { getTurnedState } from './getTurnedState';
  * @param gameState - The current game state
  * @param unitWithPlacement - The unit and its starting position
  * @param direction - The direction of movement: 'advance' or 'retreat'
+ * @param commitmentModifiers - What a card committed for this move adds (§8), if one was
  * @returns Every legal ending, with the Speed and Flexibility it costs
  */
 export function exploreUnitMoves(
   gameState: GameState,
   unitWithPlacement: UnitWithPlacement,
   direction: 'advance' | 'retreat',
+  commitmentModifiers?: Modifier[],
 ): Set<MoveResult> {
-  const context = createMoveContext(gameState, unitWithPlacement, direction);
+  const context = createMoveContext(
+    gameState,
+    unitWithPlacement,
+    direction,
+    commitmentModifiers,
+  );
   const results = new Set<MoveResult>();
 
   // Points are keyed with the allowances still unspent: the same placement

@@ -1,4 +1,4 @@
-import type { BoardSpace, UnitWithPlacement } from '@entities';
+import type { BoardSpace, Modifier, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { getBoardSpace, hasSingleUnit, isSameUnitInstance } from '@queries';
 import type { MoveResult } from './explore';
@@ -19,12 +19,14 @@ import { exploreUnitMoves } from './explore';
  *
  * @param unitWithPlacement - The unit and its starting position for which to calculate legal moves
  * @param gameState - The current game state
+ * @param commitmentModifiers - What a card committed for this move adds (§4.3.10), if one was
  * @returns Every legal ending the unit can reach, each with its cost and a path a player can submit to make it
  * @throws {Error} If the unit is not free to move, not present, or facing mismatch
  */
 export function getLegalUnitMoves(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
+  commitmentModifiers?: Modifier[],
 ): Set<MoveResult> {
   const { unit, placement: startingPosition } = unitWithPlacement;
   // Get the board state
@@ -54,6 +56,11 @@ export function getLegalUnitMoves(
   // Every ending of an ordered advance, each with the path that reaches it.
   // Two paths to one placement are offered separately: they cost
   // differently, and the player chooses (A11).
-  const legalMoves = exploreUnitMoves(gameState, unitWithPlacement, 'advance');
+  const legalMoves = exploreUnitMoves(
+    gameState,
+    unitWithPlacement,
+    'advance',
+    commitmentModifiers,
+  );
   return legalMoves;
 }

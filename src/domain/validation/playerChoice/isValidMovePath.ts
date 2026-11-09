@@ -1,4 +1,4 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { Modifier, MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { ValidationResult } from '@utils';
 import { getLegalMoveDeltas } from '@legality';
@@ -17,6 +17,7 @@ import { getLegalMoveDeltas } from '@legality';
  * @param unitWithPlacement - The moving unit and where it starts
  * @param path - The steps and turns the player submitted
  * @param direction - An ordered advance, or a forced retreat
+ * @param commitmentModifiers - What a card committed for this move adds (§4.3.10), if one was
  * @returns Success, or the first move the rules refuse and why
  */
 export function isValidMovePath(
@@ -24,6 +25,7 @@ export function isValidMovePath(
   unitWithPlacement: UnitWithPlacement,
   path: readonly MoveDelta[],
   direction: 'advance' | 'retreat',
+  commitmentModifiers?: Modifier[],
 ): ValidationResult {
   try {
     // Every move must be one of those offered after the moves before it.
@@ -33,6 +35,7 @@ export function isValidMovePath(
         unitWithPlacement,
         path.slice(0, index),
         direction,
+        commitmentModifiers,
       );
       if (offered === undefined || !offered.next.has(delta)) {
         const refused: ValidationResult = {
@@ -49,6 +52,7 @@ export function isValidMovePath(
       unitWithPlacement,
       path,
       direction,
+      commitmentModifiers,
     );
     if (atEnd === undefined || !atEnd.mayStop) {
       const stillOwed = atEnd === undefined ? [] : [...atEnd.next];

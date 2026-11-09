@@ -1,4 +1,4 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { Modifier, MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { LegalMoveDeltas } from './legalMoveDeltas';
 import {
@@ -23,6 +23,7 @@ import { followMovePrefix } from './followMovePrefix';
  * @param unitWithPlacement - The moving unit and where it starts
  * @param prefix - The moves written so far
  * @param direction - An ordered advance, or a forced retreat
+ * @param commitmentModifiers - What a card committed for this move adds (§4.3.10), if one was
  * @returns What may come next, or `undefined` when the moves so far are not a legal start to a move
  */
 export function getLegalMoveDeltas(
@@ -30,8 +31,14 @@ export function getLegalMoveDeltas(
   unitWithPlacement: UnitWithPlacement,
   prefix: readonly MoveDelta[],
   direction: 'advance' | 'retreat',
+  commitmentModifiers?: Modifier[],
 ): LegalMoveDeltas | undefined {
-  const context = createMoveContext(gameState, unitWithPlacement, direction);
+  const context = createMoveContext(
+    gameState,
+    unitWithPlacement,
+    direction,
+    commitmentModifiers,
+  );
   const position = followMovePrefix(context, prefix);
   if (position === undefined) {
     return undefined;

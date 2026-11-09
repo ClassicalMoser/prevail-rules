@@ -27,6 +27,26 @@ describe('getLegalUnitMoves function', () => {
       expect(hasMove(moves, 'D-7', 'southEast')).toBe(true);
     });
 
+    it('a card committed for Speed lets the move reach a space further', () => {
+      // A Speed-2 unit on E-5 facing north reaches C-5 at most; committed
+      // +1 Speed (§4.3.10, §8) carries it on to B-5.
+      const gameState = createGameState([
+        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+      ]);
+      const unit = getSingleUnitWithPlacementAtCoordinate(
+        gameState.boardState,
+        'E-5',
+      );
+
+      const uncommitted = getLegalUnitMoves(unit, gameState);
+      const committed = getLegalUnitMoves(unit, gameState, [
+        { type: 'speed', value: 1 },
+      ]);
+
+      expect(hasMove(uncommitted, 'B-5', 'north')).toBe(false);
+      expect(hasMove(committed, 'B-5', 'north')).toBe(true);
+    });
+
     it('each legal move carries the path that makes it', () => {
       // A lone unit on E-5 facing north; one step ahead reaches D-5.
       const gameState = createGameState([['E-5', 'black', 'north']]);
