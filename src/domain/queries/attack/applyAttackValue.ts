@@ -5,7 +5,8 @@ import { getCurrentUnitStat } from '@queries/unit';
 /**
  * Applies an attack value to a unit and returns the result.
  * @param gameState - The current game state.
- * @param attackValue - The attack value to apply.
+ * @param attackValue - The attack value to apply: the raw sum of Attack and
+ * support, floored here at zero.
  * @param unit - The unit to apply the attack value to.
  * @param defendingModifiers - Additional modifiers to apply to the unit.
  * Usually used for commitment modifiers.
@@ -37,10 +38,14 @@ export function applyAttackValue(
     defendingModifiers,
   );
 
+  // The attack value is finished here, so this is where it floors at zero
+  // (§7.1.4): a blow that sums below zero still meets a threshold of 0.
+  const finishedAttackValue = Math.max(0, attackValue);
+
   // Check if the unit is routed, retreated, or reversed
-  const unitRouted = attackValue >= currentRoutValue;
-  const unitRetreated = attackValue >= currentRetreatValue;
-  const unitReversed = attackValue >= currentReverseValue;
+  const unitRouted = finishedAttackValue >= currentRoutValue;
+  const unitRetreated = finishedAttackValue >= currentRetreatValue;
+  const unitReversed = finishedAttackValue >= currentReverseValue;
 
   // Return the result
   return {

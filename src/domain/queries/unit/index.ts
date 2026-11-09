@@ -21,6 +21,9 @@ export { setWithoutUnit } from './setWithoutUnit';
 // A unit's stat after round, command, and extra modifiers.
 export { getCurrentUnitStat } from './getCurrentUnitStat';
 
+// The unfloored sum, for a total that adds more before its floor (§7.1.4).
+export { getRawUnitStat } from './getRawUnitStat';
+
 // Whether a unit fits a support grant.
 export { unitMatchesSupport } from './unitMatchesSupport';
 

@@ -209,9 +209,12 @@ Blocks: `legality/choiceOptions`, `expected`, `procedures`.
 
 **S16. Every stat floors at zero** — §7.1.4, B2. Decided 2026-11-08, and
 wider than the old gate: all stats floor, applied once to the finished total,
-never mid-sum (no floor-and-rebound). Note that modifiers and inspiration range on command cards don't count as unit stats.
-sentinel for an unrestricted inspiration range (A6) must be exempt from the
-floor — latent today, since nothing modifies range.
+never mid-sum (no floor-and-rebound). Modifiers and inspiration range on
+command cards are not unit stats (author, 2026-11-09), so the −1 sentinel
+for an unrestricted inspiration range (A6) is never floored. **Done
+2026-11-09:** `getCurrentUnitStat` floors every finished stat;
+`getRawUnitStat` is the unfloored sum for the attack value, which adds
+support to Attack and is floored once in `applyAttackValue`.
 Files: `queries/unit/getCurrentUnitStat.ts`,
 `queries/attack/applyAttackValue.ts`.
 Blocks: `queries/attack`, `queries/unit`.

@@ -7,7 +7,7 @@ import type { ResolveRangedAttackEvent } from '@events';
 import { throwIfPending } from '@utils';
 import {
   applyAttackValue,
-  getCurrentUnitStat,
+  getRawUnitStat,
   getPositionOfUnit,
   getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
@@ -63,8 +63,9 @@ export function generateResolveRangedAttackEvent(
     rangedAttackState.attackingCommitment,
   );
 
-  // Get the base attack value of the attacking unit
-  const baseAttackValue = getCurrentUnitStat(
+  // The shooter's Attack, summed raw: support is added to it and the whole
+  // is floored once, when it lands (§7.1.4).
+  const baseAttackValue = getRawUnitStat(
     attackingUnit,
     'attack',
     state,

@@ -3,10 +3,10 @@ import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
   applyAttackValue,
-  getCurrentUnitStat,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
+  getRawUnitStat,
   hasInitiative,
   modifiersFromCompletedCommitment,
 } from '@queries';
@@ -57,7 +57,9 @@ export function generateResolveMeleeEvent(
       : meleeState.secondPlayerCommitment,
   );
 
-  const whiteAttackValue = getCurrentUnitStat(
+  // The unit's Attack is summed raw: the attack value adds support to it
+  // and is floored once, as a whole, when it lands (§7.1.4).
+  const whiteAttackValue = getRawUnitStat(
     whiteUnit.unit,
     'attack',
     state,
@@ -74,7 +76,7 @@ export function generateResolveMeleeEvent(
       : meleeState.firstPlayerCommitment,
   );
 
-  const blackAttackValue = getCurrentUnitStat(
+  const blackAttackValue = getRawUnitStat(
     blackUnit.unit,
     'attack',
     state,

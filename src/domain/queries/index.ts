@@ -141,6 +141,7 @@ export type { RoutLocation } from './sequencing';
 export {
   arrayWithoutUnit,
   getCurrentUnitStat,
+  getRawUnitStat,
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   hasUnitInArray,

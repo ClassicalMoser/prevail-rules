@@ -117,6 +117,33 @@ describe('getCurrentUnitStat function', () => {
     });
   });
 
+  describe('the floor at zero (§7.1.4)', () => {
+    it('a stat pushed below zero counts as zero', () => {
+      // Range 2 with a −3 modifier sums to −1; no stat goes below zero, so
+      // the unit's Range is 0 and it cannot shoot.
+      const unit = createTestUnit('black', { range: 2 });
+      const gameState = stateWithUnit(unit);
+
+      expect(
+        getCurrentUnitStat(unit, 'range', gameState, [
+          { type: 'range', value: -3 },
+        ]),
+      ).toBe(0);
+    });
+
+    it('a stat at or above zero is untouched by the floor', () => {
+      // Range 2 with a −1 modifier is 1.
+      const unit = createTestUnit('black', { range: 2 });
+      const gameState = stateWithUnit(unit);
+
+      expect(
+        getCurrentUnitStat(unit, 'range', gameState, [
+          { type: 'range', value: -1 },
+        ]),
+      ).toBe(1);
+    });
+  });
+
   describe('round effect modifiers', () => {
     it('adds an unrestricted attack round modifier to the base', () => {
       const unit = createTestUnit('black', { attack: 3 });

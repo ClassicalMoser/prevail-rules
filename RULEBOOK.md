@@ -1492,11 +1492,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `generateResolveRangedAttackEvent` would apply it, but `getLegalCommitToRangedAttackEvents` offers both sides the same list (Range, Attack, Flexibility), so only a two-stat card that happens to name Defence could ever protect a target.
 - **Closed:** The shooter and the target now commit through separate events with separate lists: `commitToRangedAttack` (Range, Attack, Flexibility), the shooter's one window before it aims; `commitToRangedDefense` (Defence, Flexibility), the target's, once it is named. A target's Flexibility counts because a deficit penalises its thresholds too (§2.5.2).
 
-<a id="b2"></a>**B2. Attack value is never clamped at zero.** _Code lags rule._
+<a id="b2"></a>**B2. Attack value is never clamped at zero.** _Closed: S16._
 
 - **Rule:** §7.1.4: **every stat floors at zero**, the attack value included (author, 2026-11-08). The floor is applied once, to the finished total — never mid-sum, so a floored stat cannot be rebounded above its raw arithmetic by a later bonus.
 - **Code does:** sums base, modifiers and support with no floor. `getCurrentUnitStat` returns `baseStat + totalModifier` and `applyAttackValue` compares the raw sum. A negative value fails every threshold, including a printed Reverse of 0, whereas a value of exactly 0 meets it. (`src/domain/queries/unit/getCurrentUnitStat.ts`, `src/domain/queries/attack/applyAttackValue.ts:14`)
 - **To settle:** Floor the finished total in `getCurrentUnitStat` and `applyAttackValue`, so a negative attack behaves as 0 and still reverses a 0-threshold unit. One wrinkle: the engine encodes an **unrestricted** inspiration range as −1 (A6), while the author reads a negative range as _no range_. The sentinel must be exempted from the floor or re-encoded before range is ever modified — today nothing modifies it, so the collision is latent.
+- **Closed:** `getCurrentUnitStat` floors every finished stat at zero. The attack value is a unit's Attack plus support, so the procedures sum `getRawUnitStat` (the unfloored stat) and `applyAttackValue` floors the whole once: a blow summing to −2 still meets a Reverse of 0, and meets nothing above it. The inspiration-range sentinel is a command-card value, not a unit stat (author, 2026-11-09), so the floor never reaches it.
 
 <a id="b3"></a>**B3. Defence commitments do nothing in melee.** _Closed: S14._
 
