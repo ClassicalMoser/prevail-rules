@@ -6,6 +6,7 @@ export {
   diagonalIsClear,
   getAdjacentSpaces,
   getBackSpaces,
+  getNeighbourSide,
   getBoardCoordinates,
   getBoardCoordinatesWithEngagedUnits,
   getBoardSpace,

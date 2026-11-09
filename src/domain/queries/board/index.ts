@@ -1,4 +1,5 @@
-// Neighbors: orthogonal, diagonal, all eight; then front, flank, and rear arcs.
+// Neighbors: orthogonal, diagonal, all eight; then front, flank, and rear arcs,
+// and which of those a given neighbour lies on.
 export {
   getOrthogonallyAdjacentSpaces,
   getDiagonallyAdjacentSpaces,
@@ -6,6 +7,7 @@ export {
   getFrontSpaces,
   getFlankingSpaces,
   getBackSpaces,
+  getNeighbourSide,
 } from './adjacency';
 
 // Regions: inline, half-plane, ahead, behind, arc, within distance.

@@ -1,7 +1,7 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import {
   getBoardSpace,
-  getFrontSpaces,
+  getNeighbourSide,
   getOppositeFacing,
   hasSingleUnit,
 } from '@queries';
@@ -37,12 +37,13 @@ export function getEngagementEndFacing(
 
   // Which of the defender's spaces the step left decides the manner of the
   // engagement (§6.2). Only a front approach forces the facing.
-  const defenderFrontSpaces = getFrontSpaces(
+  const approach = getNeighbourSide(
     board,
     defenderCoordinate,
     defenderFacing,
+    approachCoordinate,
   );
-  if (!defenderFrontSpaces.has(approachCoordinate)) {
+  if (approach !== 'front') {
     // Flank and rear approaches fight as they arrived: the flanked
     // defender is the one dragged around, not the attacker (§6.3.4).
     const kept = { facing: steppedFacing, flexibilitySpent: 0 };

@@ -1,14 +1,12 @@
 import type { Board, Coordinate, PlayerSide, UnitFacing } from '@entities';
 import {
-  getBackSpaces,
   getBoardSpace,
-  getFlankingSpaces,
-  getFrontSpaces,
-  getOppositeFacing,
+  getNeighbourSide,
   getSpacesBehind,
   hasSingleUnit,
   isFriendlyUnit,
 } from '@queries';
+import { getEngagementEndFacing } from './getEngagementEndFacing';
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.
@@ -43,68 +41,49 @@ export function canEngageEnemy(
       return false;
     }
 
-    // We're moving into an enemy space - need to check engagement rules
-    const enemyFacing = destinationSpace.unitPresence.facing;
-
-    // Validate adjacent coordinate exists
-    getBoardSpace(board, adjacentCoordinate);
-
-    // We're moving from a different space - check if we're coming from front/flank/back
-    const enemyFrontSpaces = getFrontSpaces(
+    // Which of the defender's spaces the step left decides whether this
+    // engagement is legal (§6.2).
+    const approach = getNeighbourSide(
       board,
       destinationCoordinate,
-      enemyFacing,
-    );
-    const enemyFlankSpaces = getFlankingSpaces(
-      board,
-      destinationCoordinate,
-      enemyFacing,
-    );
-    const enemyBackSpaces = getBackSpaces(
-      board,
-      destinationCoordinate,
-      enemyFacing,
+      destinationSpace.unitPresence.facing,
+      adjacentCoordinate,
     );
 
-    // If coming from flank: no further checks needed.
-    // Defending unit will be forced to face this unit.
-    if (enemyFlankSpaces.has(adjacentCoordinate)) {
+    // From a flanking space: always allowed. The defender will be dragged
+    // round to face the attacker (§6.2.1).
+    if (approach === 'flank') {
       return true;
     }
 
-    // If coming from back: must have started move behind the enemy.
-    if (enemyBackSpaces.has(adjacentCoordinate)) {
-      const spacesBehindEnemy = getSpacesBehind(
+    // From a back space: only if the move began behind the defender. A unit
+    // cannot loop round a flank and take it in the rear in one order (§6.2.2).
+    if (approach === 'back') {
+      const startedBehind = getSpacesBehind(
         board,
         destinationCoordinate,
-        enemyFacing,
+        destinationSpace.unitPresence.facing,
+      ).has(moveStartCoordinate);
+      return startedBehind;
+    }
+
+    // From a front space: only if the unit can square up head-on as it
+    // closes, which costs a point unless it already faces that way
+    // (§6.2.3). `getEngagementEndFacing` says what squaring costs.
+    if (approach === 'front') {
+      const squaring = getEngagementEndFacing(
+        board,
+        destinationCoordinate,
+        adjacentCoordinate,
+        currentFacing,
       );
-      if (spacesBehindEnemy.has(moveStartCoordinate)) {
-        // We can engage an enemy from the back if we started the move behind them.
-        return true;
-      }
-      // We can't engage an enemy from the back if we didn't start the move behind them.
-      return false;
+      const canSquareUp =
+        squaring !== undefined &&
+        squaring.flexibilitySpent <= remainingFlexibility;
+      return canSquareUp;
     }
 
-    // If coming from front: must end facing opposite to the enemy
-    if (enemyFrontSpaces.has(adjacentCoordinate)) {
-      const requiredFacing = getOppositeFacing(enemyFacing);
-      // If we're already facing the required direction, we can engage the enemy.
-      if (currentFacing === requiredFacing) {
-        return true;
-      }
-      // If we're coming from an angle and need to rotate, we need at least 1 flexibility
-      if (remainingFlexibility > 0) {
-        // We have flexibility to rotate, so we can engage the enemy.
-        return true;
-      }
-
-      // Can't rotate to face the enemy, so we can't engage the enemy.
-      return false;
-    }
-
-    // We're not adjacent to the enemy, so we can't validate engagement.
+    // Not stepping in from next to the defender at all.
     return false;
   } catch {
     // Any error means we cannot engage the enemy.

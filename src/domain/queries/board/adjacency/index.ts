@@ -15,3 +15,6 @@ export { getFlankingSpaces } from './getFlankingSpaces';
 
 // Rear arc: up to three spaces behind the facing, including diagonals.
 export { getBackSpaces } from './getBackSpaces';
+
+// Which of those three sides a given neighbour lies on.
+export { getNeighbourSide } from './getNeighbourSide';
