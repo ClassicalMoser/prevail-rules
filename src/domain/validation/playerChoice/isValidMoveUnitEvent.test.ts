@@ -61,7 +61,9 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: false,
       player: 'black',
-      to: createUnitPlacement('E-4', 'north'),
+      // A step straight ahead: the old E-4 target was a sidestep, which the
+      // 45°/180° turn rule (§5.2.1) prices out of a Flexibility-2 unit.
+      to: createUnitPlacement('D-5', 'north'),
       unit: unitWithPlacement,
     });
 
@@ -76,7 +78,7 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: true,
       player: 'black',
-      to: createUnitPlacement('E-4', 'north'),
+      to: createUnitPlacement('D-5', 'north'),
       unit: unitWithPlacement,
     });
 
@@ -89,7 +91,7 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: true,
       player: 'black',
-      to: createUnitPlacement('E-4', 'north'),
+      to: createUnitPlacement('D-5', 'north'),
       unit: unitWithPlacement,
     });
 
@@ -123,7 +125,7 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: false,
       player: 'black',
-      to: createUnitPlacement('E-4', 'north'),
+      to: createUnitPlacement('D-5', 'north'),
       unit: unitWithPlacement,
     });
 

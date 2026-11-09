@@ -50,20 +50,22 @@ export {
   isEngagementFromRear,
 } from './engagement';
 
-// Opposite, left, right, neighbors, and the diagonal check.
+// Opposite, left, right, neighbors, one turn's reach, and the diagonal check.
 export {
   getOppositeFacing,
   getLeftFacing,
   getRightFacing,
   getAdjacentFacings,
   getOrthogonalFacings,
+  getFacingsOneTurnAway,
   isDiagonalFacing,
 } from './facings';
 
-// Empty hand or an unpayable rout discard.
+// Empty hand, an unpayable rout discard, or an army destroyed to the last unit.
 export {
   getWinnerFromEmptyHands,
   getWinnerFromUnpayableRoutDiscard,
+  getWinnerFromNoUnits,
   getGameOverWinner,
 } from './gameOver';
 

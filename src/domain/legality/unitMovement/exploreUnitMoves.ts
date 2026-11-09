@@ -5,11 +5,11 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import type { GameState } from '@game';
-import { unitFacings } from '@entities';
 import {
-  getAdjacentFacings,
   getCurrentUnitStat,
+  getFacingsOneTurnAway,
   getForwardSpace,
+  getOppositeFacing,
   getRearwardSpace,
   getSpacesBehind,
   isDiagonalFacing,
@@ -31,12 +31,22 @@ export interface MoveResult {
 }
 
 /**
- * Explores all possible moves for a unit using recursive exploration with memoization.
- * Handles both forward and backward movement based on configuration.
+ * Explores every placement a unit's move may legally end on, by walking the
+ * state graph of §5. From any point in a move a unit can do only two things:
+ * step 1 Speed into the space it faces (§5.1.2, §5.1.3), or spend
+ * 1 Flexibility to turn 45° either way or about (§5.2.1). Turns and steps
+ * come in any order and may repeat (§5.2.2), so the walk applies both edges
+ * from every state until the two allowances run out.
+ *
+ * A retreat walks the same graph under two extra constraints: every space it
+ * passes through or ends on lies behind the starting rank (§9.1.2, and it
+ * may not end where it started), and before its first step back it may turn
+ * by at most 45° in all, never about (§9.1.4) — after the first step the
+ * ordinary turn rule applies.
  *
  * @param gameState - The current game state
  * @param unitWithPlacement - The unit and its starting position
- * @param direction - The direction of movement: 'forward' or 'backward'
+ * @param direction - The direction of movement: 'advance' or 'retreat'
  * @returns Set of all explored move destinations with their metadata, including the amount of flexibility and speed used to reach each destination
  */
 export function exploreUnitMoves(
@@ -44,40 +54,40 @@ export function exploreUnitMoves(
   unitWithPlacement: UnitWithPlacement,
   direction: 'advance' | 'retreat',
 ): Set<MoveResult> {
-  // Get the board state
-  const board = gameState.boardState;
+  // The type names the two directions, but a caller outside the type system
+  // (a test, a wire payload) still gets a clear fault rather than a walk
+  // that silently explores nothing.
+  if (direction !== 'advance' && direction !== 'retreat') {
+    throw new Error('Invalid direction');
+  }
 
-  // Get the unit and original placement
+  const board = gameState.boardState;
   const { placement: initialPlacement, unit } = unitWithPlacement;
   const initialCoordinate = initialPlacement.coordinate;
   const initialFacing = initialPlacement.facing;
   const unitSide = unit.playerSide;
 
-  // Get the current unit flexibility and speed
-  const currentUnitFlexibility = getCurrentUnitStat(
-    unit,
-    'flexibility',
-    gameState,
-  );
-  const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
+  // The move's whole budget is sampled here, once, where the move begins
+  // (§5.1.4): current Speed for stepping, current Flexibility for turning.
+  const totalFlexibility = getCurrentUnitStat(unit, 'flexibility', gameState);
+  const totalSpeed = getCurrentUnitStat(unit, 'speed', gameState);
 
-  // Determine which function to use for getting next space
+  // A retreat moves rearward, away from the facing; an advance follows it.
   const getSpaceInDirection =
     direction === 'advance' ? getForwardSpace : getRearwardSpace;
 
-  // Cache valid retreat spaces
+  // A retreat is confined to the half of the board behind the unit's
+  // starting rank (§2.3.2, §9.1.2). The start space is not behind its own
+  // rank, so "may not end where it started" comes with the region.
   const validRetreatSpaces = getSpacesBehind(
     board,
     initialCoordinate,
     initialFacing,
   );
 
-  // Helper for checking if a space is a valid retreat space
-  function isValidRetreatSpace(coordinate: Coordinate): boolean {
-    return validRetreatSpaces.has(coordinate);
-  }
-
-  // Track visited states to avoid revisiting
+  // States are keyed with the budgets still unspent: the same placement
+  // reached with more allowance left is a genuinely different prospect,
+  // because it has more move left to spend from there.
   const visitedStates = new Set<string>();
   const getStateKey = (
     coordinate: Coordinate,
@@ -87,240 +97,201 @@ export function exploreUnitMoves(
   ): string =>
     `${coordinate}|${facing}|${remainingSpeed}|${remainingFlexibility}`;
 
-  // Collect all explored moves
   const results = new Set<MoveResult>();
 
-  // Recursive function to explore moves
-  const explore = (
-    currentPlacement: UnitPlacement,
+  /**
+   * Judges a space the move cannot continue from — an enemy to engage, or
+   * ground that stops the unit — as an endpoint, without exploring onward.
+   */
+  const includeEndpointOnly = (
+    coordinate: Coordinate,
+    facing: UnitFacing,
+    cameFrom: Coordinate,
     remainingSpeed: number,
     remainingFlexibility: number,
-    isTruePosition: boolean,
   ): void => {
-    const { coordinate: currentCoordinate, facing: currentFacing } =
-      currentPlacement;
+    const isLegalEnd =
+      canMoveInto(
+        unitSide,
+        board,
+        coordinate,
+        cameFrom,
+        initialCoordinate,
+        facing,
+        remainingFlexibility,
+        direction,
+      ) &&
+      (direction === 'advance' || validRetreatSpaces.has(coordinate));
+    if (isLegalEnd) {
+      results.add({
+        flexibilityUsed: totalFlexibility - remainingFlexibility,
+        placement: { coordinate, facing },
+        speedUsed: totalSpeed - remainingSpeed,
+      });
+    }
+  };
 
+  /**
+   * One state of the move in progress. `cameFrom` is the space the last step
+   * left; engaging legality reads the step's origin (§6.2), and turning never
+   * changes it. It stays out of the visited key because a move never
+   * continues from an enemy's space — stepping into an enemy ends the move —
+   * so the origin can only matter on the step edge that proposes the ending.
+   */
+  const explore = (
+    coordinate: Coordinate,
+    facing: UnitFacing,
+    cameFrom: Coordinate,
+    remainingSpeed: number,
+    remainingFlexibility: number,
+  ): void => {
     const stateKey = getStateKey(
-      currentCoordinate,
-      currentFacing,
+      coordinate,
+      facing,
       remainingSpeed,
       remainingFlexibility,
     );
-
     if (visitedStates.has(stateKey)) {
       return;
     }
     visitedStates.add(stateKey);
 
-    // Specific rules for our initial position.
-    // We can only turn in place if we have flexibility remaining.
-    // If we are advancing, we can turn to any facing.
-    // If we are retreating, we can only turn to adjacent facings.
-    // This block is only for initial position.
-    // Other rotations are handled after move
-    // To prevent repeated rotation in one space.
-    if (isTruePosition) {
-      // If advancing, add the initial position to the results.
+    const speedUsed = totalSpeed - remainingSpeed;
+    const flexibilityUsed = totalFlexibility - remainingFlexibility;
+
+    // ── May the move end on this state? ──────────────────────────────────
+    if (coordinate === initialCoordinate && speedUsed === 0) {
+      // Standing in place, turned or not, is a legal advance: the unit's own
+      // space needs no one's permission. A retreat must actually fall back,
+      // so its starting space is never an endpoint (§9.1.2).
       if (direction === 'advance') {
         results.add({
-          flexibilityUsed: 0,
-          placement: currentPlacement,
-          speedUsed: 0,
+          flexibilityUsed,
+          placement: { coordinate, facing },
+          speedUsed,
         });
-        // Original position is not valid for retreating.
       }
-      // Sometimes we can turn in the initial position.
-      if (remainingFlexibility > 0) {
-        let newFacings = new Set<UnitFacing>();
-        if (direction === 'retreat') {
-          // For a retreat, in our initial position,
-          // We can only turn to adjacent facings.
-          newFacings = getAdjacentFacings(initialFacing);
-        } else if (direction === 'advance') {
-          // For an advance, we can turn to any facing.
-          newFacings = new Set(unitFacings);
-        } else {
-          throw new Error('Invalid direction');
-        }
-        // Do not turn to the same facing.
-        newFacings.delete(initialFacing);
-        // Explore each new facing.
-        for (const newFacing of newFacings) {
-          const newPlacement: UnitPlacement = {
-            coordinate: currentCoordinate,
-            facing: newFacing,
-          };
-          // Add the new move result to the results set.
-          const newMoveResult: MoveResult = {
-            placement: newPlacement,
-            // -1 because we're using 1 flexibility to turn.
-            flexibilityUsed:
-              currentUnitFlexibility - (remainingFlexibility - 1),
-            speedUsed: currentUnitSpeed - remainingSpeed,
-          };
-          if (direction === 'advance') {
-            // Advances can end in the initial position.
-            results.add(newMoveResult);
-          }
-          // Retreats cannot end in the initial position.
-          // Regardless, the initial position will always continue exploring.
-          explore(
-            {
-              coordinate: currentCoordinate,
-              facing: newFacing,
-            },
-            remainingSpeed,
-            remainingFlexibility - 1,
-            false,
-          );
-        }
+    } else if (coordinate !== initialCoordinate) {
+      // Elsewhere, the ground decides: open ground may be rested on, a
+      // friend's space only passed through (§5.3), and an enemy's space
+      // entered only as an engagement legal from the space the step left
+      // (§6.2) — which is why the ending is judged against `cameFrom`.
+      const isLegalEnd =
+        canMoveInto(
+          unitSide,
+          board,
+          coordinate,
+          cameFrom,
+          initialCoordinate,
+          facing,
+          remainingFlexibility,
+          direction,
+        ) &&
+        (direction === 'advance' || validRetreatSpaces.has(coordinate));
+      if (isLegalEnd) {
+        results.add({
+          flexibilityUsed,
+          placement: { coordinate, facing },
+          speedUsed,
+        });
       }
     }
 
-    // Try moving in direction if we have speed remaining
+    // ── Turn edge: 1 Flexibility, 45° either way or about (§5.2.1) ───────
+    if (remainingFlexibility > 0) {
+      // Before its first step back, a retreat may turn at most 45° in all
+      // and never about (§9.1.4): one turn, to a neighbour of the facing it
+      // started with. A second pre-step turn would stack to 90°, so once the
+      // facing has left the initial one, pre-step turning is spent.
+      const preStepRetreat =
+        direction === 'retreat' && coordinate === initialCoordinate;
+      let turnTargets: Set<UnitFacing>;
+      if (!preStepRetreat) {
+        turnTargets = getFacingsOneTurnAway(facing);
+      } else if (facing === initialFacing) {
+        turnTargets = getFacingsOneTurnAway(initialFacing);
+        // The about-turn is the one §5.2.1 option a retreat's opening turn
+        // does not get: a retreat never begins by facing the other way.
+        turnTargets.delete(getOppositeFacing(initialFacing));
+      } else {
+        // The one pre-step turn has been taken.
+        turnTargets = new Set<UnitFacing>();
+      }
+      for (const newFacing of turnTargets) {
+        explore(
+          coordinate,
+          newFacing,
+          cameFrom,
+          remainingSpeed,
+          remainingFlexibility - 1,
+        );
+      }
+    }
+
+    // ── Step edge: 1 Speed, into the faced space (§5.1.2, §5.1.3) ────────
     if (remainingSpeed > 0) {
-      const nextCoordinate = getSpaceInDirection(
-        board,
-        currentCoordinate,
-        currentFacing,
-      );
-      // If there is no space in the direction, we stop here.
-      if (nextCoordinate !== undefined) {
-        // If there is a space in the direction we have three steps:
-        // 1. If it is diagonal, check if we can reach it.
-        // — otherwise we stop here.
-        // 2. Check if we can move into it.
-        // — this means we can add this position to the results.
-        // 3. Check if we can move through it.
-        // — this means we continue exploring the move by calling explore again.
+      const nextCoordinate = getSpaceInDirection(board, coordinate, facing);
+      // The board edge simply ends the walk in this direction.
+      if (nextCoordinate === undefined) {
+        return;
+      }
 
-        // 1. Check if the facing is diagonal.
-        const { result: isDiagonalFacingResult } =
-          isDiagonalFacing(currentFacing);
-        if (isDiagonalFacingResult) {
-          // If the facing is diagonal, check if we can reach the target space.
-          const canReachTarget = checkDiagonalMove(
-            unitSide,
-            currentUnitFlexibility,
-            gameState,
-            currentCoordinate,
-            nextCoordinate,
-            currentFacing,
-          );
-          if (!canReachTarget) {
-            // If we cannot reach the target space, we stop here.
-            return;
-          }
-        }
-
-        // 2. Check if we can move into the space.
-        let isLegalEnd = canMoveInto(
+      // A diagonal step must pass between the two corner spaces flanking
+      // the diagonal (§5.4.5) — slipping between two units standing corner
+      // to corner is not allowed.
+      const { result: isDiagonal } = isDiagonalFacing(facing);
+      if (isDiagonal) {
+        const canReachTarget = checkDiagonalMove(
           unitSide,
-          board,
-          nextCoordinate,
-          currentCoordinate,
-          initialCoordinate,
-          currentFacing,
-          remainingFlexibility,
-          direction,
-        );
-
-        if (direction === 'retreat' && !isValidRetreatSpace(nextCoordinate)) {
-          isLegalEnd = false;
-        }
-
-        // If we can move into the space, we add it to the results.
-        if (isLegalEnd) {
-          const newPlacement: UnitPlacement = {
-            coordinate: nextCoordinate,
-            facing: currentFacing,
-          };
-          const newMoveResult: MoveResult = {
-            placement: newPlacement,
-            flexibilityUsed: currentUnitFlexibility - remainingFlexibility,
-            // -1 because we're using 1 speed to move.
-            speedUsed: currentUnitSpeed - (remainingSpeed - 1),
-          };
-          results.add(newMoveResult);
-        }
-
-        // 3. Check if we can move through the space.
-        let shouldContinueExploring = canMoveThrough(
-          unitSide,
-          currentUnitFlexibility,
-          nextCoordinate,
+          totalFlexibility,
           gameState,
+          coordinate,
+          nextCoordinate,
+          facing,
         );
-
-        // Retreats can only move through spaces behind the starting position.
-        if (direction === 'retreat' && !isValidRetreatSpace(nextCoordinate)) {
-          shouldContinueExploring = false;
+        if (!canReachTarget) {
+          return;
         }
+      }
 
-        // If we can move through, we should keep exploring.
-        if (shouldContinueExploring) {
-          explore(
-            {
-              coordinate: nextCoordinate,
-              facing: currentFacing,
-            },
-            remainingSpeed - 1,
-            remainingFlexibility,
-            false,
-          );
-          // Also try changing facing after moving.
-          if (remainingFlexibility > 0) {
-            // Explore each new facing.
-            for (const newFacing of unitFacings) {
-              // Do not turn to the same facing.
-              if (newFacing !== currentFacing) {
-                const canMoveIntoNewFacing = canMoveInto(
-                  unitSide,
-                  board,
-                  nextCoordinate,
-                  currentCoordinate,
-                  initialCoordinate,
-                  newFacing,
-                  remainingFlexibility,
-                  direction,
-                );
-                if (canMoveIntoNewFacing) {
-                  const newPlacement: UnitPlacement = {
-                    coordinate: nextCoordinate,
-                    facing: newFacing,
-                  };
-                  const newMoveResult: MoveResult = {
-                    placement: newPlacement,
-                    // -1 because we're using 1 flexibility to turn.
-                    flexibilityUsed:
-                      currentUnitFlexibility - (remainingFlexibility - 1),
-                    speedUsed: currentUnitSpeed - (remainingSpeed - 1),
-                  };
-                  // Doesn't need to check if it's a valid retreat space
-                  // Because we already checked it when exploring the move.
-                  results.add(newMoveResult);
-                }
-                // Explore the new space with the new facings.
-                explore(
-                  {
-                    coordinate: nextCoordinate,
-                    facing: newFacing,
-                  },
-                  remainingSpeed - 1,
-                  remainingFlexibility - 1,
-                  false,
-                );
-              }
-            }
-          }
-        }
+      // A retreat may not pass through ground that is not behind its rank
+      // (§9.1.2), and whatever cannot be passed through ends the walk —
+      // ending there, if legal, was already judged when the state is
+      // visited below.
+      const mayContinue =
+        canMoveThrough(unitSide, totalFlexibility, nextCoordinate, gameState) &&
+        (direction === 'advance' || validRetreatSpaces.has(nextCoordinate));
+
+      if (mayContinue) {
+        explore(
+          nextCoordinate,
+          facing,
+          coordinate,
+          remainingSpeed - 1,
+          remainingFlexibility,
+        );
+      } else {
+        // The space stops the move, but it may still be where the move
+        // ends — an enemy to engage, most importantly. Judge it as an
+        // endpoint without walking on from it.
+        includeEndpointOnly(
+          nextCoordinate,
+          facing,
+          coordinate,
+          remainingSpeed - 1,
+          remainingFlexibility,
+        );
       }
     }
   };
 
-  // Start exploring from the starting position
-  explore(initialPlacement, currentUnitSpeed, currentUnitFlexibility, true);
+  explore(
+    initialCoordinate,
+    initialFacing,
+    initialCoordinate,
+    totalSpeed,
+    totalFlexibility,
+  );
 
-  // Get the set of final legal positions
   return results;
 }

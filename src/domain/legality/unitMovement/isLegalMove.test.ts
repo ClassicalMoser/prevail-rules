@@ -13,17 +13,20 @@ import {
  */
 describe('isLegalMove function', () => {
   describe('core functionality', () => {
-    it('given a legal move, returns true', () => {
+    it('a step straight ahead is a legal move', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState('standard');
       let board = gameState.boardState;
       board = addUnitToBoard(board, placed(unitInstance, 'E-5', 'north'));
       gameState.boardState = board;
+      // One step into the faced space (§5.1.2–§5.1.3). The old case here
+      // was a sidestep (E-5 to E-4, still facing north), which the 45°/180°
+      // turn rule prices at four Flexibility — no longer a cheap move.
       const moveUnitEvent = createMoveUnitEvent({
         eventNumber: 0,
         moveCommander: false,
         player: 'black',
-        to: createUnitPlacement('E-4', 'north'),
+        to: createUnitPlacement('D-5', 'north'),
         unit: placed(unitInstance, 'E-5', 'north'),
       });
       const isLegal = isLegalMove(moveUnitEvent, gameState);

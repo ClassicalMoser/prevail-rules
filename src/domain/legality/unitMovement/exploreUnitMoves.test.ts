@@ -84,7 +84,7 @@ describe('exploreUnitMoves function', () => {
       expect(hasStartingPosition).toBe(false);
     });
 
-    it('given allow all turns in place for advance', () => {
+    it('one turn in place reaches 45° either way or about, nothing else', () => {
       expect.hasAssertions();
       const gameState = createGameState([
         {
@@ -103,10 +103,9 @@ describe('exploreUnitMoves function', () => {
         throw new Error('Unit not found');
       }
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const unitFacingsMinusStart = unitFacings.filter(
-        (facing) => facing !== 'north',
-      );
-      const allFacingsResults = unitFacingsMinusStart.map((facing) =>
+      // One spend turns 45° to a side or 180° about (§5.2.1).
+      const oneTurnFacings: UnitFacing[] = ['northWest', 'northEast', 'south'];
+      const oneTurnResults = oneTurnFacings.map((facing) =>
         exploreResultHasMatch(moves, {
           coordinate: 'E-5',
           facing,
@@ -114,7 +113,65 @@ describe('exploreUnitMoves function', () => {
           speedUsed: 0,
         }),
       );
-      expect(allFacingsResults.every((result) => result)).toBe(true);
+      expect(oneTurnResults.every((result) => result)).toBe(true);
+      // Every other facing is a wheel: two spends, never one.
+      const wheelFacings: UnitFacing[] = unitFacings.filter(
+        (facing) => facing !== 'north' && !oneTurnFacings.includes(facing),
+      );
+      const wheelsAtOne = wheelFacings.map((facing) =>
+        exploreResultHasMatch(moves, {
+          coordinate: 'E-5',
+          facing,
+          flexibilityUsed: 1,
+        }),
+      );
+      expect(wheelsAtOne.some((result) => result)).toBe(false);
+      const wheelsAtTwo = wheelFacings.map((facing) =>
+        exploreResultHasMatch(moves, {
+          coordinate: 'E-5',
+          facing,
+          flexibilityUsed: 2,
+          speedUsed: 0,
+        }),
+      );
+      expect(wheelsAtTwo.every((result) => result)).toBe(true);
+    });
+
+    it('a unit with Flexibility 1 cannot wheel to a perpendicular facing', () => {
+      // The stiff formation stays stiff: a phalanx with one turn in it
+      // cannot swing 90° to meet a flank threat in a single order (§5.2.1).
+      const gameState = createGameState([
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 1,
+          player: 'black',
+        },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'advance');
+
+      expect(
+        exploreResultHasMatch(moves, { coordinate: 'E-5', facing: 'east' }),
+      ).toBe(false);
+      expect(
+        exploreResultHasMatch(moves, { coordinate: 'E-5', facing: 'west' }),
+      ).toBe(false);
+      // The about-turn, though, is one motion (§5.2.1).
+      expect(
+        exploreResultHasMatch(moves, {
+          coordinate: 'E-5',
+          facing: 'south',
+          flexibilityUsed: 1,
+        }),
+      ).toBe(true);
     });
 
     it('given not include starting position with different speed', () => {
@@ -584,10 +641,16 @@ describe('exploreUnitMoves function', () => {
       expect(hasMove).toBe(false);
     });
 
-    it('can navigate around an enemy unit', () => {
+    it('navigating around an enemy costs the wheel back onto the line', () => {
       expect.hasAssertions();
       const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 3,
+          player: 'black',
+          speed: 2,
+        },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
       ]);
       const unit = getPlayerUnitWithPosition(
@@ -599,20 +662,28 @@ describe('exploreUnitMoves function', () => {
         throw new Error('Unit not found');
       }
       const moves = exploreUnitMoves(gameState, unit, 'advance');
+      // Swerving round the blocker is 45° out, then a 90° wheel back in:
+      // one turn plus two (§5.2.1), three Flexibility in all.
       const hasLeftThenRightMove = exploreResultHasMatch(moves, {
         coordinate: 'C-5',
         facing: 'northEast',
-        flexibilityUsed: 2,
+        flexibilityUsed: 3,
         speedUsed: 2,
       });
       const hasRightThenLeftMove = exploreResultHasMatch(moves, {
         coordinate: 'C-5',
         facing: 'northWest',
-        flexibilityUsed: 2,
+        flexibilityUsed: 3,
         speedUsed: 2,
       });
       expect(hasLeftThenRightMove).toBe(true);
       expect(hasRightThenLeftMove).toBe(true);
+      // The old two-spend zigzag relied on a free 90° turn, which no unit has.
+      const hasCheapZigzag = exploreResultHasMatch(moves, {
+        coordinate: 'C-5',
+        flexibilityUsed: 2,
+      });
+      expect(hasCheapZigzag).toBe(false);
     });
 
     it('can engage an enemy unit', () => {

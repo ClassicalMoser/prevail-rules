@@ -9,5 +9,8 @@ export { getRightFacing } from './getRightFacing';
 export { getAdjacentFacings } from './getAdjacentFacings';
 export { getOrthogonalFacings } from './getOrthogonalFacings';
 
+// The three facings one Flexibility spend reaches: 45° either way, or about.
+export { getFacingsOneTurnAway } from './getFacingsOneTurnAway';
+
 // Whether the facing is one of the four diagonals.
 export { isDiagonalFacing } from './isDiagonalFacing';
