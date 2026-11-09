@@ -2,7 +2,7 @@ import type { ValidationResult } from '@utils';
 import type { MoveUnitEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalMoveUnits, isLegalMove } from '@legality';
-import { getBoardSpace, isSameUnitInstance } from '@queries';
+import { getBoardSpace, isSameUnitWithPlacement } from '@queries';
 
 /**
  * Validates a MoveUnitEvent as an integral commit over:
@@ -31,10 +31,7 @@ export function isValidMoveUnitEvent(
     }
 
     const matchingUnit = legal.units.find(
-      (candidate) =>
-        isSameUnitInstance(candidate.unit, event.unit.unit).result &&
-        candidate.placement.coordinate === event.unit.placement.coordinate &&
-        candidate.placement.facing === event.unit.placement.facing,
+      (candidate) => isSameUnitWithPlacement(candidate, event.unit).result,
     );
     if (matchingUnit === undefined) {
       return {

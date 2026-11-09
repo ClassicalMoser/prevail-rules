@@ -6,18 +6,7 @@ import {
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
 } from '@legality';
-import { isFriendlyUnit, isSameUnitInstance } from '@queries';
-
-function samePlacement(
-  a: PerformRangedAttackEvent['unit'],
-  b: PerformRangedAttackEvent['unit'],
-): boolean {
-  return (
-    isSameUnitInstance(a.unit, b.unit).result &&
-    a.placement.coordinate === b.placement.coordinate &&
-    a.placement.facing === b.placement.facing
-  );
-}
+import { isFriendlyUnit, isSameUnitWithPlacement } from '@queries';
 
 /**
  * Validates a PerformRangedAttackEvent as an integral commit over atoms:
@@ -55,8 +44,8 @@ export function isValidPerformRangedAttackEvent(
       };
     }
 
-    const attacker = legal.attackers.find((candidate) =>
-      samePlacement(candidate, event.unit),
+    const attacker = legal.attackers.find(
+      (candidate) => isSameUnitWithPlacement(candidate, event.unit).result,
     );
     if (attacker === undefined) {
       return {
@@ -66,8 +55,9 @@ export function isValidPerformRangedAttackEvent(
     }
 
     const legalTargets = getLegalRangedAttackTargets(attacker, state);
-    const target = legalTargets.find((candidate) =>
-      samePlacement(candidate, event.targetUnit),
+    const target = legalTargets.find(
+      (candidate) =>
+        isSameUnitWithPlacement(candidate, event.targetUnit).result,
     );
     if (target === undefined) {
       return {
@@ -93,15 +83,15 @@ export function isValidPerformRangedAttackEvent(
       }
       seenKeys.add(key);
 
-      if (samePlacement(supporter, event.unit)) {
+      if (isSameUnitWithPlacement(supporter, event.unit).result) {
         return {
           errorReason: 'Attacker cannot also be listed as a supporter',
           result: false,
         };
       }
 
-      const found = legalSupporters.find((candidate) =>
-        samePlacement(candidate, supporter),
+      const found = legalSupporters.find(
+        (candidate) => isSameUnitWithPlacement(candidate, supporter).result,
       );
       if (found === undefined) {
         return {

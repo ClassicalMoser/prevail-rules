@@ -1,12 +1,8 @@
-import type { UnitPlacement } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { ChooseRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalChooseRetreatOptionEvents } from '@legality';
-
-function isSameRetreatOption(a: UnitPlacement, b: UnitPlacement): boolean {
-  return a.coordinate === b.coordinate && a.facing === b.facing;
-}
+import { isSamePlacement } from '@queries';
 
 /**
  * Validates a ChooseRetreatOptionEvent by membership against
@@ -22,7 +18,7 @@ export function isValidChooseRetreatOptionEvent(
     const isLegal = legalOptions.some(
       (option) =>
         option.player === event.player &&
-        isSameRetreatOption(option.retreatOption, event.retreatOption),
+        isSamePlacement(option.retreatOption, event.retreatOption),
     );
     if (!isLegal) {
       return {

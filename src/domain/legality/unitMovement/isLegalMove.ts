@@ -1,6 +1,7 @@
 import type { UnitWithPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import type { GameState } from '@game';
+import { isSamePlacement } from '@queries';
 import { getLegalUnitMoves } from './getLegalUnitMoves';
 
 /**
@@ -19,10 +20,10 @@ export function isLegalMove(
   try {
     const unitWithPlacement = unit as UnitWithPlacement;
     const legalMoves = getLegalUnitMoves(unitWithPlacement, gameState);
-    // Set.has() uses reference equality, so we need to check by value
-    return [...legalMoves].some(
-      (move) => move.coordinate === to.coordinate && move.facing === to.facing,
-    );
+    // The legal moves are freshly built placements, so the destination is
+    // matched by value, not by `Set.has`.
+    const isOffered = [...legalMoves].some((move) => isSamePlacement(move, to));
+    return isOffered;
   } catch {
     // If getLegalUnitMoves throws (invalid starting position, etc.), the move is not legal
     // TODO(wrong): the catch also hides faults unrelated to the start
