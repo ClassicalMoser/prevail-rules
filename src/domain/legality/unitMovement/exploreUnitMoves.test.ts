@@ -753,6 +753,55 @@ describe('exploreUnitMoves function', () => {
       expect(hasMove).toBe(true);
     });
 
+    it('a diagonal step can end on an enemy in its flanking space', () => {
+      // §6.2.1: engaging from a flanking space is always allowed, straight
+      // or diagonal — nothing about the engagement is special for being
+      // diagonal. The defender faces northWest, so the attacker's space is
+      // at its south-west shoulder: a flank approach.
+      const gameState = createGameState([
+        { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
+        { coord: 'D-6', facing: 'northWest', player: 'white', speed: 2 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const hasDiagonalEngage = exploreResultHasMatch(moves, {
+        coordinate: 'D-6',
+        facing: 'northEast',
+        flexibilityUsed: 0,
+        speedUsed: 1,
+      });
+      expect(hasDiagonalEngage).toBe(true);
+    });
+
+    it('two enemies on the corners still shut a diagonal engagement', () => {
+      // The step passes the same corner test as any other diagonal step
+      // (§5.4.5): enemies in both flanking corner spaces stop it.
+      const gameState = createGameState([
+        { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
+        { coord: 'D-6', facing: 'northWest', player: 'white', speed: 2 },
+        { coord: 'D-5', facing: 'south', player: 'white', speed: 2 },
+        { coord: 'E-6', facing: 'south', player: 'white', speed: 2 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'advance');
+
+      expect(exploreResultHasMatch(moves, { coordinate: 'D-6' })).toBe(false);
+    });
+
     it('given not pass through diagonal enemy line', () => {
       expect.hasAssertions();
       const gameState = createGameState([

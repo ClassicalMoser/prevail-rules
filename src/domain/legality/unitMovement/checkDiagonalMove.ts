@@ -8,11 +8,14 @@ import {
 import { canMoveThrough } from './canMoveThrough';
 
 /**
- * Checks if a unit can make a diagonal move through the target space.
- * Diagonal moves require passing through at least one adjacent orthogonal space.
+ * The corner test for a diagonal step (§5.4.5): the unit must be able to
+ * pass through at least one of the two orthogonal spaces flanking the
+ * diagonal — you cannot slip between two units standing corner to corner.
  *
- * This function only checks if the unit can continue moving through the target.
- * Whether the unit can end at the target should be checked separately by the caller.
+ * The test looks only at those two corner spaces, never at the space the
+ * step enters. What the unit may do at the target — rest there, pass
+ * through, or engage an enemy standing on it (§6.2.1) — is the caller's
+ * question, which is what lets a diagonal step end on an enemy.
  *
  * @param unitSide - The side of the unit attempting to move
  * @param currentUnitFlexibility - The flexibility of the unit attempting to move
@@ -20,7 +23,7 @@ import { canMoveThrough } from './canMoveThrough';
  * @param currentCoordinate - The current position
  * @param targetCoordinate - The target diagonal space
  * @param currentFacing - The facing direction (must be diagonal)
- * @returns Whether the unit can continue moving through the target space
+ * @returns Whether the diagonal step passes the corner test
  */
 export function checkDiagonalMove(
   unitSide: PlayerSide,
@@ -53,16 +56,11 @@ export function checkDiagonalMove(
     canMoveThrough(unitSide, currentUnitFlexibility, space, gameState),
   );
 
-  // We can make a diagonal move if we can pass through any of the adjacent orthogonal spaces
+  // The step is possible if at least one corner lets the unit slip past.
+  // The target space itself is deliberately not asked about here: testing
+  // it with the pass-through rule was what made an enemy on the diagonal
+  // unreachable, because an enemy can be engaged but never passed through
+  // (A12).
   const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
-
-  // Can continue if we can move through the target and have a valid pass-through space
-  return (
-    canMoveThrough(
-      unitSide,
-      currentUnitFlexibility,
-      targetCoordinate,
-      gameState,
-    ) && canMakeDiagonalMove
-  );
+  return canMakeDiagonalMove;
 }
