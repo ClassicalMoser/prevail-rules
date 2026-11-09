@@ -1505,12 +1505,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `generateResolveMeleeEvent` passes no defending modifiers to `applyAttackValue`, so a melee Defence card is discarded for nothing (`procedures/resolveAttack/generateResolveMeleeEvent.ts`; `TODO(wrong)`; unchanged since `f69a8d1`). The ranged path does pass them, and the old rulebook lists Defence as a melee commit.
 - **To settle:** Pass each side's own commitment as that unit's defending modifiers; add a spec with a committed Defence card.
 
-<a id="b4"></a>**B4. A rout forced by a blocked retreat cannot be paid.** _Bug._
+<a id="b4"></a>**B4. A rout forced by a blocked retreat cannot be paid.** _Closed: S11._
 
 - **Rule:** 7.5 edge case and 9.1.6, a unit that must retreat and cannot routs and its owner pays Morale (9.3).
 - **Code does:** the engine opens the rout (`triggerRoutFromRetreat`) and `findRoutLocation` can find it, but the rout sits inside the retreat and `updateRoutState` has no case for writing it. For an attack-apply or front-engagement parent it throws, so `applyChooseRoutDiscardEvent` cannot pay it. A zero penalty also closes the nested rout without closing its retreat, which `getExpectedRetreatEvent` then refuses. Marked `TODO(wrong)`. (`src/domain/transforms/pureTransforms/sequencing/updateRoutState.ts:26-37`; AUDIT.md `transforms`)
 - **Probe:** a unit at the board edge hit to Retreat runs `openRetreat → triggerRoutFromRetreat → resolveRout → chooseRoutDiscard`; the discard throws "No rout state found in attack apply state" (`updateRoutState.ts:113`). With Morale 0, `getExpectedEvent` throws instead. The game stalls either way.
-- **To settle:** a failing spec for a retreat-held rout, then write through `updateRetreatRoutState`. Until then the rulebook states the intent; the engine would crash at the payment.
+- **Closed:** `updateRoutState` now finds a rout held by a retreat and writes through `updateRetreatRoutState`, which closes the retreat when its rout completes, whether paid or a zero penalty. Specs: `applyChooseRoutDiscardEvent.test.ts`, `updateRetreatRoutState.test.ts`.
 
 <a id="b5"></a>**B5. A card with two commit stats applies both.** _Settled: both at once._
 

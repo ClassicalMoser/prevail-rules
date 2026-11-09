@@ -1,5 +1,6 @@
 import type { GameState, RoutState } from '@game';
 import {
+  findRoutLocation,
   getCleanupPhaseState,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
@@ -12,6 +13,7 @@ import {
   isOpenSubstep,
 } from '@queries';
 import { throwIfPending } from '@utils';
+import { updateRetreatRoutState } from './updateRetreatRoutState';
 import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
 import { updatePhaseState } from '../state';
 
@@ -23,12 +25,8 @@ import { updatePhaseState } from '../state';
  * - Melee resolution (resolveMelee phase)
  * - Rally resolution / lost support (cleanup phase)
  *
- * TODO(wrong): a rout nested in a retreat (the defender had nowhere to go) is
- * a fifth location `findRoutLocation` can find but this cannot write. In an
- * attack apply or a front engagement it throws, so `applyChooseRoutDiscardEvent`
- * cannot pay that rout. A zero penalty also closes the nested rout without
- * closing its retreat. Settled by a failing spec for a retreat-held rout, then
- * writing through `updateRetreatRoutState`. See AUDIT.md `transforms`.
+ * - A retreat with nowhere to go (§9.1.6), which holds its own rout inside
+ *   the retreat, wherever that retreat sits
  *
  * @param state - The current game state
  * @param routState - The new rout state to set
@@ -38,6 +36,14 @@ export function updateRoutState<S extends GameState>(
   state: S,
   routState: RoutState,
 ): S {
+  // A rout the retreat holds is written through that retreat, whichever
+  // attack or engagement the retreat belongs to.
+  const heldByRetreat =
+    findRoutLocation(state, routState.player)?.source === 'retreat';
+  if (heldByRetreat) {
+    return updateRetreatRoutState(state, routState);
+  }
+
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

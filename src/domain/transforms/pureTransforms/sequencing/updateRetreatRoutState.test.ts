@@ -1,4 +1,8 @@
-import { getRetreatStateFromAttackApply, isOpenSubstep } from '@queries';
+import {
+  getIssueCommandsPhaseState,
+  getRetreatStateFromAttackApply,
+  isOpenSubstep,
+} from '@queries';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
@@ -81,5 +85,34 @@ describe('updateRetreatRoutState function', () => {
       throw new Error('expected open rout');
     }
     expect(rout.numberToDiscard).toBe(2);
+  });
+
+  it('a rout that completes closes the retreat holding it', () => {
+    // §9.1.6: the unit has left, so the retreat has nothing left to do. A
+    // zero-penalty rout completes in the same write as it is resolved.
+    const state = createStateWithRangedAttackRetreat();
+    const unit = createTestUnit('white', { attack: 2 });
+    const settled = createRoutState('white', unit, {
+      cardsChosen: true,
+      completed: true,
+      numberToDiscard: 0,
+    });
+
+    const newState = updateRetreatRoutState(state, settled);
+
+    const phase = getIssueCommandsPhaseState(newState);
+    const command = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
+    );
+    if (command.commandResolutionType !== 'rangedAttack') {
+      throw new Error('type');
+    }
+    const apply = throwIfPending(command.attackApplyState, 'attack apply');
+    const retreat = throwIfBypassed(
+      getRetreatStateFromAttackApply(apply),
+      'the attack applies a retreat',
+    );
+    expect(retreat.completed).toBe(true);
   });
 });

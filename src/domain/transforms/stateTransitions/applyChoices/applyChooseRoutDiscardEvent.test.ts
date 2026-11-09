@@ -1,14 +1,20 @@
 import { tempCommandCards } from '@sampleValues';
 import type { ChooseRoutDiscardEvent } from '@events';
-import { throwIfNone, throwIfPending } from '@utils';
-import { getIssueCommandsPhaseState } from '@queries';
+import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
+  getIssueCommandsPhaseState,
+  getRetreatStateFromAttackApply,
+} from '@queries';
+import {
+  createAttackApplyStateWithRetreat,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
   createRallyResolutionState,
+  createRangedAttackResolutionState,
   createRearEngagementState,
+  createRetreatState,
   createRoutState,
   createTestCard,
   createTestUnit,
@@ -176,6 +182,74 @@ describe('applyChooseRoutDiscardEvent function', () => {
     expect(engagement.engagementResolutionState.completed).toBe(true);
     expect(engagement.engagementResolutionState.routState.completed).toBe(true);
     expect(next.routedUnits).toContainEqual(defender.unit);
+    expect(next.cardState.white.inHand.map((c) => c.id)).toStrictEqual([
+      tempCommandCards[3].id,
+    ]);
+  });
+
+  it('a rout held by a retreat is paid, and the retreat closes with it', () => {
+    // §9.1.6: a unit hit to Retreat with nowhere to go routs instead. The
+    // rout sits inside the retreat, so paying it must write there.
+    const defender = createUnitWithPlacement({
+      coordinate: 'E-6',
+      facing: 'north',
+      playerSide: 'white',
+    });
+    let state = createEmptyGameState('standard');
+    state = updateCardState(state, {
+      ...state.cardState,
+      white: {
+        ...state.cardState.white,
+        inHand: [tempCommandCards[2], tempCommandCards[3]],
+      },
+    });
+    state = { ...state, routedUnits: [defender.unit] };
+    const retreatState = createRetreatState(defender, {
+      legalRetreatOptions: [],
+      routState: createRoutState('white', defender.unit, {
+        numberToDiscard: 1,
+      }),
+    });
+    state = updatePhaseState(
+      state,
+      createIssueCommandsPhaseState(state, {
+        currentCommandResolutionState: createRangedAttackResolutionState(
+          state,
+          {
+            attackApplyState: createAttackApplyStateWithRetreat(defender, {
+              retreatState,
+            }),
+          },
+        ),
+      }),
+    );
+
+    const next = applyChooseRoutDiscardEvent(
+      {
+        cardIds: [tempCommandCards[2].id],
+        choiceType: 'chooseRoutDiscard',
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        player: 'white',
+      },
+      state,
+    );
+
+    const crs = throwIfPending(
+      getIssueCommandsPhaseState(next).currentCommandResolutionState,
+      'crs',
+    );
+    if (crs.commandResolutionType !== 'rangedAttack') {
+      throw new Error('rangedAttack');
+    }
+    const apply = throwIfPending(crs.attackApplyState, 'apply');
+    const retreat = throwIfBypassed(
+      getRetreatStateFromAttackApply(apply),
+      'retreat',
+    );
+    expect(retreat.completed).toBe(true);
+    const rout = throwIfPending(retreat.routState, 'rout');
+    expect(rout !== 'bypassed' && rout.completed).toBe(true);
     expect(next.cardState.white.inHand.map((c) => c.id)).toStrictEqual([
       tempCommandCards[3].id,
     ]);
