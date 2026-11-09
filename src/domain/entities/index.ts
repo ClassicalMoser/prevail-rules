@@ -77,8 +77,18 @@ export type {
 } from './unitPresence';
 
 // Unit location
-export { unitPlacementSchema, unitWithPlacementSchema } from './unitLocation';
-export type { UnitPlacement, UnitWithPlacement } from './unitLocation';
+export {
+  moveDeltas,
+  moveDeltaSchema,
+  unitPlacementSchema,
+  unitWithPlacementSchema,
+} from './unitLocation';
+export type {
+  MoveDelta,
+  MoveTurn,
+  UnitPlacement,
+  UnitWithPlacement,
+} from './unitLocation';
 
 // Cards
 export {

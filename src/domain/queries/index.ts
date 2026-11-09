@@ -59,6 +59,7 @@ export {
   getAdjacentFacings,
   getOrthogonalFacings,
   getFacingsOneTurnAway,
+  getTurnedFacing,
   isDiagonalFacing,
 } from './facings';
 
