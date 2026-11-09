@@ -1,9 +1,13 @@
 import type { MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { getTurnedFacing } from '@queries';
 import type { MoveState } from '../explore';
 import type { PathTrace } from './pathTrace';
-import { createMoveContext, getStepOption, getTurnOptions } from '../explore';
+import {
+  createMoveContext,
+  getStepOption,
+  getTurnedState,
+  getTurnOptions,
+} from '../explore';
 import { closeMovePath } from './closeMovePath';
 
 /**
@@ -50,12 +54,7 @@ export function traceMovePath(
         };
         return badTurn;
       }
-      state = {
-        ...state,
-        facing: getTurnedFacing(state.facing, delta),
-        path: [...state.path, delta],
-        remainingFlexibility: state.remainingFlexibility - 1,
-      };
+      state = getTurnedState(state, delta);
       continue;
     }
 

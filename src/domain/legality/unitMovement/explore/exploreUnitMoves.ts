@@ -1,12 +1,12 @@
 import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { getTurnedFacing } from '@queries';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
 import { createMoveContext } from './createMoveContext';
 import { getMoveEnding } from './getMoveEnding';
 import { getStepOption } from './getStepOption';
 import { getTurnOptions } from './getTurnOptions';
+import { getTurnedState } from './getTurnedState';
 
 /**
  * Every placement a unit's move may legally end on. From any point in a
@@ -57,12 +57,7 @@ export function exploreUnitMoves(
 
     // Or it may turn, for a point of Flexibility each.
     for (const turn of getTurnOptions(context, state)) {
-      explore({
-        ...state,
-        facing: getTurnedFacing(state.facing, turn),
-        path: [...state.path, turn],
-        remainingFlexibility: state.remainingFlexibility - 1,
-      });
+      explore(getTurnedState(state, turn));
     }
 
     // Or it may step, for a point of Speed.

@@ -6,8 +6,10 @@ export { createMoveContext } from './createMoveContext';
 export type { MoveState } from './moveState';
 export type { MoveResult } from './moveResult';
 
-// The turns and the step open from a point, and whether the move may end there.
+// The turns and the step open from a point, the point a turn reaches, and
+// whether the move may end there.
 export { getTurnOptions } from './getTurnOptions';
+export { getTurnedState } from './getTurnedState';
 export { getStepOption } from './getStepOption';
 export { getMoveEnding } from './getMoveEnding';
 
