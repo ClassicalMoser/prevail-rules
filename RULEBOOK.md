@@ -1447,17 +1447,15 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** On a move into an enemy space the mover stays on its start space while its target is stored beside it; the move is applied only when the engagement is set up (`applyMoveUnitEvent.ts`, "the mover has not moved yet"). The start-space stat read during the Speed comparison is therefore right by design now; what is missing is the path. No path is stored at all.
 - **To settle:** Put the delta trajectory on the `moveUnit` event — and on the retreat choice, which runs on the same rules — advance the mover along it, and validate by folding. Movement stats stay sampled at move-start, which the engine already does.
 
-<a id="a12"></a>**A12. A diagonal step can never end on an enemy.** _Bug._
+<a id="a12"></a>**A12. A diagonal step can never end on an enemy.** _Closed 2026-11-08._
 
 - **Rule:** §6.2.1: engaging from a flanking space is always allowed, straight or diagonal, and a diagonal step passes the usual corner test (§5.4.5). Nothing about the engagement is special for being diagonal.
-- **Code does:** For a diagonal step the move search first asks whether the unit could pass _through_ the target, which an enemy never allows (`legality/unitMovement/exploreUnitMoves.ts`; `checkDiagonalMove.ts`, whose own comment says the caller should check the end space). Probe: diagonal-facing defenders were reached only from the rear or at 135°, never in the flank. No test engages diagonally.
-- **To settle:** Check the destination of a diagonal step with `canMoveInto`/`canEngageEnemy`, not `canMoveThrough`.
+- **Closed:** `checkDiagonalMove` now asks only the corner question, as its own header always said it should (slice S4); what the unit may do at the target is the walk's question, and the walk judges an enemy there as an engagement. A diagonal-facing defender can be taken in the flank, spec-pinned, and two enemies on the corners still shut the step.
 
-<a id="a13"></a>**A13. The squaring-up turn is checked, never made; a 135° approach crashes.** _Bug._
+<a id="a13"></a>**A13. The squaring-up turn is checked, never made; a 135° approach crashes.** _Closed 2026-11-08._
 
 - **Rule:** §6.2.3: a front approach ends facing directly opposite, spending 1 Flexibility if needed. §6.3.1 then always classifies.
-- **Code does:** `canEngageEnemy.ts` only checks that 1 Flexibility remains; the turn is not applied. Against a diagonal-facing defender a step from an orthogonal front space arrives at 135°, which `isEngagementFromFront` and its siblings do not cover, and `generateStartEngagementEvent` throws (`TODO(wrong)` in `queries/engagement/isEngagementFromFront.ts`). Probe: Flexibility 2 against a SW-facing defender offered 28 such approaches. With Flexibility 0 only rear approaches exist, so no crash. Orthogonal defenders are unaffected. Intent: test titles in `canEngageEnemy.test.ts` ("has flexibility to rotate to face opposite").
-- **To settle:** Apply the turn as part of the engaging move (and spend the point), so 135° cannot arise.
+- **Closed:** `getEngagementEndFacing` states the ending — squared head-on for a front approach, the point spent when the step arrived oblique; flank and rear fight as they arrived — and the walk applies it (slice S5), so the oblique ending is never offered and §6.3.1 always classifies. The throw in `generateStartEngagementEvent` stays as the guard on that guarantee.
 
 <a id="a14"></a>**A14. Retreat turning after the first step is unrestricted.** _Closed 2026-11-08._
 

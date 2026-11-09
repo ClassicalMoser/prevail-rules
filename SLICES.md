@@ -70,13 +70,14 @@ three facings.
 Files: `legality/unitMovement/exploreUnitMoves.ts`.
 Blocks: `legality/unitMovement`, `queries` (facings).
 
-**S4. A diagonal step can end on an enemy** — §6.2.1, §5.4.5, A12. _Bug._
+**S4. A diagonal step can end on an enemy** — §6.2.1, §5.4.5, A12. **Done.**
 Check the destination with `canMoveInto`/`canEngageEnemy`, not
 `canMoveThrough`.
 Files: `legality/unitMovement/checkDiagonalMove.ts`, `exploreUnitMoves.ts`.
 Blocks: `legality/unitMovement`.
 
 **S5. The squaring-up turn is made, not just checked** — §6.2.3, §6.3.1, A13.
+**Done** (`getEngagementEndFacing` + the walk).
 _Bug: 135° approach crashes._ Apply the turn and spend the point as part of
 the engaging move, so `isEngagementFromFront` never sees 135°.
 Files: `legality/unitMovement/canEngageEnemy.ts`,
