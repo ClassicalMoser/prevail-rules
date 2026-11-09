@@ -1,4 +1,4 @@
-import type { UnitWithPlacement } from '@entities';
+import type { MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameEffectType } from '@events';
 import {
   createAttackApplyState as createPendingAttackApply,
@@ -13,11 +13,7 @@ import {
  *
  * No Vitest imports.
  */
-import type {
-  GameStateForVisibility,
-  IssueCommandsPhaseState,
-  RetreatOption,
-} from '@game';
+import type { GameStateForVisibility, IssueCommandsPhaseState } from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
@@ -386,14 +382,11 @@ export const procedureRegistryStateFactories: Record<
     };
     // On an open board the unit's one retreat is a step straight back to
     // F-5, still facing north (§9.1.3), and it is already chosen.
-    const onlyRetreat: RetreatOption = {
-      path: ['step'],
-      placement: { coordinate: 'F-5', facing: 'north' },
-    };
+    const onlyRetreat: MoveDelta[] = ['step'];
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
       retreatState: createRetreatState(unitWithPlacement, {
-        chosenRetreat: onlyRetreat,
-        legalRetreatOptions: [onlyRetreat],
+        chosenRetreatPath: onlyRetreat,
+        legalRetreatPaths: [onlyRetreat],
       }),
     });
     const ranged = createRangedAttackResolutionState(withBoard, {

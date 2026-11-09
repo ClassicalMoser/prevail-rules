@@ -44,8 +44,8 @@ export function generateResolveRetreatEvent(
   }
 
   // The retreat to carry out was chosen, or was the only one.
-  const chosen = retreatState.chosenRetreat;
-  if (chosen === 'pending') {
+  const path = retreatState.chosenRetreatPath;
+  if (path === 'pending') {
     throw new Error('No retreat has been chosen yet');
   }
 
@@ -53,11 +53,7 @@ export function generateResolveRetreatEvent(
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    finalPosition: {
-      placement: chosen.placement,
-      unit: retreatState.retreatingUnit.unit,
-    },
-    path: chosen.path,
+    path,
     startingPosition: retreatState.retreatingUnit,
   };
 

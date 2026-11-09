@@ -19,7 +19,7 @@ import {
 } from '@factories';
 /**
  * Front engagement during movement: defender commits whether to attempt retreat.
- * Accepting opens a nested RetreatState with baked legalRetreatOptions.
+ * Accepting opens a nested RetreatState with baked legalRetreatPaths.
  */
 describe('applyChooseWhetherToRetreatEvent function', () => {
   function createStateWithFrontEngagement(defender?: UnitWithPlacement) {
@@ -66,7 +66,7 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
       throw new Error('expected retreatState');
     }
     expect(retreatState.retreatingUnit.unit).toStrictEqual(defender.unit);
-    expect(retreatState.legalRetreatOptions.length).toBeGreaterThan(0);
+    expect(retreatState.legalRetreatPaths.length).toBeGreaterThan(0);
   });
 
   it('accepting a retreat with legal hexes bypasses the nested rout — it will never rout', () => {
@@ -83,7 +83,7 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     if (retreatState === 'pending') {
       throw new Error('expected retreatState');
     }
-    expect(retreatState.legalRetreatOptions.length).toBeGreaterThan(0);
+    expect(retreatState.legalRetreatPaths.length).toBeGreaterThan(0);
     expect(retreatState.routState).toBe('bypassed');
   });
 

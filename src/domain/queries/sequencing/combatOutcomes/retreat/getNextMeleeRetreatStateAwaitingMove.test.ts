@@ -1,5 +1,5 @@
-import type { UnitWithPlacement } from '@entities';
-import type { GameState, MeleeResolutionState, RetreatOption } from '@game';
+import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState, createUnitPlacement } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
@@ -40,16 +40,13 @@ function placed(
 describe('getNextMeleeRetreatStateAwaitingMove function', () => {
   // A retreat already chosen: one step straight back. Which retreat it is does
   // not matter here, only that the unit has one waiting to be carried out.
-  const chosen = {
-    path: ['step'],
-    placement: { coordinate: 'F-5', facing: 'north' },
-  } satisfies RetreatOption;
+  const chosen: MoveDelta[] = ['step'];
 
   it('returns the first player retreat whose retreat is chosen', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const retreat = createRetreatState(white, {
-      chosenRetreat: chosen,
+      chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
@@ -66,7 +63,7 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     const white = placed('white', 'north');
     const black = placed('black', 'south');
     const retreat = createRetreatState(black, {
-      chosenRetreat: chosen,
+      chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white),
@@ -100,7 +97,7 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'south');
     const retreat = createRetreatState(black, {
-      chosenRetreat: chosen,
+      chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, {

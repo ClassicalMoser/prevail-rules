@@ -90,7 +90,7 @@ describe('findRoutLocation function', () => {
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(standing, {
         retreatState: createRetreatState(standing, {
-          legalRetreatOptions: [],
+          legalRetreatPaths: [],
           routState: nested,
         }),
       }),

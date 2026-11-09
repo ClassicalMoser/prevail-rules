@@ -14,9 +14,10 @@ export interface ResolveRetreatEvent {
   effectType: typeof RESOLVE_RETREAT_EFFECT_TYPE;
   /** The starting position of the unit. */
   startingPosition: UnitWithPlacement;
-  /** The final position of the unit. */
-  finalPosition: UnitWithPlacement;
-  /** The steps and turns of the fall-back, for a client to show it (§9.1). */
+  /**
+   * The steps and turns of the fall-back (§9.1). Where the unit ends is read
+   * from this path and its starting position, never stored beside them.
+   */
   path: MoveDelta[];
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
@@ -27,7 +28,6 @@ const _resolveRetreatEventSchemaObject = z
     effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
     eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    finalPosition: unitWithPlacementSchema,
     path: z.array(moveDeltaSchema),
     startingPosition: unitWithPlacementSchema,
   })
@@ -47,7 +47,6 @@ export const resolveRetreatEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  finalPosition: typeof unitWithPlacementSchema;
   path: z.ZodArray<typeof moveDeltaSchema>;
   startingPosition: typeof unitWithPlacementSchema;
 }> = _resolveRetreatEventSchemaObject;

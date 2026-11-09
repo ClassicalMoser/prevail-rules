@@ -1,5 +1,6 @@
+import type { MoveDelta } from '@entities';
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
-import type { GameState, RetreatOption, RetreatState } from '@game';
+import type { GameState, RetreatState } from '@game';
 import { getLegalRetreats } from '@legality';
 import { getAttackApplyStateAt, getPositionOfUnit } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
@@ -32,20 +33,20 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
     placement,
     unit: apply.defendingUnit,
   };
-  const legalRetreatOptions = getLegalRetreats(retreatingUnit, state);
+  const legalRetreatPaths = getLegalRetreats(retreatingUnit, state);
   // One legal retreat is not a choice — it is carried out as it stands.
-  const chosenRetreat: RetreatOption | 'pending' =
-    legalRetreatOptions.length === 1 ? legalRetreatOptions[0] : 'pending';
+  const chosenRetreatPath: MoveDelta[] | 'pending' =
+    legalRetreatPaths.length === 1 ? legalRetreatPaths[0] : 'pending';
 
   // A retreat with somewhere to go will never rout, so that slot is bypassed.
   // Nowhere to go leaves the rout pending until triggerRoutFromRetreat opens it.
   const nestedRoutState: 'pending' | 'bypassed' =
-    legalRetreatOptions.length === 0 ? 'pending' : 'bypassed';
+    legalRetreatPaths.length === 0 ? 'pending' : 'bypassed';
 
   const retreatState: RetreatState = {
     completed: false,
-    chosenRetreat,
-    legalRetreatOptions,
+    chosenRetreatPath,
+    legalRetreatPaths,
     retreatingUnit,
     routState: nestedRoutState,
     substepType: 'retreat',

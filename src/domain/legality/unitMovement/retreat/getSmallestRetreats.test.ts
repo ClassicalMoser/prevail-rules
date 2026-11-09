@@ -26,12 +26,7 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    expect(smallest).toStrictEqual([
-      {
-        path: ['step', 'step'],
-        placement: { coordinate: 'G-5', facing: 'north' },
-      },
-    ]);
+    expect(smallest).toStrictEqual([['step', 'step']]);
   });
 
   it('among equal turns, the fewest steps win', () => {
@@ -52,12 +47,7 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    expect(smallest).toStrictEqual([
-      {
-        path: ['step'],
-        placement: { coordinate: 'F-5', facing: 'north' },
-      },
-    ]);
+    expect(smallest).toStrictEqual([['step']]);
   });
 
   it('a tie offers every smallest retreat, for the owner to choose', () => {
@@ -78,17 +68,11 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    // Each is offered with the path that reaches it, so the choice can be
-    // made, and recorded, by path.
+    // Each is offered by the path that reaches it, so the choice is made, and
+    // recorded, by path.
     expect(smallest).toStrictEqual([
-      {
-        path: ['turnRight', 'step'],
-        placement: { coordinate: 'F-4', facing: 'northEast' },
-      },
-      {
-        path: ['turnLeft', 'step'],
-        placement: { coordinate: 'F-6', facing: 'northWest' },
-      },
+      ['turnRight', 'step'],
+      ['turnLeft', 'step'],
     ]);
   });
 
@@ -114,12 +98,7 @@ describe('getSmallestRetreats function', () => {
       ]),
     );
 
-    expect(smallest).toStrictEqual([
-      {
-        path: ['turnLeft', 'step', 'turnRight', 'step'],
-        placement: { coordinate: 'G-5', facing: 'north' },
-      },
-    ]);
+    expect(smallest).toStrictEqual([['turnLeft', 'step', 'turnRight', 'step']]);
   });
 
   it('no legal ending means no retreat', () => {

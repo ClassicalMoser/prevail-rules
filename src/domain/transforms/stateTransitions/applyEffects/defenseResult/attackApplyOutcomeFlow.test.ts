@@ -87,16 +87,16 @@ describe('attack apply outcome flow', () => {
       ),
       'the attack applies a retreat',
     );
-    // The engine computed where this unit can go; this case picks one of them.
-    expect(retreat.legalRetreatOptions.length).toBeGreaterThan(0);
-    const chosen = retreat.legalRetreatOptions[0];
+    // The engine computed the way back for this unit on an empty board: one
+    // step straight back. This case takes it.
+    expect(retreat.legalRetreatPaths).toStrictEqual([['step']]);
+    const chosen = retreat.legalRetreatPaths[0];
 
     const resolveRetreat: ResolveRetreatEvent = {
       effectType: 'resolveRetreat',
       eventNumber: 1,
       eventType: 'gameEffect',
-      finalPosition: { placement: chosen.placement, unit: defendingUnit },
-      path: chosen.path,
+      path: chosen,
       startingPosition: retreat.retreatingUnit,
     };
     const afterRetreat = applyResolveRetreatEvent(
@@ -129,7 +129,7 @@ describe('attack apply outcome flow', () => {
     expect(reverse.reversingUnit).toBe(defendingUnit);
     expect(
       getPositionOfUnit(afterReverseOpen.boardState, reverse.reversingUnit),
-    ).toStrictEqual(chosen.placement);
+    ).toStrictEqual({ coordinate: 'F-5', facing: 'north' });
   });
 
   it('a retreat with nowhere to go that routs bypasses reverse on the apply', () => {
@@ -140,7 +140,7 @@ describe('attack apply outcome flow', () => {
       unitWithPlacement,
       {
         retreatState: createRetreatState(unitWithPlacement, {
-          legalRetreatOptions: [],
+          legalRetreatPaths: [],
         }),
       },
     );

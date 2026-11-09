@@ -140,17 +140,11 @@ describe('getExpectedEngagementEvent function', () => {
         commitmentType: 'completed',
       },
       retreatState: createRetreatState(retreatingUnit, {
-        chosenRetreat: 'pending',
-        // Two tied endings, so the defender has a real choice to make.
-        legalRetreatOptions: [
-          {
-            path: ['turnLeft', 'step'],
-            placement: { coordinate: 'F-6', facing: 'northWest' },
-          },
-          {
-            path: ['turnRight', 'step'],
-            placement: { coordinate: 'F-4', facing: 'northEast' },
-          },
+        chosenRetreatPath: 'pending',
+        // Two tied ways back, so the defender has a real choice to make.
+        legalRetreatPaths: [
+          ['turnLeft', 'step'],
+          ['turnRight', 'step'],
         ],
       }),
     });
@@ -172,16 +166,8 @@ describe('getExpectedEngagementEvent function', () => {
         commitmentType: 'completed',
       },
       retreatState: createRetreatState(retreatingUnit, {
-        chosenRetreat: {
-          path: ['step'],
-          placement: { coordinate: 'F-5', facing: 'north' },
-        },
-        legalRetreatOptions: [
-          {
-            path: ['step'],
-            placement: { coordinate: 'F-5', facing: 'north' },
-          },
-        ],
+        chosenRetreatPath: ['step'],
+        legalRetreatPaths: [['step']],
       }),
     });
 
@@ -232,16 +218,8 @@ describe('getExpectedEngagementEvent function', () => {
       },
       retreatState: createRetreatState(retreatingUnit, {
         completed: true,
-        chosenRetreat: {
-          path: ['step'],
-          placement: { coordinate: 'F-5', facing: 'north' },
-        },
-        legalRetreatOptions: [
-          {
-            path: ['step'],
-            placement: { coordinate: 'F-5', facing: 'north' },
-          },
-        ],
+        chosenRetreatPath: ['step'],
+        legalRetreatPaths: [['step']],
       }),
     });
 

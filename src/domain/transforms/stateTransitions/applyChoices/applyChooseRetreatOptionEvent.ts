@@ -20,15 +20,15 @@ export function applyChooseRetreatOptionEvent<S extends GameState>(
 ): S {
   const retreatState = getRetreatState(state, event.player);
   // The path names one of the offered retreats; that one is carried out.
-  const chosen = retreatState.legalRetreatOptions.find((option) =>
-    isSameMovePath(option.path, event.path),
+  const chosen = retreatState.legalRetreatPaths.find((path) =>
+    isSameMovePath(path, event.path),
   );
   if (chosen === undefined) {
     throw new Error('The chosen retreat is not one of those offered');
   }
   const newRetreatState: RetreatState = {
     ...retreatState,
-    chosenRetreat: chosen,
+    chosenRetreatPath: chosen,
   };
   const updated = updateRetreatState(state, newRetreatState);
   return updated;

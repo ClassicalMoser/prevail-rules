@@ -1,3 +1,4 @@
+import type { MoveDelta } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -28,15 +29,12 @@ import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
 
 import { createEmptyGameState } from '@factories';
 /**
- * Applies a committed retreat: removes the unit from `startingPosition`, places it at
- * `finalPosition`, and marks the nested retreat substep completed (ranged or melee side).
+ * Applies a committed retreat: removes the unit from `startingPosition`, places it where
+ * `path` leads, and marks the nested retreat substep completed (ranged or melee side).
  */
 describe('applyResolveRetreatEvent function', () => {
   // A unit on E-5 facing north falls straight back one step, to F-5.
-  const stepBack = {
-    path: ['step' as const],
-    placement: { coordinate: 'F-5' as const, facing: 'north' as const },
-  };
+  const stepBack: MoveDelta[] = ['step'];
 
   /** IssueCommands + ranged CRS + retreat substep for white on E-5. */
   function createStateWithRangedAttackRetreat(): GameState {
@@ -118,7 +116,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -148,7 +145,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -177,7 +173,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -202,7 +197,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -227,7 +221,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -259,7 +252,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -287,7 +279,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -302,6 +293,27 @@ describe('applyResolveRetreatEvent function', () => {
     });
   });
 
+  describe('a path that runs off the board', () => {
+    it('is refused: the retreat path leaves the board', () => {
+      const state = createStateWithRangedAttackRetreat();
+      const retreatState = getRangedAttackRetreatState(state);
+
+      // Every step falls back one more space (§9.1.3); from E-5 facing north,
+      // enough of them carry the unit past the board's edge.
+      const event: ResolveRetreatEvent = {
+        effectType: 'resolveRetreat',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        path: Array.from({ length: 40 }, () => 'step' as const),
+        startingPosition: retreatState.retreatingUnit,
+      };
+
+      expect(() => applyResolveRetreatEvent(event, state)).toThrow(
+        'The retreat path leaves the board',
+      );
+    });
+  });
+
   describe('structural update', () => {
     it('given retreat completed flag and board ref before apply, input unchanged after apply', () => {
       const state = createStateWithRangedAttackRetreat();
@@ -313,7 +325,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(retreatState.retreatingUnit.unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };
@@ -343,8 +354,8 @@ describe('applyResolveRetreatEvent function', () => {
               engagementState: createFrontEngagementState({
                 defendingUnitRetreats: true,
                 retreatState: createRetreatState(placement, {
-                  chosenRetreat: stepBack,
-                  legalRetreatOptions: [stepBack],
+                  chosenRetreatPath: stepBack,
+                  legalRetreatPaths: [stepBack],
                 }),
               }),
             },
@@ -356,7 +367,6 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: placed(unit, 'F-5', 'north'),
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
       };

@@ -239,7 +239,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
           whitePlacement,
           {
             retreatState: createRetreatState(whitePlacement, {
-              legalRetreatOptions: [],
+              legalRetreatPaths: [],
             }),
           },
         ),

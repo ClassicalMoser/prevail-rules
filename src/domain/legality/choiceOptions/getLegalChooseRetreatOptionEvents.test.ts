@@ -1,5 +1,5 @@
+import type { MoveDelta } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
-import type { RetreatOption } from '@game';
 import {
   createAttackApplyStateWithRetreat,
   createFrontEngagementState,
@@ -17,22 +17,16 @@ import { getLegalChooseRetreatOptionEvents } from './getLegalChooseRetreatOption
 import { createEmptyGameState } from '@factories';
 /**
  * GetLegalChooseRetreatOptionEvents: full ChooseRetreatOptionEvent payloads from
- * an active retreat substep's legalRetreatOptions.
+ * an active retreat substep's legalRetreatPaths.
  */
 describe('getLegalChooseRetreatOptionEvents function', () => {
-  // Two tied ways back, each reached by its own path.
-  const optionA: RetreatOption = {
-    path: ['turnLeft', 'step'],
-    placement: { coordinate: 'F-6', facing: 'northWest' },
-  };
-  const optionB: RetreatOption = {
-    path: ['turnRight', 'step'],
-    placement: { coordinate: 'F-4', facing: 'northEast' },
-  };
+  // Two tied ways back, each named by the moves it takes.
+  const optionA: MoveDelta[] = ['turnLeft', 'step'];
+  const optionB: MoveDelta[] = ['turnRight', 'step'];
 
   function stateWithRangedRetreatOptions(
-    options: readonly RetreatOption[] = [optionA, optionB],
-    chosenRetreat: RetreatOption | 'pending' = 'pending',
+    options: readonly MoveDelta[][] = [optionA, optionB],
+    chosenRetreatPath: MoveDelta[] | 'pending' = 'pending',
   ) {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
@@ -43,8 +37,8 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(placement, {
       retreatState: createRetreatState(placement, {
-        chosenRetreat,
-        legalRetreatOptions: [...options],
+        chosenRetreatPath,
+        legalRetreatPaths: [...options],
       }),
     });
     return updatePhaseState(
@@ -68,14 +62,14 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
-        path: optionA.path,
+        path: optionA,
       },
       {
         choiceType: 'chooseRetreatOption',
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
-        path: optionB.path,
+        path: optionB,
       },
     ]);
   });
@@ -108,8 +102,8 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
           engagementState: createFrontEngagementState({
             defendingUnitRetreats: true,
             retreatState: createRetreatState(placement, {
-              chosenRetreat: 'pending',
-              legalRetreatOptions: [optionA, optionB],
+              chosenRetreatPath: 'pending',
+              legalRetreatPaths: [optionA, optionB],
             }),
           }),
         }),
@@ -122,14 +116,14 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
-        path: optionA.path,
+        path: optionA,
       },
       {
         choiceType: 'chooseRetreatOption',
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
-        path: optionB.path,
+        path: optionB,
       },
     ]);
   });

@@ -32,7 +32,7 @@ describe('findRoutAwaitingPenalty function', () => {
           {
             attackApplyState: createAttackApplyStateWithRetreat(standing, {
               retreatState: createRetreatState(standing, {
-                legalRetreatOptions: [],
+                legalRetreatPaths: [],
                 routState: nested,
               }),
             }),

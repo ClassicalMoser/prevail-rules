@@ -17,7 +17,7 @@ export interface FrontEngagementResolutionState {
   defendingUnitRetreats: 'pending' | boolean;
   /**
    * Nested retreat substep once the defender accepts retreat.
-   * Baked with {@link RetreatState.legalRetreatOptions} like attack-apply.
+   * Baked with {@link RetreatState.legalRetreatPaths} like attack-apply.
    */
   retreatState: RetreatState | 'pending';
 }

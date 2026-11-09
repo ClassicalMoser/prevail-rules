@@ -1,5 +1,5 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import type { RetreatOption } from '@game';
+import type { MoveDelta } from '@entities';
 import {
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
@@ -15,21 +15,14 @@ import { isValidChooseRetreatOptionEvent } from './isValidChooseRetreatOptionEve
 import {
   createChooseRetreatOptionEvent,
   createEmptyGameState,
-  createUnitPlacement,
 } from '@factories';
 /**
  * IsValidChooseRetreatOptionEvent: membership against getLegalChooseRetreatOptionEvents.
  */
 describe('isValidChooseRetreatOptionEvent function', () => {
   // Two tied ways back, each named by the moves it takes.
-  const optionA: RetreatOption = {
-    path: ['turnLeft', 'step'],
-    placement: createUnitPlacement('F-6', 'northWest'),
-  };
-  const optionB: RetreatOption = {
-    path: ['turnRight', 'step'],
-    placement: createUnitPlacement('F-4', 'northEast'),
-  };
+  const optionA: MoveDelta[] = ['turnLeft', 'step'];
+  const optionB: MoveDelta[] = ['turnRight', 'step'];
 
   function stateWithRangedRetreat() {
     const state = createEmptyGameState('standard');
@@ -41,7 +34,7 @@ describe('isValidChooseRetreatOptionEvent function', () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(placement, {
       retreatState: createRetreatState(placement, {
-        legalRetreatOptions: [optionA, optionB],
+        legalRetreatPaths: [optionA, optionB],
       }),
     });
     return updatePhaseState(
@@ -60,7 +53,7 @@ describe('isValidChooseRetreatOptionEvent function', () => {
     const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
       player: 'white',
-      path: optionB.path,
+      path: optionB,
     });
 
     expect(isValidChooseRetreatOptionEvent(event, state)).toStrictEqual({
@@ -68,7 +61,7 @@ describe('isValidChooseRetreatOptionEvent function', () => {
     });
   });
 
-  it('rejects a path that is not among legalRetreatOptions', () => {
+  it('rejects a path that is not among legalRetreatPaths', () => {
     const state = stateWithRangedRetreat();
     const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
@@ -92,7 +85,7 @@ describe('isValidChooseRetreatOptionEvent function', () => {
     const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
       player: 'white',
-      path: optionA.path,
+      path: optionA,
     });
 
     expect(isValidChooseRetreatOptionEvent(event, state).result).toBe(false);

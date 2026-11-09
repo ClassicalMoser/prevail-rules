@@ -23,7 +23,7 @@ export function getNextMeleeRetreatStateAwaitingMove(
     const retreat = apply.retreatState;
     if (
       isOpenSubstep(retreat) &&
-      retreat.chosenRetreat !== 'pending' &&
+      retreat.chosenRetreatPath !== 'pending' &&
       !retreat.completed
     ) {
       return retreat;

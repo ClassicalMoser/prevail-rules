@@ -43,7 +43,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       unitWithPlacement,
       {
         retreatState: createRetreatState(unitWithPlacement, {
-          legalRetreatOptions: [],
+          legalRetreatPaths: [],
         }),
       },
     );
@@ -90,7 +90,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       retreatingUnitWithPlacement,
       {
         retreatState: createRetreatState(retreatingUnitWithPlacement, {
-          legalRetreatOptions: [],
+          legalRetreatPaths: [],
         }),
       },
     );
@@ -224,7 +224,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
         unitWithPlacement,
         {
           retreatState: createRetreatState(unitWithPlacement, {
-            legalRetreatOptions: [],
+            legalRetreatPaths: [],
           }),
         },
       );

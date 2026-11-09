@@ -31,7 +31,7 @@ describe('updateRetreatRoutState function', () => {
       boardState: addUnitToBoard(state.boardState, placement),
     };
     const retreatState = createRetreatState(placement, {
-      legalRetreatOptions: [],
+      legalRetreatPaths: [],
       routState: createRoutState('white', unit),
     });
     const attackApply = createAttackApplyStateWithRetreat(placement, {

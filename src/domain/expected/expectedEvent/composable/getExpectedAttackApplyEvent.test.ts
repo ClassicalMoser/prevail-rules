@@ -222,10 +222,7 @@ describe('getExpectedAttackApplyEvent function', () => {
         {
           retreatState: createRetreatState(unitPlacement, {
             completed: true,
-            chosenRetreat: {
-              path: ['step'],
-              placement: { coordinate: 'F-5', facing: 'north' },
-            },
+            chosenRetreatPath: ['step'],
           }),
         },
       );
@@ -245,10 +242,7 @@ describe('getExpectedAttackApplyEvent function', () => {
           completed: true,
           retreatState: createRetreatState(unitPlacement, {
             completed: true,
-            chosenRetreat: {
-              path: ['step'],
-              placement: { coordinate: 'F-5', facing: 'north' },
-            },
+            chosenRetreatPath: ['step'],
           }),
         },
       );

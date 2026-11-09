@@ -1,4 +1,4 @@
-import type { RetreatOption } from '@game';
+import type { MoveDelta } from '@entities';
 import { isSamePlacement } from '@queries';
 import type { MoveResult } from '../explore';
 
@@ -13,9 +13,9 @@ import type { MoveResult } from '../explore';
  * one ending are exceptionally rare and never significant).
  *
  * @param endings - Every legal ending of the retreat, with its cost
- * @returns The smallest endings, each with one path; empty when there are none
+ * @returns The paths of the smallest retreats, one per ending; empty when there are none
  */
-export function getSmallestRetreats(endings: Set<MoveResult>): RetreatOption[] {
+export function getSmallestRetreats(endings: Set<MoveResult>): MoveDelta[][] {
   const all = [...endings];
 
   // Fewest turns first: a retreat should not wheel when it can fall straight
@@ -33,15 +33,16 @@ export function getSmallestRetreats(endings: Set<MoveResult>): RetreatOption[] {
     (ending) => ending.speedUsed === fewestSteps,
   );
 
-  // One option per ending: a second path to the same place is no choice.
-  const options: RetreatOption[] = [];
+  // One path per ending: a second path to the same place is no choice.
+  const kept: MoveResult[] = [];
   for (const ending of smallest) {
-    const alreadyOffered = options.some((option) =>
-      isSamePlacement(option.placement, ending.placement),
+    const alreadyOffered = kept.some((other) =>
+      isSamePlacement(other.placement, ending.placement),
     );
     if (!alreadyOffered) {
-      options.push({ path: [...ending.path], placement: ending.placement });
+      kept.push(ending);
     }
   }
-  return options;
+  const paths = kept.map((ending) => [...ending.path]);
+  return paths;
 }

@@ -20,7 +20,7 @@ export function getExpectedRetreatEvent(
   }
 
   // Check if there are no legal retreat options
-  if (retreatState.legalRetreatOptions.length === 0) {
+  if (retreatState.legalRetreatPaths.length === 0) {
     // If the rout state is not populated, trigger a rout from the retreat
     if (isPending(retreatState.routState)) {
       return {
@@ -45,10 +45,10 @@ export function getExpectedRetreatEvent(
   }
 
   // Check whether the retreat to carry out has been chosen
-  if (retreatState.chosenRetreat === 'pending') {
+  if (retreatState.chosenRetreatPath === 'pending') {
     // Multiple retreat options exist - player must choose
     // If only one option exists, it is carried out as it stands (chosen when the retreat opens)
-    if (retreatState.legalRetreatOptions.length === 1) {
+    if (retreatState.legalRetreatPaths.length === 1) {
       throw new Error(
         'A retreat with a single option should have it chosen when it opens',
       );

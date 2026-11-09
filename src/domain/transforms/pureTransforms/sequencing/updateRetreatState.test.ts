@@ -209,10 +209,7 @@ describe('updateRetreatState function', () => {
     });
     const stateInPhase = updatePhaseState(withBoard, phaseState);
     const nextRetreat = createRetreatState(placedUnit, {
-      chosenRetreat: {
-        path: ['step'],
-        placement: createUnitPlacement('F-5', 'north'),
-      },
+      chosenRetreatPath: ['step'],
     });
 
     const next = updateRetreatState(stateInPhase, nextRetreat);
@@ -223,10 +220,7 @@ describe('updateRetreatState function', () => {
     if (retreatState === 'pending') {
       throw new Error('expected retreatState');
     }
-    expect(retreatState.chosenRetreat).toStrictEqual({
-      path: ['step'],
-      placement: { coordinate: 'F-5', facing: 'north' },
-    });
+    expect(retreatState.chosenRetreatPath).toStrictEqual(['step']);
   });
 
   it('throws when movement CRS has front engagement without an opened retreatState', () => {

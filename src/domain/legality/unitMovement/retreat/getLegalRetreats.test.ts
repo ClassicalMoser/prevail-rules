@@ -19,7 +19,7 @@ import { getLegalRetreats } from './getLegalRetreats';
 
 import { createEmptyGameState } from '@factories';
 /**
- * GetLegalRetreats: legal retreat options (path and ending) for an engaged unit given speed, flexibility, and board occupancy.
+ * GetLegalRetreats: legal retreat paths for an engaged unit given speed, flexibility, and board occupancy.
  */
 describe('getLegalRetreats function', () => {
   // Test helper to check if a placement exists in the set
@@ -307,7 +307,7 @@ describe('getLegalRetreats function', () => {
   });
 
   describe('edge cases', () => {
-    it('returns the legal retreat option for the secondary unit in an engagement', () => {
+    it('returns the legal retreat path for the secondary unit in an engagement', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -327,12 +327,7 @@ describe('getLegalRetreats function', () => {
       const retreats = getLegalRetreats(unitWithPlacement, gameState);
       // Secondary (white) faces east; backward is west — one minimal legal retreat, a single step, from engaged G-8
       expect(retreats).toHaveLength(1);
-      expect(retreats).toStrictEqual([
-        {
-          path: ['step'],
-          placement: { coordinate: 'G-7', facing: 'east' },
-        },
-      ]);
+      expect(retreats).toStrictEqual([['step']]);
     });
   });
 });

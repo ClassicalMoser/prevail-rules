@@ -1,9 +1,7 @@
-import type { UnitWithPlacement } from '@entities';
-import type { RetreatOption } from './retreatOption';
+import type { MoveDelta, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
-import { unitWithPlacementSchema } from '@entities';
-import { retreatOptionSchema } from './retreatOption';
+import { moveDeltaSchema, unitWithPlacementSchema } from '@entities';
 import { z } from 'zod';
 import { routStateSchema } from './routSubstep';
 
@@ -23,13 +21,18 @@ export interface RetreatState {
   substepType: 'retreat';
   /** The unit that is retreating. */
   retreatingUnit: UnitWithPlacement;
-  /** Where the unit may fall back to, each by one path (§9.1.3). */
-  legalRetreatOptions: RetreatOption[];
   /**
-   * The retreat to be carried out: chosen by the player among several, or
-   * filled in at once when there is only one. `'pending'` until then.
+   * The retreats the unit may make, each as its path from where it stands
+   * (§9.1.3): one path per space it could end in. Where each ends is read
+   * from the path, never stored beside it.
    */
-  chosenRetreat: RetreatOption | 'pending';
+  legalRetreatPaths: MoveDelta[][];
+  /**
+   * The retreat to be carried out, as its path: chosen by the player among
+   * several, or filled in at once when there is only one. `'pending'` until
+   * then.
+   */
+  chosenRetreatPath: MoveDelta[] | 'pending';
   /**
    * Rout nested under this retreat: `'pending'` when the unit has nowhere to
    * go (a rout is still due), `'bypassed'` when it has legal hexes (a retreat
@@ -42,9 +45,9 @@ export interface RetreatState {
 
 const _retreatStateSchemaObject = z
   .object({
-    chosenRetreat: retreatOptionSchema.or(z.literal('pending')),
+    chosenRetreatPath: z.array(moveDeltaSchema).or(z.literal('pending')),
     completed: z.boolean(),
-    legalRetreatOptions: z.array(retreatOptionSchema),
+    legalRetreatPaths: z.array(z.array(moveDeltaSchema)),
     retreatingUnit: unitWithPlacementSchema,
     routState: routStateSchema
       .or(z.literal('pending'))

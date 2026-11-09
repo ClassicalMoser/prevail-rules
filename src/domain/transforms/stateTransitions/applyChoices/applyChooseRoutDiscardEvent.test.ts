@@ -217,7 +217,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
     state = { ...state, routedUnits: [defender.unit] };
     // No legal retreat options is what made this a rout; one card owed.
     const retreatState = createRetreatState(defender, {
-      legalRetreatOptions: [],
+      legalRetreatPaths: [],
       routState: createRoutState('white', defender.unit, {
         numberToDiscard: 1,
       }),

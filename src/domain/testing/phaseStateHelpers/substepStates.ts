@@ -1,7 +1,11 @@
-import type { PlayerSide, UnitInstance, UnitWithPlacement } from '@entities';
+import type {
+  MoveDelta,
+  PlayerSide,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
 import type {
   RallyResolutionState,
-  RetreatOption,
   RetreatState,
   ReverseState,
   RoutState,
@@ -16,33 +20,28 @@ export function createRetreatState(
 ): RetreatState {
   // A stand-in tie between two equally small retreats (§9.1.3): the two a
   // unit on E-5 facing north has when an enemy stands behind it on F-5, as
-  // `getLegalRetreats` finds them.
-  const defaultLegalRetreatOptions: RetreatOption[] = [
-    {
-      path: ['turnLeft', 'step'],
-      placement: { coordinate: 'F-6', facing: 'northWest' },
-    },
-    {
-      path: ['turnRight', 'step'],
-      placement: { coordinate: 'F-4', facing: 'northEast' },
-    },
+  // `getLegalRetreats` finds them: to F-6 facing northwest, and to F-4
+  // facing northeast.
+  const defaultLegalRetreatPaths: MoveDelta[][] = [
+    ['turnLeft', 'step'],
+    ['turnRight', 'step'],
   ];
   const {
-    legalRetreatOptions: overrideLegalRetreatOptions,
+    legalRetreatPaths: overrideLegalRetreatPaths,
     routState: overrideRoutState,
     ...restOverrides
   } = overrides ?? {};
-  const legalRetreatOptions =
-    overrideLegalRetreatOptions ?? defaultLegalRetreatOptions;
+  const legalRetreatPaths =
+    overrideLegalRetreatPaths ?? defaultLegalRetreatPaths;
   // A retreat with somewhere to go will never rout, so that slot is bypassed.
   // Nowhere to go leaves the rout pending until triggerRoutFromRetreat opens it.
   const routState =
     overrideRoutState ??
-    (legalRetreatOptions.length === 0 ? 'pending' : 'bypassed');
+    (legalRetreatPaths.length === 0 ? 'pending' : 'bypassed');
   return {
     completed: false,
-    chosenRetreat: 'pending',
-    legalRetreatOptions,
+    chosenRetreatPath: 'pending',
+    legalRetreatPaths,
     retreatingUnit: unit,
     routState,
     substepType: 'retreat' as const,

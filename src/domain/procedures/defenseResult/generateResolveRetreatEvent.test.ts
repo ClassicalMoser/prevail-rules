@@ -1,3 +1,4 @@
+import type { MoveDelta } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -26,18 +27,11 @@ import { createEmptyGameState } from '@factories';
  * initiative player’s path first.
  */
 describe('generateResolveRetreatEvent function', () => {
-  // A white unit on E-5 facing north falls straight back one step, to F-5.
-  const chosenWhite = {
-    path: ['step' as const],
-    placement: { coordinate: 'F-5' as const, facing: 'north' as const },
-  };
-  // A black unit on E-5 facing south falls straight back the other way, to D-5.
-  const chosenBlack = {
-    path: ['step' as const],
-    placement: { coordinate: 'D-5' as const, facing: 'south' as const },
-  };
+  // A unit on E-5 falls straight back one step, whichever way it faces: the
+  // path names the move, and where it ends follows from the way the unit faces.
+  const stepBack: MoveDelta[] = ['step'];
 
-  it('given ranged attack-apply with retreat substep and a chosen retreat, event carries that path and placement', () => {
+  it('given ranged attack-apply with retreat substep and a chosen retreat, event carries that path', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
@@ -47,7 +41,7 @@ describe('generateResolveRetreatEvent function', () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
       retreatState: createRetreatState(unitWithPlacement, {
-        chosenRetreat: chosenWhite,
+        chosenRetreatPath: stepBack,
       }),
     });
     const ranged = createRangedAttackResolutionState(withBoard, {
@@ -63,8 +57,7 @@ describe('generateResolveRetreatEvent function', () => {
     expect(event.effectType).toBe('resolveRetreat');
     expect(event.startingPosition).toStrictEqual(unitWithPlacement);
     expect(event.path).toStrictEqual(['step']);
-    expect(event.finalPosition.placement).toStrictEqual(chosenWhite.placement);
-    expect(event.finalPosition.unit).toBe(retreatingUnit);
+    expect(event.startingPosition.unit).toBe(retreatingUnit);
   });
 
   it("with both retreats ready, the second player's unit falls back first (§7.5.6)", () => {
@@ -80,10 +73,10 @@ describe('generateResolveRetreatEvent function', () => {
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 
     const whiteRetreat = createRetreatState(whiteWp, {
-      chosenRetreat: chosenWhite,
+      chosenRetreatPath: stepBack,
     });
     const blackRetreat = createRetreatState(blackWp, {
-      chosenRetreat: chosenBlack,
+      chosenRetreatPath: stepBack,
     });
 
     const whiteApply = createAttackApplyStateWithRetreat(whiteWp, {
@@ -103,14 +96,10 @@ describe('generateResolveRetreatEvent function', () => {
     const full = updatePhaseState(s, phase);
 
     // White holds initiative and strikes first, so black's unit, the second
-    // player's, is the one that falls back first: to D-5, facing south.
+    // player's, is the one that falls back first.
     const event = generateResolveRetreatEvent(full, 0);
     expect(event.startingPosition.unit).toBe(blackUnit);
     expect(event.path).toStrictEqual(['step']);
-    expect(event.finalPosition.placement).toStrictEqual({
-      coordinate: 'D-5',
-      facing: 'south',
-    });
   });
 
   it('given playCards phase, throws retreat resolution phase guard', () => {

@@ -3,6 +3,7 @@ import type { GameState, RetreatState } from '@game';
 import {
   getBoardSpace,
   getFrontEngagementStateFromMovement,
+  getPlacementAfterPath,
   getRetreatState,
 } from '@queries';
 import {
@@ -16,7 +17,7 @@ import {
 
 /**
  * Applies a ResolveRetreatEvent to the game state.
- * Moves the retreating unit from startingPosition to finalPosition on the board,
+ * Moves the retreating unit from where it stood to where its path leads,
  * and its commander with it if the commander stood in its space (§9.1.8).
  * Marks the retreat state as completed.
  *
@@ -30,12 +31,25 @@ export function applyResolveRetreatEvent<S extends GameState>(
   event: ResolveRetreatEvent,
   state: S,
 ): S {
+  // Where the unit ends is wherever its retreat path leads from where it
+  // stood, read by geometry: the path was judged when it was offered.
+  const landing = getPlacementAfterPath(
+    state.boardState,
+    event.startingPosition.placement,
+    event.path,
+    'retreat',
+  );
+  if (landing === undefined) {
+    throw new Error('The retreat path leaves the board');
+  }
+  const arrived = { placement: landing, unit: event.startingPosition.unit };
+
   // Move the unit on the board
   const removedUnitBoard = removeUnitFromBoard(
     state.boardState,
     event.startingPosition,
   );
-  const unitMovedBoard = addUnitToBoard(removedUnitBoard, event.finalPosition);
+  const unitMovedBoard = addUnitToBoard(removedUnitBoard, arrived);
 
   // A commander standing with the retreating unit always goes with it
   // (§9.1.8). Only the unit's own commander: an enemy commander that rode
@@ -51,7 +65,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
         unitMovedBoard,
         retreatingSide,
         startCoordinate,
-        event.finalPosition.placement.coordinate,
+        landing.coordinate,
       )
     : unitMovedBoard;
 

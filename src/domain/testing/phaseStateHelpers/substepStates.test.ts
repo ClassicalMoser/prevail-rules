@@ -17,7 +17,7 @@ describe('createRetreatState function', () => {
     const state = createRetreatState(unit);
     expect(state.substepType).toBe('retreat');
     expect(state.retreatingUnit).toBe(unit);
-    expect(state.legalRetreatOptions).toHaveLength(2);
+    expect(state.legalRetreatPaths).toHaveLength(2);
     expect(state.completed).toBe(false);
   });
 });

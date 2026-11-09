@@ -25,16 +25,12 @@ import {
 } from '@factories';
 /**
  * After `resolveRetreat` lists the legal ways back, the defender picks one by its path: this choice writes
- * `chosenRetreat` on the active retreat substep (ranged attack-apply or the correct melee side).
+ * `chosenRetreatPath` on the active retreat substep (ranged attack-apply or the correct melee side).
  */
 describe('applyChooseRetreatOptionEvent function', () => {
   // The retreat fixture offers two tied ways back; the defender takes the one
-  // that turns right and steps, which ends on F-4 facing north-east.
+  // that turns right and steps.
   const chosenPath = ['turnRight' as const, 'step' as const];
-  const chosenRetreat = {
-    path: chosenPath,
-    placement: { coordinate: 'F-4' as const, facing: 'northEast' as const },
-  };
 
   /** IssueCommands + ranged CRS + retreat substep on white at E-5 (no retreat chosen yet). */
   function createStateWithRangedAttackRetreat() {
@@ -68,7 +64,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getRangedAttackRetreatState(newState);
 
-    expect(retreatState.chosenRetreat).toStrictEqual(chosenRetreat);
+    expect(retreatState.chosenRetreatPath).toStrictEqual(chosenPath);
   });
 
   /** ResolveMelee + one-sided retreat apply: both players engaged on E-5 (north vs south). */
@@ -117,7 +113,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getMeleeRetreatState(newState, 'white');
 
-    expect(retreatState.chosenRetreat).toStrictEqual(chosenRetreat);
+    expect(retreatState.chosenRetreatPath).toStrictEqual(chosenPath);
   });
 
   it('given black melee retreat apply, black chooses the right-turn retreat, the black retreat records it', () => {
@@ -131,7 +127,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getMeleeRetreatState(newState, 'black');
 
-    expect(retreatState.chosenRetreat).toStrictEqual(chosenRetreat);
+    expect(retreatState.chosenRetreatPath).toStrictEqual(chosenPath);
   });
 
   it('records the chosen retreat on a front-engagement nested retreat', () => {
@@ -164,8 +160,8 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
     const newState = applyChooseRetreatOptionEvent(event, stateInIssueCommands);
     expect(
-      getFrontEngagementRetreatState(newState).chosenRetreat,
-    ).toStrictEqual(chosenRetreat);
+      getFrontEngagementRetreatState(newState).chosenRetreatPath,
+    ).toStrictEqual(chosenPath);
   });
 
   it('refuses a path the retreat did not offer', () => {
