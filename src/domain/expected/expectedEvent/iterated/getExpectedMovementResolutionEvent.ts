@@ -33,39 +33,35 @@ export function getExpectedMovementResolutionEvent(
   }
 
   // The commitment has been completed.
-  // Before we can finish our movement,
-  // We need to check if we are engaging an enemy unit
-
-  const board = gameState.boardState;
-  const targetSpace = getBoardSpace(
-    board,
-    resolutionState.targetPlacement.coordinate,
-  );
-
-  if (hasEnemyUnit(player, targetSpace).result) {
-    // If we are, we need to see if we've alredy started an engagement
-    const { engagementState } = resolutionState;
-    if (engagementState === 'pending') {
-      // If we haven't started an engagement, we need to start one
-      return {
-        actionType: 'gameEffect',
-        effectType: 'startEngagement',
-      };
-    }
-    // If we have an engagement state, we need to check if it is complete
+  // An engagement already under way decides what comes next, whatever the
+  // board now shows: a rear engagement routs its defender off the board the
+  // moment it starts, yet its owner still owes the Morale (§6.3.3). Asking
+  // the board first would see an empty space and end the move unpaid.
+  const { engagementState } = resolutionState;
+  if (engagementState !== 'pending') {
+    // Once the engagement is settled, the move can finish.
     if (engagementState.completed) {
-      // If the engagement is complete, we can finish our movement
       return {
         actionType: 'gameEffect',
         effectType: 'completeUnitMovement',
       };
     }
-    // If the engagement state is not complete,
-    // We need to get the expected engagement event
     return getExpectedEngagementEvent(engagementState);
   }
 
-  // If we are not engaging an enemy unit, we can finish our movement
+  // No engagement yet: a move that ends on an enemy starts one (§6.1).
+  const targetSpace = getBoardSpace(
+    gameState.boardState,
+    resolutionState.targetPlacement.coordinate,
+  );
+  if (hasEnemyUnit(player, targetSpace).result) {
+    return {
+      actionType: 'gameEffect',
+      effectType: 'startEngagement',
+    };
+  }
+
+  // Open ground: the move can finish.
   return {
     actionType: 'gameEffect',
     effectType: 'completeUnitMovement',

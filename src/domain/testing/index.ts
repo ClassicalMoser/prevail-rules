@@ -35,12 +35,14 @@ export {
 } from './phaseStateHelpers';
 export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
 export {
+  applyEffectsUntilChoice,
   coordinatesOfLine,
   coordinatesOfLines,
   coordinatesOfSegment,
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  getCardsByCount,
   hasMove,
   placed,
   updateCardState,

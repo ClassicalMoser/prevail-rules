@@ -29,12 +29,17 @@ describe('applyStartEngagementEvent function', () => {
     const defendingUnit = createTestUnit('white');
     const blackMover = createTestUnit('black');
     const defenderWithPlacement = placed(defendingUnit, 'E-6', 'south');
+    // The mover waits on its start space until the engagement places it.
+    const moverWithPlacement = placed(blackMover, 'E-5', 'north');
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(state.boardState, defenderWithPlacement),
+        moverWithPlacement,
+      ),
     };
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: placed(blackMover, 'E-5', 'north'),
+      movingUnit: moverWithPlacement,
       targetPlacement: createUnitPlacement('E-6', 'north'),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
@@ -105,6 +110,31 @@ describe('applyStartEngagementEvent function', () => {
     const rout = throwIfPending(res.routState, 'rout');
     expect(rout.player).toBe(defenderWithPlacement.unit.playerSide);
     expect(rout.numberToDiscard).toBe('pending');
+  });
+
+  it('a rear engagement steps the attacker into the space its routed defender left', () => {
+    // §6.3.3: the defender routs off the board at once, and the attacker
+    // stands where it stood before its owner is asked for the Morale.
+    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
+    const event: StartEngagementEvent = {
+      defenderWithPlacement,
+      effectType: 'startEngagement' as const,
+      engagementType: 'rear' as const,
+      eventNumber: 0,
+      eventType: 'gameEffect' as const,
+    };
+
+    const next = applyStartEngagementEvent(event, state);
+
+    // The attacker has left its start space for the defender's.
+    expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
+      'none',
+    );
+    const target = next.boardState.board['E-6']?.unitPresence;
+    expect(target?.presenceType === 'single' && target.unit.playerSide).toBe(
+      'black',
+    );
+    expect(target?.presenceType === 'single' && target.facing).toBe('north');
   });
 
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {

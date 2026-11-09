@@ -2,6 +2,7 @@ import type { ResolveRoutEvent } from '@events';
 import type { GameState, RoutState } from '@game';
 import { getRoutState } from '@queries';
 import {
+  closeRearEngagementWhenRouted,
   updateRetreatRoutState,
   updateRoutState,
 } from '@transforms/pureTransforms';
@@ -45,5 +46,9 @@ export function applyResolveRoutEvent<S extends GameState>(
   if (event.routResolutionSource === 'retreat') {
     return updateRetreatRoutState(state, newRoutState);
   }
-  return updateRoutState(state, newRoutState);
+  const written = updateRoutState(state, newRoutState);
+  // A zero penalty settles a rear engagement's rout here, and so ends the
+  // engagement itself, as paying a discard would (§6.3.3).
+  const closed = closeRearEngagementWhenRouted(written);
+  return closed;
 }

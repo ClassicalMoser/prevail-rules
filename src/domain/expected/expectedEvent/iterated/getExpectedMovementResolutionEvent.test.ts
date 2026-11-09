@@ -2,6 +2,7 @@ import type { GameState, MovementResolutionState } from '@game';
 import {
   createGameStateWithUnits,
   createMovementResolutionState,
+  createRearEngagementState,
   createTestCard,
   createTestUnit,
   createUnitWithPlacement,
@@ -147,6 +148,27 @@ describe('getExpectedMovementResolutionEvent function', () => {
     expect(getExpectedEngagementEventMock).toHaveBeenCalledWith(
       resolutionState.engagementState,
     );
+  });
+
+  it('a rear engagement under way decides what comes next, though its defender has left the board', () => {
+    // §6.3.3: a rear engagement routs the defender off the board at once,
+    // but its owner still owes the Morale. The empty target space must not
+    // end the move before that rout is paid.
+    const gameState = createEmptyGameState('standard');
+    gameState.cardState.black.inPlay = createTestCard();
+    const resolutionState = createMovementResolutionState(gameState, {
+      engagementState: createRearEngagementState(),
+    });
+    // What the rout asks for next is the engagement's own question.
+    const routEvent = {
+      actionType: 'gameEffect',
+      effectType: 'resolveRout',
+    } as const;
+    getExpectedEngagementEventMock.mockReturnValue(routEvent);
+
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toBe(routEvent);
   });
 
   it('given when the movement resolution is already complete, throws', () => {

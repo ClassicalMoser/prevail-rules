@@ -3,6 +3,7 @@ import type { GameState } from '@game';
 import {
   getMeleeAttackApplyState,
   getRangedAttackApplyState,
+  getRearEngagementStateFromMovement,
   getIssueCommandsPhaseState,
   getRoutStateFromAttackApply,
   getRoutStateFromRally,
@@ -377,6 +378,28 @@ describe('applyResolveRoutEvent function', () => {
       expect(
         throwIfPending(newResolution.routState, 'rout').numberToDiscard,
       ).toBe(event.penalty);
+    });
+  });
+
+  describe('rear engagement with nothing to pay', () => {
+    it('a zero-Morale rout closes the rear engagement, so the move can finish', () => {
+      // A defender worth no Morale — a cheap skirmisher — routed from the
+      // rear: no discard to ask for, so the engagement ends here (§6.3.3).
+      const state = createStateWithRearEngagementRoutAwaitingPenalty();
+      const event: ResolveRoutEvent = {
+        effectType: 'resolveRout',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        penalty: 0,
+        routResolutionSource: 'rearEngagementMovement',
+        unitInstances: [createTestUnit('white', { attack: 2 })],
+      };
+
+      const newState = applyResolveRoutEvent(event, state);
+      const engagement = getRearEngagementStateFromMovement(newState);
+
+      expect(engagement.completed).toBe(true);
+      expect(engagement.engagementResolutionState.completed).toBe(true);
     });
   });
 

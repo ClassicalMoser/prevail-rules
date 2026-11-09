@@ -1,14 +1,10 @@
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
+import { getRoutState, getOwnedPlayerCardState } from '@queries';
 import {
-  getRoutState,
-  getOwnedPlayerCardState,
-  getRearEngagementStateFromMovement,
-} from '@queries';
-import {
+  closeRearEngagementWhenRouted,
   discardCardsFromHand,
   replaceOwnedPlayerCardState,
-  updateEngagementStateInMovement,
   updateRoutState,
 } from '@transforms/pureTransforms';
 
@@ -50,20 +46,8 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
   };
   next = updateRoutState(next, completedRout);
 
-  try {
-    const engagement = getRearEngagementStateFromMovement(next);
-    next = updateEngagementStateInMovement(next, {
-      ...engagement,
-      completed: true,
-      engagementResolutionState: {
-        ...engagement.engagementResolutionState,
-        completed: true,
-        routState: completedRout,
-      },
-    });
-  } catch {
-    // Not a rear-engagement rout parent (rally / attack apply / melee).
-  }
+  // A rear engagement is nothing but this rout; paying it ends the engagement.
+  next = closeRearEngagementWhenRouted(next);
 
   return next;
 }

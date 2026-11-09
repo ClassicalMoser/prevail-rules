@@ -11,7 +11,10 @@ import {
   getMovementResolutionState,
 } from '@queries';
 import {
+  addUnitToBoard,
+  removeUnitFromBoard,
   removeUnitsLeavingUnderRout,
+  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -102,10 +105,33 @@ export function applyStartEngagementEvent<S extends GameState>(
 
   const withEngagement = updatePhaseState(state, newPhaseState);
 
-  // A rear engagement opens a rout immediately — the defender leaves then.
-  if (event.engagementType === 'rear') {
-    return removeUnitsLeavingUnderRout(withEngagement, [defendingUnit]);
+  if (event.engagementType !== 'rear') {
+    return withEngagement;
   }
 
-  return withEngagement;
+  // A rear engagement opens a rout immediately, and the defender leaves the
+  // board then (§6.3.3).
+  const defenderGone = removeUnitsLeavingUnderRout(withEngagement, [
+    defendingUnit,
+  ]);
+  // The attacker steps into the space it left, so it stands where it
+  // fought before the defender's owner is asked for the Morale.
+  const arrived = {
+    placement: movementState.targetPlacement,
+    unit: engagingUnit,
+  };
+  const attackerPlaced = updateBoardState(
+    defenderGone,
+    addUnitToBoard(
+      removeUnitFromBoard(defenderGone.boardState, movementState.movingUnit),
+      arrived,
+    ),
+  );
+  // The movement records where the mover now stands.
+  const placedPhaseState: IssueCommandsPhaseState = {
+    ...newPhaseState,
+    currentCommandResolutionState: { ...newMovementState, movingUnit: arrived },
+  };
+  const rearResolved = updatePhaseState(attackerPlaced, placedPhaseState);
+  return rearResolved;
 }
