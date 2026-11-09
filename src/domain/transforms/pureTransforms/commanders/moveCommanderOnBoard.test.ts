@@ -10,6 +10,7 @@ describe('moveCommanderOnBoard function', () => {
   const board = addCommanderToBoard(createEmptyStandardBoard(), 'black', 'E-5');
 
   it('the commander leaves its space and stands on the new one', () => {
+    // Black's commander goes from E-5 to C-5.
     const moved = moveCommanderOnBoard(board, 'black', 'E-5', 'C-5');
 
     expect(moved.board['E-5']?.commanders).toStrictEqual([]);
@@ -17,6 +18,7 @@ describe('moveCommanderOnBoard function', () => {
   });
 
   it('the other side’s commander in the same space stays put', () => {
+    // Both commanders may share a space (§2.2.3); only black's is moved.
     const shared = addCommanderToBoard(board, 'white', 'E-5');
 
     const moved = moveCommanderOnBoard(shared, 'black', 'E-5', 'C-5');

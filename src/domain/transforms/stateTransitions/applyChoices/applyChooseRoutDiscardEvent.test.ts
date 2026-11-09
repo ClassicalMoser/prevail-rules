@@ -191,14 +191,21 @@ describe('applyChooseRoutDiscardEvent function', () => {
     ]);
   });
 
-  it('a rout held by a retreat is paid, and the retreat closes with it', () => {
-    // §9.1.6: a unit hit to Retreat with nowhere to go routs instead. The
-    // rout sits inside the retreat, so paying it must write there.
+  /**
+   * §9.1.6: a unit hit to Retreat with nowhere to go routs instead, and that
+   * rout sits inside the retreat. Here white's unit on E-6 is already off the
+   * board (a rout takes the unit away when it opens), and white, holding two
+   * cards, owes one for its Morale. The caller places the retreat in the
+   * attack or engagement that forced it.
+   */
+  function whiteOwingFromRetreat() {
     const defender = createUnitWithPlacement({
       coordinate: 'E-6',
       facing: 'north',
       playerSide: 'white',
     });
+    // Two cards in hand: paying one still leaves white a hand, so the
+    // discard is the only thing the event can change.
     let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
@@ -208,37 +215,43 @@ describe('applyChooseRoutDiscardEvent function', () => {
       },
     });
     state = { ...state, routedUnits: [defender.unit] };
+    // No legal retreat options is what made this a rout; one card owed.
     const retreatState = createRetreatState(defender, {
       legalRetreatOptions: [],
       routState: createRoutState('white', defender.unit, {
         numberToDiscard: 1,
       }),
     });
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: createAttackApplyStateWithRetreat(defender, {
-              retreatState,
-            }),
-          },
-        ),
+    return { defender, retreatState, state };
+  }
+
+  /** White pays the one card it owes with the first card in its hand. */
+  const whitePaysFirstCard = {
+    cardIds: [tempCommandCards[2].id],
+    choiceType: 'chooseRoutDiscard' as const,
+    eventNumber: 0,
+    eventType: 'playerChoice' as const,
+    player: 'white' as const,
+  };
+
+  it('a ranged attack whose target had nowhere to retreat lets it pay its rout', () => {
+    const { defender, retreatState, state: base } = whiteOwingFromRetreat();
+    // The rout is held by the retreat, which sits in the ranged attack's apply.
+    const state = updatePhaseState(
+      base,
+      createIssueCommandsPhaseState(base, {
+        currentCommandResolutionState: createRangedAttackResolutionState(base, {
+          attackApplyState: createAttackApplyStateWithRetreat(defender, {
+            retreatState,
+          }),
+        }),
       }),
     );
 
-    const next = applyChooseRoutDiscardEvent(
-      {
-        cardIds: [tempCommandCards[2].id],
-        choiceType: 'chooseRoutDiscard',
-        eventNumber: 0,
-        eventType: 'playerChoice',
-        player: 'white',
-      },
-      state,
-    );
+    const next = applyChooseRoutDiscardEvent(whitePaysFirstCard, state);
 
+    // The payment is written where the rout lives, and the retreat closes
+    // with it: the unit has gone, so there is nothing left to move.
     const crs = throwIfPending(
       getIssueCommandsPhaseState(next).currentCommandResolutionState,
       'crs',
@@ -251,52 +264,21 @@ describe('applyChooseRoutDiscardEvent function', () => {
       getRetreatStateFromAttackApply(apply),
       'retreat',
     );
+    const rout = throwIfBypassed(
+      throwIfPending(retreat.routState, 'rout'),
+      'rout',
+    );
+    expect(rout.completed).toBe(true);
     expect(retreat.completed).toBe(true);
-    const rout = throwIfPending(retreat.routState, 'rout');
-    expect(rout !== 'bypassed' && rout.completed).toBe(true);
+    // White's first card is the one gone.
     expect(next.cardState.white.inHand.map((c) => c.id)).toStrictEqual([
       tempCommandCards[3].id,
     ]);
   });
 
-  /**
-   * White's unit on E-6 had nowhere to retreat and routs from inside the
-   * retreat (§9.1.6); white holds two cards and owes one.
-   */
-  function whiteOwingFromRetreat() {
-    const defender = createUnitWithPlacement({
-      coordinate: 'E-6',
-      facing: 'north',
-      playerSide: 'white',
-    });
-    let state = createEmptyGameState('standard');
-    state = updateCardState(state, {
-      ...state.cardState,
-      white: {
-        ...state.cardState.white,
-        inHand: [tempCommandCards[2], tempCommandCards[3]],
-      },
-    });
-    state = { ...state, routedUnits: [defender.unit] };
-    const retreatState = createRetreatState(defender, {
-      legalRetreatOptions: [],
-      routState: createRoutState('white', defender.unit, {
-        numberToDiscard: 1,
-      }),
-    });
-    return { defender, retreatState, state };
-  }
-
-  const payOneCard = {
-    cardIds: [tempCommandCards[2].id],
-    choiceType: 'chooseRoutDiscard' as const,
-    eventNumber: 0,
-    eventType: 'playerChoice' as const,
-    player: 'white' as const,
-  };
-
-  it('a rout held by a retreat in a front engagement is paid, and the retreat closes', () => {
+  it('a front engagement whose defender had nowhere to retreat lets it pay its rout', () => {
     const { retreatState, state: base } = whiteOwingFromRetreat();
+    // The rout is held by the retreat of a front engagement during a move.
     const state = updatePhaseState(
       base,
       createIssueCommandsPhaseState(base, {
@@ -306,8 +288,10 @@ describe('applyChooseRoutDiscardEvent function', () => {
       }),
     );
 
-    const next = applyChooseRoutDiscardEvent(payOneCard, state);
+    const next = applyChooseRoutDiscardEvent(whitePaysFirstCard, state);
 
+    // The retreat is closed, so the engagement can go on to place the
+    // engaging unit (§6.3.2).
     const crs = throwIfPending(
       getIssueCommandsPhaseState(next).currentCommandResolutionState,
       'crs',
@@ -324,9 +308,9 @@ describe('applyChooseRoutDiscardEvent function', () => {
     expect(next.cardState.white.inHand).toHaveLength(1);
   });
 
-  it('a rout held by a retreat in a melee is paid, and the retreat closes', () => {
-    // White holds second place in the melee, so its apply is the second slot.
+  it('a melee whose unit had nowhere to retreat lets its owner pay the rout', () => {
     const { defender, retreatState, state: base } = whiteOwingFromRetreat();
+    // Black holds initiative, so white's apply is the second slot (§7.5.6).
     const state = updatePhaseState(
       updateCurrentInitiative(base, 'black'),
       createResolveMeleePhaseState(base, {
@@ -339,8 +323,9 @@ describe('applyChooseRoutDiscardEvent function', () => {
       }),
     );
 
-    const next = applyChooseRoutDiscardEvent(payOneCard, state);
+    const next = applyChooseRoutDiscardEvent(whitePaysFirstCard, state);
 
+    // The payment finds white's slot, not black's, and closes its retreat.
     const melee = throwIfPending(
       getResolveMeleePhaseState(next).currentMeleeResolutionState,
       'melee',

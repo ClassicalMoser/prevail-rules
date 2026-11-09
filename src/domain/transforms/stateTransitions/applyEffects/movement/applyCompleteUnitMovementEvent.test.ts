@@ -175,8 +175,11 @@ describe('applyCompleteUnitMovementEvent function', () => {
       }),
     );
 
+    // The front engagement is settled and the mover is placed on the defender.
     const next = applyCompleteUnitMovementEvent(event, state);
 
+    // The commander has left E-5 with its unit and stands in the engaged
+    // space, committed to the fight.
     expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
     expect(next.boardState.board['D-5']?.commanders).toStrictEqual(['black']);
   });

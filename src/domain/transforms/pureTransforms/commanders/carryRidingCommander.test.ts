@@ -20,8 +20,10 @@ describe('carryRidingCommander function', () => {
     facing: 'north',
     playerSide: 'black',
   });
+  // Black's commander shares the unit's starting space (§4.3.10).
   const board = addCommanderToBoard(createEmptyStandardBoard(), 'black', 'E-5');
 
+  /** The movement as declared: the unit is bound for C-5, rider or not. */
   function movement(moveCommander: boolean) {
     const resolution = createMovementResolutionState(
       createEmptyGameState('standard'),
@@ -38,6 +40,7 @@ describe('carryRidingCommander function', () => {
   it('a riding commander leaves the start space for the landing space', () => {
     const carried = carryRidingCommander(board, movement(true), 'C-5');
 
+    // The commander follows its unit: gone from E-5, standing on C-5.
     expect(carried.board['E-5']?.commanders).toStrictEqual([]);
     expect(carried.board['C-5']?.commanders).toStrictEqual(['black']);
   });
@@ -45,6 +48,7 @@ describe('carryRidingCommander function', () => {
   it('a commander who stays behind is left on the start space', () => {
     const carried = carryRidingCommander(board, movement(false), 'C-5');
 
+    // Nothing moves: the commander only goes in Phase 2 (§4.3.10).
     expect(carried.board['E-5']?.commanders).toStrictEqual(['black']);
     expect(carried.board['C-5']?.commanders).toStrictEqual([]);
   });

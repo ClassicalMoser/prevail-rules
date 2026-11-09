@@ -144,11 +144,13 @@ describe('applyMoveUnitEvent function', () => {
       playerSide: 'black',
     });
     const opened = awaitingMove(mover);
+    // The commander stands with the unit, so it may ride.
     const state = updateBoardState(
       opened,
       addCommanderToBoard(opened.boardState, 'black', 'E-5'),
     );
 
+    // One step north, from E-5 to D-5, the commander riding along.
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
         eventNumber: 2,
@@ -159,6 +161,8 @@ describe('applyMoveUnitEvent function', () => {
       state,
     );
 
+    // The commander ends in the unit's final space, and the move records
+    // that it rode.
     expect(moved.boardState.board['E-5']?.commanders).toStrictEqual([]);
     expect(moved.boardState.board['D-5']?.commanders).toStrictEqual(['black']);
     expect(getMovementResolutionState(moved).moveCommander).toBe(true);
@@ -178,11 +182,13 @@ describe('applyMoveUnitEvent function', () => {
       playerSide: 'white',
     });
     const opened = awaitingMove(engager, [defender]);
+    // The commander stands with the engager, so it may ride into the fight.
     const state = updateBoardState(
       opened,
       addCommanderToBoard(opened.boardState, 'black', 'E-5'),
     );
 
+    // One step from E-5 into the enemy on D-5, the commander riding along.
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
         eventNumber: 2,
@@ -193,6 +199,8 @@ describe('applyMoveUnitEvent function', () => {
       state,
     );
 
+    // Not yet in the enemy's space: it goes when the engagement places the
+    // unit, and no earlier.
     expect(moved.boardState.board['E-5']?.commanders).toStrictEqual(['black']);
     expect(moved.boardState.board['D-5']?.commanders).toStrictEqual([]);
   });

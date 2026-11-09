@@ -89,9 +89,11 @@ describe('updateRetreatRoutState function', () => {
 
   it('a rout that completes closes the retreat holding it', () => {
     // §9.1.6: the unit has left, so the retreat has nothing left to do. A
-    // zero-penalty rout completes in the same write as it is resolved.
+    // rout with nothing to pay completes in the same write as it is resolved
+    // (§9.3), which is the case that used to leave the retreat open.
     const state = createStateWithRangedAttackRetreat();
     const unit = createTestUnit('white', { attack: 2 });
+    // A rout settled outright: no cards owed, so none are chosen.
     const settled = createRoutState('white', unit, {
       cardsChosen: true,
       completed: true,
@@ -100,6 +102,8 @@ describe('updateRetreatRoutState function', () => {
 
     const newState = updateRetreatRoutState(state, settled);
 
+    // Read the retreat back out of the ranged attack's apply: it, and not
+    // only the rout inside it, is now complete.
     const phase = getIssueCommandsPhaseState(newState);
     const command = throwIfPending(
       phase.currentCommandResolutionState,

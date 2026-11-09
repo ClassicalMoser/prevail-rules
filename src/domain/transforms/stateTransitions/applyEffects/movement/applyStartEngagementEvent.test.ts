@@ -155,6 +155,8 @@ describe('applyStartEngagementEvent function', () => {
       commanderRides: true,
     });
 
+    // The rear engagement starts: the defender routs and the attacker takes
+    // its space at once.
     const next = applyStartEngagementEvent(
       {
         defenderWithPlacement,
@@ -166,6 +168,8 @@ describe('applyStartEngagementEvent function', () => {
       state,
     );
 
+    // The commander is with the attacker in the space the defender left, and
+    // the rout does not touch it: only the unit routed.
     expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
     expect(next.boardState.board['E-6']?.commanders).toStrictEqual(['black']);
   });
