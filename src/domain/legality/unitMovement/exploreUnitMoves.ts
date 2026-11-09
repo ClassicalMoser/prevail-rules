@@ -17,6 +17,7 @@ import {
 import { canMoveInto } from './canMoveInto';
 import { canMoveThrough } from './canMoveThrough';
 import { checkDiagonalMove } from './checkDiagonalMove';
+import { getEngagementEndFacing } from './getEngagementEndFacing';
 
 /**
  * Represents the result of an explored move.
@@ -122,13 +123,31 @@ export function exploreUnitMoves(
         direction,
       ) &&
       (direction === 'advance' || validRetreatSpaces.has(coordinate));
-    if (isLegalEnd) {
-      results.add({
-        flexibilityUsed: totalFlexibility - remainingFlexibility,
-        placement: { coordinate, facing },
-        speedUsed: totalSpeed - remainingSpeed,
-      });
+    if (!isLegalEnd) {
+      return;
     }
+    // An engaging move does not end on the facing it stepped in with when
+    // the approach is frontal: it squares up, head on, and the squaring
+    // turn is part of this move and spends its point (§6.2.3). This is
+    // what keeps every engagement square, flank, or rear — never 45° off
+    // (§6.3.1, A13). Open ground keeps the stepped facing.
+    const engagementEnd = getEngagementEndFacing(
+      board,
+      coordinate,
+      cameFrom,
+      facing,
+    );
+    const endFacing = engagementEnd?.facing ?? facing;
+    const squaringCost = engagementEnd?.flexibilitySpent ?? 0;
+    if (squaringCost > remainingFlexibility) {
+      // Without the point, the frontal approach cannot close (§6.2.3).
+      return;
+    }
+    results.add({
+      flexibilityUsed: totalFlexibility - remainingFlexibility + squaringCost,
+      placement: { coordinate, facing: endFacing },
+      speedUsed: totalSpeed - remainingSpeed,
+    });
   };
 
   /**

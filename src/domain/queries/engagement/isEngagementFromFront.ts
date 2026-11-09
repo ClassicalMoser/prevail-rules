@@ -6,11 +6,12 @@ import { getOppositeFacing } from '@queries/facings';
  * Whether the attacker meets the defender head-on.
  * The attacker's facing must be the opposite of the defender's facing.
  */
-// TODO(wrong): front (opposite), flank (the two orthogonals) and rear (same
-// and its two neighbours) cover six of the eight facings. An attacker 45° off
-// head-on is none of them, and `generateStartEngagementEvent` throws for it.
-// Settled by saying which engagement that is, and whether movement can end an
-// approach at that facing.
+// Front (opposite), flank (the two orthogonals) and rear (same and its two
+// neighbours) cover six of the eight facings, and that is all of them that
+// exist: a front approach squares up head-on as part of the engaging move
+// (§6.2.3, `getEngagementEndFacing`), so no engagement ends 45° off. The
+// throw in `generateStartEngagementEvent` remains as the guard on that
+// guarantee. (Settled 2026-11-08; was TODO(wrong), A13.)
 export function isEngagementFromFront(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,

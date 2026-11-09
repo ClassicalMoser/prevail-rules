@@ -729,6 +729,74 @@ describe('exploreUnitMoves function', () => {
       expect(hasCheapZigzag).toBe(false);
     });
 
+    it('a front approach off the corner squares up as it closes', () => {
+      // §6.2.3: a front engagement ends facing directly opposite the
+      // defender. The turn is part of the engaging move and spends the
+      // point, so the engagement is offered squared, never 45° off (A13).
+      const gameState = createGameState([
+        {
+          coord: 'E-4',
+          facing: 'northEast',
+          // The stand-in catalog's spearmen: one turn in them, so the only
+          // way onto D-5 is the diagonal step plus the squaring turn.
+          flexibility: 1,
+          player: 'black',
+          speed: 2,
+        },
+        { coord: 'D-5', facing: 'south', player: 'white', speed: 2 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-4',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const squaredEngage = exploreResultHasMatch(moves, {
+        coordinate: 'D-5',
+        facing: 'north',
+        flexibilityUsed: 1,
+        speedUsed: 1,
+      });
+      expect(squaredEngage).toBe(true);
+      // The unsquared 135° ending must never be offered.
+      const obliqueEngage = exploreResultHasMatch(moves, {
+        coordinate: 'D-5',
+        facing: 'northEast',
+      });
+      expect(obliqueEngage).toBe(false);
+    });
+
+    it('without Flexibility the cornered front approach cannot close', () => {
+      // The squaring turn costs the point (§6.2.3); a unit with none left
+      // cannot engage from the off-centre front space at all.
+      const gameState = createGameState([
+        {
+          coord: 'E-4',
+          facing: 'northEast',
+          // The stand-in catalog's elephants: no turns at all, so the
+          // diagonal front approach is the only line to the defender.
+          flexibility: 0,
+          player: 'black',
+          speed: 3,
+        },
+        { coord: 'D-5', facing: 'south', player: 'white', speed: 2 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-4',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'advance');
+
+      expect(exploreResultHasMatch(moves, { coordinate: 'D-5' })).toBe(false);
+    });
+
     it('can engage an enemy unit', () => {
       expect.hasAssertions();
       const gameState = createGameState([
