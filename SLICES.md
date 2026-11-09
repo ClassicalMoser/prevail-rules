@@ -100,7 +100,7 @@ The engine already plays both; §2.4.4 now states it. What remains is the
 `TODO(misleading)` comment on `diagonalIsClear` (Pass B) and distinct names
 for the two tests someday (nomenclature, not design).
 
-**S8. The trajectory rides on the move event, as deltas** — A11, §5.1.4. **Done 2026-11-09** (`b03fe05`, `7ad0b18`, `333eebc`): path replaces the destination, the squaring turn is in the path, every legal move carries its path, and traceMovePath validates. **One question open:** whether the mover should stand in the penultimate space before the engagement (see A11); it still waits on its start space, which keeps the §5.1.4 Speed read right.
+**S8. The trajectory rides on the move event, as deltas** — A11, §5.1.4. **Done 2026-11-09** (`b03fe05`, `7ad0b18`, `333eebc`): path replaces the destination, the squaring turn is in the path, every legal move carries its path, and traceMovePath validates. The mover waits on its start space until the engagement places it (author, 2026-11-09: a penultimate stand would be misleading under §5.1.4); A11 closed.
 AUDIT.md Movement item 2. Settled in full 2026-11-08: the `moveUnit` event
 (and later the retreat choice, Cluster 3) carries the path **atomically as
 deltas** — step, turn 45° either way, turn about — resolved to spaces by one
@@ -108,11 +108,11 @@ owned fold. A delta list cannot encode an illegal shape; a manual
 turn/reverse/step client input produces the identical event an assisted UI
 does. Legal moves reach the client as compound atoms (the existing
 compound-choice pattern), never an enumeration of trajectories; validation
-folds the submitted deltas through the same step/turn predicates. The mover
-genuinely advances along its path — before an engagement is set up it stands
-in the penultimate space, ending the half-applied move — but its **movement
-stats do not travel with it**: Speed and Flexibility sample once at
-move-start (§5.1.4), which the engine's stat read already does. Terrain later
+folds the submitted deltas through the same step/turn predicates. The
+mover's **movement stats do not travel with it**: Speed and Flexibility
+sample once at move-start (§5.1.4), and the mover waits on its start space
+until the engagement places it (the planned penultimate stand was dropped
+2026-11-09). Terrain later
 binds to the trodden path (worst touched); worst only worsens, so per-delta
 validation stays sound.
 Files: `events/playerChoices/` (moveUnit payload — delta list),
@@ -149,6 +149,12 @@ Blocks: `transforms`, `validation`, `events`.
 same explorer, and the retreat choice event grows the same delta payload as
 S8, so specs built here against the old shapes would churn. This is the
 two-descents problem from AUDIT.md.
+
+**Retreat choice (author, 2026-11-09):** works the way the move event does —
+the chosen retreat is a path, judged by the same trace (`traceMovePath`
+already takes `'retreat'`). And as now, a single legal retreat is never
+presented as a choice: it is filled in automatically
+(`applyOpenRetreatFromAttackApplyEvent`), and that stays so.
 
 **S11. A rout held by a retreat can be paid** — §9.1.6, §7.5, B4. _Bug: the
 game stalls._ Write through `updateRetreatRoutState`; close the retreat when a
