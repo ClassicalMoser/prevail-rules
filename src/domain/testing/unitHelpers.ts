@@ -48,47 +48,51 @@ export function createTestUnit(
 ): UnitInstance {
   const instanceNumber = options?.instanceNumber ?? 1;
 
-  // TODO(misleading): `cost`, `limit` and `morale` are accepted and documented
-  // but never read below, so a spec asking for one gets the default unit.
-  // Settled by looking them up like the other stats, or dropping them from
-  // the options. See AUDIT.md `factories and testing`.
   if (options?.unitType) {
     return createUnitInstance(playerSide, options.unitType, instanceNumber);
   }
 
-  const specifiedStats: { stat: UnitStatName; value: number }[] = [];
-  if (options?.flexibility !== undefined) {
-    specifiedStats.push({ stat: 'flexibility', value: options.flexibility });
+  // Each asked-for value narrows the catalog. Stats live under `stats`; the
+  // cost, limit and Morale of a unit type sit on the type itself, so a spec
+  // can ask for a unit by what its rout costs (§9.3) as readily as by Speed.
+  const wanted: { label: string; matches: (unitType: UnitType) => boolean }[] =
+    [];
+  const stats: UnitStatName[] = [
+    'flexibility',
+    'attack',
+    'speed',
+    'range',
+    'reverse',
+    'retreat',
+    'rout',
+  ];
+  for (const stat of stats) {
+    const value = options?.[stat];
+    if (value !== undefined) {
+      wanted.push({
+        label: `${stat}=${value}`,
+        matches: (unitType) => unitType.stats[stat] === value,
+      });
+    }
   }
-  if (options?.attack !== undefined) {
-    specifiedStats.push({ stat: 'attack', value: options.attack });
-  }
-  if (options?.speed !== undefined) {
-    specifiedStats.push({ stat: 'speed', value: options.speed });
-  }
-  if (options?.range !== undefined) {
-    specifiedStats.push({ stat: 'range', value: options.range });
-  }
-  if (options?.reverse !== undefined) {
-    specifiedStats.push({ stat: 'reverse', value: options.reverse });
-  }
-  if (options?.retreat !== undefined) {
-    specifiedStats.push({ stat: 'retreat', value: options.retreat });
-  }
-  if (options?.rout !== undefined) {
-    specifiedStats.push({ stat: 'rout', value: options.rout });
+  for (const field of ['cost', 'limit', 'morale'] as const) {
+    const value = options?.[field];
+    if (value !== undefined) {
+      wanted.push({
+        label: `${field}=${value}`,
+        matches: (unitType) => unitType[field] === value,
+      });
+    }
   }
 
-  if (specifiedStats.length > 0) {
+  if (wanted.length > 0) {
     const unitType = tempUnits.find((unit) =>
-      specifiedStats.every(({ stat, value }) => unit.stats[stat] === value),
+      wanted.every(({ matches }) => matches(unit)),
     );
     if (!unitType) {
-      const statDescriptions = specifiedStats
-        .map(({ stat, value }) => `${stat}=${value}`)
-        .join(', ');
+      const description = wanted.map(({ label }) => label).join(', ');
       throw new Error(
-        `No unit found matching all specified stats: ${statDescriptions}.`,
+        `No unit found matching all specified stats: ${description}.`,
       );
     }
     return createUnitInstance(playerSide, unitType, instanceNumber);

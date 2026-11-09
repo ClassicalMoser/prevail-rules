@@ -45,6 +45,18 @@ describe('createTestUnit function', () => {
     expect(unit.unitType.stats.attack).toBe(2);
     expect(unit.unitType.stats.range).toBe(1);
   });
+
+  it('a unit can be asked for by the Morale its rout costs', () => {
+    // Morale sits on the unit type, not among its stats (§9.3).
+    const unit = createTestUnit('white', { morale: 0 });
+    expect(unit.unitType.morale).toBe(0);
+  });
+
+  it('a Morale no catalog unit has is refused like any other value', () => {
+    expect(() => createTestUnit('black', { morale: 99 })).toThrow(
+      'No unit found matching all specified stats: morale=99.',
+    );
+  });
 });
 
 describe('createUnitByStat function', () => {
