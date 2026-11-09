@@ -556,8 +556,8 @@ export {
   getLineSegmentFromStart,
   getSetupZoneCoordinates,
   getLegalRetreats,
+  getLegalMoveDeltas,
   getLegalUnitMoves,
-  traceMovePath,
   isValidLine,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
@@ -573,8 +573,8 @@ export type {
   LegalSetupUnits,
   LegalAssignUnitSupport,
   LegalSupportCategory,
+  LegalMoveDeltas,
   MoveResult,
-  PathTrace,
 } from '@legality';
 export {
   eachCardPresentOnce,

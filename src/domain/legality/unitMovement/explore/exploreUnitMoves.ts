@@ -4,6 +4,7 @@ import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
 import { createMoveContext } from './createMoveContext';
 import { getMoveEnding } from './getMoveEnding';
+import { getStartState } from './getStartState';
 import { getStepOption } from './getStepOption';
 import { getTurnOptions } from './getTurnOptions';
 import { getTurnedState } from './getTurnedState';
@@ -77,15 +78,7 @@ export function exploreUnitMoves(
     }
   };
 
-  const start: MoveState = {
-    cameFrom: context.start.coordinate,
-    coordinate: context.start.coordinate,
-    facing: context.start.facing,
-    path: [],
-    remainingFlexibility: context.totalFlexibility,
-    remainingSpeed: context.totalSpeed,
-  };
-  explore(start);
+  explore(getStartState(context));
 
   return results;
 }

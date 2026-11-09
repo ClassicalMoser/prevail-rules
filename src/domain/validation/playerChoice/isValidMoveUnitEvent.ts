@@ -1,13 +1,14 @@
 import type { ValidationResult } from '@utils';
 import type { MoveUnitEvent } from '@events';
 import type { GameState } from '@game';
-import { getLegalMoveUnits, traceMovePath } from '@legality';
+import { getLegalMoveUnits } from '@legality';
 import { getBoardSpace, isSameUnitWithPlacement } from '@queries';
+import { isValidMovePath } from './isValidMovePath';
 
 /**
  * Validates a MoveUnitEvent as an integral commit over:
  * - {@link getLegalMoveUnits} (player + eligible unit atoms)
- * - {@link traceMovePath} (the submitted path, step by step and turn by turn)
+ * - {@link isValidMovePath} (each step and turn of the submitted path)
  * - `moveCommander` only when the player's commander shares the unit's space
  */
 export function isValidMoveUnitEvent(
@@ -41,9 +42,9 @@ export function isValidMoveUnitEvent(
     }
 
     // The path must be a legal move, every step and turn of it (A11).
-    const trace = traceMovePath(state, event.unit, event.path, 'advance');
-    if (!trace.result) {
-      return trace;
+    const pathValid = isValidMovePath(state, event.unit, event.path, 'advance');
+    if (!pathValid.result) {
+      return pathValid;
     }
 
     if (event.moveCommander) {

@@ -2,6 +2,9 @@
 export type { MoveContext } from './moveContext';
 export { createMoveContext } from './createMoveContext';
 
+// The point a move begins from, its budget unspent.
+export { getStartState } from './getStartState';
+
 // One point in a move in progress, and one place a move may legally end.
 export type { MoveState } from './moveState';
 export type { MoveResult } from './moveResult';

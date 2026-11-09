@@ -133,8 +133,10 @@ It returns `null` when the next action is a game effect, and also when
 `getExpectedEvent` throws. Otherwise it discriminates by `choiceType` and
 carries `playerSource`, `expectedEventNumber`, and either the full `events[]`
 for an atomic choice or named root atoms for a compound one. Follow-ups that
-depend on a selection stay on their own helpers — `getLegalUnitMoves`,
-`getLegalRangedAttackTargets`, `getLegalLineEndsForIssueCommand`.
+depend on a selection stay on their own helpers — `getLegalUnitMoves` (every
+ending with a path to it), `getLegalMoveDeltas` (the next step or turn of a
+path being written), `getLegalRangedAttackTargets`,
+`getLegalLineEndsForIssueCommand`.
 
 ## How they fit
 

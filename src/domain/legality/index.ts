@@ -62,13 +62,13 @@ export type {
 } from './choiceOptions';
 export { getLegalCommanderMoves } from './commanderMovement';
 export { canReverseUnit } from './combatOutcomes';
-export type { MoveResult, PathTrace } from './unitMovement';
+export type { LegalMoveDeltas, MoveResult } from './unitMovement';
 export {
   canEngageEnemy,
   canMoveInto,
   canMoveThrough,
   checkDiagonalMove,
   getLegalRetreats,
+  getLegalMoveDeltas,
   getLegalUnitMoves,
-  traceMovePath,
 } from './unitMovement';

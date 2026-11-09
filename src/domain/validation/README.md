@@ -23,7 +23,7 @@ Callers branch on `result` and surface `errorReason` when rejecting an event. Se
 
 ## Player choices: enumerate then membership
 
-Legal player-choice payloads are owned by `@legality` (`getLegal*`). Validators that have an enumerator check **membership** against that list (same idea as `isLegalMove` → `getLegalUnitMoves`):
+Legal player-choice payloads are owned by `@legality` (`getLegal*`). Validators that have an enumerator check **membership** against that list (for a move's path, `isValidMovePath` checks each step and turn against `getLegalMoveDeltas`):
 
 ```typescript
 export function isValidChooseCardEvent(
@@ -54,7 +54,7 @@ export function isValidChooseCardEvent(
 
 `validatePlayerChoice` still layers **expected** (sequencing) before **legal** (membership). Do not re-encode phase/hand rules in `isValid*` when a `getLegal*` already enumerates them.
 
-Movement legality (`getLegalUnitMoves`, `isLegalMove`, commander moves) lives in `@legality`, not here.
+Movement legality (`getLegalUnitMoves`, `getLegalMoveDeltas`, commander moves) lives in `@legality`, not here; judging a submitted path against it (`isValidMovePath`) lives here.
 
 ## Game state invariants
 
