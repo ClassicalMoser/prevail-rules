@@ -8,6 +8,7 @@ import {
   placed,
 } from '@testing';
 import {
+  addCommanderToBoard,
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
@@ -136,5 +137,47 @@ describe('applyCompleteUnitMovementEvent function', () => {
       primaryUnit: defender.unit,
       secondaryUnit: mover.unit,
     });
+  });
+
+  it('a commander riding into an engagement joins the fight with the unit', () => {
+    // §4.3.10: the one way a commander comes to share an enemy's space.
+    // Black's commander rides with the mover from E-5 into white on D-5.
+    const defender = createUnitWithPlacement({
+      coordinate: 'D-5',
+      facing: 'south',
+      playerSide: 'white',
+    });
+    const mover = createUnitWithPlacement({
+      coordinate: 'E-5',
+      facing: 'north',
+      playerSide: 'black',
+    });
+    let state = createEmptyGameState('standard');
+    state = updateBoardState(
+      state,
+      addCommanderToBoard(
+        addUnitToBoard(addUnitToBoard(state.boardState, mover), defender),
+        'black',
+        'E-5',
+      ),
+    );
+    const movement = createMovementResolutionState(state, {
+      moveCommander: true,
+      movingUnit: mover,
+      targetPlacement: { coordinate: 'D-5', facing: 'north' },
+    });
+    state = updatePhaseState(
+      state,
+      createIssueCommandsPhaseState(state, {
+        currentCommandResolutionState: movement,
+        remainingUnitsFirstPlayer: [],
+        step: 'firstPlayerResolveCommands',
+      }),
+    );
+
+    const next = applyCompleteUnitMovementEvent(event, state);
+
+    expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
+    expect(next.boardState.board['D-5']?.commanders).toStrictEqual(['black']);
   });
 });

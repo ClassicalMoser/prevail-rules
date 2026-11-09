@@ -9,6 +9,7 @@ import {
   createUnitWithPlacement,
 } from '@testing';
 import {
+  addCommanderToBoard,
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
@@ -135,13 +136,18 @@ describe('applyMoveUnitEvent function', () => {
     expect(generateStartEngagementEvent(moved, 3).engagementType).toBe('front');
   });
 
-  it('records whether the commander rides along', () => {
+  it('a commander riding onto open ground arrives with the unit', () => {
+    // §4.3.10: black's commander stands with the mover on E-5 and rides.
     const mover = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
       playerSide: 'black',
     });
-    const state = awaitingMove(mover);
+    const opened = awaitingMove(mover);
+    const state = updateBoardState(
+      opened,
+      addCommanderToBoard(opened.boardState, 'black', 'E-5'),
+    );
 
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
@@ -153,6 +159,41 @@ describe('applyMoveUnitEvent function', () => {
       state,
     );
 
+    expect(moved.boardState.board['E-5']?.commanders).toStrictEqual([]);
+    expect(moved.boardState.board['D-5']?.commanders).toStrictEqual(['black']);
     expect(getMovementResolutionState(moved).moveCommander).toBe(true);
+  });
+
+  it('a commander riding into an enemy waits with the unit', () => {
+    // The mover waits on its start space until the engagement places it
+    // (§5.1.4); so does the commander riding with it.
+    const engager = createUnitWithPlacement({
+      coordinate: 'E-5',
+      facing: 'north',
+      playerSide: 'black',
+    });
+    const defender = createUnitWithPlacement({
+      coordinate: 'D-5',
+      facing: 'south',
+      playerSide: 'white',
+    });
+    const opened = awaitingMove(engager, [defender]);
+    const state = updateBoardState(
+      opened,
+      addCommanderToBoard(opened.boardState, 'black', 'E-5'),
+    );
+
+    const moved = applyMoveUnitEvent(
+      createMoveUnitEvent({
+        eventNumber: 2,
+        moveCommander: true,
+        path: ['step'],
+        player: 'black',
+      }),
+      state,
+    );
+
+    expect(moved.boardState.board['E-5']?.commanders).toStrictEqual(['black']);
+    expect(moved.boardState.board['D-5']?.commanders).toStrictEqual([]);
   });
 });

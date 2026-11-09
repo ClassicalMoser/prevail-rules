@@ -9,7 +9,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addCommanderToBoard,
+  addUnitToBoard,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 
@@ -19,8 +23,11 @@ import { createEmptyGameState, createUnitPlacement } from '@factories';
  * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
  */
 describe('applyStartEngagementEvent function', () => {
-  /** Black E-5 moving into white on E-6 with north-facing target placement. */
-  function stateWithMovementToEnemy(): {
+  /**
+   * Black E-5 moving into white on E-6 with north-facing target placement;
+   * if the commander rides, black's commander stands with the mover.
+   */
+  function stateWithMovementToEnemy(options?: { commanderRides?: boolean }): {
     state: GameState;
     defenderWithPlacement: UnitWithPlacement;
   } {
@@ -31,14 +38,19 @@ describe('applyStartEngagementEvent function', () => {
     const defenderWithPlacement = placed(defendingUnit, 'E-6', 'south');
     // The mover waits on its start space until the engagement places it.
     const moverWithPlacement = placed(blackMover, 'E-5', 'north');
+    const units = addUnitToBoard(
+      addUnitToBoard(state.boardState, defenderWithPlacement),
+      moverWithPlacement,
+    );
+    const commanderRides = options?.commanderRides ?? false;
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(
-        addUnitToBoard(state.boardState, defenderWithPlacement),
-        moverWithPlacement,
-      ),
+      boardState: commanderRides
+        ? addCommanderToBoard(units, 'black', 'E-5')
+        : units,
     };
     const movement = createMovementResolutionState(withBoard, {
+      moveCommander: commanderRides,
       movingUnit: moverWithPlacement,
       targetPlacement: createUnitPlacement('E-6', 'north'),
     });
@@ -135,6 +147,27 @@ describe('applyStartEngagementEvent function', () => {
       'black',
     );
     expect(target?.presenceType === 'single' && target.facing).toBe('north');
+  });
+
+  it("a commander riding into the defender's rear arrives with the attacker", () => {
+    // §4.3.10: black's commander stands with the attacker on E-5 and rides.
+    const { state, defenderWithPlacement } = stateWithMovementToEnemy({
+      commanderRides: true,
+    });
+
+    const next = applyStartEngagementEvent(
+      {
+        defenderWithPlacement,
+        effectType: 'startEngagement',
+        engagementType: 'rear',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+      },
+      state,
+    );
+
+    expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
+    expect(next.boardState.board['E-6']?.commanders).toStrictEqual(['black']);
   });
 
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {

@@ -12,6 +12,7 @@ import {
 } from '@queries';
 import {
   addUnitToBoard,
+  carryRidingCommander,
   removeUnitFromBoard,
   removeUnitsLeavingUnderRout,
   updateBoardState,
@@ -121,16 +122,21 @@ export function applyStartEngagementEvent<S extends GameState>(
     defendingUnit,
   ]);
   // The attacker steps into the space it left, so it stands where it
-  // fought before the defender's owner is asked for the Morale.
+  // fought before the defender's owner is asked for the Morale. A commander
+  // riding with it arrives too (§4.3.10).
   const arrived = {
     placement: targetPlacement,
     unit: engagingUnit,
   };
   const attackerPlaced = updateBoardState(
     defenderGone,
-    addUnitToBoard(
-      removeUnitFromBoard(defenderGone.boardState, movementState.movingUnit),
-      arrived,
+    carryRidingCommander(
+      addUnitToBoard(
+        removeUnitFromBoard(defenderGone.boardState, movementState.movingUnit),
+        arrived,
+      ),
+      movementState,
+      targetPlacement.coordinate,
     ),
   );
   // The movement records where the mover now stands.

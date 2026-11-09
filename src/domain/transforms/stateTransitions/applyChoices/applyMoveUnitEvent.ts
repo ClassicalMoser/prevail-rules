@@ -8,6 +8,7 @@ import {
 } from '@queries';
 import {
   addUnitToBoard,
+  carryRidingCommander,
   removeUnitFromBoard,
   updateBoardState,
   updateCommandResolutionState,
@@ -42,22 +43,31 @@ export function applyMoveUnitEvent<S extends GameState>(
     throw new Error('The move path leaves the board');
   }
 
-  // Into an enemy, the mover waits; onto open ground, it moves now.
+  const written: MovementResolutionState = {
+    ...movement,
+    moveCommander: event.moveCommander,
+    targetPlacement: destination,
+  };
+
+  // Into an enemy, the mover waits, and so does a commander riding with it;
+  // onto open ground, both move now.
   const targetSpace = getBoardSpace(state.boardState, destination.coordinate);
   const enteringEnemy = hasEnemyUnit(event.player, targetSpace).result;
   const arrived = { ...mover, placement: destination };
   const movingUnit = enteringEnemy ? mover : arrived;
   const board = enteringEnemy
     ? state.boardState
-    : addUnitToBoard(removeUnitFromBoard(state.boardState, mover), arrived);
+    : carryRidingCommander(
+        addUnitToBoard(removeUnitFromBoard(state.boardState, mover), arrived),
+        written,
+        destination.coordinate,
+      );
   const withBoard = updateBoardState(state, board);
 
-  const written: MovementResolutionState = {
-    ...movement,
-    moveCommander: event.moveCommander,
+  // The movement records where the mover now stands.
+  const moved = updateCommandResolutionState(withBoard, {
+    ...written,
     movingUnit,
-    targetPlacement: destination,
-  };
-  const moved = updateCommandResolutionState(withBoard, written);
+  });
   return moved;
 }

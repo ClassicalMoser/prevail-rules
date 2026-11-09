@@ -11,6 +11,7 @@ import {
 } from '@queries';
 import {
   addUnitToBoard,
+  carryRidingCommander,
   removeUnitFromBoard,
   updateBoardState,
   updatePhaseState,
@@ -63,9 +64,18 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
     placement: targetPlacement,
     unit: mover,
   };
-  const boardWithMover = moverAlreadyPresent
+  // A front or flank engagement places the mover only now; a commander
+  // riding with it comes off the start space with it (§4.3.10).
+  const boardWithUnit = moverAlreadyPresent
     ? state.boardState
     : addUnitToBoard(boardAfterLift, arrival);
+  const boardWithMover = leavingStartingHex
+    ? carryRidingCommander(
+        boardWithUnit,
+        movementState,
+        targetPlacement.coordinate,
+      )
+    : boardWithUnit;
   const stateWithMover =
     boardWithMover === state.boardState
       ? state

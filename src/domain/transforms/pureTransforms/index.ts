@@ -27,6 +27,7 @@ export type { ProjectedEvent } from './visibility';
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
+  carryRidingCommander,
   removeCommanderFromBoard,
 } from './commanders';
 export {
