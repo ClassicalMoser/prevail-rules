@@ -60,6 +60,7 @@ heavy argument plumbing. If small pieces would mean threading six parameters
 everywhere, prefer a narrow explicit context value over either extreme.
 
 **S3. A turn is 45° or 180°** — §5.2.1–§5.2.2, A2; AUDIT.md Movement item 1.
+**Done** (`82f4a77`), together with S6 — one mechanism.
 Turns repeat in any order within Flexibility; no more free 90° wheels. This
 _simplifies_ the explorer: the turn-only-at-start-or-after-a-step
 special-casing (`isTruePosition`) exists only because any-facing turns made
@@ -83,7 +84,8 @@ Files: `legality/unitMovement/canEngageEnemy.ts`,
 `procedures/.../generateStartEngagementEvent`.
 Blocks: `legality/unitMovement`, `queries/engagement`, `procedures`.
 
-**S6. Retreat turning follows the same rule** — §9.1.4, A14. Decided
+**S6. Retreat turning follows the same rule** — §9.1.4, A14. **Done**
+(with S3, `82f4a77`; spec-pinned post-step). Decided
 2026-11-08: after the first step, §5.2.1 applies (45°/180°, repeatable); only
 the opening turn keeps the 45° limit. Retreats go through `exploreUnitMoves`,
 so most of the work is S3's.

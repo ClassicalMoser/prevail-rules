@@ -1388,12 +1388,10 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** Issue-time eligibility never checks engagement, so an engaged unit is offered alone, as a line end and as a line member (`legality/choiceOptions/issueCommand/getLegalUnitsForIssueCommand.ts`; `getLegalLineEndsForIssueCommand.ts`, `canJoin`). Movement skips it at resolve (`getLegalMoveUnits.ts`; filter added in `778f05c`), so a "units" order can be spent on it for nothing. Probe: an engaged unit at E-5 was offered at issue and refused at resolve. A unit engaged inside a rank joins the line and is skipped at resolve; under the rule as now settled, all three offerings are wrong — the line should stop at it.
 - **To settle:** Treat an engaged unit as non-qualifying at issue time everywhere: single-unit orders, line ends, and line membership (`canJoin`), so a line stops where an engagement stands.
 
-<a id="a2"></a>**A2. One Flexibility reaches any facing; the rule is 45° or 180°.** _Code lags rule._
+<a id="a2"></a>**A2. One Flexibility reaches any facing; the rule is 45° or 180°.** _Closed 2026-11-08._
 
 - **Rule:** §5.2.1: a turn is 45° either way, or 180° about. (Author decision 2026-11-08; `AUDIT.md`, Movement item 1.)
-- **Code does:** From the start and after each step, any of the seven other facings costs one Flexibility (`legality/unitMovement/exploreUnitMoves.ts`). A Flexibility-1 phalanx can therefore wheel 90° on the spot.
-- **Also:** The engine explores one turn at the start and one after each step, so it offers no second turn in a row. §5.2.2 lets turns and steps come in any order, including two turns on the spot. This is read from `exploreUnitMoves`, not probed.
-- **To settle:** Restrict the facings `exploreUnitMoves` offers per spend to the two 45° neighbours and the reverse, and let turns repeat in any order within the Flexibility available. Read retreat turning (A14) against the same rule.
+- **Closed:** `getFacingsOneTurnAway` states the rule, and `exploreUnitMoves` now walks a uniform graph — a step edge and a turn edge from every state, repeatable in any order (§5.2.2) within the two allowances (slice S3, `82f4a77`). A 90° wheel costs two spends, so the Flexibility-1 phalanx stays stiff, and the free sidestep is gone. Retreat turning (A14) closed with it.
 
 <a id="a3"></a>**A3. Terrain does nothing yet.** _Code lags rule._ (`ROADMAP.md` §1; `AUDIT.md`, Movement item 3.)
 
@@ -1461,11 +1459,10 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `canEngageEnemy.ts` only checks that 1 Flexibility remains; the turn is not applied. Against a diagonal-facing defender a step from an orthogonal front space arrives at 135°, which `isEngagementFromFront` and its siblings do not cover, and `generateStartEngagementEvent` throws (`TODO(wrong)` in `queries/engagement/isEngagementFromFront.ts`). Probe: Flexibility 2 against a SW-facing defender offered 28 such approaches. With Flexibility 0 only rear approaches exist, so no crash. Orthogonal defenders are unaffected. Intent: test titles in `canEngageEnemy.test.ts` ("has flexibility to rotate to face opposite").
 - **To settle:** Apply the turn as part of the engaging move (and spend the point), so 135° cannot arise.
 
-<a id="a14"></a>**A14. Retreat turning after the first step is unrestricted.** _Code lags rule._
+<a id="a14"></a>**A14. Retreat turning after the first step is unrestricted.** _Closed 2026-11-08._
 
 - **Rule:** §9.1.4: a retreat may turn at most 45° at its start; after the first step, turning follows §5.2.1 — 45° or about per spend, repeatable (author, 2026-11-08, with A2: the limited turn is back, so sequential turns are back in).
-- **Code does:** Probe: the start turn is limited to the two adjacent facings, but after a step the search allows any facing. Retreats are the minimal move (fewest turns, then fewest steps; confirmed), so this rarely shows.
-- **To settle:** Restrict post-step turns to the same two 45° neighbours and the reverse, the same change A2 makes to `exploreUnitMoves`; retreats go through the same search, so most of the work is A2's.
+- **Closed:** The retreat walks the same uniform graph as the advance (slice S6, with S3, `82f4a77`): its opening turn is one 45° neighbour at most, never about, and after the first step the ordinary rule applies, spec-pinned about-face and priced wheel included.
 
 <a id="a15"></a>**A15. Commanders are never defeated.** _Code lags rule._
 
