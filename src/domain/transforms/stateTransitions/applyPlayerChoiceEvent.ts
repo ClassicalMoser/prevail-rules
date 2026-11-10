@@ -21,7 +21,7 @@ import {
   applyMoveCommanderEvent,
   applyChooseMovingUnitEvent,
   applyMoveUnitEvent,
-  applyChooseFiringUnitEvent,
+  applyChooseShooterEvent,
   applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
 } from './applyChoices';
@@ -87,8 +87,8 @@ export function applyPlayerChoiceEvent<S extends GameState>(
     case 'moveUnit': {
       return applyMoveUnitEvent(event, state);
     }
-    case 'chooseFiringUnit': {
-      return applyChooseFiringUnitEvent(event, state);
+    case 'chooseShooter': {
+      return applyChooseShooterEvent(event, state);
     }
     case 'performRangedAttack': {
       return applyPerformRangedAttackEvent(event, state);

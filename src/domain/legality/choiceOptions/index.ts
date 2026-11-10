@@ -39,10 +39,10 @@ export {
 } from './setupUnits';
 export {
   canUnitRangedAttackTarget,
-  getLegalFiringUnitTargets,
+  getLegalShooterTargets,
   getLegalRangedAttackers,
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
-  type LegalFiringUnitTargets,
+  type LegalShooterTargets,
   type LegalRangedAttackers,
 } from './performRangedAttack';

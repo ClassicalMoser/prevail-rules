@@ -1,4 +1,4 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { UnitWithPlacement } from '@entities';
 import type { GameEffectType } from '@events';
 import {
   createAttackApplyState as createPendingAttackApply,
@@ -20,6 +20,7 @@ import {
   PLAY_CARDS_PHASE,
 } from '@game';
 
+import { getLegalRetreats } from '@legality';
 import { tempCommandCards } from '@sampleValues';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -412,15 +413,18 @@ export const procedureRegistryStateFactories: Record<
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    // On an open board the unit's one retreat is a step straight back to
-    // F-5, still facing north (§9.1.3), and it is already chosen.
-    const onlyRetreat: MoveDelta[] = ['step'];
-    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
-      retreatState: createRetreatState(unitWithPlacement, {
-        chosenRetreatPath: onlyRetreat,
-        legalRetreatPaths: [onlyRetreat],
-      }),
-    });
+    // On an open board the engine offers the unit one retreat, a step
+    // straight back to F-5 (§9.1.3), and that path is already chosen.
+    const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
+    const attackApply = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      legalRetreatPaths,
+      {
+        retreatState: createRetreatState(unitWithPlacement, legalRetreatPaths, {
+          chosenRetreatPath: legalRetreatPaths[0],
+        }),
+      },
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,
@@ -541,11 +545,22 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: retreatingUnit,
     };
+    // An enemy directly behind, facing the unit, cuts its line of withdrawal
+    // (§9.1.5): it cannot retreat, so it routs instead (§9.1.6).
+    const cuttingEnemy: UnitWithPlacement = {
+      placement: { coordinate: 'F-5', facing: 'north' },
+      unit: createTestUnit('black'),
+    };
+    const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
+      boardState: addUnitToBoard(withUnit, cuttingEnemy),
     };
-    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement);
+    const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
+    const attackApply = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      legalRetreatPaths,
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,

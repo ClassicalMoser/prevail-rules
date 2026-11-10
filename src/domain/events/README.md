@@ -19,7 +19,7 @@ A player's act:
 - `MoveUnitEvent` writes that unit's move, as a path
 - `MoveCommanderEvent` moves a commander
 - `CommitToMeleeEvent` commits a card to melee
-- `ChooseFiringUnitEvent` names the next unit a Shoot order fires
+- `ChooseShooterEvent` names the next unit a Shoot order shoots with
 - `CommitToRangedAttackEvent` commits the shooter's one card to the whole shot, before it aims
 - `PerformRangedAttackEvent` names the shot's target and supporters
 - `CommitToRangedDefenseEvent` commits a card for the shot's target, once it is named

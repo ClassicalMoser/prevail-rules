@@ -6,6 +6,7 @@ import {
   createRoutState,
   createTestCard,
   createUnitWithPlacement,
+  legalRetreatsOf,
 } from '@testing';
 
 import { getExpectedEngagementEvent } from './getExpectedEngagementEvent';
@@ -151,6 +152,13 @@ describe('getExpectedEngagementEvent function', () => {
 
   it('asks the defender to choose a retreat option after accepting retreat with multiple destinations', () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
+    // A black unit behind on F-5 looks away: it blocks the space straight back
+    // but not the way round, leaving two tied ways back (§9.1.3).
+    const behind = createUnitWithPlacement({
+      coordinate: 'F-5',
+      facing: 'south',
+      playerSide: 'black',
+    });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
       defendingUnitRetreats: true,
@@ -158,14 +166,11 @@ describe('getExpectedEngagementEvent function', () => {
         card: createTestCard(),
         commitmentType: 'completed',
       },
-      retreatState: createRetreatState(retreatingUnit, {
-        chosenRetreatPath: 'pending',
-        // Two tied ways back, so the defender has a real choice to make.
-        legalRetreatPaths: [
-          ['turnLeft', 'step'],
-          ['turnRight', 'step'],
-        ],
-      }),
+      // Two tied ways back, so the defender has a real choice to make.
+      retreatState: createRetreatState(
+        retreatingUnit,
+        legalRetreatsOf(retreatingUnit, [behind]),
+      ),
     });
 
     expect(getExpectedEngagementEvent(engagementState)).toStrictEqual({
@@ -184,10 +189,12 @@ describe('getExpectedEngagementEvent function', () => {
         card: createTestCard(),
         commitmentType: 'completed',
       },
-      retreatState: createRetreatState(retreatingUnit, {
-        chosenRetreatPath: ['step'],
-        legalRetreatPaths: [['step']],
-      }),
+      // Open ground behind: one way back, already chosen.
+      retreatState: createRetreatState(
+        retreatingUnit,
+        legalRetreatsOf(retreatingUnit),
+        { chosenRetreatPath: ['step'] },
+      ),
     });
 
     expect(getExpectedEngagementEvent(engagementState)).toStrictEqual({
@@ -235,11 +242,12 @@ describe('getExpectedEngagementEvent function', () => {
         card: createTestCard(),
         commitmentType: 'completed',
       },
-      retreatState: createRetreatState(retreatingUnit, {
-        completed: true,
-        chosenRetreatPath: ['step'],
-        legalRetreatPaths: [['step']],
-      }),
+      // Open ground behind: one way back, taken and finished.
+      retreatState: createRetreatState(
+        retreatingUnit,
+        legalRetreatsOf(retreatingUnit),
+        { completed: true, chosenRetreatPath: ['step'] },
+      ),
     });
 
     expect(() => getExpectedEngagementEvent(engagementState)).toThrow(

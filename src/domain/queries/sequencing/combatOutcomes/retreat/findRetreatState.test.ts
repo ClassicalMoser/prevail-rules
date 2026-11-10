@@ -15,6 +15,7 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
@@ -65,11 +66,15 @@ describe('findRetreatState function', () => {
   it('returns the white retreat on a ranged attack', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender);
+    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyStateWithRetreat(defender, {
-        retreatState: retreat,
-      }),
+      attackApplyState: createAttackApplyStateWithRetreat(
+        defender,
+        legalRetreatsOf(defender),
+        {
+          retreatState: retreat,
+        },
+      ),
       defendingUnit: defender.unit,
     });
     const state = issueCommands(resolution);
@@ -80,11 +85,15 @@ describe('findRetreatState function', () => {
   it('returns the white retreat on a melee', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const retreat = createRetreatState(white);
+    const retreat = createRetreatState(white, legalRetreatsOf(white));
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
-        retreatState: retreat,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        white,
+        legalRetreatsOf(white),
+        {
+          retreatState: retreat,
+        },
+      ),
     });
     const state = resolveMelee(melee);
 
@@ -102,7 +111,7 @@ describe('findRetreatState function', () => {
   it('returns the retreat nested on a front engagement', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender);
+    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
     const resolution = createMovementResolutionState(empty, {
       engagementState: createFrontEngagementState({
         defendingUnitRetreats: true,
@@ -117,11 +126,15 @@ describe('findRetreatState function', () => {
   it('answers undefined when the retreat belongs to the other player', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender);
+    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyStateWithRetreat(defender, {
-        retreatState: retreat,
-      }),
+      attackApplyState: createAttackApplyStateWithRetreat(
+        defender,
+        legalRetreatsOf(defender),
+        {
+          retreatState: retreat,
+        },
+      ),
       defendingUnit: defender.unit,
     });
     const state = issueCommands(resolution);

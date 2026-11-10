@@ -1,5 +1,5 @@
 import { isOpenSubstep } from '@queries';
-import { createUnitWithPlacement } from '@testing/testHelpers';
+import { createUnitWithPlacement, legalRetreatsOf } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
 import {
@@ -34,7 +34,10 @@ describe('createAttackApplyState function', () => {
 describe('createAttackApplyStateWithRetreat function', () => {
   it('given context, returns state with retreat result and retreatState', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
-    const state = createAttackApplyStateWithRetreat(unit);
+    const state = createAttackApplyStateWithRetreat(
+      unit,
+      legalRetreatsOf(unit),
+    );
     expect(state.attackResult.unitRetreated).toBe(true);
     expect(
       isOpenSubstep(state.retreatState) && state.retreatState.retreatingUnit,

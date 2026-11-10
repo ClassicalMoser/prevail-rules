@@ -4,9 +4,10 @@ import {
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
-  createRetreatState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
+  enemyBlockingStraightBack,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -20,7 +21,7 @@ import {
  * IsValidChooseRetreatOptionEvent: membership against getLegalChooseRetreatOptionEvents.
  */
 describe('isValidChooseRetreatOptionEvent function', () => {
-  // Two tied ways back, each named by the moves it takes.
+  // The two tied ways back the engine offers, each named by its moves.
   const optionA: MoveDelta[] = ['turnLeft', 'step'];
   const optionB: MoveDelta[] = ['turnRight', 'step'];
 
@@ -28,15 +29,18 @@ describe('isValidChooseRetreatOptionEvent function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement = placed(unit, 'E-5', 'north');
+    // A black unit on F-5, its back to white's, bars the straight step back
+    // and leaves two equal ways round it (§9.1.3).
+    const blocker = enemyBlockingStraightBack(placement);
     const withUnit = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(state.boardState, placement),
+        blocker,
+      ),
     };
-    const attackApply = createAttackApplyStateWithRetreat(placement, {
-      retreatState: createRetreatState(placement, {
-        legalRetreatPaths: [optionA, optionB],
-      }),
-    });
+    const tiedPaths = legalRetreatsOf(placement, [blocker]);
+    const attackApply = createAttackApplyStateWithRetreat(placement, tiedPaths);
     return updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {

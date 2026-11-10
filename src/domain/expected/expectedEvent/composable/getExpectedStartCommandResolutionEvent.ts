@@ -32,7 +32,7 @@ export function getExpectedStartCommandResolutionEvent(
     // the shooter; its commitment and its target follow (§4.3.11).
     return {
       actionType: 'playerChoice',
-      choiceType: 'chooseFiringUnit',
+      choiceType: 'chooseShooter',
       playerSource: player,
     };
   }

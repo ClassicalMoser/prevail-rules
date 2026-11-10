@@ -33,7 +33,7 @@ function rangedAttackModifiersOnCard(
  */
 function pendingShooter<S extends GameState>(gameState: S): PlayerSide | null {
   const phaseState = gameState.currentRoundState.currentPhaseState;
-  // Shots are fired only while a Shoot order is being carried out.
+  // Shots are taken only while a Shoot order is being carried out.
   if (
     phaseState === 'none' ||
     phaseState.phase !== 'issueCommands' ||

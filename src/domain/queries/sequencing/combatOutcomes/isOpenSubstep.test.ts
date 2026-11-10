@@ -1,13 +1,19 @@
-import { createRetreatState, createUnitWithPlacement } from '@testing';
+import {
+  createRetreatState,
+  createUnitWithPlacement,
+  legalRetreatsOf,
+} from '@testing';
 
 import { isOpenSubstep } from './isOpenSubstep';
 
 describe('isOpenSubstep function', () => {
   it('a written outcome is open', () => {
     // A retreat is one written outcome.
-    const retreat = createRetreatState(
-      createUnitWithPlacement({ coordinate: 'E-5', facing: 'north' }),
-    );
+    const standing = createUnitWithPlacement({
+      coordinate: 'E-5',
+      facing: 'north',
+    });
+    const retreat = createRetreatState(standing, legalRetreatsOf(standing));
 
     expect(isOpenSubstep(retreat)).toBe(true);
   });

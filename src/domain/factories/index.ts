@@ -46,7 +46,7 @@ export { createIssueCommandEvent } from './playerChoices';
 export { createMoveCommanderEvent } from './playerChoices';
 export { createChooseMovingUnitEvent } from './playerChoices';
 export { createMoveUnitEvent } from './playerChoices';
-export { createChooseFiringUnitEvent } from './playerChoices';
+export { createChooseShooterEvent } from './playerChoices';
 export { createPerformRangedAttackEvent } from './playerChoices';
 export { createSetupUnitsEvent } from './playerChoices';
 

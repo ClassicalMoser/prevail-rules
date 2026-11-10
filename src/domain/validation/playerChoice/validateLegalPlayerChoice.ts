@@ -17,7 +17,7 @@ import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
 import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
-import { isValidChooseFiringUnitEvent } from './isValidChooseFiringUnitEvent';
+import { isValidChooseShooterEvent } from './isValidChooseShooterEvent';
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
 import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 
@@ -85,8 +85,8 @@ export function validateLegalPlayerChoice(
     case 'setupUnits': {
       return isValidSetupUnitsEvent(event, state);
     }
-    case 'chooseFiringUnit': {
-      return isValidChooseFiringUnitEvent(event, state);
+    case 'chooseShooter': {
+      return isValidChooseShooterEvent(event, state);
     }
     case 'performRangedAttack': {
       return isValidPerformRangedAttackEvent(event, state);

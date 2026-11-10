@@ -40,7 +40,7 @@ vi.mock(import('@expected'), async (importOriginal) => {
 
 const allChoiceTypes = [
   'chooseCard',
-  'chooseFiringUnit',
+  'chooseShooter',
   'chooseMeleeResolution',
   'chooseMovingUnit',
   'chooseRally',
@@ -183,7 +183,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.destinations).toContain('E-5');
   });
 
-  it('packages chooseFiringUnit root attackers', () => {
+  it('packages chooseShooter root attackers', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -228,11 +228,11 @@ describe('getLegalPlayerChoiceOptions function', () => {
     // The Shoot order starts by naming its shooter (§4.3.11 step 1).
     const options = getLegalPlayerChoiceOptions(state);
     expect(options).toMatchObject({
-      choiceType: 'chooseFiringUnit',
+      choiceType: 'chooseShooter',
       playerSource: 'black',
     });
-    if (options?.choiceType !== 'chooseFiringUnit') {
-      throw new Error('expected chooseFiringUnit');
+    if (options?.choiceType !== 'chooseShooter') {
+      throw new Error('expected chooseShooter');
     }
     expect(options.rangedAttackers.attackers).toStrictEqual([attacker]);
   });
@@ -303,7 +303,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
             expect(options).toMatchObject({ movingUnit: null, moves: [] });
             break;
           }
-          case 'chooseFiringUnit': {
+          case 'chooseShooter': {
             expect(options).toMatchObject({
               rangedAttackers: { attackers: [], player: 'black' },
             });
@@ -312,7 +312,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
           case 'performRangedAttack': {
             // No shot is open in this state, so there is no shooter and
             // nothing to aim at.
-            expect(options).toMatchObject({ firingUnit: null, targets: [] });
+            expect(options).toMatchObject({ shooter: null, targets: [] });
             break;
           }
           case 'setupUnits': {

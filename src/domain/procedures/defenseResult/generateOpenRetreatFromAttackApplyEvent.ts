@@ -8,10 +8,10 @@ import {
 } from '@events';
 import { getLegalRetreats } from '@legality';
 import {
-  getMeleeAttackApplyState,
+  getMeleeAppliesInResolutionOrder,
+  getMeleeResolutionState,
   getRangedAttackApplyState,
   getCurrentPhaseState,
-  getOtherPlayer,
   getPositionOfUnit,
 } from '@queries';
 
@@ -66,33 +66,26 @@ export function generateOpenRetreatFromAttackApplyEvent(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    // The first player's blow lands first, so the second player's unit is
-    // the first one still waiting on a retreat to open (§7.5.6).
-    const firstPlayer = state.currentInitiative;
-    const secondPlayer = getOtherPlayer(firstPlayer);
-    const secondApply = getMeleeAttackApplyState(state, secondPlayer);
-    if (secondApply.retreatState === 'pending') {
-      return {
-        attackResolutionContext: 'melee',
-        defendingPlayer: secondPlayer,
-        effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-        eventNumber,
-        eventType: GAME_EFFECT_EVENT_TYPE,
-        retreatPaths: retreatPathsFor(state, secondApply),
-      };
+    // The first retreat still waiting to open, in the order results take
+    // effect: the first player's blow lands first, so the second player's
+    // unit comes first (§7.5.6).
+    const meleeState = getMeleeResolutionState(state);
+    const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
+    const apply = appliesInOrder.find(
+      (candidate) => candidate.retreatState === 'pending',
+    );
+    if (apply === undefined) {
+      throw new Error('No pending retreat on either melee attack apply');
     }
-    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
-    if (firstApply.retreatState === 'pending') {
-      return {
-        attackResolutionContext: 'melee',
-        defendingPlayer: firstPlayer,
-        effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-        eventNumber,
-        eventType: GAME_EFFECT_EVENT_TYPE,
-        retreatPaths: retreatPathsFor(state, firstApply),
-      };
-    }
-    throw new Error('No pending retreat on either melee attack apply');
+    const event: OpenRetreatFromAttackApplyEvent = {
+      attackResolutionContext: 'melee',
+      defendingPlayer: apply.defendingUnit.playerSide,
+      effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
+      eventNumber,
+      eventType: GAME_EFFECT_EVENT_TYPE,
+      retreatPaths: retreatPathsFor(state, apply),
+    };
+    return event;
   }
 
   throw new Error(

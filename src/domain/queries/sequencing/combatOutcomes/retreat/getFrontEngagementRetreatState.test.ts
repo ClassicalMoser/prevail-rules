@@ -8,6 +8,7 @@ import {
   createRearEngagementState,
   createRetreatState,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
@@ -41,7 +42,10 @@ describe('getFrontEngagementRetreatState function', () => {
   it('returns the retreat opened when the defender gave ground', () => {
     const defendingUnit = defender();
     // A front engagement the defender yields to opens a retreat for that unit.
-    const retreat = createRetreatState(defendingUnit);
+    const retreat = createRetreatState(
+      defendingUnit,
+      legalRetreatsOf(defendingUnit),
+    );
     // The engagement is reached through the movement that caused it.
     const state = stateEngaging(
       createFrontEngagementState({ retreatState: retreat }),

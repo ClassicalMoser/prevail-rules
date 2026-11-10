@@ -14,7 +14,7 @@ import type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
 import type { IssueCommandEvent } from './issueCommand';
 import type { MoveCommanderEvent } from './moveCommander';
 import type { ChooseMovingUnitEvent } from './chooseMovingUnit';
-import type { ChooseFiringUnitEvent } from './chooseFiringUnit';
+import type { ChooseShooterEvent } from './chooseShooter';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { SetupUnitsEvent } from './setupUnit';
@@ -36,7 +36,7 @@ import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
-import { chooseFiringUnitEventSchema } from './chooseFiringUnit';
+import { chooseShooterEventSchema } from './chooseShooter';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import { setupUnitsEventSchema } from './setupUnit';
@@ -62,7 +62,7 @@ export type PlayerChoiceEvent =
   | MoveCommanderEvent
   | ChooseMovingUnitEvent
   | MoveUnitEvent
-  | ChooseFiringUnitEvent
+  | ChooseShooterEvent
   | PerformRangedAttackEvent
   | SetupUnitsEvent;
 
@@ -91,7 +91,7 @@ const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   moveCommanderEventSchema,
   chooseMovingUnitEventSchema,
   moveUnitEventSchema,
-  chooseFiringUnitEventSchema,
+  chooseShooterEventSchema,
   performRangedAttackEventSchema,
   setupUnitsEventSchema,
 ]);

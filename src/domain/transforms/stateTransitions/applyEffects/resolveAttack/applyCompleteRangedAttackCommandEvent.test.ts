@@ -31,7 +31,7 @@ const rangedCard = {
 };
 
 /**
- * Ranged command finished or unfireable remaining: clear CRS; keep shooters or
+ * Ranged command finished or no remaining unit can shoot: clear CRS; keep shooters or
  * advance the resolve step when nobody has a legal target.
  */
 describe('applyCompleteRangedAttackCommandEvent function', () => {

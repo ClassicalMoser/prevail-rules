@@ -1,5 +1,5 @@
 import type { GameStateForVisibility } from '@game';
-import { createChooseFiringUnitEvent } from '@factories';
+import { createChooseShooterEvent } from '@factories';
 import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
@@ -7,7 +7,7 @@ import {
 } from '@queries';
 import { createPlayableGame, resolvingShootOrder } from '@testing';
 
-import { applyChooseFiringUnitEvent } from './applyChooseFiringUnitEvent';
+import { applyChooseShooterEvent } from './applyChooseShooterEvent';
 
 /**
  * Naming a unit under a Shoot order begins its shot (§4.3.11 step 1): a
@@ -39,7 +39,7 @@ function blackShootingWithTwo(): GameStateForVisibility<'authoritative'> {
   return resolving;
 }
 
-describe('applyChooseFiringUnitEvent function', () => {
+describe('applyChooseShooterEvent function', () => {
   it('opens the shot with the shooter’s commitment owed and nothing yet aimed', () => {
     const state = blackShootingWithTwo();
     const shooter = getSingleUnitWithPlacementAtCoordinate(
@@ -47,9 +47,9 @@ describe('applyChooseFiringUnitEvent function', () => {
       'E-5',
     );
 
-    // Black names the unit on E-5 to fire.
-    const named = applyChooseFiringUnitEvent(
-      createChooseFiringUnitEvent({
+    // Black names the unit on E-5 to shoot.
+    const named = applyChooseShooterEvent(
+      createChooseShooterEvent({
         eventNumber: 0,
         player: 'black',
         unit: shooter,
@@ -82,9 +82,9 @@ describe('applyChooseFiringUnitEvent function', () => {
       'E-3',
     );
 
-    // Black names the unit on E-5; each unit fires once.
-    const named = applyChooseFiringUnitEvent(
-      createChooseFiringUnitEvent({
+    // Black names the unit on E-5; each unit shoots once.
+    const named = applyChooseShooterEvent(
+      createChooseShooterEvent({
         eventNumber: 0,
         player: 'black',
         unit: shooter,

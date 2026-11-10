@@ -11,7 +11,7 @@ import { hasUnitInArray, isSameUnitWithPlacement } from '@queries';
  * the shooter cannot also support itself.
  *
  * @param supporters - The units the player named as supporters
- * @param attacker - The firing unit, already validated
+ * @param attacker - The shooter, already validated
  * @param target - The target, already validated for that attacker
  * @param state - The current game state
  * @returns Success, or the first reason a supporter is not allowed

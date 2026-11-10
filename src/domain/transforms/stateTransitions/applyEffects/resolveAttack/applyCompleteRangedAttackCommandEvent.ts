@@ -7,7 +7,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 /**
  * Clears an in-progress ranged CRS (or no-ops CRS already pending), then either:
  * - keeps only remaining units that still have a legal target, or
- * - if none can fire, clears that player's remaining units and advances the
+ * - if none can shoot, clears that player's remaining units and advances the
  *   resolve step (first → second issue, second → complete).
  *
  * Also used when resolve begins with remaining units that have range but no

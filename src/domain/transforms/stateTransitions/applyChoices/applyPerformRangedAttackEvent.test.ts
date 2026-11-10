@@ -21,8 +21,8 @@ import { updateCurrentInitiative } from '@transforms/pureTransforms/state/update
 
 /**
  * Aiming a shot (§4.3.11 steps 3–4): the target and supporters are written
- * into the shot `chooseFiringUnit` opened, the supporters' shots are spent,
- * and the target leaves its own side's units still to act.
+ * into the shot `chooseShooter` opened, and the supporters' shots are
+ * spent.
  */
 describe('applyPerformRangedAttackEvent function', () => {
   /**
@@ -103,7 +103,7 @@ describe('applyPerformRangedAttackEvent function', () => {
   });
 
   it('a named supporter spends its shot: the shot records it and it no longer waits to act', () => {
-    // Two more black units of the same order still wait to fire; one
+    // Two more black units of the same order still wait to shoot; one
     // supports, the other does not.
     const shooter = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -142,47 +142,12 @@ describe('applyPerformRangedAttackEvent function', () => {
       state,
     );
 
-    // The supporter is in the shot; only the bystander is left to fire.
+    // The supporter is in the shot; only the bystander is left to shoot.
     expect(getRangedAttackResolutionState(aimed).supportingUnits).toStrictEqual(
       [supporter.unit],
     );
     expect(
       getIssueCommandsPhaseState(aimed).remainingUnitsFirstPlayer,
     ).toStrictEqual([bystander.unit]);
-  });
-
-  it('the target leaves its own side’s units still to act', () => {
-    // White resolves second, so its target sits in the first player's list.
-    const shooter = createUnitWithPlacement({
-      coordinate: 'E-6',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const target = createUnitWithPlacement({
-      coordinate: 'E-4',
-      playerSide: 'black',
-    });
-    const state = shotAwaitingTarget(
-      'secondPlayerResolveCommands',
-      shooter.unit,
-      [target.unit],
-      [],
-    );
-
-    // White aims at the black unit.
-    const aimed = applyPerformRangedAttackEvent(
-      createPerformRangedAttackEvent({
-        eventNumber: 0,
-        player: 'white',
-        supportingUnits: [],
-        targetUnit: target,
-      }),
-      state,
-    );
-
-    // The black unit is no longer listed as still to act.
-    expect(
-      getIssueCommandsPhaseState(aimed).remainingUnitsFirstPlayer,
-    ).toStrictEqual([]);
   });
 });

@@ -11,7 +11,7 @@ import { z } from 'zod';
 export const playerChoices = [
   'assignUnitSupport',
   'chooseCard',
-  'chooseFiringUnit',
+  'chooseShooter',
   'chooseMeleeResolution',
   'chooseMovingUnit',
   'chooseRally',

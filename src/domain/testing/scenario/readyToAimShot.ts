@@ -2,7 +2,7 @@ import type { CommandCard, UnitWithPlacement } from '@entities';
 import type { RangedAttackModifier } from '@events';
 import type { GameStateForVisibility } from '@game';
 import {
-  createChooseFiringUnitEvent,
+  createChooseShooterEvent,
   createCommitToRangedAttackEvent,
 } from '@factories';
 import { applyEvent } from '@transforms';
@@ -14,8 +14,8 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  * declines. What remains is the target and its supporters, which is what a
  * scenario is usually about, so everything before it lives here.
  *
- * @param state - A game waiting for the player to name the unit to fire
- * @param unit - The unit to fire, standing where the board has it
+ * @param state - A game waiting for the player to name the shooter
+ * @param unit - The shooter, standing where the board has it
  * @param commitment - The card committed and what it adds, or `null` to decline
  * @returns The game waiting for the `performRangedAttack`, and the number that event must carry
  */
@@ -36,7 +36,7 @@ export function readyToAimShot(
   }
   const named = applyEffectsUntilChoice(
     applyEvent(
-      createChooseFiringUnitEvent({
+      createChooseShooterEvent({
         eventNumber: start.next.expectedEventNumber,
         player,
         unit,

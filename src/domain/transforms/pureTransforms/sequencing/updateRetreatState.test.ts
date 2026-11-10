@@ -16,12 +16,13 @@ import {
   createRetreatState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRetreatState } from './updateRetreatState';
 
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateRetreatState: Creates a new game state with the retreat state updated.
  */
@@ -34,7 +35,10 @@ describe('updateRetreatState function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, placedUnit),
     };
-    const attackApply = createAttackApplyStateWithRetreat(placedUnit);
+    const attackApply = createAttackApplyStateWithRetreat(
+      placedUnit,
+      legalRetreatsOf(placedUnit),
+    );
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
       currentCommandResolutionState: createRangedAttackResolutionState(
         stateWithUnit,
@@ -65,7 +69,10 @@ describe('updateRetreatState function', () => {
       ...stateWithUnits,
       boardState: addUnitToBoard(stateWithUnits.boardState, otherPlacement),
     };
-    const attackApply = createAttackApplyStateWithRetreat(retreatingPlacement);
+    const attackApply = createAttackApplyStateWithRetreat(
+      retreatingPlacement,
+      legalRetreatsOf(retreatingPlacement),
+    );
     const melee = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
@@ -84,7 +91,11 @@ describe('updateRetreatState function', () => {
     const state = createStateWithRangedAttackRetreat();
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const newRetreat = createRetreatState(placedUnit, { completed: true });
+    const newRetreat = createRetreatState(
+      placedUnit,
+      legalRetreatsOf(placedUnit),
+      { completed: true },
+    );
 
     const newState = updateRetreatState(state, newRetreat);
 
@@ -119,7 +130,11 @@ describe('updateRetreatState function', () => {
     const state = createStateWithMeleeRetreat('white');
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const newRetreat = createRetreatState(placedUnit, { completed: true });
+    const newRetreat = createRetreatState(
+      placedUnit,
+      legalRetreatsOf(placedUnit),
+      { completed: true },
+    );
 
     const newState = updateRetreatState(state, newRetreat);
 
@@ -148,7 +163,11 @@ describe('updateRetreatState function', () => {
     const state = createStateWithMeleeRetreat('black');
     const unit = createTestUnit('black', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const newRetreat = createRetreatState(placedUnit, { completed: true });
+    const newRetreat = createRetreatState(
+      placedUnit,
+      legalRetreatsOf(placedUnit),
+      { completed: true },
+    );
 
     const newState = updateRetreatState(state, newRetreat);
 
@@ -186,7 +205,10 @@ describe('updateRetreatState function', () => {
     const stateInPhase = updatePhaseState(state, phaseState);
 
     expect(() =>
-      updateRetreatState(stateInPhase, createRetreatState(placedUnit)),
+      updateRetreatState(
+        stateInPhase,
+        createRetreatState(placedUnit, legalRetreatsOf(placedUnit)),
+      ),
     ).toThrow('No retreat state found in attack apply state');
   });
 
@@ -198,7 +220,7 @@ describe('updateRetreatState function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, placedUnit),
     };
-    const opened = createRetreatState(placedUnit);
+    const opened = createRetreatState(placedUnit, legalRetreatsOf(placedUnit));
     const phaseState = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: createMovementResolutionState(withBoard, {
         engagementState: createFrontEngagementState({
@@ -208,9 +230,13 @@ describe('updateRetreatState function', () => {
       }),
     });
     const stateInPhase = updatePhaseState(withBoard, phaseState);
-    const nextRetreat = createRetreatState(placedUnit, {
-      chosenRetreatPath: ['step'],
-    });
+    const nextRetreat = createRetreatState(
+      placedUnit,
+      legalRetreatsOf(placedUnit),
+      {
+        chosenRetreatPath: ['step'],
+      },
+    );
 
     const next = updateRetreatState(stateInPhase, nextRetreat);
     const { retreatState } =
@@ -235,7 +261,10 @@ describe('updateRetreatState function', () => {
     const placedUnit = placed(unit, 'E-5', 'north');
 
     expect(() =>
-      updateRetreatState(stateInPhase, createRetreatState(placedUnit)),
+      updateRetreatState(
+        stateInPhase,
+        createRetreatState(placedUnit, legalRetreatsOf(placedUnit)),
+      ),
     ).toThrow('No retreat state found in front engagement');
   });
 
@@ -247,7 +276,10 @@ describe('updateRetreatState function', () => {
     const placedUnit = placed(unit, 'E-5', 'north');
 
     expect(() =>
-      updateRetreatState(stateInPhase, createRetreatState(placedUnit)),
+      updateRetreatState(
+        stateInPhase,
+        createRetreatState(placedUnit, legalRetreatsOf(placedUnit)),
+      ),
     ).toThrow('No command resolution state found');
   });
 
@@ -257,10 +289,10 @@ describe('updateRetreatState function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat({
-        placement: createUnitPlacement('E-5', 'south'),
-        unit: blackUnit,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        placed(blackUnit, 'E-5', 'south'),
+        legalRetreatsOf(placed(blackUnit, 'E-5', 'south')),
+      ),
       secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
@@ -271,7 +303,10 @@ describe('updateRetreatState function', () => {
     );
 
     expect(() =>
-      updateRetreatState(stateInPhase, createRetreatState(whitePlacement)),
+      updateRetreatState(
+        stateInPhase,
+        createRetreatState(whitePlacement, legalRetreatsOf(whitePlacement)),
+      ),
     ).toThrow('No retreat state found in attack apply state');
   });
 
@@ -282,10 +317,10 @@ describe('updateRetreatState function', () => {
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
       firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat({
-        placement: createUnitPlacement('E-5', 'north'),
-        unit: whiteUnit,
-      }),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        placed(whiteUnit, 'E-5', 'north'),
+        legalRetreatsOf(placed(whiteUnit, 'E-5', 'north')),
+      ),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -295,7 +330,10 @@ describe('updateRetreatState function', () => {
     );
 
     expect(() =>
-      updateRetreatState(stateInPhase, createRetreatState(blackPlacement)),
+      updateRetreatState(
+        stateInPhase,
+        createRetreatState(blackPlacement, legalRetreatsOf(blackPlacement)),
+      ),
     ).toThrow('No retreat state found in attack apply state');
   });
 
@@ -309,7 +347,10 @@ describe('updateRetreatState function', () => {
     const placedUnit = placed(unit, 'E-5', 'north');
 
     expect(() =>
-      updateRetreatState(stateInPlayCards, createRetreatState(placedUnit)),
+      updateRetreatState(
+        stateInPlayCards,
+        createRetreatState(placedUnit, legalRetreatsOf(placedUnit)),
+      ),
     ).toThrow('Retreat state update not expected in phase: playCards');
   });
 });

@@ -7,6 +7,7 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
@@ -41,11 +42,15 @@ describe('getMeleeRetreatState function', () => {
   it('returns the white retreat', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const retreat = createRetreatState(white);
+    const retreat = createRetreatState(white, legalRetreatsOf(white));
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
-        retreatState: retreat,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        white,
+        legalRetreatsOf(white),
+        {
+          retreatState: retreat,
+        },
+      ),
     });
     const state = resolveMelee(melee);
 
@@ -55,11 +60,15 @@ describe('getMeleeRetreatState function', () => {
   it('returns the black retreat', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'south');
-    const retreat = createRetreatState(black);
+    const retreat = createRetreatState(black, legalRetreatsOf(black));
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, {
-        retreatState: retreat,
-      }),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        black,
+        legalRetreatsOf(black),
+        {
+          retreatState: retreat,
+        },
+      ),
     });
     const state = resolveMelee(melee);
 

@@ -1,21 +1,21 @@
 import type { GameStateForVisibility } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
-import { createChooseFiringUnitEvent, createEmptyGameState } from '@factories';
+import { createChooseShooterEvent, createEmptyGameState } from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createPlayableGame, resolvingShootOrder } from '@testing';
 import { updatePhaseState } from '@transforms';
 
-import { isValidChooseFiringUnitEvent } from './isValidChooseFiringUnitEvent';
+import { isValidChooseShooterEvent } from './isValidChooseShooterEvent';
 
 /**
- * Naming the next unit to fire under a Shoot order (§4.3.11 step 1): one of
+ * Naming the next unit to shoot under a Shoot order (§4.3.11 step 1): one of
  * the ordered units still to act, unengaged, with Range and something in
  * its arc to shoot at, standing where the board has it.
  *
  * Black carries out a Shoot order for its Range-2 unit on E-5 facing north;
  * a white unit stands two ranks ahead on C-5, inside that Range.
  */
-describe('isValidChooseFiringUnitEvent function', () => {
+describe('isValidChooseShooterEvent function', () => {
   function resolvingOrder(): GameStateForVisibility<'authoritative'> {
     const game = createPlayableGame(
       [
@@ -39,13 +39,13 @@ describe('isValidChooseFiringUnitEvent function', () => {
       'E-5',
     );
     // Black names the unit on E-5, where it stands.
-    const event = createChooseFiringUnitEvent({
+    const event = createChooseShooterEvent({
       eventNumber: 0,
       player: 'black',
       unit: ordered,
     });
 
-    expect(isValidChooseFiringUnitEvent(event, state)).toStrictEqual({
+    expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
       result: true,
     });
   });
@@ -57,13 +57,13 @@ describe('isValidChooseFiringUnitEvent function', () => {
       'E-5',
     );
     // The same unit, claimed to stand one space off.
-    const event = createChooseFiringUnitEvent({
+    const event = createChooseShooterEvent({
       eventNumber: 0,
       player: 'black',
       unit: { ...ordered, placement: { coordinate: 'D-5', facing: 'north' } },
     });
 
-    expect(isValidChooseFiringUnitEvent(event, state)).toStrictEqual({
+    expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
       errorReason: 'Unit is not a legal ranged attacker for black',
       result: false,
     });
@@ -76,14 +76,14 @@ describe('isValidChooseFiringUnitEvent function', () => {
       'E-5',
     );
     // White tries to name black's shooter during black's order.
-    const event = createChooseFiringUnitEvent({
+    const event = createChooseShooterEvent({
       eventNumber: 0,
       player: 'white',
       unit: ordered,
     });
 
-    expect(isValidChooseFiringUnitEvent(event, state)).toStrictEqual({
-      errorReason: 'Expected a unit to fire from black, got white',
+    expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
+      errorReason: 'Expected a shooter from black, got white',
       result: false,
     });
   });
@@ -98,15 +98,14 @@ describe('isValidChooseFiringUnitEvent function', () => {
       resolvingOrder().boardState,
       'E-5',
     );
-    const event = createChooseFiringUnitEvent({
+    const event = createChooseShooterEvent({
       eventNumber: 0,
       player: 'black',
       unit: ordered,
     });
 
-    expect(isValidChooseFiringUnitEvent(event, state)).toStrictEqual({
-      errorReason:
-        'Choosing a unit to fire is not expected in the current state',
+    expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
+      errorReason: 'Choosing a shooter is not expected in the current state',
       result: false,
     });
   });

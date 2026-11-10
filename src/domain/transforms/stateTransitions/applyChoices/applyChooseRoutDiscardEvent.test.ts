@@ -24,6 +24,8 @@ import {
   createTestUnit,
   createUnitWithPlacement,
   updateCardState,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
 } from '@testing';
 
 import { updatePhaseState } from '@transforms/pureTransforms';
@@ -216,12 +218,15 @@ describe('applyChooseRoutDiscardEvent function', () => {
     });
     state = { ...state, routedUnits: [defender.unit] };
     // No legal retreat options is what made this a rout; one card owed.
-    const retreatState = createRetreatState(defender, {
-      legalRetreatPaths: [],
-      routState: createRoutState('white', defender.unit, {
-        numberToDiscard: 1,
-      }),
-    });
+    const retreatState = createRetreatState(
+      defender,
+      legalRetreatsOf(defender, [enemyCuttingOffRetreat(defender)]),
+      {
+        routState: createRoutState('white', defender.unit, {
+          numberToDiscard: 1,
+        }),
+      },
+    );
     return { defender, retreatState, state };
   }
 
@@ -241,9 +246,13 @@ describe('applyChooseRoutDiscardEvent function', () => {
       base,
       createIssueCommandsPhaseState(base, {
         currentCommandResolutionState: createRangedAttackResolutionState(base, {
-          attackApplyState: createAttackApplyStateWithRetreat(defender, {
-            retreatState,
-          }),
+          attackApplyState: createAttackApplyStateWithRetreat(
+            defender,
+            legalRetreatsOf(defender),
+            {
+              retreatState,
+            },
+          ),
         }),
       }),
     );
@@ -317,6 +326,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
         currentMeleeResolutionState: createMeleeResolutionState(base, {
           secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
             defender,
+            retreatState.legalRetreatPaths,
             { retreatState },
           ),
         }),

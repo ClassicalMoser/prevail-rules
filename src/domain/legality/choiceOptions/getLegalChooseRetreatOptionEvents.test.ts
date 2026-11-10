@@ -9,6 +9,8 @@ import {
   createRetreatState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
+  enemyBlockingStraightBack,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -20,27 +22,40 @@ import { createEmptyGameState } from '@factories';
  * an active retreat substep's legalRetreatPaths.
  */
 describe('getLegalChooseRetreatOptionEvents function', () => {
-  // Two tied ways back, each named by the moves it takes.
+  // The two tied ways back the engine offers, each named by its moves.
   const optionA: MoveDelta[] = ['turnLeft', 'step'];
   const optionB: MoveDelta[] = ['turnRight', 'step'];
 
+  /**
+   * A shot has driven white's unit back from E-5, and it has two equally
+   * small retreats; `chosenRetreatPath` is its choice, if made.
+   */
   function stateWithRangedRetreatOptions(
-    options: readonly MoveDelta[][] = [optionA, optionB],
     chosenRetreatPath: MoveDelta[] | 'pending' = 'pending',
   ) {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement = placed(unit, 'E-5', 'north');
+    // A black unit on F-5, its back to white's, bars the straight step back
+    // and leaves two equal ways round it (§9.1.3).
+    const blocker = enemyBlockingStraightBack(placement);
     const withUnit = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(state.boardState, placement),
+        blocker,
+      ),
     };
-    const attackApply = createAttackApplyStateWithRetreat(placement, {
-      retreatState: createRetreatState(placement, {
-        chosenRetreatPath,
-        legalRetreatPaths: [...options],
-      }),
-    });
+    const tiedPaths = legalRetreatsOf(placement, [blocker]);
+    const attackApply = createAttackApplyStateWithRetreat(
+      placement,
+      tiedPaths,
+      {
+        retreatState: createRetreatState(placement, tiedPaths, {
+          chosenRetreatPath,
+        }),
+      },
+    );
     return updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {
@@ -75,7 +90,7 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
   });
 
   it('returns empty when the retreat is already chosen', () => {
-    const state = stateWithRangedRetreatOptions([optionA, optionB], optionA);
+    const state = stateWithRangedRetreatOptions(optionA);
     expect(getLegalChooseRetreatOptionEvents(state)).toStrictEqual([]);
   });
 
@@ -91,20 +106,24 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement = placed(unit, 'E-5', 'north');
+    // A black unit on F-5, its back to white's, bars the straight step back
+    // and leaves two equal ways round it (§9.1.3).
+    const blocker = enemyBlockingStraightBack(placement);
     const withUnit = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(state.boardState, placement),
+        blocker,
+      ),
     };
+    const tiedPaths = legalRetreatsOf(placement, [blocker]);
     const engagementState = updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {
         currentCommandResolutionState: createMovementResolutionState(withUnit, {
           engagementState: createFrontEngagementState({
             defendingUnitRetreats: true,
-            retreatState: createRetreatState(placement, {
-              chosenRetreatPath: 'pending',
-              legalRetreatPaths: [optionA, optionB],
-            }),
+            retreatState: createRetreatState(placement, tiedPaths),
           }),
         }),
       }),

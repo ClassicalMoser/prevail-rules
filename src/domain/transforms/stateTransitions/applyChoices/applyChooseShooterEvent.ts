@@ -1,4 +1,4 @@
-import type { ChooseFiringUnitEvent } from '@events';
+import type { ChooseShooterEvent } from '@events';
 import type {
   GameState,
   IssueCommandsPhaseState,
@@ -8,16 +8,16 @@ import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
- * Applies a ChooseFiringUnitEvent: the named unit's shot begins (§4.3.11).
+ * Applies a ChooseShooterEvent: the named unit's shot begins (§4.3.11).
  * A ranged attack opens for it with its owner's commitment still to come,
  * and its target, its supporters and the target's commitment not yet known;
  * and the unit leaves the list of those the order has still to act, since
- * each fires once.
+ * each shoots once.
  *
- * Event is assumed pre-validated (the unit is one the order may fire next).
+ * Event is assumed pre-validated (the unit is one the order may shoot with next).
  */
-export function applyChooseFiringUnitEvent<S extends GameState>(
-  event: ChooseFiringUnitEvent,
+export function applyChooseShooterEvent<S extends GameState>(
+  event: ChooseShooterEvent,
   state: S,
 ): S {
   const phaseState = getIssueCommandsPhaseState(state);

@@ -13,7 +13,9 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
+  enemyBlockingStraightBack,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -28,8 +30,9 @@ import {
  * `chosenRetreatPath` on the active retreat substep (ranged attack-apply or the correct melee side).
  */
 describe('applyChooseRetreatOptionEvent function', () => {
-  // The retreat fixture offers two tied ways back; the defender takes the one
-  // that turns right and steps.
+  // In every case an enemy stands on F-5 with its back to the retreating
+  // unit: it bars the straight step back and leaves two tied ways round it
+  // (§9.1.3). The defender takes the one that turns right and steps.
   const chosenPath = ['turnRight' as const, 'step' as const];
 
   /** IssueCommands + ranged CRS + retreat substep on white at E-5 (no retreat chosen yet). */
@@ -37,11 +40,18 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
+    const blocker = enemyBlockingStraightBack(placement);
     const stateWithUnit = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(state.boardState, placement),
+        blocker,
+      ),
     };
-    const attackApply = createAttackApplyStateWithRetreat(placement);
+    const attackApply = createAttackApplyStateWithRetreat(
+      placement,
+      legalRetreatsOf(placement, [blocker]),
+    );
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
       currentCommandResolutionState: createRangedAttackResolutionState(
         stateWithUnit,
@@ -83,11 +93,18 @@ describe('applyChooseRetreatOptionEvent function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, retreatingPlacement),
     };
+    const blocker = enemyBlockingStraightBack(retreatingPlacement);
     stateWithUnits = {
       ...stateWithUnits,
-      boardState: addUnitToBoard(stateWithUnits.boardState, otherPlacement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(stateWithUnits.boardState, otherPlacement),
+        blocker,
+      ),
     };
-    const attackApply = createAttackApplyStateWithRetreat(retreatingPlacement);
+    const attackApply = createAttackApplyStateWithRetreat(
+      retreatingPlacement,
+      legalRetreatsOf(retreatingPlacement, [blocker]),
+    );
     const melee = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
@@ -134,9 +151,13 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
+    const blocker = enemyBlockingStraightBack(placement);
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
+      boardState: addUnitToBoard(
+        addUnitToBoard(state.boardState, placement),
+        blocker,
+      ),
     };
     const stateInIssueCommands = updatePhaseState(
       withBoard,
@@ -146,7 +167,10 @@ describe('applyChooseRetreatOptionEvent function', () => {
           {
             engagementState: createFrontEngagementState({
               defendingUnitRetreats: true,
-              retreatState: createRetreatState(placement),
+              retreatState: createRetreatState(
+                placement,
+                legalRetreatsOf(placement, [blocker]),
+              ),
             }),
           },
         ),

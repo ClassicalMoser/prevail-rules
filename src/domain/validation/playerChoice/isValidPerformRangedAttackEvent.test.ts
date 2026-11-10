@@ -23,7 +23,7 @@ import {
 /**
  * IsValidPerformRangedAttackEvent: one attacker, one defender, supporters
  * that independently can hit that defender. The shooter is the one its
- * `chooseFiringUnit` named, and its committed card counts toward its Range;
+ * `chooseShooter` named, and its committed card counts toward its Range;
  * supporters are judged at their own.
  */
 describe('isValidPerformRangedAttackEvent function', () => {

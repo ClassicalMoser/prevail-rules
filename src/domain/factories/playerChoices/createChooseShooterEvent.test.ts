@@ -1,21 +1,21 @@
 import { createUnitWithPlacement } from '@testing';
 
-import { createChooseFiringUnitEvent } from './createChooseFiringUnitEvent';
+import { createChooseShooterEvent } from './createChooseShooterEvent';
 
-describe('createChooseFiringUnitEvent function', () => {
+describe('createChooseShooterEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
     // Any unit will do: the factory only carries it, and judging whether it
-    // may fire is legality's job.
+    // may shoot is legality's job.
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
 
-    const event = createChooseFiringUnitEvent({
+    const event = createChooseShooterEvent({
       eventNumber: 2,
       player: 'black',
       unit,
     });
 
     expect(event).toStrictEqual({
-      choiceType: 'chooseFiringUnit',
+      choiceType: 'chooseShooter',
       eventNumber: 2,
       eventType: 'playerChoice',
       player: 'black',

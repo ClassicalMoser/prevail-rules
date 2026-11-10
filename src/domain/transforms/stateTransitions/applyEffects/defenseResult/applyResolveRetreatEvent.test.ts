@@ -18,6 +18,7 @@ import {
   createRetreatState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 import {
   addCommanderToBoard,
@@ -49,8 +50,10 @@ describe('applyResolveRetreatEvent function', () => {
     };
 
     // Create attack apply state with retreat
-    const attackApplyState =
-      createAttackApplyStateWithRetreat(unitWithPlacement);
+    const attackApplyState = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      legalRetreatsOf(unitWithPlacement),
+    );
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
@@ -93,6 +96,7 @@ describe('applyResolveRetreatEvent function', () => {
     // Create attack apply state with retreat for the retreating player
     const attackApplyState = createAttackApplyStateWithRetreat(
       retreatingUnitWithPlacement,
+      legalRetreatsOf(retreatingUnitWithPlacement),
     );
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
@@ -353,10 +357,12 @@ describe('applyResolveRetreatEvent function', () => {
             {
               engagementState: createFrontEngagementState({
                 defendingUnitRetreats: true,
-                retreatState: createRetreatState(placement, {
-                  chosenRetreatPath: stepBack,
-                  legalRetreatPaths: [stepBack],
-                }),
+                // Open ground behind: the one retreat, taken at once.
+                retreatState: createRetreatState(
+                  placement,
+                  legalRetreatsOf(placement),
+                  { chosenRetreatPath: stepBack },
+                ),
               }),
             },
           ),

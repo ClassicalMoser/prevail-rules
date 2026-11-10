@@ -33,13 +33,13 @@ export function isUnengagedUnit(
 }
 
 /**
- * Whether `attacker` may fire at `target`: attacker unengaged with range &gt; 0,
+ * Whether `attacker` may shoot at `target`: attacker unengaged with range &gt; 0,
  * target is an enemy on a space in the attacker's front arc out to current
  * range. No line-of-sight check.
  *
  * @param modifiers - The card the shooter committed before naming its
  * target, when there is one: a Range card reaches one space further out
- * (§4.3.11 step 2). Supporters and the question of whether a unit may fire
+ * (§4.3.11 step 2). Supporters and the question of whether a unit may shoot
  * at all are judged without one.
  */
 export function canUnitRangedAttackTarget(
@@ -48,7 +48,7 @@ export function canUnitRangedAttackTarget(
   gameState: GameState,
   modifiers?: Modifier[],
 ): boolean {
-  // A unit cannot fire on a friend.
+  // A unit cannot shoot at a friend.
   const sameSide = isFriendlyUnit(attacker.unit, target.unit.playerSide);
   if (sameSide) {
     return false;

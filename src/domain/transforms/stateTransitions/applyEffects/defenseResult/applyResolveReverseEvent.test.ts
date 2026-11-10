@@ -16,6 +16,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -77,6 +78,7 @@ describe('applyResolveReverseEvent function', () => {
 
     const opponentAttackApplyState = createAttackApplyStateWithRetreat(
       opponentUnitWithPlacement,
+      legalRetreatsOf(opponentUnitWithPlacement),
     );
     const reversingAttackApplyState =
       createAttackApplyStateWithReverse(reversingUnit);

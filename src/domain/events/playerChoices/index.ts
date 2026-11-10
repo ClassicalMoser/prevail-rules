@@ -27,12 +27,12 @@ export {
 export type { MoveUnitEvent } from './moveUnit';
 export { moveUnitEventSchema } from './moveUnit';
 
-// Fire one shot of a ranged attack order: name the shooter, then the target.
-export type { ChooseFiringUnitEvent } from './chooseFiringUnit';
+// Take one shot of a Shoot order: name the shooter, then the target.
+export type { ChooseShooterEvent } from './chooseShooter';
 export {
-  CHOOSE_FIRING_UNIT_CHOICE_TYPE,
-  chooseFiringUnitEventSchema,
-} from './chooseFiringUnit';
+  CHOOSE_SHOOTER_CHOICE_TYPE,
+  chooseShooterEventSchema,
+} from './chooseShooter';
 export type { PerformRangedAttackEvent } from './performRangedAttack';
 export { performRangedAttackEventSchema } from './performRangedAttack';
 
@@ -47,7 +47,7 @@ export {
   rangedAttackModifierTypes,
 } from './commitToRangedAttack';
 
-// The target of a shot commits a card for Defence.
+// The target of a shot commits a card for Defence or Flexibility.
 export type { CommitToRangedDefenseEvent } from './commitToRangedDefense';
 export {
   commitToRangedDefenseEventSchema,

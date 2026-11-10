@@ -15,24 +15,39 @@ import {
 
 /**
  * A melee carries its results out a stage at a time (§7.5.6), played through
- * the engines: every retreat, then every reverse, then every rout. What the
- * order changes is whether a unit that is only hit to reverse is still engaged
- * when its turn comes (§7.5.5).
+ * the engines: every retreat, then every reverse, then every rout. In each
+ * stage the first player's blow lands first, so the second player's unit
+ * suffers first. What the order changes is whether a unit that is only hit
+ * to reverse is still engaged when its turn comes (§7.5.5), and whose Morale
+ * is paid first when both rout (§9.3.3).
  *
  * Black, the first player, stands on E-5 facing north, engaged with white
- * facing south on the same space. Both have committed their cards.
+ * facing south on the same space. Both units have Morale 2. Each side has a
+ * second unit far from the fight, so losing this one does not leave it with
+ * no units (§11.4). Both have committed their cards; each holds three more
+ * unless a case says otherwise.
  */
-function meleeResolvedWith(results: {
-  blackRetreated: boolean;
-  blackReversed: boolean;
-  whiteReversed: boolean;
-}): GameStateForVisibility<'authoritative'> {
+function meleeResolvedWith(
+  results: {
+    blackRetreated?: boolean;
+    blackReversed?: boolean;
+    blackRouted?: boolean;
+    whiteReversed?: boolean;
+    whiteRouted?: boolean;
+  },
+  whiteHand = 3,
+): {
+  state: GameStateForVisibility<'authoritative'>;
+  next: ReturnType<typeof applyEffectsUntilChoice>['next'];
+} {
   const game = createPlayableGame(
     [
-      { coord: 'E-5', facing: 'north', player: 'black' },
-      { coord: 'E-5', facing: 'south', player: 'white' },
+      { coord: 'E-5', facing: 'north', morale: 2, player: 'black' },
+      { coord: 'E-5', facing: 'south', morale: 2, player: 'white' },
+      { coord: 'I-1', facing: 'north', instanceNumber: 2, player: 'black' },
+      { coord: 'A-9', facing: 'south', instanceNumber: 2, player: 'white' },
     ],
-    { initiative: 'black' },
+    { hands: { white: whiteHand }, initiative: 'black' },
   );
   // Both sides have a card in play, the commitments the melee opens on.
   const blackPlayed = updatePlayerCardState(game, 'black', {
@@ -62,30 +77,30 @@ function meleeResolvedWith(results: {
   // engines play everything that follows.
   const resolved = applyEvent(
     {
-      blackUnitRetreated: results.blackRetreated,
-      blackUnitReversed: results.blackReversed,
-      blackUnitRouted: false,
+      blackUnitRetreated: results.blackRetreated ?? false,
+      blackUnitReversed: results.blackReversed ?? false,
+      blackUnitRouted: results.blackRouted ?? false,
       blackUnitWithPlacement: black,
       effectType: 'resolveMelee',
       eventNumber: 0,
       eventType: 'gameEffect',
       location: 'E-5',
       whiteUnitRetreated: false,
-      whiteUnitReversed: results.whiteReversed,
-      whiteUnitRouted: false,
+      whiteUnitReversed: results.whiteReversed ?? false,
+      whiteUnitRouted: results.whiteRouted ?? false,
       whiteUnitWithPlacement: white,
     },
     melee,
   );
-  const { state } = applyEffectsUntilChoice(resolved);
-  return state;
+  const played = applyEffectsUntilChoice(resolved);
+  return played;
 }
 
 describe('a melee carried out a stage at a time', () => {
   it('turns a unit that is only hit to reverse once its enemy has fallen back', () => {
     // Black's unit is hit to retreat; white's only to reverse. The retreats
     // come first, so black has left E-5 by the time white's reverse is due.
-    const state = meleeResolvedWith({
+    const { state } = meleeResolvedWith({
       blackReversed: false,
       blackRetreated: true,
       whiteReversed: true,
@@ -102,7 +117,7 @@ describe('a melee carried out a stage at a time', () => {
   it('leaves two engaged units as they are when both are only hit to reverse', () => {
     // Neither unit has fallen back, so each is still engaged when its reverse
     // is due, and each stays as it is (§7.5.5).
-    const state = meleeResolvedWith({
+    const { state } = meleeResolvedWith({
       blackReversed: true,
       blackRetreated: false,
       whiteReversed: true,
@@ -112,5 +127,35 @@ describe('a melee carried out a stage at a time', () => {
     const white = getPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
     expect(black?.placement.facing).toBe('north');
     expect(white?.placement.facing).toBe('south');
+  });
+
+  it('when both units rout, the second player pays its Morale first', () => {
+    // Each blow reached the other's Rout. Black's blow lands first, so white's
+    // unit routs first, and white is the first asked to discard (§9.3.3).
+    const { next } = meleeResolvedWith({
+      blackRouted: true,
+      whiteRouted: true,
+    });
+
+    expect(next).toMatchObject({
+      choiceType: 'chooseRoutDiscard',
+      playerSource: 'white',
+    });
+  });
+
+  it('when both units rout and the second player cannot pay, the game ends before the first player’s rout', () => {
+    // White holds two cards against a Morale debt of 2: paying with its last
+    // card is already a loss (§11.2).
+    const { state, next } = meleeResolvedWith(
+      { blackRouted: true, whiteRouted: true },
+      2,
+    );
+
+    // White's rout came first, and white loses on it.
+    expect(next).toBe('gameOver');
+    expect(state.winner).toBe('black');
+    // Black's unit was never routed: its turn never came.
+    const black = getPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
+    expect(black?.unit.playerSide).toBe('black');
   });
 });

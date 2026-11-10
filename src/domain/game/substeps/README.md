@@ -33,7 +33,7 @@ Active command loop under `issueCommands`. `CommandResolutionState` is the union
 | ----------------------------- | ------------------------------------- |
 | `CommandResolutionState`      | Union: movement \| ranged attack      |
 | `MovementResolutionState`     | Unit move; may nest `EngagementState` |
-| `RangedAttackResolutionState` | Ranged fire; nests `AttackApplyState` |
+| `RangedAttackResolutionState` | A shot; nests `AttackApplyState`      |
 
 ### Melee resolution (`meleeResolution/`)
 

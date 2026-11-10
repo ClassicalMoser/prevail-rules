@@ -10,6 +10,7 @@ import {
   createRoutState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
@@ -148,8 +149,13 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('retreat', () => {
     it('given retreat is not completed, returns expected retreat event', () => {
       const unit = createTestUnit('white', { attack: 2 });
+      const unitPlacement = placed(unit, 'E-5', 'north');
+      // A black unit behind on F-5 looks away, so the retreating unit has two
+      // tied ways back and must be asked which to take (§9.1.3).
+      const behind = placed(createTestUnit('black'), 'F-5', 'south');
       const attackApplyState = createAttackApplyStateWithRetreat(
-        placed(unit, 'E-5', 'north'),
+        unitPlacement,
+        legalRetreatsOf(unitPlacement, [behind]),
       );
 
       expectPlayerChoice(
@@ -162,10 +168,16 @@ describe('getExpectedAttackApplyEvent function', () => {
     it('given continue to completeAttackApply when retreat is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement = placed(unit, 'E-5', 'north');
+      // Open ground behind: the unit has one way back.
+      const openGround = legalRetreatsOf(unitPlacement);
       const attackApplyState = createAttackApplyStateWithRetreat(
         unitPlacement,
+        openGround,
         {
-          retreatState: createRetreatState(unitPlacement, { completed: true }),
+          // The retreat is finished, so only the attack's closing step is left.
+          retreatState: createRetreatState(unitPlacement, openGround, {
+            completed: true,
+          }),
         },
       );
 
@@ -217,10 +229,14 @@ describe('getExpectedAttackApplyEvent function', () => {
     it('given all substeps are completed, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement = placed(unit, 'E-5', 'north');
+      // Open ground behind: the unit has one way back.
+      const openGround = legalRetreatsOf(unitPlacement);
       const attackApplyState = createAttackApplyStateWithRetreat(
         unitPlacement,
+        openGround,
         {
-          retreatState: createRetreatState(unitPlacement, {
+          // The one retreat was taken and finished; nothing else is due.
+          retreatState: createRetreatState(unitPlacement, openGround, {
             completed: true,
             chosenRetreatPath: ['step'],
           }),
@@ -236,11 +252,15 @@ describe('getExpectedAttackApplyEvent function', () => {
     it('given when attack apply is already completed, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement = placed(unit, 'E-5', 'north');
+      // Open ground behind: the unit has one way back.
+      const openGround = legalRetreatsOf(unitPlacement);
       const attackApplyState = createAttackApplyStateWithRetreat(
         unitPlacement,
+        openGround,
         {
+          // Both the retreat and the attack's own resolution are finished.
           completed: true,
-          retreatState: createRetreatState(unitPlacement, {
+          retreatState: createRetreatState(unitPlacement, openGround, {
             completed: true,
             chosenRetreatPath: ['step'],
           }),

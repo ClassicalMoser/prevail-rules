@@ -142,10 +142,10 @@ export {
 } from './playerChoices';
 export type { MoveUnitEvent } from './playerChoices';
 export { moveUnitEventSchema } from './playerChoices';
-export type { ChooseFiringUnitEvent } from './playerChoices';
+export type { ChooseShooterEvent } from './playerChoices';
 export {
-  CHOOSE_FIRING_UNIT_CHOICE_TYPE,
-  chooseFiringUnitEventSchema,
+  CHOOSE_SHOOTER_CHOICE_TYPE,
+  chooseShooterEventSchema,
 } from './playerChoices';
 export type { PerformRangedAttackEvent } from './playerChoices';
 export { performRangedAttackEventSchema } from './playerChoices';

@@ -34,7 +34,7 @@ export {
   getLegalLineEndsForIssueCommand,
   getLegalLineStartsForIssueCommand,
   getLegalMoveUnits,
-  getLegalFiringUnitTargets,
+  getLegalShooterTargets,
   getLegalRangedAttackers,
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
@@ -54,7 +54,7 @@ export {
 export type {
   LegalIssueCommands,
   LegalMoveUnits,
-  LegalFiringUnitTargets,
+  LegalShooterTargets,
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,

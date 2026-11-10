@@ -21,7 +21,7 @@ describe('getExpectedStartCommandResolutionEvent function', () => {
     });
   });
 
-  it('a Shoot order starts by asking which unit fires next', () => {
+  it('a Shoot order starts by asking which unit shoots next', () => {
     const state = createEmptyGameState('standard');
     state.cardState.white.inPlay = {
       ...createTestCard(),
@@ -35,7 +35,7 @@ describe('getExpectedStartCommandResolutionEvent function', () => {
       getExpectedStartCommandResolutionEvent(state, 'white'),
     ).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'chooseFiringUnit',
+      choiceType: 'chooseShooter',
       playerSource: 'white',
     });
   });

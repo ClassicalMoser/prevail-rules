@@ -4,7 +4,7 @@ import { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseE
 
 describe('createCommitToRangedDefenseEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
-    // A Defence card, the only stat a target may commit for (B1).
+    // A Defence card, one a target may commit (B1).
     const committedCard = createTestCard({ modifiers: ['defense'] });
 
     const event = createCommitToRangedDefenseEvent({

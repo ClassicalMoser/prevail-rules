@@ -9,14 +9,17 @@ import {
 } from '@queries';
 
 /**
- * Generates a ResolveRetreatEvent by reading the finalPosition from the retreat state.
- * The finalPosition is already determined (either auto-selected if single option,
- * or chosen by player via chooseRetreatOption if multiple options).
+ * Carries out a retreat already decided (§9.1): the path it takes was the
+ * only legal one, taken at once, or the one its owner chose among the
+ * smallest (§9.1.3). The event names where the unit starts and the path;
+ * where it lands follows from those, so it is not recorded twice.
  *
- * This is a **convergence event** that performs the actual unit movement on the board.
+ * Every retreat, whatever opened it, ends here, and this event moves the
+ * unit on the board.
  *
  * @param state - The current game state
- * @returns A complete ResolveRetreatEvent with the retreating unit and final position
+ * @param eventNumber - The event's place in the round
+ * @returns The retreat to carry out: the unit where it stands, and its path
  */
 export function generateResolveRetreatEvent(
   state: GameState,

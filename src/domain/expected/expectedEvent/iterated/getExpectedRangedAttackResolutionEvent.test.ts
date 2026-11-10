@@ -92,7 +92,7 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     });
   });
 
-  it('once the target is named, asks its owner to commit for Defence', () => {
+  it('once the target is named, asks its owner to commit for Defence or Flexibility', () => {
     const gameState = createGameState();
     // Black's shot is aimed at the white unit the fixture names.
     const resolutionState = createRangedAttackResolutionState(gameState, {

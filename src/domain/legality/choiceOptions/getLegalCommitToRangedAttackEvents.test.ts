@@ -135,7 +135,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     ]);
   });
 
-  it('offers the target nothing: its commitment is a separate choice, for Defence (B1)', () => {
+  it('offers the target nothing: its commitment is a separate choice (B1)', () => {
     // White holds an Attack card while its commitment is owed.
     const state = stateAwaitingTargetCommit([attackCard]);
 

@@ -8,6 +8,7 @@ import {
   createRangedAttackResolutionState,
   createRetreatState,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
@@ -36,11 +37,15 @@ describe('getRangedAttackRetreatState function', () => {
   it('returns the retreat on the ranged attack apply', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender);
+    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyStateWithRetreat(defender, {
-        retreatState: retreat,
-      }),
+      attackApplyState: createAttackApplyStateWithRetreat(
+        defender,
+        legalRetreatsOf(defender),
+        {
+          retreatState: retreat,
+        },
+      ),
       defendingUnit: defender.unit,
     });
     const state = issueCommands(resolution);

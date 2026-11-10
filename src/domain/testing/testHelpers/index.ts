@@ -5,7 +5,10 @@ export {
   getCards,
   getCardsByCount,
 } from './cardHelpers';
+export { enemyBlockingStraightBack } from './enemyBlockingStraightBack';
+export { enemyCuttingOffRetreat } from './enemyCuttingOffRetreat';
 export { hasMove } from './hasMove';
+export { legalRetreatsOf } from './legalRetreatsOf';
 export {
   coordinatesOfLine,
   coordinatesOfLines,

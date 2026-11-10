@@ -17,6 +17,8 @@ import {
   createRetreatState,
   createRoutState,
   createTestUnit,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
@@ -105,12 +107,19 @@ describe('findRoutState function', () => {
     // is held by the retreat rather than by the attack.
     const nested = createRoutState('black', defender);
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyStateWithRetreat(standing, {
-        retreatState: createRetreatState(standing, {
-          legalRetreatPaths: [],
-          routState: nested,
-        }),
-      }),
+      attackApplyState: createAttackApplyStateWithRetreat(
+        standing,
+        legalRetreatsOf(standing),
+        {
+          retreatState: createRetreatState(
+            standing,
+            legalRetreatsOf(standing, [enemyCuttingOffRetreat(standing)]),
+            {
+              routState: nested,
+            },
+          ),
+        },
+      ),
       defendingUnit: defender,
     });
 

@@ -13,9 +13,10 @@ import {
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
-  createRetreatState,
   createTestUnit,
   placed,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -41,11 +42,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
     // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
       unitWithPlacement,
-      {
-        retreatState: createRetreatState(unitWithPlacement, {
-          legalRetreatPaths: [],
-        }),
-      },
+      // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
+      legalRetreatsOf(unitWithPlacement, [
+        enemyCuttingOffRetreat(unitWithPlacement),
+      ]),
     );
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
@@ -88,11 +88,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
     // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
       retreatingUnitWithPlacement,
-      {
-        retreatState: createRetreatState(retreatingUnitWithPlacement, {
-          legalRetreatPaths: [],
-        }),
-      },
+      // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
+      legalRetreatsOf(retreatingUnitWithPlacement, [
+        enemyCuttingOffRetreat(retreatingUnitWithPlacement),
+      ]),
     );
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
@@ -222,11 +221,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       // Retreat and reverse were both due; nowhere to go opens a rout instead.
       const attackApplyState = createAttackApplyStateWithRetreatAndReverse(
         unitWithPlacement,
-        {
-          retreatState: createRetreatState(unitWithPlacement, {
-            legalRetreatPaths: [],
-          }),
-        },
+        // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
+        legalRetreatsOf(unitWithPlacement, [
+          enemyCuttingOffRetreat(unitWithPlacement),
+        ]),
       );
       expect(attackApplyState.reverseState).toBe('pending');
       const ranged = createRangedAttackResolutionState(stateWithUnit, {

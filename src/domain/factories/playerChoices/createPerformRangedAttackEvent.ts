@@ -13,7 +13,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @param fields - `eventNumber` the ordered index of the event in the round,
  * zero-indexed; `player` the shooting player; `supportingUnits` the units
  * spending their shots on this one; `targetUnit` the enemy unit being shot
- * at — the shooter itself was named by `chooseFiringUnit`
+ * at — the shooter itself was named by `chooseShooter`
  * @returns The event
  */
 export function createPerformRangedAttackEvent(fields: {

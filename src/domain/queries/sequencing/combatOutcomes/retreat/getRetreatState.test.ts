@@ -7,6 +7,7 @@ import {
   createRangedAttackResolutionState,
   createRetreatState,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
@@ -23,11 +24,15 @@ describe('getRetreatState function', () => {
   it('returns the retreat that player is making', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white');
-    const retreat = createRetreatState(defender);
+    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyStateWithRetreat(defender, {
-        retreatState: retreat,
-      }),
+      attackApplyState: createAttackApplyStateWithRetreat(
+        defender,
+        legalRetreatsOf(defender),
+        {
+          retreatState: retreat,
+        },
+      ),
       defendingUnit: defender.unit,
     });
     const state = updatePhaseState(

@@ -29,7 +29,7 @@ import {
   getLegalIssueCommands,
   getLegalMoveUnits,
   getLegalUnitMoves,
-  getLegalFiringUnitTargets,
+  getLegalShooterTargets,
   getLegalRangedAttackers,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
@@ -132,13 +132,13 @@ export type LegalPlayerChoiceOptions =
       moves: MoveResult[];
     })
   | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseFiringUnit';
+      choiceType: 'chooseShooter';
       rangedAttackers: LegalRangedAttackers;
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'performRangedAttack';
       /** The unit whose shot is being aimed; `null` if it cannot be read. */
-      firingUnit: UnitWithPlacement | null;
+      shooter: UnitWithPlacement | null;
       /**
        * Every enemy it may target, with the card committed for the shot
        * counted (§4.3.11 steps 2–3). Supporters for a chosen target are
@@ -408,7 +408,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         moves,
       };
     }
-    case 'chooseFiringUnit': {
+    case 'chooseShooter': {
       let rangedAttackers: LegalRangedAttackers;
       try {
         rangedAttackers =
@@ -418,19 +418,19 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       }
       return {
         ...base,
-        choiceType: 'chooseFiringUnit',
+        choiceType: 'chooseShooter',
         rangedAttackers,
       };
     }
     case 'performRangedAttack': {
       // The shooter was named and its card committed or refused; offer every
       // target it may reach, the committed card counted.
-      let firingUnit: UnitWithPlacement | null = null;
+      let shooter: UnitWithPlacement | null = null;
       let targets: UnitWithPlacement[] = [];
       try {
-        const legal = getLegalFiringUnitTargets(state);
+        const legal = getLegalShooterTargets(state);
         if (legal !== null) {
-          firingUnit = legal.firingUnit;
+          shooter = legal.shooter;
           targets = [...legal.targets];
         }
       } catch {
@@ -439,7 +439,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       return {
         ...base,
         choiceType: 'performRangedAttack',
-        firingUnit,
+        shooter,
         targets,
       };
     }

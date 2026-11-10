@@ -9,6 +9,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -29,11 +30,18 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
+    // A black unit on F-5 facing the defender closes its way back, so it has no
+    // retreat and must rout instead (§9.1.5, §9.1.6).
+    const cutter = placed(createTestUnit('black'), 'F-5', 'north');
+    const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
+      boardState: addUnitToBoard(withUnit, cutter),
     };
-    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement);
+    const attackApply = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      legalRetreatsOf(unitWithPlacement, [cutter]),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,
@@ -62,7 +70,18 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
       boardState: addUnitToBoard(state.boardState, retreatingWp),
     };
     s = { ...s, boardState: addUnitToBoard(s.boardState, otherWp) };
-    const attackApply = createAttackApplyStateWithRetreat(retreatingWp);
+    // A third unit, an enemy of the retreating one, stands directly behind it
+    // facing it, so the retreating unit cannot fall back (§9.1.5).
+    const cutter = placed(
+      createTestUnit(retreatingPlayer === 'white' ? 'black' : 'white'),
+      'F-5',
+      'north',
+    );
+    s = { ...s, boardState: addUnitToBoard(s.boardState, cutter) };
+    const attackApply = createAttackApplyStateWithRetreat(
+      retreatingWp,
+      legalRetreatsOf(retreatingWp, [otherWp, cutter]),
+    );
     const melee = createMeleeResolutionState(
       s,
       // Black holds the initiative by default here, so black resolves first.
@@ -105,7 +124,14 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
-    const attackApply = createAttackApplyStateWithRetreat(whiteWp);
+    // A second black unit directly behind the white one, facing it, leaves it
+    // no retreat (§9.1.5).
+    const cutter = placed(createTestUnit('black'), 'F-5', 'north');
+    s = { ...s, boardState: addUnitToBoard(s.boardState, cutter) };
+    const attackApply = createAttackApplyStateWithRetreat(
+      whiteWp,
+      legalRetreatsOf(whiteWp, [blackWp, cutter]),
+    );
     const melee = createMeleeResolutionState(s, {
       firstPlayerAttackApplyState: attackApply,
     });

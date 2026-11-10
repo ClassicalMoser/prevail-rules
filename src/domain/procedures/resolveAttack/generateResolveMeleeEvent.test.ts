@@ -60,7 +60,7 @@ describe('generateResolveMeleeEvent function', () => {
      * Rout 7). Black, the first player, commits a card for +1 Attack, so its
      * blow on white is 5. White commits a card naming `whiteCommits`.
      */
-    function cavalryMelee(whiteCommits: 'attack' | 'defense'): GameState {
+    function cavalryMelee(whiteCommits: ('attack' | 'defense')[]): GameState {
       const state = createEmptyGameState('standard');
       const whiteWp = placed(
         createTestUnit('white', { unitType: cavalryType }),
@@ -83,7 +83,7 @@ describe('generateResolveMeleeEvent function', () => {
           commitmentType: 'completed',
         },
         secondPlayerCommitment: {
-          card: createTestCard({ modifiers: [whiteCommits] }),
+          card: createTestCard({ modifiers: whiteCommits }),
           commitmentType: 'completed',
         },
       });
@@ -95,7 +95,7 @@ describe('generateResolveMeleeEvent function', () => {
 
     it("without it, a blow that reaches the unit's Reverse turns it", () => {
       // Black's blow of 5 meets white's Reverse of 5.
-      const event = generateResolveMeleeEvent(cavalryMelee('attack'), 0);
+      const event = generateResolveMeleeEvent(cavalryMelee(['attack']), 0);
 
       expect(event.whiteUnitReversed).toBe(true);
     });
@@ -103,19 +103,24 @@ describe('generateResolveMeleeEvent function', () => {
     it("with it, the unit's thresholds rise by 1 and the same blow does not turn it", () => {
       // White's Reverse is 6 for this fight, above black's blow of 5. Its
       // Retreat of 4 is still reached.
-      const event = generateResolveMeleeEvent(cavalryMelee('defense'), 0);
+      const event = generateResolveMeleeEvent(cavalryMelee(['defense']), 0);
 
       expect(event.whiteUnitReversed).toBe(false);
       expect(event.whiteUnitRetreated).toBe(true);
     });
 
     it("does nothing to the enemy's thresholds", () => {
-      // White's Defence card adds nothing to its own blow: 4 against black's
-      // Reverse of 5 does not turn black, and black's thresholds are its own.
-      const event = generateResolveMeleeEvent(cavalryMelee('defense'), 0);
+      // White's card names Attack and Defence: its blow on black is 5, and
+      // black's Reverse stays 5, so black turns. Had the Defence reached
+      // black, its Reverse would be 6 and the blow would fall short.
+      const event = generateResolveMeleeEvent(
+        cavalryMelee(['attack', 'defense']),
+        0,
+      );
 
-      expect(event.blackUnitReversed).toBe(false);
-      expect(event.blackUnitRetreated).toBe(true);
+      expect(event.blackUnitReversed).toBe(true);
+      // The same card still raises white's own Reverse to 6, above black's 5.
+      expect(event.whiteUnitReversed).toBe(false);
     });
   });
 

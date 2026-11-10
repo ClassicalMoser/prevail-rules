@@ -9,8 +9,8 @@ export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack' as const;
 
 /**
  * The shot itself, under a Shoot order (§4.3.11 steps 3–4): the target, and
- * any supporters who spend their own shots to add +1 each. The firing unit
- * was named by `chooseFiringUnit` and its card committed by
+ * any supporters who spend their own shots to add +1 each. The shooter
+ * was named by `chooseShooter` and its card committed by
  * `commitToRangedAttack`, so this event carries only what is aimed at.
  */
 export interface PerformRangedAttackEvent {

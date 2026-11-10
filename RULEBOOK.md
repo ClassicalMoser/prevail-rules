@@ -591,18 +591,18 @@ A commander may ride along even when the unit moves **into an engagement**. This
 
 **4.3.11 Resolving a ranged attack order** (§7.4):
 
-1. Choose the firing unit. It must be unengaged, have Range of at least 1, and have a legal target at its own Range. A unit with no such target is skipped: a Range commitment can carry a shot further, but it does not give a unit a shot it did not have (author, 2026-11-09: kept simple for now).
+1. Choose the shooter. It must be unengaged, have Range of at least 1, and have a legal target at its own Range. A unit with no such target is skipped: a Range commitment can carry a shot further, but it does not give a unit a shot it did not have (author, 2026-11-09: kept simple for now).
 2. Before choosing a target, the **attacker** may commit one card. This is the attacker's only commitment for the shot, and it applies to the whole attack: +1 **Range** extends the forward arc one space further out (§2.4.3), +1 **Attack** adds to the blow, and a card naming both gives both (§8). Optional.<sup>[B6](#b6)</sup>
 3. Choose one enemy target within its forward arc (§2.4.3), counting any Range committed. You cannot shoot into a melee: a unit in an engaged space is never a target.
-4. Optionally name **supporters** — other units you ordered with this same command that have not yet fired, and that could each independently shoot that same target at their own Range; the attacker's card does not reach them. Each supporter adds **+1**, and naming it spends that unit's own shot (§7.3.4).
-5. The **defender** may then commit a card for **+1 Defence** (§8.5). Optional.<sup>[B1](#b1)</sup>
+4. Optionally name **supporters** — other units you ordered with this same command that have not yet shot, and that could each independently shoot that same target at their own Range; the attacker's card does not reach them. Each supporter adds **+1**, and naming it spends that unit's own shot (§7.3.4).
+5. The **defender** may then commit a card for **+1 Defence**, or for **+1 Flexibility** to shrink a deficit on its thresholds (§2.5.2, §8.5). Optional.<sup>[B1](#b1)</sup>
 6. Resolve the attack (§7).
 
 A card naming Flexibility helps a shooter standing at a deficit: +1 Flexibility shrinks the deficit, and with it the penalty to Range and Attack (§2.5.2).
 
 **⚠ Edge case.** An engaged unit can neither shoot nor support a shot. It is busy.
 
-**⚠ Edge case.** Shooting is never automatic. Units with Range do nothing at all unless a Shoot command orders them to fire.
+**⚠ Edge case.** Shooting is never automatic. Units with Range do nothing at all unless a Shoot command orders them to shoot.
 
 **⚠ Edge case.** The target must also be in **line of sight** (§7.4.6). Units never block sight: you may always shoot over your own line, or over a melee.
 
@@ -857,20 +857,20 @@ Ranged support is much simpler and quite different from melee support. Each supp
 A supporter must be one of your units that
 
 - was **ordered by this same Shoot command**,
-- has **not yet fired** its own shot this phase, and
+- has **not yet taken** its own shot this phase, and
 - could **independently make that same shot** — unengaged, Range 1 or more, the target within its own forward arc.
 
-Naming a unit as a supporter **spends its shot**. A command that orders four archers may therefore be fired as four separate attacks, or as a single attack at +3, or anything in between. Concentrating fire is how you break a hard target; spreading it is how you cover a frontage.
+Naming a unit as a supporter **spends its shot**. A command that orders four archers may therefore shoot as four separate attacks, or as a single attack at +3, or anything in between. Concentrating shots is how you break a hard target; spreading it is how you cover a frontage.
 
 ### 7.4 Ranged attacks
 
-**7.4.1** The firing unit must be **unengaged** and have current **Range** of at least 1.
+**7.4.1** The shooter must be **unengaged** and have current **Range** of at least 1.
 
-**7.4.2** The target must be an **unengaged** enemy unit in the firer's **forward arc** (§2.4.3), out to its current Range, and in **line of sight** (§7.4.6). A unit locked in an engagement cannot be shot, though it can be shot over.
+**7.4.2** The target must be an **unengaged** enemy unit in the shooter's **forward arc** (§2.4.3), out to its current Range, and in **line of sight** (§7.4.6). A unit locked in an engagement cannot be shot, though it can be shot over.
 
-**7.4.3** Attack value = the firer's Attack (with its modifiers, §7.1) + 1 per supporter (§7.3.4).
+**7.4.3** Attack value = the shooter's Attack (with its modifiers, §7.1) + 1 per supporter (§7.3.4).
 
-**7.4.4** Ranged fire is **one way**. The target does not shoot back.
+**7.4.4** A shot is **one way**. The target does not shoot back.
 
 **7.4.5** The attacker commits first, once, before choosing the target; the card counts for the whole attack (Range for the arc, Attack for the blow). Then, with the target named, the defender commits for Defence, raising the target's thresholds against this shot (§8.5).<sup>[B1](#b1)</sup>
 
@@ -1525,8 +1525,8 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 - **Rule:** §8.4 lists the stats each moment accepts. Flexibility counts before a move (once A8 is fixed). Range extends a shot's forward arc one space further out (§4.3.11, committed before the target is chosen). In a shot or a melee, +1 Flexibility shrinks a deficit (§2.5.2), so it matters only on rough ground.
 - **Code does:** Commitments are read only in the front-engagement Speed contest, the ranged attack value and target thresholds, and the melee attack value (`procedures/movement/generateResolveEngageRetreatOptionEvent.ts`; `resolveAttack/`). The engine still accepts Range and Flexibility in shooting, and Flexibility in melee (`getLegalCommitTo*Events.ts`).
-- **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen: the attacker's one window, whose card counts for the whole attack (author, 2026-11-09). A Range commitment does not count when deciding whether a unit has a target at all (author, 2026-11-09: simplified for now), and it reaches the firing unit only, not its supporters. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
-- **Range, closed in S15:** the shooter commits before it aims, and `getLegalFiringUnitTargets` builds the arc with that card's Range counted. Flexibility is still offered (to the shooter and, for its own thresholds, to the target) and read nowhere until the deficit lands (A3).
+- **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen: the attacker's one window, whose card counts for the whole attack (author, 2026-11-09). A Range commitment does not count when deciding whether a unit has a target at all (author, 2026-11-09: simplified for now), and it reaches the shooter only, not its supporters. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
+- **Range, closed in S15:** the shooter commits before it aims, and `getLegalShooterTargets` builds the arc with that card's Range counted. Flexibility is still offered (to the shooter and, for its own thresholds, to the target) and read nowhere until the deficit lands (A3).
 
 <a id="b7"></a>**B7. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Closed 2026-11-08._
 
@@ -1542,7 +1542,7 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 - **Rule:** §7.5.6: both retreats, then both reverses, then both routs, with the first player's blow landing first, so the second player's unit suffers first in each stage.
 - **Code does:** The engine carries out the first player's unit's results in full (retreat, reverse, rout), then the second player's. A probe on 2026-11-08 confirmed that order; the stage order is read, not probed. The two differ when one unit's retreat would end the other's engagement before its reverse: a second-player unit that only reverses is judged before the first player's unit falls back, so it is still engaged and does not turn, where the rule has it turn.
-- **Closed:** `getExpectedMeleeResolutionEvent` walks the stages (`attackApplyStages`) across both applies in the order the blows land (`getMeleeAppliesInResolutionOrder`: the second player's unit first), asking `getExpectedAttackApplyStageEvent` what each unit still needs; a ranged attack's single apply walks the same stages. The openers, the `getNextMelee*` selectors and `findNextMeleeDefendingPlayer` read the same order. The slots stay named for whose unit holds the result, so resolution order is the reverse of the slot names (author, 2026-11-09: the first player strikes first). Specs: `getExpectedMeleeResolutionEvent.test.ts`. Played end to end in `scenarios/meleeStages.test.ts`: a unit only hit to reverse turns once its enemy has fallen back. The stand-in units cannot be hit to reverse alone, so that scenario writes the measured results itself and lets the engines play on.
+- **Closed:** `getExpectedMeleeResolutionEvent` walks the stages (`attackApplyStages`) across both applies in the order the blows land (`getMeleeAppliesInResolutionOrder`: the second player's unit first), asking `getExpectedAttackApplyStageEvent` what each unit still needs; a ranged attack's single apply walks the same stages. The openers, the `getNextMelee*` selectors and `findNextMeleeDefendingPlayer` read the same order. The slots stay named for whose unit holds the result, so resolution order is the reverse of the slot names (author, 2026-11-09: the first player strikes first). Specs: `getExpectedMeleeResolutionEvent.test.ts`. Played end to end in `scenarios/meleeStages.test.ts`: a unit only hit to reverse turns once its enemy has fallen back; when both rout, the second player is asked for its Morale first, and if it cannot pay the game ends with the first player's unit still standing (§11.2). The stand-in units cannot be hit to reverse alone, so that scenario writes the measured results itself and lets the engines play on.
 
 <a id="b10"></a>**B10. A rear engagement's Morale was never paid.** _Bug — found and closed 2026-11-09._
 

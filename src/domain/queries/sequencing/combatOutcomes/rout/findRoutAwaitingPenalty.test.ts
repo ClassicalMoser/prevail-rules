@@ -8,6 +8,8 @@ import {
   createRetreatState,
   createRoutState,
   createTestUnit,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
@@ -30,12 +32,19 @@ describe('findRoutAwaitingPenalty function', () => {
         currentCommandResolutionState: createRangedAttackResolutionState(
           empty,
           {
-            attackApplyState: createAttackApplyStateWithRetreat(standing, {
-              retreatState: createRetreatState(standing, {
-                legalRetreatPaths: [],
-                routState: nested,
-              }),
-            }),
+            attackApplyState: createAttackApplyStateWithRetreat(
+              standing,
+              legalRetreatsOf(standing),
+              {
+                retreatState: createRetreatState(
+                  standing,
+                  legalRetreatsOf(standing, [enemyCuttingOffRetreat(standing)]),
+                  {
+                    routState: nested,
+                  },
+                ),
+              },
+            ),
             defendingUnit: defender,
           },
         ),

@@ -4,6 +4,7 @@ import {
   createAttackApplyStateWithRetreat,
   createRetreatState,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 
 import { createUnitPlacement } from '@factories';
@@ -23,10 +24,14 @@ function placed(
 describe('getRetreatStateFromAttackApply function', () => {
   it('returns the retreat on the attack apply', () => {
     const unit = placed('black', 'north');
-    const retreat = createRetreatState(unit);
-    const apply = createAttackApplyStateWithRetreat(unit, {
-      retreatState: retreat,
-    });
+    const retreat = createRetreatState(unit, legalRetreatsOf(unit));
+    const apply = createAttackApplyStateWithRetreat(
+      unit,
+      legalRetreatsOf(unit),
+      {
+        retreatState: retreat,
+      },
+    );
 
     expect(getRetreatStateFromAttackApply(apply)).toBe(retreat);
   });

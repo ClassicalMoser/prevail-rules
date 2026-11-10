@@ -17,9 +17,10 @@ import {
   createAttackApplyStateWithRetreatAndReverse,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
-  createRetreatState,
   createTestUnit,
   placed,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -142,11 +143,10 @@ describe('attack apply outcome flow', () => {
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
     const attackApply = createAttackApplyStateWithRetreatAndReverse(
       unitWithPlacement,
-      {
-        retreatState: createRetreatState(unitWithPlacement, {
-          legalRetreatPaths: [],
-        }),
-      },
+      // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
+      legalRetreatsOf(unitWithPlacement, [
+        enemyCuttingOffRetreat(unitWithPlacement),
+      ]),
     );
     expect(attackApply.reverseState).toBe('pending');
     const full = rangedApplyShell(retreatingUnit, attackApply);

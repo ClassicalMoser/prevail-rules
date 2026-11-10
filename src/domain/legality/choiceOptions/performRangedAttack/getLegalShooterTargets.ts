@@ -11,11 +11,11 @@ import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
  * Supporters for a chosen target are enumerated by
  * {@link getLegalRangedAttackSupporters}.
  */
-export interface LegalFiringUnitTargets {
+export interface LegalShooterTargets {
   /** The player carrying out the Shoot order. */
   player: PlayerSide;
-  /** The unit named to fire, and where it stands. */
-  firingUnit: UnitWithPlacement;
+  /** The unit named to shoot, and where it stands. */
+  shooter: UnitWithPlacement;
   /** Every enemy in its forward arc, out to its Range with the card counted. */
   targets: readonly UnitWithPlacement[];
 }
@@ -28,13 +28,13 @@ export interface LegalFiringUnitTargets {
  * The shooter commits before it aims (§4.3.11 step 2), and its card counts
  * here: a Range card reaches one space further out, adding any enemy just
  * beyond its own Range. It never gives a shot to a unit with none: only a
- * unit with a target at its own Range is named to fire (§4.3.11 step 1).
+ * unit with a target at its own Range is named to shoot (§4.3.11 step 1).
  */
-export function getLegalFiringUnitTargets<S extends GameState>(
+export function getLegalShooterTargets<S extends GameState>(
   gameState: S,
-): LegalFiringUnitTargets | null {
+): LegalShooterTargets | null {
   const phaseState = gameState.currentRoundState.currentPhaseState;
-  // Shots are fired only while a Shoot order is being carried out.
+  // Shots are taken only while a Shoot order is being carried out.
   if (
     phaseState === 'none' ||
     phaseState.phase !== 'issueCommands' ||
@@ -56,20 +56,20 @@ export function getLegalFiringUnitTargets<S extends GameState>(
   }
 
   // The shooter does not move during its shot, so where the board has it is
-  // where it fires from.
-  const shooter = resolution.attackingUnit;
-  const placement = getPositionOfUnit(gameState.boardState, shooter);
-  const firingUnit: UnitWithPlacement = { placement, unit: shooter };
+  // where it shoots from.
+  const shootingUnit = resolution.attackingUnit;
+  const placement = getPositionOfUnit(gameState.boardState, shootingUnit);
+  const shooter: UnitWithPlacement = { placement, unit: shootingUnit };
 
   // Its committed card, if any, counts toward its Range (§4.3.11 step 2).
   const committed = modifiersFromCompletedCommitment(
     resolution.attackingCommitment,
   );
-  const targets = getLegalRangedAttackTargets(firingUnit, gameState, committed);
+  const targets = getLegalRangedAttackTargets(shooter, gameState, committed);
 
-  const legal: LegalFiringUnitTargets = {
-    firingUnit,
-    player: shooter.playerSide,
+  const legal: LegalShooterTargets = {
+    shooter,
+    player: shootingUnit.playerSide,
     targets,
   };
   return legal;

@@ -9,7 +9,7 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  * suffers first, since the first player's blow lands first (§7.5.6).
  *
  * @param state - The game state
- * @returns The first retreat in initiative order that has a destination and is not finished
+ * @returns The first retreat in resolution order whose path is chosen and is not finished
  * @throws Error when neither side has such a retreat
  */
 export function getNextMeleeRetreatStateAwaitingMove(

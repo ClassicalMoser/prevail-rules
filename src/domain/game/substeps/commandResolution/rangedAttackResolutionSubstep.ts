@@ -21,7 +21,7 @@ export interface RangedAttackResolutionState {
   substepType: 'commandResolution';
   /** The type of command resolution. */
   commandResolutionType: 'rangedAttack';
-  /** The unit that is firing, named first (§4.3.11 step 1). */
+  /** The shooter, named first (§4.3.11 step 1). */
   attackingUnit: UnitInstance;
   /**
    * The unit being shot at. `'pending'` from the moment the shooter is named
@@ -36,7 +36,7 @@ export interface RangedAttackResolutionState {
   attackApplyState: AttackApplyState | 'pending';
   /** The shooter's commitment, made before the target is named. */
   attackingCommitment: Commitment;
-  /** The target's commitment, for Defence, made once it is named (B1). */
+  /** The target's commitment, for Defence or Flexibility, made once it is named (B1). */
   defendingCommitment: Commitment;
   /** Whether the ranged attack resolution substep is complete. */
   completed: boolean;

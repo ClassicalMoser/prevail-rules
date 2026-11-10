@@ -12,6 +12,8 @@ import {
   createRoutState,
   createTestUnit,
   placed,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '../';
 
@@ -30,13 +32,20 @@ describe('updateRetreatRoutState function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
     };
-    const retreatState = createRetreatState(placement, {
-      legalRetreatPaths: [],
-      routState: createRoutState('white', unit),
-    });
-    const attackApply = createAttackApplyStateWithRetreat(placement, {
-      retreatState,
-    });
+    const retreatState = createRetreatState(
+      placement,
+      legalRetreatsOf(placement, [enemyCuttingOffRetreat(placement)]),
+      {
+        routState: createRoutState('white', unit),
+      },
+    );
+    const attackApply = createAttackApplyStateWithRetreat(
+      placement,
+      legalRetreatsOf(placement),
+      {
+        retreatState,
+      },
+    );
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
       currentCommandResolutionState: createRangedAttackResolutionState(
         stateWithUnit,

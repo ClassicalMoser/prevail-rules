@@ -14,7 +14,7 @@ import { updatePhaseState, updatePlayerCardState } from '@transforms';
  *
  * @param state - A playable game
  * @param units - The units the order names, all of the initiative holder's side
- * @returns The game, waiting for the first `chooseFiringUnit`
+ * @returns The game, waiting for the first `chooseShooter`
  */
 export function resolvingShootOrder(
   state: GameStateForVisibility<'authoritative'>,
@@ -33,7 +33,7 @@ export function resolvingShootOrder(
     inPlay: shootCard,
   });
 
-  // The order's units wait their turn to fire, and the other side's order is
+  // The order's units wait their turn to shoot, and the other side's order is
   // still to be issued.
   const resolving = updatePhaseState(
     withOrder,

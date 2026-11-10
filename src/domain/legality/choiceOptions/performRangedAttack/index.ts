@@ -4,9 +4,9 @@ export {
   type LegalRangedAttackers,
 } from './getLegalRangedAttackers';
 export {
-  getLegalFiringUnitTargets,
-  type LegalFiringUnitTargets,
-} from './getLegalFiringUnitTargets';
+  getLegalShooterTargets,
+  type LegalShooterTargets,
+} from './getLegalShooterTargets';
 export {
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,

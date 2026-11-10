@@ -1,5 +1,5 @@
 import type { GameStateForVisibility } from '@game';
-import { createChooseFiringUnitEvent } from '@factories';
+import { createChooseShooterEvent } from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
   applyEffectsUntilChoice,
@@ -10,7 +10,7 @@ import {
 } from '@testing';
 import { applyEvent } from '@transforms';
 
-import { getLegalFiringUnitTargets } from './getLegalFiringUnitTargets';
+import { getLegalShooterTargets } from './getLegalShooterTargets';
 
 /**
  * Once a shooter is named and its card committed or refused, the targets
@@ -39,7 +39,7 @@ function blackShooting(): GameStateForVisibility<'authoritative'> {
   return resolving;
 }
 
-describe('getLegalFiringUnitTargets function', () => {
+describe('getLegalShooterTargets function', () => {
   it('a Range card committed for the shot brings a target one space beyond the shooter’s Range into reach', () => {
     const ready = blackShooting();
     const shooter = getSingleUnitWithPlacementAtCoordinate(
@@ -52,7 +52,7 @@ describe('getLegalFiringUnitTargets function', () => {
       modifierTypes: ['range'],
     });
 
-    const legal = getLegalFiringUnitTargets(state);
+    const legal = getLegalShooterTargets(state);
 
     // Both white units are in reach: B-5 only through the card.
     expect(
@@ -69,14 +69,14 @@ describe('getLegalFiringUnitTargets function', () => {
     // Black names its unit and refuses to commit.
     const { state } = readyToAimShot(ready, shooter, null);
 
-    const legal = getLegalFiringUnitTargets(state);
+    const legal = getLegalShooterTargets(state);
 
     // Only the unit two ranks out is in reach.
     expect(
       legal?.targets.map((target) => target.placement.coordinate),
     ).toStrictEqual(['C-7']);
     // And the shooter it reports is black's unit, where it stands.
-    expect(legal?.firingUnit).toStrictEqual(shooter);
+    expect(legal?.shooter).toStrictEqual(shooter);
   });
 
   it('offers no targets until the shooter has committed or refused', () => {
@@ -91,7 +91,7 @@ describe('getLegalFiringUnitTargets function', () => {
     );
     // Black names its unit; its commitment is still owed (§4.3.11 step 2).
     const named = applyEvent(
-      createChooseFiringUnitEvent({
+      createChooseShooterEvent({
         eventNumber: start.next.expectedEventNumber,
         player: 'black',
         unit: shooter,
@@ -99,6 +99,6 @@ describe('getLegalFiringUnitTargets function', () => {
       start.state,
     );
 
-    expect(getLegalFiringUnitTargets(named)).toBeNull();
+    expect(getLegalShooterTargets(named)).toBeNull();
   });
 });

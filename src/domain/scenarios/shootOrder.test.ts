@@ -1,6 +1,6 @@
 import type { GameStateForVisibility } from '@game';
 import {
-  createChooseFiringUnitEvent,
+  createChooseShooterEvent,
   createPerformRangedAttackEvent,
 } from '@factories';
 import {
@@ -21,7 +21,7 @@ import { validatePlayerChoice } from '@validation';
  * Carrying out a Shoot order for one unit (§4.3.11), played through the
  * engines: the player names the shooter, may commit a card for the shot —
  * whose Range reaches one space further — and only then names the target;
- * the target's owner may then commit for Defence (B1, B6).
+ * the target's owner may then commit for Defence or Flexibility (B1, B6).
  *
  * Black's Range-2 unit stands on E-5 facing north. White has a unit on C-7,
  * two ranks out and inside that Range, so black's unit has something to
@@ -71,7 +71,7 @@ describe('a Shoot order', () => {
     if (start.next === 'gameOver' || start.next.actionType !== 'playerChoice') {
       throw new Error('Play should wait on a player choice');
     }
-    expect(start.next.choiceType).toBe('chooseFiringUnit');
+    expect(start.next.choiceType).toBe('chooseShooter');
 
     // Once named, the shooter's commitment comes before the target (step 2).
     const shooter = getSingleUnitWithPlacementAtCoordinate(
@@ -80,7 +80,7 @@ describe('a Shoot order', () => {
     );
     const named = applyEffectsUntilChoice(
       applyEvent(
-        createChooseFiringUnitEvent({
+        createChooseShooterEvent({
           eventNumber: start.next.expectedEventNumber,
           player: 'black',
           unit: shooter,
@@ -134,7 +134,7 @@ describe('a Shoot order', () => {
     expect(validatePlayerChoice(shot, state).result).toBe(false);
   });
 
-  it('once the target is named, its owner is asked for Defence', () => {
+  it('once the target is named, its owner is asked for its commitment', () => {
     const { state, eventNumber } = namedAndCommitted(rangeCard);
     const target = getSingleUnitWithPlacementAtCoordinate(
       state.boardState,
@@ -156,7 +156,7 @@ describe('a Shoot order', () => {
       throw new Error('Play should wait on a player choice');
     }
 
-    // White, the target's owner, commits next, for Defence (§4.3.11 step 5).
+    // White, the target's owner, commits next (§4.3.11 step 5).
     expect(aimed.next.choiceType).toBe('commitToRangedDefense');
     expect(aimed.next.playerSource).toBe('white');
   });

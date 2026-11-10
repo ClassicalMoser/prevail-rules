@@ -14,6 +14,6 @@ export { applyIssueCommandEvent } from './applyIssueCommandEvent';
 export { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 export { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
 export { applyMoveUnitEvent } from './applyMoveUnitEvent';
-export { applyChooseFiringUnitEvent } from './applyChooseFiringUnitEvent';
+export { applyChooseShooterEvent } from './applyChooseShooterEvent';
 export { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 export { applySetupUnitsEvent } from './applySetupUnitsEvent';

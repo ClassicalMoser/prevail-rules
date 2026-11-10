@@ -46,7 +46,7 @@ export function getExpectedRangedAttackResolutionEvent(
   }
 
   // Then the target's owner, knowing what it faces, may commit for Defence
-  // (§4.3.11 step 5, B1).
+  // or Flexibility (§4.3.11 step 5, B1).
   if (resolutionState.defendingCommitment.commitmentType === 'pending') {
     return {
       actionType: 'playerChoice',

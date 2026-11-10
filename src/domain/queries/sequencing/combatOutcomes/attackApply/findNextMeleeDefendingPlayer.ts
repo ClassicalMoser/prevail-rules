@@ -13,10 +13,9 @@ import { getMeleeAppliesInResolutionOrder } from '@queries/sequencing/meleeResol
  * @returns `undefined` if either attack-apply state is missing, or both are
  * already complete
  */
-// TODO(composition): `getExpectedMeleeResolutionEvent` repeats this selection
-// line for line, treating `'pending'` the same way; the `getNextMelee*`
-// selectors are a third variant that skip per side and ignore `completed`.
-// Settled by one "next open apply" selection for all of them.
+// TODO(composition): the closing loop of `getExpectedMeleeResolutionEvent`
+// repeats this selection — the first apply in resolution order not yet
+// completed. One "next apply to close" query would serve both.
 export function findNextMeleeDefendingPlayer(
   meleeState: MeleeResolutionState,
 ): PlayerSide | undefined {

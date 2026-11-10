@@ -1,11 +1,11 @@
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
-  createRetreatState,
   placed,
   createMeleeResolutionState,
   createTestCard,
   createTestUnit,
+  legalRetreatsOf,
 } from '@testing';
 
 import { getExpectedMeleeResolutionEvent } from './getExpectedMeleeResolutionEvent';
@@ -232,16 +232,25 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       // that failed retreat is asked for before the first player's retreat.
       const blackPlacement = placed(black, 'E-5', 'north');
       const whitePlacement = placed(white, 'E-5', 'south');
+      // A black unit on D-5 facing the white unit closes its way back, so it
+      // cannot retreat (§9.1.5). Black's own way back, on F-5, stays open.
+      const cutter = placed(createTestUnit('black'), 'D-5', 'south');
+      const blackRetreats = legalRetreatsOf(blackPlacement, [
+        whitePlacement,
+        cutter,
+      ]);
+      const whiteRetreats = legalRetreatsOf(whitePlacement, [
+        blackPlacement,
+        cutter,
+      ]);
       const meleeState = createMeleeResolutionState(gameState, {
-        firstPlayerAttackApplyState:
-          createAttackApplyStateWithRetreat(blackPlacement),
+        firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+          blackPlacement,
+          blackRetreats,
+        ),
         secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
           whitePlacement,
-          {
-            retreatState: createRetreatState(whitePlacement, {
-              legalRetreatPaths: [],
-            }),
-          },
+          whiteRetreats,
         ),
       });
 

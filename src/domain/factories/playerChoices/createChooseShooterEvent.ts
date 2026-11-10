@@ -1,9 +1,9 @@
 import type { PlayerSide, UnitWithPlacement } from '@entities';
-import type { ChooseFiringUnitEvent } from '@events';
+import type { ChooseShooterEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**
- * A chooseFiringUnit event: the player names the next unit to fire under a
+ * A chooseShooter event: the player names the next unit to shoot under a
  * Shoot order (§4.3.11 step 1).
  *
  * `eventType` and `choiceType` are fixed by the event's own type and cannot
@@ -12,16 +12,16 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  *
  * @param fields - `eventNumber` the ordered index of the event in the round,
  * zero-indexed; `player` the player carrying out the order; `unit` the unit
- * that fires next, and where it stands
+ * that shoots next, and where it stands
  * @returns The event
  */
-export function createChooseFiringUnitEvent(fields: {
+export function createChooseShooterEvent(fields: {
   player: PlayerSide;
   eventNumber: number;
   unit: UnitWithPlacement;
-}): ChooseFiringUnitEvent {
-  const event: ChooseFiringUnitEvent = {
-    choiceType: 'chooseFiringUnit',
+}): ChooseShooterEvent {
+  const event: ChooseShooterEvent = {
+    choiceType: 'chooseShooter',
     eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
     player: fields.player,

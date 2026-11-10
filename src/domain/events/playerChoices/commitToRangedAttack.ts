@@ -33,7 +33,7 @@ const _assertRangedAttackModifierExtendsStatModifier: [
 
 /**
  * The shooter's one commitment in a ranged attack (§4.3.11, §7.4.5): after
- * the firing unit is named and before its target is, its owner may commit a
+ * the shooter is named and before its target is, its owner may commit a
  * card, or refuse (`committedCard` null). The card counts for the whole shot:
  * its Range when the target is chosen, its Attack when the shot lands.
  */

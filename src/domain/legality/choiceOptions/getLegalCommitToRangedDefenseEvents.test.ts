@@ -120,7 +120,7 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
   });
 
   it('offers nothing outside a Shoot order', () => {
-    // Cards are being chosen, not shots fired.
+    // Cards are being chosen, no shots taken.
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',

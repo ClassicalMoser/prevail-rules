@@ -6,10 +6,10 @@ import {
   RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from '@events';
 import {
-  getMeleeAttackApplyState,
+  getMeleeAppliesInResolutionOrder,
+  getMeleeResolutionState,
   getRangedAttackApplyState,
   getCurrentPhaseState,
-  getOtherPlayer,
 } from '@queries';
 
 /**
@@ -40,31 +40,25 @@ export function generateOpenReverseFromAttackApplyEvent(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    // The first player's blow lands first, so the second player's unit is
-    // the first one still waiting on a reverse to open (§7.5.6).
-    const firstPlayer = state.currentInitiative;
-    const secondPlayer = getOtherPlayer(firstPlayer);
-    const secondApply = getMeleeAttackApplyState(state, secondPlayer);
-    if (secondApply.reverseState === 'pending') {
-      return {
-        attackResolutionContext: 'melee',
-        defendingPlayer: secondPlayer,
-        effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-        eventNumber,
-        eventType: GAME_EFFECT_EVENT_TYPE,
-      };
+    // The first reverse still waiting to open, in the order results take
+    // effect: the first player's blow lands first, so the second player's
+    // unit comes first (§7.5.6).
+    const meleeState = getMeleeResolutionState(state);
+    const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
+    const apply = appliesInOrder.find(
+      (candidate) => candidate.reverseState === 'pending',
+    );
+    if (apply === undefined) {
+      throw new Error('No pending reverse on either melee attack apply');
     }
-    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
-    if (firstApply.reverseState === 'pending') {
-      return {
-        attackResolutionContext: 'melee',
-        defendingPlayer: firstPlayer,
-        effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-        eventNumber,
-        eventType: GAME_EFFECT_EVENT_TYPE,
-      };
-    }
-    throw new Error('No pending reverse on either melee attack apply');
+    const event: OpenReverseFromAttackApplyEvent = {
+      attackResolutionContext: 'melee',
+      defendingPlayer: apply.defendingUnit.playerSide,
+      effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
+      eventNumber,
+      eventType: GAME_EFFECT_EVENT_TYPE,
+    };
+    return event;
   }
 
   throw new Error(

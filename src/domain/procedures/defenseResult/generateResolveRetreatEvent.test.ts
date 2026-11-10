@@ -10,6 +10,7 @@ import {
   createRetreatState,
   createTestUnit,
   placed,
+  legalRetreatsOf,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -39,11 +40,17 @@ describe('generateResolveRetreatEvent function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
-      retreatState: createRetreatState(unitWithPlacement, {
-        chosenRetreatPath: stepBack,
-      }),
-    });
+    // Open ground behind: the unit's only way back is the step already chosen.
+    const openGround = legalRetreatsOf(unitWithPlacement);
+    const attackApply = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      openGround,
+      {
+        retreatState: createRetreatState(unitWithPlacement, openGround, {
+          chosenRetreatPath: stepBack,
+        }),
+      },
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,
@@ -72,17 +79,21 @@ describe('generateResolveRetreatEvent function', () => {
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 
-    const whiteRetreat = createRetreatState(whiteWp, {
+    // Each engaged unit has open ground behind it, and has already chosen the
+    // step back.
+    const whitePaths = legalRetreatsOf(whiteWp, [blackWp]);
+    const blackPaths = legalRetreatsOf(blackWp, [whiteWp]);
+    const whiteRetreat = createRetreatState(whiteWp, whitePaths, {
       chosenRetreatPath: stepBack,
     });
-    const blackRetreat = createRetreatState(blackWp, {
+    const blackRetreat = createRetreatState(blackWp, blackPaths, {
       chosenRetreatPath: stepBack,
     });
 
-    const whiteApply = createAttackApplyStateWithRetreat(whiteWp, {
+    const whiteApply = createAttackApplyStateWithRetreat(whiteWp, whitePaths, {
       retreatState: whiteRetreat,
     });
-    const blackApply = createAttackApplyStateWithRetreat(blackWp, {
+    const blackApply = createAttackApplyStateWithRetreat(blackWp, blackPaths, {
       retreatState: blackRetreat,
     });
 
@@ -121,7 +132,11 @@ describe('generateResolveRetreatEvent function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement);
+    // Open ground behind, but the player has not picked the way back yet.
+    const attackApply = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      legalRetreatsOf(unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,

@@ -43,6 +43,9 @@ export {
   createUnitWithPlacement,
   getCardsByCount,
   hasMove,
+  enemyBlockingStraightBack,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
   placed,
   updateCardState,
 } from './testHelpers';

@@ -12,26 +12,26 @@ import { isUnengagedUnit } from './canUnitRangedAttackTarget';
 import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
 
 /**
- * The units a Shoot order may fire next (`chooseFiringUnit`, §4.3.11 step
+ * The units a Shoot order may shoot with next (`chooseShooter`, §4.3.11 step
  * 1): which player is carrying out the order, and which of its ordered
  * units still to act may be named as the shooter.
  *
  * Only units with at least one legal target are included — otherwise the
  * orchestrator would wait forever on an empty target list. That target is
  * judged at the unit's own Range: a Range card committed afterwards may
- * widen the choice, but is not counted in deciding whether a unit may fire
- * at all (author, 2026-11-09: simplified for now; §4.3.11 counts it).
+ * extend the choice, but is not counted in deciding whether a unit may shoot
+ * at all (§4.3.11 step 1; author, 2026-11-09: kept simple for now).
  *
  * Targets / supporters are enumerated once the shooter is named and its card
- * committed, via {@link getLegalFiringUnitTargets} /
+ * committed, via {@link getLegalShooterTargets} /
  * {@link getLegalRangedAttackSupporters}.
  *
- * `null` when a chooseFiringUnit choice is not expected (or no remaining
- * unit can currently fire at anyone).
+ * `null` when a chooseShooter choice is not expected (or no remaining
+ * unit can currently shoot at anyone).
  */
 export interface LegalRangedAttackers {
   player: PlayerSide;
-  /** Remaining commanded units that may fire at ≥1 legal target. */
+  /** Remaining commanded units that may shoot at ≥1 legal target. */
   attackers: readonly UnitWithPlacement[];
 }
 
