@@ -15,7 +15,7 @@ import { getOppositeFacing } from './getOppositeFacing';
 export function getFacingsOneTurnAway(facing: UnitFacing): Set<UnitFacing> {
   // 45° to either side of the current facing.
   const adjacents = getAdjacentFacings(facing);
-  // The about-turn: drilled troops can face rear in one motion.
+  // The about-turn: reversing in place is easier than changing a facing
   const opposite = getOppositeFacing(facing);
   // Combined set
   const targets = new Set([...adjacents, opposite]);
