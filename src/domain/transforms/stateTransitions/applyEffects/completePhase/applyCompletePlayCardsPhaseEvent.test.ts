@@ -4,7 +4,10 @@ import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
 import { createPlayCardsPhaseState } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addCommanderToLostCommanders,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyCompletePlayCardsPhaseEvent } from './applyCompletePlayCardsPhaseEvent';
 
@@ -37,5 +40,30 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
     const completed = [...next.currentRoundState.completedPhases];
     expect(completed).toHaveLength(1);
     expect(completed[0]?.phase).toBe(PLAY_CARDS_PHASE);
+  });
+
+  it('when the first player’s commander has fallen, Move Commanders opens on the second player’s turn', () => {
+    // Black holds initiative, but its commander was defeated (§4.2.8).
+    const base = createEmptyGameState('standard');
+    const full: GameState = updatePhaseState(
+      addCommanderToLostCommanders(base, 'black'),
+      createPlayCardsPhaseState({ step: 'complete' }),
+    );
+
+    const next = applyCompletePlayCardsPhaseEvent(
+      {
+        effectType: 'completePlayCardsPhase',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+      },
+      full,
+    );
+
+    // White moves first, and alone.
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.step).toBe('moveSecondCommander');
   });
 });

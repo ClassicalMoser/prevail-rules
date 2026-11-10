@@ -1402,7 +1402,7 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 <a id="a4"></a>**A4. Commanders can share a space with the enemy commander.** _Settled: allowed._
 
 - **Rule:** More than one thing may stand in a space if one is a commander. A commander may not enter a space holding an enemy **unit**. Two commanders in one space is legal (author, 2026-11-08: "can't really argue against it").
-- **Code does:** Commander movement only refuses enemy units, so it may end on, or pass through, a space holding the enemy commander (`legality/commanderMovement/exploreCommanderMoves.ts`, `exploreCommanderMoves`, `hasEnemyUnit`). That is now the rule; a confirming spec can ride the A15 work.
+- **Code does:** Commander movement only refuses enemy units, so it may end on, or pass through, a space holding the enemy commander (`legality/commanderMovement/exploreCommanderMoves.ts`, `exploreCommanderMoves`, `hasEnemyUnit`). That is now the rule. Confirmed with the A15 work: two commanders sharing a space where one side's unit routs, and only that side's commander falls (`defeatCommanderWithRoutedUnit.test.ts`).
 - **Still open:** what happens when an enemy **unit** enters a commander's space — see Open design questions.
 
 <a id="a5"></a>**A5. The setup sequence does not exist; the engine gives Black initiative and has White deploy first.** _Code lags rule._
@@ -1462,11 +1462,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Rule:** §9.1.4: a retreat may turn at most 45° at its start; after the first step it turns 45° either way per spend, repeatable, and never about (author, 2026-11-09: "reversing as part of a retreat is explicitly not an option"). This replaces the 2026-11-08 ruling that after the first step turning followed §5.2.1, about included (with A2: the limited turn is back, so sequential turns are back in).
 - **Closed:** The retreat walks the same uniform graph as the advance (slice S6, with S3, `82f4a77`): its opening turn is one 45° neighbour at most, and no retreat turn is ever about (`getTurnOptions`); specs pin the wheel priced at 45° a spend and the missing about-face after a step.
 
-<a id="a15"></a>**A15. Commanders are never defeated.** _Code lags rule._
+<a id="a15"></a>**A15. Commanders are never defeated.** _Closed: S21, 2026-11-09._
 
-- **Rule:** §4.2.8: a commander is defeated if it stands in a space where a unit routs in combat, and not when a unit routs at the support check.
-- **Code does:** The game state carries `lostCommanders`, and `addCommanderToLostCommanders` exists, but nothing in production calls it: a rout never touches a commander (`game/gameState/`; `transforms/pureTransforms/commanders/addCommanderToLostCommanders.ts`). Read, not probed.
-- **To settle:** Decided (author, 2026-11-08): defeat costs nothing on its face — no discard, no Morale. The commander leaves the board, and every inspiration range in that hand now reaches nothing; §4.2.8 says so. Only the routing unit's **own** commander falls — the enemy routing at its feet does not touch it. So: call the transform from the combat rout path only, for the routing side's commander only, keeping the support-check rout out of it; then make an absent commander survivable everywhere one is read — the author flags that Phase 2 (Move Commanders) may not model an absent commander at all.
+- **Rule:** §4.2.8: a commander is defeated if it stands in a space where one of its own units routs in combat, and not when a unit routs at the support check. Defeat costs nothing on its face — no discard, no Morale; the commander leaves the board, and every inspiration range in that hand reaches nothing (author, 2026-11-08).
+- **Code did:** The game state carried `lostCommanders`, and `addCommanderToLostCommanders` existed, but nothing in production called it: a rout never touched a commander.
+- **Closed:** Every combat rout — a shot's or a melee's result, a retreat with nowhere to go, a rear engagement — leaves the board through `removeUnitsLeavingUnderRout`, which now fells the routing unit's own commander if it stands there (`defeatCommanderWithRoutedUnit`); an enemy commander in the same space stays. The support check's rout does not pass through it. A missing commander was already survivable where ranges are read: a range of 0 or more reaches nothing, and an unrestricted (−1) card still applies. Move Commanders passes over a side whose commander has fallen (`getMoveCommandersStepFrom`, §4.2.1). Specs: `defeatCommanderWithRoutedUnit.test.ts`, `getMoveCommandersStepFrom.test.ts`, and `scenarios/rearEngagement.test.ts`, where the defender's commander falls with it.
 
 <a id="a16"></a>**A16. Elevation is a 0–5 height per corner and nothing reads it.** _Code lags rule._
 

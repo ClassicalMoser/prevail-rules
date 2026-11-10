@@ -2,7 +2,7 @@ import type { CompletePlayCardsPhaseEvent } from '@events';
 import type { GameState, MoveCommandersPhaseState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
-import { getPlayCardsPhaseState } from '@queries';
+import { getMoveCommandersStepFrom, getPlayCardsPhaseState } from '@queries';
 import {
   addCompletedPhase,
   updatePhaseState,
@@ -30,10 +30,11 @@ export function applyCompletePlayCardsPhaseEvent<S extends GameState>(
   // Add the completed phase to the set of completed phases
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 
-  // Create the new move commanders phase state
+  // The first player moves their commander first, unless it has fallen
+  // (§4.2.1, §4.2.8).
   const newPhaseState: MoveCommandersPhaseState = {
     phase: MOVE_COMMANDERS_PHASE,
-    step: 'moveFirstCommander',
+    step: getMoveCommandersStepFrom(state, 'moveFirstCommander'),
   };
 
   return updatePhaseState(stateWithCompletedPhase, newPhaseState);

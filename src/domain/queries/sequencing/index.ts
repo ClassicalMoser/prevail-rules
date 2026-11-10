@@ -2,6 +2,7 @@
 export { getCurrentPhaseState } from './phases';
 export { getPlayCardsPhaseState } from './phases';
 export { getMoveCommandersPhaseState } from './phases';
+export { getMoveCommandersStepFrom } from './phases';
 export { getIssueCommandsPhaseState } from './phases';
 export { getResolveMeleePhaseState } from './phases';
 export { getCleanupPhaseState } from './phases';

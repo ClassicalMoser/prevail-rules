@@ -11,7 +11,7 @@ import {
   readyToWriteMove,
   resolvingMoveOrder,
 } from '@testing';
-import { applyEvent } from '@transforms';
+import { addCommanderToBoard, applyEvent, updateBoardState } from '@transforms';
 
 /**
  * Engaging from the rear (§6.3.3), played through the engines: the defender
@@ -20,11 +20,13 @@ import { applyEvent } from '@transforms';
  *
  * Black on F-5 facing north steps into the back of white on E-5, also facing
  * north. White holds five cards. What matters about the defender is the
- * Morale its rout costs (§9.3).
+ * Morale its rout costs (§9.3), and whether white's commander stands with it
+ * (§4.2.8).
  */
 function rearAttack(options: {
   defenderMorale: number;
   whiteHasAnotherUnit: boolean;
+  whiteCommanderWithDefender?: boolean;
 }): GameStateForVisibility<'authoritative'> {
   const game = createPlayableGame(
     [
@@ -43,11 +45,19 @@ function rearAttack(options: {
     ],
     { hands: { white: 5 }, initiative: 'black' },
   );
+  // White's commander stands with the defender, if the case says so.
+  const withCommander =
+    options.whiteCommanderWithDefender === true
+      ? updateBoardState(
+          game,
+          addCommanderToBoard(game.boardState, 'white', 'E-5'),
+        )
+      : game;
   const attacker = getSingleUnitWithPlacementAtCoordinate(
-    game.boardState,
+    withCommander.boardState,
     'F-5',
   );
-  const resolving = resolvingMoveOrder(game, [attacker.unit]);
+  const resolving = resolvingMoveOrder(withCommander, [attacker.unit]);
 
   // Black names its attacker, declines to commit, and steps north into
   // the defender's back.
@@ -145,5 +155,23 @@ describe('a rear engagement', () => {
 
     expect(next).toBe('gameOver');
     expect(state.winner).toBe('black');
+  });
+
+  it("fells the defender's commander, standing with it, as it routs", () => {
+    // White's commander shares E-5 with the unit black routs from behind.
+    const { state } = applyEffectsUntilChoice(
+      rearAttack({
+        defenderMorale: 2,
+        whiteCommanderWithDefender: true,
+        whiteHasAnotherUnit: true,
+      }),
+    );
+
+    // §4.2.8: it falls with its own unit, and is gone for the rest of the game.
+    expect(state.lostCommanders).toStrictEqual(['white']);
+    expect(state.boardState.board['E-5']?.commanders).toStrictEqual([]);
+    // Defeat costs no cards of its own: white still owes only the unit's
+    // Morale, and has paid nothing yet.
+    expect(state.cardState.white.inHand).toHaveLength(5);
   });
 });

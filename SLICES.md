@@ -257,7 +257,7 @@ range −1; −1 stays, as the authoring interface keeps the range numeric and �
 
 ## Cluster 6 — Commander defeat (§4.2.8) — unparked 2026-11-08
 
-**S21. A commander falls where its army routs** — §4.2.8, A15 + A4. Defeat
+**S21. A commander falls where its army routs** — §4.2.8, A15 + A4. **Done 2026-11-09:** `removeUnitsLeavingUnderRout` fells the routing unit's own commander (`defeatCommanderWithRoutedUnit`); Move Commanders passes over a fallen commander's turn (`getMoveCommandersStepFrom`); range reads already treated a missing commander as reaching nothing. Defeat
 costs nothing on its face — no discard, no Morale; the commander leaves the
 board and every inspiration range in that hand reaches nothing. Call
 `addCommanderToLostCommanders` from the combat rout path only (never the

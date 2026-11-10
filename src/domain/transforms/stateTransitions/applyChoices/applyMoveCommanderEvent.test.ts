@@ -3,7 +3,10 @@ import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
 import { createBoardWithCommander } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addCommanderToLostCommanders,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
@@ -129,6 +132,27 @@ describe('applyMoveCommanderEvent function', () => {
       });
 
       const newState = applyMoveCommanderEvent(event, state);
+
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('complete');
+    });
+
+    it('when the second player’s commander has fallen, the first player’s move ends the phase', () => {
+      // White's commander was defeated earlier (§4.2.8): white has no turn.
+      const base = createGameStateInMoveCommandersStep('moveFirstCommander');
+      const state = addCommanderToLostCommanders(base, 'white');
+
+      // Black, the first player, moves its commander.
+      const newState = applyMoveCommanderEvent(
+        createMoveCommanderEvent({
+          eventNumber: 0,
+          from: 'E-5',
+          player: 'black',
+          to: 'E-7',
+        }),
+        state,
+      );
 
       expect(
         throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,

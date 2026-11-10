@@ -84,6 +84,7 @@ export {
   getCurrentPhaseState,
   getPlayCardsPhaseState,
   getMoveCommandersPhaseState,
+  getMoveCommandersStepFrom,
   getIssueCommandsPhaseState,
   getResolveMeleePhaseState,
   getCleanupPhaseState,
