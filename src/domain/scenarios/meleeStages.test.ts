@@ -25,17 +25,20 @@ import {
  * facing south on the same space. Both units have Morale 2. Each side has a
  * second unit far from the fight, so losing this one does not leave it with
  * no units (§11.4). Both have committed their cards; each holds three more
- * unless a case says otherwise.
+ * unless a case says otherwise. A case may stand further units on the board,
+ * for instance to cut a unit's line of withdrawal.
  */
 function meleeResolvedWith(
   results: {
     blackRetreated?: boolean;
     blackReversed?: boolean;
     blackRouted?: boolean;
+    whiteRetreated?: boolean;
     whiteReversed?: boolean;
     whiteRouted?: boolean;
   },
   whiteHand = 3,
+  extraUnits: Parameters<typeof createPlayableGame>[0] = [],
 ): {
   state: GameStateForVisibility<'authoritative'>;
   next: ReturnType<typeof applyEffectsUntilChoice>['next'];
@@ -46,6 +49,7 @@ function meleeResolvedWith(
       { coord: 'E-5', facing: 'south', morale: 2, player: 'white' },
       { coord: 'I-1', facing: 'north', instanceNumber: 2, player: 'black' },
       { coord: 'A-9', facing: 'south', instanceNumber: 2, player: 'white' },
+      ...extraUnits,
     ],
     { hands: { white: whiteHand }, initiative: 'black' },
   );
@@ -85,7 +89,7 @@ function meleeResolvedWith(
       eventNumber: 0,
       eventType: 'gameEffect',
       location: 'E-5',
-      whiteUnitRetreated: false,
+      whiteUnitRetreated: results.whiteRetreated ?? false,
       whiteUnitReversed: results.whiteReversed ?? false,
       whiteUnitRouted: results.whiteRouted ?? false,
       whiteUnitWithPlacement: white,
@@ -157,5 +161,49 @@ describe('a melee carried out a stage at a time', () => {
     // Black's unit was never routed: its turn never came.
     const black = getPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
     expect(black?.unit.playerSide).toBe('black');
+  });
+
+  it('a second-player unit that cannot fall back routs in the retreat stage, before the first player’s unit falls back', () => {
+    // Both blows reach the other's Retreat. A third black unit stands on D-5,
+    // behind white's unit and facing it, so white's line of withdrawal is cut
+    // (§9.1.5); black's own unit has open ground behind it on F-5.
+    const { state, next } = meleeResolvedWith(
+      { blackRetreated: true, whiteRetreated: true },
+      3,
+      [{ coord: 'D-5', facing: 'south', instanceNumber: 3, player: 'black' }],
+    );
+
+    // White's unit suffers first in the retreat stage, and a retreat it
+    // cannot make becomes a rout in its place (§7.5.6), so white is the one
+    // asked for Morale.
+    expect(next).toMatchObject({
+      choiceType: 'chooseRoutDiscard',
+      playerSource: 'white',
+    });
+    // Black's unit has not fallen back yet: its retreat comes after white's.
+    const black = getPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
+    expect(black?.unit.playerSide).toBe('black');
+  });
+
+  it('a first-player unit that cannot fall back routs after the second player’s unit has fallen back', () => {
+    // Both blows reach the other's Retreat. A third white unit stands on F-5,
+    // behind black's unit and facing it, so black's line of withdrawal is cut
+    // (§9.1.5); white's own unit has open ground behind it on D-5.
+    const { state, next } = meleeResolvedWith(
+      { blackRetreated: true, whiteRetreated: true },
+      3,
+      [{ coord: 'F-5', facing: 'north', instanceNumber: 3, player: 'white' }],
+    );
+
+    // White's unit falls back first, out of E-5.
+    const white = getPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
+    expect(white).toBeUndefined();
+    // Black's retreat comes second, and it cannot make it, so black's unit
+    // routs in its place and black is the one asked for Morale (§7.5.6) —
+    // not white, whose retreat was already done.
+    expect(next).toMatchObject({
+      choiceType: 'chooseRoutDiscard',
+      playerSource: 'black',
+    });
   });
 });
