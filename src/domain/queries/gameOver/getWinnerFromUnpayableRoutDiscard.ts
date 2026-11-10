@@ -1,6 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import { isPending } from '@utils';
+import { getOtherPlayer } from '@queries/player';
 import { findRoutOwingDiscard } from '../sequencing/combatOutcomes/rout/findRoutOwingDiscard';
 
 /**
@@ -33,8 +34,7 @@ export function getWinnerFromUnpayableRoutDiscard(
     return undefined;
   }
 
-  // TODO(composition): hand-rolls `getOtherPlayer`, which throws on a bad side
-  // where this ternary does not. Settled by calling it.
-  const winner = routState.player === 'white' ? 'black' : 'white';
+  // The player who cannot pay loses, so the other wins.
+  const winner = getOtherPlayer(routState.player);
   return winner;
 }
