@@ -14,7 +14,8 @@ import {
  * Builds the effect that opens a front-engaged defender's retreat, once it
  * has chosen to fall back (§6.3.2). The retreats it may make are worked out
  * here, from the board as it stands, and recorded on the event so the log
- * shows what was legal (§9.1). None means it routs instead (§9.1.6).
+ * shows what was legal (§9.1). There is always at least one: the defender is
+ * offered the retreat only when it has one to make (§6.3.2).
  *
  * @param state - A movement whose front engagement's defender chose to retreat
  * @param eventNumber - The ordered index of this event in the round

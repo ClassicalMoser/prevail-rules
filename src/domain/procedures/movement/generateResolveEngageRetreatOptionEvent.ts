@@ -4,6 +4,7 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
 } from '@events';
+import { getLegalRetreats } from '@legality';
 import {
   getCurrentUnitStat,
   getFrontEngagementStateFromMovement,
@@ -16,9 +17,10 @@ import {
  * can retreat during a front engagement.
  *
  * @param state - The current game state
+ * @param eventNumber - The ordered index of this event in the round
  * @returns A complete ResolveEngageRetreatOptionEvent. Retreat is possible if the defending
- * unit has a higher current speed value than the engaging unit. Each player's committed
- * card applies only to their own unit.
+ * unit has a higher current speed value than the engaging unit, and has a legal retreat
+ * to make. Each player's committed card applies only to their own unit.
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveEngageRetreatOptionEvent(
@@ -28,10 +30,11 @@ export function generateResolveEngageRetreatOptionEvent(
   const movementResolutionState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
 
-  const { unit: defendingUnit } = getSingleUnitWithPlacementAtCoordinate(
+  const defender = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
     engagementState.targetPlacement.coordinate,
   );
+  const defendingUnit = defender.unit;
   const { engagingUnit } = engagementState;
 
   const engagingCommitmentModifiers = modifiersFromCompletedCommitment(
@@ -55,8 +58,12 @@ export function generateResolveEngageRetreatOptionEvent(
     engagingCommitmentModifiers,
   );
 
-  // Retreat is possible if defending unit has higher speed than engaging unit
-  const defendingUnitCanRetreat = defendingSpeed > engagingSpeed;
+  // The defender may fall back only if it is strictly the faster (§6.3.2),
+  // and only if it has somewhere to fall back to (§9.1): a retreat it could
+  // not make is not offered, so the choice never turns into a rout.
+  const outpacesEngager = defendingSpeed > engagingSpeed;
+  const defendingUnitCanRetreat =
+    outpacesEngager && getLegalRetreats(defender, state).length > 0;
 
   return {
     defendingUnitCanRetreat,
