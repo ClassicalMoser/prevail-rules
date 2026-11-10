@@ -1,30 +1,10 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { CommitToMovementEvent } from '@events';
 import type { GameState } from '@game';
+import { movementModifierTypes } from '@events';
 import { createCommitToMovementEvent } from '@factories';
-import {
-  getNextEventNumber,
-  getOtherPlayer,
-  getOwnedPlayerCardState,
-} from '@queries';
-
-/** Modifier types that may appear on a commitToMovement event. */
-const MOVEMENT_MODIFIER_TYPES = [
-  'speed',
-  'flexibility',
-] as const satisfies readonly StatModifier[];
-
-type MovementModifier = (typeof MOVEMENT_MODIFIER_TYPES)[number];
-
-function isMovementModifier(
-  modifier: StatModifier,
-): modifier is MovementModifier {
-  return (MOVEMENT_MODIFIER_TYPES as readonly string[]).includes(modifier);
-}
-
-function movementModifiersOnCard(card: CommandCard): MovementModifier[] {
-  return card.modifiers.filter(isMovementModifier);
-}
+import { getNextEventNumber, getOtherPlayer } from '@queries';
+import { getCommitmentOffers } from './commitment';
 
 /**
  * Player whose commit-to-movement is pending: either the moving unit (CRS
@@ -85,41 +65,20 @@ export function getLegalCommitToMovementEvents<S extends GameState>(
   }
 
   const eventNumber = getNextEventNumber(gameState);
-  const result: CommitToMovementEvent[] = [];
-
-  let hand: CommandCard[] | undefined;
-  try {
-    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
-  } catch {
-    hand = undefined;
-  }
-
-  if (hand !== undefined) {
-    for (const committedCard of hand) {
-      const modifierTypes = movementModifiersOnCard(committedCard);
-      if (modifierTypes.length === 0) {
-        continue;
-      }
-      result.push(
-        createCommitToMovementEvent({
-          player,
-          eventNumber,
-          committedCard,
-          modifierTypes,
-        }),
-      );
-    }
-  }
-
-  // Always allow refusing / declining without spending a card.
-  result.push(
+  // Each card in hand naming a stat this commitment applies, then the
+  // refusal, which is always open (§8.3, §8.4).
+  const offers = getCommitmentOffers(
+    gameState.cardState,
+    player,
+    movementModifierTypes,
+  );
+  const events = offers.map((offer) =>
     createCommitToMovementEvent({
-      player,
+      committedCard: offer.committedCard,
       eventNumber,
-      committedCard: null,
-      modifierTypes: [],
+      modifierTypes: offer.modifierTypes,
+      player,
     }),
   );
-
-  return result;
+  return events;
 }

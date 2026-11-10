@@ -150,7 +150,10 @@ export {
 export type { PerformRangedAttackEvent } from './playerChoices';
 export { performRangedAttackEventSchema } from './playerChoices';
 export type { CommitToMovementEvent } from './playerChoices';
-export { commitToMovementEventSchema } from './playerChoices';
+export {
+  commitToMovementEventSchema,
+  movementModifierTypes,
+} from './playerChoices';
 export type { CommitToRangedAttackEvent } from './playerChoices';
 export {
   commitToRangedAttackEventSchema,
@@ -162,7 +165,7 @@ export {
   rangedDefenseModifierTypes,
 } from './playerChoices';
 export type { CommitToMeleeEvent } from './playerChoices';
-export { commitToMeleeEventSchema } from './playerChoices';
+export { commitToMeleeEventSchema, meleeModifierTypes } from './playerChoices';
 export type { ChooseMeleeResolutionEvent } from './playerChoices';
 export { chooseMeleeResolutionEventSchema } from './playerChoices';
 export type { ChooseWhetherToRetreatEvent } from './playerChoices';

@@ -1,30 +1,18 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
+import { meleeModifierTypes } from '@events';
 import { createCommitToMeleeEvent } from '@factories';
-import {
-  getNextEventNumber,
-  getOtherPlayer,
-  getOwnedPlayerCardState,
-} from '@queries';
+import { getNextEventNumber, getOtherPlayer } from '@queries';
+import { getCommitmentOffers } from './commitment';
 
-/** Modifier types that may appear on a commitToMelee event. */
-const MELEE_MODIFIER_TYPES = [
-  'attack',
-  'defense',
-  'flexibility',
-] as const satisfies readonly StatModifier[];
-
-type MeleeModifier = (typeof MELEE_MODIFIER_TYPES)[number];
-
-function isMeleeModifier(modifier: StatModifier): modifier is MeleeModifier {
-  return (MELEE_MODIFIER_TYPES as readonly string[]).includes(modifier);
-}
-
-function meleeModifiersOnCard(card: CommandCard): MeleeModifier[] {
-  return card.modifiers.filter(isMeleeModifier);
-}
-
+/**
+ * The player whose melee commitment is owed. The first player commits
+ * first, then the second (§7.2.2); once both have, nobody is asked.
+ *
+ * @param gameState - The game state
+ * @returns The player to ask, or `null` when no melee commitment is owed
+ */
 function pendingCommitPlayer<S extends GameState>(
   gameState: S,
 ): PlayerSide | null {
@@ -69,41 +57,20 @@ export function getLegalCommitToMeleeEvents<S extends GameState>(
   }
 
   const eventNumber = getNextEventNumber(gameState);
-  const result: CommitToMeleeEvent[] = [];
-
-  let hand: CommandCard[] | undefined;
-  try {
-    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
-  } catch {
-    hand = undefined;
-  }
-
-  if (hand !== undefined) {
-    for (const committedCard of hand) {
-      const modifierTypes = meleeModifiersOnCard(committedCard);
-      if (modifierTypes.length === 0) {
-        continue;
-      }
-      result.push(
-        createCommitToMeleeEvent({
-          player,
-          eventNumber,
-          committedCard,
-          modifierTypes,
-        }),
-      );
-    }
-  }
-
-  // Always allow refusing / declining without spending a card.
-  result.push(
+  // Each card in hand naming a stat this commitment applies, then the
+  // refusal, which is always open (§8.3, §8.4).
+  const offers = getCommitmentOffers(
+    gameState.cardState,
+    player,
+    meleeModifierTypes,
+  );
+  const events = offers.map((offer) =>
     createCommitToMeleeEvent({
-      player,
+      committedCard: offer.committedCard,
       eventNumber,
-      committedCard: null,
-      modifierTypes: [],
+      modifierTypes: offer.modifierTypes,
+      player,
     }),
   );
-
-  return result;
+  return events;
 }

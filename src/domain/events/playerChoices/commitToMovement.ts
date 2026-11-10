@@ -7,7 +7,8 @@ import { z } from 'zod';
 /** The type of the commit to movement event. */
 export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement' as const;
 
-const movementModifierTypes = ['speed', 'flexibility'] as const;
+/** The stats a mover's or a front-engaged defender's commitment may apply (§8.4). */
+export const movementModifierTypes = ['speed', 'flexibility'] as const;
 export type MovementModifier = (typeof movementModifierTypes)[number];
 
 // Type-level guarantee that MovementModifier extends StatModifier

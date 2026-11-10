@@ -7,7 +7,8 @@ import { z } from 'zod';
 /** The type of the commit to melee event. */
 export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee' as const;
 
-const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
+/** The stats a melee commitment may apply (§8.4). */
+export const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
 export type MeleeModifier = (typeof meleeModifierTypes)[number];
 
 // Type-level guarantee that MeleeModifier extends StatModifier

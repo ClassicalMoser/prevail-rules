@@ -1,29 +1,10 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
-import type { CommitToRangedAttackEvent, RangedAttackModifier } from '@events';
+import type { PlayerSide } from '@entities';
+import type { CommitToRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import { rangedAttackModifierTypes } from '@events';
 import { createCommitToRangedAttackEvent } from '@factories';
-import { getNextEventNumber, getOwnedPlayerCardState } from '@queries';
-
-/** Whether a stat on a card is one a shooter may commit it for (§8.4). */
-function isRangedAttackModifier(
-  modifier: StatModifier,
-): modifier is RangedAttackModifier {
-  const accepted: readonly StatModifier[] = rangedAttackModifierTypes;
-  const isAccepted = accepted.includes(modifier);
-  return isAccepted;
-}
-
-/**
- * The stats on a card that count for the shooter; a card whose stats are
- * all of other kinds is no use to it and is not offered (§8.4).
- */
-function rangedAttackModifiersOnCard(
-  card: CommandCard,
-): RangedAttackModifier[] {
-  const modifiers = card.modifiers.filter(isRangedAttackModifier);
-  return modifiers;
-}
+import { getNextEventNumber } from '@queries';
+import { getCommitmentOffers } from './commitment';
 
 /**
  * The shooting player, while the shooter's commitment is owed: a ranged
@@ -78,45 +59,20 @@ export function getLegalCommitToRangedAttackEvents<S extends GameState>(
   }
 
   const eventNumber = getNextEventNumber(gameState);
-  const result: CommitToRangedAttackEvent[] = [];
-
-  // A seat that cannot see this hand can still refuse; only its owner can
-  // name a card from it.
-  let hand: CommandCard[] | undefined;
-  try {
-    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
-  } catch {
-    hand = undefined;
-  }
-
-  // Each card in hand naming a stat the shooter can use is a commitment it
-  // may make (§8.4).
-  if (hand !== undefined) {
-    for (const committedCard of hand) {
-      const modifierTypes = rangedAttackModifiersOnCard(committedCard);
-      if (modifierTypes.length === 0) {
-        continue;
-      }
-      result.push(
-        createCommitToRangedAttackEvent({
-          player,
-          eventNumber,
-          committedCard,
-          modifierTypes,
-        }),
-      );
-    }
-  }
-
-  // Commitment is always optional (§8.3).
-  result.push(
+  // Each card in hand naming a stat this commitment applies, then the
+  // refusal, which is always open (§8.3, §8.4).
+  const offers = getCommitmentOffers(
+    gameState.cardState,
+    player,
+    rangedAttackModifierTypes,
+  );
+  const events = offers.map((offer) =>
     createCommitToRangedAttackEvent({
-      player,
+      committedCard: offer.committedCard,
       eventNumber,
-      committedCard: null,
-      modifierTypes: [],
+      modifierTypes: offer.modifierTypes,
+      player,
     }),
   );
-
-  return result;
+  return events;
 }

@@ -38,7 +38,10 @@ export { performRangedAttackEventSchema } from './performRangedAttack';
 
 // Commit a card to a movement command.
 export type { CommitToMovementEvent } from './commitToMovement';
-export { commitToMovementEventSchema } from './commitToMovement';
+export {
+  commitToMovementEventSchema,
+  movementModifierTypes,
+} from './commitToMovement';
 
 // Commit a card to a ranged attack.
 export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
@@ -56,7 +59,7 @@ export {
 
 // Commit a card to a melee defense or attack.
 export type { CommitToMeleeEvent } from './commitToMelee';
-export { commitToMeleeEventSchema } from './commitToMelee';
+export { commitToMeleeEventSchema, meleeModifierTypes } from './commitToMelee';
 
 // Pick which melee engagement to resolve.
 export type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
