@@ -1531,7 +1531,7 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 <a id="b7"></a>**B7. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Closed 2026-11-08._
 
 - **Rule:** §11.1: an empty hand loses at once, so playing or committing your last card loses. §11.3: if both hands empty at the same moment, the player who held initiative going into the round wins (author decision 2026-11-08).
-- **Closed:** The engine now gives the tie to the holder of initiative — still the previous round's at that moment, since the new initiative is only assigned after the reveal — and the draw is gone from the whole chain: query, event schema, and `GameState.winner` (slice S1, `51c5521`). `getExpectedEvent` asks `getGameOverWinner` before every event, so playing or committing your last card ends the game at once, as the rule says.
+- **Closed:** The engine now gives the tie to the holder of initiative — still the previous round's at that moment, since the new initiative is only assigned after the reveal — and the draw is gone from the whole chain: query, event schema, and `GameState.winner` (slice S1, `51c5521`). `getExpectedEvent` asks `getGameOverWinner` before every event, so committing your last card ends the game at once, as the rule says. In Phase 1 the last card is played when it is revealed, not when it is chosen: choosing is simultaneous and secret (§4.1.1), so `getWinnerFromEmptyHands` does not count a hand as empty while its card is face down awaiting the reveal. Before this (found 2026-11-10, fixed) the first player to choose its last card lost on the spot, and the §11.3 tie-break could not be reached.
 
 <a id="b8"></a>**B8. No-units-left is not a loss.** _Closed 2026-11-08._
 
