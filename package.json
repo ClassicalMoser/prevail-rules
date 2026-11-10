@@ -28,6 +28,14 @@
       "types": "./dist/domain/index.d.ts",
       "import": "./dist/domain/index.js"
     },
+    "./testing": {
+      "types": "./dist/domain/testing/index.d.ts",
+      "import": "./dist/domain/testing/index.js"
+    },
+    "./sampleValues": {
+      "types": "./dist/domain/sampleValues/index.d.ts",
+      "import": "./dist/domain/sampleValues/index.js"
+    },
     "./application": {
       "types": "./dist/application/index.d.ts",
       "import": "./dist/application/index.js"

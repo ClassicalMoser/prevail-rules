@@ -20,4 +20,6 @@ the catalog as a list import it from `@sampleValues`.
 
 Only tests may import this layer. Production code does not.
 
+Packages built on these rules test against the same fixtures and catalogs. They import `@classicalmoser/prevail-rules/testing` and `@classicalmoser/prevail-rules/sampleValues`, which are separate from the main entry so production bundles stay free of stand-in values.
+
 Tests are colocated with the code they exercise.
