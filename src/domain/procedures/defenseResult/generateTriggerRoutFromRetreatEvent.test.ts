@@ -147,14 +147,15 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     }
   });
 
-  it('given playCards phase, throws retreat rout phase guard', () => {
+  it('throws outside any combat, where no retreat can be waiting to rout', () => {
+    // Playing cards resolves no attack, so nothing can be retreating.
     const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
     expect(() => generateTriggerRoutFromRetreatEvent(full, 0)).toThrow(
-      'Retreat rout not expected in phase: playCards',
+      'No retreat is waiting to turn into a rout',
     );
   });
 });

@@ -16,10 +16,17 @@ export { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState
 
 // Selections. A rule of the game decides which candidate is answered about.
 
-// The melee retreat whose destination is chosen and whose move is not finished.
-export { getNextMeleeRetreatStateAwaitingMove } from './getNextMeleeRetreatStateAwaitingMove';
+// The retreat whose path is settled and whose move is not finished.
+export { findRetreatAwaitingMove } from './findRetreatAwaitingMove';
+
+// The retreat with nowhere to go whose rout has not opened.
+export { findRetreatAwaitingRout } from './findRetreatAwaitingRout';
 
 // Routers. The retreat this player is making, wherever it sits.
+
+// With the parent holding it; `undefined` when they are not retreating.
+export type { RetreatLocation, RetreatSource } from './findRetreatLocation';
+export { findRetreatLocation } from './findRetreatLocation';
 
 // `undefined` when they are not retreating.
 export { findRetreatState } from './findRetreatState';

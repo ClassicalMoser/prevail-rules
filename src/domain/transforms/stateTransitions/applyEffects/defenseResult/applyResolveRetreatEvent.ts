@@ -3,8 +3,8 @@ import type { GameState, RetreatState } from '@game';
 import {
   getBoardSpace,
   getFrontEngagementStateFromMovement,
+  findRetreatLocation,
   getPlacementAfterPath,
-  getRetreatState,
 } from '@queries';
 import {
   addUnitToBoard,
@@ -69,33 +69,31 @@ export function applyResolveRetreatEvent<S extends GameState>(
       )
     : unitMovedBoard;
 
-  // Get the current retreat state to update
+  // The retreat being finished, and the parent holding it.
   const retreatingPlayer = event.startingPosition.unit.playerSide;
-  const currentRetreatState = getRetreatState(state, retreatingPlayer);
+  const location = findRetreatLocation(state, retreatingPlayer);
+  if (location === undefined) {
+    throw new Error(`No retreat is in play for ${retreatingPlayer}`);
+  }
 
   // Mark retreat as completed
   const newRetreatState: RetreatState = {
-    ...currentRetreatState,
+    ...location.retreatState,
     completed: true,
   };
 
   const stateWithUpdatedRetreat = updateRetreatState(state, newRetreatState);
-  let next = updateBoardState(stateWithUpdatedRetreat, addedUnitBoard);
+  const moved = updateBoardState(stateWithUpdatedRetreat, addedUnitBoard);
 
-  try {
-    const front = getFrontEngagementStateFromMovement(next);
-    if (
-      front.engagementResolutionState.retreatState !== 'pending' &&
-      front.engagementResolutionState.retreatState.completed
-    ) {
-      next = updateEngagementStateInMovement(next, {
-        ...front,
-        completed: true,
-      });
-    }
-  } catch {
-    // Not a front-engagement retreat parent (ranged / melee attack-apply).
+  // A defender that gave ground ends the front engagement: no melee is
+  // fought (§6.3.2). A retreat an attack forced leaves its attack to finish.
+  if (location.source !== 'frontEngagement') {
+    return moved;
   }
-
-  return next;
+  const front = getFrontEngagementStateFromMovement(moved);
+  const engagementClosed = updateEngagementStateInMovement(moved, {
+    ...front,
+    completed: true,
+  });
+  return engagementClosed;
 }

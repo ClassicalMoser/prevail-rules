@@ -1,20 +1,16 @@
 import type { GameState, RetreatState } from '@game';
-import { isNone, isPending } from '@utils';
-import { hasInitiative } from '@queries/player';
-import { isFriendlyUnit } from '@queries/unit';
-import { isOpenSubstep } from '../isOpenSubstep';
+import { findRetreatLocation } from './findRetreatLocation';
 
 /**
  * The retreat this player is making, or `undefined` when they are not
  * retreating.
  *
- * Three places hold a retreat: the apply on a ranged attack, a front engagement
- * the defender gave ground to, and either side's apply in a melee. Which one is
- * live follows from the phase and the command being resolved.
+ * This is `findRetreatLocation` for a caller that needs the retreat and not
+ * the parent holding it, which is most of them: only finishing a retreat has
+ * to know whether it closes a front engagement.
  *
- * Not retreating is an ordinary state, so this reads each slot's own sentinel
- * rather than asking a getter that would throw. Callers that know a retreat
- * must be there use `getRetreatState`.
+ * Not retreating is an ordinary state, so this answers rather than throwing.
+ * Callers that know a retreat must be there use `getRetreatState`.
  *
  * @param state - The game state
  * @param player - The player whose retreat to find
@@ -24,75 +20,10 @@ export function findRetreatState(
   state: GameState,
   player: 'white' | 'black',
 ): RetreatState | undefined {
-  // Setup has no phase yet, and asking before the round starts is fair.
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (isNone(phaseState)) {
+  const location = findRetreatLocation(state, player);
+  if (location === undefined) {
     return undefined;
   }
-
-  if (phaseState.phase === 'issueCommands') {
-    const commandResolution = phaseState.currentCommandResolutionState;
-    // Between commands nobody is retreating.
-    if (isPending(commandResolution)) {
-      return undefined;
-    }
-
-    if (commandResolution.commandResolutionType === 'rangedAttack') {
-      const apply = commandResolution.attackApplyState;
-      if (isPending(apply)) {
-        return undefined;
-      }
-      const rangedRetreat = apply.retreatState;
-      if (!isOpenSubstep(rangedRetreat)) {
-        return undefined;
-      }
-      // The defender of a ranged attack may be either player's unit.
-      if (!isFriendlyUnit(rangedRetreat.retreatingUnit.unit, player)) {
-        return undefined;
-      }
-      return rangedRetreat;
-    }
-
-    // A movement forces a retreat only when it engages from the front and the
-    // defender gives ground rather than holding.
-    const engagement = commandResolution.engagementState;
-    if (isPending(engagement)) {
-      return undefined;
-    }
-    const resolution = engagement.engagementResolutionState;
-    if (resolution.engagementType !== 'front') {
-      return undefined;
-    }
-    const frontRetreat = resolution.retreatState;
-    if (isPending(frontRetreat)) {
-      return undefined;
-    }
-    if (!isFriendlyUnit(frontRetreat.retreatingUnit.unit, player)) {
-      return undefined;
-    }
-    return frontRetreat;
-  }
-
-  if (phaseState.phase === 'resolveMelee') {
-    const melee = phaseState.currentMeleeResolutionState;
-    if (isPending(melee)) {
-      return undefined;
-    }
-    // The slots are named for whose unit holds the result, so the owner
-    // picks the slot.
-    const sideApply = hasInitiative(state, player)
-      ? melee.firstPlayerAttackApplyState
-      : melee.secondPlayerAttackApplyState;
-    if (isPending(sideApply)) {
-      return undefined;
-    }
-    const meleeRetreat = sideApply.retreatState;
-    if (!isOpenSubstep(meleeRetreat)) {
-      return undefined;
-    }
-    return meleeRetreat;
-  }
-
-  // No other phase moves a unit by retreat.
-  return undefined;
+  const retreatState = location.retreatState;
+  return retreatState;
 }

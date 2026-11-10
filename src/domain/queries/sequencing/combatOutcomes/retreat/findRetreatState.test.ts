@@ -1,23 +1,16 @@
 import type { UnitWithPlacement } from '@entities';
-import type {
-  CommandResolutionState,
-  GameState,
-  MeleeResolutionState,
-} from '@game';
+import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState, createUnitPlacement } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
-  createFrontEngagementState,
   createIssueCommandsPhaseState,
-  createMeleeResolutionState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
   legalRetreatsOf,
 } from '@testing';
-import { updateCurrentInitiative, updatePhaseState } from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { findRetreatState } from './findRetreatState';
 
@@ -27,21 +20,6 @@ function issueCommands(resolution: CommandResolutionState): GameState {
     empty,
     createIssueCommandsPhaseState(empty, {
       currentCommandResolutionState: resolution,
-    }),
-  );
-}
-function resolveMelee(
-  melee: MeleeResolutionState,
-  initiative: 'white' | 'black' = 'white',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createResolveMeleePhaseState(empty, {
-      currentMeleeResolutionState: melee,
     }),
   );
 }
@@ -56,14 +34,7 @@ function placed(
 }
 
 describe('findRetreatState function', () => {
-  it('answers undefined before the round has a phase', () => {
-    // Setup has no phase yet, and the endgame check asks on every state.
-    const state = createEmptyGameState('standard');
-
-    expect(findRetreatState(state, 'white')).toBeUndefined();
-  });
-
-  it('returns the white retreat on a ranged attack', () => {
+  it('returns the retreat without the parent holding it', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
     const retreat = createRetreatState(defender, legalRetreatsOf(defender));
@@ -71,9 +42,7 @@ describe('findRetreatState function', () => {
       attackApplyState: createAttackApplyStateWithRetreat(
         defender,
         legalRetreatsOf(defender),
-        {
-          retreatState: retreat,
-        },
+        { retreatState: retreat },
       ),
       defendingUnit: defender.unit,
     });
@@ -82,65 +51,11 @@ describe('findRetreatState function', () => {
     expect(findRetreatState(state, 'white')).toBe(retreat);
   });
 
-  it('returns the white retreat on a melee', () => {
-    const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
-    const retreat = createRetreatState(white, legalRetreatsOf(white));
-    const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
-        legalRetreatsOf(white),
-        {
-          retreatState: retreat,
-        },
-      ),
-    });
-    const state = resolveMelee(melee);
-
-    expect(findRetreatState(state, 'white')).toBe(retreat);
-  });
-
-  it('answers undefined when a movement has engaged nobody', () => {
-    const empty = createEmptyGameState('standard');
+  it('answers undefined when the player is not retreating', () => {
     // A move that opened no engagement forces no retreat, which is ordinary.
+    const empty = createEmptyGameState('standard');
     const state = issueCommands(createMovementResolutionState(empty));
 
     expect(findRetreatState(state, 'white')).toBeUndefined();
-  });
-
-  it('returns the retreat nested on a front engagement', () => {
-    const empty = createEmptyGameState('standard');
-    const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
-    const resolution = createMovementResolutionState(empty, {
-      engagementState: createFrontEngagementState({
-        defendingUnitRetreats: true,
-        retreatState: retreat,
-      }),
-    });
-    const state = issueCommands(resolution);
-
-    expect(findRetreatState(state, 'white')).toBe(retreat);
-  });
-
-  it('answers undefined when the retreat belongs to the other player', () => {
-    const empty = createEmptyGameState('standard');
-    const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
-    const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyStateWithRetreat(
-        defender,
-        legalRetreatsOf(defender),
-        {
-          retreatState: retreat,
-        },
-      ),
-      defendingUnit: defender.unit,
-    });
-    const state = issueCommands(resolution);
-
-    // The defender of a ranged attack may be either side's unit, so black is
-    // entitled to ask and entitled to a no.
-    expect(findRetreatState(state, 'black')).toBeUndefined();
   });
 });

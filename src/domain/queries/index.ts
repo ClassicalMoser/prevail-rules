@@ -122,7 +122,9 @@ export {
   getMeleeRoutState,
   getRangedAttackReverseState,
   getMeleeReverseState,
-  getNextMeleeRetreatStateAwaitingMove,
+  findRetreatAwaitingMove,
+  findRetreatAwaitingRout,
+  findRetreatLocation,
   getFrontEngagementRetreatState,
   findRetreatState,
   getRetreatState,
@@ -136,7 +138,11 @@ export {
   getNextMeleeRoutState,
   getRearEngagementRoutState,
 } from './sequencing';
-export type { RoutLocation } from './sequencing';
+export type {
+  RetreatLocation,
+  RetreatSource,
+  RoutLocation,
+} from './sequencing';
 
 // Unit stats, identity, support, and who is on the board.
 export {

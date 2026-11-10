@@ -113,18 +113,19 @@ describe('generateResolveRetreatEvent function', () => {
     expect(event.path).toStrictEqual(['step']);
   });
 
-  it('given playCards phase, throws retreat resolution phase guard', () => {
+  it('throws outside any combat, where no retreat can be waiting to move', () => {
+    // Playing cards resolves no attack, so nothing can be retreating.
     const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      'Retreat resolution not expected in phase: playCards',
+      'No retreat is waiting to be carried out',
     );
   });
 
-  it('given ranged apply with retreat substep but no retreat chosen yet, throws', () => {
+  it('throws while the owner has still to choose the way back', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
@@ -147,7 +148,7 @@ describe('generateResolveRetreatEvent function', () => {
     const full = updatePhaseState(withBoard, phase);
 
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      'No retreat has been chosen yet',
+      'No retreat is waiting to be carried out',
     );
   });
 });

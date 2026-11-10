@@ -1,12 +1,7 @@
 import type { ResolveRetreatEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
+import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
-import {
-  getCurrentPhaseState,
-  getFrontEngagementRetreatState,
-  getRangedAttackRetreatState,
-  getNextMeleeRetreatStateAwaitingMove,
-} from '@queries';
+import { findRetreatAwaitingMove } from '@queries';
 
 /**
  * Carries out a retreat already decided (§9.1): the path it takes was the
@@ -20,33 +15,20 @@ import {
  * @param state - The current game state
  * @param eventNumber - The event's place in the round
  * @returns The retreat to carry out: the unit where it stands, and its path
+ * @throws Error when no retreat has its path settled and its move still to make
  */
 export function generateResolveRetreatEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveRetreatEvent {
-  const phaseState = getCurrentPhaseState(state);
-
-  let retreatState: RetreatState;
-  if (phaseState.phase === 'issueCommands') {
-    // TODO(composition): any ranged fault, including a retreat not yet opened,
-    // falls through to the front engagement. `findRetreatState` walks both
-    // parents without throwing but needs a player. Settled by passing the
-    // retreating player, or a player-free total query.
-    try {
-      retreatState = getRangedAttackRetreatState(state);
-    } catch {
-      retreatState = getFrontEngagementRetreatState(state);
-    }
-  } else if (phaseState.phase === 'resolveMelee') {
-    retreatState = getNextMeleeRetreatStateAwaitingMove(state);
-  } else {
-    throw new Error(
-      `Retreat resolution not expected in phase: ${phaseState.phase}`,
-    );
+  const location = findRetreatAwaitingMove(state);
+  if (location === undefined) {
+    throw new Error('No retreat is waiting to be carried out');
   }
+  const retreatState = location.retreatState;
 
-  // The retreat to carry out was chosen, or was the only one.
+  // The retreat to carry out was chosen, or was the only one. The selection
+  // answers only with a settled path; this says so to the type as well.
   const path = retreatState.chosenRetreatPath;
   if (path === 'pending') {
     throw new Error('No retreat has been chosen yet');

@@ -48,7 +48,10 @@ These throw when the context does not hold what they name.
 **A selection picks among candidates by a rule of the game.** `getNextMeleeRoutState`
 resolves the initiative player's side first because the rules say so.
 `findRoutOwingDiscard` picks the side that still owes cards;
-`findRoutAwaitingPenalty` picks the rout `resolveRout` is due for. These are the
+`findRoutAwaitingPenalty` picks the rout `resolveRout` is due for;
+`findRetreatAwaitingMove` and `findRetreatAwaitingRout` pick the retreat
+`resolveRetreat` or `triggerRoutFromRetreat` is due for, asking after the units
+in the order they suffer (§7.5.6). These are the
 queries that carry gameplay rather than position, and they are the ones to read
 first when the sequencing is unclear. A selection with no candidate to pick takes
 the `find` prefix and answers `undefined`, like `findNextMeleeDefendingPlayer`.
@@ -61,8 +64,10 @@ cards. That is the bug the split below is careful about.
 
 **A router walks every context and answers.** `findRoutLocation` answers with
 the rout and the parent accountable for it; `findRoutState` is the same answer
-without the parent, for the callers that do not need it. `findRetreatState` is
-the equivalent for retreats. All of them take the player, because a rout or a
+without the parent, for the callers that do not need it. `findRetreatLocation`
+and `findRetreatState` are the same pair for retreats: finishing a retreat has
+to know whether a front engagement holds it, since that engagement then closes
+with no melee (§6.3.2). All of them take the player, because a rout or a
 retreat belongs to the one who pays for it and a melee holds one per side, so
 asking without naming a player has no answer there. `getRoutState` and
 `getRetreatState` are the same walk for a caller that knows there must be one,
@@ -78,6 +83,13 @@ A router reads each slot's own sentinel rather than calling the scoped getters,
 so it needs no `try`. That duplicates a little descent knowledge against the
 scoped getters, which is the price of one query that answers and one that
 insists.
+
+A procedure is never told where it is: no event has arrived yet to say. So a
+procedure reads a selection, and the event it builds names the parent, which is
+what lets the transform that applies it use a scoped getter. A procedure that
+tried scoped getters one after another and caught the misses was guessing at the
+parent, and its guess was right only while the slots happened to open one at a
+time.
 
 Being total is what makes a router shareable. A scoped getter can only be called
 by someone who already knows where they are, and a parent reader only by someone

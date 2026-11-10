@@ -481,6 +481,9 @@ export {
 } from '@queries';
 export { getExpectedEvent } from '@expected';
 export {
+  findRetreatAwaitingMove,
+  findRetreatAwaitingRout,
+  findRetreatLocation,
   findRetreatState,
   findRoutState,
   isAwaitingRoutDiscard,
@@ -519,7 +522,6 @@ export {
   getRangedAttackReverseState,
   getRangedAttackRoutState,
   getRangedAttackRetreatState,
-  getNextMeleeRetreatStateAwaitingMove,
   getReverseStateFromAttackApply,
   getNextMeleeReverseState,
   getRoutStateFromAttackApply,
