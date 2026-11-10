@@ -368,9 +368,9 @@ describe('exploreUnitMoves function', () => {
       expect(hasRearwardMove).toBe(true);
     });
 
-    it('after the first step back a retreat turns by the ordinary rule', () => {
-      // Only the opening turn is restricted (§9.1.4): after one step back,
-      // §5.2.1 applies — about in one spend, a 90° wheel in two.
+    it('after the first step back a retreat wheels 45° a spend, and never turns about', () => {
+      // §9.1.4: after one step back the unit may turn 45° per spend, so a
+      // 90° wheel takes two; turning about is never part of a retreat.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -385,19 +385,21 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      const aboutAfterStep = exploreResultHasMatch(moves, {
+      // One spend after the step does not reverse it to face south.
+      const aboutAfterStepAtOne = exploreResultHasMatch(moves, {
         coordinate: 'F-5',
         facing: 'south',
         flexibilityUsed: 1,
-        speedUsed: 1,
       });
-      expect(aboutAfterStep).toBe(true);
+      expect(aboutAfterStepAtOne).toBe(false);
+      // One spend wheels it no further than 45°: not yet east.
       const wheelAfterStepAtOne = exploreResultHasMatch(moves, {
         coordinate: 'F-5',
         facing: 'east',
         flexibilityUsed: 1,
       });
       expect(wheelAfterStepAtOne).toBe(false);
+      // Two spends wheel it 90°, to face east.
       const wheelAfterStepAtTwo = exploreResultHasMatch(moves, {
         coordinate: 'F-5',
         facing: 'east',

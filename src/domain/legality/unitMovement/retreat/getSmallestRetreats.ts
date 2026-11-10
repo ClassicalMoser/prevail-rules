@@ -4,12 +4,12 @@ import type { MoveResult } from '../explore';
 
 /**
  * The smallest of a retreat's legal endings (§9.1.3): the fewest facing
- * changes first, then the fewest steps. A retreat is a fall-back, not a
+ * changes first (the least rotation, since a retreat only turns 45°), then the fewest steps. A retreat is a fall-back, not a
  * free repositioning, so only the cheapest are offered; where several tie,
  * the retreating player chooses among them.
  *
- * A retreat is judged by where it ends, so each ending is offered once, by
- * the first path found to it (author, 2026-11-09: two equally small paths to
+ * A retreat is judged by where it ends — its space and its facing — so each
+ * ending is offered once, by the first path found to it (author, 2026-11-09: two equally small paths to
  * one ending are exceptionally rare and never significant).
  *
  * @param endings - Every legal ending of the retreat, with its cost

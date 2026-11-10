@@ -7,7 +7,8 @@ import { getTurnOptions } from './getTurnOptions';
 
 /**
  * A turn costs 1 Flexibility and goes 45° either way or about (§5.2.1); a
- * retreat's opening turn is limited to 45° in all (§9.1.4).
+ * retreat never turns about, and its opening turn is limited to 45° in all
+ * (§9.1.4).
  */
 describe('getTurnOptions function', () => {
   // A lone black unit on E-5 facing north. Its own Speed and Flexibility are
@@ -93,7 +94,7 @@ describe('getTurnOptions function', () => {
     expect(options).toStrictEqual(new Set());
   });
 
-  it('a retreat that has stepped back turns 45° either way or about', () => {
+  it('a retreat that has stepped back turns 45° either way, never about', () => {
     // Build the context of a retreat begun on E-5 facing north.
     const context = createMoveContext(gameState, unit, 'retreat');
     // One step back, now on F-5, facing as it started.
@@ -108,8 +109,7 @@ describe('getTurnOptions function', () => {
 
     const options = getTurnOptions(context, state);
 
-    expect(options).toStrictEqual(
-      new Set(['turnLeft', 'turnRight', 'turnAbout']),
-    );
+    // With Flexibility to spare, it still may not reverse its facing.
+    expect(options).toStrictEqual(new Set(['turnLeft', 'turnRight']));
   });
 });
