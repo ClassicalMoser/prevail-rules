@@ -249,13 +249,11 @@ Files: `legality/choiceOptions/issueCommand/getLegalUnitsForIssueCommand.ts`,
 `validation/playerChoice/isValidIssueCommandEvent.ts`.
 Blocks: `legality/choiceOptions`, `validation`.
 
-**S20. Inspiration range speaks the card's language** — §4.2.7, A6. Add the
-"all of a trait" range; keep one copy of the range test (it is written twice,
-`TODO(composition)` in `getCurrentUnitStat.ts`).
-Files: `entities/card/restrictions.ts`, `queries/unit/getCurrentUnitStat.ts`,
-`legality/.../unitMatchesInspirationRange`.
-Blocks: `queries/unit`, `legality/choiceOptions`, `entities` (reopens a closed
-box — the only slice that does; keep it schema-additive).
+~~S20. Inspiration range speaks the card's language~~ — §4.2.7, A6. **Closed by
+decision 2026-11-09, no slice.** "All of a trait" is a trait restriction with
+range −1; −1 stays, as the authoring interface keeps the range numeric and −1,
+0 and positive ranges are one family (author). The range test written twice
+(`TODO(composition)` in `getCurrentUnitStat.ts`) goes to Pass B.
 
 ## Cluster 6 — Commander defeat (§4.2.8) — unparked 2026-11-08
 
@@ -282,7 +280,7 @@ Blocks: `transforms`, `expected`, `queries/unit`, `queries/card`.
 Pass B material — behavior-preserving, runs layer-by-layer once the clusters
 touching that layer are done:
 
-- The duplicate walks indexed in AUDIT.md: inspiration range (S20 takes it),
+- The duplicate walks indexed in AUDIT.md: inspiration range (S20 closed; Pass B takes it),
   units-on-board, the defender-to-slot ternary (7 copies), next-open-apply
   (3 variants), hand-rolled `getOtherPlayer`.
 - Unused exports (`queries/sequencing`, `getLinesFromUnit` once S18 settles
