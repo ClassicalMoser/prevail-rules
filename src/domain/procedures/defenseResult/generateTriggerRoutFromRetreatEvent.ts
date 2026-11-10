@@ -6,7 +6,7 @@ import {
   RANGED_ATTACK_RESOLUTION_CONTEXT,
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
 } from '@events';
-import { findRetreatAwaitingRout } from '@queries';
+import { findRetreatAwaitingRout, getCurrentPhaseState } from '@queries';
 
 /**
  * Builds the effect that turns a retreat with nowhere to go into a rout
@@ -17,15 +17,26 @@ import { findRetreatAwaitingRout } from '@queries';
  * @param state - A retreat with no legal path whose rout has not opened
  * @param eventNumber - The ordered index of this event in the round
  * @returns The event, naming where the retreat is held
- * @throws Error when no retreat is waiting to turn into a rout
+ * @throws Error outside a shot, engagement or melee; or when no retreat is waiting to turn into a rout
  */
 export function generateTriggerRoutFromRetreatEvent(
   state: GameState,
   eventNumber: number,
 ): TriggerRoutFromRetreatEvent {
+  // A retreat can fall into a rout in a shot, engagement or melee only.
+  const phaseState = getCurrentPhaseState(state);
+  if (
+    phaseState.phase !== 'issueCommands' &&
+    phaseState.phase !== 'resolveMelee'
+  ) {
+    throw new Error(`Retreat rout not expected in phase: ${phaseState.phase}`);
+  }
+
   const location = findRetreatAwaitingRout(state);
   if (location === undefined) {
-    throw new Error('No retreat is waiting to turn into a rout');
+    throw new Error(
+      `No retreat with nowhere to go is waiting for its rout in phase: ${phaseState.phase}`,
+    );
   }
 
   if (location.source === 'rangedAttack') {

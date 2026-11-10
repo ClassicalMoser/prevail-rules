@@ -155,7 +155,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
       step: 'complete',
     });
     expect(() => generateTriggerRoutFromRetreatEvent(full, 0)).toThrow(
-      'No retreat is waiting to turn into a rout',
+      'Retreat rout not expected in phase: playCards',
     );
   });
 });

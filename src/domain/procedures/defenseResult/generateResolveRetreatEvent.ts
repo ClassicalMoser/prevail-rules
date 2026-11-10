@@ -1,7 +1,7 @@
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
-import { findRetreatAwaitingMove } from '@queries';
+import { findRetreatAwaitingMove, getCurrentPhaseState } from '@queries';
 
 /**
  * Carries out a retreat already decided (§9.1): the path it takes was the
@@ -15,15 +15,31 @@ import { findRetreatAwaitingMove } from '@queries';
  * @param state - The current game state
  * @param eventNumber - The event's place in the round
  * @returns The retreat to carry out: the unit where it stands, and its path
- * @throws Error when no retreat has its path settled and its move still to make
+ * @throws Error outside a shot, engagement or melee; or when no retreat has its path settled and its move still to make
  */
 export function generateResolveRetreatEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveRetreatEvent {
+  // Retreats are carried out in a shot or engagement (issueCommands) and in
+  // a melee (resolveMelee), and nowhere else.
+  const phaseState = getCurrentPhaseState(state);
+  if (
+    phaseState.phase !== 'issueCommands' &&
+    phaseState.phase !== 'resolveMelee'
+  ) {
+    throw new Error(
+      `Retreat resolution not expected in phase: ${phaseState.phase}`,
+    );
+  }
+
   const location = findRetreatAwaitingMove(state);
   if (location === undefined) {
-    throw new Error('No retreat is waiting to be carried out');
+    throw new Error(
+      phaseState.phase === 'resolveMelee'
+        ? 'No chosen retreat found in melee resolution'
+        : 'No retreat has been chosen yet',
+    );
   }
   const retreatState = location.retreatState;
 

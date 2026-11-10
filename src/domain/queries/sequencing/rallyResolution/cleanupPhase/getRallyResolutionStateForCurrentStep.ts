@@ -29,7 +29,9 @@ export function getRallyResolutionStateForCurrentStep(
   const rallyingPlayer = getRallyingPlayer(state);
   if (player !== rallyingPlayer) {
     throw new Error(
-      `Expected ${rallyingPlayer} to resolve rally, got ${player}`,
+      `Expected ${rallyingPlayer} (${
+        phaseState.step === 'firstPlayerResolveRally' ? 'first' : 'second'
+      } player) to resolve rally, got ${player}`,
     );
   }
 

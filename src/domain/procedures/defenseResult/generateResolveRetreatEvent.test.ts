@@ -121,7 +121,7 @@ describe('generateResolveRetreatEvent function', () => {
       step: 'complete',
     });
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      'No retreat is waiting to be carried out',
+      'Retreat resolution not expected in phase: playCards',
     );
   });
 
@@ -148,7 +148,7 @@ describe('generateResolveRetreatEvent function', () => {
     const full = updatePhaseState(withBoard, phase);
 
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      'No retreat is waiting to be carried out',
+      'No retreat has been chosen yet',
     );
   });
 });

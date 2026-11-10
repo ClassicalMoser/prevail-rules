@@ -54,7 +54,7 @@ describe('getRallyResolutionStateForCurrentStep function', () => {
     });
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'black')).toThrow(
-      'Expected white to resolve rally, got black',
+      'Expected white (first player) to resolve rally, got black',
     );
   });
 
@@ -62,7 +62,7 @@ describe('getRallyResolutionStateForCurrentStep function', () => {
     const state = cleanup('secondPlayerResolveRally');
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'white')).toThrow(
-      'Expected black to resolve rally, got white',
+      'Expected black (second player) to resolve rally, got white',
     );
   });
 
