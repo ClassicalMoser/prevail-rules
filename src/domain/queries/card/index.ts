@@ -3,6 +3,7 @@ export { isAuthoritativeGameState } from './isAuthoritativeGameState';
 
 // Owned and hidden views of a player's card piles.
 export { getHiddenPlayerCardState } from './getHiddenPlayerCardState';
+export { findOwnedPlayerCardState } from './findOwnedPlayerCardState';
 export { getOwnedPlayerCardState } from './getOwnedPlayerCardState';
 
 // Lower initiative number wins; a tie keeps the current holder.

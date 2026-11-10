@@ -36,6 +36,7 @@ export {
   calculateInitiative,
   findMatchingCommand,
   getHiddenPlayerCardState,
+  findOwnedPlayerCardState,
   getOwnedPlayerCardState,
   isAuthoritativeGameState,
   modifiersFromCompletedCommitment,

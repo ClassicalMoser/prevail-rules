@@ -2,7 +2,7 @@ import type { PlayerSide, UnitInstance, UnitSupport } from '@entities';
 import type { GameState } from '@game';
 import {
   getCleanupPhaseState,
-  getOwnedPlayerCardState,
+  findOwnedPlayerCardState,
   getPlayerUnitsOnBoard,
   getRallyResolutionStateAwaitingUnitSupport,
   unitMatchesSupport,
@@ -65,12 +65,12 @@ export function getLegalAssignUnitSupport<S extends GameState>(
     return null;
   }
 
-  let hand;
-  try {
-    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
-  } catch {
+  // Only the rallying player's seat can see the support cards in its hand.
+  const owned = findOwnedPlayerCardState(gameState.cardState, player);
+  if (owned === undefined) {
     return null;
   }
+  const hand = owned.inHand;
 
   const boardUnits = [...getPlayerUnitsOnBoard(gameState, player)];
   const categories: LegalSupportCategory[] = combineSupportCategoriesFromHand(

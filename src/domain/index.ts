@@ -457,6 +457,7 @@ export {
   getOppositeFacing,
   getOrthogonalFacings,
   getOtherPlayer,
+  findOwnedPlayerCardState,
   getOwnedPlayerCardState,
   getHiddenPlayerCardState,
   getRightFacing,

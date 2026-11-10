@@ -1,46 +1,28 @@
 import type { PlayerSide } from '@entities';
 import type { CardState, OwnedCardState } from '@game';
+import { findOwnedPlayerCardState } from './findOwnedPlayerCardState';
 
 /**
- * Returns the owned card slice for `player`, proven via `cardState.visibility`.
+ * Returns the owned card slice for `player`, proven via `cardState.visibility`,
+ * for a caller that knows this view can see it.
  *
- * No casts: each branch reads a field TypeScript already types as
- * {@link OwnedCardState}. Throws if that player is hidden under this visibility.
+ * No casts: `findOwnedPlayerCardState` reads a field TypeScript already types
+ * as {@link OwnedCardState}. Use that to ask whether the hand is in view.
+ *
+ * @param cardState - The card state, under some visibility
+ * @param player - The player whose piles to read
+ * @returns That player's owned piles
+ * @throws Error when that player's hand is hidden under this visibility
  */
 export function getOwnedPlayerCardState(
   cardState: CardState,
   player: PlayerSide,
 ): OwnedCardState {
-  const visibility = cardState.visibility;
-  switch (visibility) {
-    case 'authoritative': {
-      return cardState[player];
-    }
-    case 'blackSeen': {
-      if (player !== 'black') {
-        throw new Error(
-          `Player ${player} is not owned under blackSeen visibility`,
-        );
-      }
-      return cardState.black;
-    }
-    case 'whiteSeen': {
-      if (player !== 'white') {
-        throw new Error(
-          `Player ${player} is not owned under whiteSeen visibility`,
-        );
-      }
-      return cardState.white;
-    }
-    case 'spectator': {
-      // A spectator view has no owned slice.
-      throw new Error(
-        `Player ${player} is not owned under spectator visibility`,
-      );
-    }
-    default: {
-      const _exhaustiveCheck: never = visibility;
-      throw new Error(`Invalid visibility: ${_exhaustiveCheck}`);
-    }
+  const owned = findOwnedPlayerCardState(cardState, player);
+  if (owned === undefined) {
+    throw new Error(
+      `Player ${player} is not owned under ${cardState.visibility} visibility`,
+    );
   }
+  return owned;
 }

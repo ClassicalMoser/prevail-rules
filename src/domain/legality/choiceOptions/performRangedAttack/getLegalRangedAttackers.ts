@@ -3,7 +3,7 @@ import type { GameState } from '@game';
 import {
   getCurrentUnitStat,
   getOtherPlayer,
-  getOwnedPlayerCardState,
+  findOwnedPlayerCardState,
   getPositionOfUnit,
   isFriendlyUnit,
 } from '@queries';
@@ -71,12 +71,12 @@ export function getLegalRangedAttackers<S extends GameState>(
     return null;
   }
 
-  let inPlay;
-  try {
-    inPlay = getOwnedPlayerCardState(gameState.cardState, player).inPlay;
-  } catch {
+  // A seat that cannot see this player's cards cannot read the order.
+  const owned = findOwnedPlayerCardState(gameState.cardState, player);
+  if (owned === undefined) {
     return null;
   }
+  const inPlay = owned.inPlay;
   if (inPlay === null || inPlay.command.type !== 'rangedAttack') {
     return null;
   }

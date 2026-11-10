@@ -1,6 +1,6 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { findRoutOwingDiscard, getOwnedPlayerCardState } from '@queries';
+import { findOwnedPlayerCardState, findRoutOwingDiscard } from '@queries';
 
 /**
  * Atomic rout-discard options for UI and validation: which player must discard,
@@ -39,16 +39,12 @@ export function getLegalRoutDiscardCards<S extends GameState>(
     return null;
   }
 
-  let cardIds: string[];
-  try {
-    cardIds = getOwnedPlayerCardState(
-      gameState.cardState,
-      routState.player,
-    ).inHand.map((card) => card.id);
-  } catch {
-    // Discarding player's hand is hidden under this visibility.
+  // Discarding player's hand is hidden under this visibility.
+  const owned = findOwnedPlayerCardState(gameState.cardState, routState.player);
+  if (owned === undefined) {
     return null;
   }
+  const cardIds = owned.inHand.map((card) => card.id);
 
   return {
     cardIds,
