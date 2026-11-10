@@ -4,8 +4,7 @@ import {
   getAdjacentSpaces,
   getBoardSpace,
   getDiagonallyAdjacentSpaces,
-  getFlankingSpaces,
-  getFrontSpaces,
+  getNeighbourSide,
   getSpacesBehind,
 } from '@queries/board';
 import {
@@ -14,6 +13,17 @@ import {
   hasNoUnit,
 } from '@queries/unitPresence';
 
+/**
+ * What a fighter's friends add to its blow in melee (§7.3.1). A friend lends a
+ * hand when it stands beside the fighter, not in its back spaces, free of a
+ * fight of its own, and — on a diagonal — with the way between them open.
+ * How much it lends depends on where the fighter lies from the friend's point
+ * of view, and every qualifying friend counts (§7.3.2).
+ *
+ * @param board - The board as it stands at this fight (§7.3.3)
+ * @param unit - The fighter and where it stands
+ * @returns The fighter's total support
+ */
 export function getMeleeSupportValue(
   board: Board,
   unit: UnitWithPlacement,
@@ -73,31 +83,21 @@ export function getMeleeSupportValue(
   // Calculate the support value
   let supportValue = 0;
 
-  // Check each potential support unit for support value
+  // Each friend lends by where the fighter lies from its point of view: in
+  // its front spaces, looking at it, +2; in its flanking spaces, off to a
+  // side, +1; behind it, looking away, nothing.
   for (const potentialSupportUnit of potentialSupportUnits) {
-    // Get the support unit's coordinate and facing
-    const supportCoordinate = potentialSupportUnit.placement.coordinate;
-    const supportFacing = potentialSupportUnit.placement.facing;
-    // Check if the support unit is facing the primary unit
-    const frontSpaces = getFrontSpaces(board, supportCoordinate, supportFacing);
-    // If it is, add strong support of two
-    if (frontSpaces.has(unitCoordinate)) {
-      supportValue += 2;
-      continue;
-    }
-    // If it is not, check if it is flanking the primary unit
-    const flankingSpaces = getFlankingSpaces(
+    const side = getNeighbourSide(
       board,
-      supportCoordinate,
-      supportFacing,
+      potentialSupportUnit.placement.coordinate,
+      potentialSupportUnit.placement.facing,
+      unitCoordinate,
     );
-    // If it is, add weak support of one
-    if (flankingSpaces.has(unitCoordinate)) {
+    if (side === 'front') {
+      supportValue += 2;
+    } else if (side === 'flank') {
       supportValue += 1;
-      continue;
     }
-    // Otherwise, no support
-    continue;
   }
 
   // Return the total support value
