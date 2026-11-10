@@ -36,9 +36,11 @@ const newState = applyEvent(event, currentState);
 **Function:** `validatePlayerChoice(event: PlayerChoiceEvent, state: GameState): ValidationResult`
 
 Asks two separate questions in order: is this choice **expected**, from
-`getExpectedEvent`, and is it **legal**, by membership against the same
-`@legality` enumerators that build the option payloads. A failure of either
-returns a reason.
+`getExpectedEvent` — the choice type, the player, and the event number the
+round is up to — and is it **legal**, by membership against the same
+`@legality` enumerators that build the option payloads. Between the two, the
+event is parsed against its schema, so the legality check reads a well-formed
+payload. A failure at any step returns a reason.
 
 It never throws. Queries beneath it do, so it wraps them and turns a throw into
 an `errorReason`. Everything a caller needs is in the returned
@@ -64,7 +66,7 @@ Per-choice `isValid*Event` helpers stay inside `@validation`. Callers use
 **Function:** `generateEventFromProcedure(state, eventNumber, effectType, random): GameEffectEvent`
 
 When the game owes an effect rather than waiting on a player, a procedure builds
-the event. There are 27 generators, each named for the event it produces, and the
+the event. There are 28 generators, each named for the event it produces, and the
 registry is a switch over `GameEffectType` — not a map, so it cannot be indexed.
 
 The switch is exhaustive: its default assigns `effectType` to `never`. Every

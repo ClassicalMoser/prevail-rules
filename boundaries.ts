@@ -105,7 +105,7 @@ export const boundaries: BoundaryConfig[] = [
     ],
     dir: 'domain/procedures',
     identifier: '@procedures',
-    // Deterministic game-effect event generators from game state.
+    // Game-effect event generators from game state; some draw at random.
   },
   {
     alias: '@legality',
@@ -137,7 +137,7 @@ export const boundaries: BoundaryConfig[] = [
     ],
     dir: 'domain/validation',
     identifier: '@validation',
-    // Pure validation; always returns boolean, never throws.
+    // Pure validation; answers with a ValidationResult and never throws.
   },
   {
     alias: '@transforms',
