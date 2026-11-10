@@ -2,11 +2,11 @@ import type { PlayerSide, UnitInstance, UnitSupport } from '@entities';
 import type { GameState } from '@game';
 import {
   getCleanupPhaseState,
-  getOtherPlayer,
   getOwnedPlayerCardState,
   getPlayerUnitsOnBoard,
   getRallyResolutionStateAwaitingUnitSupport,
   unitMatchesSupport,
+  getRallyingPlayer,
 } from '@queries';
 
 import { combineSupportCategoriesFromHand } from './combineSupportCategoriesFromHand';
@@ -57,11 +57,7 @@ export function getLegalAssignUnitSupport<S extends GameState>(
     return null;
   }
 
-  const firstPlayer = gameState.currentInitiative;
-  const player =
-    phaseState.step === 'firstPlayerResolveRally'
-      ? firstPlayer
-      : getOtherPlayer(firstPlayer);
+  const player = getRallyingPlayer(gameState);
 
   try {
     getRallyResolutionStateAwaitingUnitSupport(gameState, player);

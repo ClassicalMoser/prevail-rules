@@ -53,6 +53,9 @@ export { getRallyResolutionStateAwaitingBurn } from './rallyResolution';
 // That rally after the burn, before support is assigned.
 export { getRallyResolutionStateAwaitingUnitSupport } from './rallyResolution';
 
+// The player whose rally the cleanup step is on.
+export { getRallyingPlayer } from './rallyResolution';
+
 // Whether this resolve-rally step belongs to the initiative player.
 export { getIsFirstPlayerForResolveRallyStep } from './rallyResolution';
 

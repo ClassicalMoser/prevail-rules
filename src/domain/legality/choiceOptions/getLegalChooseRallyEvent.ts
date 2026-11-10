@@ -3,9 +3,8 @@ import type { GameState } from '@game';
 import { createChooseRallyEvent } from '@factories';
 import {
   getCleanupPhaseState,
-  getCurrentInitiative,
   getNextEventNumber,
-  getOtherPlayer,
+  getRallyingPlayer,
 } from '@queries';
 
 /**
@@ -37,11 +36,7 @@ export function getLegalChooseRallyEvent(
   const eventNumber = getNextEventNumber(gameState);
 
   // The first player chooses first, then the second (§10.3).
-  const firstPlayer = getCurrentInitiative(gameState);
-  const choosingPlayer =
-    phaseState.step === 'firstPlayerChooseRally'
-      ? firstPlayer
-      : getOtherPlayer(firstPlayer);
+  const choosingPlayer = getRallyingPlayer(gameState);
 
   // Rallying needs a card to burn; declining is always allowed.
   const canRally = gameState.cardState[choosingPlayer].played.length > 0;

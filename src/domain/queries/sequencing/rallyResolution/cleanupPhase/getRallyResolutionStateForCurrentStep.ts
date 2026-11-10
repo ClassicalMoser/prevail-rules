@@ -1,7 +1,7 @@
 import type { GameState, RallyResolutionState } from '@game';
-import { getOtherPlayer } from '@queries/player';
 import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhaseState';
 import { getCurrentRallyResolutionState } from '../getCurrentRallyResolutionState';
+import { getRallyingPlayer } from './getRallyingPlayer';
 
 /**
  * Gets the rally resolution state for the current cleanup phase step.
@@ -18,24 +18,18 @@ export function getRallyResolutionStateForCurrentStep(
 ): RallyResolutionState {
   // The step must be that player's resolve step. The rally itself is read next.
   const phaseState = getCleanupPhaseState(state);
-  const firstPlayer = state.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-
-  if (phaseState.step === 'firstPlayerResolveRally') {
-    if (player !== firstPlayer) {
-      throw new Error(
-        `Expected ${firstPlayer} (first player) to resolve rally, got ${player}`,
-      );
-    }
-  } else if (phaseState.step === 'secondPlayerResolveRally') {
-    if (player !== secondPlayer) {
-      throw new Error(
-        `Expected ${secondPlayer} (second player) to resolve rally, got ${player}`,
-      );
-    }
-  } else {
+  if (
+    phaseState.step !== 'firstPlayerResolveRally' &&
+    phaseState.step !== 'secondPlayerResolveRally'
+  ) {
     throw new Error(
       `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
+    );
+  }
+  const rallyingPlayer = getRallyingPlayer(state);
+  if (player !== rallyingPlayer) {
+    throw new Error(
+      `Expected ${rallyingPlayer} to resolve rally, got ${player}`,
     );
   }
 

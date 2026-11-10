@@ -2,16 +2,15 @@ import type { RandomSource } from '@utils';
 import type { ResolveRallyEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
-import type { PlayerSide } from '@entities';
-import { getCleanupPhaseState, getOtherPlayer } from '@queries';
+import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
 
 /**
  * Generates a ResolveRallyEvent by randomly selecting a card to burn.
  * The draw happens here; the event (with the selected card) is what makes it
  * replayable. The source is the caller's, so a fixed one burns the same card.
  *
- * Player is taken from the cleanup resolve-rally step + initiative (same as
- * {@link getLegalAssignUnitSupport} / assign-unit-support).
+ * The player is the one whose rally the step is on (`getRallyingPlayer`), as
+ * for {@link getLegalAssignUnitSupport}.
  *
  * @param state - The current game state
  * @param eventNumber - The ordered index of this event in the round (zero-indexed)
@@ -35,19 +34,17 @@ export function generateResolveRallyEvent(
   eventNumber: number,
   random: RandomSource,
 ): ResolveRallyEvent {
+  // Only a resolve step burns a card; choosing to rally burns nothing yet.
   const phaseState = getCleanupPhaseState(state);
-  const firstPlayer = state.currentInitiative;
-  let rallyingPlayer: PlayerSide;
-
-  if (phaseState.step === 'firstPlayerResolveRally') {
-    rallyingPlayer = firstPlayer;
-  } else if (phaseState.step === 'secondPlayerResolveRally') {
-    rallyingPlayer = getOtherPlayer(firstPlayer);
-  } else {
+  if (
+    phaseState.step !== 'firstPlayerResolveRally' &&
+    phaseState.step !== 'secondPlayerResolveRally'
+  ) {
     throw new Error(
       `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
     );
   }
+  const rallyingPlayer = getRallyingPlayer(state);
 
   const playedCards = state.cardState[rallyingPlayer].played;
 
