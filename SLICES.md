@@ -88,7 +88,8 @@ Blocks: `legality/unitMovement`, `queries/engagement`, `procedures`.
 **S6. Retreat turning follows the same rule** — §9.1.4, A14. **Done**
 (with S3, `82f4a77`; spec-pinned post-step). Decided
 2026-11-08: after the first step, §5.2.1 applies (45°/180°, repeatable); only
-the opening turn keeps the 45° limit. Retreats go through `exploreUnitMoves`,
+the opening turn keeps the 45° limit. Superseded 2026-11-09 (`0962cb5`): a
+retreat never turns about, before or after its first step — 45° turns only. Retreats go through `exploreUnitMoves`,
 so most of the work is S3's.
 Files: `legality/unitMovement/getLegalRetreats.ts` and the S3 files.
 Blocks: `legality/unitMovement`.
@@ -135,7 +136,7 @@ Files: `applyMoveUnitEvent.ts`,
 `expected/.../getExpectedMovementResolutionEvent.ts`, `exploreUnitMoves.ts`.
 Blocks: `transforms`, `legality/choiceOptions`, `expected`.
 
-**S10. A commander rides with its unit** — §4.3.10, §9.1.8, A9. **Moves done 2026-11-09** (`df6742f`, `8756c04`, scenario `commanderRides.test.ts`); the retreat half stays open and goes with the retreat-choice path in Cluster 3. The riding into an engagement keeps its commander committed; its fall with a routed unit is S21. Apply the
+**S10. A commander rides with its unit** — §4.3.10, §9.1.8, A9. **Moves done 2026-11-09** (`df6742f`, `8756c04`, scenario `commanderRides.test.ts`); the retreat half is done too (`bbe06a9`): a commander in the retreating unit's space always goes with it, no choice (§9.1.8). The riding into an engagement keeps its commander committed; its fall with a routed unit is S21. Apply the
 `moveCommander` flag; give retreats the same option. The engagement case is
 decided 2026-11-08: the ride into an engagement is allowed — the one way a
 commander ends in an enemy-held space; it is committed to the fight and falls
