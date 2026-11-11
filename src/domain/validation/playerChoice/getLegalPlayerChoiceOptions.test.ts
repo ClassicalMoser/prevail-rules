@@ -57,7 +57,6 @@ const allChoiceTypes = [
   'chooseWhetherToRetreat',
   'commitToRangedAttack',
   'commitToRangedDefense',
-  'doneIssuingCommands',
   'issueCommand',
   'moveCommander',
   'performRangedAttack',
@@ -72,6 +71,7 @@ const allChoiceTypes = [
 const choicesNeedingRoundUnderWay = [
   'chooseMeleeResolution',
   'chooseRally',
+  'doneIssuingCommands',
   'moveUnit',
 ] as const satisfies readonly PlayerChoiceType[];
 
@@ -290,8 +290,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
           case 'commitToMelee':
           case 'commitToMovement':
           case 'commitToRangedAttack':
-          case 'commitToRangedDefense':
-          case 'doneIssuingCommands': {
+          case 'commitToRangedDefense': {
             expect(options).toHaveProperty('events');
             if (options && 'events' in options) {
               expect(Array.isArray(options.events)).toBe(true);

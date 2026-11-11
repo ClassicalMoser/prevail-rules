@@ -11,12 +11,6 @@ export function isValidDoneIssuingCommandsEvent(
   state: GameState,
 ): ValidationResult {
   const legalOptions = getLegalDoneIssuingCommandsEvents(state);
-  if (legalOptions === null) {
-    return {
-      errorReason: 'Done issuing commands is not expected in the current state',
-      result: false,
-    };
-  }
   const isLegal = legalOptions.some((option) => option.player === event.player);
   if (!isLegal) {
     return {

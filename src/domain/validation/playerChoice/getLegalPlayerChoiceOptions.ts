@@ -332,7 +332,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       return {
         ...base,
         choiceType: 'doneIssuingCommands',
-        events: getLegalDoneIssuingCommandsEvents(state) ?? [],
+        events: getLegalDoneIssuingCommandsEvents(state),
       };
     }
     case 'issueCommand': {
