@@ -7,12 +7,8 @@ import type {
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
-import { getBoardSpace } from '@queries/board';
-import { hasUnitInArray, unitTypeMatchesRestrictions } from '@queries/unit';
-import {
-  findPlayerUnitWithPosition,
-  hasEngagedUnits,
-} from '@queries/unitPresence';
+import { canBeOrdered } from '@queries/unit';
+import { findPlayerUnitWithPosition } from '@queries/unitPresence';
 
 /**
  * Whether the unit at `coordinate` may stand in a line (§4.3.5): this is the
@@ -56,21 +52,14 @@ export function canJoinLine(
   if (playerUnit === undefined) {
     return undefined;
   }
-  // A unit locked with an enemy cannot be ordered, so the line stops there.
-  if (hasEngagedUnits(getBoardSpace(board, coordinate).unitPresence)) {
-    return undefined;
-  }
   // Facing must match the line facing or its opposite.
   const playerFacing = playerUnit.placement.facing;
   if (playerFacing !== lineFacing && playerFacing !== oppositeLineFacing) {
     return undefined;
   }
-  // The order's trait and type filters apply to every member.
-  if (!unitTypeMatchesRestrictions(playerUnit.unit.unitType, restrictions)) {
-    return undefined;
-  }
-  // One order per unit per round: a commanded unit ends the line.
-  if (hasUnitInArray([...commandedUnits], playerUnit.unit)) {
+  // A line is drawn only through units an order may name, so it stops at an
+  // engaged unit, a commanded one, or one the restrictions leave out.
+  if (!canBeOrdered(playerUnit, board, restrictions, commandedUnits)) {
     return undefined;
   }
   return playerUnit;

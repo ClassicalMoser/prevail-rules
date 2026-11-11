@@ -6,11 +6,9 @@ import type {
 } from '@entities';
 import type { GameState } from '@game';
 import {
-  getBoardSpace,
+  canBeOrdered,
   getPlayerUnitsWithPlacementOnBoard,
   unitMatchesInspirationRange,
-  hasEngagedUnits,
-  hasUnitInArray,
   unitTypeMatchesRestrictions,
 } from '@queries';
 
@@ -49,32 +47,6 @@ export function unitMatchesRestrictions(
 }
 
 /**
- * Whether the unit is free of an engagement: a unit locked with an enemy
- * cannot be ordered (§4.3.4), alone or as a line's start.
- */
-function notEngaged(
-  unitWithPlacement: UnitWithPlacement,
-  gameState: GameState,
-): boolean {
-  const space = getBoardSpace(
-    gameState.boardState,
-    unitWithPlacement.placement.coordinate,
-  );
-  const free = !hasEngagedUnits(space.unitPresence);
-  return free;
-}
-
-function notAlreadyCommanded(
-  unitWithPlacement: UnitWithPlacement,
-  gameState: GameState,
-): boolean {
-  return !hasUnitInArray(
-    gameState.currentRoundState.commandedUnits,
-    unitWithPlacement.unit,
-  );
-}
-
-/**
  * Returns friendly on-board units eligible under full command restrictions
  * (inspiration + traits/types). Excludes already-commanded units, and engaged
  * ones (§4.3.4).
@@ -92,17 +64,25 @@ export function getLegalUnitsForIssueCommand(
   const onBoard = getPlayerUnitsWithPlacementOnBoard(gameState, player);
   const result: UnitWithPlacement[] = [];
 
+  const { commandedUnits } = gameState.currentRoundState;
+
   for (const unitWithPlacement of onBoard) {
-    if (!notAlreadyCommanded(unitWithPlacement, gameState)) {
-      continue;
-    }
-    // An engaged unit cannot be ordered, alone or in a line.
-    if (!notEngaged(unitWithPlacement, gameState)) {
-      continue;
-    }
+    // Free of an engagement, not yet commanded, and allowed by the order's
+    // traits and types (§4.3.4, §4.3.6).
     if (
-      unitMatchesRestrictions(
+      !canBeOrdered(
         unitWithPlacement,
+        gameState.boardState,
+        command.restrictions,
+        commandedUnits,
+      )
+    ) {
+      continue;
+    }
+    // Within inspiration range, where the order needs it.
+    if (
+      unitMatchesInspirationRange(
+        unitWithPlacement.unit,
         command.restrictions,
         gameState,
       )

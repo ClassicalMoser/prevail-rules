@@ -15,6 +15,7 @@ export { unitMatchesInspirationRange } from './unitMatchesInspirationRange';
 export { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 
 // Membership in a unit list, by value rather than reference.
+export { canBeOrdered } from './canBeOrdered';
 export { hasUnitInArray } from './hasUnitInArray';
 export { arrayWithoutUnit } from './arrayWithoutUnit';
 

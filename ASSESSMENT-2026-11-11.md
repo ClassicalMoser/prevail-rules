@@ -670,6 +670,14 @@ which event carries the paths and whether state or event holds them.
 
 ### 7.6 Who may be ordered is checked twice
 
+**Done (seventh pass, on the author's yes).** `canBeOrdered` in `@queries/unit`
+is the one statement of "free of an engagement, not yet commanded, matching the
+order's traits and types". `getLegalUnitsForIssueCommand` and `canJoinLine`
+both ask it; inspiration range and facing stay where they were. The three
+missing specs are written: a commanded end and an engaged end are refused, a
+commanded unit in the middle cuts the rank, and every line end is a unit the
+units order also offers.
+
 **Verdict: design risk; the two agree on every input.** Predicate by predicate
 (units order, line anchor and line member): friendly and on the board are given
 by both; **engaged, already commanded and trait/type restrictions are written

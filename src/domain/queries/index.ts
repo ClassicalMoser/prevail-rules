@@ -186,6 +186,7 @@ export {
   getRawUnitStat,
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
+  canBeOrdered,
   hasUnitInArray,
   hasUnitInSet,
   isDefenseStat,

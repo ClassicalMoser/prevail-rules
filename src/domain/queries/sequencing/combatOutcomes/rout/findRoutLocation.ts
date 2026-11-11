@@ -210,9 +210,6 @@ function routInCurrentContext(
  * player has no answer in a melee, where both sides strike at once and both
  * can be routing, so the player is part of the question.
  *
- * TODO(misleading): no `@expected` code calls this, directly or through a
- * wrapper; `getExpectedRetreatEvent` reads the retreat's rout field itself.
- * Settled by deciding whether the sequencer should locate routs here.
  * Every layer that has to locate a rout reads it here: the sequencer to ask for
  * the next event, legality to enumerate the discard, the procedure to work out
  * the penalty, and settleRout to know what a settled rout closes. Nothing

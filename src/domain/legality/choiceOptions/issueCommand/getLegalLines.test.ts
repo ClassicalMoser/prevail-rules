@@ -1,8 +1,10 @@
 import type { Coordinate } from '@entities';
 import type { LegalLine } from './getLegalLines';
 import {
+  createBoardWithEngagedUnits,
   createBoardWithFacingRow,
   createTestCommand,
+  createTestUnit,
   createUnitWithPlacement,
 } from '@testing';
 import {
@@ -11,7 +13,12 @@ import {
   updateBoardState,
 } from '@transforms';
 
-import { findLegalLine, getLegalLines } from './getLegalLines';
+import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
+import {
+  findLegalLine,
+  getLegalLines,
+  getLineRefusalReason,
+} from './getLegalLines';
 
 import { createEmptyGameState } from '@factories';
 
@@ -176,5 +183,107 @@ describe('getLegalLines function', () => {
     expect(
       findLegalLine(lines, [unitAt('E-1').unit, unitAt('E-9').unit]),
     ).toBeUndefined();
+  });
+
+  it('refuses a line whose end has already been commanded this round', () => {
+    // A rank of three, E-1 to E-3, under an order with no range limit.
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1', 'E-2', 'E-3'],
+    });
+    const base = updateBoardState(createEmptyGameState('standard'), board);
+    const commanded = {
+      ...base,
+      currentRoundState: {
+        ...base.currentRoundState,
+        commandedUnits: [unitAt('E-1').unit],
+      },
+    };
+
+    // One order per unit per round (§4.3.6), so it cannot be a line's end.
+    expect(
+      findLegalLine(getLegalLines(unlimitedLineCommand, 'black', commanded), [
+        unitAt('E-1').unit,
+        unitAt('E-3').unit,
+      ]),
+    ).toBeUndefined();
+    expect(
+      getLineRefusalReason(unlimitedLineCommand, 'black', commanded, [
+        unitAt('E-1').unit,
+        unitAt('E-3').unit,
+      ]),
+    ).toBe('A line end may not stand in a line under this order');
+  });
+
+  it('refuses a line whose end is locked in an engagement', () => {
+    const ours = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const theirs = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+    // Our unit has walked into the enemy: both stand in E-5 (§2.2.1).
+    const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
+    const state = updateBoardState(createEmptyGameState('standard'), board);
+
+    // An engaged unit cannot be ordered (§4.3.4), so it cannot end a line.
+    expect(
+      getLineRefusalReason(unlimitedLineCommand, 'black', state, [ours, ours]),
+    ).toBe('A line end may not stand in a line under this order');
+  });
+
+  it('cuts a rank short at a commanded unit in the middle', () => {
+    // A rank of five, E-1 to E-5, with the middle unit already commanded.
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1', 'E-2', 'E-3', 'E-4', 'E-5'],
+    });
+    const base = updateBoardState(createEmptyGameState('standard'), board);
+    const state = {
+      ...base,
+      currentRoundState: {
+        ...base.currentRoundState,
+        commandedUnits: [unitAt('E-3').unit],
+      },
+    };
+
+    const lines = getLegalLines(unlimitedLineCommand, 'black', state);
+
+    // A line cannot be drawn through a commanded unit (§4.3.6): two units on
+    // either side give three stretches each, and none crosses E-3.
+    expect(endSpaces(lines)).toHaveLength(6);
+    expect(
+      findLegalLine(lines, [unitAt('E-2').unit, unitAt('E-4').unit]),
+    ).toBeUndefined();
+    expect(
+      findLegalLine(lines, [unitAt('E-1').unit, unitAt('E-2').unit]),
+    ).toBeDefined();
+    expect(
+      findLegalLine(lines, [unitAt('E-4').unit, unitAt('E-5').unit]),
+    ).toBeDefined();
+  });
+
+  it('offers as line ends only units that a units order could also name', () => {
+    // A rank of four, with the second unit already commanded.
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1', 'E-2', 'E-3', 'E-4'],
+    });
+    const base = updateBoardState(createEmptyGameState('standard'), board);
+    const state = {
+      ...base,
+      currentRoundState: {
+        ...base.currentRoundState,
+        commandedUnits: [unitAt('E-2').unit],
+      },
+    };
+
+    const lines = getLegalLines(unlimitedLineCommand, 'black', state);
+    const mayBeOrdered = getLegalUnitsForIssueCommand(
+      unlimitedLineCommand,
+      'black',
+      state,
+    ).map((member) => member.unit);
+
+    // Both lists answer "who may an order name", so every end of every line
+    // is a unit the units order offers too.
+    for (const line of lines) {
+      for (const end of line.ends) {
+        expect(mayBeOrdered).toContainEqual(end.unit);
+      }
+    }
   });
 });
