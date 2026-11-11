@@ -1,23 +1,26 @@
 import type { GameMode } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateForVisibility } from '@game';
 import type { RoundSnapshotStorage } from '@application/ports';
-import { parseStoredGameForMode } from '../utils/parseStoredGame';
+import { parseLegalGameStateForMode } from '../utils/parseLegalGame';
 
 /**
- * Loads via `RoundSnapshotStorage` (wide types), then `parseStoredGameForMode`.
+ * Loads a round snapshot through `RoundSnapshotStorage` and reads it as the
+ * authoritative game state of a game in `gameMode`, so everything downstream
+ * can trust it.
  *
  * @param gameId - The ID of the game.
  * @param roundNumber - The number of the round.
  * @param gameMode - The mode of the game.
  * @param roundSnapshotStorage - The storage for round snapshots.
- * @returns The round snapshot.
+ * @returns The round snapshot, or `undefined` when none is stored.
+ * @throws Error when storage fails, or when the stored snapshot is not a legal game state of the mode
  */
 export async function getRoundSnapshot(
   gameId: string,
   roundNumber: number,
   gameMode: GameMode,
   roundSnapshotStorage: RoundSnapshotStorage,
-): Promise<GameState | undefined> {
+): Promise<GameStateForVisibility<'authoritative'> | undefined> {
   const result = await roundSnapshotStorage.getRoundSnapshot(
     gameId,
     roundNumber,
@@ -28,12 +31,9 @@ export async function getRoundSnapshot(
   if (result.data === undefined) {
     return undefined;
   }
-  // TODO(wrong): a round snapshot is a game state, but it is read with the
-  // game schema, so every stored snapshot is refused. Nothing calls this yet.
-  // Settled by reading it as an authoritative game state of the mode's size.
-  const game = parseStoredGameForMode(gameMode.name, result.data);
-  if (!game.result) {
-    throw new Error(game.errorReason);
+  const snapshot = parseLegalGameStateForMode(gameMode.name, result.data);
+  if (!snapshot.result) {
+    throw new Error(snapshot.errorReason);
   }
-  return game.data.gameState;
+  return snapshot.data;
 }

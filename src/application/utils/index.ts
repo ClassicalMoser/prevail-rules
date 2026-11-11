@@ -1,2 +1,5 @@
 export { parseStoredEventStream } from './parseStoredEventStream';
-export { parseStoredGameForMode } from './parseStoredGame';
+export {
+  parseLegalGameForMode,
+  parseLegalGameStateForMode,
+} from './parseLegalGame';

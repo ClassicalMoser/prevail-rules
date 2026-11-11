@@ -3,7 +3,7 @@ export { gameSchema } from './game';
 export type { Game } from './game';
 
 // Runtime state
-export { gameStateSchema } from './gameState';
+export { authoritativeGameStateSchema, gameStateSchema } from './gameState';
 export type {
   CardStateForVisibility,
   GameState,

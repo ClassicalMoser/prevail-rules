@@ -1,5 +1,5 @@
 export { eachCardPresentOnce, eachUnitPresentOnce } from './gameState';
-export { legalGameSchema } from './game/legalGameSchemas';
+export { legalGameSchema, legalGameStateSchema } from './game/legalGameSchemas';
 export {
   getLegalPlayerChoiceOptions,
   isValidChooseMeleeResolutionEvent,

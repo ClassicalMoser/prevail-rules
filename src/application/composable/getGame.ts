@@ -1,11 +1,11 @@
 import type { Game } from '@game';
 import type { GameStorage, PortResponse } from '@application/ports';
 import type { GameModeName } from '@entities';
-import { parseStoredGameForMode } from '../utils/parseStoredGame';
+import { parseLegalGameForMode } from '../utils/parseLegalGame';
 
 /**
  * Loads a game through `GameStorage` and reads it with
- * {@link parseStoredGameForMode}, so everything downstream can trust it: a
+ * {@link parseLegalGameForMode}, so everything downstream can trust it: a
  * legal game of the expected mode, authoritative by type.
  *
  * Parsing once per load costs about a millisecond for a busy epic game; it is
@@ -28,6 +28,6 @@ export async function getGame(
   if (!stored.result) {
     return stored;
   }
-  const game = parseStoredGameForMode(gameMode, stored.data);
+  const game = parseLegalGameForMode(gameMode, stored.data);
   return game;
 }

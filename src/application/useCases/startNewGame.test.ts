@@ -1,10 +1,24 @@
-import type { EnginePorts } from '@application/ports';
+import type { EnginePorts, NewGame } from '@application/ports';
+import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
 import { defaultRandom } from '@utils';
 
+import { parseLegalGameForMode } from '../utils/parseLegalGame';
 import { startNewGame } from './startNewGame';
 import { gameModes } from '@entities';
 
-const placeholderGameId = '00000000-0000-0000-0000-000000000000';
+const gameId = '11111111-1111-4111-8111-111111111111';
+
+/**
+ * A legal mini game: its armies keep mini's army rules, as a game must to be
+ * started at all.
+ */
+const miniGame: NewGame = {
+  blackArmy: blackMiniStarterArmy,
+  blackPlayer: '22222222-2222-4222-8222-222222222222',
+  id: gameId,
+  whiteArmy: whiteMiniStarterArmy,
+  whitePlayer: '33333333-3333-4333-8333-333333333333',
+};
 
 function createEnginePorts(overrides: {
   gameStateSubscribers?: EnginePorts['gameStateSubscribers'];
@@ -40,7 +54,7 @@ describe('startNewGame function', () => {
     const ports = createEnginePorts({
       gameStateSubscribers: [
         {
-          gameId: placeholderGameId,
+          gameId,
           gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange,
@@ -48,13 +62,13 @@ describe('startNewGame function', () => {
       ],
     });
 
-    const outcome = await startNewGame('mini', ports);
+    const outcome = await startNewGame('mini', miniGame, ports);
 
     expect(outcome).toStrictEqual({ data: undefined, result: true });
     expect(onGameStateChange).toHaveBeenCalledTimes(1);
     const [change] = onGameStateChange.mock.calls[0] ?? [];
     expect(change).toMatchObject({
-      gameId: placeholderGameId,
+      gameId,
       gameMode: gameModes[1].name,
     });
     expect(change?.gameState).toBeDefined();
@@ -68,19 +82,19 @@ describe('startNewGame function', () => {
     const ports = createEnginePorts({
       gameStateSubscribers: [
         {
-          gameId: placeholderGameId,
+          gameId,
           gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange: matching,
         },
         {
-          gameId: '11111111-1111-4111-8111-111111111111',
+          gameId: '44444444-4444-4444-8444-444444444444',
           gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange: wrongId,
         },
         {
-          gameId: placeholderGameId,
+          gameId,
           gameMode: gameModes[2].name,
           onError: vi.fn(),
           onGameStateChange: wrongMode,
@@ -88,7 +102,7 @@ describe('startNewGame function', () => {
       ],
     });
 
-    const outcome = await startNewGame('mini', ports);
+    const outcome = await startNewGame('mini', miniGame, ports);
 
     expect(outcome).toStrictEqual({ data: undefined, result: true });
     expect(matching).toHaveBeenCalledTimes(1);
@@ -106,7 +120,7 @@ describe('startNewGame function', () => {
       result: false,
     });
 
-    const outcome = await startNewGame('mini', ports);
+    const outcome = await startNewGame('mini', miniGame, ports);
 
     expect(outcome).toStrictEqual({
       errorReason: 'Game already exists',
@@ -124,7 +138,7 @@ describe('startNewGame function', () => {
     const ports = createEnginePorts({
       gameStateSubscribers: [
         {
-          gameId: placeholderGameId,
+          gameId,
           gameMode: gameModes[1].name,
           onError,
           onGameStateChange,
@@ -132,12 +146,65 @@ describe('startNewGame function', () => {
       ],
     });
 
-    const outcome = await startNewGame('mini', ports);
+    const outcome = await startNewGame('mini', miniGame, ports);
 
     expect(outcome).toStrictEqual({
       errorReason: 'subscriber failed',
       result: false,
     });
     expect(onError).toHaveBeenCalledWith(boom);
+  });
+
+  it('saves the game with the players and armies it was given', async () => {
+    expect.hasAssertions();
+    const ports = createEnginePorts({});
+
+    await startNewGame('mini', miniGame, ports);
+
+    expect(ports.gameStorage.saveNewGame).toHaveBeenCalledWith(
+      expect.objectContaining({
+        blackArmy: blackMiniStarterArmy,
+        blackPlayer: miniGame.blackPlayer,
+        gameMode: 'mini',
+        id: gameId,
+        whiteArmy: whiteMiniStarterArmy,
+        whitePlayer: miniGame.whitePlayer,
+      }),
+    );
+  });
+
+  it('refuses a game whose army breaks the mode rules, and saves nothing', async () => {
+    expect.hasAssertions();
+    const ports = createEnginePorts({});
+    // An army with nothing in it cannot meet mini's morale or its cards per
+    // initiative.
+    const empty = { ...whiteMiniStarterArmy, commandCards: [], units: [] };
+
+    const outcome = await startNewGame(
+      'mini',
+      { ...miniGame, whiteArmy: empty },
+      ports,
+    );
+
+    expect(outcome).toStrictEqual({
+      errorReason: expect.stringContaining('total morale value of 10'),
+      result: false,
+    });
+    expect(ports.gameStorage.saveNewGame).not.toHaveBeenCalled();
+  });
+
+  it('starts a game that can be loaded again as a legal game', async () => {
+    expect.hasAssertions();
+    const ports = createEnginePorts({});
+
+    await startNewGame('mini', miniGame, ports);
+    const [saved] =
+      vi.mocked(ports.gameStorage.saveNewGame).mock.calls[0] ?? [];
+
+    // What was saved is what loading accepts: creation and loading agree on
+    // what a legal game is.
+    expect(parseLegalGameForMode('mini', saved)).toMatchObject({
+      result: true,
+    });
   });
 });

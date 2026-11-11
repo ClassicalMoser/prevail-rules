@@ -4,11 +4,11 @@ export type { EnginePorts } from './enginePorts';
  *
  * Types here stay **relatively wide** (`Game`, `GameState`, …): adapters
  * only see storage and transport shapes. **Correlated** variants (`GameOfType<T>`, `GameState<BoardForGameMode<T>>`)
- * are established **after** load (`parseStoredGameForMode`, `getGame`, `getGameState`), then passed into
+ * are established **after** load (`parseLegalGameForMode`, `getGame`, `getGameState`), then passed into
  * `process/*` where stricter typing pays off.
  */
 export type { EventStreamStorage } from './eventStreamStorage';
-export type { GameRunner } from './gameRunner';
+export type { GameRunner, NewGame } from './gameRunner';
 export type { GameStateChange } from './gameStateChange';
 export type { GameStateSubscriber } from './gameStateSubscriber';
 export type { GameStorage } from './gameStorage';

@@ -9,6 +9,7 @@ export {
 } from './army';
 export {
   legalGameSchema,
+  legalGameStateSchema,
   refineGameArmyComposition,
   refineGameModeBoardSize,
   refineGameRules,

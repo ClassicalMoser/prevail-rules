@@ -1,10 +1,19 @@
 import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
-import type { GameState } from '@game';
+import type { Game, GameState } from '@game';
 import type { PortResponse } from './portResponse';
 
+/** What a game is between: its id, the two players, and the army each brings. */
+export type NewGame = Pick<
+  Game,
+  'id' | 'whitePlayer' | 'blackPlayer' | 'whiteArmy' | 'blackArmy'
+>;
+
 export interface GameRunner {
-  startNewGame: (gameMode: GameModeName) => Promise<PortResponse<void>>;
+  startNewGame: (
+    gameMode: GameModeName,
+    newGame: NewGame,
+  ) => Promise<PortResponse<void>>;
   /** Applies the choice, then runs chained game effects until the next player-facing event. */
   handlePlayerChoiceSubmission: (
     gameId: string,

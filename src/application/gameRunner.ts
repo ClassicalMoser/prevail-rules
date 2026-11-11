@@ -2,7 +2,7 @@ import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
 import type { EnginePorts, PortResponse } from './ports';
-import type { GameRunner } from './ports/gameRunner';
+import type { GameRunner, NewGame } from './ports/gameRunner';
 import { advanceUntilPlayerChoice as advanceUntilPlayerChoiceFunction } from './useCases/advanceUntilPlayerChoice';
 import { handlePlayerChoiceSubmission as handlePlayerChoiceSubmissionFunction } from './useCases/handlePlayerChoiceSubmission';
 import { requestGameStateSnapshot as requestGameStateSnapshotFunction } from './useCases/requestGameStateSnapshot';
@@ -14,8 +14,11 @@ import { startNewGame as startNewGameFunction } from './useCases/startNewGame';
  * @returns The game runner instance, structured according to the GameRunner interface.
  */
 export function createGameRunner(ports: EnginePorts): GameRunner {
-  const startNewGame = (gameMode: GameModeName): Promise<PortResponse<void>> =>
-    startNewGameFunction(gameMode, ports);
+  const startNewGame = (
+    gameMode: GameModeName,
+    newGame: NewGame,
+  ): Promise<PortResponse<void>> =>
+    startNewGameFunction(gameMode, newGame, ports);
 
   const handlePlayerChoiceSubmission = (
     gameId: string,

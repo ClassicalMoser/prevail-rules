@@ -1,7 +1,7 @@
 import type { Army, Board, GameModeName } from '@entities';
-import type { Game } from '@game';
+import type { Game, GameStateForVisibility } from '@game';
 
-import { gameSchema } from '@game';
+import { authoritativeGameStateSchema, gameSchema } from '@game';
 import type { z } from 'zod';
 import { refineBoardLayout } from '../board/refineBoardLayout';
 import { refineGameArmyComposition } from './refineGameArmyComposition';
@@ -38,3 +38,24 @@ export function refineGameRules(
 /** {@link Game} schema including the game rules. */
 export const legalGameSchema: z.ZodType<Game> =
   gameSchema.superRefine(refineGameRules);
+
+/**
+ * The schema for an authoritative game state of a game played in `gameMode`,
+ * including the rules that need the mode: a board laid out for its size, and
+ * the size the mode is played on. It is what a round snapshot must satisfy.
+ *
+ * @param gameMode - The mode the state's game is played in
+ * @returns A schema that accepts only a legal state for that mode
+ */
+export function legalGameStateSchema(
+  gameMode: GameModeName,
+): z.ZodType<GameStateForVisibility<'authoritative'>> {
+  const schema = authoritativeGameStateSchema.superRefine((state, ctx) => {
+    refineGameModeBoardSize({ gameMode, gameState: state }, ctx, [
+      'boardState',
+      'boardType',
+    ]);
+    refineBoardLayout(state.boardState, ctx, ['boardState']);
+  });
+  return schema;
+}
