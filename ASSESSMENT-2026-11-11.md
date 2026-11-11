@@ -141,59 +141,21 @@ Decision points left for the author, found on the way:
 
 ## 1. Defects
 
-Each breaks a rule, a stated engine contract, or the replay the engine exists
-to give. Each wants a failing spec first and its own fix commit, unless the
-author decides otherwise.
-
-| #   | Defect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Where                                                                                                                                                                                  | Status                  |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| E1  | **Three Phase 3 applies keep the unit the event sent instead of the one on the board.** `applyChooseMovingUnitEvent` stores `event.unit` as the mover, `applyChooseShooterEvent` stores `event.unit.unit` as the shooter, and `applyPerformRangedAttackEvent` stores `event.targetUnit.unit` as the target. The validators match by identity and placement, which is enough, so a real id carrying forged stats passes. `applyMoveUnitEvent` then writes the stored copy back onto the board, and `generateResolveRangedAttackEvent` reads the shooter's and target's stats from the stored copies. No other transform or procedure takes a unit's value from an event. _Design (author, 2026-11-11):_ unlike a card, which the event must carry whole so a hidden hand can fold it, a unit on an event is identity only. The transform moves the unit already on the board with a pure transform; it never places what the event represents. There is no unit counterpart of `moveCommanderOnBoard`, so the lift-and-set-down is written by hand in six production transforms: `applyMoveUnitEvent`, `applyCompleteUnitMovementEvent`, `applyResolveRetreatEvent`, `applyResolveReverseEvent`, `applyResolveFlankEngagementEvent` and `applyStartEngagementEvent` (read, not each compared). _Design (author, 2026-11-11):_ one pure transform removes the unit and adds it at its new placement, and it is the only one those transforms call. | `applyChooseMovingUnitEvent.ts:41`, `applyChooseShooterEvent.ts:40`, `applyPerformRangedAttackEvent.ts:37`; `applyMoveUnitEvent.ts:56-61`; `generateResolveRangedAttackEvent.ts:48-68` | Verified                |
-| E2  | **A seat's fold leaves the server's during the opponent's orders.** `getLegalMoveUnits` and `getLegalRangedAttackers` answer `null` when the viewer cannot see the player's hand, though they read only `inPlay`, which is face up (§4.1.2). `applyCompleteRangedAttackCommandEvent` reads that `null` as "nobody else can shoot", clears the remaining shooters and advances the step. The opponent's seat and every spectator then sit on a different step from the server, and `findExpectedEvent` on a seen state expects a different event. Breaks ENGINES §1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `getLegalMoveUnits.ts:67-70`, `getLegalRangedAttackers.ts:74-82`, `applyCompleteRangedAttackCommandEvent.ts`, `getExpectedIssueCommandsPhaseEvent.ts`                                  | Verified; two reviewers |
-| E3  | **Each round's log opens with the last event of the round before.** The cleanup apply resets `events` to `[]`; `applyEvent` then appends `completeCleanupPhase` to the new list. The application files the same event under the old round number, so the stored stream and the in-state log disagree. ENGINES §2 makes the position in `events[]` the cursor for replay and undo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `applyEvent.ts:59-66`, `applyCompleteCleanupPhaseEvent.ts:39`, `application/process/processEvent.ts:18-22`                                                                             | Verified                |
-| E4  | **A commitment's stats are compared in order and never applied.** Each `commitTo*` event carries `modifierTypes`; the validators require them in the card's order, so the same stats listed the other way are refused. No transform reads the field: the stored commitment keeps only the card, and readers give +1 to every stat the card names. §8.2's "a second stat is simply ignored" holds only because each reader asks for its own stats.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | the four `isValidCommitTo*Event` (`sameModifierTypes`); `getCommitmentOffers.ts`; `modifiersFromCompletedCommitment.ts`                                                                | Verified; two reviewers |
-| E5  | **The melee order enumerator offers mid-melee and throws on empty.** It does not check that no melee is under way, so mid-melee it offers the remaining engagements; only the expected-choice check hides that. And it throws on an empty list, where ENGINES says an enumerator that finds nothing answers with an empty offer.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `getLegalChooseMeleeResolutionEvents.ts`                                                                                                                                               | Verified                |
-| E6  | **The application saves an event before applying it.** If the apply throws, the stream holds an event the stored state never reflects.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `application/process/processEvent.ts:18-31`                                                                                                                                            | Verified                |
-| E7  | **Asking a finished game what is owed throws.** `advanceEffects` calls `getExpectedEvent` before its loop and checks `winner` by hand inside it; `validateExpectedChoice` calls `getExpectedEvent` too. ENGINES §4 gives a caller asking whether anything is owed `findExpectedEvent`. Whether a finished game is a fault at these boundaries is the author's call.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `application/process/advanceEffects.ts:26,42`, `validation/playerChoice/validateExpectedChoice.ts:41`                                                                                  | Traced; two reviewers   |
+E1 to E7 are closed; the run log above names how. One thing from E5 is left
+for the author: `getLegalChooseMeleeResolutionEvents` still throws on an
+empty list of engagements, where the sweep read ENGINES as asking for an
+empty offer and the spec's own header calls that a caller's mistake.
 
 ---
 
 ## 2. Rule questions for the author
 
-Each is a design decision. R1, R2, R3, R5 and R6 are decided in the table
-above, and R4 has a direction. The text below is kept as it was written.
-
-**R1. Does a front-engaged defender's commitment count toward its retreat?**
-_Verified; three reviewers._ The defender may commit for Speed or Flexibility
-(§6.3.2 step 1, §8.4). The engine adds the card to the Speed comparison only:
-`getLegalRetreats` takes no commitment, so both "is there a retreat to make?"
-and the retreat paths ignore it, and a Flexibility card committed here is read
-nowhere. The plumbing exists (`exploreUnitMoves` and `createMoveContext` take
-`commitmentModifiers`). §6.3.2 ("the start of the retreat it is weighing") and
-§5.1.1 ("any card committed for it") read one way; §9.1.3's list of what a
-retreat's stats include reads the other. B6 covers shots and melee, not this.
-
-**R2. Where does the engaging unit stand while the defender's retreat is worked
-out?** _Plausible._ The engager waits on its start space so its Speed is
-sampled there (§5.1.4). The defender's retreat is computed while it is still
-there. An engager that began in the defender's back spaces and closed from the
-front still blocks, or cuts off (§9.1.5), a retreat from a space it has left,
-where §6.1.1 puts both units in the engaged space. Needs a probe.
-
-**R3. Choices that hold two decisions, or one decision split in two.** Against
-the practice of one player-choice event per rule decision, in rule order:
-
-- `performRangedAttack` carries the target and the supporters, steps 3 and 4
-  of §4.3.11. The shooter and its commitment are already their own choices.
-- `moveUnit` carries the path and the commander's ride-along (§4.3.10).
-- `commitToMovement` serves the mover's moment (§4.3.10) and the front-engaged
-  defender's (§6.3.2); the transform probes the state to tell them apart. §8.4
-  lists them as separate moments.
-- The reverse case: "issue another order or stop" (§4.3.3) is one decision
-  split over `issueCommand` and `doneIssuingCommands`. `ExpectedEventInfo` can
-  name only one, so `validateExpectedChoice` accepts the other by hand and
-  `getLegalPlayerChoiceOptions` writes `canDoneIssuing: true` as a constant.
-
-Some of these may be one compound decision, as a move's path is.
+R1, R2, R3, R5 and R6 were decided on 2026-11-11 and are in the table above.
+R6 was applied to `@queries` only. The `getLegal*` enumerators answer `null`
+or an empty offer by ENGINES, and `getExpectedAttackApplyStageEvent`,
+`getMoveEnding` and `getLegalMoveDeltas` answer `undefined`; whether those
+follow the find/get naming is for the author. R3's other three shapes
+(`commitToMovement`, `performRangedAttack`, `moveUnit`) stay as they are.
 
 **R4. Rules that live only in validation.** The support check's one place per
 unit, pool capacity and "use what you have" (§10.4.3–10.4.5) are in
@@ -206,19 +168,9 @@ are judged in validation. The legality README cites an `isValidLine` that does
 not exist. Pool identity is defined three ways (`unitSupportKindLabel` in
 legality, `unitSupportLabel` and `sameUnitSupport` in validation).
 
-**R5. Should the rout selections carry the §7.5.6 order?** `findRoutAwaitingPenalty`
-and `findRoutOwingDiscard` ask the first player first. §7.5.6 and §9.3.3 have
-the second player's unit rout and pay first, and the retreat selections do ask
-in that order. It is harmless today only because the sequencer finishes one
-rout before opening the next. The combatOutcomes README (line 48) and
-`findRoutOwingDiscard`'s JSDoc describe the order backwards whichever way
-this is settled.
-
-**R6. How far does the find/get contract reach?** The combatOutcomes README
-says it crosses all four reader kinds, and `findExpectedEvent` follows it.
-`queries/README.md` says failure modes are per function. If it is repo-wide,
-`getPlayerUnitWithPosition` and `getCommanderSpace` return `undefined` under a
-`get` name, and so do the board steps and the `getWinnerFrom*` queries.
+Direction (author, 2026-11-11): legality predicates that validation calls, as
+`canReverseUnit` is. Predicate versus enumerator needs more design work; the
+author has been least hands-on here. Nothing is built.
 
 ---
 
@@ -229,12 +181,31 @@ replaced, in a scout pass; most of these wait on the author choosing a shape.
 
 ### 3.1 Missing readers
 
-| Item                                                      | What is hand-written instead                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Found by        |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| The acting player's remaining units and orders, Phase 3   | About ten modules pick `remaining{Units,Commands}{First,Second}Player`, some by step literal and some by `player === state.currentInitiative` rather than `hasInitiative`. `getLegalMoveUnits`, `getLegalRangedAttackers`, `getLegalRangedAttackOptions`, `getLegalIssueCommands`, `getLegalDoneIssuingCommandsEvents`, the five choice applies, both `applyComplete*CommandEvent`s. `getExpectedIssueCommandsPhaseEvent`'s mirrored branches come from the same gap. Cleanup has `getRallyingPlayer`; Phase 3 has nothing. `updateRemainingPlayerCommands` exists for orders; units have no counterpart. | Three reviewers |
-| The command resolution under way, found without insisting | Six enumerators walk `none` → `issueCommands` → CRS `pending` → type by hand, because `@queries` offers only scoped getters that throw: `getLegalCommitToMovementEvents`, `getLegalChooseWhetherToRetreatEvents`, `getLegalCommitToRangedAttackEvents`, `getLegalCommitToRangedDefenseEvents`, `getLegalShooterTargets`, `getLegalCommitToMeleeEvents`. Each also works out who is asked: the melee commit order is written there and in `getExpectedMeleeResolutionEvent`; the front-engagement gates there and in `getExpectedEngagementEvent`.                                                         | Traced          |
-| Whose rally it is                                         | Five derivations covering different steps: `getRallyingPlayer`, `getCurrentRallyResolutionState`, `getRallyResolutionState` (no caller), `getIsFirstPlayerForResolveRallyStep` (no caller), `getRallyStepRoutState` (no caller). On `discardPlayedCards` and `complete` one throws and another reads the second player's slot.                                                                                                                                                                                                                                                                            | Traced          |
-| The retreat awaiting a choice                             | `getLegalChooseRetreatOptionEvents` walks `findRetreatState` black then white with its own condition, where its siblings walk second player then first.                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Traced          |
+Added in the first pass: `getRemainingUnitsForPlayer` and
+`getRemainingCommandsForPlayer` (nine read sites moved onto them),
+`find*` twins for the order under way, the shot, the melee and the front
+engagement (six enumerators moved onto them), `findRetreatAwaitingChoice`,
+and `findPlayerOwingMeleeCommitment`, which `@expected` and `@legality` both
+ask.
+
+Left, each for a stated reason:
+
+- **Phase 3 writes.** The first or second player's slot is still chosen by
+  hand when it is written (the choice applies, both `applyComplete*CommandEvent`s,
+  `applyDoneIssuingCommandsEvent`). It waits on the writer question.
+- **Whose rally it is.** Every derivation of the rallying _player_ already
+  asks `getRallyingPlayer`. What remains maps a rally step to a _slot_
+  (`getCurrentRallyResolutionState`, `getRallyResolutionStateForCurrentStep`,
+  `updateRallyResolutionStateForCurrentStep`, the router copy in
+  `findRoutLocation`), and three readers have no caller
+  (`getRallyResolutionState`, `getIsFirstPlayerForResolveRallyStep`,
+  `getRallyStepRoutState`). They disagree on `discardPlayedCards` and
+  `complete`: `getRallyingPlayer` throws there, `getRallyStepRoutState` reads
+  the second player's slot. Which is the rule is the author's.
+- **The front-engagement gates** are written in `getLegalChooseWhetherToRetreatEvents`
+  and again in `getExpectedEngagementEvent`. Unlike the melee commit order, the
+  gates are several tests in sequence, and the reader model does not say what
+  one selection for them should answer.
 
 ### 3.2 Combat outcomes
 
