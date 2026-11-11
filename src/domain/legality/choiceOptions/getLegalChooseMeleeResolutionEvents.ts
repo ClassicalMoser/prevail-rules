@@ -16,10 +16,12 @@ export function getLegalChooseMeleeResolutionEvents(
   }
 
   // The order of the melees is chosen between them: while one is being
-  // fought, the next is not yet in question (§4.4.2), so nothing is offered.
+  // fought, the next is not yet in question (§4.4.2). Nothing asks then, so
+  // being asked is the caller's mistake.
   if (phaseState.currentMeleeResolutionState !== 'pending') {
-    const underway: ChooseMeleeResolutionEvent[] = [];
-    return underway;
+    throw new Error(
+      'A melee is under way; the next is chosen once it is resolved',
+    );
   }
 
   // Get the active player
