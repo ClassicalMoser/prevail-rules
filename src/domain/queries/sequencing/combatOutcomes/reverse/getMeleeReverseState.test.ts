@@ -1,7 +1,7 @@
 import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithReverse,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
@@ -55,7 +55,8 @@ describe('getMeleeReverseState function', () => {
     const defender = createTestUnit('black', { attack: 2 });
     // The attack reached nothing, so every outcome on it is bypassed.
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyState(defender),
+      firstPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(defender),
     });
     const state = resolveMelee(melee);
 

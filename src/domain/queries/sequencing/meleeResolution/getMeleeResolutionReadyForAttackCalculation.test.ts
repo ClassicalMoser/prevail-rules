@@ -1,6 +1,6 @@
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
@@ -54,7 +54,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
   it('throws when the white attack apply already exists', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
@@ -72,7 +72,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
   it('throws when the black attack apply already exists', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),

@@ -1,6 +1,6 @@
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -15,7 +15,7 @@ describe('getAttackApplyStateAt function', () => {
   it('reads the ranged attack apply when the context names one', () => {
     const empty = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
-    const apply = createAttackApplyState(defender);
+    const apply = createAttackApplyStateWithNothingDue(defender);
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: apply,
       defendingUnit: defender,
@@ -37,7 +37,7 @@ describe('getAttackApplyStateAt function', () => {
   it('reads the named side of the melee when the context is a melee', () => {
     const empty = createEmptyGameState('standard');
     const blackDefender = createTestUnit('black', { attack: 2 });
-    const blackApply = createAttackApplyState(blackDefender);
+    const blackApply = createAttackApplyStateWithNothingDue(blackDefender);
     // A melee holds an apply per side, so the location carries the side.
     const melee = createMeleeResolutionState(empty, {
       firstPlayerAttackApplyState: blackApply,

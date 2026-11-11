@@ -1,7 +1,7 @@
 import { getRoutStateFromAttackApply } from '@queries';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
   createFrontEngagementState,
@@ -297,7 +297,7 @@ describe('updateRoutState function', () => {
   it('given when no rout state in attack apply, throws', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
-    const attackApply = createAttackApplyState(unit);
+    const attackApply = createAttackApplyStateWithNothingDue(unit);
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state, {
         attackApplyState: attackApply,
@@ -344,7 +344,8 @@ describe('updateRoutState function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
       firstPlayerAttackApplyState: createAttackApplyStateWithRout(blackUnit),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
+      secondPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -363,7 +364,8 @@ describe('updateRoutState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      firstPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(blackUnit),
       secondPlayerAttackApplyState: createAttackApplyStateWithRout(whiteUnit),
     });
     const stateInPhase = updatePhaseState(

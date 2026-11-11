@@ -2,7 +2,7 @@ import type { UnitWithPlacement } from '@entities';
 import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState, createUnitPlacement } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
@@ -69,7 +69,7 @@ describe('getRangedAttackRetreatState function', () => {
     const empty = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyState(defender, {
+      attackApplyState: createAttackApplyStateWithNothingDue(defender, {
         retreatState: 'pending',
       }),
       defendingUnit: defender,
@@ -87,7 +87,7 @@ describe('getRangedAttackRetreatState function', () => {
     // no retreat to route to, so the route is the thing that fails.
     const defender = createTestUnit('white', { attack: 2 });
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyState(defender),
+      attackApplyState: createAttackApplyStateWithNothingDue(defender),
       defendingUnit: defender,
     });
     const state = issueCommands(resolution);

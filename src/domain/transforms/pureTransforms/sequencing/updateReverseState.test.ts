@@ -1,7 +1,7 @@
 import { getReverseStateFromAttackApply } from '@queries';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithReverse,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
@@ -181,7 +181,7 @@ describe('updateReverseState function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const attackApply = createAttackApplyState(unit);
+    const attackApply = createAttackApplyStateWithNothingDue(unit);
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state, {
         attackApplyState: attackApply,
@@ -232,7 +232,8 @@ describe('updateReverseState function', () => {
       firstPlayerAttackApplyState: createAttackApplyStateWithReverse(
         blackPlacement.unit,
       ),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
+      secondPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -253,7 +254,8 @@ describe('updateReverseState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      firstPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(blackUnit),
       secondPlayerAttackApplyState: createAttackApplyStateWithReverse(
         whitePlacement.unit,
       ),

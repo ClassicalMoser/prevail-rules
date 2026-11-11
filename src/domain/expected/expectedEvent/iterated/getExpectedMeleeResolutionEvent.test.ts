@@ -1,5 +1,5 @@
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   placed,
   createMeleeResolutionState,
@@ -88,10 +88,10 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given delegate to the first player attack apply state when it is incomplete', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white'),
       ),
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
         {
           completed: true,
@@ -115,13 +115,13 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given delegate to the second player attack apply state when the first one is complete', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white'),
         {
           completed: true,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
       ),
     });
@@ -142,13 +142,13 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given both attack apply states are complete, returns completeMeleeResolution', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white'),
         {
           completed: true,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
         {
           completed: true,

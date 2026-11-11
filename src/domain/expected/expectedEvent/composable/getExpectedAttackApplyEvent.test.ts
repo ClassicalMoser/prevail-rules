@@ -1,7 +1,7 @@
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 import { createAttackApplyState as createPendingAttackApply } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
@@ -98,7 +98,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       const unit = createTestUnit('white', { attack: 2 });
       // §7.5.3: the rout is open and the retreat and reverse the same blow
       // reached are bypassed, so the rout is the only thing left to resolve.
-      const attackApplyState = createAttackApplyState(unit, {
+      const attackApplyState = createAttackApplyStateWithNothingDue(unit, {
         attackResult: {
           unitRetreated: true,
           unitReversed: true,
@@ -276,7 +276,7 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('error cases', () => {
     it('given when no results are reported, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const attackApplyState = createAttackApplyState(unit);
+      const attackApplyState = createAttackApplyStateWithNothingDue(unit);
 
       expectGameEffect(
         getExpectedAttackApplyEvent(attackApplyState),
@@ -286,7 +286,7 @@ describe('getExpectedAttackApplyEvent function', () => {
 
     it('given when no results and attack apply is already complete, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const attackApplyState = createAttackApplyState(unit, {
+      const attackApplyState = createAttackApplyStateWithNothingDue(unit, {
         completed: true,
       });
 

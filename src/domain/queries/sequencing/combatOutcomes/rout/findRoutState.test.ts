@@ -2,7 +2,7 @@ import type { UnitWithPlacement } from '@entities';
 import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState, createUnitPlacement } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
@@ -164,7 +164,7 @@ describe('findRoutState function', () => {
     const defender = createTestUnit('white', { attack: 2 });
     // The attack reached no threshold, so its rout slot is bypassed.
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyState(defender),
+      attackApplyState: createAttackApplyStateWithNothingDue(defender),
       defendingUnit: defender,
     });
 

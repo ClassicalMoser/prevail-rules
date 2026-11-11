@@ -1,6 +1,6 @@
 import type { GameState } from '@game';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
@@ -126,7 +126,7 @@ describe('generateResolveRangedAttackEvent function', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: createAttackApplyState(defendingUnit),
+      attackApplyState: createAttackApplyStateWithNothingDue(defendingUnit),
       defendingUnit,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {

@@ -1,5 +1,5 @@
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createRoutState,
   createTestUnit,
 } from '@testing';
@@ -10,7 +10,7 @@ describe('getRoutStateFromAttackApply function', () => {
   it('returns the rout on the attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const rout = createRoutState('black', unit, { numberToDiscard: 1 });
-    const apply = createAttackApplyState(unit, {
+    const apply = createAttackApplyStateWithNothingDue(unit, {
       attackResult: {
         unitRetreated: false,
         unitReversed: false,
@@ -25,7 +25,7 @@ describe('getRoutStateFromAttackApply function', () => {
   it('answers bypassed when the attack applied no rout', () => {
     // The threshold went unmet, or a rout superseded this step. Either way the
     // rules apply no rout here, and that is an answer rather than a fault.
-    const apply = createAttackApplyState(
+    const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('black', { attack: 2 }),
     );
 
@@ -35,7 +35,7 @@ describe('getRoutStateFromAttackApply function', () => {
   it('throws when the rout is due and has not been opened', () => {
     // A pending slot means the sequencer owes an opener, so a caller asking
     // for the substep now is out of order.
-    const apply = createAttackApplyState(
+    const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('black', { attack: 2 }),
       { routState: 'pending' },
     );

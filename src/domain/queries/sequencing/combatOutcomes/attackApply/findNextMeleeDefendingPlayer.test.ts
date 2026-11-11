@@ -1,6 +1,6 @@
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createMeleeResolutionState,
   createTestUnit,
 } from '@testing';
@@ -15,11 +15,11 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white', { attack: 2 }),
         { completed: false },
       ),
@@ -34,11 +34,11 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black', { attack: 2 }),
         { completed: false },
       ),
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
@@ -53,11 +53,11 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),
-      firstPlayerAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
@@ -72,7 +72,7 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black', { attack: 2 }),
       ),
       firstPlayerAttackApplyState: 'pending',

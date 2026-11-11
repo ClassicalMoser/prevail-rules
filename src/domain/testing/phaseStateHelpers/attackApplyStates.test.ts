@@ -3,7 +3,7 @@ import { createUnitWithPlacement, legalRetreatsOf } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
@@ -12,10 +12,10 @@ import {
 /**
  * CreateAttackApplyState: Creates an AttackApplyState with sensible defaults.
  */
-describe('createAttackApplyState function', () => {
+describe('createAttackApplyStateWithNothingDue function', () => {
   it('given context, returns attackApply substep with defending unit and default result', () => {
     const unit = createTestUnit('black');
-    const state = createAttackApplyState(unit);
+    const state = createAttackApplyStateWithNothingDue(unit);
     expect(state.substepType).toBe('attackApply');
     expect(state.defendingUnit).toBe(unit);
     expect(state.attackResult.unitRouted).toBe(false);
@@ -26,7 +26,9 @@ describe('createAttackApplyState function', () => {
 
   it('given accept overrides', () => {
     const unit = createTestUnit('white');
-    const state = createAttackApplyState(unit, { completed: true });
+    const state = createAttackApplyStateWithNothingDue(unit, {
+      completed: true,
+    });
     expect(state.completed).toBe(true);
   });
 });

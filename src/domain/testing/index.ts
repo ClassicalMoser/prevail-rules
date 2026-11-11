@@ -12,7 +12,7 @@ export {
 export { getUnitByStatValue } from './getUnitByStatValue';
 export { getUnitByTrait } from './getUnitByTrait';
 export {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRetreatAndReverse,
   createAttackApplyStateWithReverse,

@@ -9,7 +9,7 @@ import {
   getRoutStateFromRally,
 } from '@queries';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
@@ -441,7 +441,7 @@ describe('applyResolveRoutEvent function', () => {
     it('throws when the ranged apply owes a rout that was never opened', () => {
       const state = createEmptyGameState('standard');
       const unit = createTestUnit('white', { attack: 2 });
-      const attackApplyState = createAttackApplyState(unit, {
+      const attackApplyState = createAttackApplyStateWithNothingDue(unit, {
         routState: 'pending',
       });
       const rangedAttackState = createRangedAttackResolutionState(state, {

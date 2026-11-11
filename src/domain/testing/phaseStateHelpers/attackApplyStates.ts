@@ -35,7 +35,7 @@ const nothingReached: AttackResult = {
  * @param overrides - Fields to replace, for a state the game cannot reach
  * @returns The attack-apply with every outcome bypassed
  */
-export function createAttackApplyState(
+export function createAttackApplyStateWithNothingDue(
   defendingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {

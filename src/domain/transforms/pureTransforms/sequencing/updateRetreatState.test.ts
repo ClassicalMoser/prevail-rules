@@ -4,7 +4,7 @@ import {
 } from '@queries';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
@@ -196,7 +196,7 @@ describe('updateRetreatState function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const attackApply = createAttackApplyState(unit);
+    const attackApply = createAttackApplyStateWithNothingDue(unit);
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state, {
         attackApplyState: attackApply,
@@ -293,7 +293,8 @@ describe('updateRetreatState function', () => {
         placed(blackUnit, 'E-5', 'south'),
         legalRetreatsOf(placed(blackUnit, 'E-5', 'south')),
       ),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
+      secondPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -316,7 +317,8 @@ describe('updateRetreatState function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      firstPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(blackUnit),
       secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
         placed(whiteUnit, 'E-5', 'north'),
         legalRetreatsOf(placed(whiteUnit, 'E-5', 'north')),

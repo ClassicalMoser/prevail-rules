@@ -1,5 +1,5 @@
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithReverse,
   createReverseState,
   createTestUnit,
@@ -21,7 +21,7 @@ describe('getReverseStateFromAttackApply function', () => {
   it('answers bypassed when the attack applied no reverse', () => {
     // The threshold went unmet, or a rout superseded this step. Either way the
     // rules apply no reverse here, and that is an answer rather than a fault.
-    const apply = createAttackApplyState(
+    const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('black', { attack: 2 }),
     );
 
@@ -31,7 +31,7 @@ describe('getReverseStateFromAttackApply function', () => {
   it('throws when the reverse is due and has not been opened', () => {
     // A pending slot means the sequencer owes an opener, so a caller asking
     // for the substep now is out of order.
-    const apply = createAttackApplyState(
+    const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('black', { attack: 2 }),
       { reverseState: 'pending' },
     );

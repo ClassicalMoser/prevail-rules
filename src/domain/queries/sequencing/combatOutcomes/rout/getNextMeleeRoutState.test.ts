@@ -1,7 +1,7 @@
 import type { GameState, RoutState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createRoutState,
@@ -28,12 +28,18 @@ describe('getNextMeleeRoutState function', () => {
     const firstUnit = createTestUnit(firstPlayer, { attack: 2 });
     const secondUnit = createTestUnit(secondPlayer, { attack: 2 });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyState(firstUnit, {
-        routState: routs.first ?? 'pending',
-      }),
-      secondPlayerAttackApplyState: createAttackApplyState(secondUnit, {
-        routState: routs.second ?? 'pending',
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        firstUnit,
+        {
+          routState: routs.first ?? 'pending',
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        secondUnit,
+        {
+          routState: routs.second ?? 'pending',
+        },
+      ),
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,

@@ -1,6 +1,6 @@
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
@@ -13,7 +13,7 @@ import { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 describe('getMeleeAttackApplyState function', () => {
   it('returns the white attack apply', () => {
     const empty = createEmptyGameState('standard');
-    const apply = createAttackApplyState(
+    const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('white', { attack: 2 }),
       { completed: true },
     );
@@ -55,10 +55,10 @@ describe('getMeleeAttackApplyState function', () => {
         firstPlayer,
       );
       const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const firstApply = createAttackApplyState(
+      const firstApply = createAttackApplyStateWithNothingDue(
         createTestUnit(firstPlayer, { attack: 2 }),
       );
-      const secondApply = createAttackApplyState(
+      const secondApply = createAttackApplyStateWithNothingDue(
         createTestUnit(secondPlayer, { attack: 2 }),
       );
       const melee = createMeleeResolutionState(empty, {

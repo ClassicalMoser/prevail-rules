@@ -1,5 +1,5 @@
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createPlayCardsPhaseState,
@@ -26,7 +26,7 @@ describe('updateAttackApplyState function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
     };
-    const attackApply = createAttackApplyState(unit);
+    const attackApply = createAttackApplyStateWithNothingDue(unit);
     const ranged = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState: attackApply,
     });
@@ -41,8 +41,10 @@ describe('updateAttackApplyState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
+      firstPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(blackUnit),
+      secondPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(whiteUnit),
     });
     return updatePhaseState(
       state,
@@ -55,7 +57,9 @@ describe('updateAttackApplyState function', () => {
   it('given update attack apply state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackApply();
     const unit = createTestUnit('white', { attack: 2 });
-    const updated = createAttackApplyState(unit, { completed: true });
+    const updated = createAttackApplyStateWithNothingDue(unit, {
+      completed: true,
+    });
 
     const newState = updateAttackApplyState(state, updated);
 
@@ -85,7 +89,9 @@ describe('updateAttackApplyState function', () => {
   it('given update white attack apply state in melee resolution', () => {
     const state = createStateWithMeleeApply();
     const whiteUnit = createTestUnit('white', { attack: 2 });
-    const updated = createAttackApplyState(whiteUnit, { completed: true });
+    const updated = createAttackApplyStateWithNothingDue(whiteUnit, {
+      completed: true,
+    });
 
     const newState = updateAttackApplyState(state, updated);
 
@@ -108,7 +114,9 @@ describe('updateAttackApplyState function', () => {
   it('given update black attack apply state in melee resolution', () => {
     const state = createStateWithMeleeApply();
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const updated = createAttackApplyState(blackUnit, { completed: true });
+    const updated = createAttackApplyStateWithNothingDue(blackUnit, {
+      completed: true,
+    });
 
     const newState = updateAttackApplyState(state, updated);
 
@@ -140,7 +148,10 @@ describe('updateAttackApplyState function', () => {
     const unit = createTestUnit('white', { attack: 2 });
 
     expect(() =>
-      updateAttackApplyState(stateInPhase, createAttackApplyState(unit)),
+      updateAttackApplyState(
+        stateInPhase,
+        createAttackApplyStateWithNothingDue(unit),
+      ),
     ).toThrow('No attack apply state found in ranged attack resolution state');
   });
 
@@ -153,7 +164,10 @@ describe('updateAttackApplyState function', () => {
     const unit = createTestUnit('white', { attack: 2 });
 
     expect(() =>
-      updateAttackApplyState(stateInPlayCards, createAttackApplyState(unit)),
+      updateAttackApplyState(
+        stateInPlayCards,
+        createAttackApplyStateWithNothingDue(unit),
+      ),
     ).toThrow('Attack apply state update not expected in phase: playCards');
   });
 });

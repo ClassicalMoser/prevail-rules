@@ -1,5 +1,5 @@
 export {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRetreatAndReverse,
   createAttackApplyStateWithReverse,

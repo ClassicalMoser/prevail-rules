@@ -1,7 +1,7 @@
 import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
@@ -56,7 +56,7 @@ describe('getRangedAttackRoutState function', () => {
     const defender = createTestUnit('white', { attack: 2 });
     // The attack reached nothing, so every outcome on it is bypassed.
     const resolution = createRangedAttackResolutionState(empty, {
-      attackApplyState: createAttackApplyState(defender),
+      attackApplyState: createAttackApplyStateWithNothingDue(defender),
       defendingUnit: defender,
     });
     const state = issueCommands(resolution);

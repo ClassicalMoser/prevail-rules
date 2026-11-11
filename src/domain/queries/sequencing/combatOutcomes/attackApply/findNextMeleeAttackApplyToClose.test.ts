@@ -1,6 +1,6 @@
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createMeleeResolutionState,
   createTestUnit,
 } from '@testing';
@@ -20,12 +20,18 @@ describe('findNextMeleeAttackApplyToClose function', () => {
 
   it('returns the second player’s apply first, while it is open', () => {
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit, {
-        completed: false,
-      }),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: false,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        blackUnit,
+        {
+          completed: false,
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        whiteUnit,
+        {
+          completed: false,
+        },
+      ),
     });
 
     // Both are open; the second player's unit is closed out first.
@@ -36,12 +42,18 @@ describe('findNextMeleeAttackApplyToClose function', () => {
 
   it('returns the first player’s apply once the second player’s is closed', () => {
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit, {
-        completed: false,
-      }),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: true,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        blackUnit,
+        {
+          completed: false,
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        whiteUnit,
+        {
+          completed: true,
+        },
+      ),
     });
 
     expect(findNextMeleeAttackApplyToClose(melee)?.defendingUnit).toBe(
@@ -51,12 +63,18 @@ describe('findNextMeleeAttackApplyToClose function', () => {
 
   it('returns nothing when both applies are closed', () => {
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit, {
-        completed: true,
-      }),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: true,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        blackUnit,
+        {
+          completed: true,
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        whiteUnit,
+        {
+          completed: true,
+        },
+      ),
     });
 
     expect(findNextMeleeAttackApplyToClose(melee)).toBeUndefined();
@@ -66,9 +84,12 @@ describe('findNextMeleeAttackApplyToClose function', () => {
     // The first player's blow has not been measured yet.
     const melee = createMeleeResolutionState(state, {
       firstPlayerAttackApplyState: 'pending',
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: false,
-      }),
+      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+        whiteUnit,
+        {
+          completed: false,
+        },
+      ),
     });
 
     expect(findNextMeleeAttackApplyToClose(melee)).toBeUndefined();

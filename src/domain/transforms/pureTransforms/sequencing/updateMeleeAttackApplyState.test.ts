@@ -1,5 +1,5 @@
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
@@ -19,8 +19,10 @@ describe('updateMeleeAttackApplyState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const meleeState = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
-      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
+      firstPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(blackUnit),
+      secondPlayerAttackApplyState:
+        createAttackApplyStateWithNothingDue(whiteUnit),
     });
     const phaseState = createResolveMeleePhaseState(state, {
       currentMeleeResolutionState: meleeState,
@@ -31,7 +33,9 @@ describe('updateMeleeAttackApplyState function', () => {
   it('given update white attack apply state', () => {
     const state = createStateInResolveMelee();
     const whiteUnit = createTestUnit('white', { attack: 2 });
-    const updated = createAttackApplyState(whiteUnit, { completed: true });
+    const updated = createAttackApplyStateWithNothingDue(whiteUnit, {
+      completed: true,
+    });
 
     const newState = updateMeleeAttackApplyState(state, 'white', updated);
 
@@ -59,7 +63,9 @@ describe('updateMeleeAttackApplyState function', () => {
   it('given update black attack apply state', () => {
     const state = createStateInResolveMelee();
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const updated = createAttackApplyState(blackUnit, { completed: true });
+    const updated = createAttackApplyStateWithNothingDue(blackUnit, {
+      completed: true,
+    });
 
     const newState = updateMeleeAttackApplyState(state, 'black', updated);
 
@@ -103,7 +109,7 @@ describe('updateMeleeAttackApplyState function', () => {
     updateMeleeAttackApplyState(
       state,
       'white',
-      createAttackApplyState(whiteUnit, { completed: true }),
+      createAttackApplyStateWithNothingDue(whiteUnit, { completed: true }),
     );
 
     const checkPhase = throwIfNone(

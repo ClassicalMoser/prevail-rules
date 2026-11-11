@@ -1,6 +1,6 @@
 import { createEmptyGameState } from '@factories';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
@@ -13,7 +13,7 @@ import { getRangedAttackApplyState } from './getRangedAttackApplyState';
 describe('getRangedAttackApplyState function', () => {
   it('returns the attack apply on the ranged resolution', () => {
     const empty = createEmptyGameState('standard');
-    const apply = createAttackApplyState(
+    const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('white', { attack: 2 }),
       { completed: true },
     );

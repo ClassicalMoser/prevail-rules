@@ -3,7 +3,7 @@ import type { CompleteAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { getRangedAttackApplyState, getMeleeResolutionState } from '@queries';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithNothingDue,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -33,7 +33,8 @@ describe('applyCompleteAttackApplyEvent function', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
 
-    const attackApplyState = createAttackApplyState(defendingUnit);
+    const attackApplyState =
+      createAttackApplyStateWithNothingDue(defendingUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
@@ -67,10 +68,10 @@ describe('applyCompleteAttackApplyEvent function', () => {
       ),
     };
 
-    const whiteAttackApply = createAttackApplyState(whiteUnit, {
+    const whiteAttackApply = createAttackApplyStateWithNothingDue(whiteUnit, {
       completed: incompletePlayer !== 'white',
     });
-    const blackAttackApply = createAttackApplyState(blackUnit, {
+    const blackAttackApply = createAttackApplyStateWithNothingDue(blackUnit, {
       completed: incompletePlayer !== 'black',
     });
 
