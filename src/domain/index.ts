@@ -168,9 +168,7 @@ export {
   gameEffects,
   gameEffectTypeSchema,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
-  RALLY_ROUT_RESOLUTION_SOURCE,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
-  REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
   OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
@@ -197,9 +195,6 @@ export {
   resolveRoutEventSchema,
   REVEAL_CARDS_EFFECT_TYPE,
   revealCardsEventSchema,
-  ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES,
-  ROUT_RESOLUTION_SOURCE_VALUES,
-  routResolutionSourceSchema,
   START_ENGAGEMENT_EFFECT_TYPE,
 } from '@events';
 export {
@@ -270,8 +265,6 @@ export type {
   ResolveReverseEvent,
   ResolveRoutEvent,
   RevealCardsEvent,
-  RoutResolutionSource,
-  RoutResolutionSourceNonAttack,
 } from '@events';
 export type {
   AssignUnitSupportEvent,

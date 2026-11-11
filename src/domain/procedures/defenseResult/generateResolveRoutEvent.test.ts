@@ -25,7 +25,7 @@ import { createEmptyGameState } from '@factories';
  * rear engagement during movement, or cleanup rally after failed support.
  */
 describe('generateResolveRoutEvent function', () => {
-  it('given ranged resolution with rout substep on white defender, source rangedAttack and that unit', () => {
+  it('charges the morale of a shot’s routed defender', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
@@ -45,12 +45,11 @@ describe('generateResolveRoutEvent function', () => {
 
     const event = generateResolveRoutEvent(full);
     expect(event.effectType).toBe('resolveRout');
-    expect(event.routResolutionSource).toBe('rangedAttack');
     expect(event.penalty).toBe(defendingUnit.unitType.morale);
     expect(event.unitInstances).toContain(defendingUnit);
   });
 
-  it('given black initiative and rout on both melee applies, uses black unit and melee source', () => {
+  it('with both melee sides awaiting their penalty, answers the initiative player’s', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -72,7 +71,6 @@ describe('generateResolveRoutEvent function', () => {
     const full = updatePhaseState(s, phase);
 
     const event = generateResolveRoutEvent(full);
-    expect(event.routResolutionSource).toBe('melee');
     expect(event.unitInstances).toContain(blackUnit);
     expect(event.penalty).toBe(blackUnit.unitType.morale);
   });
@@ -88,7 +86,7 @@ describe('generateResolveRoutEvent function', () => {
     );
   });
 
-  it('given issueCommands movement with rear engagement routState, source rearEngagementMovement', () => {
+  it('resolves the rout of a unit engaged from the rear', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
@@ -105,11 +103,10 @@ describe('generateResolveRoutEvent function', () => {
     );
 
     const event = generateResolveRoutEvent(full);
-    expect(event.routResolutionSource).toBe('rearEngagementMovement');
     expect(event.unitInstances).toContain(whiteUnit);
   });
 
-  it('given cleanup firstPlayerResolveRally with nested routState, source rally and listed unit', () => {
+  it('resolves the rout of the units a rally could not cover', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const base = createEmptyGameState('standard');
     const full = updatePhaseState(
@@ -134,7 +131,6 @@ describe('generateResolveRoutEvent function', () => {
     );
 
     const event = generateResolveRoutEvent(full);
-    expect(event.routResolutionSource).toBe('rally');
     expect(event.unitInstances).toContain(unit);
   });
 

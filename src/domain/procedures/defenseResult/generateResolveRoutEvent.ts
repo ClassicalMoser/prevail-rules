@@ -8,10 +8,8 @@ import { findRoutAwaitingPenalty } from '@queries';
  * for the unit(s) being routed.
  * The penalty is the sum of all units' morale values.
  *
- * Where the rout sits is the query's answer, not this procedure's: a rout can
- * be held by an attack apply, a rear engagement, a rally, or a retreat that
- * found nowhere to go, and the parent comes back with it so that applying the
- * effect writes the penalty to the slot it came from.
+ * Which rout is awaiting its penalty is the query's answer, not this
+ * procedure's.
  *
  * @param state - The current game state
  * @returns A complete ResolveRoutEvent with the routed unit and penalty
@@ -23,7 +21,7 @@ export function generateResolveRoutEvent(state: GameState): ResolveRoutEvent {
     throw new Error('No rout is awaiting its penalty');
   }
 
-  const { routState, source } = location;
+  const { routState } = location;
   const totalPenalty = routState.unitsToRout.reduce(
     (sum, unit) => sum + unit.unitType.morale,
     0,
@@ -33,7 +31,6 @@ export function generateResolveRoutEvent(state: GameState): ResolveRoutEvent {
     effectType: RESOLVE_ROUT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     penalty: totalPenalty,
-    routResolutionSource: source,
     unitInstances: routState.unitsToRout,
   };
 }

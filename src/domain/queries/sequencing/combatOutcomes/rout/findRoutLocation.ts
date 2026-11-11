@@ -1,5 +1,4 @@
 import type { PlayerSide } from '@entities';
-import type { RoutResolutionSource } from '@events';
 import type {
   AttackApplyState,
   GameState,
@@ -12,6 +11,18 @@ import { findRallyingPlayer } from '@queries/sequencing/rallyResolution/cleanupP
 import { findRallyResolutionState } from '@queries/sequencing/rallyResolution/findRallyResolutionState';
 import { isOpenSubstep } from '../isOpenSubstep';
 
+/**
+ * Which parent holds a rout: the result of a ranged attack or of a melee, a
+ * rear engagement during a move, a rally in cleanup, or a retreat that found
+ * nowhere to go.
+ */
+export type RoutSource =
+  | 'rangedAttack'
+  | 'melee'
+  | 'rearEngagementMovement'
+  | 'rally'
+  | 'retreat';
+
 /** A rout slot, as a parent holds it before and after the substep opens. */
 type RoutSlot = RoutState | 'pending' | 'bypassed';
 
@@ -20,20 +31,20 @@ interface RoutSlotLocation {
   /** The slot as its parent holds it, which may not be open yet. */
   routSlot: RoutSlot;
   /** The parent accountable for resolving it. */
-  source: RoutResolutionSource;
+  source: RoutSource;
 }
 
 /**
  * A rout and the parent accountable for resolving it.
  *
- * The procedure works out `resolveRout`'s source here, and the transform that
- * writes the rout back finds its parent here too.
+ * The writer finds where to put a rout here, and settleRout what a settled
+ * rout closes.
  */
 export interface RoutLocation {
   /** The open rout. */
   routState: RoutState;
   /** The parent accountable for resolving it. */
-  source: RoutResolutionSource;
+  source: RoutSource;
 }
 
 /**

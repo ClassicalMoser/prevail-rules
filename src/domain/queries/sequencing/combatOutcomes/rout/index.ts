@@ -41,7 +41,7 @@ export { findRoutAwaitingPenalty } from './findRoutAwaitingPenalty';
 // The rout and the parent accountable for resolving it. Every layer that has
 // to locate a rout descends here.
 export { findRoutLocation } from './findRoutLocation';
-export type { RoutLocation } from './findRoutLocation';
+export type { RoutLocation, RoutSource } from './findRoutLocation';
 
 // Just the rout. `undefined` when this player is not routing.
 export { findRoutState } from './findRoutState';

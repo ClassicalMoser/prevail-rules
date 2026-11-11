@@ -140,7 +140,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        routResolutionSource: 'rangedAttack',
         unitInstances: [routState.unitsToRout[0]],
       };
 
@@ -166,7 +165,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 0,
-        routResolutionSource: 'rangedAttack',
         unitInstances: [routState.unitsToRout[0]],
       };
 
@@ -194,7 +192,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 3,
-        routResolutionSource: 'rangedAttack',
         unitInstances: [routState.unitsToRout[0]],
       };
 
@@ -226,7 +223,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        routResolutionSource: 'melee',
         unitInstances: [routState.unitsToRout[0]],
       };
 
@@ -252,7 +248,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 1,
-        routResolutionSource: 'melee',
         unitInstances: [routState.unitsToRout[0]],
       };
 
@@ -291,7 +286,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        routResolutionSource: 'rally',
         unitInstances: [routedUnit],
       };
 
@@ -344,7 +338,6 @@ describe('applyResolveRoutEvent function', () => {
           (sum: number, u) => sum + u.unitType.morale,
           0,
         ),
-        routResolutionSource: 'rearEngagementMovement',
         unitInstances: rout.unitsToRout,
       };
 
@@ -383,7 +376,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 0,
-        routResolutionSource: 'rearEngagementMovement',
         unitInstances: [createTestUnit('white', { attack: 2 })],
       };
 
@@ -409,7 +401,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        routResolutionSource: 'rangedAttack',
         unitInstances: [routState.unitsToRout[0]],
       };
 
@@ -427,7 +418,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        routResolutionSource: 'melee',
         unitInstances: [],
       };
 
@@ -456,7 +446,6 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        routResolutionSource: 'rangedAttack',
         unitInstances: [unit],
       };
 

@@ -9,8 +9,7 @@ import { findRoutLocation } from './findRoutLocation';
  * accountable for it.
  *
  * `resolveRout` fills the penalty in, and this is the rout it is due for. The
- * parent comes back too, because applying that effect has to write the penalty
- * to the slot it came from.
+ * parent comes back with it, as `findRoutLocation` gives it.
  *
  * Both sides are asked after, the initiative player's first. That order
  * decides nothing: the sequencer owns the order of routs (the second player's

@@ -18,20 +18,8 @@ export type { ResolveReverseEvent } from './resolveReverse';
 export { resolveReverseEventSchema } from './resolveReverse';
 
 // Defender routs, and where that rout came from.
-export {
-  RALLY_ROUT_RESOLUTION_SOURCE,
-  REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
-  RESOLVE_ROUT_EFFECT_TYPE,
-  RETREAT_ROUT_RESOLUTION_SOURCE,
-  ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES,
-  ROUT_RESOLUTION_SOURCE_VALUES,
-  routResolutionSourceSchema,
-} from './resolveRout';
-export type {
-  ResolveRoutEvent,
-  RoutResolutionSource,
-  RoutResolutionSourceNonAttack,
-} from './resolveRout';
+export { RESOLVE_ROUT_EFFECT_TYPE } from './resolveRout';
+export type { ResolveRoutEvent } from './resolveRout';
 export { resolveRoutEventSchema } from './resolveRout';
 
 // A failed retreat becomes a rout.

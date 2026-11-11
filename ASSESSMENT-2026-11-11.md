@@ -278,7 +278,11 @@ Left for the author:
   `meleeModifierTypes` and its three sibling tables with their four types
   (moved to `@ruleValues` under new names), `isValidChooseMeleeResolutionEvent`,
   `updateHiddenPlayerCardState`, and `gameModes` changed from an array to a
-  record keyed by mode name.
+  record keyed by mode name. Later: `resolveRout` lost `routResolutionSource`, and
+  `routResolutionSourceSchema`, `RoutResolutionSource`,
+  `RoutResolutionSourceNonAttack` and the five `*_ROUT_RESOLUTION_SOURCE*`
+  constants are gone; `closeRearEngagementWhenRouted` is replaced by
+  `settleRout`.
 
 ---
 
@@ -539,6 +543,12 @@ closes inside the writers "the wrong closure".
 rout inside a front engagement's retreat, since a defender with nowhere to go
 is never offered that retreat (§6.3.2). The spec that let such a rout be paid
 now asserts it is refused.
+
+**Done (sixth pass, on the author's answer).** `resolveRout` no longer carries
+`routResolutionSource`; nothing read it. The five constants, the two types and
+the schema that spelled it went with it. Where a rout sits is now a query's
+type, `RoutSource`, beside `findRoutLocation`. Event shape change: logs that
+carry the field no longer parse (the schema is strict).
 
 **Verdict: design risk, low.** The four are layers of one chain every caller
 goes through, not four alternatives. The two apply events that settle a rout
