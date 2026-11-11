@@ -13,7 +13,8 @@ describe('createEmptyGameState function', () => {
     // Setup is round 0. The round state already waits for round 1, the first
     // round played, and nothing has happened in it yet.
     expect(gameState.currentRoundNumber).toBe(0);
-    expect(gameState.currentRoundState.roundNumber).toBe(1);
+    // Setup is round 0; the first round to be played is 1.
+    expect(gameState.currentRoundState.roundNumber).toBe(0);
     expect(gameState.currentRoundState.completedPhases).toStrictEqual([]);
     expect(gameState.currentRoundState.currentPhaseState).toBe('none');
     expect(gameState.currentRoundState.commandedUnits).toStrictEqual([]);

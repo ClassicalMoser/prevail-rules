@@ -41,7 +41,8 @@ describe('updateRoundState function', () => {
     };
     const newState = updateRoundState(state, newRoundState);
 
-    expect(newState.currentRoundState.roundNumber).toBe(2);
-    expect(state.currentRoundState.roundNumber).toBe(1);
+    // A game still in setup is round 0; the new state is the next round.
+    expect(newState.currentRoundState.roundNumber).toBe(1);
+    expect(state.currentRoundState.roundNumber).toBe(0);
   });
 });

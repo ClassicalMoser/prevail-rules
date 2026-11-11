@@ -33,15 +33,14 @@ function shell(board: Board): AuthoritativeGameState {
     currentInitiative: 'black',
     // Round number is zero during setup.
     currentRoundNumber: 0,
-    // Before the first round starts this slot already holds the round about to
-    // be played (round 1), still waiting; `currentRoundNumber` above stays 0
-    // while the armies are set up.
+    // Setup is round 0, with its own events; the first round to be played is
+    // round 1, which setup starts once every unit is placed.
     currentRoundState: {
       commandedUnits: [],
       completedPhases: [],
       currentPhaseState: 'none',
       events: [],
-      roundNumber: 1,
+      roundNumber: 0,
     },
     // No units or commanders initialized yet.
     lostCommanders: [],

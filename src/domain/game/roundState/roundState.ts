@@ -56,7 +56,8 @@ const _roundStateBaseSchemaObject: z.ZodObject<{
 }> = z
   .object({
     /** The number of the round. */
-    roundNumber: z.int().positive(),
+    // Setup is round 0, with its own events; the first round to be played is 1.
+    roundNumber: z.int().min(0),
     /** The phases that have been completed in the round. */
     completedPhases: z.array(phaseStateSchema),
     /** The state of the current phase of the round. */
