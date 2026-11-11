@@ -51,7 +51,8 @@ function getExpectedMovementResolveStart(
 /**
  * While remaining slots exist: prefer `issueCommand` if any slot is still
  * issuable; otherwise `doneIssuingCommands` so the phase cannot stall.
- * (`doneIssuingCommands` is also accepted when `issueCommand` is expected.)
+ * While an order can still be given, the player may stop instead and forfeit
+ * the orders left (§4.3.3), so the expectation names both choices.
  */
 function getExpectedIssueStepEvent(
   state: GameState,
@@ -64,6 +65,7 @@ function getExpectedIssueStepEvent(
   if (anyIssuable) {
     return {
       actionType: 'playerChoice',
+      alsoAccepted: ['doneIssuingCommands'],
       choiceType: 'issueCommand',
       playerSource: player,
     };

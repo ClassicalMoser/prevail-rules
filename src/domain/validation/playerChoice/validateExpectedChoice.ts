@@ -56,16 +56,16 @@ export function validateExpectedChoice(
     };
   }
 
-  // Ensure that the choice type matches the expected choice type.
-  // While issuing, `doneIssuingCommands` is always an accepted alternative to
-  // `issueCommand` (forfeit leftover slots).
-  const choiceTypeMatches =
-    expected.choiceType === event.choiceType ||
-    (expected.choiceType === 'issueCommand' &&
-      event.choiceType === 'doneIssuingCommands');
-  if (!choiceTypeMatches) {
+  // Ensure that the choice type is one the expectation accepts: the choice
+  // it asks for, or one it names as standing in for it (a player asked to
+  // give another order may stop instead, §4.3.3).
+  const acceptedChoiceTypes = [
+    expected.choiceType,
+    ...(expected.alsoAccepted ?? []),
+  ];
+  if (!acceptedChoiceTypes.includes(event.choiceType)) {
     return {
-      errorReason: `Expected ${expected.choiceType}, got ${event.choiceType}`,
+      errorReason: `Expected ${acceptedChoiceTypes.join(' or ')}, got ${event.choiceType}`,
       result: false,
     };
   }

@@ -106,7 +106,7 @@ export type LegalPlayerChoiceOptions =
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'issueCommand';
-      /** Always true while issueCommand is expected (forfeit leftover slots). */
+      /** True when the expectation also accepts stopping (forfeit leftover slots, §4.3.3). */
       canDoneIssuing: boolean;
       issueCommands: LegalIssueCommands;
     })
@@ -342,7 +342,8 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         getLegalIssueCommands(state) ?? emptyIssueCommands(player);
       return {
         ...base,
-        canDoneIssuing: true,
+        canDoneIssuing:
+          expected.alsoAccepted?.includes('doneIssuingCommands') === true,
         choiceType: 'issueCommand',
         issueCommands,
       };

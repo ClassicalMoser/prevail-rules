@@ -93,8 +93,13 @@ describe('getLegalPlayerChoiceOptions function', () => {
     choiceType: PlayerChoiceType,
     playerSource: PlayerSource = 'black',
   ): void {
+    // While an order can be given, the real expectation also accepts
+    // stopping (§4.3.3), so the stand-in says the same.
     const expected: ExpectedEventInfo = {
       actionType: 'playerChoice',
+      ...(choiceType === 'issueCommand'
+        ? { alsoAccepted: ['doneIssuingCommands' as const] }
+        : {}),
       choiceType,
       playerSource,
     };
