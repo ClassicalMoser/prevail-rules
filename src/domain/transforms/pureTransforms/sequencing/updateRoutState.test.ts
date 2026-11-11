@@ -309,7 +309,7 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow('No rout state found in attack apply state');
+    ).toThrow(/^No open rout to write for/);
   });
 
   it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
@@ -324,9 +324,7 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow(
-      'Rout state update not expected in issueCommands (command type: movement)',
-    );
+    ).toThrow(/^No open rout to write for/);
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {
@@ -337,7 +335,7 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow('No command resolution state found');
+    ).toThrow(/^No open rout to write for/);
   });
 
   it('given when melee white attack apply has no rout state, throws', () => {
@@ -358,7 +356,7 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInPhase, createRoutState('white', whiteUnit)),
-    ).toThrow('No rout state found in attack apply state');
+    ).toThrow(/^No open rout to write for/);
   });
 
   it('given when melee black attack apply has no rout state, throws', () => {
@@ -379,7 +377,7 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInPhase, createRoutState('black', blackUnit)),
-    ).toThrow('No rout state found in attack apply state');
+    ).toThrow(/^No open rout to write for/);
   });
 
   it('given when cleanup rally resolution has no rout state, throws', () => {
@@ -401,7 +399,7 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInCleanup, createRoutState('white', unit)),
-    ).toThrow('No rout state found in rally resolution state');
+    ).toThrow(/^No open rout to write for/);
   });
 
   it('given when not in issueCommands, resolveMelee, or cleanup phase, throws', () => {
@@ -414,6 +412,6 @@ describe('updateRoutState function', () => {
 
     expect(() =>
       updateRoutState(stateInPlayCards, createRoutState('white', unit)),
-    ).toThrow('Rout state update not expected in phase: playCards');
+    ).toThrow(/^No open rout to write for/);
   });
 });

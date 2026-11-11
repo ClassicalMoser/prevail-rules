@@ -17,6 +17,7 @@ export {
 } from './engagementStates';
 export {
   createCleanupPhaseState,
+  createCleanupPhaseStateWithRallyRout,
   createIssueCommandsPhaseState,
   createMoveCommandersPhaseState,
   createPlayCardsPhaseState,

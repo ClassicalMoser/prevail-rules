@@ -18,6 +18,7 @@ export {
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
+  createCleanupPhaseStateWithRallyRout,
   createFlankEngagementState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,

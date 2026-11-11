@@ -2,8 +2,7 @@ import type { CommandCard, PlayerSide } from '@entities';
 import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
 import {
-  createCleanupPhaseState,
-  createRallyResolutionState,
+  createCleanupPhaseStateWithRallyRout,
   createRoutState,
   createTestCard,
   createTestUnit,
@@ -54,14 +53,10 @@ function gameOverState(options: {
   }
   const cleanup = updatePhaseState(
     withHands,
-    createCleanupPhaseState({
-      firstPlayerRallyResolutionState: createRallyResolutionState({
-        playerRallied: true,
-        rallyResolved: true,
-        routState: createRoutState('white', createTestUnit('white')),
-      }),
-      step: 'firstPlayerResolveRally',
-    }),
+    createCleanupPhaseStateWithRallyRout(
+      withHands,
+      createRoutState(options.rout.player, createTestUnit(options.rout.player)),
+    ),
   );
   const next = updateRoutState(
     cleanup,

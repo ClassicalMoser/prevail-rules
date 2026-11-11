@@ -2,9 +2,8 @@ import type { CommandCard, PlayerSide } from '@entities';
 import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
 import {
-  createCleanupPhaseState,
+  createCleanupPhaseStateWithRallyRout,
   createIssueCommandsPhaseState,
-  createRallyResolutionState,
   createRoutState,
   createTestCard,
   createTestUnit,
@@ -37,7 +36,7 @@ function stateAwaitingDiscard(options: {
   numberToDiscard: number;
   player: PlayerSide;
 }): GameState {
-  // White is first, so `firstPlayerResolveRally` is white's rally step.
+  // White is first: white rallies first, black second.
   const base = updateCurrentInitiative(
     createEmptyGameState('standard'),
     'white',
@@ -56,14 +55,10 @@ function stateAwaitingDiscard(options: {
   // Rally is already accepted. The rout slot has to exist before it can be replaced.
   const cleanup = updatePhaseState(
     withHands,
-    createCleanupPhaseState({
-      firstPlayerRallyResolutionState: createRallyResolutionState({
-        playerRallied: true,
-        rallyResolved: true,
-        routState: createRoutState('white', createTestUnit('white')),
-      }),
-      step: 'firstPlayerResolveRally',
-    }),
+    createCleanupPhaseStateWithRallyRout(
+      withHands,
+      createRoutState(options.player, createTestUnit(options.player)),
+    ),
   );
   // Cards are not chosen yet, and the penalty is the one this case is about.
   const next = updateRoutState(
