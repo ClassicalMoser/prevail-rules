@@ -40,12 +40,13 @@ enough to run without the author present. Anything not listed is not decided.
 | R1   | Yes: a front-engaged defender's committed card counts toward the retreat it is weighing. `getLegalRetreats` takes the commitment modifiers, both procedures pass them, and RULEBOOK §9.1.3 gets a clause saying so.                                                                                  |
 | R2   | Closed, no change. The engager waits on its start space until the engagement is set up. A unit that starts behind its target engages from behind, a rear engagement that routs the defender (§6.3.3), and has very good reason to; the case that worried the sweep is one a player would not choose. |
 | R3   | Only issue-or-stop changes: `ExpectedEventInfo` names both accepted choices, so validation and the options router stop re-deriving it. The other three stay as they are. Committing a few closely related consecutive choices in one event is acceptable and gives the client more flexibility.      |
-| R4   | Direction only: legality predicates that validation calls, as `canReverseUnit` is. The author has been least hands-on here and says predicate versus enumerator needs more design work. Nothing is built yet.                                                                                        |
+| R4   | Done. A choice too large to list whole is offered a part at a time (`OpenChoice`, `findRefusal`), and the validator only walks the offers: moves, unit support, units orders. Lines are listed whole. See the run logs.                                                                              |
 | R5   | The selections stay as they are. The sequencer owns the order of routs and opens them one at a time, so the selections' first-player-first order never has two candidates to choose between. The README sentence and the `findRoutOwingDiscard` JSDoc are corrected to say that.                     |
 | R6   | Repo-wide: every total reader is `find*` and every `get*` insists. The `get*` readers that return `undefined` are renamed.                                                                                                                                                                           |
 
-**Hands off, with no design yet:** the writer question, `submittedTime`, and
-R4 beyond the direction above. The other three R3 shapes (`commitToMovement`,
+**No longer hands off.** The writer question was settled by the author's layer
+principles (third pass), R4 is done, and `submittedTime` is dropped: it is
+explicitly after the audit. The other three R3 shapes (`commitToMovement`,
 `performRangedAttack`, `moveUnit`) stay as they are by the author's ruling.
 
 **Work order.** One kind of change per commit, a failing spec first and its
@@ -203,14 +204,29 @@ first where a behaviour changed:
   `findUnitIndex` and `findRankSpanBetweenEnds` replace restated lookups.
 - Stale documents in Section 4, except where noted there.
 
+**Run log (2026-11-11, fifth pass).** On the author's answers. Closed:
+
+- The mode table, the entity bounds and the `@ruleValues` cycle (see 3.5).
+- `submittedTime` is dropped (after the audit). `getLegalChooseCardOptions`
+  throwing off its step is acceptable to clients.
+- `@testing` delegates to production wherever it can. New opened-state
+  factories (`createOpenedReverseState`, `createOpenedRallyResolutionState`,
+  the three opened engagement resolutions, `createOpenedEngagementState`) replace
+  blocks that applies built inline and that `@testing` then built again;
+  `createRoutState`, `createReverseState`, `createRallyResolutionState`,
+  `createMeleeResolutionState`, the three engagement-state builders and
+  `updateCardState` start from the production factory or transform.
+- Events: the projected-choice schema list is asserted against its type, and
+  the list of choice types against the union of events (Section 7, scout 5).
+- Functions with no caller in 3.3 stay: `eachUnitPresentOnce`,
+  `eachCardPresentOnce`, `getEventStream` and `getRoundSnapshot` are for
+  periodic integrity checks not yet implemented, or for consumers.
+
+Six scouts and a report on the game tree against the events were run
+read-only; they are in Section 7 with what each would cost.
+
 Decision points left for the author, found on the way:
 
-- **`getLegalChooseCardOptions` was documented as soft** ("does not throw ...
-  so clients can re-enumerate after a peer commits"). It now throws off the
-  chooseCards step, by the no-belt-and-suspenders principle. A client that
-  re-enumerates after both players have chosen has moved past the step and
-  would now be refused loudly; if that is a pattern the clients rely on, this
-  one is for the author to reverse.
 - **The combatOutcomes README** described `getNextMeleeRoutState` as asking the
   initiative player's side first; it asks the second player's. Corrected with
   R5.
@@ -370,21 +386,22 @@ Closed in the fourth pass (the sweep):
   throws the reason.
 - `@testing`'s engaged-board fixture engages through `addUnitToBoard`.
 
-Left, each a design choice:
+Closed in the fifth pass, on the author's answers:
 
-- **The §3.1.3 mode table is split.** Board size per mode is in
-  `entities/gameModes`, limits in `@ruleValues`, assembly in `legality/army`,
-  and the mode-to-board lookup is written twice, in `refineGameModeBoardSize`
-  and `createEmptyGameState` (`startNewGame` no longer exists). `@factories`
-  cannot import `@queries`, so a single lookup needs a function in `@entities`,
-  which holds none, or a second table kept in step with the catalog.
-- **Entity bounds that are rules.** The entities README says a schema is shape
-  only and every rule about allowed values is a refine in `@legality`. Still in
-  schemas: card commit stats `1..2` (§8.2), unit limit and count `≤ 12`
-  (§3.1.4), initiative `1..4`, support count `≥ 1` (§10.4.2). Other bounds are
-  arbitrary limits; `instanceNumber ≤ 20` does not match the type limit of 12.
-  Moving a bound from a schema to a refine changes where bad data is caught on
-  parse, so it is the author's.
+- **The §3.1.3 mode table.** One table, in `@entities`, keyed by mode name
+  (`gameModes` is now a record; iterate `gameModeNames`), looked up by
+  indexing where a game is composed. `createEmptyGameState` and
+  `refineGameModeBoardSize` index it. `startNewGame` re-derived the fact three
+  times (a switch, a catalog lookup, a board-size check that
+  `parseLegalGameForMode` repeats) and now calls `createEmptyGameState` once.
+- **Entity bounds.** Numeric limits stay declared in the schemas: Zod checks
+  them where the value is parsed, a refine would add a step to validation, and
+  they are declarations. The entities README now says so; refines are for
+  rules that look across values. `instanceNumber` is bounded by
+  `MAX_ARMY_UNIT_PER_TYPE_COUNT` where it said 20.
+- **No circular dependency with `@ruleValues`.** `@ruleValues` imported
+  nothing from the domain until the commitment table type-imported
+  `StatModifier`; it no longer does.
 
 ---
 
@@ -403,16 +420,16 @@ are the ones to revisit.
 
 ## 5. Carried over from 2026-11-10
 
-| Item                                                 | Note                                                                                                                                                                                                                                                      |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `submittedTime` on player choices as a replay record | Agreed, not built. Do it before production.                                                                                                                                                                                                               |
-| Writer question                                      | `update{Retreat,Reverse,Rout,AttackApply}State`; the melee slot ternary belongs here. Author's design call.                                                                                                                                               |
-| `createInitialGameState` has no production caller    | `startNewGame` builds with `createEmptyGameState`. See also 3.5.                                                                                                                                                                                          |
-| Seven `TODO` marks, each a decision for the author   | `UnitPlacement` and `createUnitWithPlacement` names; the board-size factory lookup; the rally rout's `'bypassed'`; whether the sequencer locates routs through `findRoutLocation`; the rout getters with no production caller; the melee apply's `player` |
-| Spec type assertions without the STYLE comment       | Not recounted.                                                                                                                                                                                                                                            |
-| Headers on exported and local functions              | Not recounted.                                                                                                                                                                                                                                            |
-| 744 spec titles beginning "should" or "given"        | STYLE.                                                                                                                                                                                                                                                    |
-| Commentary, layer by layer                           | Validation and transforms first.                                                                                                                                                                                                                          |
+| Item                                                 | Note                                                                                                                                                                                                                                                           |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `submittedTime` on player choices as a replay record | Dropped by the author: after the audit.                                                                                                                                                                                                                        |
+| Writer question                                      | Closed: one query reads and one transform writes each slot (third pass).                                                                                                                                                                                       |
+| `createInitialGameState` has no production caller    | `startNewGame` now calls `createEmptyGameState` once. Kept for consumers.                                                                                                                                                                                      |
+| Seven `TODO` marks, each a decision for the author   | `UnitPlacement` and `createUnitWithPlacement` names; the rally rout's `'bypassed'`; whether the sequencer locates routs through `findRoutLocation`; the rout getters with no production caller; the melee apply's `player`. (The board-size lookup is closed.) |
+| Spec type assertions without the STYLE comment       | Not recounted.                                                                                                                                                                                                                                                 |
+| Headers on exported and local functions              | Not recounted.                                                                                                                                                                                                                                                 |
+| 744 spec titles beginning "should" or "given"        | STYLE.                                                                                                                                                                                                                                                         |
+| Commentary, layer by layer                           | Validation and transforms first.                                                                                                                                                                                                                               |
 
 ---
 
@@ -449,3 +466,217 @@ So the next sweep need not repeat them:
   - Command modifiers only on the commanded, all round (§4.3.8).
 - **Geometry and endgame.** `calculateInitiative`, `diagonalIsClear`, lines,
   arcs and distances, the §6.3.1 facing table, and §11.1–11.4 in order.
+
+---
+
+## 7. Scout reports (fifth pass)
+
+Each is read-only, from the code and its specs; the claims that change what we
+would do were spot-checked against the code (the commander readers, the two
+retreat computations, the front-engagement rout spec, the round filing). None
+found a defect a player can reach today except scout 5. "Shape cost" means a
+change to a public event or state shape, which the client and server packages
+consume. Nothing in this section is changed yet; each says what would be.
+
+### 7.1 A settled rout closes its parent four ways
+
+**Verdict: design risk, low.** The four are layers of one chain every caller
+goes through, not four alternatives. The two apply events that settle a rout
+(`applyChooseRoutDiscardEvent`, `applyResolveRoutEvent`) both write through
+`updateRoutState`. A ranged or melee rout leaves its apply open on purpose:
+`completeAttackApply` is a separate effect, because both melee sides must
+finish before the next stage (§7.5.6). The rear engagement is closed by
+`closeRearEngagementWhenRouted`, which both settlers call; forgetting it is
+loud (`getExpectedEngagementEvent` throws). The rally advances its step inside
+`updateRoutState`, once; a second advance throws. No stall or double close is
+reachable.
+
+Two real findings. (1) `applyChooseRoutDiscardEvent` finds a retreat's rout
+through `updateRoutState`'s `findRoutLocation` check, and `applyResolveRoutEvent`
+through the event's `routResolutionSource` and a direct `updateRetreatRoutState`
+call: two routes to the same write. (2) A rout nested in a **front**
+engagement's retreat cannot arise (a front retreat always has a path), yet
+`findRoutLocation` handles it, and the spec at
+`applyChooseRoutDiscardEvent.test.ts` ("a front engagement whose defender had
+nowhere to retreat lets it pay its rout") builds that unreachable state and
+asserts only that the retreat closes, not the engagement.
+
+**Proposal (no shape cost):** one `settleRout(state, rout)` that writes the rout
+and applies all three closes, called by both settlers, so
+`updateRoutState` returns to being a pure writer and `applyResolveRoutEvent`
+loses its `routResolutionSource === 'retreat'` branch; make `findRoutLocation`
+throw for a rout on a front engagement's retreat, and correct that spec.
+(`resolveRout`'s `routResolutionSource` field would then be unread; dropping it
+is a shape change, left for the author.)
+
+### 7.2 `completeRangedAttackCommand` closes one shot and the whole order
+
+**Verdict: design risk.** One effect, requested in four places (a finished
+shot; units remain but none has a target; an empty list at resolve start; and
+the post-shot case where nobody can shoot, where the transform has already
+advanced). Its transform clears the shot, re-runs `getLegalRangedAttackers`,
+and either keeps the survivors or finishes the order. It never asks why it was
+called, and the expected engine uses the same legality query on the same state,
+so they cannot disagree; no unit is shot twice or stranded. The cost: the log
+cannot tell a shot ending from an order ending, and the transform mixes
+bookkeeping with a legality filter (movement's `completeMovementCommand` has
+the same body). Two branches in `getExpectedIssueCommandsPhaseEvent` (empty
+list after a ranged resolve) cannot follow a shot. A minor, unbuilt-board case:
+a unit with no target when the filter runs is dropped for good, where the rule
+says it is skipped at step 1.
+
+**Proposal (shape cost: one new effect type):** mirror movement. A per-shot
+effect (`completeRangedAttack`) that only clears the shot; `completeRangedAttackCommand`
+becomes the per-order effect the expected engine asks for only when nobody can
+shoot or the list is empty; the legal filter moves out of the transform into
+one shared pure step. Needs a new type in `ruleValues/gameEffectTypes.ts`,
+`events/gameEffects/resolveAttack/` and the procedure registry; clients that
+wait for `completeRangedAttackCommand` after a shot must wait for the new one;
+old logs do not replay. Missing specs: a two-shooter order run end to end.
+
+### 7.3 Commander defeat is held twice
+
+**Verdict: design risk, low; the redundancy is real.** `lostCommanders` has
+exactly one reader (`getMoveCommandersStepFrom`, which skips a fallen side's
+commander move) and one writer; board absence has five readers. They are
+written together in one function (`defeatCommanderWithRoutedUnit`), reached only
+from `removeUnitsLeavingUnderRout` (combat routs, correctly not the support
+check), so no production path makes them disagree. Every question
+`lostCommanders` answers can be answered by `findCommanderSpace(...) ===
+undefined`, because the Move Commanders phase comes after setup places both
+commanders. Specs that set one alone: `getMoveCommandersStepFrom.test.ts` and
+`unitMatchesInspirationRange.test.ts`.
+
+**Proposal (shape cost: removes `lostCommanders` from the state, its four
+schemas and `createEmptyGameState`):** a `commanderIsFallen(state, side)` query
+built on `findCommanderSpace`, read by `getMoveCommandersStepFrom`; delete the
+list and `addCommanderToLostCommanders`. **Caveat for the author:** if
+"defeated" must ever differ from "absent" (the deferred question about an enemy
+entering a commander's space), the list earns its place; then keep it and put
+both readers behind one named query.
+
+### 7.4 A front-engagement retreat's paths are computed twice
+
+**Verdict: design risk.** `generateResolveEngageRetreatOptionEvent` and
+`generateOpenRetreatFromEngagementEvent` both look up the defender, build the
+defender's commitment modifiers, and call `getLegalRetreats`; the first keeps
+only whether the list is non-empty and the speed comparison. Between them only
+two booleans flip, so they cannot disagree today. The risk is indirect: a
+future change that moves or alters a unit between the two events, or an old log
+whose first event said "can retreat" and whose second recorded `[]` (which the
+apply now throws on). Nothing validates the second against the first. The
+attack-apply path does it once: the procedure that opens the retreat computes
+and records the paths, and empty means rout.
+
+**Options.** (a) Leave it. (b) Cheapest, no shape cost: one shared query for the
+"defender and its modifiers" lookup, so the same-inputs fact has one source.
+(c) The tidy fix, shape cost: `resolveEngageRetreatOption` carries
+`retreatPaths` (empty means it stands) and the paths wait in the front
+engagement's resolution state, so `openRetreatFromEngagement` needs no
+recomputation; both event schemas are `.strict()`, so a removed field breaks
+parsing of old logs, and the resolution state gains a field. Author's call on
+which event carries the paths and whether state or event holds them.
+
+### 7.5 Hand-kept event-type lists
+
+**Verdict: one real defect (fixed), two design risks.**
+
+| List                                                                                              | Result                                                                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PlayerChoiceEvent` type and schema, and the apply and validate switches                          | Dropping a member fails the typecheck. Not an issue.                                                                                                                                        |
+| `projectedPlayerChoiceEventSchema` list                                                           | **Dropping an entry compiled silently**; the wire schema then refused that choice at runtime while the type allowed it. **Fixed:** asserted against its type (proved by dropping an entry). |
+| `playerChoices` tuple against the event union                                                     | Drift was caught only where some consumer happened to switch on the tuple. **Fixed:** asserted against `PlayerChoiceEvent['choiceType']`.                                                   |
+| `gameEffects` tuple, union, schema, procedure switch                                              | Each drift fails the typecheck. Not an issue; no change.                                                                                                                                    |
+| The 19 `*_CHOICE_TYPE` constants                                                                  | Duplicate the tuple strings by hand; drift is now caught by the new assert.                                                                                                                 |
+| `LegalPlayerChoiceOptions` union                                                                  | Hand-kept, tied only by the router's return type. Design risk, left.                                                                                                                        |
+| `getLegalPlayerChoiceOptions.test.ts` partition (`allChoiceTypes`, `choicesNeedingRoundUnderWay`) | Both typed against `PlayerChoiceType`, so a wrong name fails; a **new** choice is omitted silently. Typing it as `Record<PlayerChoiceType, …>` would close that; not done.                  |
+
+### 7.6 Who may be ordered is checked twice
+
+**Verdict: design risk; the two agree on every input.** Predicate by predicate
+(units order, line anchor and line member): friendly and on the board are given
+by both; **engaged, already commanded and trait/type restrictions are written
+twice** (`notEngaged`, `notAlreadyCommanded` and the pass-through
+`unitMatchesTraitAndTypeRestrictions` in `getLegalUnitsForIssueCommand`;
+`canJoinLine`'s inline checks). Inspiration range differs by rule (only a
+line's anchor needs range, §4.3.5), and facing is line-only. Every case checked
+(a commanded or engaged anchor or end, a line cut by a commanded unit, a member
+that fails range) is consistent and rule-correct. Not covered by specs: a
+commanded or engaged unit named as a line's end (the refusal-reason path), a
+line trimmed by a commanded unit in the middle, and a cross-check that the
+anchors' set is a subset of what `canJoinLine` accepts.
+
+**Proposal (no shape cost):** one `@queries` predicate, "free of engagement, not
+yet commanded, matching trait and type", called by both; range stays separate.
+An edit to one copy, for example the "looser" engaged-unit rule noted at
+RULEBOOK §4.3.5, would otherwise silently desynchronise them.
+
+### 7.7 The game tree against the events
+
+**Attack-apply parent vocabularies (3.2).** Not four spellings of the same
+field but four shapes of "which apply": `open*FromAttackApply` carry
+`attackResolutionContext` and, for melee only, `defendingPlayer` (the query
+`getAttackApplyStateAt` dispatches, so the transforms do not); `resolveReverse`
+carries the context with no discriminated union and takes the player from the
+unit; `resolveRetreat` carries none and finds its retreat with
+`findRetreatLocation`; `resolveRout` carries `routResolutionSource` with five
+values and uses it only to ask "is it a retreat?"; `triggerRoutFromRetreat`
+carries `retreatResolutionContext` (the same two literals under another name) and
+`retreatingPlayer`, and its transform has **two hand-written ternaries**;
+`completeAttackApply` carries `attackType` (`'ranged'`, from `@entities`) and
+`defendingPlayer`, with an if-chain, and the ranged player is dead data. Also
+`'ranged'` against `'rangedAttack'` for the same fact. The copies cannot
+disagree under a procedure (it reads the player off the apply's unit); only a
+hand-built or replayed event can, and the transforms then throw. The stated
+reason for the context ("spares transforms re-branching on phase") is weak:
+`updateAttackApplyState` already branches on phase, and `resolveRetreat` and
+`resolveRout` work with none.
+
+Options: (1) leave; (2) shape cost, two events: put `triggerRoutFromRetreat` and
+`completeAttackApply` on the existing `AttackApplyLocation` and make
+`resolveReverse` a discriminated union, deleting the ternaries and the if-chain;
+(3) shape cost, seven or more events: drop the context and player and derive
+them from identity and state, closest to "an event names a unit by identity".
+Recommendation (2); (3) is a larger decision.
+
+**The attack result spelled three ways, and colour against initiative.**
+`resolveMelee` carries `whiteUnitRouted`/`blackUnitRetreated`…; `resolveRangedAttack`
+carries `routed`/`retreated`/`reversed`; the state holds `AttackResult`
+`{unitRouted, …}`. `applyAttackValue` already returns an `AttackResult`; each
+generator unpacks it into the event and each transform repacks it (two unpacks,
+two repacks, about twelve flag lines). The colour-to-slot mapping (colour in the
+event, initiative in the state) is written in four places, all from
+`state.currentInitiative`, so one transform cannot disagree with itself; it
+could only drift if initiative changed between generating and applying, which
+the flow does not allow. Options: (1) leave; (2) shape cost, both events: put
+`AttackResult` in `@entities` (the precedent: `AttackType` is there) and nest it,
+`{ defenderWithPlacement, attackResult }` and `{ whiteAttackResult, blackAttackResult }`,
+colour kept in the event; (3) also drop the `…WithPlacement` fields, which the
+state holds and the transforms read only `.unit` from.
+
+**The round number stored twice (3.4).** `currentRoundNumber` (min 0) and
+`roundState.roundNumber` (positive) are written together by exactly two
+transforms (`applyCompleteCleanupPhaseEvent`, `applySetupUnitsEvent`) and read in
+disjoint places (`processEvent` and `handleNewRound` read the first, the cleanup
+transform reads the second), so they cannot disagree today; by design they are 0
+and 1 during setup. A **discrepancy at the setup boundary**: `processEvent` files
+each event under the round number of the state _before_ it, so the last setup
+event is filed under round 0; the setup transition then resets the in-state log
+to `[]` and `applyEvent` appends that event to it, so state round 1's log begins
+with the last setup event while the stored round-1 stream begins empty and
+round 0's stream (the setup events) is never flushed. The cleanup boundary is
+handled on purpose (the log starts empty); the setup boundary is not. Options:
+(1) leave, and add a schema refine or a spec linking the two; (2) remove
+`currentRoundNumber` and read the round's own number (state shape cost; no event
+shape cost; the application then files setup under round 1, a policy change for
+the round-0 stream), recommended; (3) remove `roundState.roundNumber`.
+
+**Other discrepancies noted.** `resolveMelee` carries `location` and both
+placements' coordinates, which the state also holds; `resolveReverse` carries a
+placement with a unit again (`newUnitPlacement.unit` unread);
+`resolveRetreat.startingPosition.placement` is read by the transform in place of
+the board, so the event and the board can disagree and the event wins;
+`resolveRout.penalty` is a computed value written to `numberToDiscard`, and
+`unitInstances` beyond the first is ignored; the attack-apply factory lets a
+rout win over retreat and reverse, so inconsistent event flags are silently
+reconciled.
