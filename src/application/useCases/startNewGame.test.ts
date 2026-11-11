@@ -60,7 +60,7 @@ describe('startNewGame function', () => {
       gameStateSubscribers: [
         {
           gameId,
-          gameMode: gameModes[1].name,
+          gameMode: gameModes.mini.name,
           onError: vi.fn(),
           onGameStateChange,
         },
@@ -74,7 +74,7 @@ describe('startNewGame function', () => {
     const [change] = onGameStateChange.mock.calls[0] ?? [];
     expect(change).toMatchObject({
       gameId,
-      gameMode: gameModes[1].name,
+      gameMode: gameModes.mini.name,
     });
     expect(change?.gameState).toBeDefined();
   });
@@ -88,19 +88,19 @@ describe('startNewGame function', () => {
       gameStateSubscribers: [
         {
           gameId,
-          gameMode: gameModes[1].name,
+          gameMode: gameModes.mini.name,
           onError: vi.fn(),
           onGameStateChange: matching,
         },
         {
           gameId: '44444444-4444-4444-8444-444444444444',
-          gameMode: gameModes[1].name,
+          gameMode: gameModes.mini.name,
           onError: vi.fn(),
           onGameStateChange: wrongId,
         },
         {
           gameId,
-          gameMode: gameModes[2].name,
+          gameMode: gameModes.standard.name,
           onError: vi.fn(),
           onGameStateChange: wrongMode,
         },
@@ -144,7 +144,7 @@ describe('startNewGame function', () => {
       gameStateSubscribers: [
         {
           gameId,
-          gameMode: gameModes[1].name,
+          gameMode: gameModes.mini.name,
           onError,
           onGameStateChange,
         },

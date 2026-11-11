@@ -4,8 +4,8 @@ import { createEmptyGameState } from '@factories';
 
 import { getRoundSnapshot } from './getRoundSnapshot';
 
-const mini = gameModes[1];
-const standard = gameModes[2];
+const mini = gameModes.mini;
+const standard = gameModes.standard;
 
 function storageReturning(data: unknown): RoundSnapshotStorage {
   return {

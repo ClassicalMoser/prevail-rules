@@ -17,19 +17,20 @@ export const gameModeNameSchema: z.ZodType<GameModeName> =
   z.enum(gameModeNames);
 
 /**
- * Catalog of modes: name ↔ board size lives here (values), not on per-mode interfaces.
+ * Catalog of modes, keyed by name: the one table that says which board size
+ * each mode is played on (§3.1.3). A caller looks a mode up by indexing it.
  */
-export const gameModes = [
-  { boardSize: 'small', name: 'tutorial' },
-  { boardSize: 'small', name: 'mini' },
-  { boardSize: 'standard', name: 'standard' },
-  { boardSize: 'large', name: 'epic' },
-] as const;
+export const gameModes = {
+  epic: { boardSize: 'large', name: 'epic' },
+  mini: { boardSize: 'small', name: 'mini' },
+  standard: { boardSize: 'standard', name: 'standard' },
+  tutorial: { boardSize: 'small', name: 'tutorial' },
+} as const;
 
 /**
  * A game mode entry from {@link gameModes}.
  */
-export type GameMode = (typeof gameModes)[number];
+export type GameMode = (typeof gameModes)[GameModeName];
 
 const _assertExactGameModeNames: AssertExact<GameModeName, GameMode['name']> =
   true;
@@ -53,10 +54,10 @@ function gameModeEntrySchema<
 }
 
 const _gameModeSchemaObject = z.union([
-  gameModeEntrySchema(gameModes[0]),
-  gameModeEntrySchema(gameModes[1]),
-  gameModeEntrySchema(gameModes[2]),
-  gameModeEntrySchema(gameModes[3]),
+  gameModeEntrySchema(gameModes.tutorial),
+  gameModeEntrySchema(gameModes.mini),
+  gameModeEntrySchema(gameModes.standard),
+  gameModeEntrySchema(gameModes.epic),
 ]);
 
 type GameModeSchemaType = z.infer<typeof _gameModeSchemaObject>;

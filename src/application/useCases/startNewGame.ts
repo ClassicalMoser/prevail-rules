@@ -1,6 +1,5 @@
-import { gameModes } from '@entities';
 import type { GameModeName } from '@entities';
-import type { Game, GameState } from '@game';
+import type { Game } from '@game';
 import type {
   EnginePorts,
   GameStateChange,
@@ -27,43 +26,9 @@ export const startNewGame = async (
   newGame: NewGame,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> => {
-  let gameState: GameState;
-  switch (gameMode) {
-    case 'tutorial': {
-      gameState = createEmptyGameState('tutorial');
-      break;
-    }
-    case 'mini': {
-      gameState = createEmptyGameState('mini');
-      break;
-    }
-    case 'standard': {
-      gameState = createEmptyGameState('standard');
-      break;
-    }
-    case 'epic': {
-      gameState = createEmptyGameState('epic');
-      break;
-    }
-    default: {
-      const _exhaustive: never = gameMode;
-      throw new Error(`Unknown gameMode: ${_exhaustive}`);
-    }
-  }
-
-  const boardSize = gameModes.find(
-    (gameModeObject) => gameModeObject.name === gameMode,
-  )?.boardSize;
-
-  if (boardSize === undefined) {
-    throw new Error(`Game mode ${gameMode} missing board size definition!`);
-  }
-
-  if (gameState.boardState.boardType !== boardSize) {
-    throw new Error(
-      `Empty game state board size ${gameState.boardState.boardType} does not match mode ${gameMode} (${boardSize}).`,
-    );
-  }
+  // The mode catalog says which board it is played on; the game is then
+  // checked against the same catalog by `parseLegalGameForMode`.
+  const gameState = createEmptyGameState(gameMode);
 
   const candidate: Game = { ...newGame, gameMode, gameState };
   const legal = parseLegalGameForMode(gameMode, candidate);

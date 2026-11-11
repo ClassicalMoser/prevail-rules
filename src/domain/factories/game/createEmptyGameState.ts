@@ -60,14 +60,13 @@ export function createEmptyGameState(
   name: GameModeName,
 ): AuthoritativeGameState {
   // The mode catalog is the one place a mode's board size is written down;
-  // the game rules check a game's board against the same catalog.
-  const mode = gameModes.find((entry) => entry.name === name);
-  // GameModeName is a closed catalog; this keeps a drifted value from building a shell.
-  if (!mode) {
+  // the game rules check a game's board against the same catalog. A mode name
+  // enters a game here, so a drifted value is refused here.
+  if (!Object.hasOwn(gameModes, name)) {
     throw new Error(`Unknown gameMode: ${name}`);
   }
   // Lay out an empty board of the size that mode is played on.
-  const board = emptyBoardBySize[mode.boardSize]();
+  const board = emptyBoardBySize[gameModes[name].boardSize]();
   const gameState = shell(board);
   return gameState;
 }
