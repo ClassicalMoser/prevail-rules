@@ -146,7 +146,17 @@ for an atomic choice or named root atoms for a compound one. Follow-ups that
 depend on a selection stay on their own helpers — `getLegalUnitMoves` (every
 ending with a path to it), `findLegalMoveDeltas` (the next step or turn of a
 path being written), `getLegalRangedAttackTargets`,
-`getLegalLineEndsForIssueCommand`.
+`getLegalLineEndsForIssueCommand`, `getSupportPlacementOffer`.
+
+A choice too large to list whole is offered a part at a time, as a
+`PartOffer` (`@utils`): the parts that may come next after the parts chosen
+so far, and whether the choice may stop there. A rule that binds the whole
+choice is a stopping rule: a move owes its squaring turn (§6.2.3), and a
+player must fill any support place an uncovered unit could take (§10.4.5).
+The validator walks the submitted choice through the same offers with
+`findRefusedPart` and only words the refusal, so a client is never refused
+by a rule its offers did not show. Moves (`findLegalMoveDeltas`) and unit
+support (`getSupportPlacementOffer`) are offered this way.
 
 ## How they fit
 

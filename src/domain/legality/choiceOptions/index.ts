@@ -1,8 +1,13 @@
 export {
   combineSupportCategoriesFromHand,
+  describeRefusedSupportPlacement,
+  describeSupportPool,
   getLegalAssignUnitSupport,
+  getSupportPlacementOffer,
+  isSameSupportPlacement,
   type LegalAssignUnitSupport,
   type LegalSupportCategory,
+  type SupportPlacement,
 } from './assignUnitSupport';
 export { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 export { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';

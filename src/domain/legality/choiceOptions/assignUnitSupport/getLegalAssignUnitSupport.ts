@@ -23,11 +23,11 @@ export interface LegalSupportCategory {
  * Atomic assign-unit-support options for UI and validation after rally.
  *
  * Categories are summed from the hand by support kind (type / trait / generic).
- * Does not expand assignment combinations — callers assign up to `count`
- * eligible units per category; {@link isValidAssignUnitSupportEvent} checks
- * integrity and **local maximality** (no unused slot may still cover an
- * uncovered unit; uncoverable units then rout on apply). Global allocation
- * optimality is not required.
+ * Does not expand assignment combinations — callers fill places one unit at a
+ * time from {@link getSupportPlacementOffer}, which holds the rules of
+ * capacity, one place per unit and **local maximality** (no unused slot may
+ * still cover an uncovered unit; uncoverable units then rout on apply).
+ * Global allocation optimality is not required.
  *
  * `null` when assign-unit-support is not expected (wrong step / visibility).
  */
