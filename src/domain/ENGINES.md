@@ -36,11 +36,16 @@ const newState = applyEvent(event, currentState);
 **Function:** `validatePlayerChoice(event: PlayerChoiceEvent, state: GameState): ValidationResult`
 
 Asks two separate questions in order: is this choice **expected**, from
-`getExpectedEvent` — the choice type, the player, and the event number the
-round is up to — and is it **legal**, by membership against the same
+`getExpectedEvent` — the choice type and the player — and is it **legal**, by membership against the same
 `@legality` enumerators that build the option payloads. Between the two, the
 event is parsed against its schema, so the legality check reads a well-formed
 payload. A failure at any step returns a reason.
+
+The event number is not judged here. `expectedEventNumber` says what the next
+event will take, and the caller stamps events with it. That keeps the engine
+out of arrival order: two players choosing their cards at the same moment
+(§4.1.1) cannot both know the number their own choice will take, so the engine
+accepts a choice it expects whatever number it carries.
 
 It never throws. Queries beneath it do, so it wraps them and turns a throw into
 an `errorReason`. Everything a caller needs is in the returned

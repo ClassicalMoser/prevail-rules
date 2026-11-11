@@ -124,39 +124,4 @@ describe('validatePlayerChoice function', () => {
     expect(validation.errorReason).toContain('chooseCard');
     expect(validation.errorReason).toContain('moveCommander');
   });
-
-  it('accepts a choice numbered as the next event in the round', () => {
-    // Nothing has happened yet this round, so black's card choice is event 0.
-    const state = stateInPlayCardsChooseCards();
-    const event = createChooseCardEvent({
-      card: tempCommandCards[2],
-      eventNumber: 0,
-      player: 'black',
-    });
-
-    const validation = validatePlayerChoice(event, state);
-
-    expect(validation.result).toBe(true);
-  });
-
-  it('refuses a choice numbered other than the next event in the round', () => {
-    // The same choice, but numbered as if events had happened that have not:
-    // stored as it is, it would leave a gap in the round's record.
-    const state = stateInPlayCardsChooseCards();
-    const event = createChooseCardEvent({
-      card: tempCommandCards[2],
-      eventNumber: 5,
-      player: 'black',
-    });
-
-    const validation = validatePlayerChoice(event, state);
-
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    // The reason names both the number given and the one due.
-    expect(validation.errorReason).toContain('5');
-    expect(validation.errorReason).toContain('0');
-  });
 });

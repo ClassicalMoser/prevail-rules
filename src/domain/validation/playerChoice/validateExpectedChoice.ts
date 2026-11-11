@@ -1,6 +1,10 @@
 import type { PlayerSide } from '@entities';
 import type { ValidationResult } from '@utils';
-import type { ExpectedEvent, PlayerChoiceEvent, PlayerSource } from '@events';
+import type {
+  ExpectedEventInfo,
+  PlayerChoiceEvent,
+  PlayerSource,
+} from '@events';
 import type { GameState } from '@game';
 import { getExpectedEvent } from '@expected';
 /**
@@ -34,7 +38,7 @@ export function validateExpectedChoice(
 ): ValidationResult {
   try {
     // Get the expected event, and handle any errors that may occur
-    let expected: ExpectedEvent;
+    let expected: ExpectedEventInfo;
     try {
       expected = getExpectedEvent(state);
     } catch (error) {
@@ -74,16 +78,6 @@ export function validateExpectedChoice(
     if (!playerMatchesExpectedSource(event.player, expected.playerSource)) {
       return {
         errorReason: `Expected input from ${expected.playerSource}, not ${event.player}`,
-        result: false,
-      };
-    }
-
-    // A choice takes the next place in the round's record. Any other number
-    // would be stored as given, leaving a gap or a duplicate in the record
-    // that replaying the round depends on.
-    if (event.eventNumber !== expected.expectedEventNumber) {
-      return {
-        errorReason: `Expected event number ${expected.expectedEventNumber}, got ${event.eventNumber}`,
         result: false,
       };
     }
