@@ -20,7 +20,7 @@ const otherCard = createTestCard({ modifiers: ['attack'] });
  * IsValidCommitToMeleeEvent: membership against getLegalCommitToMeleeEvents.
  */
 describe('isValidCommitToMeleeEvent function', () => {
-  function stateWhitePendingCommit() {
+  function stateWhitePendingCommit(hand = [attackCard]) {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -30,7 +30,7 @@ describe('isValidCommitToMeleeEvent function', () => {
       white: {
         ...base.cardState.white,
         awaitingPlay: null,
-        inHand: [attackCard],
+        inHand: hand,
         inPlay: null,
       },
     });
@@ -50,6 +50,22 @@ describe('isValidCommitToMeleeEvent function', () => {
     const event = createCommitToMeleeEvent({
       committedCard: attackCard,
       modifierTypes: ['attack'],
+      player: 'white',
+    });
+
+    expect(isValidCommitToMeleeEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('accepts committing a card whichever way its stats are listed', () => {
+    // A card that gives +1 Attack and +1 Defence (§8.2) is the same card
+    // however the committing client happens to list the two stats.
+    const bothStats = createTestCard({ modifiers: ['attack', 'defense'] });
+    const state = stateWhitePendingCommit([bothStats]);
+    const event = createCommitToMeleeEvent({
+      committedCard: bothStats,
+      modifierTypes: ['defense', 'attack'],
       player: 'white',
     });
 
