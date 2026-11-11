@@ -20,7 +20,7 @@ function getExpectedRangedResolveStart(
   player: 'black' | 'white',
 ): ExpectedEventInfo {
   const legal = getLegalRangedAttackers(state);
-  if (legal === null) {
+  if (legal.attackers.length === 0) {
     return {
       actionType: 'gameEffect',
       effectType: 'completeRangedAttackCommand',
@@ -39,7 +39,7 @@ function getExpectedMovementResolveStart(
   player: 'black' | 'white',
 ): ExpectedEventInfo {
   const legal = getLegalMoveUnits(state);
-  if (legal === null) {
+  if (legal.units.length === 0) {
     return {
       actionType: 'gameEffect',
       effectType: 'completeMovementCommand',

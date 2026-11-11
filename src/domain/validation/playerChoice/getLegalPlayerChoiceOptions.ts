@@ -150,32 +150,12 @@ export type LegalPlayerChoiceOptions =
       setupUnits: LegalSetupUnits;
     });
 
-/** No support is owed to any unit: the answer when nothing is awaiting assignment. */
-function emptyAssignUnitSupport(player: PlayerSide): LegalAssignUnitSupport {
-  return { categories: [], player };
-}
-
 /** The one player who chooses, or `null` when both choose at once and no single player is meant. */
 function concretePlayer(playerSource: PlayerSource): PlayerSide | null {
   if (playerSource === 'bothPlayers') {
     return null;
   }
   return playerSource;
-}
-
-/** No unit is able to move: the answer when none can be named to move. */
-function emptyMoveUnits(player: PlayerSide): LegalMoveUnits {
-  return { player, units: [] };
-}
-
-/** No unit can shoot: the answer when no shooter can be named. */
-function emptyRangedAttackers(player: PlayerSide): LegalRangedAttackers {
-  return { attackers: [], player };
-}
-
-/** No Morale is owed: the answer when no rout discard is due. */
-function emptyRoutDiscard(player: PlayerSide): LegalRoutDiscardCards {
-  return { cardIds: [], numberToDiscard: 0, player };
 }
 
 /** No unit or space is open for placement: the answer when setup has nothing to offer. */
@@ -222,8 +202,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // support their hand's cards hold (§10.4.4); offer that support and the
       // units that match it, and the places are filled one at a time from
       // getLegalUnitSupportAssignments. Whatever is left over routs (§10.4.6).
-      const assignUnitSupport =
-        getLegalAssignUnitSupport(state) ?? emptyAssignUnitSupport(player);
+      const assignUnitSupport = getLegalAssignUnitSupport(state);
       return {
         ...base,
         assignUnitSupport,
@@ -260,8 +239,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     case 'chooseRoutDiscard': {
       // A routed unit costs its Morale, paid by discarding cards chosen freely
       // from hand (§9.3.2); offer the cards that may pay it.
-      const routDiscard =
-        getLegalRoutDiscardCards(state) ?? emptyRoutDiscard(player);
+      const routDiscard = getLegalRoutDiscardCards(state);
       return {
         ...base,
         choiceType: 'chooseRoutDiscard',
@@ -368,7 +346,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     case 'chooseMovingUnit': {
       // Each commanded unit is finished before the next begins (§4.3.9); offer
       // the units still able to move.
-      const moveUnits = getLegalMoveUnits(state) ?? emptyMoveUnits(player);
+      const moveUnits = getLegalMoveUnits(state);
       return {
         ...base,
         choiceType: 'chooseMovingUnit',
@@ -395,8 +373,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     case 'chooseShooter': {
       // A command may order several shooters, one shot at a time; offer the
       // units able to shoot.
-      const rangedAttackers =
-        getLegalRangedAttackers(state) ?? emptyRangedAttackers(player);
+      const rangedAttackers = getLegalRangedAttackers(state);
       return {
         ...base,
         choiceType: 'chooseShooter',

@@ -85,7 +85,7 @@ describe('isValidChooseShooterEvent function', () => {
     });
   });
 
-  it('refuses when no Shoot order is being carried out', () => {
+  it('throws when asked where no Shoot order is being carried out, which the expected check rules out first', () => {
     // Cards are being chosen, not orders carried out.
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
@@ -100,9 +100,10 @@ describe('isValidChooseShooterEvent function', () => {
       unit: ordered,
     });
 
-    expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
-      errorReason: 'Choosing a shooter is not expected in the current state',
-      result: false,
-    });
+    // A shooter named while cards are chosen is refused by the expected check
+    // before membership is asked; reaching here is a fault.
+    expect(() => isValidChooseShooterEvent(event, state)).toThrow(
+      'Expected issueCommands phase, got playCards',
+    );
   });
 });

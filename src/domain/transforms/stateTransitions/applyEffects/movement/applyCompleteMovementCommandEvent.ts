@@ -27,7 +27,7 @@ export function applyCompleteMovementCommandEvent<S extends GameState>(
   const provisional = updatePhaseState(state, clearedCrs);
   const legal = getLegalMoveUnits(provisional);
 
-  if (legal !== null) {
+  if (legal.units.length > 0) {
     const moverUnits = legal.units.map((entry) => entry.unit);
     const isFirstPlayer = clearedCrs.step === 'firstPlayerResolveCommands';
     return updatePhaseState(state, {

@@ -42,12 +42,6 @@ export function isValidAssignUnitSupportEvent(
   state: GameState,
 ): ValidationResult {
   const legal = getLegalAssignUnitSupport(state);
-  if (legal === null) {
-    return {
-      errorReason: 'Assign unit support is not expected in the current state',
-      result: false,
-    };
-  }
 
   if (event.player !== legal.player) {
     return {

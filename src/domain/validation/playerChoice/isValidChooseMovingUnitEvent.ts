@@ -15,13 +15,6 @@ export function isValidChooseMovingUnitEvent(
   state: GameState,
 ): ValidationResult {
   const legal = getLegalMoveUnits(state);
-  if (legal === null) {
-    return {
-      errorReason:
-        'Choosing a unit to move is not expected in the current state',
-      result: false,
-    };
-  }
 
   if (event.player !== legal.player) {
     return {

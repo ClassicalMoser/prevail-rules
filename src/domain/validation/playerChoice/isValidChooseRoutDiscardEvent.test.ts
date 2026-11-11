@@ -134,7 +134,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     expect(validation.errorReason).toContain(tempCommandCards[0].id);
   });
 
-  it('rejects when rout discard is not expected', () => {
+  it('throws when asked where no rout awaits a discard, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -144,11 +144,10 @@ describe('isValidChooseRoutDiscardEvent function', () => {
       player: 'white',
     });
 
-    const validation = isValidChooseRoutDiscardEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toMatch(/not expected/iu);
+    // A discard sent while cards are chosen is refused by the expected check
+    // before membership is asked; reaching here is a fault.
+    expect(() => isValidChooseRoutDiscardEvent(event, state)).toThrow(
+      'No rout is awaiting a discard',
+    );
   });
 });

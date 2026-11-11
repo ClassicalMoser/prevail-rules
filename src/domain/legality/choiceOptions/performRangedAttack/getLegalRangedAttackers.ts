@@ -2,6 +2,7 @@ import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   getCurrentUnitStat,
+  getIssueCommandsPhaseState,
   getOtherPlayer,
   findPositionOfUnit,
   isFriendlyUnit,
@@ -25,35 +26,40 @@ import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
  * Targets / supporters are enumerated once the shooter is named and its card
  * committed, via {@link getLegalShooterTargets} /
  * {@link getLegalRangedAttackSupporters}.
- *
- * `null` when a chooseShooter choice is not expected (or no remaining
- * unit can currently shoot at anyone).
  */
 export interface LegalRangedAttackers {
   player: PlayerSide;
-  /** Remaining commanded units that may shoot at ≥1 legal target. */
+  /**
+   * Remaining commanded units that may shoot at ≥1 legal target. Empty when
+   * none can, which ends the order with no shot taken.
+   */
   attackers: readonly UnitWithPlacement[];
 }
 
 /**
  * Returns legal ranged attackers when issueCommands awaits the start of a
  * ranged command resolution (CRS pending, remaining units, ranged card in play).
+ *
+ * Nobody able to shoot is a real answer, an empty list, and the order ends
+ * without a shot. Being asked outside the start of a ranged order is the
+ * caller's mistake and throws.
+ *
+ * @throws Error outside the issue commands phase, off a resolve step, while a
+ * command is already being resolved, or when the card in play is not a
+ * ranged attack order
  */
 export function getLegalRangedAttackers<S extends GameState>(
   gameState: S,
-): LegalRangedAttackers | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'issueCommands') {
-    return null;
-  }
+): LegalRangedAttackers {
+  const phaseState = getIssueCommandsPhaseState(gameState);
   if (
     phaseState.step !== 'firstPlayerResolveCommands' &&
     phaseState.step !== 'secondPlayerResolveCommands'
   ) {
-    return null;
+    throw new Error(`Not on a resolve commands step: ${phaseState.step}`);
   }
   if (phaseState.currentCommandResolutionState !== 'pending') {
-    return null;
+    throw new Error('A command is already being resolved');
   }
 
   const firstPlayer = gameState.currentInitiative;
@@ -64,16 +70,14 @@ export function getLegalRangedAttackers<S extends GameState>(
       : secondPlayer;
   const remainingUnits = getRemainingUnitsForPlayer(gameState, player);
 
-  if (remainingUnits.length === 0) {
-    return null;
-  }
-
   // The order is the card the player has in play, which lies face up for
   // every viewer (§4.1.2): a seat reads it as plainly as the player does. Only
   // the hand is hidden, and the order does not come from the hand.
   const inPlay = gameState.cardState[player].inPlay;
   if (inPlay === null || inPlay.command.type !== 'rangedAttack') {
-    return null;
+    throw new Error(
+      `The card ${player} has in play is not a ranged attack order`,
+    );
   }
 
   const attackers: UnitWithPlacement[] = [];
@@ -105,9 +109,6 @@ export function getLegalRangedAttackers<S extends GameState>(
     attackers.push(unitWithPlacement);
   }
 
-  if (attackers.length === 0) {
-    return null;
-  }
-
-  return { attackers, player };
+  const legal: LegalRangedAttackers = { attackers, player };
+  return legal;
 }

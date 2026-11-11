@@ -2,6 +2,7 @@ import type { PlayerSide, UnitInstance, UnitSupport } from '@entities';
 import type { GameState } from '@game';
 import {
   findOwnedPlayerCardState,
+  getCleanupPhaseState,
   getCurrentRallyResolutionState,
   getPlayerUnitsOnBoard,
   getRallyingPlayer,
@@ -29,46 +30,51 @@ export interface LegalSupportCategory {
  * still cover an uncovered unit; uncoverable units then rout on apply).
  * Global allocation optimality is not required.
  *
- * `null` when assign-unit-support is not expected (wrong step / visibility).
  */
 export interface LegalAssignUnitSupport {
   player: PlayerSide;
+  /**
+   * The unit support the hand sums to. Empty when this view cannot see the
+   * hand: an opponent's seat knows a rally is being resolved, not what its
+   * cards hold.
+   */
   categories: readonly LegalSupportCategory[];
 }
 
 /**
  * Returns support categories from the rallying player’s hand with eligible
  * board units when cleanup is awaiting unit-support assignment.
+ *
+ * Support is asked for only while a rally awaits its assignment, so being
+ * asked at any other time is the caller's mistake and throws. A hand this
+ * view cannot see is an ordinary state for a seated client, and answers with
+ * no categories.
+ *
+ * @throws Error outside cleanup, off a resolve rally step, or when the rally
+ * is not awaiting unit support
  */
 export function getLegalAssignUnitSupport<S extends GameState>(
   gameState: S,
-): LegalAssignUnitSupport | null {
+): LegalAssignUnitSupport {
   // Support is assigned in cleanup, after a rally has been resolved.
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'cleanup') {
-    return null;
-  }
-
+  const phaseState = getCleanupPhaseState(gameState);
   if (
     phaseState.step !== 'firstPlayerResolveRally' &&
     phaseState.step !== 'secondPlayerResolveRally'
   ) {
-    return null;
+    throw new Error(`Not on a resolve rally step: ${phaseState.step}`);
   }
 
   // Not yet burnt, or already assigned: nothing is due.
   if (!isAwaitingUnitSupport(getCurrentRallyResolutionState(gameState))) {
-    return null;
+    throw new Error('The rally is not awaiting unit support');
   }
 
   const player = getRallyingPlayer(gameState);
 
   // Only the rallying player's seat can see the support cards in its hand.
   const owned = findOwnedPlayerCardState(gameState.cardState, player);
-  if (owned === undefined) {
-    return null;
-  }
-  const hand = owned.inHand;
+  const hand = owned === undefined ? [] : owned.inHand;
 
   const boardUnits = [...getPlayerUnitsOnBoard(gameState, player)];
   const categories: LegalSupportCategory[] = combineSupportCategoriesFromHand(
@@ -80,5 +86,6 @@ export function getLegalAssignUnitSupport<S extends GameState>(
     unitSupport,
   }));
 
-  return { categories, player };
+  const legal: LegalAssignUnitSupport = { categories, player };
+  return legal;
 }

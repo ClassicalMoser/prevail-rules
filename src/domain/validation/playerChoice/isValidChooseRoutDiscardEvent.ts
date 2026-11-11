@@ -17,12 +17,6 @@ export function isValidChooseRoutDiscardEvent(
   state: GameState,
 ): ValidationResult {
   const legal = getLegalRoutDiscardCards(state);
-  if (legal === null) {
-    return {
-      errorReason: 'Rout discard is not expected in the current state',
-      result: false,
-    };
-  }
 
   if (event.player !== legal.player) {
     return {

@@ -27,7 +27,7 @@ export function applyCompleteRangedAttackCommandEvent<S extends GameState>(
   const provisional = updatePhaseState(state, clearedCrs);
   const legal = getLegalRangedAttackers(provisional);
 
-  if (legal !== null) {
+  if (legal.attackers.length > 0) {
     const attackerUnits = legal.attackers.map((attacker) => attacker.unit);
     const isFirstPlayer = clearedCrs.step === 'firstPlayerResolveCommands';
     return updatePhaseState(state, {

@@ -48,9 +48,6 @@ vi.mock(import('@expected'), async (importOriginal) => {
  */
 const allChoiceTypes = [
   'chooseCard',
-  'chooseShooter',
-  'chooseMovingUnit',
-  'chooseRoutDiscard',
   'chooseRetreatOption',
   'commitToMelee',
   'commitToMovement',
@@ -66,14 +63,21 @@ const allChoiceTypes = [
  * state has neither, so they cannot answer; that is a fault to throw, not an
  * empty offer.
  */
-const choicesNeedingRoundUnderWay = [
-  'chooseMeleeResolution',
-  'chooseRally',
-  'doneIssuingCommands',
-  'issueCommand',
-  'moveUnit',
-  'performRangedAttack',
-] as const satisfies readonly PlayerChoiceType[];
+const choicesNeedingRoundUnderWay: readonly (readonly [
+  PlayerChoiceType,
+  string,
+])[] = [
+  ['assignUnitSupport', 'No current phase state found'],
+  ['chooseMeleeResolution', 'No current phase state found'],
+  ['chooseMovingUnit', 'No current phase state found'],
+  ['chooseRally', 'No current phase state found'],
+  ['chooseRoutDiscard', 'No rout is awaiting a discard'],
+  ['chooseShooter', 'No current phase state found'],
+  ['doneIssuingCommands', 'No current phase state found'],
+  ['issueCommand', 'No current phase state found'],
+  ['moveUnit', 'No current phase state found'],
+  ['performRangedAttack', 'No current phase state found'],
+];
 
 /**
  * GetLegalPlayerChoiceOptions: presentation router from expected choice →
@@ -136,14 +140,14 @@ describe('getLegalPlayerChoiceOptions function', () => {
 
   it.each(choicesNeedingRoundUnderWay)(
     'throws the enumerator’s own fault for %s when no round is under way, instead of offering no options',
-    (choiceType) => {
+    (choiceType, fault) => {
       // The choice is expected, but the state has no round to read it from.
       // That is a fault in the state, not a player with nothing to choose.
       stubExpected(choiceType);
 
       expect(() =>
         getLegalPlayerChoiceOptions(createEmptyGameState('standard')),
-      ).toThrow('No current phase state found');
+      ).toThrow(fault);
     },
   );
 
@@ -317,32 +321,10 @@ describe('getLegalPlayerChoiceOptions function', () => {
             }
             break;
           }
-          case 'chooseRoutDiscard': {
-            expect(options).toMatchObject({
-              routDiscard: {
-                cardIds: [],
-                numberToDiscard: 0,
-                player: 'black',
-              },
-            });
-            break;
-          }
           case 'moveCommander': {
             expect(options).toMatchObject({
               destinations: [],
               startingCoordinate: null,
-            });
-            break;
-          }
-          case 'chooseMovingUnit': {
-            expect(options).toMatchObject({
-              moveUnits: { player: 'black', units: [] },
-            });
-            break;
-          }
-          case 'chooseShooter': {
-            expect(options).toMatchObject({
-              rangedAttackers: { attackers: [], player: 'black' },
             });
             break;
           }

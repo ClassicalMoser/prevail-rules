@@ -5,13 +5,15 @@ import { findOwnedPlayerCardState, findRoutOwingDiscard } from '@queries';
 /**
  * Atomic rout-discard options for UI and validation: which player must discard,
  * how many cards, and which hand card IDs may be chosen.
- *
- * `null` when a rout discard is not expected under this state/visibility.
  */
 export interface LegalRoutDiscardCards {
   player: PlayerSide;
   numberToDiscard: number;
-  /** Eligible card IDs from the discarding player's owned hand. */
+  /**
+   * Eligible card IDs from the discarding player's owned hand. Empty when
+   * this view cannot see that hand: an opponent's seat knows how many cards
+   * must go, but not which are held.
+   */
   cardIds: readonly string[];
 }
 
@@ -24,31 +26,35 @@ export interface LegalRoutDiscardCards {
  * {@link LegalRoutDiscardCards.cardIds}; {@link isValidChooseRoutDiscardEvent}
  * checks integrity of the committed set.
  *
- * Returns `null` when discard is not expected or the discarding player's hand
- * is hidden under this visibility.
+ * Nothing asks for a discard unless a rout is awaiting one, so being asked
+ * then is the caller's mistake and throws. A hand this view cannot see is an
+ * ordinary state for a seated client, and answers with no cards to choose from.
+ *
+ * @throws Error when no rout is awaiting a discard, or the rout has not yet
+ * worked out how many cards it costs
  */
 export function getLegalRoutDiscardCards<S extends GameState>(
   gameState: S,
-): LegalRoutDiscardCards | null {
+): LegalRoutDiscardCards {
   const routState = findRoutOwingDiscard(gameState);
-  // Nothing routing, or a rout that owes no cards, means no discard to offer.
   if (routState === undefined) {
-    return null;
+    throw new Error('No rout is awaiting a discard');
   }
   if (routState.numberToDiscard === 'pending') {
-    return null;
+    throw new Error(
+      'The rout has not yet worked out how many cards to discard',
+    );
   }
 
-  // Discarding player's hand is hidden under this visibility.
+  // Under this visibility the discarding player's hand may be hidden.
   const owned = findOwnedPlayerCardState(gameState.cardState, routState.player);
-  if (owned === undefined) {
-    return null;
-  }
-  const cardIds = owned.inHand.map((card) => card.id);
+  const cardIds =
+    owned === undefined ? [] : owned.inHand.map((card) => card.id);
 
-  return {
+  const legal: LegalRoutDiscardCards = {
     cardIds,
     numberToDiscard: routState.numberToDiscard,
     player: routState.player,
   };
+  return legal;
 }

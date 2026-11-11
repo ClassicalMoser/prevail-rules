@@ -357,14 +357,16 @@ describe('isValidAssignUnitSupportEvent function', () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
-  it('given wrong phase, is invalid', () => {
+  it('throws when asked where no rally awaits unit support, which the expected check rules out first', () => {
     const event = createAssignUnitSupportEvent({
       assignments: [],
       player: 'white',
     });
-    expect(
-      isValidAssignUnitSupportEvent(event, createEmptyGameState('standard'))
-        .result,
-    ).toBe(false);
+
+    // Support sent with no round under way is refused by the expected check
+    // before membership is asked; reaching here is a fault.
+    expect(() =>
+      isValidAssignUnitSupportEvent(event, createEmptyGameState('standard')),
+    ).toThrow('No current phase state found');
   });
 });

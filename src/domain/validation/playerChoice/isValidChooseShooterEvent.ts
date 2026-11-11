@@ -17,13 +17,6 @@ export function isValidChooseShooterEvent(
 ): ValidationResult {
   // A shooter is named only while a Shoot order waits for its next shot.
   const legal = getLegalRangedAttackers(state);
-  if (legal === null) {
-    const notExpected: ValidationResult = {
-      errorReason: 'Choosing a shooter is not expected in the current state',
-      result: false,
-    };
-    return notExpected;
-  }
 
   // Only the player carrying out the order names its shooters.
   if (event.player !== legal.player) {

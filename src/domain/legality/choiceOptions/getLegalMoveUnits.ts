@@ -2,6 +2,7 @@ import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   getBoardSpace,
+  getIssueCommandsPhaseState,
   getOtherPlayer,
   findPositionOfUnit,
   hasSingleUnit,
@@ -15,12 +16,13 @@ import {
  *
  * Destinations are not expanded here — use {@link getLegalUnitMoves} per unit.
  * `moveCommander` integrity belongs in {@link isValidMoveUnitEvent}.
- *
- * `null` when a moveUnit choice is not expected.
  */
 export interface LegalMoveUnits {
   player: PlayerSide;
-  /** Remaining commanded units that are on the board and free to start a move. */
+  /**
+   * Remaining commanded units that are on the board and free to start a move.
+   * Empty when none can, which ends the order with no move made.
+   */
   units: readonly UnitWithPlacement[];
 }
 
@@ -31,22 +33,27 @@ export interface LegalMoveUnits {
  *
  * Engaged units are excluded — they cannot legally start a move.
  * Does not enumerate destinations or moveCommander flags.
+ *
+ * Nobody able to move is a real answer, an empty list, and the order ends
+ * without a move. Being asked outside the start of a movement order is the
+ * caller's mistake and throws.
+ *
+ * @throws Error outside the issue commands phase, off a resolve step, while a
+ * command is already being resolved, or when the card in play is not a
+ * movement order
  */
 export function getLegalMoveUnits<S extends GameState>(
   gameState: S,
-): LegalMoveUnits | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'issueCommands') {
-    return null;
-  }
+): LegalMoveUnits {
+  const phaseState = getIssueCommandsPhaseState(gameState);
   if (
     phaseState.step !== 'firstPlayerResolveCommands' &&
     phaseState.step !== 'secondPlayerResolveCommands'
   ) {
-    return null;
+    throw new Error(`Not on a resolve commands step: ${phaseState.step}`);
   }
   if (phaseState.currentCommandResolutionState !== 'pending') {
-    return null;
+    throw new Error('A command is already being resolved');
   }
 
   const firstPlayer = gameState.currentInitiative;
@@ -57,16 +64,12 @@ export function getLegalMoveUnits<S extends GameState>(
       : secondPlayer;
   const remainingUnits = getRemainingUnitsForPlayer(gameState, player);
 
-  if (remainingUnits.length === 0) {
-    return null;
-  }
-
   // The order is the card the player has in play, which lies face up for
   // every viewer (§4.1.2): a seat reads it as plainly as the player does. Only
   // the hand is hidden, and the order does not come from the hand.
   const inPlay = gameState.cardState[player].inPlay;
   if (inPlay === null || inPlay.command.type !== 'movement') {
-    return null;
+    throw new Error(`The card ${player} has in play is not a movement order`);
   }
 
   const units: UnitWithPlacement[] = [];
@@ -90,9 +93,6 @@ export function getLegalMoveUnits<S extends GameState>(
     units.push({ placement, unit });
   }
 
-  if (units.length === 0) {
-    return null;
-  }
-
-  return { player, units };
+  const legal: LegalMoveUnits = { player, units };
+  return legal;
 }

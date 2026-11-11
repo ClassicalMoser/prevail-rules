@@ -82,7 +82,7 @@ describe('isValidChooseMovingUnitEvent function', () => {
     );
   });
 
-  it('refuses when no Move order is being carried out', () => {
+  it('throws when asked where no Move order is being carried out, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -92,6 +92,10 @@ describe('isValidChooseMovingUnitEvent function', () => {
       unit: ordered,
     });
 
-    expect(isValidChooseMovingUnitEvent(event, state).result).toBe(false);
+    // A unit named while cards are chosen is refused by the expected check
+    // before membership is asked; reaching here is a fault.
+    expect(() => isValidChooseMovingUnitEvent(event, state)).toThrow(
+      'Expected issueCommands phase, got playCards',
+    );
   });
 });

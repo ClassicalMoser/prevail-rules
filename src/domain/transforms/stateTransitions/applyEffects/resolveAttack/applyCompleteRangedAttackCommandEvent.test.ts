@@ -38,7 +38,7 @@ describe('applyCompleteRangedAttackCommandEvent function', () => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
-      black: { ...base.cardState.black, inPlay: createTestCard() },
+      black: { ...base.cardState.black, inPlay: rangedCard },
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     const ranged = createRangedAttackResolutionState(withCards);
