@@ -8,7 +8,7 @@ A query reports what is already the case. What a player may do is `@legality`. W
 
 Folders follow the game nouns, in the same order as the directory: `attack`, `board`, `card`, and so on. Phase readers under `sequencing/` follow `game/phases`. Substep readers follow `game/substeps`.
 
-Failure modes are per function. Do not assume every getter throws, or that every getter returns `undefined`. The table in [`validation/README.md`](../validation/README.md#contrast-with-queries) is the worked example: `getBoardSpace` throws when the coordinate is absent, and `findForwardSpace` returns `undefined` when the step leaves the board.
+A `find*` is total: it answers `undefined` for an absence, which is an ordinary answer — a step that leaves the board, a commander who has fallen, no winner yet. A `get*` insists: it throws when what it names is not there. [`sequencing/combatOutcomes/README.md`](./sequencing/combatOutcomes/README.md) sets the split out in full. The table in [`validation/README.md`](../validation/README.md#contrast-with-queries) is the worked example: `getBoardSpace` throws when the coordinate is absent, and `findForwardSpace` returns `undefined` when the step leaves the board. The `getLegal*` enumerators and the `getExpected*` builders are not readers and keep the conventions in their own layers' READMEs.
 
 ## Where to look
 
