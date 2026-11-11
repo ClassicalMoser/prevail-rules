@@ -1,6 +1,6 @@
 import type { Command, PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, getRemainingCommandsForPlayer } from '@queries';
 
 /**
  * Atomic issue-command context: which player may issue, and which remaining
@@ -42,10 +42,7 @@ export function getLegalIssueCommands<S extends GameState>(
   const secondPlayer = getOtherPlayer(firstPlayer);
   const player =
     phaseState.step === 'firstPlayerIssueCommands' ? firstPlayer : secondPlayer;
-  const commands =
-    phaseState.step === 'firstPlayerIssueCommands'
-      ? phaseState.remainingCommandsFirstPlayer
-      : phaseState.remainingCommandsSecondPlayer;
+  const commands = getRemainingCommandsForPlayer(gameState, player);
 
   if (commands.length === 0) {
     return null;

@@ -4,6 +4,7 @@ import {
   findMatchingCommand,
   getIssueCommandsPhaseState,
   isFriendlyUnit,
+  getRemainingCommandsForPlayer,
 } from '@queries';
 import {
   addUnitsToCommandedUnits,
@@ -33,9 +34,7 @@ export function applyIssueCommandEvent<S extends GameState>(
 
   // Determine if this is the first or second player
   const isFirstPlayer = player === state.currentInitiative;
-  const remainingCommands = isFirstPlayer
-    ? phaseState.remainingCommandsFirstPlayer
-    : phaseState.remainingCommandsSecondPlayer;
+  const remainingCommands = getRemainingCommandsForPlayer(state, player);
 
   // Resolve set member to remove (pre-validated: command is in remaining commands)
   const matchingCommand = findMatchingCommand(remainingCommands, command);

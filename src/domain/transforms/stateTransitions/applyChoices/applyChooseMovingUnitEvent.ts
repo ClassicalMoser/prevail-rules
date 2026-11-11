@@ -8,6 +8,7 @@ import {
   getIssueCommandsPhaseState,
   getUnitWithPlacementOnBoard,
   isSameUnitInstance,
+  getRemainingUnitsForPlayer,
 } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
@@ -27,9 +28,7 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
 
   // The order is carried out unit by unit; this one is now under way.
   const isFirstPlayer = event.player === state.currentInitiative;
-  const remaining = isFirstPlayer
-    ? phaseState.remainingUnitsFirstPlayer
-    : phaseState.remainingUnitsSecondPlayer;
+  const remaining = getRemainingUnitsForPlayer(state, event.player);
   const stillToMove = remaining.filter(
     (unit) => !isSameUnitInstance(unit, event.unit.unit).result,
   );

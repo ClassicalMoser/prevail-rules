@@ -10,6 +10,7 @@ import {
   getRangedAttackResolutionState,
   getUnitWithPlacementOnBoard,
   isSameUnitInstance,
+  getRemainingUnitsForPlayer,
 } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
@@ -48,9 +49,7 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
 
   // The shooter's side is the one acting on this order.
   const isFirstPlayer = attackingPlayer === state.currentInitiative;
-  const remainingAttacker = isFirstPlayer
-    ? currentPhaseState.remainingUnitsFirstPlayer
-    : currentPhaseState.remainingUnitsSecondPlayer;
+  const remainingAttacker = getRemainingUnitsForPlayer(state, attackingPlayer);
 
   // Each supporter has spent its own shot on this one (§7.3.4).
   const newRemainingAttacker = remainingAttacker.filter(

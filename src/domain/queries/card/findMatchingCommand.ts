@@ -9,7 +9,7 @@ import { areCommandsEqual } from './commandEquivalence';
  * @returns The matching command if found, undefined otherwise
  */
 export function findMatchingCommand(
-  commands: Command[],
+  commands: readonly Command[],
   targetCommand: Command,
 ): Command | undefined {
   const match = commands.find((command) =>

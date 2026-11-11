@@ -8,6 +8,7 @@ import {
   hasSingleUnit,
   isFriendlyUnit,
   isSameUnitInstance,
+  getRemainingUnitsForPlayer,
 } from '@queries';
 
 import { canUnitRangedAttackTarget } from './canUnitRangedAttackTarget';
@@ -68,10 +69,7 @@ export function getLegalRangedAttackSupporters(
   }
 
   const player = attacker.unit.playerSide;
-  const isFirstPlayer = player === gameState.currentInitiative;
-  const remaining = isFirstPlayer
-    ? phaseState.remainingUnitsFirstPlayer
-    : phaseState.remainingUnitsSecondPlayer;
+  const remaining = getRemainingUnitsForPlayer(gameState, player);
 
   const supporters: UnitWithPlacement[] = [];
   for (const unit of remaining) {

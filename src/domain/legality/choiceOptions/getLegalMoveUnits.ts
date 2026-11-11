@@ -6,6 +6,7 @@ import {
   findPositionOfUnit,
   hasSingleUnit,
   isFriendlyUnit,
+  getRemainingUnitsForPlayer,
 } from '@queries';
 
 /**
@@ -54,10 +55,7 @@ export function getLegalMoveUnits<S extends GameState>(
     phaseState.step === 'firstPlayerResolveCommands'
       ? firstPlayer
       : secondPlayer;
-  const remainingUnits =
-    phaseState.step === 'firstPlayerResolveCommands'
-      ? phaseState.remainingUnitsFirstPlayer
-      : phaseState.remainingUnitsSecondPlayer;
+  const remainingUnits = getRemainingUnitsForPlayer(gameState, player);
 
   if (remainingUnits.length === 0) {
     return null;

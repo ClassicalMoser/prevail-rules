@@ -1,7 +1,7 @@
 import type { DoneIssuingCommandsEvent } from '@events';
 import type { GameState } from '@game';
 import { createDoneIssuingCommandsEvent } from '@factories';
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, getRemainingCommandsForPlayer } from '@queries';
 
 /**
  * Legal `doneIssuingCommands` events for the active issue step.
@@ -29,10 +29,7 @@ export function getLegalDoneIssuingCommandsEvents(
   const secondPlayer = getOtherPlayer(firstPlayer);
   const player =
     phaseState.step === 'firstPlayerIssueCommands' ? firstPlayer : secondPlayer;
-  const remaining =
-    phaseState.step === 'firstPlayerIssueCommands'
-      ? phaseState.remainingCommandsFirstPlayer
-      : phaseState.remainingCommandsSecondPlayer;
+  const remaining = getRemainingCommandsForPlayer(gameState, player);
 
   if (remaining.length === 0) {
     return null;

@@ -5,6 +5,7 @@ import {
   getOtherPlayer,
   findPositionOfUnit,
   isFriendlyUnit,
+  getRemainingUnitsForPlayer,
 } from '@queries';
 
 import { isUnengagedUnit } from './canUnitRangedAttackTarget';
@@ -61,10 +62,7 @@ export function getLegalRangedAttackers<S extends GameState>(
     phaseState.step === 'firstPlayerResolveCommands'
       ? firstPlayer
       : secondPlayer;
-  const remainingUnits =
-    phaseState.step === 'firstPlayerResolveCommands'
-      ? phaseState.remainingUnitsFirstPlayer
-      : phaseState.remainingUnitsSecondPlayer;
+  const remainingUnits = getRemainingUnitsForPlayer(gameState, player);
 
   if (remainingUnits.length === 0) {
     return null;
