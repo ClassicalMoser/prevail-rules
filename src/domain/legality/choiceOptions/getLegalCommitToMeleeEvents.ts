@@ -3,7 +3,7 @@ import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { meleeModifierTypes } from '@events';
 import { createCommitToMeleeEvent } from '@factories';
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, findMeleeResolutionState } from '@queries';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -16,17 +16,11 @@ import { getCommitmentOffers } from './commitment';
 function pendingCommitPlayer<S extends GameState>(
   gameState: S,
 ): PlayerSide | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (
-    phaseState === 'none' ||
-    phaseState.phase !== 'resolveMelee' ||
-    phaseState.step !== 'resolveMelee' ||
-    phaseState.currentMeleeResolutionState === 'pending'
-  ) {
+  // A commitment is owed only while a melee is being fought.
+  const meleeState = findMeleeResolutionState(gameState);
+  if (meleeState === undefined) {
     return null;
   }
-
-  const meleeState = phaseState.currentMeleeResolutionState;
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 

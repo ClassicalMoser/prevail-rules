@@ -2,7 +2,7 @@ import type { PlayerSide } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import { createChooseWhetherToRetreatEvent } from '@factories';
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, findFrontEngagementStateFromMovement } from '@queries';
 
 /**
  * Defending player when a front engagement is awaiting chooseWhetherToRetreat:
@@ -11,27 +11,14 @@ import { getOtherPlayer } from '@queries';
 function pendingWhetherToRetreatPlayer<S extends GameState>(
   gameState: S,
 ): PlayerSide | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (
-    phaseState === 'none' ||
-    phaseState.phase !== 'issueCommands' ||
-    phaseState.currentCommandResolutionState === 'pending'
-  ) {
+  // Only a front engagement offers the defender the chance to fall back
+  // (§6.3.2).
+  const front = findFrontEngagementStateFromMovement(gameState);
+  if (front === undefined) {
     return null;
   }
 
-  const crs = phaseState.currentCommandResolutionState;
-  if (crs.commandResolutionType !== 'movement') {
-    return null;
-  }
-  if (crs.engagementState === 'pending') {
-    return null;
-  }
-
-  const engagement = crs.engagementState.engagementResolutionState;
-  if (engagement.engagementType !== 'front') {
-    return null;
-  }
+  const engagement = front.engagementResolutionState;
   if (engagement.defensiveCommitment.commitmentType === 'pending') {
     return null;
   }
@@ -42,7 +29,7 @@ function pendingWhetherToRetreatPlayer<S extends GameState>(
     return null;
   }
 
-  return getOtherPlayer(crs.engagementState.engagingUnit.playerSide);
+  return getOtherPlayer(front.engagingUnit.playerSide);
 }
 
 /**

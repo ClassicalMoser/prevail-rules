@@ -3,7 +3,7 @@ import type { CommitToMovementEvent } from '@events';
 import type { GameState } from '@game';
 import { movementModifierTypes } from '@events';
 import { createCommitToMovementEvent } from '@factories';
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, findMovementResolutionState } from '@queries';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -13,17 +13,9 @@ import { getCommitmentOffers } from './commitment';
 function pendingCommitPlayer<S extends GameState>(
   gameState: S,
 ): PlayerSide | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (
-    phaseState === 'none' ||
-    phaseState.phase !== 'issueCommands' ||
-    phaseState.currentCommandResolutionState === 'pending'
-  ) {
-    return null;
-  }
-
-  const crs = phaseState.currentCommandResolutionState;
-  if (crs.commandResolutionType !== 'movement') {
+  // A commitment is owed only while a movement is being carried out.
+  const crs = findMovementResolutionState(gameState);
+  if (crs === undefined) {
     return null;
   }
 

@@ -3,6 +3,7 @@ import type { CommitToRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import { rangedAttackModifierTypes } from '@events';
 import { createCommitToRangedAttackEvent } from '@factories';
+import { findRangedAttackResolutionState } from '@queries';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -12,18 +13,9 @@ import { getCommitmentOffers } from './commitment';
  * choice (`commitToRangedDefense`).
  */
 function pendingShooter<S extends GameState>(gameState: S): PlayerSide | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
   // Shots are taken only while a Shoot order is being carried out.
-  if (
-    phaseState === 'none' ||
-    phaseState.phase !== 'issueCommands' ||
-    phaseState.currentCommandResolutionState === 'pending'
-  ) {
-    return null;
-  }
-
-  const resolution = phaseState.currentCommandResolutionState;
-  if (resolution.commandResolutionType !== 'rangedAttack') {
+  const resolution = findRangedAttackResolutionState(gameState);
+  if (resolution === undefined) {
     return null;
   }
 

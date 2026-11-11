@@ -1,6 +1,10 @@
 import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { getPositionOfUnit, modifiersFromCompletedCommitment } from '@queries';
+import {
+  getPositionOfUnit,
+  modifiersFromCompletedCommitment,
+  findRangedAttackResolutionState,
+} from '@queries';
 import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
 
 /**
@@ -33,17 +37,9 @@ export interface LegalShooterTargets {
 export function getLegalShooterTargets<S extends GameState>(
   gameState: S,
 ): LegalShooterTargets | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
   // Shots are taken only while a Shoot order is being carried out.
-  if (
-    phaseState === 'none' ||
-    phaseState.phase !== 'issueCommands' ||
-    phaseState.currentCommandResolutionState === 'pending'
-  ) {
-    return null;
-  }
-  const resolution = phaseState.currentCommandResolutionState;
-  if (resolution.commandResolutionType !== 'rangedAttack') {
+  const resolution = findRangedAttackResolutionState(gameState);
+  if (resolution === undefined) {
     return null;
   }
 
