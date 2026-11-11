@@ -218,7 +218,7 @@ first where a behaviour changed:
   `updateCardState` start from the production factory or transform.
 - Events: the projected-choice schema list is asserted against its type, and
   the list of choice types against the union of events (Section 7, scout 5).
-- Functions with no caller in 3.3 stay: `eachUnitPresentOnce`,
+- The functions in 3.3 that the game itself does not call stay: `eachUnitPresentOnce`,
   `eachCardPresentOnce`, `getEventStream` and `getRoundSnapshot` are for
   periodic integrity checks not yet implemented, or for consumers.
 
@@ -382,12 +382,12 @@ hand-rolled `hasUnitInArray`/`arrayWithoutUnit`, and the four commitment
 validators. Left:
 
 - `isValidSetupUnitsEvent` keeps its own `unitKey`. Setup is out of scope.
-- `eachUnitPresentOnce` and `eachCardPresentOnce` have no caller; the load
+- `eachUnitPresentOnce` and `eachCardPresentOnce` are not called by the game; the load
   boundary is the natural one. `eachUnitPresentOnce` ignores reserved units and
   compares identity only, which E1's design makes enough. `getEventStream` and
-  `getRoundSnapshot` have no caller: nothing rebuilds state from the stream.
-- Who may be ordered (§4.3.4, §4.3.6) is checked in `getLegalUnitsForIssueCommand`
-  and again in `canJoinLine`. They agree today. _Plausible._
+  `getRoundSnapshot` are not called by the game: nothing rebuilds state from the stream.
+- ~~Who may be ordered (§4.3.4, §4.3.6) is checked twice.~~ Closed in the
+  seventh pass: `canBeOrdered` (see 7.6).
 - `@testing`'s `updateCardState` replaces the whole card state, which
   `replaceCardState` now does in production. Done in the fifth pass: the
   fixture setter delegates to `replaceCardState`.
@@ -456,27 +456,24 @@ Closed in the fifth pass, on the author's answers:
 
 Closed in the third pass: each of the twelve listed spots was corrected, or the
 code it described was changed (the in-play card reads, the exported per-choice
-validator). One thing to check: the `openRetreatFromEngagement` fix rests on
-§6.3.2 and §9.1.5 (a front-engaged defender may fall back only where there is
-somewhere to go, and otherwise stands). The "D1 ruling" the old entry named is
-not in the RULEBOOK, so if D1 said something else about a defender with no
-retreat, that fix, and the throw it added in `applyOpenRetreatFromEngagementEvent`,
-are the ones to revisit.
+validator). The `openRetreatFromEngagement` fix rests on §6.3.2 and §9.1.5: a
+front-engaged defender may fall back only where there is somewhere to go, and
+otherwise stands. The author confirmed that reading.
 
 ---
 
 ## 5. Carried over from 2026-11-10
 
-| Item                                                 | Note                                                                                                                                                                                                                                                           |
-| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `submittedTime` on player choices as a replay record | Dropped by the author: after the audit.                                                                                                                                                                                                                        |
-| Writer question                                      | Closed: one query reads and one transform writes each slot (third pass).                                                                                                                                                                                       |
-| `createInitialGameState` has no production caller    | `startNewGame` now calls `createEmptyGameState` once. Kept for consumers.                                                                                                                                                                                      |
-| Seven `TODO` marks, each a decision for the author   | `UnitPlacement` and `createUnitWithPlacement` names; the rally rout's `'bypassed'`; whether the sequencer locates routs through `findRoutLocation`; the rout getters with no production caller; the melee apply's `player`. (The board-size lookup is closed.) |
-| Spec type assertions without the STYLE comment       | Not recounted.                                                                                                                                                                                                                                                 |
-| Headers on exported and local functions              | Not recounted.                                                                                                                                                                                                                                                 |
-| 744 spec titles beginning "should" or "given"        | STYLE.                                                                                                                                                                                                                                                         |
-| Commentary, layer by layer                           | Validation and transforms first.                                                                                                                                                                                                                               |
+| Item                                                    | Note                                                                                                                                                                                                                                                             |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `submittedTime` on player choices as a replay record    | Dropped by the author: after the audit.                                                                                                                                                                                                                          |
+| Writer question                                         | Closed: one query reads and one transform writes each slot (third pass).                                                                                                                                                                                         |
+| `createInitialGameState` is not used by the game itself | `startNewGame` now calls `createEmptyGameState` once. Kept for consumers.                                                                                                                                                                                        |
+| The `TODO` marks, each a decision for the author        | `UnitPlacement` and `createUnitWithPlacement` names; the rally rout's `'bypassed'`; whether the sequencer locates routs through `findRoutLocation`; the rout getters `findRoutLocation` replaced; the melee apply's `player`. (The board-size lookup is closed.) |
+| Spec type assertions without the STYLE comment          | Not recounted.                                                                                                                                                                                                                                                   |
+| Headers on exported and local functions                 | Not recounted.                                                                                                                                                                                                                                                   |
+| 744 spec titles beginning "should" or "given"           | STYLE.                                                                                                                                                                                                                                                           |
+| Commentary, layer by layer                              | Validation and transforms first.                                                                                                                                                                                                                                 |
 
 ---
 
@@ -614,8 +611,8 @@ what remains is only to put both readers behind one named query if they ever
 multiply.
 
 **Verdict: design risk, low; the redundancy is real.** `lostCommanders` has
-exactly one reader (`getMoveCommandersStepFrom`, which skips a fallen side's
-commander move) and one writer; board absence has five readers. They are
+one reader (`getMoveCommandersStepFrom`, which skips a fallen side's
+commander move) and one writer; board absence has several. They are
 written together in one function (`defeatCommanderWithRoutedUnit`), reached only
 from `removeUnitsLeavingUnderRout` (combat routs, correctly not the support
 check), so no production path makes them disagree. Every question
