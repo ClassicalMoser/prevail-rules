@@ -1,16 +1,18 @@
 import type { CompleteUnitMovementEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type { GameState } from '@game';
 import {
   findPositionOfUnit,
-  getIssueCommandsPhaseState,
+  getCommandingPlayer,
   getMovementResolutionState,
+  getRemainingUnitsForPlayer,
   isSamePlacement,
 } from '@queries';
 import {
   carryRidingCommander,
+  clearCommandResolution,
+  finishResolvingCommands,
   moveUnitOnBoard,
   updateBoardState,
-  updatePhaseState,
 } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
@@ -28,7 +30,6 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
   _event: CompleteUnitMovementEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
   // A move is only completed once it has been written.
   const targetPlacement = throwIfPending(
@@ -65,32 +66,13 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
       ? state
       : updateBoardState(state, boardWithMover);
 
-  const clearedCrs: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: 'pending',
-  };
-
-  if (clearedCrs.step === 'firstPlayerResolveCommands') {
-    if (clearedCrs.remainingUnitsFirstPlayer.length > 0) {
-      return updatePhaseState(stateWithMover, clearedCrs);
-    }
-    return updatePhaseState(stateWithMover, {
-      ...clearedCrs,
-      remainingUnitsFirstPlayer: [],
-      step: 'secondPlayerIssueCommands',
-    });
+  // The unit's move is done; the player's orders are finished once no
+  // ordered unit is left to move.
+  const cleared = clearCommandResolution(stateWithMover);
+  const player = getCommandingPlayer(cleared);
+  if (getRemainingUnitsForPlayer(cleared, player).length > 0) {
+    return cleared;
   }
-
-  if (clearedCrs.step === 'secondPlayerResolveCommands') {
-    if (clearedCrs.remainingUnitsSecondPlayer.length > 0) {
-      return updatePhaseState(stateWithMover, clearedCrs);
-    }
-    return updatePhaseState(stateWithMover, {
-      ...clearedCrs,
-      remainingUnitsSecondPlayer: [],
-      step: 'complete',
-    });
-  }
-
-  return updatePhaseState(stateWithMover, clearedCrs);
+  const finished = finishResolvingCommands(cleared);
+  return finished;
 }

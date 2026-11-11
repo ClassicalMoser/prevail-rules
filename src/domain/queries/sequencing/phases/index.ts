@@ -8,5 +8,10 @@ export { getIssueCommandsPhaseState } from './getIssueCommandsPhaseState';
 // Who still has something to give or to do in Phase 3, by player.
 export { getRemainingCommandsForPlayer } from './getRemainingCommandsForPlayer';
 export { getRemainingUnitsForPlayer } from './getRemainingUnitsForPlayer';
+// Whose orders the step is on, and the steps that follow issuing and carrying
+// them out.
+export { getCommandingPlayer } from './getCommandingPlayer';
+export { getResolveStepAfterIssuing } from './getResolveStepAfterIssuing';
+export { getStepAfterResolvingCommands } from './getStepAfterResolvingCommands';
 export { getResolveMeleePhaseState } from './getResolveMeleePhaseState';
 export { getCleanupPhaseState } from './getCleanupPhaseState';

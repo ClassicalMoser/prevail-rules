@@ -10,7 +10,7 @@ import { isSameUnitInstance } from './unitEquivalence';
  * @returns A new array without a value match
  */
 export function arrayWithoutUnit(
-  units: UnitInstance[],
+  units: readonly UnitInstance[],
   unit: UnitInstance,
 ): UnitInstance[] {
   const remaining = units.filter(

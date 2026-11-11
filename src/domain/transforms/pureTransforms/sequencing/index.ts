@@ -18,4 +18,16 @@ export { updateRallyResolutionState } from './updateRallyResolutionState';
 
 // The cleanup step.
 export { updateCleanupStep } from './updateCleanupStep';
+
+// Phase 3, by player: the orders and units still to go, the step, and the
+// one unit's move or shot under way.
+export { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPlayer';
+export { updateRemainingUnitsForPlayer } from './updateRemainingUnitsForPlayer';
+export { updateIssueCommandsStep } from './updateIssueCommandsStep';
+export { openCommandResolution } from './openCommandResolution';
+export { clearCommandResolution } from './clearCommandResolution';
+
+// A player starts carrying out their orders, and finishes them.
+export { beginResolvingCommands } from './beginResolvingCommands';
+export { finishResolvingCommands } from './finishResolvingCommands';
 export { updateRoutState } from './updateRoutState';

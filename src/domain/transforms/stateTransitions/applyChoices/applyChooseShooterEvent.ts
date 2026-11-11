@@ -1,16 +1,14 @@
 import type { ChooseShooterEvent } from '@events';
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  RangedAttackResolutionState,
-} from '@game';
+import type { GameState, RangedAttackResolutionState } from '@game';
 import {
-  getIssueCommandsPhaseState,
-  getUnitWithPlacementOnBoard,
-  isSameUnitInstance,
+  arrayWithoutUnit,
   getRemainingUnitsForPlayer,
+  getUnitWithPlacementOnBoard,
 } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  openCommandResolution,
+  updateRemainingUnitsForPlayer,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseShooterEvent: the named unit's shot begins (§4.3.11).
@@ -25,14 +23,9 @@ export function applyChooseShooterEvent<S extends GameState>(
   event: ChooseShooterEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
-
   // The order is carried out shot by shot; this unit's is now under way.
-  const isFirstPlayer = event.player === state.currentInitiative;
   const remaining = getRemainingUnitsForPlayer(state, event.player);
-  const stillToAct = remaining.filter(
-    (unit) => !isSameUnitInstance(unit, event.unit.unit).result,
-  );
+  const stillToAct = arrayWithoutUnit(remaining, event.unit.unit);
 
   // The event names the shooter by who it is; the unit that shoots, with the
   // stats it carries, is the one the board holds.
@@ -56,16 +49,9 @@ export function applyChooseShooterEvent<S extends GameState>(
     supportingUnits: 'pending',
   };
 
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: shot,
-    remainingUnitsFirstPlayer: isFirstPlayer
-      ? stillToAct
-      : phaseState.remainingUnitsFirstPlayer,
-    remainingUnitsSecondPlayer: isFirstPlayer
-      ? phaseState.remainingUnitsSecondPlayer
-      : stillToAct,
-  };
-  const opened = updatePhaseState(state, newPhaseState);
+  const opened = openCommandResolution(
+    updateRemainingUnitsForPlayer(state, event.player, stillToAct),
+    shot,
+  );
   return opened;
 }

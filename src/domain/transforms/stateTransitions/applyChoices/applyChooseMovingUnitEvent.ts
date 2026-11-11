@@ -1,16 +1,14 @@
 import type { ChooseMovingUnitEvent } from '@events';
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-} from '@game';
+import type { GameState, MovementResolutionState } from '@game';
 import {
-  getIssueCommandsPhaseState,
-  getUnitWithPlacementOnBoard,
-  isSameUnitInstance,
+  arrayWithoutUnit,
   getRemainingUnitsForPlayer,
+  getUnitWithPlacementOnBoard,
 } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  openCommandResolution,
+  updateRemainingUnitsForPlayer,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseMovingUnitEvent: the named unit's move begins (§4.3.10).
@@ -24,14 +22,9 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
   event: ChooseMovingUnitEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
-
   // The order is carried out unit by unit; this one is now under way.
-  const isFirstPlayer = event.player === state.currentInitiative;
   const remaining = getRemainingUnitsForPlayer(state, event.player);
-  const stillToMove = remaining.filter(
-    (unit) => !isSameUnitInstance(unit, event.unit.unit).result,
-  );
+  const stillToMove = arrayWithoutUnit(remaining, event.unit.unit);
 
   // The event names the unit by who it is; the unit that moves, with the
   // stats it carries, is the one the board holds.
@@ -50,16 +43,9 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
     targetPlacement: 'pending',
   };
 
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: movement,
-    remainingUnitsFirstPlayer: isFirstPlayer
-      ? stillToMove
-      : phaseState.remainingUnitsFirstPlayer,
-    remainingUnitsSecondPlayer: isFirstPlayer
-      ? phaseState.remainingUnitsSecondPlayer
-      : stillToMove,
-  };
-  const opened = updatePhaseState(state, newPhaseState);
+  const opened = openCommandResolution(
+    updateRemainingUnitsForPlayer(state, event.player, stillToMove),
+    movement,
+  );
   return opened;
 }

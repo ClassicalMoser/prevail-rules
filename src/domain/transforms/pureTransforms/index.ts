@@ -43,6 +43,13 @@ export {
   updateRallyResolutionState,
   updateReverseState,
   updateRoutState,
+  updateRemainingCommandsForPlayer,
+  updateRemainingUnitsForPlayer,
+  updateIssueCommandsStep,
+  openCommandResolution,
+  clearCommandResolution,
+  beginResolvingCommands,
+  finishResolvingCommands,
 } from './sequencing';
 export {
   addCompletedPhase,
@@ -50,7 +57,6 @@ export {
   updateCurrentInitiative,
   updateCurrentRoundNumber,
   updatePhaseState,
-  updateRemainingPlayerCommands,
   updateRoundEventStream,
   updateRoundState,
   updateWinner,

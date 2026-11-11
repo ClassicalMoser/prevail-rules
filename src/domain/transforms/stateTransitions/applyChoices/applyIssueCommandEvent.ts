@@ -1,24 +1,22 @@
 import type { IssueCommandEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type { GameState } from '@game';
 import {
   findMatchingCommand,
-  getIssueCommandsPhaseState,
   getLineBetweenEnds,
-  isFriendlyUnit,
   getRemainingCommandsForPlayer,
 } from '@queries';
 import {
   addUnitsToCommandedUnits,
-  updatePhaseState,
-  updateRemainingPlayerCommands,
+  beginResolvingCommands,
+  updateRemainingCommandsForPlayer,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies an IssueCommandEvent to the game state.
  * Removes the command from remaining commands and adds the units it orders,
  * or the line between its two ends, to commandedUnits.
- * When that player's remaining commands are exhausted on their issue step, advances
- * to the matching resolve-commands step and seeds `remainingUnits*` for resolution.
+ * When that player's remaining commands are exhausted on their issue step, they
+ * move on to carrying their orders out.
  * Event is assumed pre-validated (issueCommands phase, command in that player's remaining commands).
  *
  * @param event - The issue command event to apply
@@ -29,7 +27,6 @@ export function applyIssueCommandEvent<S extends GameState>(
   event: IssueCommandEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
   const { player } = event;
   const { command, selection } = event;
 
@@ -45,60 +42,24 @@ export function applyIssueCommandEvent<S extends GameState>(
           state.currentRoundState.commandedUnits,
         ).map((member) => member.unit);
 
-  // Determine if this is the first or second player
-  const isFirstPlayer = player === state.currentInitiative;
+  // The order is spent, whichever of the player's orders it matched.
   const remainingCommands = getRemainingCommandsForPlayer(state, player);
-
-  // Resolve set member to remove (pre-validated: command is in remaining commands)
   const matchingCommand = findMatchingCommand(remainingCommands, command);
   if (matchingCommand === undefined) {
     throw new Error(
       'applyIssueCommandEvent: command not found in remaining commands',
     );
   }
+  const commandsLeft = remainingCommands.filter((c) => c !== matchingCommand);
 
-  // Remove the matching command from remaining commands (by reference)
-  const newRemainingCommands = remainingCommands.filter(
-    (c) => c !== matchingCommand,
-  );
+  // The units it orders are ordered for the round (§4.3.6).
+  const ordered = addUnitsToCommandedUnits(state, units);
+  const spent = updateRemainingCommandsForPlayer(ordered, player, commandsLeft);
 
-  // Update phase state with new remaining commands
-  let newPhaseState: IssueCommandsPhaseState = updateRemainingPlayerCommands(
-    phaseState,
-    player,
-    state.currentInitiative,
-    newRemainingCommands,
-  );
-
-  if (newRemainingCommands.length === 0) {
-    const remainingUnits = [
-      ...state.currentRoundState.commandedUnits.filter((unit) => {
-        const belongsToPlayer = isFriendlyUnit(unit, player);
-        return belongsToPlayer;
-      }),
-      ...units,
-    ];
-    if (isFirstPlayer && phaseState.step === 'firstPlayerIssueCommands') {
-      newPhaseState = {
-        ...newPhaseState,
-        remainingUnitsFirstPlayer: remainingUnits,
-        step: 'firstPlayerResolveCommands',
-      };
-    } else if (
-      !isFirstPlayer &&
-      phaseState.step === 'secondPlayerIssueCommands'
-    ) {
-      newPhaseState = {
-        ...newPhaseState,
-        remainingUnitsSecondPlayer: remainingUnits,
-        step: 'secondPlayerResolveCommands',
-      };
-    }
+  // With every order given, the player carries them out.
+  if (commandsLeft.length > 0) {
+    return spent;
   }
-
-  const stateWithPhase = updatePhaseState(state, newPhaseState);
-
-  // Add units to commandedUnits
-  const newGameState = addUnitsToCommandedUnits(stateWithPhase, units);
-  return newGameState;
+  const resolving = beginResolvingCommands(spent);
+  return resolving;
 }

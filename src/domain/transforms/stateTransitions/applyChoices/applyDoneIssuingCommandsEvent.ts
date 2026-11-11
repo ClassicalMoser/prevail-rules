@@ -1,50 +1,23 @@
 import type { DoneIssuingCommandsEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
-import { getIssueCommandsPhaseState, isFriendlyUnit } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { GameState } from '@game';
+import { getCommandingPlayer } from '@queries';
+import { beginResolvingCommands } from '@transforms/pureTransforms';
 
 /**
- * Applies a DoneIssuingCommandsEvent: clears that player's remaining command
- * slots and advances to their resolve-commands step, seeding remaining units
- * from units already commanded this round.
+ * Applies a DoneIssuingCommandsEvent: the player stops issuing orders and
+ * forfeits those left (§4.3.3), and moves on to carrying out the ones given.
  */
 export function applyDoneIssuingCommandsEvent<S extends GameState>(
   event: DoneIssuingCommandsEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
-  const { player } = event;
-  const isFirstPlayer = player === state.currentInitiative;
-  const remainingUnits = state.currentRoundState.commandedUnits.filter(
-    (unit) => {
-      const belongsToPlayer = isFriendlyUnit(unit, player);
-      return belongsToPlayer;
-    },
-  );
-
-  let newPhaseState: IssueCommandsPhaseState;
-  if (isFirstPlayer && phaseState.step === 'firstPlayerIssueCommands') {
-    newPhaseState = {
-      ...phaseState,
-      remainingCommandsFirstPlayer: [],
-      remainingUnitsFirstPlayer: remainingUnits,
-      step: 'firstPlayerResolveCommands',
-    };
-  } else if (
-    !isFirstPlayer &&
-    phaseState.step === 'secondPlayerIssueCommands'
-  ) {
-    newPhaseState = {
-      ...phaseState,
-      remainingCommandsSecondPlayer: [],
-      remainingUnitsSecondPlayer: remainingUnits,
-      step: 'secondPlayerResolveCommands',
-    };
-  } else {
+  // Only the player whose issuing step it is can stop issuing.
+  const commanding = getCommandingPlayer(state);
+  if (event.player !== commanding) {
     throw new Error(
-      `doneIssuingCommands is not valid on step ${phaseState.step} for ${player}`,
+      `doneIssuingCommands is for ${commanding}, not ${event.player}`,
     );
   }
-
-  return updatePhaseState(state, newPhaseState);
+  const resolving = beginResolvingCommands(state);
+  return resolving;
 }

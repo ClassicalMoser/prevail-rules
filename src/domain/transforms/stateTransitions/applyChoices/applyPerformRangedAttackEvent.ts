@@ -1,18 +1,16 @@
 import type { PerformRangedAttackEvent } from '@events';
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  RangedAttackResolutionState,
-} from '@game';
+import type { GameState, RangedAttackResolutionState } from '@game';
 
 import {
-  getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
   getUnitWithPlacementOnBoard,
-  isSameUnitInstance,
   getRemainingUnitsForPlayer,
+  hasUnitInArray,
 } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updateCommandResolutionState,
+  updateRemainingUnitsForPlayer,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a PerformRangedAttackEvent: the target and supporters are written
@@ -33,7 +31,6 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
   event: PerformRangedAttackEvent,
   state: S,
 ): S {
-  const currentPhaseState = getIssueCommandsPhaseState(state);
   const shot = getRangedAttackResolutionState(state);
   const attackingPlayer = event.player;
   // The event names the target and the supporters by who they are; the units
@@ -48,15 +45,11 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
   );
 
   // The shooter's side is the one acting on this order.
-  const isFirstPlayer = attackingPlayer === state.currentInitiative;
   const remainingAttacker = getRemainingUnitsForPlayer(state, attackingPlayer);
 
   // Each supporter has spent its own shot on this one (§7.3.4).
   const newRemainingAttacker = remainingAttacker.filter(
-    (unit) =>
-      !supportingUnits.some(
-        (supporter) => isSameUnitInstance(unit, supporter).result,
-      ),
+    (unit) => !hasUnitInArray(supportingUnits, unit),
   );
 
   // The shot now knows what it is aimed at; the target's commitment is next.
@@ -66,14 +59,9 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
     supportingUnits,
   };
 
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...currentPhaseState,
-    currentCommandResolutionState: aimed,
-    ...(isFirstPlayer
-      ? { remainingUnitsFirstPlayer: newRemainingAttacker }
-      : { remainingUnitsSecondPlayer: newRemainingAttacker }),
-  };
-
-  const newGameState = updatePhaseState(state, newPhaseState);
+  const newGameState = updateCommandResolutionState(
+    updateRemainingUnitsForPlayer(state, attackingPlayer, newRemainingAttacker),
+    aimed,
+  );
   return newGameState;
 }

@@ -6,6 +6,14 @@ export { getMoveCommandersStepFrom } from './phases';
 export { getIssueCommandsPhaseState } from './phases';
 export { getRemainingCommandsForPlayer } from './phases';
 export { getRemainingUnitsForPlayer } from './phases';
+export {
+  getCommandingPlayer,
+  getResolveStepAfterIssuing,
+  getStepAfterResolvingCommands,
+} from './phases';
+
+// The units one player has ordered this round.
+export { getCommandedUnitsForPlayer } from './getCommandedUnitsForPlayer';
 export { getResolveMeleePhaseState } from './phases';
 export { getCleanupPhaseState } from './phases';
 

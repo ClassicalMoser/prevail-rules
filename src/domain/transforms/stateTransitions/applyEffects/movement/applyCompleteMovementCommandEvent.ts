@@ -1,8 +1,12 @@
 import type { CompleteMovementCommandEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type { GameState } from '@game';
 import { getLegalMoveUnits } from '@legality';
-import { getIssueCommandsPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { getCommandingPlayer } from '@queries';
+import {
+  clearCommandResolution,
+  finishResolvingCommands,
+  updateRemainingUnitsForPlayer,
+} from '@transforms/pureTransforms';
 
 /**
  * Clears an in-progress movement CRS (or no-ops CRS already pending), then either:
@@ -17,45 +21,20 @@ export function applyCompleteMovementCommandEvent<S extends GameState>(
   _event: CompleteMovementCommandEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
+  // The unit's part of the order that was under way is done.
+  const cleared = clearCommandResolution(state);
 
-  const clearedCrs: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: 'pending',
-  };
-
-  const provisional = updatePhaseState(state, clearedCrs);
-  const legal = getLegalMoveUnits(provisional);
-
+  // Keep only the units that can still act on the order; with none, the
+  // player's orders are finished.
+  const legal = getLegalMoveUnits(cleared);
   if (legal.units.length > 0) {
-    const moverUnits = legal.units.map((entry) => entry.unit);
-    const isFirstPlayer = clearedCrs.step === 'firstPlayerResolveCommands';
-    return updatePhaseState(state, {
-      ...clearedCrs,
-      remainingUnitsFirstPlayer: isFirstPlayer
-        ? moverUnits
-        : clearedCrs.remainingUnitsFirstPlayer,
-      remainingUnitsSecondPlayer: isFirstPlayer
-        ? clearedCrs.remainingUnitsSecondPlayer
-        : moverUnits,
-    });
+    const stillToAct = updateRemainingUnitsForPlayer(
+      cleared,
+      getCommandingPlayer(cleared),
+      legal.units.map((entry) => entry.unit),
+    );
+    return stillToAct;
   }
-
-  if (clearedCrs.step === 'firstPlayerResolveCommands') {
-    return updatePhaseState(state, {
-      ...clearedCrs,
-      remainingUnitsFirstPlayer: [],
-      step: 'secondPlayerIssueCommands',
-    });
-  }
-
-  if (clearedCrs.step === 'secondPlayerResolveCommands') {
-    return updatePhaseState(state, {
-      ...clearedCrs,
-      remainingUnitsSecondPlayer: [],
-      step: 'complete',
-    });
-  }
-
-  return provisional;
+  const finished = finishResolvingCommands(cleared);
+  return finished;
 }
