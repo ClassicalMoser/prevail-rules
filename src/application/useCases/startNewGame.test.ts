@@ -1,5 +1,10 @@
 import type { EnginePorts, NewGame } from '@application/ports';
-import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
+import {
+  blackMiniStarterArmy,
+  blackStandardStarterArmy,
+  whiteMiniStarterArmy,
+  whiteStandardStarterArmy,
+} from '@sampleValues';
 import { defaultRandom } from '@utils';
 
 import { parseLegalGameForMode } from '../utils/parseLegalGame';
@@ -205,6 +210,39 @@ describe('startNewGame function', () => {
     // what a legal game is.
     expect(parseLegalGameForMode('mini', saved)).toMatchObject({
       result: true,
+    });
+  });
+
+  it('starts a standard game from the standard starter armies', async () => {
+    expect.hasAssertions();
+    const ports = createEnginePorts({});
+    // A legal standard game: morale of 20, three cards at each initiative,
+    // and a cost inside standard's 300.
+    const standardGame: NewGame = {
+      ...miniGame,
+      blackArmy: blackStandardStarterArmy,
+      whiteArmy: whiteStandardStarterArmy,
+    };
+
+    const outcome = await startNewGame('standard', standardGame, ports);
+
+    expect(outcome).toStrictEqual({ data: undefined, result: true });
+    expect(ports.gameStorage.saveNewGame).toHaveBeenCalledWith(
+      expect.objectContaining({ gameMode: 'standard' }),
+    );
+  });
+
+  it('refuses a mini army in a standard game, naming the rule it breaks', async () => {
+    expect.hasAssertions();
+    const ports = createEnginePorts({});
+
+    // The mini starter army is legal for mini, but standard asks for 20
+    // morale and three cards at each initiative.
+    const outcome = await startNewGame('standard', miniGame, ports);
+
+    expect(outcome).toStrictEqual({
+      errorReason: expect.stringContaining('total morale value of 20'),
+      result: false,
     });
   });
 });

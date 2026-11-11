@@ -10,7 +10,7 @@ import type { UnitType } from '@entities';
  * Each `id` is a stable UUID (not derived from the display name).
  */
 export const velites: UnitType = {
-  cost: 10,
+  cost: 6,
   id: '92a23063-1ebc-45c7-84e9-adec4bb1ffb4',
   limit: 8,
   imageUrl: 'https://example.com/velites.png',
@@ -30,7 +30,7 @@ export const velites: UnitType = {
 };
 
 export const manipularLegion: UnitType = {
-  cost: 22,
+  cost: 12,
   id: '6bb57a16-946b-4c79-b551-eb0480041c3f',
   limit: 8,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -50,7 +50,7 @@ export const manipularLegion: UnitType = {
 };
 
 export const alaeSocii: UnitType = {
-  cost: 20,
+  cost: 10,
   id: 'a75545cf-8487-460d-bd4f-207fcb7c3269',
   limit: 8,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -70,7 +70,7 @@ export const alaeSocii: UnitType = {
 };
 
 export const equites: UnitType = {
-  cost: 26,
+  cost: 14,
   id: 'a88ea489-c6f8-445f-b737-9a0e8dae1cdd',
   limit: 4,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -90,7 +90,7 @@ export const equites: UnitType = {
 };
 
 export const numidianSkirmishers: UnitType = {
-  cost: 10,
+  cost: 6,
   id: '01d30d13-e881-4979-9679-d2da6c83af8e',
   limit: 8,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -110,7 +110,7 @@ export const numidianSkirmishers: UnitType = {
 };
 
 export const numidianCavalry: UnitType = {
-  cost: 24,
+  cost: 12,
   id: 'e76f376c-9b1b-4e35-a52b-202fbd7dca51',
   limit: 4,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -130,7 +130,7 @@ export const numidianCavalry: UnitType = {
 };
 
 export const punicCitizenCavalry: UnitType = {
-  cost: 25,
+  cost: 13,
   id: '8b2e4ffb-d338-4f81-a894-2ef806976f06',
   limit: 4,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -150,7 +150,7 @@ export const punicCitizenCavalry: UnitType = {
 };
 
 export const punicCitizenSpearmen: UnitType = {
-  cost: 21,
+  cost: 12,
   id: '1c8a25b0-d326-4e0f-b65f-6df338cf3e5f',
   limit: 8,
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
@@ -170,7 +170,7 @@ export const punicCitizenSpearmen: UnitType = {
 };
 
 export const libyanSpearmen: UnitType = {
-  cost: 20,
+  cost: 10,
   id: '35650b53-3dd1-4983-a206-d3d409ba44fc',
   limit: 8,
   imageUrl: null,
@@ -190,7 +190,7 @@ export const libyanSpearmen: UnitType = {
 };
 
 export const africanVeterans: UnitType = {
-  cost: 28,
+  cost: 15,
   id: 'a66d22ea-6111-42a6-a7f1-215574cf5b51',
   limit: 4,
   imageUrl: null,
@@ -210,7 +210,7 @@ export const africanVeterans: UnitType = {
 };
 
 export const africanElephants: UnitType = {
-  cost: 45,
+  cost: 24,
   id: '9faf0f5f-fd46-46ab-8d97-a2307168255e',
   limit: 2,
   imageUrl: null,

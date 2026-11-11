@@ -1,30 +1,10 @@
 import type { Army, CommandCard, UnitCount } from '@entities';
-import { tempCommandCards } from './tempCommandCards';
+import { cardsAtInitiative } from './cardsAtInitiative';
 import { equites, manipularLegion } from './tempUnits';
 
 /**
- * Takes the first `count` sample cards at a given initiative.
- * Throws when the catalog is short, so a sample reshuffle cannot silently
- * unbalance the army's cards-per-initiative.
- */
-function cardsAtInitiative(initiative: number, count: number): CommandCard[] {
-  // Mini balances the deck by initiative value, not by printed card name.
-  const atInitiative = tempCommandCards.filter(
-    (card) => card.initiative === initiative,
-  );
-  // A short catalog would leave a side short of the mode's cards-per-initiative.
-  if (atInitiative.length < count) {
-    throw new Error(
-      `Need at least ${count} sample cards at initiative ${initiative}, found ${atInitiative.length}`,
-    );
-  }
-  const cards = atInitiative.slice(0, count);
-  return cards;
-}
-
-/**
  * Builds a starter army a side may bring to a mini game.
- * The units cost 114 and the cards 80, inside mini's 200; the units' morale
+ * The units cost 62 and the cards 64, inside mini's 200; the units' morale
  * comes to exactly mini's minimum of 10.
  */
 function makeMiniStarterArmy(id: string, name: string): Army {
