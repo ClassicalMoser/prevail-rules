@@ -50,7 +50,8 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
     ]);
   });
 
-  it('given both inPlay null at phase complete, remaining command sets are empty', () => {
+  it('throws when a player has no card in play, since every player reveals one before orders', () => {
+    // Both players reached the end of the commander moves with no card in play.
     const state = createEmptyGameState('standard');
     const withoutInPlay = updateCardState(state, {
       ...state.cardState,
@@ -62,10 +63,11 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
       step: 'complete',
     });
 
-    const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase);
-
-    expect(event.remainingCommandsFirstPlayer).toHaveLength(0);
-    expect(event.remainingCommandsSecondPlayer).toHaveLength(0);
+    // Each player's revealed card grants the round's orders (§4.1.6); none in
+    // play is a fault, not a round without orders.
+    expect(() =>
+      generateCompleteMoveCommandersPhaseEvent(stateWithPhase),
+    ).toThrow('black has no card in play');
   });
 
   it('given white initiative, white command is first-player set and black is second', () => {
@@ -98,7 +100,7 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
     const withMultiLine = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: multiLineCard },
-      white: { ...state.cardState.white, inPlay: null },
+      white: { ...state.cardState.white, inPlay: tempCommandCards[1] },
     });
     const inComplete = updatePhaseState(withMultiLine, {
       phase: MOVE_COMMANDERS_PHASE,
@@ -112,6 +114,8 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
       expectedSlot,
       expectedSlot,
     ]);
-    expect(event.remainingCommandsSecondPlayer).toStrictEqual([]);
+    expect(event.remainingCommandsSecondPlayer).toStrictEqual([
+      tempCommandCards[1].command,
+    ]);
   });
 });
