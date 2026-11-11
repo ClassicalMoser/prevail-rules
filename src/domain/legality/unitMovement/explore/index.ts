@@ -16,5 +16,10 @@ export { getTurnedState } from './getTurnedState';
 export { getStepOption } from './getStepOption';
 export { findMoveEnding } from './findMoveEnding';
 
-// Every place a move may legally end, found by walking its steps and turns.
+// Every place a move may legally end, found by walking its steps and turns
+// (`walkMoveEndings` is the one walk).
 export { exploreUnitMoves } from './exploreUnitMoves';
+export { walkMoveEndings } from './walkMoveEndings';
+
+// Whether a move can still be finished from a point in it.
+export { findEndingFrom } from './findEndingFrom';
