@@ -1,3 +1,4 @@
+import type { MoveDelta } from '@entities';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
@@ -91,6 +92,71 @@ describe('findLegalMoveDeltas function', () => {
       expect(
         findLegalMoveDeltas(gameState, unit, ['step', 'turnLeft'], 'advance'),
       ).toStrictEqual({ mayStop: true, next: [] });
+    });
+  });
+  describe('a part that leads nowhere is not offered', () => {
+    // A black unit on E-5 facing north with two points of Speed, and friendly
+    // units on D-5 and C-5 it may pass through (§6.2.5: a combined Flexibility
+    // of 6). Stepping onto D-5 and then C-5 spends all its Speed on a friend's
+    // space, and a unit may not stop on a friend's space, so no move can end
+    // after that second step.
+    const gameState = createGameState([
+      {
+        coord: 'E-5',
+        facing: 'north',
+        flexibility: 4,
+        player: 'black',
+        speed: 2,
+      },
+      {
+        coord: 'D-5',
+        facing: 'north',
+        flexibility: 4,
+        player: 'black',
+        speed: 2,
+      },
+      {
+        coord: 'C-5',
+        facing: 'north',
+        flexibility: 4,
+        player: 'black',
+        speed: 2,
+      },
+    ]);
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
+    );
+
+    it('does not offer a step whose space it could neither stop on nor move on from', () => {
+      // After passing through D-5 the unit may turn aside and stop, but
+      // stepping on to C-5 spends its last Speed where it cannot stop, so a
+      // player who took that step could never finish the move.
+      const offered = findLegalMoveDeltas(gameState, unit, ['step'], 'advance');
+      expect(offered?.next).not.toContain('step');
+    });
+
+    it('offers only parts from which the move can be finished, on every path', () => {
+      // Walk every path the offers allow, a part at a time, and require that
+      // each one ends where the move may stop. A path the offers lead into
+      // but cannot finish is the fault.
+      const stranded: string[] = [];
+      const walk = (prefix: readonly MoveDelta[]): void => {
+        const offered = findLegalMoveDeltas(gameState, unit, prefix, 'advance');
+        if (offered === undefined) {
+          stranded.push(`${prefix.join(',')} is not a path`);
+          return;
+        }
+        if (offered.next.length === 0 && !offered.mayStop) {
+          stranded.push(prefix.join(','));
+        }
+        for (const delta of offered.next) {
+          walk([...prefix, delta]);
+        }
+      };
+      walk([]);
+      // A few are enough to show the fault without listing every path.
+      expect(stranded.slice(0, 3)).toStrictEqual([]);
     });
   });
 });
