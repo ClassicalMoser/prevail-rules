@@ -109,6 +109,7 @@ export { getRangedAttackReverseState } from './combatOutcomes';
 export { getMeleeReverseState } from './combatOutcomes';
 
 // The melee retreat whose destination is chosen and whose move is not finished.
+export { findRetreatAwaitingChoice } from './combatOutcomes';
 export { findRetreatAwaitingMove } from './combatOutcomes';
 export { findRetreatAwaitingRout } from './combatOutcomes';
 export { findRetreatLocation } from './combatOutcomes';

@@ -131,6 +131,7 @@ export {
   getMeleeRoutState,
   getRangedAttackReverseState,
   getMeleeReverseState,
+  findRetreatAwaitingChoice,
   findRetreatAwaitingMove,
   findRetreatAwaitingRout,
   findRetreatLocation,

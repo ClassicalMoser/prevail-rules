@@ -491,6 +491,7 @@ export {
 } from '@queries';
 export { getExpectedEvent } from '@expected';
 export {
+  findRetreatAwaitingChoice,
   findRetreatAwaitingMove,
   findRetreatAwaitingRout,
   findRetreatLocation,

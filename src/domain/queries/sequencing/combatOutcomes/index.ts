@@ -31,6 +31,7 @@ export { getRetreatStateFromAttackApply } from './retreat';
 export { getRangedAttackRetreatState } from './retreat';
 export { getMeleeRetreatState } from './retreat';
 export { getFrontEngagementRetreatState } from './retreat';
+export { findRetreatAwaitingChoice } from './retreat';
 export { findRetreatAwaitingMove } from './retreat';
 export { findRetreatAwaitingRout } from './retreat';
 export { findRetreatLocation } from './retreat';

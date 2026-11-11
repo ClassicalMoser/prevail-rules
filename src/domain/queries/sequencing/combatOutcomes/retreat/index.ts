@@ -16,6 +16,9 @@ export { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState
 
 // Selections. A rule of the game decides which candidate is answered about.
 
+// The retreat whose owner has several ways back and has not yet chosen.
+export { findRetreatAwaitingChoice } from './findRetreatAwaitingChoice';
+
 // The retreat whose path is settled and whose move is not finished.
 export { findRetreatAwaitingMove } from './findRetreatAwaitingMove';
 
