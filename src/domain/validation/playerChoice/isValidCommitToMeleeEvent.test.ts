@@ -80,6 +80,24 @@ describe('isValidCommitToMeleeEvent function', () => {
     expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
 
+  it("rejects a card that bears a hand card's id but claims stronger stats", () => {
+    // A player holds one Attack card. Its id is legal, but the card sent
+    // lists Attack three times, which would count three times over as a
+    // melee bonus (§8.4) if it were taken at its word.
+    const state = stateWhitePendingCommit();
+    const inflated = {
+      ...attackCard,
+      modifiers: ['attack', 'attack', 'attack'] as const,
+    };
+    const event = createCommitToMeleeEvent({
+      committedCard: { ...inflated, modifiers: [...inflated.modifiers] },
+      modifierTypes: ['attack'],
+      player: 'white',
+    });
+
+    expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
+  });
+
   it('rejects when commit is not expected', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
