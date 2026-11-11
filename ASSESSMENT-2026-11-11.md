@@ -102,6 +102,41 @@ sub-folders; one primary export per file.
 Anything that needs a game-rule or design choice not listed above stops the
 run for the author. It is written down here and not guessed.
 
+**Run log (2026-11-11, first pass).** Closed, each with a failing spec first:
+
+- E1: `chooseMovingUnit`, `chooseShooter` and `performRangedAttack` store the
+  unit, and the supporters, the board holds. `getUnitWithPlacementOnBoard`
+  reads it; `moveUnitOnBoard` is the one transform that lifts a unit and sets
+  it down, and the six sites call it.
+- E2: a seat reads an opponent's order from the card in play.
+- E3: the event that ends a round is not logged in the next one.
+- E4: `modifierTypes` is gone from the four `commitTo*` events.
+- E5: no melee order is offered while a melee is under way.
+- E6: `processEvent` applies first, then records.
+- E7: `advanceEffects` and `validateExpectedChoice` use `findExpectedEvent`.
+- R1: the defender's committed card counts toward its retreat; RULEBOOK
+  §9.1.3 says so.
+- R3: `ExpectedEventInfo` names `alsoAccepted` for issue-or-stop.
+- R5: the README and two JSDoc blocks say the sequencer owns the order.
+
+Decision points left for the author, found on the way:
+
+- **E5, the throw on an empty list.** `getLegalChooseMeleeResolutionEvents`
+  still throws when no engagements remain. Its spec's header calls asking then
+  "a mistake by the caller", which reads against ENGINES' "an enumerator that
+  finds no options answers with an empty offer". Left as authored.
+- **`applyCompleteUnitMovementEvent`.** A mover that is on neither its start
+  space nor its destination is set down from nowhere. It looks unreachable and
+  is marked `TODO(wrong)`.
+- **The combatOutcomes README** described `getNextMeleeRoutState` as asking the
+  initiative player's side first; it asks the second player's. Corrected with
+  R5.
+- **Dropped or reworded specs.** The three "rejects committing with an empty
+  modifier list" cases tested only the removed field. "stops after applying
+  gameOver without re-querying expected event" no longer held and was
+  reworded. Two `performRangedAttack` specs placed no units on the board and
+  now do.
+
 ---
 
 ## 1. Defects
