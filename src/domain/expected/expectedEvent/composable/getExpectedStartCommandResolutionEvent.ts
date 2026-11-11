@@ -36,5 +36,5 @@ export function getExpectedStartCommandResolutionEvent(
       playerSource: player,
     };
   }
-  throw new Error(`Invalid command type: ${activeCard.command.type as string}`);
+  throw new Error(`Invalid command type: ${activeCard.command.type}`);
 }

@@ -65,7 +65,7 @@ export const startNewGame = async (
     blackArmy: placeholderArmy(),
     blackPlayer: placeholderId,
     gameMode,
-    gameState: gameState as GameForVisibility<'authoritative'>['gameState'],
+    gameState,
     id: placeholderId,
     whiteArmy: placeholderArmy(),
     whitePlayer: placeholderId,

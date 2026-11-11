@@ -84,7 +84,7 @@ export function applyStartEngagementEvent<S extends GameState>(
       default: {
         // Exhaustiveness check for TypeScript
         const _exhaustive: never = event.engagementType;
-        throw new Error(`Unknown engagement type: ${_exhaustive as string}`);
+        throw new Error(`Unknown engagement type: ${_exhaustive}`);
       }
     }
   })();

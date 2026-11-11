@@ -59,7 +59,7 @@ export function applyEvent<S extends GameState>(
     currentRoundState: {
       ...newState.currentRoundState,
       // Projected wire events may redact card fields; stored for local fold only.
-      events: [...newState.currentRoundState.events, event as Event],
+      events: [...newState.currentRoundState.events, event],
     },
   };
 }

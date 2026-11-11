@@ -148,9 +148,7 @@ export function generateEventFromProcedure(
 
     default: {
       const _exhaustive: never = effectType;
-      throw new Error(
-        `No procedure exists for effect type: ${_exhaustive as string}`,
-      );
+      throw new Error(`No procedure exists for effect type: ${_exhaustive}`);
     }
   }
 }

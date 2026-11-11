@@ -71,7 +71,7 @@ export function getExpectedAttackApplyStageEvent(
     }
     default: {
       const _exhaustive: never = stage;
-      throw new Error(`Unknown attack apply stage: ${_exhaustive as string}`);
+      throw new Error(`Unknown attack apply stage: ${_exhaustive}`);
     }
   }
 }
