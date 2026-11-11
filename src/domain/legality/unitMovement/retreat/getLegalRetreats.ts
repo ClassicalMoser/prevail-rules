@@ -1,4 +1,4 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { Modifier, MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { isAtPlacement } from '@queries';
 import { exploreUnitMoves } from '../explore';
@@ -16,12 +16,14 @@ import { isRetreatCutOff } from './isRetreatCutOff';
  *
  * @param unitWithPlacement - The retreating unit and where it stands
  * @param gameState - The current game state
+ * @param commitmentModifiers - What a card committed for this retreat adds (§8), if one was. A defender falling back from a front engagement may commit a card for Speed or Flexibility first (§6.3.2), and it counts toward the retreat it is weighing.
  * @returns The paths the unit may retreat by, one per ending; empty when it cannot retreat
  * @throws Error when the unit does not stand at the given placement
  */
 export function getLegalRetreats(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
+  commitmentModifiers?: Modifier[],
 ): MoveDelta[][] {
   // The caller names where the unit stands. If the board disagrees, the
   // state is faulty — that is not the rules saying "no retreat".
@@ -38,7 +40,12 @@ export function getLegalRetreats(
   }
 
   // Every legal backward move, then only the smallest of them.
-  const endings = exploreUnitMoves(gameState, unitWithPlacement, 'retreat');
+  const endings = exploreUnitMoves(
+    gameState,
+    unitWithPlacement,
+    'retreat',
+    commitmentModifiers,
+  );
   const smallest = getSmallestRetreats(endings);
   return smallest;
 }

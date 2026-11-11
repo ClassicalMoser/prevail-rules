@@ -58,10 +58,13 @@ export function generateResolveEngageRetreatOptionEvent(
 
   // The defender may fall back only if it is strictly the faster (§6.3.2),
   // and only if it has somewhere to fall back to (§9.1): a retreat it could
-  // not make is not offered, so the choice never turns into a rout.
+  // not make is not offered, so the choice never turns into a rout. The
+  // card the defender committed counts toward the retreat it is weighing,
+  // as it did toward the Speed it is compared on (§6.3.2).
   const outpacesEngager = defendingSpeed > engagingSpeed;
   const defendingUnitCanRetreat =
-    outpacesEngager && getLegalRetreats(defender, state).length > 0;
+    outpacesEngager &&
+    getLegalRetreats(defender, state, defendingCommitmentModifiers).length > 0;
 
   return {
     defendingUnitCanRetreat,

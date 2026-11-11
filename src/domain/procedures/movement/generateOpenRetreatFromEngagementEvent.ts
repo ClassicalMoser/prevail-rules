@@ -8,6 +8,7 @@ import { getLegalRetreats } from '@legality';
 import {
   getFrontEngagementStateFromMovement,
   getSingleUnitWithPlacementAtCoordinate,
+  modifiersFromCompletedCommitment,
 } from '@queries';
 
 /**
@@ -30,7 +31,17 @@ export function generateOpenRetreatFromEngagementEvent(
     state.boardState,
     engagementState.targetPlacement.coordinate,
   );
-  const retreatPaths = getLegalRetreats(defender, state);
+
+  // The card the defender committed counts toward the retreat it chose to
+  // make, as it did when the retreat was offered (§6.3.2).
+  const defendingCommitmentModifiers = modifiersFromCompletedCommitment(
+    engagementState.engagementResolutionState.defensiveCommitment,
+  );
+  const retreatPaths = getLegalRetreats(
+    defender,
+    state,
+    defendingCommitmentModifiers,
+  );
 
   const event: OpenRetreatFromEngagementEvent = {
     effectType: OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
