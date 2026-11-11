@@ -92,5 +92,16 @@ const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
   ],
 );
 
+type ProjectedPlayerChoiceEventSchemaType = z.infer<
+  typeof _projectedPlayerChoiceEventSchemaObject
+>;
+
+// Dropping a choice from the schema list above must not compile, or the wire
+// schema would refuse that choice at runtime while the type still allows it.
+const _assertExactProjectedPlayerChoiceEvent: AssertExact<
+  ProjectedPlayerChoiceEvent,
+  ProjectedPlayerChoiceEventSchemaType
+> = true;
+
 export const projectedPlayerChoiceEventSchema: z.ZodType<ProjectedPlayerChoiceEvent> =
   _projectedPlayerChoiceEventSchemaObject;

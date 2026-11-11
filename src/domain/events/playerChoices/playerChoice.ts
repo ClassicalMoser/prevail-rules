@@ -105,5 +105,12 @@ const _assertExactPlayerChoiceEvent: AssertExact<
   PlayerChoiceEventSchemaType
 > = true;
 
+// The list of choice types and the union of events name the same choices: a
+// choice added to one and not the other must not compile.
+const _assertChoiceTypesMatchEvents: AssertExact<
+  PlayerChoiceEvent['choiceType'],
+  PlayerChoiceType
+> = true;
+
 export const playerChoiceEventSchema: z.ZodType<PlayerChoiceEvent> =
   _playerChoiceEventSchemaObject;
