@@ -49,7 +49,7 @@ export function findLegalMoveDeltas(
   if (position.closing !== undefined) {
     const owed: LegalMoveDeltas = {
       mayStop: position.closing.length === 0,
-      next: new Set(position.closing.slice(0, 1)),
+      next: position.closing.slice(0, 1),
     };
     return owed;
   }
@@ -68,7 +68,7 @@ export function findLegalMoveDeltas(
 
   const offered: LegalMoveDeltas = {
     mayStop: findMoveEnding(context, state) !== undefined,
-    next,
+    next: [...next],
   };
   return offered;
 }

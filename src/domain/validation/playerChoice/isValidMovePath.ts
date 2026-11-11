@@ -1,7 +1,9 @@
 import type { Modifier, MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
+import type { LegalMoveDeltas } from '@legality';
 import type { ValidationResult } from '@utils';
 import { findLegalMoveDeltas } from '@legality';
+import { findRefusedPart, throwIfUndefined } from '@utils';
 
 /**
  * Whether a submitted path is a legal move, checked the way every
@@ -10,8 +12,8 @@ import { findLegalMoveDeltas } from '@legality';
  * and the move must be allowed to stop where the path ends — which also
  * means an oblique front approach has written its squaring turn (§6.2.3).
  *
- * Never throws: a fault in the state comes back as a refusal with its
- * message.
+ * A fault in the state throws here, where it is found, and
+ * `validatePlayerChoice` turns it into a refusal with its message.
  *
  * @param gameState - The current game state
  * @param unitWithPlacement - The moving unit and where it starts
@@ -27,44 +29,43 @@ export function isValidMovePath(
   direction: 'advance' | 'retreat',
   commitmentModifiers?: Modifier[],
 ): ValidationResult {
-  // Every move must be one of those offered after the moves before it.
-  for (const [index, delta] of path.entries()) {
-    const offered = findLegalMoveDeltas(
-      gameState,
-      unitWithPlacement,
-      path.slice(0, index),
-      direction,
-      commitmentModifiers,
+  // What may follow a run of moves already accepted. Every run the walk
+  // asks about was offered move by move, so it is always a legal start.
+  const offerAfter = (soFar: readonly MoveDelta[]): LegalMoveDeltas =>
+    throwIfUndefined(
+      findLegalMoveDeltas(
+        gameState,
+        unitWithPlacement,
+        soFar,
+        direction,
+        commitmentModifiers,
+      ),
+      'A path accepted move by move is not a legal start to a move',
     );
-    if (offered === undefined || !offered.next.has(delta)) {
-      const refused: ValidationResult = {
-        errorReason: `Move ${index + 1} (${delta}) is not one the unit may make there`,
-        result: false,
-      };
-      return refused;
-    }
+
+  // Every move must be one of those offered after the moves before it, and
+  // the move must be allowed to stop where the path ends.
+  const refused = findRefusedPart(path, offerAfter);
+  if (refused === undefined) {
+    const valid: ValidationResult = { result: true };
+    return valid;
   }
 
-  // And the move must be allowed to stop where the path ends.
-  const atEnd = findLegalMoveDeltas(
-    gameState,
-    unitWithPlacement,
-    path,
-    direction,
-    commitmentModifiers,
-  );
-  if (atEnd === undefined || !atEnd.mayStop) {
-    const stillOwed = atEnd === undefined ? [] : [...atEnd.next];
-    const cannotStop: ValidationResult = {
-      errorReason:
-        stillOwed.length === 0
-          ? 'The move may not stop there'
-          : `The move may not stop there; it may go on with ${stillOwed.join(' or ')}`,
+  if (refused.refusal === 'notOffered') {
+    const notOffered: ValidationResult = {
+      errorReason: `Move ${refused.index + 1} (${path[refused.index]}) is not one the unit may make there`,
       result: false,
     };
-    return cannotStop;
+    return notOffered;
   }
 
-  const valid: ValidationResult = { result: true };
-  return valid;
+  const stillOwed = refused.offered.next;
+  const cannotStop: ValidationResult = {
+    errorReason:
+      stillOwed.length === 0
+        ? 'The move may not stop there'
+        : `The move may not stop there; it may go on with ${stillOwed.join(' or ')}`,
+    result: false,
+  };
+  return cannotStop;
 }

@@ -27,7 +27,7 @@ describe('findLegalMoveDeltas function', () => {
       findLegalMoveDeltas(openGround, loneUnit, [], 'advance'),
     ).toStrictEqual({
       mayStop: true,
-      next: new Set(['turnLeft', 'turnRight', 'turnAbout', 'step']),
+      next: ['turnLeft', 'turnRight', 'turnAbout', 'step'],
     });
   });
 
@@ -37,7 +37,7 @@ describe('findLegalMoveDeltas function', () => {
       findLegalMoveDeltas(openGround, loneUnit, [], 'retreat'),
     ).toStrictEqual({
       mayStop: false,
-      next: new Set(['turnLeft', 'turnRight', 'step']),
+      next: ['turnLeft', 'turnRight', 'step'],
     });
   });
 
@@ -46,7 +46,7 @@ describe('findLegalMoveDeltas function', () => {
       findLegalMoveDeltas(openGround, loneUnit, ['step', 'step'], 'advance'),
     ).toStrictEqual({
       mayStop: true,
-      next: new Set(['turnLeft', 'turnRight', 'turnAbout']),
+      next: ['turnLeft', 'turnRight', 'turnAbout'],
     });
   });
 
@@ -84,13 +84,13 @@ describe('findLegalMoveDeltas function', () => {
       // §6.2.3: the move owes the turn that faces the enemy head-on.
       expect(
         findLegalMoveDeltas(gameState, unit, ['step'], 'advance'),
-      ).toStrictEqual({ mayStop: false, next: new Set(['turnLeft']) });
+      ).toStrictEqual({ mayStop: false, next: ['turnLeft'] });
     });
 
     it('once squared, nothing may follow and the move may stop', () => {
       expect(
         findLegalMoveDeltas(gameState, unit, ['step', 'turnLeft'], 'advance'),
-      ).toStrictEqual({ mayStop: true, next: new Set() });
+      ).toStrictEqual({ mayStop: true, next: [] });
     });
   });
 });
