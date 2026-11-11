@@ -5,7 +5,6 @@ export {
   chooseCard,
   chooseHiddenCard,
   discardCardsFromHand,
-  discardHiddenCardFromHand,
   discardShownCardFromHiddenHand,
   moveBothInPlayToPlayed,
   moveCardToPlayed,

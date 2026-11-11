@@ -3,7 +3,6 @@ export { burnHiddenCardFromPlayed } from './burnHiddenCardFromPlayed';
 export { chooseCard } from './chooseCard';
 export { chooseHiddenCard } from './chooseHiddenCard';
 export { discardCardsFromHand } from './discardCardsFromHand';
-export { discardHiddenCardFromHand } from './discardHiddenCardFromHand';
 export { discardShownCardFromHiddenHand } from './discardShownCardFromHiddenHand';
 export { moveBothInPlayToPlayed } from './moveBothInPlayToPlayed';
 export { moveCardToPlayed } from './moveCardToPlayed';

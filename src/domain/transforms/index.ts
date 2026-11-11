@@ -9,7 +9,6 @@ export {
   burnHiddenCardFromPlayed,
   chooseHiddenCard,
   discardCardsFromHand,
-  discardHiddenCardFromHand,
   discardShownCardFromHiddenHand,
   markPhaseAsComplete,
   moveBothInPlayToPlayed,
