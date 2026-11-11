@@ -15,6 +15,13 @@ export function getLegalChooseMeleeResolutionEvents(
     throw new Error('Not in resolve melee phase');
   }
 
+  // The order of the melees is chosen between them: while one is being
+  // fought, the next is not yet in question (§4.4.2), so nothing is offered.
+  if (phaseState.currentMeleeResolutionState !== 'pending') {
+    const underway: ChooseMeleeResolutionEvent[] = [];
+    return underway;
+  }
+
   // Get the active player
   const activePlayer = getCurrentInitiative(gameState);
 
