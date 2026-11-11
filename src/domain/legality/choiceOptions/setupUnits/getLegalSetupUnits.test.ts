@@ -47,8 +47,13 @@ describe('getLegalSetupUnits function', () => {
     );
   });
 
-  it('returns null when the player has no reserved units', () => {
+  it('throws for a side with nothing left to place, which is never asked to set up', () => {
+    // A side whose army is all on the board has set up already; the
+    // sequencer asks only a side with units in reserve.
     const state = createEmptyGameState('standard');
-    expect(getLegalSetupUnits(state, 'white')).toBeNull();
+
+    expect(() => getLegalSetupUnits(state, 'white')).toThrow(
+      'white has no units left to place',
+    );
   });
 });
