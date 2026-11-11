@@ -1,16 +1,12 @@
 import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState, IssueCommandsPhaseState } from '@game';
 import {
-  getBoardSpace,
+  findPositionOfUnit,
   getIssueCommandsPhaseState,
   getMovementResolutionState,
-  hasEngagedUnits,
-  hasSingleUnit,
-  isAtPlacement,
-  isSameUnitInstance,
+  isSamePlacement,
 } from '@queries';
 import {
-  addUnitToBoard,
   carryRidingCommander,
   moveUnitOnBoard,
   updateBoardState,
@@ -20,9 +16,9 @@ import { throwIfPending } from '@utils';
 
 /**
  * Finishes a movement command-resolution slice:
- * ensures the mover is on the target hex. An engage move leaves the mover on
- * its starting hex until now, so that hex is cleared before the unit is placed
- * on the defender. Clears CRS back to `pending`, then either waits for the
+ * ensures the mover is on the target space. An engage move leaves the mover on
+ * its starting space until now, so it is moved onto the defender here. A mover
+ * that is on neither space is a fault. Clears CRS back to `pending`, then either waits for the
  * next `moveUnit` or advances the issue-commands step when this player's
  * resolve queue is empty.
  *
@@ -39,48 +35,31 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
     movementState.targetPlacement,
     'The move has not been written yet',
   );
-  const targetPresence = getBoardSpace(
-    state.boardState,
-    targetPlacement.coordinate,
-  ).unitPresence;
-  const moverWithPlacement = movementState.movingUnit;
-  const mover = moverWithPlacement.unit;
-  const moverAlreadyPresent =
-    (hasSingleUnit(targetPresence) &&
-      isSameUnitInstance(targetPresence.unit, mover).result) ||
-    (hasEngagedUnits(targetPresence) &&
-      (isSameUnitInstance(targetPresence.primaryUnit, mover).result ||
-        isSameUnitInstance(targetPresence.secondaryUnit, mover).result));
-  // Still standing on the hex it started from. The move has not been applied.
-  const stillOnStartingHex = isAtPlacement(
-    state.boardState,
-    moverWithPlacement,
-  ).result;
-  const leavingStartingHex = stillOnStartingHex && !moverAlreadyPresent;
-  const arrival = {
-    placement: targetPlacement,
-    unit: mover,
-  };
+  const mover = movementState.movingUnit.unit;
+
+  // Where the mover stands now. An engage move leaves it on its start space
+  // until now; open ground and a rear engagement have already set it down.
+  const standing = findPositionOfUnit(state.boardState, mover);
+  if (standing === undefined) {
+    throw new Error('The moving unit is not on the board');
+  }
+  const arrived = standing.coordinate === targetPlacement.coordinate;
+  const onStart = isSamePlacement(standing, movementState.movingUnit.placement);
+  if (!arrived && !onStart) {
+    throw new Error(
+      'The moving unit is neither where it started nor where it was going',
+    );
+  }
+
   // A front or flank engagement places the mover only now; a commander
   // riding with it comes off the start space with it (§4.3.10).
-  // TODO(wrong): a mover that is neither on its start space nor already at
-  // its destination is not on the board, and is set down from nowhere. This
-  // looks unreachable (a rear engagement and open ground both place the mover
-  // before the move completes); what would settle it is a spec that reaches
-  // it, or a throw here.
-  let boardWithUnit = state.boardState;
-  if (leavingStartingHex) {
-    boardWithUnit = moveUnitOnBoard(state.boardState, mover, targetPlacement);
-  } else if (!moverAlreadyPresent) {
-    boardWithUnit = addUnitToBoard(state.boardState, arrival);
-  }
-  const boardWithMover = leavingStartingHex
-    ? carryRidingCommander(
-        boardWithUnit,
+  const boardWithMover = arrived
+    ? state.boardState
+    : carryRidingCommander(
+        moveUnitOnBoard(state.boardState, mover, targetPlacement),
         movementState,
         targetPlacement.coordinate,
-      )
-    : boardWithUnit;
+      );
   const stateWithMover =
     boardWithMover === state.boardState
       ? state
