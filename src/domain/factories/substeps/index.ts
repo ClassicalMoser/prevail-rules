@@ -3,4 +3,5 @@ export { createAttackApplyState } from './createAttackApplyState';
 
 // A rout and a retreat as they open, owing what the rules say is owed.
 export { createOpenedRoutState } from './createOpenedRoutState';
+export { createOpenedMeleeResolutionState } from './createOpenedMeleeResolutionState';
 export { createOpenedRetreatState } from './createOpenedRetreatState';

@@ -23,6 +23,11 @@ export { updateIssueCommandsStep } from './updateIssueCommandsStep';
 export { openCommandResolution } from './openCommandResolution';
 export { clearCommandResolution } from './clearCommandResolution';
 
+// Phase 4: the melee under way, and the commander moves' step.
+export { openMeleeResolution } from './openMeleeResolution';
+export { clearMeleeResolution } from './clearMeleeResolution';
+export { updateMoveCommandersStep } from './updateMoveCommandersStep';
+
 // A player starts carrying out their orders, and finishes them.
 export { beginResolvingCommands } from './beginResolvingCommands';
 export { finishResolvingCommands } from './finishResolvingCommands';

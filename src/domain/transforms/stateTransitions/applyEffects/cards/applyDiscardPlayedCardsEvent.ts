@@ -1,9 +1,8 @@
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { CleanupPhaseState, GameState } from '@game';
-import { getCleanupPhaseState } from '@queries';
+import type { GameState } from '@game';
 import {
   moveBothInPlayToPlayed,
-  updatePhaseState,
+  updateCleanupStep,
 } from '@transforms/pureTransforms';
 
 /**
@@ -22,17 +21,11 @@ export function applyDiscardPlayedCardsEvent<S extends GameState>(
   _event: DiscardPlayedCardsEvent,
   state: S,
 ): S {
-  const phaseState = getCleanupPhaseState(state);
-
+  // The played cards go to the played pile, and the rallies begin (§10.3).
   const stateWithCards = {
     ...state,
     cardState: moveBothInPlayToPlayed(state.cardState),
   };
-
-  const newPhaseState: CleanupPhaseState = {
-    ...phaseState,
-    step: 'firstPlayerChooseRally',
-  };
-
-  return updatePhaseState(stateWithCards, newPhaseState);
+  const rallying = updateCleanupStep(stateWithCards, 'firstPlayerChooseRally');
+  return rallying;
 }

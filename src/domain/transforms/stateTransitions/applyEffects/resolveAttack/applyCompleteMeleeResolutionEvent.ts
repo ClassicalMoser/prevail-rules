@@ -1,7 +1,6 @@
 import type { CompleteMeleeResolutionEvent } from '@events';
-import type { GameState, ResolveMeleePhaseState } from '@game';
-import { getResolveMeleePhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { GameState } from '@game';
+import { clearMeleeResolution } from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteMeleeResolutionEvent to the game state.
@@ -16,13 +15,7 @@ export function applyCompleteMeleeResolutionEvent<S extends GameState>(
   _event: CompleteMeleeResolutionEvent,
   state: S,
 ): S {
-  const phaseState = getResolveMeleePhaseState(state);
-
-  // Clear the current melee resolution state
-  const newPhaseState: ResolveMeleePhaseState = {
-    ...phaseState,
-    currentMeleeResolutionState: 'pending',
-  };
-
-  return updatePhaseState(state, newPhaseState);
+  // The melee is finished; the next may be chosen (§4.4.2).
+  const cleared = clearMeleeResolution(state);
+  return cleared;
 }

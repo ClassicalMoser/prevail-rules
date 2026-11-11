@@ -1,5 +1,5 @@
 import type { MoveCommanderEvent } from '@events';
-import type { GameState, MoveCommandersPhaseState } from '@game';
+import type { GameState, MoveCommandersPhaseStep } from '@game';
 import {
   getMoveCommandersPhaseState,
   getMoveCommandersStepFrom,
@@ -7,7 +7,7 @@ import {
 import {
   moveCommanderOnBoard,
   updateBoardState,
-  updatePhaseState,
+  updateMoveCommandersStep,
 } from '@transforms/pureTransforms';
 
 /**
@@ -38,16 +38,11 @@ export function applyMoveCommanderEvent<S extends GameState>(
 
   // The second player moves next, unless their commander has fallen; after
   // the second, the phase is done (§4.2.1, §4.2.8).
-  const newStep: MoveCommandersPhaseState['step'] =
+  const newStep: MoveCommandersPhaseStep =
     currentPhaseState.step === 'moveFirstCommander'
       ? getMoveCommandersStepFrom(state, 'moveSecondCommander')
       : 'complete';
-  const newPhaseState: MoveCommandersPhaseState = {
-    ...currentPhaseState,
-    step: newStep,
-  };
-
   const stateWithBoard = updateBoardState(state, addedCommanderBoard);
-  const newGameState = updatePhaseState(stateWithBoard, newPhaseState);
+  const newGameState = updateMoveCommandersStep(stateWithBoard, newStep);
   return newGameState;
 }

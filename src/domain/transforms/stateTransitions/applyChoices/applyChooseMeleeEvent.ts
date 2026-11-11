@@ -1,11 +1,6 @@
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type {
-  GameState,
-  MeleeResolutionState,
-  ResolveMeleePhaseState,
-} from '@game';
-import { getResolveMeleePhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { GameState } from '@game';
+import { openMeleeResolution } from '@transforms/pureTransforms';
 
 /** Applies the choose melee resolution event to the game state.
  * Active player chooses a space with engaged units to resolve the melee.
@@ -18,33 +13,7 @@ export function applyChooseMeleeEvent<S extends GameState>(
   event: ChooseMeleeResolutionEvent,
   state: S,
 ): S {
-  const { space } = event;
-  const currentPhaseState = getResolveMeleePhaseState(state);
-
-  // Update the remaining engagements with the space removed
-  const newRemainingEngagements = new Set(
-    [...currentPhaseState.remainingEngagements].filter((s) => s !== space),
-  );
-
-  // Create a new melee resolution state for the space chosen
-  const newMeleeResolutionState: MeleeResolutionState = {
-    completed: false,
-    firstPlayerAttackApplyState: 'pending',
-    firstPlayerCommitment: { commitmentType: 'pending' as const },
-    location: space,
-    secondPlayerAttackApplyState: 'pending',
-    secondPlayerCommitment: { commitmentType: 'pending' as const },
-    substepType: 'meleeResolution' as const,
-  };
-
-  // Update the phase state with the two new values
-  const newPhaseState: ResolveMeleePhaseState = {
-    ...currentPhaseState,
-    currentMeleeResolutionState: newMeleeResolutionState,
-    remainingEngagements: [...newRemainingEngagements],
-  };
-
-  // Return the new game state
-  const newGameState = updatePhaseState(state, newPhaseState);
-  return newGameState;
+  // Fight the chosen engagement next (§4.4.2).
+  const opened = openMeleeResolution(state, event.space);
+  return opened;
 }
