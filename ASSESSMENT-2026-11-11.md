@@ -369,10 +369,8 @@ walked to the attack apply. Left:
   (`triggerRoutFromRetreat`), and `attackType` + `defendingPlayer`
   (`completeAttackApply`). The last two make their transforms dispatch by hand.
   It is an event's public shape, so it is the author's.
-- A settled rout closes its parent four ways: inside `updateRoutState` (which
-  also advances the cleanup step), inside `updateRetreatRoutState`, only if the
-  caller remembers `closeRearEngagementWhenRouted`, and by a separate
-  `completeAttackApply` effect. _Plausible_ as a risk; not yet scouted.
+- ~~A settled rout closes its parent four ways.~~ Closed in the sixth pass:
+  see 7.1.
 - A front-engagement retreat's paths are computed twice:
   `generateResolveEngageRetreatOptionEvent` emits only a boolean, and
   `generateOpenRetreatFromEngagementEvent` computes them again.
@@ -407,11 +405,10 @@ validators. Left:
   transform tells which by re-running legality, which is how E2 reaches the
   fold. Movement has a per-unit effect. _Plausible._
 - Commander defeat is held both in `lostCommanders` and by absence from the
-  board, read from each by different queries, kept in step by one writer.
-  _Plausible, low._
+  board. Decided: keep `lostCommanders` (see 7.3).
 - The event-type lists (the `playerChoices` tuple, the 19 constants, the two
-  unions; the `gameEffects` tuple in `@ruleValues`) are kept by hand. Whether
-  dropping a union member fails typecheck is unchecked.
+  unions; the `gameEffects` tuple in `@ruleValues`) are kept by hand. Checked
+  in 7.5: the one silent drift is fixed; two design risks are left there.
 
 ### 3.5 Rules in the wrong layer
 
@@ -537,7 +534,11 @@ engagement or a rally. An attack's result stays open for `completeAttackApply`.
 Both settlers call it. The writers only write: `updateRoutState` no longer
 closes a rally or moves cleanup on, `updateRetreatRoutState` no longer closes
 the retreat, and `closeRearEngagementWhenRouted` is gone. The author called the
-closes inside the writers "the wrong closure".
+closes inside the writers "the wrong closure". Then `updateRoutState` stopped
+walking the phase, command and engagement by hand: it writes where
+`findRoutLocation` says the rout sits, the same answer `settleRout` reads. Two
+game-over fixtures had written black's rout onto white's rally, which the old
+walk allowed; they now use `createCleanupPhaseStateWithRallyRout`.
 
 **Done (sixth pass, on the author's answer).** `findRoutLocation` throws on a
 rout inside a front engagement's retreat, since a defender with nowhere to go
