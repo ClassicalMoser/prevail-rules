@@ -5,7 +5,7 @@ import {
   getBoardSpace,
   getDiagonallyAdjacentSpaces,
   findNeighbourSide,
-  getSpacesBehind,
+  getBackSpaces,
 } from '@queries/board';
 import {
   findPlayerUnitWithPosition,
@@ -33,19 +33,18 @@ export function getMeleeSupportValue(
   const unitFacing = unit.placement.facing;
   // Get the adjacent spaces
   const adjacentSpaces = getAdjacentSpaces(board, unitCoordinate);
-  // Get the spaces behind the primary unit
-  const spacesBehind = getSpacesBehind(board, unitCoordinate, unitFacing);
-  // Filter out the spaces behind the primary unit since they cannot provide support
-  const adjacentSpacesNotBehind = [...adjacentSpaces].filter(
-    (space) => !spacesBehind.has(space),
+  // A friend in one of the fighter's three back spaces lends nothing (§7.3.1).
+  const backSpaces = getBackSpaces(board, unitCoordinate, unitFacing);
+  const adjacentSpacesNotBack = [...adjacentSpaces].filter(
+    (space) => !backSpaces.has(space),
   );
 
   // Collect unengaged friendly units that can provide support;
   // - check engagement first to avoid unnecessary unit lookups
-  // - filter out spaces behind the primary unit
+  // - filter out the fighter's back spaces
   // - filter out units diagonally blocked by enemy units
   const potentialSupportUnits: UnitWithPlacement[] = [];
-  for (const space of adjacentSpacesNotBehind) {
+  for (const space of adjacentSpacesNotBack) {
     const boardSpace = getBoardSpace(board, space);
     // Skip spaces with no units or engaged units - they cannot provide support
     if (
