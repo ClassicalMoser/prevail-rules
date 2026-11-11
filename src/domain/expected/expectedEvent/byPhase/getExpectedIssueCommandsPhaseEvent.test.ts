@@ -94,8 +94,11 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
       ),
     );
 
+    // The player is asked for an order, and may instead stop and forfeit the
+    // orders left (§4.3.3): the expectation names both choices it accepts.
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
+      alsoAccepted: ['doneIssuingCommands'],
       choiceType: 'issueCommand',
       playerSource: 'black',
     });
