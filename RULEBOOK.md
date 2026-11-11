@@ -898,7 +898,7 @@ No unit prints a threshold of 0.
 
 **7.5.2** An attack will often meet more than one threshold. A unit's results come in this order: **retreat, then reverse, then rout.** In a melee the two units' results are interleaved (§7.5.6).
 
-**7.5.3 A rout comes last.** If the attack reaches the Rout threshold as well as Retreat or Reverse, the unit still falls back and turns about first, each in its place in the order, and routs last (§7.5.6). Where it goes before it leaves matters to others: the enemy it falls back from is no longer engaged and can turn about (§7.5.5), and a commander with it goes back with it (§9.1.8). At the table, a routing unit's own turn about can be skipped, since it changes nothing; its retreat cannot.
+**7.5.3 A rout comes last.** If the attack reaches the Rout threshold as well as Retreat or Reverse, the unit still falls back and turns about first, each in its place in the order, and routs last (§7.5.6). Where it goes before it leaves matters to others: the enemy it falls back from is no longer engaged and can turn about (§7.5.5), and a commander with it goes back with it (§9.1.8).
 
 **7.5.4** A unit that retreats and reverses does both, in that order: it falls back, then turns about. Falling back first is often what makes the reverse possible at all — see 7.5.5.
 

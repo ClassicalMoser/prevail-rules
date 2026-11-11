@@ -34,7 +34,7 @@ A player's act:
 
 ## Game effects (`gameEffects/`)
 
-A fact the game records. Topic folders match `procedures/` and `transforms/stateTransitions/applyEffects/`. See [`gameEffects/README.md`](./gameEffects/README.md).
+A fact the game records. A sample follows; `gameEffects/index.ts` is the full list. Topic folders match `procedures/` and `transforms/stateTransitions/applyEffects/`. See [`gameEffects/README.md`](./gameEffects/README.md).
 
 - `StartEngagementEvent`, `ResolveEngageRetreatOptionEvent`, `OpenRetreatFromEngagementEvent` and `ResolveFlankEngagementEvent` carry a move into an engagement
 - `ResolveMeleeEvent`
