@@ -4,6 +4,8 @@ export { getPlayCardsPhaseState } from './phases';
 export { getMoveCommandersPhaseState } from './phases';
 export { getMoveCommandersStepFrom } from './phases';
 export { getIssueCommandsPhaseState } from './phases';
+export { getRemainingCommandsForPlayer } from './phases';
+export { getRemainingUnitsForPlayer } from './phases';
 export { getResolveMeleePhaseState } from './phases';
 export { getCleanupPhaseState } from './phases';
 

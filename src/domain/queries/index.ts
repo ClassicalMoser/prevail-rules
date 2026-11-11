@@ -91,6 +91,8 @@ export {
   getMoveCommandersPhaseState,
   getMoveCommandersStepFrom,
   getIssueCommandsPhaseState,
+  getRemainingCommandsForPlayer,
+  getRemainingUnitsForPlayer,
   getResolveMeleePhaseState,
   getCleanupPhaseState,
   getCurrentStep,

@@ -512,6 +512,8 @@ export {
   getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
+  getRemainingCommandsForPlayer,
+  getRemainingUnitsForPlayer,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeResolutionState,
   getMoveCommandersPhaseState,
