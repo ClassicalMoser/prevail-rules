@@ -213,6 +213,31 @@ Direction (author, 2026-11-11): legality predicates that validation calls, as
 `canReverseUnit` is. Predicate versus enumerator needs more design work; the
 author has been least hands-on here. Nothing is built.
 
+Decided later the same day: a choice too large to list whole is offered a
+part at a time, as a `PartOffer` (`@utils`) of what may come next and whether
+the choice may stop; a rule that binds the whole choice is a stopping rule.
+The validator walks the submitted choice through the same offers with
+`findRefusedPart` and only words the refusal. ENGINES says so. Done:
+
+- Moves: `LegalMoveDeltas` is `PartOffer<MoveDelta>`, and `isValidMovePath`
+  walks it.
+- Unit support: `getSupportPlacementOffer` holds one place per unit, pool
+  capacity and "use what you have" (its stopping rule: the player may stop
+  exactly when nothing more is offered). The validator walks it; the reasons
+  for a refusal sit beside the offer. Pool identity in validation now uses
+  `areUnitSupportsEqual`. One message changed: a unit named twice under one
+  pool is refused as "assigned support more than once", as it is across pools.
+
+Left:
+
+- Issue command, which waits on the author: should a line order's event name
+  only its two ends, with the engine working out the rank between them? Then
+  the validator's "exactly the rank between the ends" check goes away.
+- The assignUnitSupport event groups units by pool and refuses a pool listed
+  twice. That is the event's shape, not a rule; a flat list of placements
+  would match the offer's parts. For the author.
+- The legality README's `isValidLine` still does not exist.
+
 ---
 
 ## 3. Composition and shape
