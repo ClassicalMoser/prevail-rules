@@ -93,7 +93,7 @@ describe('isValidCommitToMovementEvent function', () => {
     expect(isValidCommitToMovementEvent(event, state).result).toBe(false);
   });
 
-  it('rejects when commit is not expected', () => {
+  it('throws when no movement is being carried out, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -103,6 +103,10 @@ describe('isValidCommitToMovementEvent function', () => {
       player: 'black',
     });
 
-    expect(isValidCommitToMovementEvent(event, state).result).toBe(false);
+    // A choice sent out of turn is refused by the expected check before
+    // membership is asked; reaching here is a fault.
+    expect(() => isValidCommitToMovementEvent(event, state)).toThrow(
+      'No movement is being carried out',
+    );
   });
 });

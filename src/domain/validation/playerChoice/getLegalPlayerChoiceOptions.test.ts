@@ -44,16 +44,11 @@ vi.mock(import('@expected'), async (importOriginal) => {
 
 /**
  * Choices whose enumerators answer on a bare state: with no round under way
- * there is simply nothing to offer, so they answer "nothing".
+ * a commander is simply not on the board, and nothing is open to place, so
+ * they answer "nothing". Every other choice is asked only when it is owed, and
+ * throws when it is not.
  */
 const allChoiceTypes = [
-  'chooseCard',
-  'chooseRetreatOption',
-  'commitToMelee',
-  'commitToMovement',
-  'chooseWhetherToRetreat',
-  'commitToRangedAttack',
-  'commitToRangedDefense',
   'moveCommander',
   'setupUnits',
 ] as const satisfies readonly PlayerChoiceType[];
@@ -77,6 +72,16 @@ const choicesNeedingRoundUnderWay: readonly (readonly [
   ['issueCommand', 'No current phase state found'],
   ['moveUnit', 'No current phase state found'],
   ['performRangedAttack', 'No current phase state found'],
+  ['chooseCard', 'No current phase state found'],
+  [
+    'chooseRetreatOption',
+    'No retreat is awaiting its owner’s choice of destination',
+  ],
+  ['chooseWhetherToRetreat', 'No front engagement is being resolved'],
+  ['commitToMelee', 'No melee is being fought'],
+  ['commitToMovement', 'No movement is being carried out'],
+  ['commitToRangedAttack', 'No ranged attack is being carried out'],
+  ['commitToRangedDefense', 'No ranged attack is being carried out'],
 ];
 
 /**
@@ -295,7 +300,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.rangedAttackers.attackers).toStrictEqual([attacker]);
   });
 
-  describe('discriminant per PlayerChoiceType (soft empty when nothing is available)', () => {
+  describe('discriminant per PlayerChoiceType (an empty offer is a real answer)', () => {
     it.each(allChoiceTypes)(
       'returns choiceType %s with the expected payload shape',
       (choiceType) => {
@@ -308,19 +313,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
         expect(options?.playerSource).toBe('black');
 
         switch (choiceType) {
-          case 'chooseCard':
-          case 'chooseRetreatOption':
-          case 'chooseWhetherToRetreat':
-          case 'commitToMelee':
-          case 'commitToMovement':
-          case 'commitToRangedAttack':
-          case 'commitToRangedDefense': {
-            expect(options).toHaveProperty('events');
-            if (options && 'events' in options) {
-              expect(Array.isArray(options.events)).toBe(true);
-            }
-            break;
-          }
           case 'moveCommander': {
             expect(options).toMatchObject({
               destinations: [],

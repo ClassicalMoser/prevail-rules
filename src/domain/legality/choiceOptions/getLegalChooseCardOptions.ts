@@ -2,7 +2,7 @@ import type { PlayerSide } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { createChooseCardEvent } from '@factories';
-import { getOwnedPlayerCardState } from '@queries';
+import { getOwnedPlayerCardState, getPlayCardsPhaseState } from '@queries';
 
 function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
   const { cardState } = gameState;
@@ -43,22 +43,22 @@ function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
  * - Player-seen: only the viewing player's options (never reads the hidden hand).
  * - Spectator: no options, because neither hand is readable.
  *
- * Returns an empty array when no choose-card input is expected (wrong phase/step,
- * or every owned pending player has already committed). Does not throw for those
- * soft conditions so clients can re-enumerate after a peer commits.
+ * Nothing asks for a card outside the chooseCards step, so being asked then is
+ * the caller's mistake and throws. An empty array is a real answer when every
+ * pending player this view can read has already committed, or when nobody's
+ * hand is readable (a spectator).
  *
  * Aligns with {@link isValidChooseCardEvent} membership checks (authoritative)
  * and {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
+ *
+ * @throws Error outside the play cards phase, or off its chooseCards step
  */
 export function getLegalChooseCardOptions<S extends GameState>(
   gameState: S,
 ): ChooseCardEvent[] {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'playCards') {
-    return [];
-  }
+  const phaseState = getPlayCardsPhaseState(gameState);
   if (phaseState.step !== 'chooseCards') {
-    return [];
+    throw new Error(`Not on the chooseCards step: ${phaseState.step}`);
   }
 
   const pendingPlayers = pendingOwnedPlayers(gameState);

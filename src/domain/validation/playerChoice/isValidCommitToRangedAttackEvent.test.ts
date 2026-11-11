@@ -83,7 +83,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
   });
 
-  it('rejects when commit is not expected', () => {
+  it('throws when no ranged attack is being carried out, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -93,7 +93,11 @@ describe('isValidCommitToRangedAttackEvent function', () => {
       player: 'black',
     });
 
-    expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
+    // A choice sent out of turn is refused by the expected check before
+    // membership is asked; reaching here is a fault.
+    expect(() => isValidCommitToRangedAttackEvent(event, state)).toThrow(
+      'No ranged attack is being carried out',
+    );
   });
 
   it('accepts refusing the ranged commitment', () => {

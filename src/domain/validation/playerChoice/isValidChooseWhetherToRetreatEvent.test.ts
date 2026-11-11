@@ -72,7 +72,7 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
     expect(isValidChooseWhetherToRetreatEvent(event, state).result).toBe(false);
   });
 
-  it('rejects when the choice is not expected', () => {
+  it('throws when no defender is deciding, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -82,6 +82,10 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
       player: 'white',
     });
 
-    expect(isValidChooseWhetherToRetreatEvent(event, state).result).toBe(false);
+    // A choice sent out of turn is refused by the expected check before
+    // membership is asked; reaching here is a fault.
+    expect(() => isValidChooseWhetherToRetreatEvent(event, state)).toThrow(
+      'No front engagement is being resolved',
+    );
   });
 });

@@ -75,7 +75,7 @@ describe('isValidChooseCardEvent function', () => {
     expect(validation.errorReason).toContain(tempCommandCards[0].id);
   });
 
-  it('rejects when not in the chooseCards step', () => {
+  it('throws when asked off the chooseCards step, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
@@ -85,12 +85,10 @@ describe('isValidChooseCardEvent function', () => {
       player: 'black',
     });
 
-    const validation = isValidChooseCardEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toContain(tempCommandCards[2].id);
-    expect(validation.errorReason).toMatch(/not a legal choice/iu);
+    // A choice sent out of turn is refused by the expected check before
+    // membership is asked; reaching here is a fault.
+    expect(() => isValidChooseCardEvent(event, state)).toThrow(
+      'Not on the chooseCards step: revealCards',
+    );
   });
 });

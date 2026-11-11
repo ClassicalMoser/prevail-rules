@@ -12,17 +12,17 @@ import { getCommitmentOffers } from './commitment';
  * has, the next commitment in the shot is the target's, which is a different
  * choice (`commitToRangedDefense`).
  */
-function pendingShooter<S extends GameState>(gameState: S): PlayerSide | null {
+function pendingShooter<S extends GameState>(gameState: S): PlayerSide {
   // Shots are taken only while a Shoot order is being carried out.
   const resolution = findRangedAttackResolutionState(gameState);
   if (resolution === undefined) {
-    return null;
+    throw new Error('No ranged attack is being carried out');
   }
 
   // The shooter commits once, after it is named and before its target is
   // (§4.3.11 step 2, §7.4.5).
   if (resolution.attackingCommitment.commitmentType !== 'pending') {
-    return null;
+    throw new Error('The shooter has already committed or refused a card');
   }
   const shooter = resolution.attackingUnit.playerSide;
   return shooter;
@@ -35,18 +35,17 @@ function pendingShooter<S extends GameState>(gameState: S): PlayerSide | null {
  * (`committedCard: null`). The card counts for the whole shot — its Range
  * when the target is chosen, its Attack when the shot lands.
  *
- * Returns `[]` when the shooter's commitment is not expected. When the hand
- * is hidden, only the refuse option is returned (card commits require an
- * owned hand).
+ * Nothing asks unless the shooter's commitment is owed, so being asked then
+ * is the caller's mistake and throws. When the hand is hidden, only the
+ * refuse option is returned (card commits require an owned hand).
+ *
+ * @throws Error when no ranged attack is being carried out, or the shooter
+ * has already committed or refused
  */
 export function getLegalCommitToRangedAttackEvents<S extends GameState>(
   gameState: S,
 ): CommitToRangedAttackEvent[] {
   const player = pendingShooter(gameState);
-  if (player === null) {
-    const none: CommitToRangedAttackEvent[] = [];
-    return none;
-  }
 
   // Each card in hand naming a stat this commitment applies, then the
   // refusal, which is always open (§8.3, §8.4).

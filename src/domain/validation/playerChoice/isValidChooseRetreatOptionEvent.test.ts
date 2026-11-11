@@ -79,7 +79,7 @@ describe('isValidChooseRetreatOptionEvent function', () => {
     expect(validation.errorReason).toContain('turnAbout, step');
   });
 
-  it('rejects when no retreat choice is expected', () => {
+  it('throws when no retreat awaits a choice, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -89,6 +89,10 @@ describe('isValidChooseRetreatOptionEvent function', () => {
       path: optionA,
     });
 
-    expect(isValidChooseRetreatOptionEvent(event, state).result).toBe(false);
+    // A choice sent out of turn is refused by the expected check before
+    // membership is asked; reaching here is a fault.
+    expect(() => isValidChooseRetreatOptionEvent(event, state)).toThrow(
+      'No retreat is awaiting its owner’s choice of destination',
+    );
   });
 });

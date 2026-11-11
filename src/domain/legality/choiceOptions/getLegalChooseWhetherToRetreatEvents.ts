@@ -7,26 +7,31 @@ import { getOtherPlayer, findFrontEngagementStateFromMovement } from '@queries';
 /**
  * Defending player when a front engagement is awaiting chooseWhetherToRetreat:
  * commitment done, can retreat, decision still pending.
+ *
+ * @throws Error when any of those does not hold
  */
 function pendingWhetherToRetreatPlayer<S extends GameState>(
   gameState: S,
-): PlayerSide | null {
+): PlayerSide {
   // Only a front engagement offers the defender the chance to fall back
   // (§6.3.2).
   const front = findFrontEngagementStateFromMovement(gameState);
   if (front === undefined) {
-    return null;
+    throw new Error('No front engagement is being resolved');
   }
 
   const engagement = front.engagementResolutionState;
   if (engagement.defensiveCommitment.commitmentType === 'pending') {
-    return null;
+    throw new Error('The defender has not yet committed');
+  }
+  if (engagement.defendingUnitCanRetreat === 'pending') {
+    throw new Error('It is not yet known whether the defender can retreat');
   }
   if (engagement.defendingUnitCanRetreat !== true) {
-    return null;
+    throw new Error('The defender has nowhere to retreat to');
   }
   if (engagement.defendingUnitRetreats !== 'pending') {
-    return null;
+    throw new Error('The defender has already decided whether to retreat');
   }
 
   return getOtherPlayer(front.engagingUnit.playerSide);
@@ -36,15 +41,15 @@ function pendingWhetherToRetreatPlayer<S extends GameState>(
  * Returns the two legal choose-whether-to-retreat events (yes / no) for the
  * front-engagement defender when that decision is pending.
  *
- * Returns `[]` when the choice is not expected.
+ * Nothing asks unless the defender is deciding, so being asked then is the
+ * caller's mistake and throws.
+ *
+ * @throws Error when no front engagement awaits the defender's decision
  */
 export function getLegalChooseWhetherToRetreatEvents<S extends GameState>(
   gameState: S,
 ): ChooseWhetherToRetreatEvent[] {
   const player = pendingWhetherToRetreatPlayer(gameState);
-  if (player === null) {
-    return [];
-  }
 
   return [true, false].map((choosesToRetreat) =>
     createChooseWhetherToRetreatEvent({

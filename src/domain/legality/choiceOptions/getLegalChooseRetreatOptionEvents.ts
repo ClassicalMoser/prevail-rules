@@ -8,12 +8,15 @@ import { createChooseRetreatOptionEvent } from '@factories';
  * awaiting its `chosenRetreatPath`: one {@link ChooseRetreatOptionEvent} per entry in
  * `legalRetreatPaths`.
  *
- * Returns `[]` when no such retreat choice is expected (wrong phase context,
- * already chosen, or no options). Does not recompute retreat geometry —
- * options are taken from the retreat substep (baked in when the substep opened).
+ * Nothing asks unless a retreat awaits its owner's choice, so being asked
+ * then is the caller's mistake and throws. Does not recompute retreat
+ * geometry — options are taken from the retreat substep (baked in when the
+ * substep opened).
  *
  * Aligns with {@link isValidChooseRetreatOptionEvent} and
  * {@link getExpectedRetreatEvent} for the multi-option pending branch.
+ *
+ * @throws Error when no retreat is awaiting its owner's choice of destination
  */
 export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   gameState: S,
@@ -21,7 +24,7 @@ export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   // The retreat whose owner has a choice still to make (§9.1.3), if any.
   const awaiting = findRetreatAwaitingChoice(gameState);
   if (awaiting === undefined) {
-    return [];
+    throw new Error('No retreat is awaiting its owner’s choice of destination');
   }
   const { retreatState } = awaiting;
 

@@ -14,21 +14,23 @@ import { getCommitmentOffers } from './commitment';
  * first, then the second (§7.2.2); once both have, nobody is asked.
  *
  * @param gameState - The game state
- * @returns The player to ask, or `null` when no melee commitment is owed
+ * @returns The player to ask
+ * @throws Error when no melee is being fought, or both have committed
  */
-function pendingCommitPlayer<S extends GameState>(
-  gameState: S,
-): PlayerSide | null {
+function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
   // A commitment is owed only while a melee is being fought.
   const meleeState = findMeleeResolutionState(gameState);
   if (meleeState === undefined) {
-    return null;
+    throw new Error('No melee is being fought');
   }
 
   // The first player commits first, then the second (§7.2.2); once both
   // have, nobody is asked.
   const owing = findPlayerOwingMeleeCommitment(gameState, meleeState);
-  return owing ?? null;
+  if (owing === undefined) {
+    throw new Error('No melee commitment is owed');
+  }
+  return owing;
 }
 
 /**
@@ -36,16 +38,16 @@ function pendingCommitPlayer<S extends GameState>(
  * commitment is still pending: one event per in-hand card that has at least
  * one melee-applicable modifier, plus a refuse option (`committedCard: null`).
  *
- * Returns `[]` when commit is not expected. When the hand is hidden, only the
- * refuse option is returned (card commits require an owned hand).
+ * Nothing asks unless a commitment is owed, so being asked then is the
+ * caller's mistake and throws. When the hand is hidden, only the refuse
+ * option is returned (card commits require an owned hand).
+ *
+ * @throws Error when no melee is being fought, or both have committed
  */
 export function getLegalCommitToMeleeEvents<S extends GameState>(
   gameState: S,
 ): CommitToMeleeEvent[] {
   const player = pendingCommitPlayer(gameState);
-  if (player === null) {
-    return [];
-  }
 
   // Each card in hand naming a stat this commitment applies, then the
   // refusal, which is always open (§8.3, §8.4).

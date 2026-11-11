@@ -138,8 +138,13 @@ may not import expected.
 
 It returns `null` when nothing is owed a choice: the game is over
 (`findExpectedEvent` answers `undefined`) or the next action is a game effect.
-An enumerator that finds no options answers with an empty offer, but one that
-throws is a fault in the state and throws to the caller with its own message.
+An enumerator is asked only for a choice the expected engine says is owed, so
+being asked out of turn is the caller's mistake, and it throws with a message
+naming what was missing. A question that is fair but has nothing to offer
+answers with an empty offer: no unit able to move or shoot, a commander off the
+board, a spectator or opposing seat that cannot see the hand. A second guard
+that swallowed the first would hide a fault in the expected engine, so there is
+none; `validatePlayerChoice` is where such a throw becomes a refusal.
 Otherwise it discriminates by `choiceType` and
 carries `playerSource`, and either the full `events[]`
 for an atomic choice or named root atoms for a compound one. Follow-ups that

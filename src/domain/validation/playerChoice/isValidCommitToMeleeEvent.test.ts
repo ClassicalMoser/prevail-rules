@@ -99,7 +99,7 @@ describe('isValidCommitToMeleeEvent function', () => {
     expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
 
-  it('rejects when commit is not expected', () => {
+  it('throws when no melee is being fought, which the expected check rules out first', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -109,7 +109,11 @@ describe('isValidCommitToMeleeEvent function', () => {
       player: 'white',
     });
 
-    expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
+    // A choice sent out of turn is refused by the expected check before
+    // membership is asked; reaching here is a fault.
+    expect(() => isValidCommitToMeleeEvent(event, state)).toThrow(
+      'No melee is being fought',
+    );
   });
 
   it('accepts refusing the melee commitment', () => {
