@@ -88,10 +88,12 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     expect(retreat.chosenRetreatPath).toBe('pending');
   });
 
-  it('no retreat at all leaves the rout due', () => {
-    // §9.1.6: a defender that chose to fall back and cannot routs instead.
-    const retreat = openedWith([]);
-
-    expect(retreat.routState).toBe('pending');
+  it('throws when no retreat is recorded, since a defender with nowhere to go stands', () => {
+    // A front-engaged defender may fall back only where there is somewhere to
+    // fall back to (§9.1.5); with nowhere it stands and the units fight on, so
+    // no retreat is ever opened for it.
+    expect(() => openedWith([])).toThrow(
+      'A defender with nowhere to retreat stands; no retreat opens',
+    );
   });
 });
