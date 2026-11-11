@@ -1,21 +1,18 @@
 import type { Board } from '@entities';
 import type { SetupUnitsEvent } from '@events';
-import type { GameState, PlayCardsPhaseState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
+import type { GameState } from '@game';
 import {
   addCommanderToBoard,
   addUnitToBoard,
   removeUnitFromReserve,
   updateBoardState,
-  updateRoundState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a SetupUnitsEvent to the game state.
  * Adds each unit placement to the board, places the player's commander on
- * `commanderCoordinate`, and removes those units from reserve. When both sides
- * have finished setup (`reservedUnits` empty), starts round 1 in
- * `playCards` / `chooseCards` (mirroring cleanup → next-round rollover).
+ * `commanderCoordinate`, and removes those units from reserve. Round 0 ends
+ * after both sides have set up, with its own `roundEnd`, as every round does.
  *
  * Event is assumed pre-validated (setup phase, valid placements).
  *
@@ -44,23 +41,6 @@ export function applySetupUnitsEvent<S extends GameState>(
   let newGameState = updateBoardState(state, newBoard);
   for (const unitPlacement of unitPlacements) {
     newGameState = removeUnitFromReserve(newGameState, unitPlacement.unit);
-  }
-
-  if (
-    newGameState.currentRoundState.currentPhaseState === 'none' &&
-    newGameState.reservedUnits.length === 0
-  ) {
-    const playCardsPhase: PlayCardsPhaseState = {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    };
-    newGameState = updateRoundState(newGameState, {
-      commandedUnits: [],
-      completedPhases: [],
-      currentPhaseState: playCardsPhase,
-      events: [],
-      roundNumber: 1,
-    });
   }
 
   return newGameState;

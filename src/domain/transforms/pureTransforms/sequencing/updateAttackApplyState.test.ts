@@ -8,7 +8,7 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '../';
+import { addUnitToBoard, updatePhaseState, updateCurrentInitiative } from '../';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateAttackApplyState } from './updateAttackApplyState';
@@ -19,7 +19,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('updateAttackApplyState function', () => {
   function createStateWithRangedAttackApply() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
@@ -37,7 +40,10 @@ describe('updateAttackApplyState function', () => {
   }
 
   function createStateWithMeleeApply() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -137,7 +143,10 @@ describe('updateAttackApplyState function', () => {
   });
 
   it('given when ranged attack resolution has no attack apply state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const ranged = createRangedAttackResolutionState(state, {
       attackApplyState: 'pending',
     });
@@ -156,7 +165,10 @@ describe('updateAttackApplyState function', () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

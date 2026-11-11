@@ -1,7 +1,7 @@
 import { tempCommandCards } from '@sampleValues';
 import { createIssueCommandsPhaseState } from '@testing';
 
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';
 
@@ -15,11 +15,14 @@ import {
 describe('isValidDoneIssuingCommandsEvent function', () => {
   it('accepts done issuing for the active issue player with remaining slots', () => {
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [tempCommandCards[0].command],
-        step: 'firstPlayerIssueCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [tempCommandCards[0].command],
+          step: 'firstPlayerIssueCommands',
+        },
+      ),
     );
 
     expect(
@@ -34,11 +37,14 @@ describe('isValidDoneIssuingCommandsEvent function', () => {
 
   it('rejects done issuing for the wrong player', () => {
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [tempCommandCards[0].command],
-        step: 'firstPlayerIssueCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [tempCommandCards[0].command],
+          step: 'firstPlayerIssueCommands',
+        },
+      ),
     );
 
     expect(

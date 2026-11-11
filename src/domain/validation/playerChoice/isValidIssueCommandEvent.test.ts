@@ -14,6 +14,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
@@ -29,7 +30,10 @@ describe('isValidIssueCommandEvent function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
@@ -172,7 +176,10 @@ describe('isValidIssueCommandEvent function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     let board = addUnitToBoard(state.boardState, far);
     board = addCommanderToBoard(board, 'black', 'E-5');
     state = updateBoardState(state, board);
@@ -215,7 +222,10 @@ describe('isValidIssueCommandEvent function', () => {
       'E-8',
     ];
     const { board, unitAt } = createBoardWithFacingRow({ coordinates });
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
@@ -252,10 +262,13 @@ describe('isValidIssueCommandEvent function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      },
+    );
     const event = createIssueCommandEvent({
       command,
       player: 'black',

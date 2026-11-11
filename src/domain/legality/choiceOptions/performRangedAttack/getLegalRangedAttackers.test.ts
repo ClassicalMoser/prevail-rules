@@ -10,6 +10,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { getLegalRangedAttackers } from './getLegalRangedAttackers';
@@ -35,7 +36,10 @@ describe('performRangedAttack legality atoms', () => {
   const movementCard = createTestCard();
 
   function place(...units: ReturnType<typeof createUnitWithPlacement>[]) {
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: rangedCard },
@@ -117,10 +121,13 @@ describe('performRangedAttack legality atoms', () => {
 
     it('throws when asked outside the issue commands phase, where nothing asks', () => {
       // The players are still choosing their cards.
-      const state = updatePhaseState(createEmptyGameState('standard'), {
-        phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
-      });
+      const state = updatePhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          phase: PLAY_CARDS_PHASE,
+          step: 'chooseCards',
+        },
+      );
       expect(() => getLegalRangedAttackers(state)).toThrow(
         'Expected issueCommands phase, got playCards',
       );
@@ -133,7 +140,10 @@ describe('performRangedAttack legality atoms', () => {
         playerSide: 'black',
         unitOptions: { range: 2 },
       });
-      let state = createEmptyGameState('standard');
+      let state = updateCurrentInitiative(
+        createEmptyGameState('standard'),
+        'black',
+      );
       state = updateCardState(state, {
         ...state.cardState,
         black: { ...state.cardState.black, inPlay: movementCard },
@@ -282,10 +292,13 @@ describe('performRangedAttack legality atoms', () => {
         playerSide: 'white',
       });
       // The players are still choosing their cards.
-      const state = updatePhaseState(createEmptyGameState('standard'), {
-        phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
-      });
+      const state = updatePhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          phase: PLAY_CARDS_PHASE,
+          step: 'chooseCards',
+        },
+      );
 
       expect(() =>
         getLegalRangedAttackSupporters(attacker, defender, state),

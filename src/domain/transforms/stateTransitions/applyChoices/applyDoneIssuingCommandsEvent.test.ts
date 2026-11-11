@@ -5,6 +5,7 @@ import { getIssueCommandsPhaseState } from '@queries';
 import {
   addUnitsToCommandedUnits,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms/pureTransforms';
 
 import { applyDoneIssuingCommandsEvent } from './applyDoneIssuingCommandsEvent';
@@ -18,7 +19,10 @@ import {
  */
 describe('applyDoneIssuingCommandsEvent function', () => {
   function createFirstPlayerIssueState() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     return updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

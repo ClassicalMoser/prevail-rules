@@ -6,6 +6,7 @@ import { createBoardWithCommander } from '@testing';
 import {
   addCommanderToLostCommanders,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
@@ -23,7 +24,10 @@ describe('applyMoveCommanderEvent function', () => {
     blackCommanderCoord: Coordinate = 'E-5',
     whiteCommanderCoord: Coordinate = 'E-6',
   ): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
 
     let board = createBoardWithCommander('black', blackCommanderCoord);
     board = createBoardWithCommander('white', whiteCommanderCoord, board);

@@ -2,7 +2,7 @@ import { tempCommandCards } from '@sampleValues';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createIssueCommandsPhaseState, updateCardState } from '@testing';
 
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getLegalIssueCommands } from './getLegalIssueCommands';
 
@@ -13,7 +13,10 @@ import { createEmptyGameState } from '@factories';
 describe('getLegalIssueCommands function', () => {
   it('returns remaining commands for the first player issue step', () => {
     const command = tempCommandCards[0].command;
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
@@ -34,10 +37,13 @@ describe('getLegalIssueCommands function', () => {
 
   it('throws outside the issue commands phase', () => {
     // The players are still choosing their cards.
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      },
+    );
 
     // Nothing asks for an order then, so being asked is the caller's mistake.
     expect(() => getLegalIssueCommands(state)).toThrow(
@@ -49,11 +55,14 @@ describe('getLegalIssueCommands function', () => {
     // Black has issued every order; the step should already have moved on to
     // resolving them.
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [],
-        step: 'firstPlayerIssueCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [],
+          step: 'firstPlayerIssueCommands',
+        },
+      ),
     );
 
     expect(() => getLegalIssueCommands(state)).toThrow(

@@ -29,7 +29,10 @@ import { updateCurrentInitiative } from '../state/updateCurrentInitiative';
  */
 describe('updateRoutState function', () => {
   function createStateWithRangedAttackRout() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
@@ -49,7 +52,10 @@ describe('updateRoutState function', () => {
   }
 
   function createStateWithMeleeRout(routingPlayer: 'white' | 'black') {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const routedUnit = createTestUnit(routingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       routingPlayer === 'white' ? 'black' : 'white',
@@ -81,7 +87,10 @@ describe('updateRoutState function', () => {
   }
 
   it('given update rout state in rear engagement during movement resolution', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const movement = createMovementResolutionState(state, {
@@ -297,7 +306,10 @@ describe('updateRoutState function', () => {
   });
 
   it('given when no rout state in attack apply, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const attackApply = createAttackApplyStateWithNothingDue(unit);
     const phaseState = createIssueCommandsPhaseState(state, {
@@ -313,7 +325,10 @@ describe('updateRoutState function', () => {
   });
 
   it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state, {
         engagementState: createFrontEngagementState(),
@@ -328,7 +343,10 @@ describe('updateRoutState function', () => {
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -339,7 +357,10 @@ describe('updateRoutState function', () => {
   });
 
   it('given when melee white attack apply has no rout state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -360,7 +381,10 @@ describe('updateRoutState function', () => {
   });
 
   it('given when melee black attack apply has no rout state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -403,7 +427,10 @@ describe('updateRoutState function', () => {
   });
 
   it('given when not in issueCommands, resolveMelee, or cleanup phase, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

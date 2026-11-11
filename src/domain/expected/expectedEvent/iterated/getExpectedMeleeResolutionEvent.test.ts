@@ -1,3 +1,4 @@
+import { updateCurrentInitiative } from '@transforms';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
@@ -34,7 +35,10 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   });
 
   function createGameState() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
     return state;

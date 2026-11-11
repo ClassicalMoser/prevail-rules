@@ -14,7 +14,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { generateResolveRoutEvent } from './generateResolveRoutEvent';
 
@@ -26,7 +30,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('generateResolveRoutEvent function', () => {
   it('charges the morale of a shot’s routed defender', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
@@ -50,7 +57,10 @@ describe('generateResolveRoutEvent function', () => {
   });
 
   it('with both melee sides awaiting their penalty, answers the initiative player’s', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
@@ -76,7 +86,10 @@ describe('generateResolveRoutEvent function', () => {
   });
 
   it('throws in a phase that routs nobody', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
@@ -87,7 +100,10 @@ describe('generateResolveRoutEvent function', () => {
   });
 
   it('resolves the rout of a unit engaged from the rear', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
     // The penalty is what this effect works out, so the rout reaches it unpaid.
@@ -108,7 +124,10 @@ describe('generateResolveRoutEvent function', () => {
 
   it('resolves the rout of the units a rally could not cover', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full = updatePhaseState(
       base,
       createCleanupPhaseState({
@@ -137,7 +156,10 @@ describe('generateResolveRoutEvent function', () => {
   it('throws when the command being resolved holds no rout', () => {
     // Where a rout can sit is the query's answer, so a command that holds none
     // leaves this procedure with no penalty to work out.
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state.cardState.black.inPlay = createTestCard();
     const full = updatePhaseState(
       state,

@@ -7,7 +7,10 @@ import {
   updateCardState,
 } from '@testing';
 
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms/pureTransforms';
 
 import { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 
@@ -18,7 +21,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('applyCommitToMeleeEvent function', () => {
   it('given white pending and one card in hand, commit completes white and empties white hand', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateWithWhiteCardInHand = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
@@ -53,7 +59,10 @@ describe('applyCommitToMeleeEvent function', () => {
   });
 
   it('given black pending and one card in hand, commit completes black and empties black hand', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateWithBlackCardInHand = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
@@ -85,7 +94,10 @@ describe('applyCommitToMeleeEvent function', () => {
   });
 
   it('given white pending, refuse declines white and leaves hand intact', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateWithWhiteCardInHand = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },

@@ -24,6 +24,7 @@ import {
   addCommanderToBoard,
   addUnitToBoard,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms/pureTransforms';
 
 import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
@@ -39,7 +40,10 @@ describe('applyResolveRetreatEvent function', () => {
 
   /** IssueCommands + ranged CRS + retreat substep for white on E-5. */
   function createStateWithRangedAttackRetreat(): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
@@ -68,7 +72,10 @@ describe('applyResolveRetreatEvent function', () => {
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -333,7 +340,10 @@ describe('applyResolveRetreatEvent function', () => {
 
   describe('front engagement retreat apply', () => {
     it('moves the defender and completes the engagement', () => {
-      const state = createEmptyGameState('standard');
+      const state = updateCurrentInitiative(
+        createEmptyGameState('standard'),
+        'black',
+      );
       const unit = createTestUnit('white', { attack: 2 });
       const placement = placed(unit, 'E-5', 'north');
       const withBoard = {

@@ -1,7 +1,7 @@
 import type { Coordinate } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createResolveMeleePhaseState } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidChooseMeleeResolutionEvent } from './isValidMeleeResolutionEvent';
 
@@ -14,7 +14,10 @@ import {
  */
 describe('isValidChooseMeleeResolutionEvent function', () => {
   function stateWithRemaining(remaining: readonly Coordinate[]) {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phase = createResolveMeleePhaseState(base, {
       currentMeleeResolutionState: 'pending',
       remainingEngagements: [...remaining],
@@ -50,10 +53,13 @@ describe('isValidChooseMeleeResolutionEvent function', () => {
   });
 
   it('throws, naming the phase, when the game is not resolving melee', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      },
+    );
     const event = createChooseMeleeResolutionEvent({
       player: 'black',
       space: 'E-5',

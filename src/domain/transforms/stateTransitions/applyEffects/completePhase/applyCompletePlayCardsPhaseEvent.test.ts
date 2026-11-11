@@ -7,6 +7,7 @@ import { createPlayCardsPhaseState } from '@testing';
 import {
   addCommanderToLostCommanders,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms/pureTransforms';
 
 import { applyCompletePlayCardsPhaseEvent } from './applyCompletePlayCardsPhaseEvent';
@@ -18,7 +19,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('applyCompletePlayCardsPhaseEvent function', () => {
   it('given playCards complete step, next phase moveCommanders and completedPhases lists playCards', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full: GameState = updatePhaseState(
       state,
       createPlayCardsPhaseState({ step: 'complete' }),
@@ -43,7 +47,10 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
 
   it('when the first player’s commander has fallen, Move Commanders opens on the second player’s turn', () => {
     // Black holds initiative, but its commander was defeated (§4.2.8).
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full: GameState = updatePhaseState(
       addCommanderToLostCommanders(base, 'black'),
       createPlayCardsPhaseState({ step: 'complete' }),

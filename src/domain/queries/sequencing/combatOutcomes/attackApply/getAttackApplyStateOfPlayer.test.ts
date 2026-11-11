@@ -6,7 +6,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getAttackApplyStateOfPlayer } from './getAttackApplyStateOfPlayer';
 
@@ -23,7 +23,10 @@ const nothingReached = {
  */
 describe('getAttackApplyStateOfPlayer function', () => {
   it('reads the one apply of a ranged attack, whoever is asked about', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const target = createTestUnit('white', { attack: 2 });
     const apply = createAttackApplyState(target, nothingReached);
     const state = updatePhaseState(
@@ -43,12 +46,15 @@ describe('getAttackApplyStateOfPlayer function', () => {
   });
 
   it('reads the apply on a player’s own side of a melee', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const white = createTestUnit('white', { attack: 2 });
     const black = createTestUnit('black', { attack: 2 });
     const whiteApply = createAttackApplyState(white, nothingReached);
     const blackApply = createAttackApplyState(black, nothingReached);
-    // Black holds initiative in an empty game, so black's apply is the first.
+    // Black holds the initiative here, so black's apply is the first.
     const state = updatePhaseState(
       empty,
       createResolveMeleePhaseState(empty, {
@@ -65,7 +71,10 @@ describe('getAttackApplyStateOfPlayer function', () => {
 
   it('throws where no attack is being resolved', () => {
     expect(() =>
-      getAttackApplyStateOfPlayer(createEmptyGameState('standard'), 'white'),
+      getAttackApplyStateOfPlayer(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        'white',
+      ),
     ).toThrow('No current phase state found');
   });
 });

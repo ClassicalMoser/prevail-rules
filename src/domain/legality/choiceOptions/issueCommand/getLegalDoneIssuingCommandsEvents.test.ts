@@ -2,7 +2,7 @@ import { tempCommandCards } from '@sampleValues';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createIssueCommandsPhaseState } from '@testing';
 
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getLegalDoneIssuingCommandsEvents } from './getLegalDoneIssuingCommandsEvents';
 
@@ -13,11 +13,14 @@ import { createEmptyGameState } from '@factories';
 describe('getLegalDoneIssuingCommandsEvents function', () => {
   it('returns a done event for the first player when commands remain', () => {
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [tempCommandCards[0].command],
-        step: 'firstPlayerIssueCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [tempCommandCards[0].command],
+          step: 'firstPlayerIssueCommands',
+        },
+      ),
     );
 
     expect(getLegalDoneIssuingCommandsEvents(state)).toStrictEqual([
@@ -33,11 +36,14 @@ describe('getLegalDoneIssuingCommandsEvents function', () => {
     // Black has issued every order, so there is nothing left to stop short
     // of; the step should already have moved on to resolving them.
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [],
-        step: 'firstPlayerIssueCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [],
+          step: 'firstPlayerIssueCommands',
+        },
+      ),
     );
 
     // Nothing asks then, so being asked is the caller's mistake.
@@ -49,11 +55,14 @@ describe('getLegalDoneIssuingCommandsEvents function', () => {
   it('throws while the orders are being resolved rather than issued', () => {
     // Black has stopped issuing and is carrying its orders out.
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [tempCommandCards[0].command],
-        step: 'firstPlayerResolveCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [tempCommandCards[0].command],
+          step: 'firstPlayerResolveCommands',
+        },
+      ),
     );
 
     // A player stops issuing only while issuing (§4.3.3).
@@ -64,10 +73,13 @@ describe('getLegalDoneIssuingCommandsEvents function', () => {
 
   it('throws outside the issue commands phase', () => {
     // The players are still choosing their cards.
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      },
+    );
 
     expect(() => getLegalDoneIssuingCommandsEvents(state)).toThrow(
       'Expected issueCommands phase, got playCards',

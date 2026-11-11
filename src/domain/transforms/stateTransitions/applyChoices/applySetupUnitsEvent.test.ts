@@ -5,11 +5,11 @@ import { applySetupUnitsEvent } from './applySetupUnitsEvent';
 import { createEmptyGameState, createSetupUnitsEvent } from '@factories';
 /**
  * Pre-game setup: each `setupUnits` choice merges unit placements and the
- * commander into `boardState`, clears those units from reserve, and starts
- * round 1 playCards when reserve is empty.
+ * commander into `boardState`, and clears those units from reserve. Round 0
+ * ends with its own `roundEnd`, not here.
  */
 describe('applySetupUnitsEvent function', () => {
-  it('given one black unit E-5 north, board shows unit and black commander and starts round 1', () => {
+  it('places a side’s last reserved unit and its commander, and leaves round 0 for its roundEnd', () => {
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -39,12 +39,10 @@ describe('applySetupUnitsEvent function', () => {
       'black',
     ]);
     expect(newState.reservedUnits).toStrictEqual([]);
-    expect(newState.currentRoundState.roundNumber).toBe(1);
-    expect(newState.currentRoundState.currentPhaseState).toStrictEqual({
-      phase: 'playCards',
-      step: 'chooseCards',
-    });
-    expect(newState.currentRoundState.events).toStrictEqual([]);
+    // Setup stays round 0, with no phase begun, until round 0 ends with its
+    // own roundEnd.
+    expect(newState.currentRoundState.roundNumber).toBe(0);
+    expect(newState.currentRoundState.currentPhaseState).toBe('none');
   });
 
   it('given black placement while white still reserved, stays in setup phase none', () => {

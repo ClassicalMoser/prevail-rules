@@ -20,6 +20,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { getLegalPlayerChoiceOptions } from './getLegalPlayerChoiceOptions';
@@ -125,16 +126,22 @@ describe('getLegalPlayerChoiceOptions function', () => {
   }
 
   it('returns null when the next expected action is a game effect', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'revealCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'revealCards',
+      },
+    );
     // Both awaitingPlay set by createEmptyGameState → revealCards expects game effect
     expect(getLegalPlayerChoiceOptions(state)).toBeNull();
   });
 
   it('returns null when the next expected action is gameOver', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const state = updateCardState(base, {
       ...base.cardState,
       white: { ...base.cardState.white, inHand: [] },
@@ -145,7 +152,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
   it('returns null once a winner is set, because a finished game is owed no choice', () => {
     // The battle is over: no player is asked for anything.
     const state = {
-      ...createEmptyGameState('standard'),
+      ...updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
       winner: 'black' as const,
     };
 
@@ -160,13 +167,18 @@ describe('getLegalPlayerChoiceOptions function', () => {
       stubExpected(choiceType);
 
       expect(() =>
-        getLegalPlayerChoiceOptions(createEmptyGameState('standard')),
+        getLegalPlayerChoiceOptions(
+          updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        ),
       ).toThrow(fault);
     },
   );
 
   it('packages chooseCard events from the live enumerator', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -204,11 +216,14 @@ describe('getLegalPlayerChoiceOptions function', () => {
     // Black is issuing and has one order left to give.
     const command = tempCommandCards[0].command;
     const state = updatePhaseState(
-      createEmptyGameState('standard'),
-      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
-        remainingCommandsFirstPlayer: [command],
-        step: 'firstPlayerIssueCommands',
-      }),
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [command],
+          step: 'firstPlayerIssueCommands',
+        },
+      ),
     );
     stubExpected('issueCommand', 'black');
 
@@ -221,7 +236,10 @@ describe('getLegalPlayerChoiceOptions function', () => {
   });
 
   it('packages moveCommander destinations from the commander space', () => {
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: {
@@ -267,7 +285,10 @@ describe('getLegalPlayerChoiceOptions function', () => {
       facing: 'south',
       playerSide: 'white',
     });
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: {
@@ -315,7 +336,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       (choiceType) => {
         stubExpected(choiceType, 'black');
         const options = getLegalPlayerChoiceOptions(
-          createEmptyGameState('standard'),
+          updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
         );
         expect(options).not.toBeNull();
         expect(options?.choiceType).toBe(choiceType);

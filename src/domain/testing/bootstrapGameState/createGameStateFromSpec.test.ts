@@ -191,7 +191,8 @@ describe('createGameState function', () => {
   it('given no units provided, creates an empty game state', () => {
     const gameState = createGameState([]);
     expect(gameState.boardState.boardType).toBe('standard');
-    expect(gameState.currentInitiative).toBe('black');
+    // White holds the initiative at the start (§3.3.2).
+    expect(gameState.currentInitiative).toBe('white');
   });
 
   it('given support mixing tuple and object syntax', () => {

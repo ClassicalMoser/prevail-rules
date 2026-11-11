@@ -18,7 +18,11 @@ import {
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms/pureTransforms';
 
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
@@ -30,7 +34,10 @@ import { createEmptyGameState } from '@factories';
 describe('applyTriggerRoutFromRetreatEvent function', () => {
   /** IssueCommands + ranged retreat substep only (no rout yet). */
   function createStateWithRangedAttackRetreat(): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
@@ -61,7 +68,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -201,7 +211,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
 
   describe('rout supersedes reverse', () => {
     it('bypasses a still-pending reverse on the apply when the retreat routs', () => {
-      const state = createEmptyGameState('standard');
+      const state = updateCurrentInitiative(
+        createEmptyGameState('standard'),
+        'black',
+      );
       const retreatingUnit = createTestUnit('white', { attack: 2 });
       const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
       const stateWithUnit = {

@@ -18,7 +18,7 @@ import {
   placed,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '../';
+import { addUnitToBoard, updatePhaseState, updateCurrentInitiative } from '../';
 
 import { updateRetreatState } from './updateRetreatState';
 
@@ -28,7 +28,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('updateRetreatState function', () => {
   function createStateWithRangedAttackRetreat() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
@@ -51,7 +54,10 @@ describe('updateRetreatState function', () => {
   }
 
   function createStateWithMeleeRetreat(retreatingPlayer: 'white' | 'black') {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -193,7 +199,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('given when ranged attack apply has no retreat state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
     const attackApply = createAttackApplyStateWithNothingDue(unit);
@@ -213,7 +222,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('updates nested retreatState under front engagement movement CRS', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
     const withBoard = {
@@ -250,7 +262,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('throws when movement CRS has front engagement without an opened retreatState', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state, {
         engagementState: createFrontEngagementState(),
@@ -269,7 +284,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -284,7 +302,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('given when melee white attack apply has no retreat state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
@@ -312,7 +333,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('given when melee black attack apply has no retreat state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
@@ -340,7 +364,10 @@ describe('updateRetreatState function', () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

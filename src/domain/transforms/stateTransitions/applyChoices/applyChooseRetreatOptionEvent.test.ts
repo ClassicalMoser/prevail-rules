@@ -17,7 +17,11 @@ import {
   placed,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms/pureTransforms';
 
 import { applyChooseRetreatOptionEvent } from './applyChooseRetreatOptionEvent';
 
@@ -37,7 +41,10 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
   /** IssueCommands + ranged CRS + retreat substep on white at E-5 (no retreat chosen yet). */
   function createStateWithRangedAttackRetreat() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const blocker = enemyBlockingStraightBack(placement);
@@ -78,7 +85,10 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
   /** ResolveMelee + one-sided retreat apply: both players engaged on E-5 (north vs south). */
   function createStateWithMeleeRetreat(retreatingPlayer: 'white' | 'black') {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -145,7 +155,10 @@ describe('applyChooseRetreatOptionEvent function', () => {
   });
 
   it('records the chosen retreat on a front-engagement nested retreat', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const blocker = enemyBlockingStraightBack(placement);

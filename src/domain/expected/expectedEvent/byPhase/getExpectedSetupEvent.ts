@@ -1,43 +1,36 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import { isFriendlyUnit } from '@queries';
+import { getOtherPlayer, isFriendlyUnit } from '@queries';
 
 /**
- * Pre-round deployment (`currentPhaseState === 'none'`): white sets up first,
- * then black, while either side still has {@link GameState.reservedUnits}.
+ * Round 0 is setup (`currentPhaseState === 'none'`). Each side places its whole
+ * army in one `setupUnits`, the side with the initiative first and then the
+ * other (§3.5); on a bare board that is White, which holds the initiative going
+ * into round one (§3.3.2). Once neither side has a unit in reserve, round 0
+ * ends with `roundEnd`, which begins round 1.
  *
- * Deployment order is white's by rule and does not follow the initiative, which
- * black holds at the start of a game. The asymmetry is deliberate: seeing the
- * opponent deploy is worth something, and so is striking first.
- *
- * @param state - Game state with phase `'none'` and reserved units remaining
- * @returns Expected `setupUnits` choice for the next side to deploy
- * @throws If neither side has reserved units (caller should not invoke then)
+ * @param state - Game state with phase `'none'`
+ * @returns The next side's `setupUnits`, or the end of round 0
  */
 export function getExpectedSetupEvent(state: GameState): ExpectedEventInfo {
-  const whiteNeedsSetup = state.reservedUnits.some((unit) => {
-    const belongsToWhite = isFriendlyUnit(unit, 'white');
-    return belongsToWhite;
-  });
-  if (whiteNeedsSetup) {
-    return {
-      actionType: 'playerChoice',
-      choiceType: 'setupUnits',
-      playerSource: 'white',
-    };
+  // The side with the initiative sets up first, then the other.
+  const firstPlayer = state.currentInitiative;
+  for (const player of [firstPlayer, getOtherPlayer(firstPlayer)]) {
+    const hasUnitsToPlace = state.reservedUnits.some((unit) =>
+      isFriendlyUnit(unit, player),
+    );
+    if (hasUnitsToPlace) {
+      return {
+        actionType: 'playerChoice',
+        choiceType: 'setupUnits',
+        playerSource: player,
+      };
+    }
   }
 
-  const blackNeedsSetup = state.reservedUnits.some((unit) => {
-    const belongsToBlack = isFriendlyUnit(unit, 'black');
-    return belongsToBlack;
-  });
-  if (blackNeedsSetup) {
-    return {
-      actionType: 'playerChoice',
-      choiceType: 'setupUnits',
-      playerSource: 'black',
-    };
-  }
-
-  throw new Error('No reserved units remaining for setup');
+  // Both armies are on the board: round 0 is over.
+  return {
+    actionType: 'gameEffect',
+    effectType: 'roundEnd',
+  };
 }

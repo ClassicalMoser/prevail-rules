@@ -29,8 +29,9 @@ function shell(board: Board): AuthoritativeGameState {
     // Authoritative because the engine creates the game; a seat's view is
     // projected from this, never created. Both sides start with empty piles.
     cardState: createCardState(),
-    // Black always begins the game with the initiative.
-    currentInitiative: 'black',
+    // White holds the initiative going into round one (§3.3.2), and so sets
+    // up first in round 0.
+    currentInitiative: 'white',
     // Setup is round 0, with its own events; the first round to be played is
     // round 1, which setup starts once every unit is placed.
     currentRoundState: {

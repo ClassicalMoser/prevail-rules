@@ -23,7 +23,10 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
 
   /** Black initiative, both inPlay set, MOVE_COMMANDERS_PHASE step `complete`. */
   function createGameStateInCompleteStep(): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
@@ -52,7 +55,10 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
 
   it('throws when a player has no card in play, since every player reveals one before orders', () => {
     // Both players reached the end of the commander moves with no card in play.
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const withoutInPlay = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: null },
@@ -96,7 +102,10 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
   });
 
   it('given lines ×2 inPlay, expands into two number:1 remaining slots', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const withMultiLine = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: multiLineCard },

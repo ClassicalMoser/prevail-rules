@@ -57,8 +57,8 @@ export function applyEvent<S extends GameState>(
     throw new Error(`Unknown event type: ${(_exhaustive as Event).eventType}`);
   }
 
-  // The event that ends a round belongs to the round it ends (§4.5.4), and so
-  // does the setup that starts round 1 to round 0, which has its own events.
+  // The event that ends a round belongs to the round it ends (§4.5.4); round 0,
+  // setup, ends with its own `roundEnd` like every other.
   // The log is the cursor for replay and undo, so the new round's log must
   // start empty: its own first event is the first thing the new round asks
   // for. The stream the application stores files this event under the old

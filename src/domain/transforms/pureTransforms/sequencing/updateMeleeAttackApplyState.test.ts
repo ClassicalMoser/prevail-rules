@@ -4,7 +4,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '../';
+import { updatePhaseState, updateCurrentInitiative } from '../';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
@@ -15,7 +15,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('updateMeleeAttackApplyState function', () => {
   function createStateInResolveMelee() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const meleeState = createMeleeResolutionState(state, {

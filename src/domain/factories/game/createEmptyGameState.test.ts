@@ -15,7 +15,6 @@ describe('createEmptyGameState function', () => {
     expect(gameState.currentRoundState.completedPhases).toStrictEqual([]);
     expect(gameState.currentRoundState.currentPhaseState).toBe('none');
     expect(gameState.currentRoundState.commandedUnits).toStrictEqual([]);
-    // Black always begins the game with the initiative.
     // White holds the initiative going into round one (§3.3.2).
     expect(gameState.currentInitiative).toBe('white');
     expect(gameState.boardState.boardType).toBe('standard');

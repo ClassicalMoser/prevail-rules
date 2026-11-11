@@ -6,9 +6,10 @@ import { updateRoundState } from '@transforms/pureTransforms';
 
 /**
  * Applies a RoundEndEvent to the game state.
- * Increments round number and resets to playCards phase (new round).
+ * Increments round number and resets to playCards phase (new round). It ends
+ * round 0 (setup) into round 1 the same way it ends any round after cleanup.
  *
- * Cleanup phase step is not re-validated here; the event is trusted from the procedure /
+ * The step it ends from is not re-validated here; the event is trusted from the procedure /
  * machine-generated log.
  *
  * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.

@@ -10,6 +10,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { getLegalMoveUnits } from './getLegalMoveUnits';
@@ -35,7 +36,10 @@ describe('getLegalMoveUnits function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     // Ensure movement command in play (factory default is movement, but be explicit).
     state = updateCardState(state, {
       ...state.cardState,
@@ -72,10 +76,13 @@ describe('getLegalMoveUnits function', () => {
 
   it('throws when asked outside the issue commands phase, where nothing asks', () => {
     // The players are still choosing their cards.
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      },
+    );
 
     expect(() => getLegalMoveUnits(state)).toThrow(
       'Expected issueCommands phase, got playCards',
@@ -99,7 +106,10 @@ describe('getLegalMoveUnits function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: {

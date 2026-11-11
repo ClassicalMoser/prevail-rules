@@ -22,7 +22,10 @@ import { createEmptyGameState } from '@factories';
 describe('generateResolveRallyEvent function', () => {
   /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
   function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const playedCard = createTestCard();
     const withPlayed = updateCardState(base, {
       ...base.cardState,
@@ -103,7 +106,10 @@ describe('generateResolveRallyEvent function', () => {
     const first = createTestCard();
     const second = createTestCard();
     const third = createTestCard();
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const withPlayed = updateCardState(base, {
       ...base.cardState,
       black: {
@@ -138,7 +144,10 @@ describe('generateResolveRallyEvent function', () => {
   });
 
   it('throws when the acting player has an empty played pile', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full = updatePhaseState(
       base,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
@@ -149,7 +158,10 @@ describe('generateResolveRallyEvent function', () => {
   });
 
   it('throws when cleanup is still on a chooseRally step', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full = updatePhaseState(
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
@@ -160,7 +172,10 @@ describe('generateResolveRallyEvent function', () => {
   });
 
   it('throws when not in cleanup phase', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',

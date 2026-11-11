@@ -10,6 +10,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
@@ -28,7 +29,10 @@ describe('isValidChooseMovingUnitEvent function', () => {
   });
 
   function resolvingOrder() {
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: createTestCard() },
@@ -83,10 +87,13 @@ describe('isValidChooseMovingUnitEvent function', () => {
   });
 
   it('throws when asked where no Move order is being carried out, which the expected check rules out first', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      },
+    );
     const event = createChooseMovingUnitEvent({
       player: 'black',
       unit: ordered,

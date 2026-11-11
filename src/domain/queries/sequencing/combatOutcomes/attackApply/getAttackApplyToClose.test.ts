@@ -6,7 +6,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getAttackApplyToClose } from './getAttackApplyToClose';
 
@@ -40,12 +40,15 @@ describe('getAttackApplyToClose function', () => {
   });
 
   it('reads the second player’s apply of a melee first, and the first player’s once it is closed', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const white = createTestUnit('white', { attack: 2 });
     const black = createTestUnit('black', { attack: 2 });
     const blackApply = createAttackApplyState(black, nothingReached);
     const whiteApply = createAttackApplyState(white, nothingReached);
-    // Black holds initiative in an empty game, so black's blow lands first and
+    // Black holds the initiative here, so black's blow lands first and
     // white's unit, the second player's, suffers it first (§7.5.6).
     const meleeWith = (secondApplyDone: boolean) =>
       updatePhaseState(

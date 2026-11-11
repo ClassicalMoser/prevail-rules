@@ -1,3 +1,4 @@
+import { updateCurrentInitiative } from '@transforms';
 import type { GameState, ResolveMeleePhaseStep } from '@game';
 import {
   createMeleeResolutionState,
@@ -19,7 +20,10 @@ describe('getExpectedResolveMeleePhaseEvent function', () => {
       state: GameState,
     ) => Parameters<typeof createResolveMeleePhaseState>[1],
   ): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
     const overrides = buildOverrides?.(state);

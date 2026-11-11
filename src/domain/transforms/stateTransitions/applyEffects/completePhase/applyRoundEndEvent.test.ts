@@ -20,7 +20,7 @@ import { createEmptyGameState } from '@factories';
  * Trusted path can fire without a cleanup phase slice (mechanical advance).
  */
 describe('applyRoundEndEvent function', () => {
-  /** Cleanup.complete with default empty game and black initiative. */
+  /** Cleanup.complete on a default empty game. */
   function createGameStateInCleanupCompleteStep(): GameState {
     const state = createEmptyGameState('standard');
     return updatePhaseState(

@@ -370,7 +370,8 @@ export const procedureRegistryStateFactories: Record<
 
   resolveRally: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
-    const played = 'black' as const;
+    // The first player rallies first; White holds the initiative at the start.
+    const played = base.currentInitiative;
     const card = createTestCard();
     const withPlayed = updateCardState(base, {
       ...base.cardState,

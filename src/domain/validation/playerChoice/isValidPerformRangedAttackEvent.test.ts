@@ -12,6 +12,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
@@ -45,7 +46,10 @@ describe('isValidPerformRangedAttackEvent function', () => {
     board: ReturnType<typeof createUnitWithPlacement>[],
     attackingCommitment?: Commitment,
   ) {
-    let state = createEmptyGameState('standard');
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: rangedCard },

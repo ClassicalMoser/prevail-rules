@@ -13,7 +13,7 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '../';
+import { addUnitToBoard, updatePhaseState, updateCurrentInitiative } from '../';
 
 import { updateReverseState } from './updateReverseState';
 
@@ -23,7 +23,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('updateReverseState function', () => {
   function createStateWithRangedAttackReverse() {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
@@ -43,7 +46,10 @@ describe('updateReverseState function', () => {
   }
 
   function createStateWithMeleeReverse(reversingPlayer: 'white' | 'black') {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       reversingPlayer === 'white' ? 'black' : 'white',
@@ -178,7 +184,10 @@ describe('updateReverseState function', () => {
   });
 
   it('given when ranged attack apply has no reverse state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const attackApply = createAttackApplyStateWithNothingDue(unit);
@@ -195,7 +204,10 @@ describe('updateReverseState function', () => {
   });
 
   it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state),
     });
@@ -211,7 +223,10 @@ describe('updateReverseState function', () => {
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -223,7 +238,10 @@ describe('updateReverseState function', () => {
   });
 
   it('given when melee white attack apply has no reverse state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
@@ -248,7 +266,10 @@ describe('updateReverseState function', () => {
   });
 
   it('given when melee black attack apply has no reverse state, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
@@ -273,7 +294,10 @@ describe('updateReverseState function', () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

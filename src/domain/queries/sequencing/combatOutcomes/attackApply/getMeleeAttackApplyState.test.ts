@@ -12,7 +12,10 @@ import { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
 describe('getMeleeAttackApplyState function', () => {
   it('returns the white attack apply', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const apply = createAttackApplyStateWithNothingDue(
       createTestUnit('white', { attack: 2 }),
       { completed: true },
@@ -29,7 +32,10 @@ describe('getMeleeAttackApplyState function', () => {
   });
 
   it('returns the black attack apply', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const apply = createAttackApplyStateWithRout(
       createTestUnit('black', { attack: 2 }),
     );
@@ -82,7 +88,10 @@ describe('getMeleeAttackApplyState function', () => {
   );
 
   it('throws when the white attack apply is still pending', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const melee = createMeleeResolutionState(empty, {
       secondPlayerAttackApplyState: 'pending',
     });

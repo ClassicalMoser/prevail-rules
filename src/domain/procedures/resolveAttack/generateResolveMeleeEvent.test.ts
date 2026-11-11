@@ -9,7 +9,11 @@ import {
   getUnitByTrait,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 
@@ -28,7 +32,10 @@ const cavalryType = getUnitByTrait('cavalry');
 describe('generateResolveMeleeEvent function', () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
   function meleeResolutionGameState(): GameState {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { unitType: spearmenType });
     const blackUnit = createTestUnit('black', { unitType: spearmenType });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
@@ -40,7 +47,10 @@ describe('generateResolveMeleeEvent function', () => {
   }
 
   it('given cavalry vs cavalry on E-5, both retreated true', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { unitType: cavalryType });
     const blackUnit = createTestUnit('black', { unitType: cavalryType });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
@@ -61,7 +71,10 @@ describe('generateResolveMeleeEvent function', () => {
      * blow on white is 5. White commits a card naming `whiteCommits`.
      */
     function cavalryMelee(whiteCommits: ('attack' | 'defense')[]): GameState {
-      const state = createEmptyGameState('standard');
+      const state = updateCurrentInitiative(
+        createEmptyGameState('standard'),
+        'black',
+      );
       const whiteWp = placed(
         createTestUnit('white', { unitType: cavalryType }),
         'E-5',
@@ -130,7 +143,10 @@ describe('generateResolveMeleeEvent function', () => {
      * east, facing west and so looking straight at it.
      */
     function cavalryMeleeWithFriend(friend: boolean): GameState {
-      const state = createEmptyGameState('standard');
+      const state = updateCurrentInitiative(
+        createEmptyGameState('standard'),
+        'black',
+      );
       const whiteWp = placed(
         createTestUnit('white', { unitType: cavalryType }),
         'E-5',
@@ -195,7 +211,10 @@ describe('generateResolveMeleeEvent function', () => {
   });
 
   it('given melee CRS with a second player commitment pending, throws that guard', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
@@ -215,7 +234,10 @@ describe('generateResolveMeleeEvent function', () => {
   });
 
   it('given playCards phase, throws not in resolveMelee', () => {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
@@ -226,7 +248,10 @@ describe('generateResolveMeleeEvent function', () => {
   });
 
   it('given only white on E-5 in resolveMelee phase, throws units not found on board', () => {
-    const state = createEmptyGameState('standard');
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const s = {

@@ -7,13 +7,16 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getAttackApplyStateAt } from './getAttackApplyStateAt';
 
 describe('getAttackApplyStateAt function', () => {
   it('reads the ranged attack apply when the context names one', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const defender = createTestUnit('white', { attack: 2 });
     const apply = createAttackApplyStateWithNothingDue(defender);
     const resolution = createRangedAttackResolutionState(empty, {
@@ -35,7 +38,10 @@ describe('getAttackApplyStateAt function', () => {
   });
 
   it('reads the named side of the melee when the context is a melee', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const blackDefender = createTestUnit('black', { attack: 2 });
     const blackApply = createAttackApplyStateWithNothingDue(blackDefender);
     // A melee holds an apply per side, so the location carries the side.
@@ -58,7 +64,10 @@ describe('getAttackApplyStateAt function', () => {
   });
 
   it('throws when that resolution has not opened its apply', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: 'pending',
     });

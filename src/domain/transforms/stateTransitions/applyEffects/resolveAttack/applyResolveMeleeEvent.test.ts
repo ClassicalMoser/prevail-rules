@@ -11,7 +11,10 @@ import {
   updateCardState,
   placed,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
 import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
@@ -23,7 +26,10 @@ import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 describe('applyResolveMeleeEvent function', () => {
   /** ResolveMelee phase with default melee CRS and both inPlay command cards set. */
   function baseMeleeGameState(): GameState {
-    const base = createEmptyGameState('standard');
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },

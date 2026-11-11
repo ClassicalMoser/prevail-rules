@@ -16,6 +16,7 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms/pureTransforms';
 import { applyCompleteUnitMovementEvent } from '../applyEffects/movement/applyCompleteUnitMovementEvent';
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
@@ -30,7 +31,10 @@ import { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
  * Black carries out a Move card for the given units, all on the board.
  */
 function resolvingOrder(units: UnitWithPlacement[]): GameState {
-  let state = createEmptyGameState('standard');
+  let state = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
   state = updateCardState(state, {
     ...state.cardState,
     black: { ...state.cardState.black, inPlay: createTestCard() },

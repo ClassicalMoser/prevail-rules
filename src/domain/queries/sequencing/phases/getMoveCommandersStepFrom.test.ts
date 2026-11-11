@@ -1,5 +1,8 @@
 import { createEmptyGameState } from '@factories';
-import { addCommanderToLostCommanders } from '@transforms';
+import {
+  addCommanderToLostCommanders,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { getMoveCommandersStepFrom } from './getMoveCommandersStepFrom';
 
@@ -9,7 +12,10 @@ import { getMoveCommandersStepFrom } from './getMoveCommandersStepFrom';
  */
 describe('getMoveCommandersStepFrom function', () => {
   // Black holds initiative, so black is the first player and white second.
-  const bothStand = createEmptyGameState('standard');
+  const bothStand = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
 
   it('with both commanders standing, the first player moves first', () => {
     expect(getMoveCommandersStepFrom(bothStand, 'moveFirstCommander')).toBe(
