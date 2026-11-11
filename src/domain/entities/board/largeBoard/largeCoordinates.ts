@@ -17,13 +17,16 @@ import { largeBoardRowLetters } from './largeRowLetters';
 export type LargeBoardCoordinate =
   `${LargeBoardRowLetter}-${LargeBoardColumnNumber}`;
 
-const computedCoordinates = largeBoardRowLetters.flatMap((row) =>
-  largeBoardColumnNumbers.map((column) => `${row}-${column}`),
-);
+const computedCoordinates: readonly LargeBoardCoordinate[] =
+  largeBoardRowLetters.flatMap((row) =>
+    largeBoardColumnNumbers.map(
+      (column): LargeBoardCoordinate => `${row}-${column}`,
+    ),
+  );
 
 /** Every large-board coordinate, in row-major order from the letter/number lists. */
-export const largeBoardCoordinates =
-  computedCoordinates as readonly LargeBoardCoordinate[]; // Intentionally safe: same consts as the template type.
+export const largeBoardCoordinates: readonly LargeBoardCoordinate[] =
+  computedCoordinates;
 
 const _largeBoardCoordinatesSchemaObject = z.enum(largeBoardCoordinates);
 

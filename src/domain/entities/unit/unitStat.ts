@@ -27,11 +27,17 @@ export const unitStatNameSchema: z.ZodType<UnitStatName> =
  */
 export type UnitStats = Record<UnitStatName, number>;
 
-// Build schema shape dynamically from unitStatNames to ensure all keys are required
-const _unitStatsSchemaShape = {} as Record<UnitStatName, z.ZodType<number>>;
-for (const statName of unitStatNames) {
-  _unitStatsSchemaShape[statName] = z.number();
-}
+// Every stat is written out, and `satisfies` makes the compiler check that
+// none is missing or extra, which a loop filling in a `{}` could not.
+const _unitStatsSchemaShape = {
+  attack: z.number(),
+  flexibility: z.number(),
+  range: z.number(),
+  retreat: z.number(),
+  reverse: z.number(),
+  rout: z.number(),
+  speed: z.number(),
+} satisfies Record<UnitStatName, z.ZodType<number>>;
 
 const _unitStatsSchemaObject = z.object(_unitStatsSchemaShape).strict();
 

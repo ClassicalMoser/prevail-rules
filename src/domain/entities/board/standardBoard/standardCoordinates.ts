@@ -20,8 +20,10 @@ export type StandardBoardCoordinate =
 /** Every standard-board coordinate, in row-major order from the letter/number lists. */
 export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
   standardBoardRowLetters.flatMap((row) =>
-    standardBoardColumnNumbers.map((column) => `${row}-${column}`),
-  ) as readonly StandardBoardCoordinate[]; // Intentionally safe: same consts as the template type.
+    standardBoardColumnNumbers.map(
+      (column): StandardBoardCoordinate => `${row}-${column}`,
+    ),
+  );
 
 const _standardBoardCoordinatesSchemaObject = z.enum(standardBoardCoordinates);
 

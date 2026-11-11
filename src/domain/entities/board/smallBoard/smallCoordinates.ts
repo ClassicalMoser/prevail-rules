@@ -3,9 +3,9 @@
  *
  * Builds the closed list of `"A-1"` … `"H-12"` strings used for Zod enums and
  * for feeding the shared {@link Coordinate} union. The template type
- * {@link SmallBoardCoordinate} matches that product; the `as const` array cast
- * after `flatMap` is the usual TS gap between computed strings and the
- * template union (safe because both sides use the same letter/number consts).
+ * {@link SmallBoardCoordinate} matches that product. Each computed string is
+ * typed as that template as it is built, so the compiler checks it against the
+ * same letter and number lists the type is made from; no assertion is needed.
  */
 
 import type { AssertExact } from '@utils';
@@ -20,13 +20,16 @@ import { smallBoardRowLetters } from './smallRowLetters';
 export type SmallBoardCoordinate =
   `${SmallBoardRowLetter}-${SmallBoardColumnNumber}`;
 
-const computedCoordinates = smallBoardRowLetters.flatMap((row) =>
-  smallBoardColumnNumbers.map((column) => `${row}-${column}`),
-);
+const computedCoordinates: readonly SmallBoardCoordinate[] =
+  smallBoardRowLetters.flatMap((row) =>
+    smallBoardColumnNumbers.map(
+      (column): SmallBoardCoordinate => `${row}-${column}`,
+    ),
+  );
 
 /** Every small-board coordinate, in row-major order from the letter/number lists. */
-export const smallBoardCoordinates =
-  computedCoordinates as readonly SmallBoardCoordinate[]; // Intentionally safe: same consts as the template type.
+export const smallBoardCoordinates: readonly SmallBoardCoordinate[] =
+  computedCoordinates;
 
 const _smallBoardCoordinatesSchemaObject = z.enum(smallBoardCoordinates);
 
