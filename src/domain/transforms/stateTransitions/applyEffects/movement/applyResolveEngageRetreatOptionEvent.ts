@@ -1,15 +1,7 @@
 import type { ResolveEngageRetreatOptionEvent } from '@events';
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-} from '@game';
-import {
-  getFrontEngagementStateFromMovement,
-  getIssueCommandsPhaseState,
-  getMovementResolutionState,
-} from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { GameState } from '@game';
+import { getFrontEngagementStateFromMovement } from '@queries';
+import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveEngageRetreatOptionEvent to the game state.
@@ -25,10 +17,7 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
   event: ResolveEngageRetreatOptionEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
-  const movementState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
-
   const frontResolutionState = engagementState.engagementResolutionState;
 
   // Update front engagement resolution state with retreat option.
@@ -47,15 +36,6 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
     engagementResolutionState: newFrontResolutionState,
   };
 
-  const newMovementState: MovementResolutionState = {
-    ...movementState,
-    engagementState: newEngagementState,
-  };
-
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: newMovementState,
-  };
-
-  return updatePhaseState(state, newPhaseState);
+  const updated = updateEngagementStateInMovement(state, newEngagementState);
+  return updated;
 }

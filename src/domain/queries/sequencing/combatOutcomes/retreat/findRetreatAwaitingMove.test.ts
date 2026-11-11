@@ -101,18 +101,19 @@ describe('findRetreatAwaitingMove function', () => {
     const white = placed('white', 'north');
     const black = placed('black', 'south');
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
-        legalRetreatsOf(white),
-      ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
-        legalRetreatsOf(black),
-      ),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, [
+        ['step'],
+        ['turnLeft', 'step'],
+      ]),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, [
+        ['step'],
+        ['turnLeft', 'step'],
+      ]),
     });
     const state = resolveMelee(melee, 'white');
 
-    // Each owner still has a choice to make, so no move is due yet.
+    // Each owner has two ways back and still has a choice to make, so no move
+    // is due yet.
     expect(findRetreatAwaitingMove(state)).toBeUndefined();
   });
 

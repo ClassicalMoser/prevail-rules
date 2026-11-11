@@ -27,7 +27,8 @@ describe('createRetreatState function', () => {
     expect(state.retreatingUnit).toBe(unit);
     // It can fall straight back one space, and nothing smaller.
     expect(state.legalRetreatPaths).toStrictEqual([['step']]);
-    expect(state.chosenRetreatPath).toBe('pending');
+    // One legal retreat is not a choice: it is carried out as it stands.
+    expect(state.chosenRetreatPath).toStrictEqual(['step']);
     // Somewhere to go: it will not rout.
     expect(state.routState).toBe('bypassed');
     expect(state.completed).toBe(false);

@@ -1,5 +1,6 @@
 import type { PlayerSide, UnitInstance } from '@entities';
 import type { CleanupPhaseState, GameState, RoutState } from '@game';
+import { createOpenedRoutState } from '@factories';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
@@ -51,14 +52,10 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
   // filled by resolveRout; a zero penalty closes that substep without a choice.
   const routState: RoutState | 'pending' =
     unitsToRout.length > 0
-      ? ({
-          cardsChosen: false,
-          completed: false,
-          numberToDiscard: 'pending',
+      ? createOpenedRoutState(
           player,
-          substepType: 'rout' as const,
-          unitsToRout: unitsToRout.map((u) => u.unit),
-        } satisfies RoutState)
+          unitsToRout.map((u) => u.unit),
+        )
       : 'pending';
 
   const updatedRallyState = {

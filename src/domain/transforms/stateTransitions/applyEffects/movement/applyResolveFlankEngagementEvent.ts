@@ -3,18 +3,12 @@ import type {
   EngagementState,
   FlankEngagementResolutionState,
   GameState,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
 } from '@game';
-import {
-  getFlankEngagementStateFromMovement,
-  getIssueCommandsPhaseState,
-  getMovementResolutionState,
-} from '@queries';
+import { getFlankEngagementStateFromMovement } from '@queries';
 import {
   moveUnitOnBoard,
   updateBoardState,
-  updatePhaseState,
+  updateEngagementStateInMovement,
 } from '@transforms/pureTransforms';
 
 /**
@@ -27,8 +21,6 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
   event: ResolveFlankEngagementEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
-  const movementState = getMovementResolutionState(state);
   const engagementState = getFlankEngagementStateFromMovement(state);
   const flankResolutionState = engagementState.engagementResolutionState;
 
@@ -51,15 +43,9 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
     engagementResolutionState: newFlankResolutionState,
   };
 
-  const newMovementState: MovementResolutionState = {
-    ...movementState,
-    engagementState: newEngagementState,
-  };
-
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: newMovementState,
-  };
-
-  return updatePhaseState(updateBoardState(state, updatedBoard), newPhaseState);
+  const updated = updateEngagementStateInMovement(
+    updateBoardState(state, updatedBoard),
+    newEngagementState,
+  );
+  return updated;
 }

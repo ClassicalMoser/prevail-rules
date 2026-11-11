@@ -1,21 +1,18 @@
 import type { StartEngagementEvent } from '@events';
+import { createOpenedRoutState } from '@factories';
 import type {
   EngagementResolutionState,
   EngagementState,
   GameState,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
 } from '@game';
-import {
-  getIssueCommandsPhaseState,
-  getMovementResolutionState,
-} from '@queries';
+import { getMovementResolutionState } from '@queries';
 import {
   carryRidingCommander,
   moveUnitOnBoard,
   removeUnitsLeavingUnderRout,
   updateBoardState,
-  updatePhaseState,
+  updateCommandResolutionState,
+  updateEngagementStateInMovement,
 } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
@@ -33,7 +30,6 @@ export function applyStartEngagementEvent<S extends GameState>(
   event: StartEngagementEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
 
   // The engagement starts from a move already written into the enemy.
@@ -53,14 +49,7 @@ export function applyStartEngagementEvent<S extends GameState>(
         return {
           completed: false,
           engagementType: 'rear' as const,
-          routState: {
-            cardsChosen: false,
-            completed: false,
-            numberToDiscard: 'pending',
-            player: defendingPlayer,
-            substepType: 'rout' as const,
-            unitsToRout: [defendingUnit],
-          },
+          routState: createOpenedRoutState(defendingPlayer, [defendingUnit]),
         };
       }
       case 'flank': {
@@ -97,19 +86,10 @@ export function applyStartEngagementEvent<S extends GameState>(
     targetPlacement,
   };
 
-  // Update movement resolution state
-  const newMovementState: MovementResolutionState = {
-    ...movementState,
+  const withEngagement = updateEngagementStateInMovement(
+    state,
     engagementState,
-  };
-
-  // Update phase state
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: newMovementState,
-  };
-
-  const withEngagement = updatePhaseState(state, newPhaseState);
+  );
 
   if (event.engagementType !== 'rear') {
     return withEngagement;
@@ -136,10 +116,9 @@ export function applyStartEngagementEvent<S extends GameState>(
     ),
   );
   // The movement records where the mover now stands.
-  const placedPhaseState: IssueCommandsPhaseState = {
-    ...newPhaseState,
-    currentCommandResolutionState: { ...newMovementState, movingUnit: arrived },
-  };
-  const rearResolved = updatePhaseState(attackerPlaced, placedPhaseState);
+  const rearResolved = updateCommandResolutionState(attackerPlaced, {
+    ...getMovementResolutionState(attackerPlaced),
+    movingUnit: arrived,
+  });
   return rearResolved;
 }

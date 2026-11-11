@@ -1,5 +1,6 @@
 import type { OpenRoutFromAttackApplyEvent } from '@events';
-import type { GameState, RoutState } from '@game';
+import type { GameState } from '@game';
+import { createOpenedRoutState } from '@factories';
 import { getAttackApplyStateAt } from '@queries';
 import {
   removeUnitsLeavingUnderRout,
@@ -29,14 +30,9 @@ export function applyOpenRoutFromAttackApplyEvent<S extends GameState>(
   }
 
   // The defender leaves under rout; discard count is filled by resolveRout.
-  const routState: RoutState = {
-    cardsChosen: false,
-    completed: false,
-    numberToDiscard: 'pending',
-    player: apply.defendingUnit.playerSide,
-    substepType: 'rout',
-    unitsToRout: [apply.defendingUnit],
-  };
+  const routState = createOpenedRoutState(apply.defendingUnit.playerSide, [
+    apply.defendingUnit,
+  ]);
 
   // A rout supersedes: retreat and reverse do not happen to a unit that leaves.
   const nextApply = {

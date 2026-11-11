@@ -57,4 +57,8 @@ export { createUnitPlacement } from './unitLocation';
 export { createUnitInstance } from './unit';
 
 // The attack-apply an attack leaves behind, with each outcome due or bypassed.
-export { createAttackApplyState } from './substeps';
+export {
+  createAttackApplyState,
+  createOpenedRetreatState,
+  createOpenedRoutState,
+} from './substeps';

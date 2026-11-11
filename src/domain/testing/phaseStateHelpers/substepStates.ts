@@ -10,6 +10,7 @@ import type {
   ReverseState,
   RoutState,
 } from '@game';
+import { createOpenedRetreatState } from '@factories';
 
 /**
  * Creates a RetreatState for a unit forced back by combat (§9.1).
@@ -21,29 +22,17 @@ import type {
  * @param unit - The retreating unit and where it stands
  * @param legalRetreatPaths - The paths the engine offers it; empty when it cannot retreat
  * @param overrides - Fields to replace, for a state the game cannot reach
- * @returns The retreat substep, open and with no path chosen
+ * @returns The retreat substep, open; with one legal path that path is chosen
  */
 export function createRetreatState(
   unit: UnitWithPlacement,
   legalRetreatPaths: MoveDelta[][],
   overrides?: Partial<RetreatState>,
 ): RetreatState {
-  const { routState: overrideRoutState, ...restOverrides } = overrides ?? {};
-  // A unit with somewhere to fall back to does not rout, so that slot is
-  // bypassed (§9.1). A unit with nowhere to go routs instead (§9.1.6), which
-  // leaves the rout pending until triggerRoutFromRetreat opens it.
-  const routState =
-    overrideRoutState ??
-    (legalRetreatPaths.length === 0 ? 'pending' : 'bypassed');
-  return {
-    completed: false,
-    chosenRetreatPath: 'pending',
-    legalRetreatPaths,
-    retreatingUnit: unit,
-    routState,
-    substepType: 'retreat' as const,
-    ...restOverrides,
-  };
+  // The retreat as the engine opens it: a single legal path is chosen at once,
+  // and the rout slot follows from whether there is anywhere to fall back to.
+  const opened = createOpenedRetreatState(unit, legalRetreatPaths);
+  return { ...opened, ...overrides };
 }
 
 /**

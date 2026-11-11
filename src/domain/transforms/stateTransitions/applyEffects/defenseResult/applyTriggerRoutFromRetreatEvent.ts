@@ -1,5 +1,6 @@
 import type { TriggerRoutFromRetreatEvent } from '@events';
-import type { GameState, RoutState } from '@game';
+import type { GameState } from '@game';
+import { createOpenedRoutState } from '@factories';
 import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
 import {
   getMeleeAttackApplyState,
@@ -32,14 +33,10 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
       ? getRangedAttackRetreatState(state)
       : getMeleeRetreatState(state, event.retreatingPlayer);
 
-  const routState: RoutState = {
-    cardsChosen: false,
-    completed: false,
-    numberToDiscard: 'pending',
-    player: retreatState.retreatingUnit.unit.playerSide,
-    substepType: 'rout',
-    unitsToRout: [retreatState.retreatingUnit.unit],
-  };
+  const routState = createOpenedRoutState(
+    retreatState.retreatingUnit.unit.playerSide,
+    [retreatState.retreatingUnit.unit],
+  );
 
   const withNestedRout = updateRetreatRoutState(state, routState);
 

@@ -133,11 +133,11 @@ describe('generateResolveRetreatEvent function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    // Open ground behind, but the player has not picked the way back yet.
-    const attackApply = createAttackApplyStateWithRetreat(
-      unitWithPlacement,
-      legalRetreatsOf(unitWithPlacement),
-    );
+    // Two ways back, and the player has not picked one yet.
+    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, [
+      ['step'],
+      ['turnLeft', 'step'],
+    ]);
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,

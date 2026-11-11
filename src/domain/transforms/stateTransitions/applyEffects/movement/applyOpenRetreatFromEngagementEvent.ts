@@ -1,6 +1,6 @@
-import type { MoveDelta } from '@entities';
 import type { OpenRetreatFromEngagementEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
+import type { GameState } from '@game';
+import { createOpenedRetreatState } from '@factories';
 import {
   getFrontEngagementStateFromMovement,
   getSingleUnitWithPlacementAtCoordinate,
@@ -31,24 +31,11 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
     engagementState.targetPlacement.coordinate,
   );
 
-  // One legal retreat is not a choice — it is carried out as it stands.
-  const legalRetreatPaths = event.retreatPaths;
-  const chosenRetreatPath: MoveDelta[] | 'pending' =
-    legalRetreatPaths.length === 1 ? legalRetreatPaths[0] : 'pending';
-
-  // A retreat with somewhere to go will never rout, so that slot is bypassed.
-  // Nowhere to go leaves the rout pending until triggerRoutFromRetreat opens it.
-  const nestedRoutState: 'pending' | 'bypassed' =
-    legalRetreatPaths.length === 0 ? 'pending' : 'bypassed';
-
-  const retreatState: RetreatState = {
-    chosenRetreatPath,
-    completed: false,
-    legalRetreatPaths,
+  // The procedure worked out the legal retreats; they are written as given.
+  const retreatState = createOpenedRetreatState(
     retreatingUnit,
-    routState: nestedRoutState,
-    substepType: 'retreat',
-  };
+    event.retreatPaths,
+  );
 
   const opened = updateEngagementStateInMovement(state, {
     ...engagementState,
