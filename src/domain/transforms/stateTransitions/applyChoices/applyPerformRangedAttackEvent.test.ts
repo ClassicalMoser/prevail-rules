@@ -1,4 +1,4 @@
-import type { UnitInstance } from '@entities';
+import type { UnitInstance, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   createPerformRangedAttackEvent,
@@ -13,7 +13,11 @@ import {
   createRangedAttackResolutionState,
   createUnitWithPlacement,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 
@@ -28,19 +32,26 @@ describe('applyPerformRangedAttackEvent function', () => {
   /**
    * A Shoot order's shot, named and committed, waiting for its target: the
    * shooter has already left the order's units still to act, and refused to
-   * commit, so nothing about the card is in play here.
+   * commit, so nothing about the card is in play here. The units named in the
+   * event stand on the board, as a legal choice requires.
    */
   function shotAwaitingTarget(
     step: 'firstPlayerResolveCommands' | 'secondPlayerResolveCommands',
     shooter: UnitInstance,
     remainingUnitsFirstPlayer: UnitInstance[],
     remainingUnitsSecondPlayer: UnitInstance[],
+    onBoard: UnitWithPlacement[] = [],
   ): GameState {
     // Black holds initiative, so black resolves first and white second.
-    const state = updateCurrentInitiative(
+    const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'black',
     );
+    let board = base.boardState;
+    for (const unit of onBoard) {
+      board = addUnitToBoard(board, unit);
+    }
+    const state = updateBoardState(base, board);
     const shot = createRangedAttackResolutionState(state, {
       attackingCommitment: { commitmentType: 'declined' },
       attackingUnit: shooter,
@@ -76,6 +87,7 @@ describe('applyPerformRangedAttackEvent function', () => {
       shooter.unit,
       [],
       [],
+      [shooter, target],
     );
 
     // Black aims at the white unit alone.
@@ -128,6 +140,7 @@ describe('applyPerformRangedAttackEvent function', () => {
       shooter.unit,
       [supporter.unit, bystander.unit],
       [],
+      [shooter, supporter, bystander, target],
     );
 
     // Black names one supporter (§7.3.4).

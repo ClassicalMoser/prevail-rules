@@ -8,6 +8,7 @@ import type {
 import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
+  getUnitWithPlacementOnBoard,
   isSameUnitInstance,
 } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
@@ -34,8 +35,16 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
   const currentPhaseState = getIssueCommandsPhaseState(state);
   const shot = getRangedAttackResolutionState(state);
   const attackingPlayer = event.player;
-  const defendingUnit = event.targetUnit.unit;
-  const supportingUnits = event.supportingUnits.map((uwp) => uwp.unit);
+  // The event names the target and the supporters by who they are; the units
+  // that are shot at and that support the shot, with the stats they carry, are
+  // the ones the board holds.
+  const defendingUnit = getUnitWithPlacementOnBoard(
+    state.boardState,
+    event.targetUnit.unit,
+  ).unit;
+  const supportingUnits = event.supportingUnits.map(
+    (named) => getUnitWithPlacementOnBoard(state.boardState, named.unit).unit,
+  );
 
   // The shooter's side is the one acting on this order.
   const isFirstPlayer = attackingPlayer === state.currentInitiative;

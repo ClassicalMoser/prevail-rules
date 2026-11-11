@@ -4,7 +4,11 @@ import type {
   IssueCommandsPhaseState,
   RangedAttackResolutionState,
 } from '@game';
-import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
+import {
+  getIssueCommandsPhaseState,
+  getUnitWithPlacementOnBoard,
+  isSameUnitInstance,
+} from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -31,13 +35,20 @@ export function applyChooseShooterEvent<S extends GameState>(
     (unit) => !isSameUnitInstance(unit, event.unit.unit).result,
   );
 
+  // The event names the shooter by who it is; the unit that shoots, with the
+  // stats it carries, is the one the board holds.
+  const shooter = getUnitWithPlacementOnBoard(
+    state.boardState,
+    event.unit.unit,
+  ).unit;
+
   // The shot opens with the shooter's commitment owed and nothing yet aimed:
   // its owner may commit a card first, and a Range card reaches further
   // when the target is chosen (§4.3.11 step 2).
   const shot: RangedAttackResolutionState = {
     attackApplyState: 'pending',
     attackingCommitment: { commitmentType: 'pending' },
-    attackingUnit: event.unit.unit,
+    attackingUnit: shooter,
     commandResolutionType: 'rangedAttack',
     completed: false,
     defendingCommitment: { commitmentType: 'pending' },

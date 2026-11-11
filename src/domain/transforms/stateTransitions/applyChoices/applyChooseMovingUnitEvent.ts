@@ -4,7 +4,11 @@ import type {
   IssueCommandsPhaseState,
   MovementResolutionState,
 } from '@game';
-import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
+import {
+  getIssueCommandsPhaseState,
+  getUnitWithPlacementOnBoard,
+  isSameUnitInstance,
+} from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -30,6 +34,10 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
     (unit) => !isSameUnitInstance(unit, event.unit.unit).result,
   );
 
+  // The event names the unit by who it is; the unit that moves, with the
+  // stats it carries, is the one the board holds.
+  const mover = getUnitWithPlacementOnBoard(state.boardState, event.unit.unit);
+
   // The move opens with the commitment owed and the move unwritten: the
   // owner may commit a card first, and the card counts toward the move.
   const movement: MovementResolutionState = {
@@ -38,7 +46,7 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
     completed: false,
     engagementState: 'pending',
     moveCommander: 'pending',
-    movingUnit: event.unit,
+    movingUnit: mover,
     substepType: 'commandResolution',
     targetPlacement: 'pending',
   };
