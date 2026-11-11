@@ -3,7 +3,8 @@ import type { AuthoritativeGameState } from '@game';
 
 import { projectGameStateForVisibility } from './projectGameStateForVisibility';
 
-import { createEmptyGameState } from '@factories';
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
+import { updateRoundEventStream } from '../state/updateRoundEventStream';
 
 function authoritativeState(): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
@@ -90,5 +91,35 @@ describe('projectGameStateForVisibility function', () => {
     ]);
     // The board is never hidden.
     expect(projected.boardState).toBe(state.boardState);
+  });
+
+  it("hides the opponent's face-down choice in the round's event log, as it hides it in the cards", () => {
+    // Both players have chosen a card for the round, face down. Each seat may
+    // read its own choice in the log and only that it happened for the other.
+    const base = authoritativeState();
+    const state = updateRoundEventStream(base, [
+      createChooseCardEvent({ card: tempCommandCards[0], player: 'black' }),
+      createChooseCardEvent({ card: tempCommandCards[3], player: 'white' }),
+    ]);
+
+    const whiteView = projectGameStateForVisibility(state, 'whiteSeen');
+    const blackView = projectGameStateForVisibility(state, 'blackSeen');
+    const spectatorView = projectGameStateForVisibility(state, 'spectator');
+
+    // White sees its own choice and not black's.
+    expect(whiteView.currentRoundState.events).toMatchObject([
+      { card: 'hidden', player: 'black' },
+      { card: tempCommandCards[3], player: 'white' },
+    ]);
+    // Black sees its own choice and not white's.
+    expect(blackView.currentRoundState.events).toMatchObject([
+      { card: tempCommandCards[0], player: 'black' },
+      { card: 'hidden', player: 'white' },
+    ]);
+    // A spectator sees neither.
+    expect(spectatorView.currentRoundState.events).toMatchObject([
+      { card: 'hidden', player: 'black' },
+      { card: 'hidden', player: 'white' },
+    ]);
   });
 });
