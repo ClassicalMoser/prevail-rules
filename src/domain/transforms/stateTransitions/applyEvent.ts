@@ -56,7 +56,18 @@ export function applyEvent<S extends GameState>(
     throw new Error(`Unknown event type: ${(_exhaustive as Event).eventType}`);
   }
 
-  return {
+  // The event that ends a round belongs to the round it ends (§4.5.4). The
+  // log is the cursor for replay and undo, so the new round's log must start
+  // empty: its own first event is the first thing the new round asks for. The
+  // stream the application stores files this event under the old round too.
+  const endsTheRound =
+    event.eventType === 'gameEffect' &&
+    event.effectType === 'completeCleanupPhase';
+  if (endsTheRound) {
+    return newState;
+  }
+
+  const logged: S = {
     ...newState,
     currentRoundState: {
       ...newState.currentRoundState,
@@ -64,4 +75,5 @@ export function applyEvent<S extends GameState>(
       events: [...newState.currentRoundState.events, event],
     },
   };
+  return logged;
 }
