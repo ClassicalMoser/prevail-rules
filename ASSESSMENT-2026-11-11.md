@@ -28,21 +28,25 @@ several runs overlapped; a single run is clean. Not yet explained.
 Decisions made while reading this document. The work order below is complete
 enough to run without the author present. Anything not listed is not decided.
 
-| Item | Decision                                                                                                                                                                                                            |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| E1   | A unit on an event is identity only. One pure transform lifts a unit and sets it down at its new placement, and all six sites call it. The three Phase 3 applies read the unit from the board.                      |
-| E2   | `getLegalMoveUnits` and `getLegalRangedAttackers` read `inPlay` directly. The hand-visibility gate goes, because the in-play card is public (§4.1.2).                                                               |
-| E3   | A round's log ends with its own last event. `completeCleanupPhase` is appended before the reset; the new round's log starts empty. The application's filing under the old round already agrees.                     |
-| E4   | `modifierTypes` is dropped from the four `commitTo*` events, together with the four copies of `sameModifierTypes`. Legality and validation work from the card and the moment's accepted stats.                      |
-| E5   | The melee order enumerator answers an empty offer and checks that a melee is under way (ENGINES, enumerator contract).                                                                                              |
-| E6   | `processEvent` applies first, then stores the event. A failed save after a good apply is a refusal and leaves both unchanged.                                                                                       |
-| E7   | A finished game is not a fault. `advanceEffects` and `validateExpectedChoice` use `findExpectedEvent`; a late choice is refused with its own reason.                                                                |
-| R1   | Yes: a front-engaged defender's committed card counts toward the retreat it is weighing. `getLegalRetreats` takes the commitment modifiers, both procedures pass them, and RULEBOOK §9.1.3 gets a clause saying so. |
+| Item | Decision                                                                                                                                                                                                                                                                                             |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| E1   | A unit on an event is identity only. One pure transform lifts a unit and sets it down at its new placement, and all six sites call it. The three Phase 3 applies read the unit from the board.                                                                                                       |
+| E2   | `getLegalMoveUnits` and `getLegalRangedAttackers` read `inPlay` directly. The hand-visibility gate goes, because the in-play card is public (§4.1.2).                                                                                                                                                |
+| E3   | A round's log ends with its own last event. `completeCleanupPhase` is appended before the reset; the new round's log starts empty. The application's filing under the old round already agrees.                                                                                                      |
+| E4   | `modifierTypes` is dropped from the four `commitTo*` events, together with the four copies of `sameModifierTypes`. Legality and validation work from the card and the moment's accepted stats.                                                                                                       |
+| E5   | The melee order enumerator answers an empty offer and checks that a melee is under way (ENGINES, enumerator contract).                                                                                                                                                                               |
+| E6   | `processEvent` applies first, then stores the event. A failed save after a good apply is a refusal and leaves both unchanged.                                                                                                                                                                        |
+| E7   | A finished game is not a fault. `advanceEffects` and `validateExpectedChoice` use `findExpectedEvent`; a late choice is refused with its own reason.                                                                                                                                                 |
+| R1   | Yes: a front-engaged defender's committed card counts toward the retreat it is weighing. `getLegalRetreats` takes the commitment modifiers, both procedures pass them, and RULEBOOK §9.1.3 gets a clause saying so.                                                                                  |
+| R2   | Closed, no change. The engager waits on its start space until the engagement is set up. A unit that starts behind its target engages from behind, a rear engagement that routs the defender (§6.3.3), and has very good reason to; the case that worried the sweep is one a player would not choose. |
+| R3   | Only issue-or-stop changes: `ExpectedEventInfo` names both accepted choices, so validation and the options router stop re-deriving it. The other three stay as they are. Committing a few closely related consecutive choices in one event is acceptable and gives the client more flexibility.      |
+| R4   | Direction only: legality predicates that validation calls, as `canReverseUnit` is. The author has been least hands-on here and says predicate versus enumerator needs more design work. Nothing is built yet.                                                                                        |
+| R5   | The selections stay as they are. The sequencer owns the order of routs and opens them one at a time, so the selections' first-player-first order never has two candidates to choose between. The README sentence and the `findRoutOwingDiscard` JSDoc are corrected to say that.                     |
+| R6   | Repo-wide: every total reader is `find*` and every `get*` insists. The `get*` readers that return `undefined` are renamed.                                                                                                                                                                           |
 
-**Hands off, with no design yet:** R3 (choice splits), R5 (rout selection
-order), R6 (reach of find/get), the writer question and `submittedTime`. R4
-(rules only in validation) is also left alone: no option was chosen.
-R2 stays a question until it has a probe.
+**Hands off, with no design yet:** the writer question, `submittedTime`, and
+R4 beyond the direction above. The other three R3 shapes (`commitToMovement`,
+`performRangedAttack`, `moveUnit`) stay as they are by the author's ruling.
 
 **Work order.** One kind of change per commit, a failing spec first and its
 own commit for each fix (AUDIT_PROCESS), then the fix. Run `pnpm validate` and
@@ -50,7 +54,9 @@ own commit for each fix (AUDIT_PROCESS), then the fix. Run `pnpm validate` and
 assertion. Specs follow STYLE: a title that states the rule in the game's
 terms, a comment on each step, literal expected values, setup from factories,
 transforms and `@testing`. Do not remove or rewrite an existing comment. No
-more than ten agents in total.
+more than ten agents in total. Before adding any helper, search the whole
+package for it (queries, utils, factories, testing); group split modules in
+sub-folders; one primary export per file.
 
 1. E3, then E4, then E7, then E6, then E5: each is small and independent.
 2. E2, with a spec that folds a two-shooter order on a seat's projection and
@@ -60,7 +66,37 @@ more than ten agents in total.
 4. R1: the failing spec (a defender whose only retreat needs one more
    Flexibility, committing Flexibility), `getLegalRetreats`, the two
    procedures, then the §9.1.3 clause in RULEBOOK. Add no appendix entry.
-5. Update this file: move each finished item out of Section 1 and 2 with the
+5. R3, issue-or-stop: `ExpectedEventInfo` names both accepted choices. Use the
+   smallest shape that does it, then remove the hand-written acceptance in
+   `validateExpectedChoice` and the constant in `getLegalPlayerChoiceOptions`.
+6. R5: correct the combatOutcomes README sentence and the `findRoutOwingDiscard`
+   JSDoc to say the sequencer owns the order and opens one rout at a time.
+   Comments only; keep the author's reasoning (initiative decides a tie, and
+   the explicit sequence means there is none).
+7. The missing readers of 3.1, each in `@queries` and written to the reader
+   model in `queries/sequencing/combatOutcomes/README.md` and the queries
+   README: a `find*` is total and answers `undefined`, a `get*` insists. For
+   each, add the reader with its own spec, then move the callers onto it, in a
+   separate commit.
+   - The acting player's remaining units and orders in Phase 3. Readers only.
+     The writes stay hand-picked until the writer question is settled.
+   - `find*` twins for the command resolution under way (movement, ranged
+     attack, front engagement, melee), so the six enumerators stop walking it
+     by hand. Where `@legality` and `@expected` write the same sequencing (the
+     melee commit order, the front-engagement gates), add one selection in
+     `@queries` that both call.
+   - Whose rally it is: route the hand-written derivations through
+     `getRallyingPlayer`. Leave the three callerless readers in place and
+     marked; where two copies disagree (`discardPlayedCards`, `complete`),
+     record it and stop.
+   - `findRetreatAwaitingChoice`, in the order its siblings ask
+     (second player first).
+8. R6: rename each `get*` that returns `undefined` to a `find*`, add a `get*`
+   twin only where a caller needs one that insists, update the callers, specs
+   and both READMEs (the root README's `getForwardSpace` example included).
+   List every `get*` that returns `undefined` by search first, not only the ones
+   named in 3.4. One rename family per commit.
+9. Update this file: move each finished item out of Sections 1 to 3 with the
    commit that closed it named in words, not by hash.
 
 Anything that needs a game-rule or design choice not listed above stops the
@@ -88,8 +124,8 @@ author decides otherwise.
 
 ## 2. Rule questions for the author
 
-Each is a design decision. None is to be specced or fixed until the author
-has given the design.
+Each is a design decision. R1, R2, R3, R5 and R6 are decided in the table
+above, and R4 has a direction. The text below is kept as it was written.
 
 **R1. Does a front-engaged defender's commitment count toward its retreat?**
 _Verified; three reviewers._ The defender may commit for Speed or Flexibility
