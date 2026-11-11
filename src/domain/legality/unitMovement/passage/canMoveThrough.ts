@@ -18,6 +18,8 @@ import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
  * @param coordinate - The coordinate to check
  * @param gameState - The current game state
  * @returns True if the unit can pass through this coordinate, false otherwise
+ * @throws Error when the coordinate is not on the board: the caller names a
+ * space it has already found, so an absent one is a fault, not a refusal
  */
 export function canMoveThrough(
   unitSide: PlayerSide,
@@ -27,44 +29,36 @@ export function canMoveThrough(
 ): boolean {
   // Get the board state
   const board = gameState.boardState;
-  try {
-    // Find the board space at the given coordinate.
-    const space = getBoardSpace(board, coordinate);
-    const spaceUnitPresence = space.unitPresence;
+  // Find the board space at the given coordinate.
+  const space = getBoardSpace(board, coordinate);
+  const spaceUnitPresence = space.unitPresence;
 
-    // If the space has no unit presence, any unit can move through it.
-    if (hasNoUnit(spaceUnitPresence)) {
-      return true;
-    }
-
-    // If the space has two units engaged in combat, no unit can move through it.
-    if (hasEngagedUnits(spaceUnitPresence)) {
-      return false;
-    }
-    // An enemy occupant cannot be passed through.
-    if (!isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
-      return false;
-    }
-    // A player can only move through their own unit if the combined
-    // Flexibility value of the two units equals or exceeds
-    // The legal threshold.
-    const currentSpaceUnitFlexibility = getCurrentUnitStat(
-      spaceUnitPresence.unit,
-      'flexibility',
-      gameState,
-    );
-    const combinedFlexibility =
-      currentUnitFlexibility + currentSpaceUnitFlexibility;
-    if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
-      return false;
-    }
-
+  // If the space has no unit presence, any unit can move through it.
+  if (hasNoUnit(spaceUnitPresence)) {
     return true;
-  } catch {
-    // If the coordinate doesn't exist, the unit cannot move through it.
-    // TODO(wrong): the comment names one throw, but the catch answers every
-    // fault in the body as "cannot move through". Settled by catching only
-    // the off-board case, or by reporting the message. See AUDIT.md `legality`.
+  }
+
+  // If the space has two units engaged in combat, no unit can move through it.
+  if (hasEngagedUnits(spaceUnitPresence)) {
     return false;
   }
+  // An enemy occupant cannot be passed through.
+  if (!isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
+    return false;
+  }
+  // A player can only move through their own unit if the combined
+  // Flexibility value of the two units equals or exceeds
+  // The legal threshold.
+  const currentSpaceUnitFlexibility = getCurrentUnitStat(
+    spaceUnitPresence.unit,
+    'flexibility',
+    gameState,
+  );
+  const combinedFlexibility =
+    currentUnitFlexibility + currentSpaceUnitFlexibility;
+  if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
+    return false;
+  }
+
+  return true;
 }

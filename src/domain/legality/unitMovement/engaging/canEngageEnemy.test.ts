@@ -121,15 +121,17 @@ describe('canEngageEnemy function', () => {
   });
 
   describe('error handling', () => {
-    it('given a non-existent coordinate, returns false', () => {
+    it('throws, naming the coordinate, when it is not on the board', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const board = gameState.boardState;
       const invalidCoordinate = 'Z-99' as Coordinate;
-      expect(
+      // The caller names a space it has already found, so an absent one is a
+      // fault in the caller, not an engagement that is not legal.
+      expect(() =>
         canEngageEnemy('black', board, invalidCoordinate, 'E-5', 'E-5', 0),
-      ).toBe(false);
+      ).toThrow('Coordinate Z-99 does not exist on standard board.');
     });
 
     it('given a non-adjacent coordinate, returns false', () => {

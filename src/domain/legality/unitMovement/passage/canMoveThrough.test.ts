@@ -121,14 +121,16 @@ describe('canMoveThrough function', () => {
   });
 
   describe('error handling', () => {
-    it('given a non-existent coordinate, returns false', () => {
+    it('throws, naming the coordinate, when it is not on the board', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const invalidCoordinate = 'Z-99' as Coordinate;
-      expect(canMoveThrough('black', 2, invalidCoordinate, gameState)).toBe(
-        false,
-      );
+      // The caller names a space it has already found, so an absent one is a
+      // fault in the caller, not a space a unit cannot pass.
+      expect(() =>
+        canMoveThrough('black', 2, invalidCoordinate, gameState),
+      ).toThrow('Coordinate Z-99 does not exist on standard board.');
     });
   });
 });

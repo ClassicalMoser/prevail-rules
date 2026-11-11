@@ -100,13 +100,15 @@ describe('canMoveInto function', () => {
   });
 
   describe('error handling', () => {
-    it('given a non-existent coordinate, returns false', () => {
+    it('throws, naming the coordinate, when it is not on the board', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const board = gameState.boardState;
       const invalidCoordinate = 'Z-99' as Coordinate;
-      expect(
+      // The caller names a space it has already found, so an absent one is a
+      // fault in the caller, not a space a unit cannot end its move on.
+      expect(() =>
         canMoveInto(
           'black',
           board,
@@ -116,7 +118,7 @@ describe('canMoveInto function', () => {
           0,
           'advance',
         ),
-      ).toBe(false);
+      ).toThrow('Coordinate Z-99 does not exist on standard board.');
     });
 
     it('given an invalid unitPresence, returns false', () => {

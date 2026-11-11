@@ -18,6 +18,8 @@ import { canEngageEnemy } from '../engaging';
  * @param moveStartCoordinate - The coordinate at the beginning of the move
  * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @returns True if the unit can end its movement at this coordinate, false otherwise
+ * @throws Error when the coordinate is not on the board: the caller names a
+ * space it has already found, so an absent one is a fault, not a refusal
  */
 export function canMoveInto(
   unitSide: PlayerSide,
@@ -28,50 +30,42 @@ export function canMoveInto(
   remainingFlexibility: number,
   direction: 'advance' | 'retreat',
 ): boolean {
-  try {
-    // Find the board space at the given coordinate.
-    const space = getBoardSpace(board, destinationCoordinate);
-    const spaceUnitPresence = space.unitPresence;
+  // Find the board space at the given coordinate.
+  const space = getBoardSpace(board, destinationCoordinate);
+  const spaceUnitPresence = space.unitPresence;
 
-    // If the space has no unit presence, any unit can move into it.
-    if (hasNoUnit(spaceUnitPresence)) {
-      return true;
-    }
+  // If the space has no unit presence, any unit can move into it.
+  if (hasNoUnit(spaceUnitPresence)) {
+    return true;
+  }
 
-    // If the space has two units engaged in combat, no unit can move into it.
-    if (hasEngagedUnits(spaceUnitPresence)) {
-      return false;
-    }
-
-    // If the space has a single unit, further checks are needed.
-    if (hasSingleUnit(spaceUnitPresence)) {
-      // A friendly occupant blocks the end of the move.
-      if (isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
-        return false;
-      }
-      // Player can advance into a space with an enemy unit
-      // If they can engage the enemy.
-      if (direction === 'advance') {
-        return canEngageEnemy(
-          unitSide,
-          board,
-          destinationCoordinate,
-          adjacentCoordinate,
-          moveStartCoordinate,
-          remainingFlexibility,
-        );
-      }
-      // Player cannot retreat into a space with an enemy unit.
-      return false;
-    }
-
-    // This represents an invalid board state. We should never get here.
-    return false;
-  } catch {
-    // Any error means the unit cannot move into this coordinate.
-    // TODO(wrong): a fault in the state (not a rule) is answered as an illegal
-    // move. Settled by catching only the expected off-board lookup, or by
-    // reporting the message. See AUDIT.md `legality`.
+  // If the space has two units engaged in combat, no unit can move into it.
+  if (hasEngagedUnits(spaceUnitPresence)) {
     return false;
   }
+
+  // If the space has a single unit, further checks are needed.
+  if (hasSingleUnit(spaceUnitPresence)) {
+    // A friendly occupant blocks the end of the move.
+    if (isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
+      return false;
+    }
+    // Player can advance into a space with an enemy unit
+    // If they can engage the enemy.
+    if (direction === 'advance') {
+      return canEngageEnemy(
+        unitSide,
+        board,
+        destinationCoordinate,
+        adjacentCoordinate,
+        moveStartCoordinate,
+        remainingFlexibility,
+      );
+    }
+    // Player cannot retreat into a space with an enemy unit.
+    return false;
+  }
+
+  // This represents an invalid board state. We should never get here.
+  return false;
 }
