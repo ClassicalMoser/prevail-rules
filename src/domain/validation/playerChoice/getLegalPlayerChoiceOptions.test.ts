@@ -5,6 +5,7 @@ import type {
   PlayerSource,
 } from '@events';
 import type { GameState } from '@game';
+import type { AssertExact } from '@utils';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createBoardWithCommander,
@@ -48,7 +49,7 @@ vi.mock(import('@expected'), async (importOriginal) => {
  * they answer "nothing". Every other choice is asked only when it is owed, and
  * throws when it is not.
  */
-const allChoiceTypes = [
+const choicesAnsweringOnABareState = [
   'moveCommander',
   'setupUnits',
 ] as const satisfies readonly PlayerChoiceType[];
@@ -58,10 +59,7 @@ const allChoiceTypes = [
  * state has neither, so they cannot answer; that is a fault to throw, not an
  * empty offer.
  */
-const choicesNeedingRoundUnderWay: readonly (readonly [
-  PlayerChoiceType,
-  string,
-])[] = [
+const choicesNeedingRoundUnderWay = [
   ['assignUnitSupport', 'No current phase state found'],
   ['chooseMeleeResolution', 'No current phase state found'],
   ['chooseMovingUnit', 'No current phase state found'],
@@ -82,7 +80,18 @@ const choicesNeedingRoundUnderWay: readonly (readonly [
   ['commitToMovement', 'No movement is being carried out'],
   ['commitToRangedAttack', 'No ranged attack is being carried out'],
   ['commitToRangedDefense', 'No ranged attack is being carried out'],
-];
+] as const satisfies readonly (readonly [PlayerChoiceType, string])[];
+
+/**
+ * The two lists above are the whole of the choices between them: adding a
+ * player choice without placing it in one fails to compile here, instead of
+ * leaving it silently untested.
+ */
+const _everyChoiceIsPlaced: AssertExact<
+  | (typeof choicesAnsweringOnABareState)[number]
+  | (typeof choicesNeedingRoundUnderWay)[number][0],
+  PlayerChoiceType
+> = true;
 
 /**
  * GetLegalPlayerChoiceOptions: presentation router from expected choice →
@@ -301,7 +310,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
   });
 
   describe('discriminant per PlayerChoiceType (an empty offer is a real answer)', () => {
-    it.each(allChoiceTypes)(
+    it.each(choicesAnsweringOnABareState)(
       'returns choiceType %s with the expected payload shape',
       (choiceType) => {
         stubExpected(choiceType, 'black');

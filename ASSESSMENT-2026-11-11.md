@@ -656,6 +656,16 @@ which event carries the paths and whether state or event holds them.
 
 ### 7.5 Hand-kept event-type lists
 
+**Done (seventh pass, on the author's yes).** The test partition in
+`getLegalPlayerChoiceOptions.test.ts` is now asserted to cover every
+`PlayerChoiceType` (proved by deleting an entry, which fails to compile). Every
+other `switch` over a closed union (24 of them: phase, step, choice type,
+effect type, visibility, rout source, engagement type) already ends in a
+`never` default, and the lists whose type is `(typeof list)[number]` share one
+source, as the entities README says. Nothing else needed changing. The
+`LegalPlayerChoiceOptions` union stays hand-kept and tied only by the router's
+return type.
+
 **Verdict: one real defect (fixed), two design risks.**
 
 | List                                                                                              | Result                                                                                                                                                                                      |
