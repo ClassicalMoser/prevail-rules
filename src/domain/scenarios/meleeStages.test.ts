@@ -1,5 +1,6 @@
 import type { AuthoritativeGameState } from '@game';
-import { findPlayerUnitWithPosition } from '@queries';
+import { createChooseRoutDiscardEvent } from '@factories';
+import { findPlayerUnitWithPosition, getOwnedPlayerCardState } from '@queries';
 import {
   applyEffectsUntilChoice,
   createMeleeResolutionState,
@@ -205,5 +206,63 @@ describe('a melee carried out a stage at a time', () => {
       choiceType: 'chooseRoutDiscard',
       playerSource: 'black',
     });
+  });
+
+  it('a unit hit to retreat and to rout falls back before it routs, so the enemy it leaves turns about', () => {
+    // Black's unit is hit to retreat and to rout; white's only to reverse.
+    // Every result is carried out in its place in the order (§7.5.2): black
+    // falls back in the retreat stage, so white is alone on E-5 when its
+    // reverse comes due, and black's rout comes last.
+    const { state, next } = meleeResolvedWith({
+      blackRetreated: true,
+      blackRouted: true,
+      whiteReversed: true,
+    });
+
+    // White is no longer engaged when its reverse is due, so it turns about.
+    const white = findPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
+    expect(white?.placement.facing).toBe('north');
+    // Black's rout comes up last, and black is asked for its Morale.
+    expect(next).toMatchObject({
+      choiceType: 'chooseRoutDiscard',
+      playerSource: 'black',
+    });
+  });
+
+  it('a unit hit to retreat and to rout, with its retreat cut off, routs once, in the retreat stage', () => {
+    // White's unit is hit to retreat and to rout, and a black unit on D-5
+    // cuts its line of withdrawal (§9.1.5), so it routs in the retreat stage
+    // (§7.5.6).
+    const { state, next } = meleeResolvedWith(
+      { whiteRetreated: true, whiteRouted: true },
+      3,
+      [{ coord: 'D-5', facing: 'south', instanceNumber: 3, player: 'black' }],
+    );
+    expect(next).toMatchObject({
+      choiceType: 'chooseRoutDiscard',
+      playerSource: 'white',
+    });
+
+    // White pays its unit's Morale of 2.
+    const hand = getOwnedPlayerCardState(state.cardState, 'white').inHand;
+    const paid = applyEffectsUntilChoice(
+      applyEvent(
+        createChooseRoutDiscardEvent({
+          cards: hand.slice(0, 2),
+          player: 'white',
+        }),
+        state,
+      ),
+    );
+
+    // The unit has left, so its own rout does not come up again: white is
+    // not asked to pay twice.
+    expect(paid.next).not.toMatchObject({
+      choiceType: 'chooseRoutDiscard',
+      playerSource: 'white',
+    });
+    expect(
+      getOwnedPlayerCardState(paid.state.cardState, 'white').inHand,
+    ).toHaveLength(hand.length - 2);
   });
 });
