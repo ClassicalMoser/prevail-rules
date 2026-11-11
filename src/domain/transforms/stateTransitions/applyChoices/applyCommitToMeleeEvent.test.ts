@@ -4,6 +4,7 @@ import { getMeleeResolutionState } from '@queries';
 import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 
@@ -116,5 +117,43 @@ describe('applyCommitToMeleeEvent function', () => {
       commitmentType: 'declined',
     });
     expect(newState.cardState.white.inHand).toHaveLength(1);
+  });
+
+  it('records the card the hand held, not a copy that claims more', () => {
+    // White holds one Attack card. The event names its id but lists Attack
+    // three times, which would count three times over as a melee bonus
+    // (§8.4) if the commitment took the event at its word. A commitment
+    // records the card as the hand held it.
+    const real = createTestCard({ modifiers: ['attack'] });
+    const state = createEmptyGameState('standard');
+    const withCard = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [real] },
+    });
+    const melee = createMeleeResolutionState(withCard, {
+      secondPlayerCommitment: { commitmentType: 'pending' },
+    });
+    const stateInPhase = updatePhaseState(
+      withCard,
+      createResolveMeleePhaseState(withCard, {
+        currentMeleeResolutionState: melee,
+      }),
+    );
+    const event: CommitToMeleeEvent = {
+      choiceType: 'commitToMelee',
+      committedCard: { ...real, modifiers: ['attack', 'attack', 'attack'] },
+      eventType: 'playerChoice',
+      modifierTypes: ['attack'],
+      player: 'white',
+    };
+
+    const newState = applyCommitToMeleeEvent(event, stateInPhase);
+
+    expect(
+      getMeleeResolutionState(newState).secondPlayerCommitment,
+    ).toStrictEqual({
+      card: real,
+      commitmentType: 'completed',
+    });
   });
 });
