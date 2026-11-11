@@ -21,7 +21,10 @@ export { getRangedAttackApplyState } from './attackApply';
 export { getMeleeAttackApplyState } from './attackApply';
 export { getAttackApplyStateAt } from './attackApply';
 export type { AttackApplyLocation } from './attackApply';
-export { findNextMeleeDefendingPlayer } from './attackApply';
+export {
+  findNextMeleeAttackApplyToClose,
+  findNextMeleeDefendingPlayer,
+} from './attackApply';
 
 // Retreat: on an attack-apply, or on a front engagement.
 export { getRetreatStateFromAttackApply } from './retreat';

@@ -1,6 +1,10 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
-import { getMeleeAppliesInResolutionOrder, getOtherPlayer } from '@queries';
+import {
+  findNextMeleeAttackApplyToClose,
+  getMeleeAppliesInResolutionOrder,
+  getOtherPlayer,
+} from '@queries';
 import {
   attackApplyStages,
   getExpectedAttackApplyEvent,
@@ -79,10 +83,9 @@ export function getExpectedMeleeResolutionEvent(
   }
 
   // Every stage is done, so each apply only needs closing, in the same order.
-  for (const apply of appliesInOrder) {
-    if (!apply.completed) {
-      return getExpectedAttackApplyEvent(apply);
-    }
+  const toClose = findNextMeleeAttackApplyToClose(meleeState);
+  if (toClose !== undefined) {
+    return getExpectedAttackApplyEvent(toClose);
   }
 
   // Both attack apply states are complete, melee resolution should be complete

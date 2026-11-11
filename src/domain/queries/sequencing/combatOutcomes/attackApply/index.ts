@@ -13,5 +13,8 @@ export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
 // Selection. A rule of the game decides which candidate is answered about.
 
+// The melee attack-apply still to close, in the order the blows take effect.
+export { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClose';
+
 // The defender whose melee attack-apply is still open, initiative first.
 export { findNextMeleeDefendingPlayer } from './findNextMeleeDefendingPlayer';
