@@ -2,6 +2,13 @@ import type { AssertExact } from '@utils';
 import type { BlackSeenCardState } from '@game/cardState';
 import type { GameStateBase } from './gameStateBase';
 
+import type {
+  boardSchema,
+  playerSideSchema,
+  unitInstanceSchema,
+} from '@entities';
+import type { roundStateSchema } from '@game/roundState';
+
 import { z } from 'zod';
 import { blackSeenCardStateSchema } from '@game/cardState';
 import { gameStateBaseSchema } from './gameStateBase';
@@ -18,19 +25,32 @@ export interface BlackSeenGameState extends GameStateBase {
   cardState: BlackSeenCardState;
 }
 
-const _blackSeenGameStateSchemaObject = gameStateBaseSchema
-  .extend({
-    cardState: blackSeenCardStateSchema,
-    visibility: z.literal('blackSeen'),
-  })
-  .strict();
+const _blackSeenGameStateSchemaObject: z.ZodObject<{
+  boardState: typeof boardSchema;
+  currentInitiative: typeof playerSideSchema;
+  currentRoundNumber: z.ZodInt;
+  currentRoundState: typeof roundStateSchema;
+  lostCommanders: z.ZodArray<typeof playerSideSchema>;
+  reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
+  routedUnits: z.ZodArray<typeof unitInstanceSchema>;
+  winner: z.ZodOptional<typeof playerSideSchema>;
+  cardState: typeof blackSeenCardStateSchema;
+  visibility: z.ZodLiteral<'blackSeen'>;
+}> = gameStateBaseSchema.merge(
+  z
+    .object({
+      cardState: blackSeenCardStateSchema,
+      visibility: z.literal('blackSeen'),
+    })
+    .strict(),
+);
 
 type BlackSeenGameStateSchemaType = z.infer<
   typeof _blackSeenGameStateSchemaObject
 >;
 
 /** Schema for {@link BlackSeenGameState}. */
-export const blackSeenGameStateSchema: z.ZodType<BlackSeenGameState> =
+export const blackSeenGameStateSchema: typeof _blackSeenGameStateSchemaObject =
   _blackSeenGameStateSchemaObject;
 
 const _assertBlackSeenGameState: AssertExact<

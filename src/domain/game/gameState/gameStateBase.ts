@@ -35,8 +35,8 @@ export interface GameStateBase {
 }
 
 /**
- * The schema of {@link GameStateBase}, which each view extends with its own
- * `visibility` and card state.
+ * The schema of {@link GameStateBase}, which each view merges its own
+ * `visibility` and card state into.
  */
 export const gameStateBaseSchema: z.ZodObject<{
   boardState: typeof boardSchema;
@@ -47,13 +47,15 @@ export const gameStateBaseSchema: z.ZodObject<{
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
   winner: z.ZodOptional<typeof playerSideSchema>;
-}> = z.object({
-  boardState: boardSchema,
-  currentInitiative: playerSideSchema,
-  currentRoundNumber: z.int().min(0),
-  currentRoundState: roundStateSchema,
-  lostCommanders: z.array(playerSideSchema),
-  reservedUnits: z.array(unitInstanceSchema),
-  routedUnits: z.array(unitInstanceSchema),
-  winner: playerSideSchema.optional(),
-});
+}> = z
+  .object({
+    boardState: boardSchema,
+    currentInitiative: playerSideSchema,
+    currentRoundNumber: z.int().min(0),
+    currentRoundState: roundStateSchema,
+    lostCommanders: z.array(playerSideSchema),
+    reservedUnits: z.array(unitInstanceSchema),
+    routedUnits: z.array(unitInstanceSchema),
+    winner: playerSideSchema.optional(),
+  })
+  .strict();

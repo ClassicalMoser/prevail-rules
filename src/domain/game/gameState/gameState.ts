@@ -48,7 +48,15 @@ export type UnownedPlayerForGameState<S extends GameState> =
         ? PlayerSide
         : never;
 
-const _gameStateSchemaObject = z.union([
+const _gameStateSchemaObject: z.ZodDiscriminatedUnion<
+  [
+    typeof authoritativeGameStateSchema,
+    typeof whiteSeenGameStateSchema,
+    typeof blackSeenGameStateSchema,
+    typeof spectatorGameStateSchema,
+  ],
+  'visibility'
+> = z.discriminatedUnion('visibility', [
   authoritativeGameStateSchema,
   whiteSeenGameStateSchema,
   blackSeenGameStateSchema,
@@ -58,6 +66,7 @@ const _gameStateSchemaObject = z.union([
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;
 
 /** Schema for {@link GameState} at any visibility. */
-export const gameStateSchema: z.ZodType<GameState> = _gameStateSchemaObject;
+export const gameStateSchema: typeof _gameStateSchemaObject =
+  _gameStateSchemaObject;
 
 const _assertExactGameState: AssertExact<GameState, GameStateSchemaType> = true;
