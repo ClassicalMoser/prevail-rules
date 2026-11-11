@@ -1,5 +1,6 @@
 import { tempCommandCards } from '@sampleValues';
 import type { ChooseRoutDiscardEvent } from '@events';
+import type { GameStateForVisibility } from '@game';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
   getIssueCommandsPhaseState,
@@ -28,7 +29,10 @@ import {
   legalRetreatsOf,
 } from '@testing';
 
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  toHiddenCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyChooseRoutDiscardEvent } from './applyChooseRoutDiscardEvent';
 
@@ -343,6 +347,38 @@ describe('applyChooseRoutDiscardEvent function', () => {
     );
     expect(retreat.completed).toBe(true);
     expect(next.cardState.white.inHand).toHaveLength(1);
+  });
+
+  it("takes the discarded cards out of an opponent's hand it cannot see", () => {
+    // Black is routed, and white's seat folds black's discard. It cannot read
+    // black's hand, only that black holds two cards, and the discard is face
+    // up, so black's hand is one card smaller afterwards.
+    const full = createStateInResolveRallyWithRout(
+      'secondPlayerResolveRally',
+      'black',
+    );
+    const blackHand = [createTestCard(), createTestCard()];
+    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+      ...full,
+      cardState: {
+        black: toHiddenCardState({
+          ...full.cardState.black,
+          inHand: blackHand,
+        }),
+        visibility: 'whiteSeen',
+        white: full.cardState.white,
+      },
+    };
+    const event: ChooseRoutDiscardEvent = {
+      cardIds: [blackHand[0].id],
+      choiceType: 'chooseRoutDiscard',
+      eventType: 'playerChoice',
+      player: 'black',
+    };
+
+    const next = applyChooseRoutDiscardEvent(event, whiteSeen);
+
+    expect(next.cardState.black.inHand).toStrictEqual(['hidden']);
   });
 
   it('throws when nothing is routing', () => {
