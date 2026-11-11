@@ -65,9 +65,6 @@ export {
   resolveRoutEventSchema,
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
   triggerRoutFromRetreatEventSchema,
-  triggerRoutFromRetreatMeleeSchema,
-  triggerRoutFromRetreatRangedAttackSchema,
-  triggerRoutFromRetreatSharedFieldsSchema,
 } from './defenseResult';
 export type {
   AttackResolutionContext,

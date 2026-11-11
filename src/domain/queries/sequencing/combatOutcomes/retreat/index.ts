@@ -24,6 +24,7 @@ export { findRetreatAwaitingMove } from './findRetreatAwaitingMove';
 
 // The retreat with nowhere to go whose rout has not opened.
 export { findRetreatAwaitingRout } from './findRetreatAwaitingRout';
+export { getRetreatAwaitingRout } from './getRetreatAwaitingRout';
 
 // Routers. The retreat this player is making, wherever it sits.
 

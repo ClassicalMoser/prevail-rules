@@ -36,7 +36,7 @@ export { getMeleeRetreatState } from './retreat';
 export { getFrontEngagementRetreatState } from './retreat';
 export { findRetreatAwaitingChoice } from './retreat';
 export { findRetreatAwaitingMove } from './retreat';
-export { findRetreatAwaitingRout } from './retreat';
+export { findRetreatAwaitingRout, getRetreatAwaitingRout } from './retreat';
 export { findRetreatLocation } from './retreat';
 export type { RetreatLocation, RetreatSource } from './retreat';
 export { findRetreatState } from './retreat';

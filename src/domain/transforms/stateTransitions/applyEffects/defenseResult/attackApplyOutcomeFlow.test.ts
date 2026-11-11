@@ -151,7 +151,6 @@ describe('attack apply outcome flow', () => {
     const event: TriggerRoutFromRetreatEvent = {
       effectType: 'triggerRoutFromRetreat',
       eventType: 'gameEffect',
-      retreatResolutionContext: 'rangedAttack',
     };
     const next = applyTriggerRoutFromRetreatEvent(event, full);
     expect(getRangedAttackApplyState(next).reverseState).toBe('bypassed');

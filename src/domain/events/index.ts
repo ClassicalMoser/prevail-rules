@@ -81,9 +81,6 @@ export {
   startEngagementEventSchema,
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
   triggerRoutFromRetreatEventSchema,
-  triggerRoutFromRetreatMeleeSchema,
-  triggerRoutFromRetreatRangedAttackSchema,
-  triggerRoutFromRetreatSharedFieldsSchema,
 } from './gameEffects';
 export type {
   AttackResolutionContext,

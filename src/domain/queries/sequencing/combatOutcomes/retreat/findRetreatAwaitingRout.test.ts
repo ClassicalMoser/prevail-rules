@@ -76,6 +76,41 @@ describe('findRetreatAwaitingRout function', () => {
     });
   });
 
+  it('names the second player when the retreat with nowhere to go is theirs', () => {
+    // The first player's unit has already fallen back; the second player's has
+    // its line of withdrawal cut. Whose retreat it is does not depend on who
+    // holds the initiative.
+    const empty = createEmptyGameState('standard');
+    const black = placed('black', 'north');
+    const white = placed('white', 'south');
+    const fellBack = createRetreatState(black, legalRetreatsOf(black), {
+      chosenRetreatPath: ['step'],
+      completed: true,
+    });
+    const cutOff = createRetreatState(
+      white,
+      legalRetreatsOf(white, [enemyCuttingOffRetreat(white)]),
+    );
+    const melee = createMeleeResolutionState(empty, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        black,
+        legalRetreatsOf(black),
+        { retreatState: fellBack },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
+        white,
+        legalRetreatsOf(white),
+        { retreatState: cutOff },
+      ),
+    });
+    const state = resolveMelee(melee, 'black');
+
+    expect(findRetreatAwaitingRout(state)).toStrictEqual({
+      retreatState: cutOff,
+      source: 'melee',
+    });
+  });
+
   it('answers undefined once the rout has opened on the retreat', () => {
     // The rout the retreat fell into is already open, so nothing is left for
     // `triggerRoutFromRetreat` to do.

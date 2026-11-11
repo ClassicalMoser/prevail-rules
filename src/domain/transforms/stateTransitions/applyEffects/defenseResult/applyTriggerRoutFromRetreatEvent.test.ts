@@ -115,7 +115,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
         eventType: 'gameEffect',
-        retreatResolutionContext: 'rangedAttack',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -139,7 +138,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
         eventType: 'gameEffect',
-        retreatResolutionContext: 'rangedAttack',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -158,15 +156,13 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
   });
 
   describe('melee retreat context', () => {
-    it('given black melee retreat, melee trigger with retreatingPlayer black seeds rout', () => {
+    it('given black melee retreat, the black retreat in the melee seeds its rout', () => {
       const state = createStateWithMeleeRetreat('black');
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
         eventType: 'gameEffect',
-        retreatResolutionContext: 'melee',
-        retreatingPlayer: 'black',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -181,15 +177,13 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       expect(rout.player).toBe('black');
     });
 
-    it('given white melee retreat, melee trigger with retreatingPlayer white seeds rout', () => {
+    it('given white melee retreat, the white retreat in the melee seeds its rout', () => {
       const state = createStateWithMeleeRetreat('white');
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
         eventType: 'gameEffect',
-        retreatResolutionContext: 'melee',
-        retreatingPlayer: 'white',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -235,7 +229,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
         eventType: 'gameEffect',
-        retreatResolutionContext: 'rangedAttack',
       };
 
       const next = applyTriggerRoutFromRetreatEvent(event, full);
@@ -254,7 +247,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
         eventType: 'gameEffect',
-        retreatResolutionContext: 'rangedAttack',
       };
 
       applyTriggerRoutFromRetreatEvent(event, state);

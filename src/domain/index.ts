@@ -215,9 +215,6 @@ export {
   openRoutFromAttackApplyEventSchema,
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
   triggerRoutFromRetreatEventSchema,
-  triggerRoutFromRetreatMeleeSchema,
-  triggerRoutFromRetreatRangedAttackSchema,
-  triggerRoutFromRetreatSharedFieldsSchema,
 } from '@events';
 export {
   assignUnitSupportEventSchema,
@@ -494,6 +491,7 @@ export {
   findRetreatAwaitingChoice,
   findRetreatAwaitingMove,
   findRetreatAwaitingRout,
+  getRetreatAwaitingRout,
   findRetreatLocation,
   findRetreatState,
   findRoutState,

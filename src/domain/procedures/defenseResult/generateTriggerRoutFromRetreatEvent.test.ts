@@ -11,11 +11,7 @@ import {
   placed,
   legalRetreatsOf,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
@@ -95,56 +91,25 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('given ranged resolution with retreat substep, retreatResolutionContext is rangedAttack', () => {
-    const full = stateWithRangedRetreat();
-    const event = generateTriggerRoutFromRetreatEvent(full);
-    expect(event.effectType).toBe('triggerRoutFromRetreat');
-    expect(event.retreatResolutionContext).toBe('rangedAttack');
-    expect(event).not.toHaveProperty('retreatingPlayer');
+  it('names the effect for a ranged retreat with nowhere to go, and carries nothing', () => {
+    const event = generateTriggerRoutFromRetreatEvent(stateWithRangedRetreat());
+
+    // Which retreat it is, is the state's to say when the event is applied.
+    expect(event).toStrictEqual({
+      effectType: 'triggerRoutFromRetreat',
+      eventType: 'gameEffect',
+    });
   });
 
-  it('given melee with only white in retreat apply, context melee and retreatingPlayer white', () => {
-    const full = stateWithMeleeRetreat('white');
-    const event = generateTriggerRoutFromRetreatEvent(full);
-    expect(event.effectType).toBe('triggerRoutFromRetreat');
-    expect(event.retreatResolutionContext).toBe('melee');
-    if (event.retreatResolutionContext === 'melee') {
-      expect(event.retreatingPlayer).toBe('white');
-    }
-  });
-
-  it('given white initiative and both could retreat, picks white retreat path for melee context', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
+  it('names the same effect for a melee retreat with nowhere to go', () => {
+    const event = generateTriggerRoutFromRetreatEvent(
+      stateWithMeleeRetreat('white'),
     );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
-    // A second black unit directly behind the white one, facing it, leaves it
-    // no retreat (§9.1.5).
-    const cutter = placed(createTestUnit('black'), 'F-5', 'north');
-    s = { ...s, boardState: addUnitToBoard(s.boardState, cutter) };
-    const attackApply = createAttackApplyStateWithRetreat(
-      whiteWp,
-      legalRetreatsOf(whiteWp, [blackWp, cutter]),
-    );
-    const melee = createMeleeResolutionState(s, {
-      firstPlayerAttackApplyState: attackApply,
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
 
-    const event = generateTriggerRoutFromRetreatEvent(full);
-    expect(event.retreatResolutionContext).toBe('melee');
-    if (event.retreatResolutionContext === 'melee') {
-      expect(event.retreatingPlayer).toBe('white');
-    }
+    expect(event).toStrictEqual({
+      effectType: 'triggerRoutFromRetreat',
+      eventType: 'gameEffect',
+    });
   });
 
   it('throws outside any combat, where no retreat can be waiting to rout', () => {

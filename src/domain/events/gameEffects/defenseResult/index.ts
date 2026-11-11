@@ -25,12 +25,7 @@ export { resolveRoutEventSchema } from './resolveRout';
 // A failed retreat becomes a rout.
 export { TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE } from './triggerRoutFromRetreat';
 export type { TriggerRoutFromRetreatEvent } from './triggerRoutFromRetreat';
-export {
-  triggerRoutFromRetreatEventSchema,
-  triggerRoutFromRetreatMeleeSchema,
-  triggerRoutFromRetreatRangedAttackSchema,
-  triggerRoutFromRetreatSharedFieldsSchema,
-} from './triggerRoutFromRetreat';
+export { triggerRoutFromRetreatEventSchema } from './triggerRoutFromRetreat';
 
 // An attack apply opens a still-pending outcome when that step's turn comes.
 export { OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE } from './openRoutFromAttackApply';

@@ -157,6 +157,7 @@ export {
   findRetreatAwaitingChoice,
   findRetreatAwaitingMove,
   findRetreatAwaitingRout,
+  getRetreatAwaitingRout,
   findRetreatLocation,
   getFrontEngagementRetreatState,
   findRetreatState,

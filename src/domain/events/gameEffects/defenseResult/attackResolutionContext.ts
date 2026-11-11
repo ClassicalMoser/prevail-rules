@@ -6,9 +6,6 @@
  * keeps `applyEffects` handlers from re-branching on phase
  * or probing players.
  *
- * **Not** used for rout sources that are neither path (see `resolveRout.ts`: rally, rear
- * engagement). **Naming**: some events use `retreatResolutionContext` for the same two literals
- * when the semantic is “where the retreat substep lives”, not “generic attack context”.
  *
  * Tuple-typed exports use explicit `readonly [...]` annotations for `--isolatedDeclarations`.
  */

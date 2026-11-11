@@ -767,6 +767,18 @@ Options: (1) leave; (2) shape cost, two events: put `triggerRoutFromRetreat` and
 them from identity and state, closest to "an event names a unit by identity".
 Recommendation (2); (3) is a larger decision.
 
+**Done so far (seventh pass, on the author's yes, in the manner of the rout).**
+`triggerRoutFromRetreat` carries nothing: the apply asks the new
+`getRetreatAwaitingRout` (the insisting twin of `findRetreatAwaitingRout`) for
+the retreat, and `getAttackApplyStateOfPlayer` for its apply, so the two hand
+ternaries on `retreatResolutionContext` and the `retreatingPlayer` field are
+gone. **Shape change:** the event lost `retreatResolutionContext` and
+`retreatingPlayer`, and the three exported schemas that spelled its branches
+(`triggerRoutFromRetreatSharedFieldsSchema`, `…RangedAttackSchema`,
+`…MeleeSchema`). The rest of 7.7 (`completeAttackApply`, `resolveReverse`, the
+`open*FromAttackApply` events, the attack result spelling, the data the events
+repeat from the state) is not done yet.
+
 **The attack result spelled three ways, and colour against initiative.**
 `resolveMelee` carries `whiteUnitRouted`/`blackUnitRetreated`…; `resolveRangedAttack`
 carries `routed`/`retreated`/`reversed`; the state holds `AttackResult`
