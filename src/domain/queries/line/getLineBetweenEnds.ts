@@ -5,6 +5,8 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 
+import { getPositionOfUnit } from '@queries/unitPresence';
+
 import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
 
 /**
@@ -18,6 +20,7 @@ import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
  * @param restrictions - The order's restrictions; every unit must match its traits and types
  * @param commandedUnits - Units already commanded this round
  * @returns The line's units, in rank order
+ * @throws Error when the first end is not on the board
  * @throws Error when the second end is not on the unbroken rank through the first
  */
 export function getLineBetweenEnds(
@@ -33,6 +36,8 @@ export function getLineBetweenEnds(
     commandedUnits,
   );
   if (span === undefined) {
+    // A first end that was never placed is its own fault, and says so.
+    getPositionOfUnit(board, ends[0]);
     throw new Error(
       'The two ends of the line do not stand on one unbroken rank',
     );
