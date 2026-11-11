@@ -14,9 +14,7 @@ import { isFriendlyUnit } from '@queries';
  * @returns Expected `setupUnits` choice for the next side to deploy
  * @throws If neither side has reserved units (caller should not invoke then)
  */
-export function getExpectedSetupUnitsEvent(
-  state: GameState,
-): ExpectedEventInfo {
+export function getExpectedSetupEvent(state: GameState): ExpectedEventInfo {
   const whiteNeedsSetup = state.reservedUnits.some((unit) => {
     const belongsToWhite = isFriendlyUnit(unit, 'white');
     return belongsToWhite;

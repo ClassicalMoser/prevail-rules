@@ -26,7 +26,7 @@ const {
   getExpectedMoveCommandersPhaseEventMock,
   getExpectedPlayCardsPhaseEventMock,
   getExpectedResolveMeleePhaseEventMock,
-  getExpectedSetupUnitsEventMock,
+  getExpectedSetupEventMock,
 } = vi.hoisted(() => ({
   getCurrentPhaseStateMock: vi.fn(),
   getExpectedCleanupPhaseEventMock: vi.fn(),
@@ -34,7 +34,7 @@ const {
   getExpectedMoveCommandersPhaseEventMock: vi.fn(),
   getExpectedPlayCardsPhaseEventMock: vi.fn(),
   getExpectedResolveMeleePhaseEventMock: vi.fn(),
-  getExpectedSetupUnitsEventMock: vi.fn(),
+  getExpectedSetupEventMock: vi.fn(),
 }));
 
 vi.mock(import('@queries'), async (importOriginal) => {
@@ -51,7 +51,7 @@ vi.mock(import('./byPhase'), () => ({
   getExpectedMoveCommandersPhaseEvent: getExpectedMoveCommandersPhaseEventMock,
   getExpectedPlayCardsPhaseEvent: getExpectedPlayCardsPhaseEventMock,
   getExpectedResolveMeleePhaseEvent: getExpectedResolveMeleePhaseEventMock,
-  getExpectedSetupUnitsEvent: getExpectedSetupUnitsEventMock,
+  getExpectedSetupEvent: getExpectedSetupEventMock,
 }));
 
 /**
@@ -166,7 +166,7 @@ describe('getExpectedEvent function', () => {
 
   it('given phase none, delegates to setup units handler', () => {
     const state = gameStillGoing();
-    getExpectedSetupUnitsEventMock.mockReturnValue({
+    getExpectedSetupEventMock.mockReturnValue({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
       playerSource: 'white',
@@ -177,7 +177,7 @@ describe('getExpectedEvent function', () => {
       choiceType: 'setupUnits',
       playerSource: 'white',
     });
-    expect(getExpectedSetupUnitsEventMock).toHaveBeenCalledWith(state);
+    expect(getExpectedSetupEventMock).toHaveBeenCalledWith(state);
     expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
   });
 
@@ -192,7 +192,7 @@ describe('getExpectedEvent function', () => {
       actionType: 'gameEffect',
       effectType: 'gameOver',
     });
-    expect(getExpectedSetupUnitsEventMock).not.toHaveBeenCalled();
+    expect(getExpectedSetupEventMock).not.toHaveBeenCalled();
     expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
   });
 

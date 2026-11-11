@@ -1,19 +1,19 @@
 import { createTestUnit } from '@testing';
 
-import { getExpectedSetupUnitsEvent } from './getExpectedSetupUnitsEvent';
+import { getExpectedSetupEvent } from './getExpectedSetupEvent';
 
 import { createEmptyGameState } from '@factories';
 /**
- * GetExpectedSetupUnitsEvent: white then black while reserved units remain.
+ * GetExpectedSetupEvent: white then black while reserved units remain.
  */
-describe('getExpectedSetupUnitsEvent function', () => {
+describe('getExpectedSetupEvent function', () => {
   it('given white reserved units, expects white setupUnits', () => {
     const state = {
       ...createEmptyGameState('standard'),
       reservedUnits: [createTestUnit('white')],
     };
 
-    expect(getExpectedSetupUnitsEvent(state)).toStrictEqual({
+    expect(getExpectedSetupEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
       playerSource: 'white',
@@ -26,7 +26,7 @@ describe('getExpectedSetupUnitsEvent function', () => {
       reservedUnits: [createTestUnit('black')],
     };
 
-    expect(getExpectedSetupUnitsEvent(state)).toStrictEqual({
+    expect(getExpectedSetupEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
       playerSource: 'black',
@@ -39,7 +39,7 @@ describe('getExpectedSetupUnitsEvent function', () => {
       reservedUnits: [createTestUnit('black'), createTestUnit('white')],
     };
 
-    expect(getExpectedSetupUnitsEvent(state)).toStrictEqual({
+    expect(getExpectedSetupEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
       playerSource: 'white',
@@ -48,7 +48,7 @@ describe('getExpectedSetupUnitsEvent function', () => {
 
   it('given empty reserve, throws', () => {
     expect(() =>
-      getExpectedSetupUnitsEvent(createEmptyGameState('standard')),
+      getExpectedSetupEvent(createEmptyGameState('standard')),
     ).toThrow('No reserved units remaining for setup');
   });
 });

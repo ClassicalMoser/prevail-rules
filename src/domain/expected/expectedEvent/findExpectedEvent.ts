@@ -11,7 +11,7 @@ import {
   getExpectedMoveCommandersPhaseEvent,
   getExpectedPlayCardsPhaseEvent,
   getExpectedResolveMeleePhaseEvent,
-  getExpectedSetupUnitsEvent,
+  getExpectedSetupEvent,
 } from './byPhase';
 
 /**
@@ -54,7 +54,7 @@ export function findExpectedEvent(
   // Pre-round deployment: place reserved units before any phase starts.
   let info: ExpectedEventInfo;
   if (rawPhase === 'none') {
-    info = getExpectedSetupUnitsEvent(state);
+    info = getExpectedSetupEvent(state);
   } else {
     const phaseState = getCurrentPhaseState(state);
 

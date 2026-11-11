@@ -862,7 +862,7 @@ begun. An event that changes the round number ends the round it was applied in,
 so round 1's log starts empty whether `roundEnd` or the last setup event began
 it (failing spec first: `scenarios/roundBoundary.test.ts`). The expected engine
 already has its explicit round-zero case: `findExpectedEvent` answers
-`getExpectedSetupUnitsEvent` while the phase is `'none'`. **Left:** the
+`getExpectedSetupEvent` while the phase is `'none'`. **Left:** the
 application never creates a stream or snapshot for round 0 (`startNewGame`
 creates none, and nothing flushes round 0); round 0 has its own structure and
 is not built out, so this waits for it. Storing a round's length and dropping
