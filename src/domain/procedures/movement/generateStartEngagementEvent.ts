@@ -38,6 +38,10 @@ export function generateStartEngagementEvent(
 
   // How the engaging unit meets the defender decides what the engagement is.
   const engagementType = findEngagementType(engagingFacing, defendingFacing);
+  // Rear, flank and front cover six of the eight ways two facings can meet.
+  // The other two, 45° off head-on, cannot happen: a front approach squares
+  // up head-on as part of the engaging move (§6.2.3, `getEngagementEndFacing`).
+  // Reaching them means that guarantee broke.
   if (engagementType === undefined) {
     throw new Error(
       `Unable to determine engagement type. Engaging facing: ${engagingFacing}, Defending facing: ${defendingFacing}`,

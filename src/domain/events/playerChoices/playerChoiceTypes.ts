@@ -7,7 +7,11 @@ import { z } from 'zod';
  * `playerChoiceTypeSchema` without circular init while `playerChoice.ts` builds `z.union(...)`.
  */
 
-/** Iterable list of valid player choices. Built from individual event constants. */
+/**
+ * Iterable list of valid player choices, written out by hand. `playerChoice.ts`
+ * asserts it against the union of choice events, so a missing or extra entry
+ * fails to compile.
+ */
 export const playerChoices = [
   'assignUnitSupport',
   'chooseCard',

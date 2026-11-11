@@ -45,15 +45,22 @@ export function applyStartEngagementEvent<S extends GameState>(
   const engagementResolutionState = (() => {
     switch (event.engagementType) {
       case 'rear': {
+        // From the rear the defender routs at once (§6.3.3); its penalty is
+        // filled in by resolveRout.
         return createOpenedRearEngagementResolutionState(defendingUnit);
       }
       case 'flank': {
+        // From the flank the defender will be turned to face the engager
+        // (§6.3.4).
         return createOpenedFlankEngagementResolutionState();
       }
       case 'front': {
+        // Head-on the defender may commit, then may be offered a retreat
+        // (§6.3.2).
         return createOpenedFrontEngagementResolutionState();
       }
       default: {
+        // Exhaustiveness check for TypeScript
         const _exhaustive: never = event.engagementType;
         throw new Error(`Unknown engagement type: ${_exhaustive}`);
       }

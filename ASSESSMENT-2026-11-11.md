@@ -236,6 +236,50 @@ Decision points left for the author, found on the way:
   reworded. Two `performRangedAttack` specs placed no units on the board and
   now do.
 
+**Integrity check (2026-11-11, after the fifth pass).** The author asked for a
+sanity check of every commit not yet pushed. Three reviewers, given the commits
+but not my conclusions, compared each commit with its parent. None of the
+refactors changed game behaviour; the only behaviour changes are the two
+misuses made to throw on purpose (a shot's supporters asked for outside Phase 3,
+and an engagement retreat recorded with no path). Fixed from what they found:
+
+- `getLineBetweenEnds` had folded "the first end is not on the board" into "the
+  two ends do not stand on one unbroken rank". It throws its own message again
+  (failing spec first).
+- Comments made false by `settleRout` (in `resolveRout.ts` and
+  `findRoutLocation.ts`) no longer say the apply reads `routResolutionSource`.
+- The "why" for the throw in `generateStartEngagementEvent` was lost when the
+  engagement predicates became booleans: the two 45° facings cannot happen,
+  because a front approach squares up (§6.2.3). It is back. The per-case
+  comments in `applyStartEngagementEvent` are back too.
+- "A defender with nowhere to fall back to stands" now cites §6.3.2 as well as
+  §9.1.5 in three places; §6.3.2 step 2 is the rule that it stands.
+- `playerChoiceTypes.ts` said the list was built from the event constants; it is
+  written by hand and asserted against the events.
+- The four opened-engagement factories share no spec file now; each has its own,
+  titled for its function.
+- Four fixtures used instance numbers (99, 999) above the new cap of 12.
+- The effects README named `updateCardState`, a test helper, as a pure
+  transform; it now names `updatePlayerCards` and `replaceCardState`.
+- Stale lines in this document (`isValidLine`, the fixture setter, Section 7's
+  "nothing changed yet").
+
+Left for the author:
+
+- **`updateHiddenPlayerCardState` was deleted** in the third pass for having no
+  caller. That was before the author said functions with no caller may be
+  consumer API. It writes the hand of a seat that cannot see it, which is what
+  a client holds. Restore it, or leave it gone?
+- **The test helper `assignInstanceNumbers`** numbers units 1, 2, 3… across both
+  players and all unit types. A layout of more than 12 auto-numbered units would
+  get numbers the schema now rejects. Nothing parses them and no spec does it
+  today; numbering per player and type would match the game.
+- **Public exports removed this session**, for the client/server handoff list:
+  `meleeModifierTypes` and its three sibling tables with their four types
+  (moved to `@ruleValues` under new names), `isValidChooseMeleeResolutionEvent`,
+  `updateHiddenPlayerCardState`, and `gameModes` changed from an array to a
+  record keyed by mode name.
+
 ---
 
 ## 1. Defects
@@ -260,8 +304,8 @@ and the order cap (§4.3.2) in `isValidIssueCommandEvent`. ENGINES §2 and the
 validation README say validators check membership. A UI or bot can learn these
 rules only by being refused. Options: a legality predicate validation calls; a
 follow-up enumerator; or say in ENGINES that choices of several units at once
-are judged in validation. The legality README cites an `isValidLine` that does
-not exist. Pool identity is defined three ways (`unitSupportKindLabel` in
+are judged in validation. (The legality README's citation of a nonexistent
+`isValidLine` was removed in the events-README commit.) Pool identity is defined three ways (`unitSupportKindLabel` in
 legality, `unitSupportLabel` and `sameUnitSupport` in validation).
 
 Direction (author, 2026-11-11): legality predicates that validation calls, as
@@ -290,7 +334,8 @@ rule. The validator walks the submitted choice through the same offers with
   `getLegalLines`, since a line is fixed by its ends; a units order is an
   `OpenChoice` from `getLegalUnitsToOrder`.
 
-- The legality README's `isValidLine` still does not exist.
+- ~~The legality README's `isValidLine` still does not exist.~~ Fixed: the
+  citation was removed.
 
 ---
 
@@ -342,7 +387,8 @@ validators. Left:
 - Who may be ordered (§4.3.4, §4.3.6) is checked in `getLegalUnitsForIssueCommand`
   and again in `canJoinLine`. They agree today. _Plausible._
 - `@testing`'s `updateCardState` replaces the whole card state, which
-  `replaceCardState` now does in production; the fixture setter could delegate.
+  `replaceCardState` now does in production. Done in the fifth pass: the
+  fixture setter delegates to `replaceCardState`.
 
 ### 3.4 State and event shapes
 
@@ -476,7 +522,8 @@ would do were spot-checked against the code (the commander readers, the two
 retreat computations, the front-engagement rout spec, the round filing). None
 found a defect a player can reach today except scout 5. "Shape cost" means a
 change to a public event or state shape, which the client and server packages
-consume. Nothing in this section is changed yet; each says what would be.
+consume. When written, nothing here had been changed; items done since are
+marked **Done** or **Fixed** in their own subsection.
 
 ### 7.1 A settled rout closes its parent four ways
 

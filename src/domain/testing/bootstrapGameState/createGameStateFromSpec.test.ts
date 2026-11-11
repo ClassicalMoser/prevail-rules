@@ -151,7 +151,7 @@ describe('createGameState function', () => {
   it('given continue auto-assigning after explicit numbers', () => {
     const gameState = createGameState([
       ['E-5', 'black'],
-      { coord: 'E-6', instanceNumber: 99, player: 'white' },
+      { coord: 'E-6', instanceNumber: 12, player: 'white' },
       ['E-7', 'black'],
       ['E-8', 'white'],
     ]);
@@ -176,7 +176,7 @@ describe('createGameState function', () => {
       'white',
     );
     expect(unit1?.unit.instanceNumber).toBe(1);
-    expect(unit2?.unit.instanceNumber).toBe(99);
+    expect(unit2?.unit.instanceNumber).toBe(12);
     expect(unit3?.unit.instanceNumber).toBe(2);
     expect(unit4?.unit.instanceNumber).toBe(3);
   });

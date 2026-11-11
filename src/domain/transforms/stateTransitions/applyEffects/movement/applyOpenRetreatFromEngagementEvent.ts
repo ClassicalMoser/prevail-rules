@@ -32,7 +32,7 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
   );
 
   // A defender with nowhere to fall back to stands, and no retreat opens
-  // for that defender (§9.1.5), so a retreat is recorded with at least one
+  // for that defender (§6.3.2, §9.1.5), so a retreat is recorded with at least one
   // way back.
   if (event.retreatPaths.length === 0) {
     throw new Error(

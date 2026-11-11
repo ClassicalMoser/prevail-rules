@@ -26,9 +26,8 @@ interface RoutSlotLocation {
 /**
  * A rout and the parent accountable for resolving it.
  *
- * `resolveRout` carries the source so that applying it can write back to the
- * right parent without searching again, and this is where that source is
- * worked out.
+ * The procedure works out `resolveRout`'s source here, and the transform that
+ * writes the rout back finds its parent here too.
  */
 export interface RoutLocation {
   /** The open rout. */

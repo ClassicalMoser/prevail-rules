@@ -22,7 +22,7 @@ export interface OpenRetreatFromEngagementEvent {
   /**
    * The retreats the defender may make, each as its path (§9.1.3). Never empty:
    * a defender with nowhere to fall back to stands, and no retreat opens
-   * (§9.1.5).
+   * (§6.3.2, §9.1.5).
    */
   retreatPaths: MoveDelta[][];
 }

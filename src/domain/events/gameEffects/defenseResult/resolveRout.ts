@@ -1,11 +1,12 @@
 /**
  * Resolve-rout effect: remove routed units and drive discard / rout substep state.
  *
- * **Why `routResolutionSource`**: Rout can start from ranged attack apply, melee attack apply,
- * cleanup rally, rear engagement during movement, or a retreat that found nowhere to go. Apply
- * must clear the correct `routState` bucket; the procedure encodes which branch is active. The
- * first two literals reuse `attackResolutionContext.ts`; the rest are rout-specific (see
- * non-attack constants below).
+ * **`routResolutionSource`**: a rout can start from a ranged attack apply, a melee attack apply,
+ * a cleanup rally, a rear engagement during movement, or a retreat that found nowhere to go. The
+ * procedure records which one. Apply does not read it: it finds the rout from the routed units'
+ * owner, through `findRoutLocation`. Whether the field stays is an open question about the
+ * event's shape. The first two literals reuse `attackResolutionContext.ts`; the rest are
+ * rout-specific (see non-attack constants below).
  *
  * Tuple-typed value arrays satisfy `--isolatedDeclarations` (no spread-composed exports).
  */
@@ -94,7 +95,7 @@ export const routResolutionSourceSchema: typeof _routResolutionSourceSchemaObjec
 /**
  * Applies rout resolution: units leave the game and the owning player pays discard penalty.
  *
- * `routResolutionSource` is procedure-filled so apply can `switch` without scanning the board.
+ * `routResolutionSource` is filled by the procedure; apply finds the rout from its owner instead.
  */
 export interface ResolveRoutEvent {
   /** The type of the event. */

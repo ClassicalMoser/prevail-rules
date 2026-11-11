@@ -54,10 +54,10 @@ describe('normalizeUnitPlacement function', () => {
 
   it('given use explicit instance number from object spec', () => {
     const result = normalizeUnitPlacement(
-      { coord: 'E-5', instanceNumber: 99, player: 'black' },
+      { coord: 'E-5', instanceNumber: 12, player: 'black' },
       1,
     );
-    expect(result.unit.instanceNumber).toBe(99);
+    expect(result.unit.instanceNumber).toBe(12);
   });
 });
 
@@ -92,11 +92,11 @@ describe('assignInstanceNumbers function', () => {
   it('given continue auto-assign after explicit', () => {
     const result = assignInstanceNumbers([
       ['E-5', 'black'],
-      { coord: 'E-6', instanceNumber: 99, player: 'white' },
+      { coord: 'E-6', instanceNumber: 12, player: 'white' },
       ['E-7', 'black'],
     ]);
     expect(result[0].instanceNumber).toBe(1);
-    expect(result[1].instanceNumber).toBe(99);
+    expect(result[1].instanceNumber).toBe(12);
     expect(result[2].instanceNumber).toBe(2);
   });
 });

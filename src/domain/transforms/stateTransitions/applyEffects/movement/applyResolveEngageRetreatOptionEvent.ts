@@ -20,7 +20,7 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
   state: S,
 ): S {
   // The defender may fall back only where there is somewhere to fall back to
-  // (§9.1.5). With nowhere to go the engagement ends here, and the two units
+  // (§6.3.2, §9.1.5). With nowhere to go the engagement ends here, and the two units
   // stand engaged for the melee in Phase 4.
   if (!event.defendingUnitCanRetreat) {
     const stands = completeEngagementInMovement(

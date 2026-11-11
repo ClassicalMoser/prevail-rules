@@ -243,7 +243,7 @@ describe('getLegalRetreats function', () => {
       );
 
       // Create a different unit instance
-      const differentUnit = createTestUnit('black', { instanceNumber: 999 });
+      const differentUnit = createTestUnit('black', { instanceNumber: 12 });
       const unitWithPlacement = placed(differentUnit, 'G-8', 'west');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
