@@ -100,7 +100,7 @@ describe('attack apply outcome flow', () => {
       effectType: 'resolveRetreat',
       eventType: 'gameEffect',
       path: chosen,
-      startingPosition: retreat.retreatingUnit,
+      unit: retreat.retreatingUnit.unit,
     };
     const afterRetreat = applyResolveRetreatEvent(
       resolveRetreat,

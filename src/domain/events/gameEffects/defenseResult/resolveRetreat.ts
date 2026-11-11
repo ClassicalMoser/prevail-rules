@@ -1,6 +1,6 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { MoveDelta, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { moveDeltaSchema, unitWithPlacementSchema } from '@entities';
+import { moveDeltaSchema, unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -12,11 +12,11 @@ export interface ResolveRetreatEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RETREAT_EFFECT_TYPE;
-  /** The starting position of the unit. */
-  startingPosition: UnitWithPlacement;
+  /** The unit falling back, by identity; where it stands is the board's. */
+  unit: UnitInstance;
   /**
    * The steps and turns of the fall-back (§9.1). Where the unit ends is read
-   * from this path and its starting position, never stored beside them.
+   * from this path and where it stands, never stored beside them.
    */
   path: MoveDelta[];
 }
@@ -26,7 +26,7 @@ const _resolveRetreatEventSchemaObject = z
     effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     path: z.array(moveDeltaSchema),
-    startingPosition: unitWithPlacementSchema,
+    unit: unitInstanceSchema,
   })
   .strict();
 
@@ -44,5 +44,5 @@ export const resolveRetreatEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   path: z.ZodArray<typeof moveDeltaSchema>;
-  startingPosition: typeof unitWithPlacementSchema;
+  unit: typeof unitInstanceSchema;
 }> = _resolveRetreatEventSchemaObject;

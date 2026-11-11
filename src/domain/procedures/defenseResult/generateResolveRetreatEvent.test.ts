@@ -62,9 +62,8 @@ describe('generateResolveRetreatEvent function', () => {
 
     const event = generateResolveRetreatEvent(full);
     expect(event.effectType).toBe('resolveRetreat');
-    expect(event.startingPosition).toStrictEqual(unitWithPlacement);
     expect(event.path).toStrictEqual(['step']);
-    expect(event.startingPosition.unit).toBe(retreatingUnit);
+    expect(event.unit).toBe(retreatingUnit);
   });
 
   it("with both retreats ready, the second player's unit falls back first (§7.5.6)", () => {
@@ -109,7 +108,7 @@ describe('generateResolveRetreatEvent function', () => {
     // White holds initiative and strikes first, so black's unit, the second
     // player's, is the one that falls back first.
     const event = generateResolveRetreatEvent(full);
-    expect(event.startingPosition.unit).toBe(blackUnit);
+    expect(event.unit).toBe(blackUnit);
     expect(event.path).toStrictEqual(['step']);
   });
 

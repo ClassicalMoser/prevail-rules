@@ -5,6 +5,7 @@ import {
   getFrontEngagementStateFromMovement,
   findRetreatLocation,
   findPlacementAfterPath,
+  getPositionOfUnit,
 } from '@queries';
 import {
   moveCommanderOnBoard,
@@ -31,10 +32,11 @@ export function applyResolveRetreatEvent<S extends GameState>(
   state: S,
 ): S {
   // Where the unit ends is wherever its retreat path leads from where it
-  // stood, read by geometry: the path was judged when it was offered.
+  // stands, read by geometry: the path was judged when it was offered.
+  const standing = getPositionOfUnit(state.boardState, event.unit);
   const landing = findPlacementAfterPath(
     state.boardState,
-    event.startingPosition.placement,
+    standing,
     event.path,
     'retreat',
   );
@@ -43,17 +45,13 @@ export function applyResolveRetreatEvent<S extends GameState>(
   }
 
   // Move the unit on the board
-  const unitMovedBoard = moveUnitOnBoard(
-    state.boardState,
-    event.startingPosition.unit,
-    landing,
-  );
+  const unitMovedBoard = moveUnitOnBoard(state.boardState, event.unit, landing);
 
   // A commander standing with the retreating unit always goes with it
   // (§9.1.8). Only the unit's own commander: an enemy commander that rode
   // into this space is with its own unit, and stays.
-  const retreatingSide = event.startingPosition.unit.playerSide;
-  const startCoordinate = event.startingPosition.placement.coordinate;
+  const retreatingSide = event.unit.playerSide;
+  const startCoordinate = standing.coordinate;
   const commanderWithUnit = getBoardSpace(
     state.boardState,
     startCoordinate,
@@ -68,7 +66,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
     : unitMovedBoard;
 
   // The retreat being finished, and the parent holding it.
-  const retreatingPlayer = event.startingPosition.unit.playerSide;
+  const retreatingPlayer = event.unit.playerSide;
   const location = findRetreatLocation(state, retreatingPlayer);
   if (location === undefined) {
     throw new Error(`No retreat is in play for ${retreatingPlayer}`);
