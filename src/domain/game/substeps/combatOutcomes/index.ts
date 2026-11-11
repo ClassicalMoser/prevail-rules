@@ -1,6 +1,4 @@
 // Attack result value
-export { attackResultSchema } from './attackResult';
-export type { AttackResult } from './attackResult';
 
 // Attack apply
 export { attackApplyStateSchema } from './attackApplySubstep';

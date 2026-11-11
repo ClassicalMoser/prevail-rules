@@ -1,4 +1,4 @@
-import type { UnitInstance, UnitWithPlacement } from '@entities';
+import type { AttackResult, UnitInstance } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
@@ -9,7 +9,6 @@ import {
   createTestCard,
   createTestUnit,
   updateCardState,
-  placed,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -25,7 +24,6 @@ describe('applyResolveRangedAttackEvent function', () => {
   function createRangedResolutionFixture(): {
     full: GameState;
     defender: UnitInstance;
-    defenderWithPlacement: UnitWithPlacement;
   } {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
@@ -34,7 +32,6 @@ describe('applyResolveRangedAttackEvent function', () => {
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     const defender = createTestUnit('white', { attack: 2 });
-    const defenderWithPlacement = placed(defender, 'E-5', 'north');
     const ranged = createRangedAttackResolutionState(withCards, {
       defendingUnit: defender,
     });
@@ -44,33 +41,28 @@ describe('applyResolveRangedAttackEvent function', () => {
         currentCommandResolutionState: ranged,
       }),
     );
-    return { defender, defenderWithPlacement, full };
+    return { defender, full };
   }
 
-  /** Game effect merge: defaults plus patch. */
+  /** A resolveRangedAttack event reaching the given thresholds, and no others. */
   function rangedEvent(
-    defenderWithPlacement: UnitWithPlacement,
-    patch: Partial<
-      Omit<
-        ResolveRangedAttackEvent,
-        'defenderWithPlacement' | 'eventType' | 'effectType'
-      >
-    > = {},
+    reached: Partial<AttackResult> = {},
   ): ResolveRangedAttackEvent {
     return {
-      defenderWithPlacement,
+      attackResult: {
+        unitRetreated: false,
+        unitReversed: false,
+        unitRouted: false,
+        ...reached,
+      },
       effectType: 'resolveRangedAttack',
       eventType: 'gameEffect',
-      retreated: false,
-      reversed: false,
-      routed: false,
-      ...patch,
     };
   }
 
   it('bypasses every outcome when the attack reaches no threshold', () => {
-    const { full, defenderWithPlacement } = createRangedResolutionFixture();
-    const event = rangedEvent(defenderWithPlacement);
+    const { full } = createRangedResolutionFixture();
+    const event = rangedEvent();
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
@@ -82,9 +74,9 @@ describe('applyResolveRangedAttackEvent function', () => {
   });
 
   it('leaves a pending reverse when the attack reversed the defender', () => {
-    const { full, defenderWithPlacement } = createRangedResolutionFixture();
-    const event = rangedEvent(defenderWithPlacement, {
-      reversed: true,
+    const { full } = createRangedResolutionFixture();
+    const event = rangedEvent({
+      unitReversed: true,
     });
 
     const next = applyResolveRangedAttackEvent(event, full);
@@ -97,10 +89,9 @@ describe('applyResolveRangedAttackEvent function', () => {
   });
 
   it('leaves a pending rout when the attack routed the defender', () => {
-    const { full, defender, defenderWithPlacement } =
-      createRangedResolutionFixture();
-    const event = rangedEvent(defenderWithPlacement, {
-      routed: true,
+    const { full, defender } = createRangedResolutionFixture();
+    const event = rangedEvent({
+      unitRouted: true,
     });
 
     const next = applyResolveRangedAttackEvent(event, full);
@@ -115,9 +106,9 @@ describe('applyResolveRangedAttackEvent function', () => {
   });
 
   it('leaves a pending retreat when the attack retreated the defender', () => {
-    const { full, defenderWithPlacement } = createRangedResolutionFixture();
-    const event = rangedEvent(defenderWithPlacement, {
-      retreated: true,
+    const { full } = createRangedResolutionFixture();
+    const event = rangedEvent({
+      unitRetreated: true,
     });
 
     const next = applyResolveRangedAttackEvent(event, full);

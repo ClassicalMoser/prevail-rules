@@ -60,8 +60,8 @@ describe('generateResolveMeleeEvent function', () => {
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
     const event = generateResolveMeleeEvent(full);
-    expect(event.whiteUnitRetreated).toBe(true);
-    expect(event.blackUnitRetreated).toBe(true);
+    expect(event.whiteAttackResult.unitRetreated).toBe(true);
+    expect(event.blackAttackResult.unitRetreated).toBe(true);
   });
 
   describe('a Defence card committed to the melee (§8.5)', () => {
@@ -110,7 +110,7 @@ describe('generateResolveMeleeEvent function', () => {
       // Black's blow of 5 meets white's Reverse of 5.
       const event = generateResolveMeleeEvent(cavalryMelee(['attack']));
 
-      expect(event.whiteUnitReversed).toBe(true);
+      expect(event.whiteAttackResult.unitReversed).toBe(true);
     });
 
     it("with it, the unit's thresholds rise by 1 and the same blow does not turn it", () => {
@@ -118,8 +118,8 @@ describe('generateResolveMeleeEvent function', () => {
       // Retreat of 4 is still reached.
       const event = generateResolveMeleeEvent(cavalryMelee(['defense']));
 
-      expect(event.whiteUnitReversed).toBe(false);
-      expect(event.whiteUnitRetreated).toBe(true);
+      expect(event.whiteAttackResult.unitReversed).toBe(false);
+      expect(event.whiteAttackResult.unitRetreated).toBe(true);
     });
 
     it("does nothing to the enemy's thresholds", () => {
@@ -130,9 +130,9 @@ describe('generateResolveMeleeEvent function', () => {
         cavalryMelee(['attack', 'defense']),
       );
 
-      expect(event.blackUnitReversed).toBe(true);
+      expect(event.blackAttackResult.unitReversed).toBe(true);
       // The same card still raises white's own Reverse to 6, above black's 5.
-      expect(event.whiteUnitReversed).toBe(false);
+      expect(event.whiteAttackResult.unitReversed).toBe(false);
     });
   });
 
@@ -188,14 +188,14 @@ describe('generateResolveMeleeEvent function', () => {
     it('without one, a blow of 4 does not turn the enemy', () => {
       const event = generateResolveMeleeEvent(cavalryMeleeWithFriend(false));
 
-      expect(event.whiteUnitReversed).toBe(false);
+      expect(event.whiteAttackResult.unitReversed).toBe(false);
     });
 
     it('a friend looking straight at the fighter adds 2, so the same blow turns the enemy', () => {
       // 4 + 2 = 6 meets white's Reverse of 5.
       const event = generateResolveMeleeEvent(cavalryMeleeWithFriend(true));
 
-      expect(event.whiteUnitReversed).toBe(true);
+      expect(event.whiteAttackResult.unitReversed).toBe(true);
     });
   });
 
@@ -203,11 +203,8 @@ describe('generateResolveMeleeEvent function', () => {
     const full = meleeResolutionGameState();
     const event = generateResolveMeleeEvent(full);
     expect(event.effectType).toBe('resolveMelee');
-    expect(event.location).toBe('E-5');
-    expect(event.whiteUnitWithPlacement.unit.playerSide).toBe('white');
-    expect(event.blackUnitWithPlacement.unit.playerSide).toBe('black');
-    expect(event.whiteUnitRetreated).toBe(false);
-    expect(event.blackUnitRetreated).toBe(false);
+    expect(event.whiteAttackResult.unitRetreated).toBe(false);
+    expect(event.blackAttackResult.unitRetreated).toBe(false);
   });
 
   it('given melee CRS with a second player commitment pending, throws that guard', () => {

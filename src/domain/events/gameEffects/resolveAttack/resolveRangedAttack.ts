@@ -1,35 +1,34 @@
-import type { UnitWithPlacement } from '@entities';
+import type { AttackResult } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitWithPlacementSchema } from '@entities';
+import { attackResultSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 /** The type of the resolve ranged attack game effect. */
 export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
 
+/**
+ * A shot is measured against its target (§4.3.11): which of the target's
+ * thresholds it reached. The target is the one the shot was aimed at, which the
+ * state holds, so the event carries only the result.
+ */
 export interface ResolveRangedAttackEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE;
-  /** Whether the unit is routed. */
-  routed: boolean;
-  /** Whether the unit is reversed. */
-  reversed: boolean;
-  /** Whether the unit is retreated. */
-  retreated: boolean;
-  /** The defender with placement. */
-  defenderWithPlacement: UnitWithPlacement;
+  /** What the shot reached against the target's thresholds. */
+  attackResult: AttackResult;
 }
 
 const _resolveRangedAttackEventSchemaObject = z
   .object({
-    defenderWithPlacement: unitWithPlacementSchema,
+    /** What the shot reached against the target's thresholds. */
+    attackResult: attackResultSchema,
+    /** The type of game effect. */
     effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
+    /** The type of the event. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    retreated: z.boolean(),
-    reversed: z.boolean(),
-    routed: z.boolean(),
   })
   .strict();
 
@@ -44,10 +43,7 @@ const _assertExactResolveRangedAttackEvent: AssertExact<
 
 /** The schema for a resolve ranged attack event. */
 export const resolveRangedAttackEventSchema: z.ZodObject<{
-  defenderWithPlacement: typeof unitWithPlacementSchema;
+  attackResult: typeof attackResultSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  retreated: z.ZodBoolean;
-  reversed: z.ZodBoolean;
-  routed: z.ZodBoolean;
 }> = _resolveRangedAttackEventSchemaObject;

@@ -1,5 +1,5 @@
-import type { Modifier, UnitInstance } from '@entities';
-import type { AttackResult, GameState } from '@game';
+import type { AttackResult, Modifier, UnitInstance } from '@entities';
+import type { GameState } from '@game';
 import { getCurrentUnitStat } from '@queries/unit';
 
 /**

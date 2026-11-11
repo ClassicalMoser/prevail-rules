@@ -1,8 +1,9 @@
 import type { ResolveRangedAttackEvent } from '@events';
-import type { AttackResult, GameState } from '@game';
+import type { GameState } from '@game';
 import { createAttackApplyState } from '@factories';
 import { getRangedAttackResolutionState } from '@queries';
 import { updateCommandResolutionState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 /**
  * Applies a ResolveRangedAttackEvent to the game state.
@@ -21,17 +22,17 @@ export function applyResolveRangedAttackEvent<S extends GameState>(
 ): S {
   const rangedAttackState = getRangedAttackResolutionState(state);
 
-  const defendingUnit = event.defenderWithPlacement.unit;
-
-  // The procedure measured which thresholds this attack cleared.
-  const attackResult: AttackResult = {
-    unitRetreated: event.retreated,
-    unitReversed: event.reversed,
-    unitRouted: event.routed,
-  };
+  // The shot's target is the one it was aimed at.
+  const defendingUnit = throwIfPending(
+    rangedAttackState.defendingUnit,
+    'The shot has not been aimed yet',
+  );
 
   // Only the factory decides which slots are due; no substep is written here.
-  const attackApplyState = createAttackApplyState(defendingUnit, attackResult);
+  const attackApplyState = createAttackApplyState(
+    defendingUnit,
+    event.attackResult,
+  );
 
   const resolved = updateCommandResolutionState(state, {
     ...rangedAttackState,

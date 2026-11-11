@@ -1,5 +1,6 @@
 import type { ResolveMeleeEvent } from '@events';
-import type { AttackResult, GameState } from '@game';
+import type { GameState } from '@game';
+import { getMeleeCombatants } from '@queries';
 import { createAttackApplyState } from '@factories';
 import { updateMeleeAttackApplyState } from '@transforms/pureTransforms';
 
@@ -18,27 +19,18 @@ export function applyResolveMeleeEvent<S extends GameState>(
   event: ResolveMeleeEvent,
   state: S,
 ): S {
-  // Each side's thresholds are independent measurements of the same exchange.
-  const whiteAttackResult: AttackResult = {
-    unitRetreated: event.whiteUnitRetreated,
-    unitReversed: event.whiteUnitReversed,
-    unitRouted: event.whiteUnitRouted,
-  };
-
-  const blackAttackResult: AttackResult = {
-    unitRetreated: event.blackUnitRetreated,
-    unitReversed: event.blackUnitReversed,
-    unitRouted: event.blackUnitRouted,
-  };
+  // The two units engaged in the melee's space; each side's result is an
+  // independent measurement of the same exchange.
+  const { black, white } = getMeleeCombatants(state);
 
   // Only the factory decides which slots are due; no substep is written here.
   const whiteAttackApplyState = createAttackApplyState(
-    event.whiteUnitWithPlacement.unit,
-    whiteAttackResult,
+    white.unit,
+    event.whiteAttackResult,
   );
   const blackAttackApplyState = createAttackApplyState(
-    event.blackUnitWithPlacement.unit,
-    blackAttackResult,
+    black.unit,
+    event.blackAttackResult,
   );
 
   // The event records what happened to each side's unit; each apply is

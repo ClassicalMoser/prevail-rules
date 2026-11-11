@@ -5,7 +5,7 @@ import {
   applyAttackValue,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeSupportValue,
-  findPlayerUnitWithPosition,
+  getMeleeCombatants,
   getRawUnitStat,
   hasInitiative,
   modifiersFromCompletedCommitment,
@@ -29,22 +29,8 @@ import {
  */
 export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
-  const meleeCoordinate = meleeState.location;
-
-  const whiteUnit = findPlayerUnitWithPosition(
-    state.boardState,
-    meleeCoordinate,
-    'white',
-  );
-  const blackUnit = findPlayerUnitWithPosition(
-    state.boardState,
-    meleeCoordinate,
-    'black',
-  );
-
-  if (!whiteUnit || !blackUnit) {
-    throw new Error('Units not found on board');
-  }
+  // The two units engaged in the melee's space.
+  const { black: blackUnit, white: whiteUnit } = getMeleeCombatants(state);
   // Commitments are named for the order they were made in, first player
   // first, so each side's own commitment is found by asking who is first.
   const whiteIsFirst = hasInitiative(state, 'white');
@@ -105,16 +91,9 @@ export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
 
   // Legal retreat hexes are computed when the retreat opens, not on this event.
   return {
-    blackUnitRetreated: blackUnitResult.unitRetreated,
-    blackUnitReversed: blackUnitResult.unitReversed,
-    blackUnitRouted: blackUnitResult.unitRouted,
-    blackUnitWithPlacement: blackUnit,
+    blackAttackResult: blackUnitResult,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    location: meleeCoordinate,
-    whiteUnitRetreated: whiteUnitResult.unitRetreated,
-    whiteUnitReversed: whiteUnitResult.unitReversed,
-    whiteUnitRouted: whiteUnitResult.unitRouted,
-    whiteUnitWithPlacement: whiteUnit,
+    whiteAttackResult: whiteUnitResult,
   };
 }

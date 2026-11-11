@@ -58,11 +58,10 @@ rule of the version being played; who owns an apply is read from its
 
 ### Shared combat outcomes (`combatOutcomes/`)
 
-Reusable under more than one parent (attack apply, retreat, engagement, rally):
+Reusable under more than one parent (attack apply, retreat, engagement, rally). The `AttackResult` an apply carries is an entity in `@entities`, since the `resolveMelee` and `resolveRangedAttack` events carry it too.
 
 | State              | Parents                                       | Nested                                      |
 | ------------------ | --------------------------------------------- | ------------------------------------------- |
-| `AttackResult`     | carried on attack apply                       | —                                           |
 | `AttackApplyState` | ranged / melee resolution                     | `ReverseState`, `RetreatState`, `RoutState` |
 | `RetreatState`     | attack apply, front engagement                | optional `RoutState`                        |
 | `RoutState`        | attack apply, retreat, rear engagement, rally | —                                           |

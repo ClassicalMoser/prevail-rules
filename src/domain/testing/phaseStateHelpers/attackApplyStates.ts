@@ -1,5 +1,10 @@
-import type { MoveDelta, UnitInstance, UnitWithPlacement } from '@entities';
-import type { AttackApplyState, AttackResult } from '@game';
+import type {
+  AttackResult,
+  MoveDelta,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
+import type { AttackApplyState } from '@game';
 import { createAttackApplyState as attackApplyFromResult } from '@factories';
 import {
   createRetreatState,

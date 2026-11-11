@@ -122,6 +122,7 @@ export {
   findRangedAttackResolutionState,
   getMeleeAppliesInResolutionOrder,
   getMeleeResolutionState,
+  getMeleeCombatants,
   findMeleeResolutionState,
   findPlayerOwingMeleeCommitment,
   getMeleeResolutionReadyForAttackCalculation,
@@ -178,6 +179,7 @@ export type {
   RetreatLocation,
   RetreatSource,
   AttackApplyStage,
+  MeleeCombatants,
   RoutLocation,
 } from './sequencing';
 

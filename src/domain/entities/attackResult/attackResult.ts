@@ -2,7 +2,11 @@ import type { AssertExact } from '@utils';
 
 import { z } from 'zod';
 
-/** The result of an attack (rout / reverse / retreat flags). */
+/**
+ * What an attack's blow reached against the defender's thresholds (§7.1.5):
+ * Retreat, Reverse and Rout, each reached or not. The game's results follow
+ * from these in stages (§7.5.2).
+ */
 export interface AttackResult {
   /** Whether the unit is routed. */
   unitRouted: boolean;

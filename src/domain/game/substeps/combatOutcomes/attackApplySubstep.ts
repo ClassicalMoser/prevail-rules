@@ -1,11 +1,9 @@
-import type { UnitInstance } from '@entities';
-import type { AttackResult } from './attackResult';
+import type { AttackResult, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import type { RetreatState } from './retreatSubstep';
 import type { ReverseState } from './reverseSubstep';
 import type { RoutState } from './routSubstep';
-import { unitInstanceSchema } from '@entities';
-import { attackResultSchema } from './attackResult';
+import { attackResultSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { retreatStateSchema } from './retreatSubstep';
 import { reverseStateSchema } from './reverseSubstep';

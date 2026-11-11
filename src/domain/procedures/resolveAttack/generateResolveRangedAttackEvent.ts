@@ -8,7 +8,6 @@ import { throwIfPending } from '@utils';
 import {
   applyAttackValue,
   getRawUnitStat,
-  getPositionOfUnit,
   getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
 } from '@queries';
@@ -90,19 +89,10 @@ export function generateResolveRangedAttackEvent(
     defendingCommitmentModifiers,
   );
 
-  const placement = getPositionOfUnit(state.boardState, defendingUnit);
-  const defenderWithPlacement = {
-    placement,
-    unit: defendingUnit,
-  };
-
   // Legal retreat hexes are computed when the retreat opens, not on this event.
   return {
-    defenderWithPlacement,
+    attackResult,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    retreated: attackResult.unitRetreated,
-    reversed: attackResult.unitReversed,
-    routed: attackResult.unitRouted,
   };
 }

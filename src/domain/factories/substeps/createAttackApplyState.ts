@@ -1,5 +1,5 @@
-import type { UnitInstance } from '@entities';
-import type { AttackApplyState, AttackResult } from '@game';
+import type { AttackResult, UnitInstance } from '@entities';
+import type { AttackApplyState } from '@game';
 
 /**
  * The attack-apply substep an attack leaves behind.

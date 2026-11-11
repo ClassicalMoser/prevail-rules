@@ -81,17 +81,18 @@ function meleeResolvedWith(
   // engines play everything that follows.
   const resolved = applyEvent(
     {
-      blackUnitRetreated: results.blackRetreated ?? false,
-      blackUnitReversed: results.blackReversed ?? false,
-      blackUnitRouted: results.blackRouted ?? false,
-      blackUnitWithPlacement: black,
+      blackAttackResult: {
+        unitRetreated: results.blackRetreated ?? false,
+        unitReversed: results.blackReversed ?? false,
+        unitRouted: results.blackRouted ?? false,
+      },
       effectType: 'resolveMelee',
       eventType: 'gameEffect',
-      location: 'E-5',
-      whiteUnitRetreated: results.whiteRetreated ?? false,
-      whiteUnitReversed: results.whiteReversed ?? false,
-      whiteUnitRouted: results.whiteRouted ?? false,
-      whiteUnitWithPlacement: white,
+      whiteAttackResult: {
+        unitRetreated: results.whiteRetreated ?? false,
+        unitReversed: results.whiteReversed ?? false,
+        unitRouted: results.whiteRouted ?? false,
+      },
     },
     melee,
   );

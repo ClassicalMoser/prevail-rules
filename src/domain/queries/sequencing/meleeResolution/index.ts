@@ -4,6 +4,10 @@ export { getMeleeAppliesInResolutionOrder } from './getMeleeAppliesInResolutionO
 // The melee currently being resolved.
 export { getMeleeResolutionState } from './getMeleeResolutionState';
 
+// The two units fighting it, by colour.
+export { getMeleeCombatants } from './getMeleeCombatants';
+export type { MeleeCombatants } from './getMeleeCombatants';
+
 // The same, `undefined` between one melee and the next.
 export { findMeleeResolutionState } from './findMeleeResolutionState';
 

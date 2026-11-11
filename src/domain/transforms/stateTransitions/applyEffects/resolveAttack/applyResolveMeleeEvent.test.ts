@@ -1,17 +1,18 @@
-import type { UnitWithPlacement } from '@entities';
+import type { AttackResult } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import { getMeleeResolutionState } from '@queries';
 import {
+  createBoardWithEngagedUnits,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
   createTestUnit,
   updateCardState,
-  placed,
 } from '@testing';
 import {
+  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms/pureTransforms';
@@ -35,51 +36,45 @@ describe('applyResolveMeleeEvent function', () => {
       black: { ...base.cardState.black, inPlay: createTestCard() },
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
-    const melee = createMeleeResolutionState(withCards);
-    return updatePhaseState(
+    // White's unit and Black's stand engaged on E-5, the melee's space.
+    const engaged = updateBoardState(
       withCards,
-      createResolveMeleePhaseState(withCards, {
+      createBoardWithEngagedUnits(
+        createTestUnit('white', { attack: 2 }),
+        createTestUnit('black', { attack: 2 }),
+        'E-5',
+        'north',
+      ),
+    );
+    const melee = createMeleeResolutionState(engaged);
+    return updatePhaseState(
+      engaged,
+      createResolveMeleePhaseState(engaged, {
         currentMeleeResolutionState: melee,
       }),
     );
   }
 
-  /** Mirror engaged pair on E-5 for event payloads. */
-  function unitPlacements(): {
-    whiteUnitWithPlacement: UnitWithPlacement;
-    blackUnitWithPlacement: UnitWithPlacement;
-  } {
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    return {
-      blackUnitWithPlacement: placed(blackUnit, 'E-5', 'south'),
-      whiteUnitWithPlacement: placed(whiteUnit, 'E-5', 'north'),
-    };
-  }
+  /** What a blow reached when it reached nothing. */
+  const nothingReached: AttackResult = {
+    unitRetreated: false,
+    unitReversed: false,
+    unitRouted: false,
+  };
 
-  /** Neutral resolveMelee event: no rout/retreat/reverse. */
-  function baseMeleeEvent(
-    placements: ReturnType<typeof unitPlacements>,
-  ): ResolveMeleeEvent {
+  /** A resolveMelee event with these results for White's unit; Black's reached nothing. */
+  function meleeEvent(white: Partial<AttackResult> = {}): ResolveMeleeEvent {
     return {
-      blackUnitRetreated: false,
-      blackUnitReversed: false,
-      blackUnitRouted: false,
-      blackUnitWithPlacement: placements.blackUnitWithPlacement,
+      blackAttackResult: nothingReached,
       effectType: 'resolveMelee',
       eventType: 'gameEffect',
-      location: 'E-5',
-      whiteUnitRetreated: false,
-      whiteUnitReversed: false,
-      whiteUnitRouted: false,
-      whiteUnitWithPlacement: placements.whiteUnitWithPlacement,
+      whiteAttackResult: { ...nothingReached, ...white },
     };
   }
 
   it('bypasses every outcome on both sides when neither unit is hit', () => {
     const full = baseMeleeGameState();
-    const placements = unitPlacements();
-    const event = baseMeleeEvent(placements);
+    const event = meleeEvent();
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
@@ -104,11 +99,7 @@ describe('applyResolveMeleeEvent function', () => {
 
   it('leaves a pending reverse for white when only white reverses', () => {
     const full = baseMeleeGameState();
-    const placements = unitPlacements();
-    const event: ResolveMeleeEvent = {
-      ...baseMeleeEvent(placements),
-      whiteUnitReversed: true,
-    };
+    const event: ResolveMeleeEvent = meleeEvent({ unitReversed: true });
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
@@ -130,11 +121,7 @@ describe('applyResolveMeleeEvent function', () => {
 
   it('leaves a pending rout for white when only white routes', () => {
     const full = baseMeleeGameState();
-    const placements = unitPlacements();
-    const event: ResolveMeleeEvent = {
-      ...baseMeleeEvent(placements),
-      whiteUnitRouted: true,
-    };
+    const event: ResolveMeleeEvent = meleeEvent({ unitRouted: true });
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
@@ -157,11 +144,7 @@ describe('applyResolveMeleeEvent function', () => {
 
   it('leaves a pending retreat when white retreated', () => {
     const full = baseMeleeGameState();
-    const placements = unitPlacements();
-    const event: ResolveMeleeEvent = {
-      ...baseMeleeEvent(placements),
-      whiteUnitRetreated: true,
-    };
+    const event: ResolveMeleeEvent = meleeEvent({ unitRetreated: true });
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);

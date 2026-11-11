@@ -128,6 +128,8 @@ export { armySchema, unitCountSchema } from './army';
 export type { Army, UnitCount } from './army';
 
 // Attack types
+export { attackResultSchema } from './attackResult';
+export type { AttackResult } from './attackResult';
 export { attackTypeSchema, attackTypes } from './attackType';
 export type { AttackType } from './attackType';
 

@@ -20,14 +20,12 @@ export type { RallyResolutionState } from './rallyResolution';
 
 // Shared combat outcomes
 export {
-  attackResultSchema,
   attackApplyStateSchema,
   retreatStateSchema,
   reverseStateSchema,
   routStateSchema,
 } from './combatOutcomes';
 export type {
-  AttackResult,
   AttackApplyState,
   RetreatState,
   ReverseState,

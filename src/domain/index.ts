@@ -1,6 +1,7 @@
 // Main entry point — explicit re-exports only (no `export *`).
 
 export {
+  attackResultSchema,
   armySchema,
   unitCountSchema,
   attackTypes,
@@ -74,6 +75,7 @@ export {
   validationResultSchema,
 } from '@utils';
 export type {
+  AttackResult,
   Army,
   AttackType,
   Board,
@@ -315,7 +317,6 @@ export type {
   WhiteSeenCardState,
 } from '@game';
 export {
-  attackResultSchema,
   authoritativeCardStateSchema,
   blackSeenCardStateSchema,
   cardStateSchema,
@@ -374,7 +375,6 @@ export {
   routStateSchema,
 } from '@game';
 export type {
-  AttackResult,
   Commitment,
   CompletedCommitment,
   DeclinedCommitment,
@@ -514,6 +514,7 @@ export {
   findMeleeResolutionState,
   findPlayerOwingMeleeCommitment,
   getMeleeResolutionState,
+  getMeleeCombatants,
   getMoveCommandersPhaseState,
   getMovementResolutionState,
   getNextStepForResolveRally,

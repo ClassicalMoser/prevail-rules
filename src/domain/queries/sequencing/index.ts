@@ -43,6 +43,8 @@ export { findRangedAttackResolutionState } from './commandResolution';
 // The melee currently being resolved.
 export { getMeleeAppliesInResolutionOrder } from './meleeResolution';
 export { getMeleeResolutionState } from './meleeResolution';
+export { getMeleeCombatants } from './meleeResolution';
+export type { MeleeCombatants } from './meleeResolution';
 export { findMeleeResolutionState } from './meleeResolution';
 export { findPlayerOwingMeleeCommitment } from './meleeResolution';
 

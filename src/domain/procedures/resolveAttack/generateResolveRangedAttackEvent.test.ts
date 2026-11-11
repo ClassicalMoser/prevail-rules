@@ -63,16 +63,14 @@ describe('generateResolveRangedAttackEvent function', () => {
     });
     const full = updatePhaseState(withBoard, phase);
     const event = generateResolveRangedAttackEvent(full);
-    expect(event.retreated).toBe(true);
+    expect(event.attackResult.unitRetreated).toBe(true);
   });
 
   it('given spearmen mirror below retreat threshold, retreated is false', () => {
     const full = rangedResolutionGameState();
     const event = generateResolveRangedAttackEvent(full);
     expect(event.effectType).toBe('resolveRangedAttack');
-    expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
-    expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
-    expect(event.retreated).toBe(false);
+    expect(event.attackResult.unitRetreated).toBe(false);
   });
 
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
@@ -191,8 +189,8 @@ describe('generateResolveRangedAttackEvent function', () => {
     it('a lone shot of 4 reaches the target’s Retreat but not its Reverse', () => {
       const event = generateResolveRangedAttackEvent(cavalryShot({}));
 
-      expect(event.retreated).toBe(true);
-      expect(event.reversed).toBe(false);
+      expect(event.attackResult.unitRetreated).toBe(true);
+      expect(event.attackResult.unitReversed).toBe(false);
     });
 
     it('each supporter adds 1 to the shot', () => {
@@ -201,7 +199,7 @@ describe('generateResolveRangedAttackEvent function', () => {
         cavalryShot({ supporters: 1 }),
       );
 
-      expect(event.reversed).toBe(true);
+      expect(event.attackResult.unitReversed).toBe(true);
     });
 
     it('the shooter’s committed Attack card adds 1 to the shot', () => {
@@ -209,7 +207,7 @@ describe('generateResolveRangedAttackEvent function', () => {
         cavalryShot({ shooterCard: ['attack'] }),
       );
 
-      expect(event.reversed).toBe(true);
+      expect(event.attackResult.unitReversed).toBe(true);
     });
 
     it('the target’s committed Defence card raises its thresholds by 1', () => {
@@ -220,8 +218,8 @@ describe('generateResolveRangedAttackEvent function', () => {
         cavalryShot({ supporters: 1, targetCard: ['defense'] }),
       );
 
-      expect(event.reversed).toBe(false);
-      expect(event.retreated).toBe(true);
+      expect(event.attackResult.unitReversed).toBe(false);
+      expect(event.attackResult.unitRetreated).toBe(true);
     });
   });
 });
