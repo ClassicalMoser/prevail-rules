@@ -4,8 +4,6 @@ This document charts the next features after the audit. The audit comes first an
 
 It records closed game-design decisions for terrain, line of sight, hidden units and setup. Each section says what the rule is and why. Open points are marked as open. How the code is organized is in [`DESIGN.md`](./DESIGN.md); this file is about the game.
 
-File paths checked against revision `1fb47ea` (2026-11-08).
-
 ## Guiding principles
 
 - **No ad hoc rules or exceptions.** Fixes extend existing rules. Data, like a terrain table, may grow. Exceptions may not.

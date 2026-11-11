@@ -55,11 +55,11 @@ mark it.
 Where a comment is missing, write one. It will be clarified later; absent is worse
 than approximate.
 
-Function JSDoc is the practice here and the IDE reads it; keep writing it. Only 6%
-of modules carry a block above the imports, and that is not a gap to fill.
+Function JSDoc is the practice here and the IDE reads it; keep writing it. A block
+above the imports is not a gap to fill.
 
-What is thin is in-body commentary: 5,216 lines of JSDoc against 764 lines inside
-functions. Add the line that says why the check is there.
+What is thin is in-body commentary, far less than the JSDoc above each function.
+Add the line that says why the check is there.
 
 A comment traces the code to the gameplay it serves and makes that link obvious,
 as `STYLE.md` describes. Code that only reaches through the state still serves a
@@ -94,12 +94,12 @@ it.
 from the shared helpers rather than by hand, and the spec stays about its
 assertions.
 
-The helpers exist and are substantially unused. `createGameState` with a
-`UnitPlacementSpec` list appears in 8 specs, while 58 place units through
-`addUnitToBoard` and 39 write a placement literal. 57 specs hand-build a phase
-state that `createCleanupPhaseState` and its siblings already build. 50 lines
-assign into state directly, which `DESIGN.md` rules out and `updateCardState` and
-the transforms exist to avoid.
+The helpers exist and are substantially unused. Many specs place units through
+`addUnitToBoard` or write a placement literal where `createGameState` with a
+`UnitPlacementSpec` list would do. Many hand-build a phase state that
+`createCleanupPhaseState` and its siblings already build. Some assign into state
+directly, which `DESIGN.md` rules out and `updateCardState` and the transforms
+exist to avoid.
 
 Setup only. An assertion's expected value stays a literal: an assertion built from
 the same fixture as its setup agrees with the fixture instead of checking the code.

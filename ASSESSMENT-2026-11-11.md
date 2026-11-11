@@ -6,7 +6,7 @@ findings are in version control (the last commit before this rewrite). It was
 written from that assessment and the code, not from a new full scan, so it
 lists what is known to be open, not everything that could be found.
 
-The gate: `pnpm validate` clean and `pnpm test` passing (2454 tests).
+The gate: `pnpm validate` clean and `pnpm test` passing.
 
 ## Where the engine stands
 
@@ -65,9 +65,9 @@ These are the author's, and are left for the read.
 
 The author runs these during the walk, once implementation holds still.
 
-- 700 of 2402 spec titles begin with "should" or "given".
-- In-body commentary is 13% of source lines against STYLE's 25% (transforms and
-  procedures 8%, application 7%) and 4% in specs (`pnpm check:commentary`).
-- 28 `as never` / `as unknown` casts in specs, each to be checked for the
-  STYLE comment.
+- Many spec titles begin with "should" or "given".
+- In-body commentary is well under STYLE's 25%, most of all in transforms,
+  procedures, application and specs (`pnpm check:commentary`).
+- `as never` / `as unknown` casts in specs, each to be checked for the STYLE
+  comment.
 - Spec rework generally.
