@@ -1,6 +1,7 @@
 import type { CommandCard } from '@entities';
 import type { AuthoritativeCardState, OwnedCardState } from '@game';
 import type { FailValidationResult, ValidationResult } from '@utils';
+import { isSameCard } from '@queries';
 
 export function eachCardPresentOnce(
   blackStartingHand: Set<CommandCard>,
@@ -13,7 +14,7 @@ export function eachCardPresentOnce(
       startingHand: Set<CommandCard>,
       playerState: OwnedCardState,
     ): ValidationResult => {
-      // Build expected cards set for this player (we'll use card ID for equality checks)
+      // Build expected cards set for this player (cards are the same by value, not by reference)
       const expectedCards = new Set<CommandCard>();
       for (const card of startingHand) {
         expectedCards.add(card);
@@ -23,10 +24,10 @@ export function eachCardPresentOnce(
       const seenInPlayerState: CommandCard[] = [];
 
       // Helper to find and remove expected card by ID
-      // Since Sets use referential equality, we need to find the matching card first
+      // A Set compares by reference, so find the matching card by value first
       const removeExpectedCard = (card: CommandCard): boolean => {
         for (const expected of expectedCards) {
-          if (expected.id === card.id) {
+          if (isSameCard(expected, card).result) {
             expectedCards.delete(expected);
             return true;
           }
@@ -36,7 +37,7 @@ export function eachCardPresentOnce(
 
       // Helper to check if card was already seen in this player's state
       const hasSeenCard = (card: CommandCard): boolean =>
-        seenInPlayerState.some((seen) => seen.id === card.id);
+        seenInPlayerState.some((seen) => isSameCard(seen, card).result);
 
       // Helper to process a single card
       const processCard = (card: CommandCard | null): ValidationResult => {

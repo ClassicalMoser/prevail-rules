@@ -1,5 +1,6 @@
 import type { CommandCard } from '@entities';
 import type { HiddenCardState } from '@game';
+import { isSameCard } from '@queries';
 
 /**
  * Burns a specific card from an unowned player's public played pile.
@@ -15,7 +16,7 @@ export function burnHiddenCardFromPlayed(
   card: CommandCard,
 ): HiddenCardState {
   const cardIndex = hidden.played.findIndex(
-    (playedCard) => playedCard.id === card.id,
+    (playedCard) => isSameCard(playedCard, card).result,
   );
   if (cardIndex === -1) {
     throw new Error(
@@ -24,7 +25,7 @@ export function burnHiddenCardFromPlayed(
   }
 
   const played = hidden.played.filter(
-    (playedCard) => playedCard.id !== card.id,
+    (playedCard) => !isSameCard(playedCard, card).result,
   );
   const burnt = [...hidden.burnt, card];
   const next: HiddenCardState = {

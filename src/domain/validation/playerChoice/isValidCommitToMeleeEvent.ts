@@ -1,7 +1,7 @@
 import type { ValidationResult } from '@utils';
 import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
-import { isSameCardValue } from '@queries';
+import { isSameCard, isSameCardValue } from '@queries';
 import { getLegalCommitToMeleeEvents } from '@legality';
 
 function sameModifierTypes(
@@ -35,7 +35,7 @@ export function isValidCommitToMeleeEvent(
       if (option.committedCard === null || event.committedCard === null) {
         return option.committedCard === event.committedCard;
       }
-      return option.committedCard.id === event.committedCard.id;
+      return isSameCard(option.committedCard, event.committedCard).result;
     });
     if (legalOption === undefined) {
       const cardLabel =

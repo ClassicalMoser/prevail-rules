@@ -1,5 +1,6 @@
 import type { CommandCard } from '@entities';
 import type { OwnedCardState } from '@game';
+import { isSameCard } from '@queries';
 
 /**
  * Moves a card from a player's hand to awaitingPlay (choosing a card for play).
@@ -15,13 +16,13 @@ export function chooseCard(
   card: CommandCard,
 ): OwnedCardState {
   const { inHand } = owned;
-  const cardInHand = inHand.find((c) => c.id === card.id);
+  const cardInHand = inHand.find((c) => isSameCard(c, card).result);
 
   if (!cardInHand) {
     throw new Error(`Command card ${card.id} not found in player's hand`);
   }
 
-  const newHand = inHand.filter((c) => c.id !== card.id);
+  const newHand = inHand.filter((c) => !isSameCard(c, card).result);
 
   return {
     ...owned,

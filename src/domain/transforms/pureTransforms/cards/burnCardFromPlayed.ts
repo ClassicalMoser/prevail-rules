@@ -1,5 +1,6 @@
 import type { CommandCard } from '@entities';
 import type { OwnedCardState } from '@game';
+import { isSameCard } from '@queries';
 
 /**
  * Burns a specific card from the player's played pile.
@@ -14,14 +15,14 @@ export function burnCardFromPlayed(
   owned: OwnedCardState,
   card: CommandCard,
 ): OwnedCardState {
-  const cardIndex = owned.played.findIndex((c) => c.id === card.id);
+  const cardIndex = owned.played.findIndex((c) => isSameCard(c, card).result);
   if (cardIndex === -1) {
     throw new Error(
       `Command card ${card.id} not found in player's played cards`,
     );
   }
 
-  const newPlayed = owned.played.filter((c) => c.id !== card.id);
+  const newPlayed = owned.played.filter((c) => !isSameCard(c, card).result);
   const newBurnt = [...owned.burnt, card];
 
   return {

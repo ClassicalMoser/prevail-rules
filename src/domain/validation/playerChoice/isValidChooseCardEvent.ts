@@ -2,7 +2,7 @@ import type { ValidationResult } from '@utils';
 import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalChooseCardOptions } from '@legality';
-import { isSameCardValue } from '@queries';
+import { isSameCard, isSameCardValue } from '@queries';
 
 /**
  * Validates whether a ChooseCardEvent is among the legal choose-card options
@@ -24,7 +24,8 @@ export function isValidChooseCardEvent(
     const legalOptions = getLegalChooseCardOptions(state);
     const legalOption = legalOptions.find(
       (option) =>
-        option.player === event.player && option.card.id === event.card.id,
+        option.player === event.player &&
+        isSameCard(option.card, event.card).result,
     );
     if (legalOption === undefined) {
       return {
