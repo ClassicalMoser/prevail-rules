@@ -580,7 +580,7 @@ export {
   getLegalUnitsForIssueCommand,
   getSetupZoneCoordinates,
   getLegalRetreats,
-  getLegalMoveDeltas,
+  findLegalMoveDeltas,
   getLegalUnitMoves,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,

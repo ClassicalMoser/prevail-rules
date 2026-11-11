@@ -1,7 +1,7 @@
 import type { ExpectedEventInfo } from '@events';
 import type { AttackApplyState } from '@game';
 import { attackApplyStages } from './attackApplyStages';
-import { getExpectedAttackApplyStageEvent } from './getExpectedAttackApplyStageEvent';
+import { findExpectedAttackApplyStageEvent } from './findExpectedAttackApplyStageEvent';
 
 /**
  * Gets the expected event for attack apply substeps.
@@ -20,7 +20,7 @@ export function getExpectedAttackApplyEvent(
   // The unit's results are carried out a stage at a time (§7.5.2); the
   // first stage with something due is what is expected next.
   for (const stage of attackApplyStages) {
-    const due = getExpectedAttackApplyStageEvent(attackApplyState, stage);
+    const due = findExpectedAttackApplyStageEvent(attackApplyState, stage);
     if (due !== undefined) {
       return due;
     }

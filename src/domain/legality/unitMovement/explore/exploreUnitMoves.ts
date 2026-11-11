@@ -3,7 +3,7 @@ import type { GameState } from '@game';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
 import { createMoveContext } from './createMoveContext';
-import { getMoveEnding } from './getMoveEnding';
+import { findMoveEnding } from './findMoveEnding';
 import { getStartState } from './getStartState';
 import { getStepOption } from './getStepOption';
 import { getTurnOptions } from './getTurnOptions';
@@ -20,7 +20,7 @@ import { getTurnedState } from './getTurnedState';
  * The rules themselves live beside it, one to a file: what a move is bound
  * by (`createMoveContext`), the turns and the step open from a point
  * (`getTurnOptions`, `getStepOption`), and whether the move may end there
- * (`getMoveEnding`). Advances and forced retreats walk the same way; a
+ * (`findMoveEnding`). Advances and forced retreats walk the same way; a
  * retreat's extra limits are carried in its context.
  *
  * @param gameState - The current game state
@@ -58,7 +58,7 @@ export function exploreUnitMoves(
     visited.add(key);
 
     // The move may stop here, if the rules allow it.
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
     if (ending !== undefined) {
       results.add(ending);
     }
@@ -79,7 +79,7 @@ export function exploreUnitMoves(
     }
     // A space the move cannot go on from may still be where it ends — an
     // enemy to engage, above all — so it is judged as an ending only.
-    const stoppingEnding = getMoveEnding(context, step.next);
+    const stoppingEnding = findMoveEnding(context, step.next);
     if (stoppingEnding !== undefined) {
       results.add(stoppingEnding);
     }

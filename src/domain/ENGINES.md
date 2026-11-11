@@ -144,7 +144,7 @@ Otherwise it discriminates by `choiceType` and
 carries `playerSource`, and either the full `events[]`
 for an atomic choice or named root atoms for a compound one. Follow-ups that
 depend on a selection stay on their own helpers — `getLegalUnitMoves` (every
-ending with a path to it), `getLegalMoveDeltas` (the next step or turn of a
+ending with a path to it), `findLegalMoveDeltas` (the next step or turn of a
 path being written), `getLegalRangedAttackTargets`,
 `getLegalLineEndsForIssueCommand`.
 

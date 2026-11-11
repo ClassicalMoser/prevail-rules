@@ -3,7 +3,7 @@ import type { GameState } from '@game';
 import type { LegalMoveDeltas } from './legalMoveDeltas';
 import {
   createMoveContext,
-  getMoveEnding,
+  findMoveEnding,
   getStepOption,
   getTurnOptions,
 } from '../explore';
@@ -26,7 +26,7 @@ import { followMovePrefix } from './followMovePrefix';
  * @param commitmentModifiers - What a card committed for this move adds (§4.3.10), if one was
  * @returns What may come next, or `undefined` when the moves so far are not a legal start to a move
  */
-export function getLegalMoveDeltas(
+export function findLegalMoveDeltas(
   gameState: GameState,
   unitWithPlacement: UnitWithPlacement,
   prefix: readonly MoveDelta[],
@@ -61,13 +61,13 @@ export function getLegalMoveDeltas(
   const step = getStepOption(context, state);
   if (
     step !== undefined &&
-    (step.mayContinue || getMoveEnding(context, step.next) !== undefined)
+    (step.mayContinue || findMoveEnding(context, step.next) !== undefined)
   ) {
     next.add('step');
   }
 
   const offered: LegalMoveDeltas = {
-    mayStop: getMoveEnding(context, state) !== undefined,
+    mayStop: findMoveEnding(context, state) !== undefined,
     next,
   };
   return offered;

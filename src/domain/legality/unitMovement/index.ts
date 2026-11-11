@@ -16,4 +16,4 @@ export { getLegalRetreats } from './retreat';
 
 // What a player may do next in a move they are writing.
 export type { LegalMoveDeltas } from './path';
-export { getLegalMoveDeltas } from './path';
+export { findLegalMoveDeltas } from './path';

@@ -126,7 +126,7 @@ export type LegalPlayerChoiceOptions =
       /**
        * Every legal ending of the move, each with a path to submit, priced
        * with the card committed for it (§4.3.10). Step-by-step offering is
-       * `getLegalMoveDeltas`.
+       * `findLegalMoveDeltas`.
        */
       moves: MoveResult[];
     })

@@ -14,7 +14,7 @@ import { isWithinMoveBounds } from './isWithinMoveBounds';
  * @param state - The point in the move being considered as its end
  * @returns The ending, or `undefined` when the move may not end here
  */
-export function getMoveEnding(
+export function findMoveEnding(
   context: MoveContext,
   state: MoveState,
 ): MoveResult | undefined {

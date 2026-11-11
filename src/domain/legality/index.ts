@@ -66,6 +66,6 @@ export {
   canMoveThrough,
   checkDiagonalMove,
   getLegalRetreats,
-  getLegalMoveDeltas,
+  findLegalMoveDeltas,
   getLegalUnitMoves,
 } from './unitMovement';

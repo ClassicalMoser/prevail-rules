@@ -14,7 +14,7 @@ export type { MoveResult } from './moveResult';
 export { getTurnOptions } from './getTurnOptions';
 export { getTurnedState } from './getTurnedState';
 export { getStepOption } from './getStepOption';
-export { getMoveEnding } from './getMoveEnding';
+export { findMoveEnding } from './findMoveEnding';
 
 // Every place a move may legally end, found by walking its steps and turns.
 export { exploreUnitMoves } from './exploreUnitMoves';

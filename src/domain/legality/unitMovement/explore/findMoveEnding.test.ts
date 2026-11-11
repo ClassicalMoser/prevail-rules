@@ -3,14 +3,14 @@ import { createGameState } from '@testing';
 
 import type { MoveState } from './moveState';
 import { createMoveContext } from './createMoveContext';
-import { getMoveEnding } from './getMoveEnding';
+import { findMoveEnding } from './findMoveEnding';
 
 /**
  * A move may stop where the ground allows (§5.3); an engagement from the
  * front ends squared up head-on at the cost of a Flexibility (§6.2.3); a
  * retreat must end behind its starting rank (§9.1.2).
  */
-describe('getMoveEnding function', () => {
+describe('findMoveEnding function', () => {
   it('an advance may end by standing in place, at no cost', () => {
     // A lone black unit on E-5 facing north, with Speed 2 and Flexibility 2
     // (a catalog pair; only the totals the state spends from matter here).
@@ -39,7 +39,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 2,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toStrictEqual({
       flexibilityUsed: 0,
@@ -76,7 +76,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 2,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toBeUndefined();
   });
@@ -109,7 +109,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 0,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toBeUndefined();
   });
@@ -141,7 +141,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 1,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toStrictEqual({
       flexibilityUsed: 1,
@@ -179,7 +179,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 1,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toBeUndefined();
   });
@@ -213,7 +213,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 1,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toStrictEqual({
       flexibilityUsed: 1,
@@ -252,7 +252,7 @@ describe('getMoveEnding function', () => {
       remainingSpeed: 1,
     };
 
-    const ending = getMoveEnding(context, state);
+    const ending = findMoveEnding(context, state);
 
     expect(ending).toBeUndefined();
   });

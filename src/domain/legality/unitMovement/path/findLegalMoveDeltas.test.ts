@@ -1,12 +1,12 @@
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import { createGameState } from '@testing';
 
-import { getLegalMoveDeltas } from './getLegalMoveDeltas';
+import { findLegalMoveDeltas } from './findLegalMoveDeltas';
 
 /**
  * What a player may do next in a move, given the path written so far.
  */
-describe('getLegalMoveDeltas function', () => {
+describe('findLegalMoveDeltas function', () => {
   // A lone black unit on E-5 facing north, Speed 2 and Flexibility 2.
   const openGround = createGameState([
     {
@@ -24,7 +24,7 @@ describe('getLegalMoveDeltas function', () => {
 
   it('at the start of an advance, any turn or a step, and it may stand still', () => {
     expect(
-      getLegalMoveDeltas(openGround, loneUnit, [], 'advance'),
+      findLegalMoveDeltas(openGround, loneUnit, [], 'advance'),
     ).toStrictEqual({
       mayStop: true,
       next: new Set(['turnLeft', 'turnRight', 'turnAbout', 'step']),
@@ -34,7 +34,7 @@ describe('getLegalMoveDeltas function', () => {
   it('a retreat opens with a step or a 45° turn, never about, and cannot stand still', () => {
     // §9.1.2, §9.1.4: a retreat must fall back, and never opens facing about.
     expect(
-      getLegalMoveDeltas(openGround, loneUnit, [], 'retreat'),
+      findLegalMoveDeltas(openGround, loneUnit, [], 'retreat'),
     ).toStrictEqual({
       mayStop: false,
       next: new Set(['turnLeft', 'turnRight', 'step']),
@@ -43,7 +43,7 @@ describe('getLegalMoveDeltas function', () => {
 
   it('with the Speed spent, only turns remain', () => {
     expect(
-      getLegalMoveDeltas(openGround, loneUnit, ['step', 'step'], 'advance'),
+      findLegalMoveDeltas(openGround, loneUnit, ['step', 'step'], 'advance'),
     ).toStrictEqual({
       mayStop: true,
       next: new Set(['turnLeft', 'turnRight', 'turnAbout']),
@@ -53,7 +53,7 @@ describe('getLegalMoveDeltas function', () => {
   it('a path that is not a legal start to a move has no next move', () => {
     // A third turn with only two points of Flexibility.
     expect(
-      getLegalMoveDeltas(
+      findLegalMoveDeltas(
         openGround,
         loneUnit,
         ['turnLeft', 'turnLeft', 'turnLeft'],
@@ -83,13 +83,13 @@ describe('getLegalMoveDeltas function', () => {
     it('only the squaring turn may follow, and it may not stop yet', () => {
       // §6.2.3: the move owes the turn that faces the enemy head-on.
       expect(
-        getLegalMoveDeltas(gameState, unit, ['step'], 'advance'),
+        findLegalMoveDeltas(gameState, unit, ['step'], 'advance'),
       ).toStrictEqual({ mayStop: false, next: new Set(['turnLeft']) });
     });
 
     it('once squared, nothing may follow and the move may stop', () => {
       expect(
-        getLegalMoveDeltas(gameState, unit, ['step', 'turnLeft'], 'advance'),
+        findLegalMoveDeltas(gameState, unit, ['step', 'turnLeft'], 'advance'),
       ).toStrictEqual({ mayStop: true, next: new Set() });
     });
   });

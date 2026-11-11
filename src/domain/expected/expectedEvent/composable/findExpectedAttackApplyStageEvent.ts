@@ -22,7 +22,7 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * @param stage - The stage being carried out
  * @returns The event that stage waits on, or `undefined` if nothing is due
  */
-export function getExpectedAttackApplyStageEvent(
+export function findExpectedAttackApplyStageEvent(
   attackApplyState: AttackApplyState,
   stage: AttackApplyStage,
 ): ExpectedEventInfo | undefined {

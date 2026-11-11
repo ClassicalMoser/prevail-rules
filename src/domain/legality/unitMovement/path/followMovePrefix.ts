@@ -2,7 +2,7 @@ import type { MoveDelta } from '@entities';
 import type { MoveContext } from '../explore';
 import type { MovePosition } from './movePosition';
 import {
-  getMoveEnding,
+  findMoveEnding,
   getStartState,
   getStepOption,
   getTurnedState,
@@ -56,7 +56,7 @@ export function followMovePrefix(
     // Into a space it cannot go on from: the move stops, and its ending
     // fixes what must follow — the squaring turn, or nothing.
     if (!step.mayContinue) {
-      const ending = getMoveEnding(context, state);
+      const ending = findMoveEnding(context, state);
       if (ending === undefined) {
         return undefined;
       }

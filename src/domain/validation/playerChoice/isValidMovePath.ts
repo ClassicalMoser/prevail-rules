@@ -1,7 +1,7 @@
 import type { Modifier, MoveDelta, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { ValidationResult } from '@utils';
-import { getLegalMoveDeltas } from '@legality';
+import { findLegalMoveDeltas } from '@legality';
 
 /**
  * Whether a submitted path is a legal move, checked the way every
@@ -29,7 +29,7 @@ export function isValidMovePath(
 ): ValidationResult {
   // Every move must be one of those offered after the moves before it.
   for (const [index, delta] of path.entries()) {
-    const offered = getLegalMoveDeltas(
+    const offered = findLegalMoveDeltas(
       gameState,
       unitWithPlacement,
       path.slice(0, index),
@@ -46,7 +46,7 @@ export function isValidMovePath(
   }
 
   // And the move must be allowed to stop where the path ends.
-  const atEnd = getLegalMoveDeltas(
+  const atEnd = findLegalMoveDeltas(
     gameState,
     unitWithPlacement,
     path,

@@ -8,7 +8,7 @@ import {
 import {
   attackApplyStages,
   getExpectedAttackApplyEvent,
-  getExpectedAttackApplyStageEvent,
+  findExpectedAttackApplyStageEvent,
 } from '../composable';
 
 /**
@@ -64,7 +64,7 @@ export function getExpectedMeleeResolutionEvent(
   const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
   for (const stage of attackApplyStages) {
     for (const apply of appliesInOrder) {
-      const due = getExpectedAttackApplyStageEvent(apply, stage);
+      const due = findExpectedAttackApplyStageEvent(apply, stage);
       if (due !== undefined) {
         return due;
       }
