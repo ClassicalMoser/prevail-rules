@@ -16,8 +16,6 @@ export type { ExpectedGameEffect } from './expectedEvent';
 
 // Game-effect payloads, grouped by the folder they live in.
 export {
-  ATTACK_RESOLUTION_CONTEXT_VALUES,
-  attackResolutionContextSchema,
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   ROUND_END_EFFECT_TYPE,
   COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,

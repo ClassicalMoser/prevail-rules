@@ -287,7 +287,10 @@ Left for the author:
   hidden hand). New effect `completeRangedAttack`: a shot ends with it, and
   `completeRangedAttackCommand` ends only the order. `triggerRoutFromRetreat` and
   `completeAttackApply` carry nothing, and `resolveReverse` lost its context (their context, player and attack-type
-  fields, and the three `triggerRoutFromRetreat*Schema` exports, are gone). `resolveEngageRetreatOption` carries `retreatPaths` where it carried
+  fields, and the three `triggerRoutFromRetreat*Schema` exports, are gone). Removed
+  as duplicates: `unitMatchesRestrictions`, `unitMatchesTraitAndTypeRestrictions`,
+  `findNextMeleeDefendingPlayer`, `attackResolutionContextSchema`,
+  `ATTACK_RESOLUTION_CONTEXT_VALUES`. `resolveEngageRetreatOption` carries `retreatPaths` where it carried
   `defendingUnitCanRetreat`, `openRetreatFromEngagement` carries nothing, and
   the front engagement state's `defendingUnitCanRetreat` is `retreatPaths`.
   The `completeCleanupPhase` effect is now `roundEnd` (with `RoundEndEvent`,
@@ -798,6 +801,24 @@ from the unit). **Not done, and why:**
   `resolveReverse`'s unread `newUnitPlacement.unit`, `resolveRetreat`'s
   `startingPosition.placement`, `resolveRout.unitInstances` beyond the first).
 - Making inconsistent flags in the attack-apply factory throw.
+
+**Review of the seventh pass (independent reviewer, 2026-11-11).** No behaviour
+change found. Fixed from its findings: the `findRoutLocation` doc (deleting its
+TODO had left a false claim; the sequencer reads rout slots on the parent it is
+stepping through, not here); `attackResolutionContext.ts`, the effects README
+and ENGINES.md no longer argue for context on events or count generators; the
+`completeRangedAttackCommand` procedure doc; `getAttackApplyToClose` says when a
+melee apply was never written instead of "no incomplete apply"; stale spec
+titles, and a transform-level spec for a melee with both applies open; the
+front-engagement guard lives once, in `getRetreatAwaitingRout`. Duplicates
+removed: `unitMatchesRestrictions` and `unitMatchesTraitAndTypeRestrictions`
+(restated `canBeOrdered` and the range check), `findNextMeleeDefendingPlayer`
+(restated `findNextMeleeAttackApplyToClose`), and
+`attackResolutionContextSchema` with `ATTACK_RESOLUTION_CONTEXT_VALUES` (no event
+uses them; the remaining events spell the literals in their discriminated
+unions). Left: `getMeleeRetreatState` and `getRangedAttackRetreatState` are route
+readers in the combatOutcomes model that the game no longer calls, the same
+question as the rout getters' TODO.
 
 **The attack result spelled three ways, and colour against initiative.**
 `resolveMelee` carries `whiteUnitRouted`/`blackUnitRetreated`…; `resolveRangedAttack`

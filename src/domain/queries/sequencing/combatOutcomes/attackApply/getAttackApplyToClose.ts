@@ -1,4 +1,5 @@
 import type { AttackApplyState, GameState } from '@game';
+import { isPending } from '@utils';
 import { getCurrentPhaseState } from '@queries/sequencing/phases/getCurrentPhaseState';
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 import { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClose';
@@ -13,7 +14,7 @@ import { getRangedAttackApplyState } from './getRangedAttackApplyState';
  *
  * @param state - The game state, in a shot or a melee
  * @returns The apply to close
- * @throws Error outside a shot or a melee, or when every apply in the melee is closed
+ * @throws Error outside a shot or a melee, when a melee apply is not written yet, or when every apply in the melee is closed
  */
 export function getAttackApplyToClose(state: GameState): AttackApplyState {
   const phaseState = getCurrentPhaseState(state);
@@ -26,9 +27,17 @@ export function getAttackApplyToClose(state: GameState): AttackApplyState {
 
   // A melee has one on each side, closed in resolution order.
   if (phaseState.phase === 'resolveMelee') {
-    const next = findNextMeleeAttackApplyToClose(
-      getMeleeResolutionState(state),
-    );
+    const melee = getMeleeResolutionState(state);
+    // Both sides' applies are written before either is closed (§7.5.6).
+    if (
+      isPending(melee.firstPlayerAttackApplyState) ||
+      isPending(melee.secondPlayerAttackApplyState)
+    ) {
+      throw new Error(
+        'A melee attack apply has not been written yet, so none can close',
+      );
+    }
+    const next = findNextMeleeAttackApplyToClose(melee);
     if (next === undefined) {
       throw new Error(
         'No incomplete attack apply state found in melee resolution',

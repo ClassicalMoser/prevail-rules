@@ -13,9 +13,5 @@ export {
   getLegalUnitsToOrder,
   getUnitsOrderRefusalReason,
 } from './getLegalUnitsToOrder';
-export {
-  getLegalUnitsForIssueCommand,
-  unitMatchesRestrictions,
-  unitMatchesTraitAndTypeRestrictions,
-} from './getLegalUnitsForIssueCommand';
+export { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 export { isCommandIssuable } from './isCommandIssuable';

@@ -130,8 +130,6 @@ export type {
   ValidationResult,
 } from '@utils';
 export {
-  ATTACK_RESOLUTION_CONTEXT_VALUES,
-  attackResolutionContextSchema,
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   ROUND_END_EFFECT_TYPE,
   COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
@@ -506,7 +504,6 @@ export {
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   findNextMeleeAttackApplyToClose,
-  findNextMeleeDefendingPlayer,
   getAttackApplyToClose,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
@@ -585,8 +582,6 @@ export {
   getLegalRetreats,
   findLegalMoveDeltas,
   getLegalUnitMoves,
-  unitMatchesRestrictions,
-  unitMatchesTraitAndTypeRestrictions,
   SETUP_ZONE_BACK_ROWS,
   SETUP_ZONE_EXCLUDED_SIDE_RANKS,
 } from '@legality';

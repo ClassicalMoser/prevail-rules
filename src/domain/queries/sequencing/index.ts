@@ -99,7 +99,6 @@ export { getMeleeAttackApplyState } from './combatOutcomes';
 // The defender whose melee attack-apply is still open, initiative first.
 export {
   findNextMeleeAttackApplyToClose,
-  findNextMeleeDefendingPlayer,
   getAttackApplyToClose,
 } from './combatOutcomes';
 

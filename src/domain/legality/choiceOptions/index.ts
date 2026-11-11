@@ -27,8 +27,6 @@ export {
   getUnitsOrderRefusalReason,
   getLegalUnitsForIssueCommand,
   isCommandIssuable,
-  unitMatchesRestrictions,
-  unitMatchesTraitAndTypeRestrictions,
   type LegalIssueCommands,
   type LegalLine,
 } from './issueCommand';

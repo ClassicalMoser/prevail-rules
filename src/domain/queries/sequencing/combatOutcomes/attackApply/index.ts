@@ -21,4 +21,3 @@ export { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClo
 export { getAttackApplyToClose } from './getAttackApplyToClose';
 
 // The defender whose melee attack-apply is still open, initiative first.
-export { findNextMeleeDefendingPlayer } from './findNextMeleeDefendingPlayer';

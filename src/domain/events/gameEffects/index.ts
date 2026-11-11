@@ -47,8 +47,6 @@ export type {
   CompleteResolveMeleePhaseEvent,
 } from './completePhase';
 export {
-  ATTACK_RESOLUTION_CONTEXT_VALUES,
-  attackResolutionContextSchema,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
   OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,

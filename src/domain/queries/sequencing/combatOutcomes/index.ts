@@ -26,7 +26,6 @@ export {
 export type { AttackApplyLocation } from './attackApply';
 export {
   findNextMeleeAttackApplyToClose,
-  findNextMeleeDefendingPlayer,
   getAttackApplyToClose,
 } from './attackApply';
 

@@ -4,7 +4,7 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
 } from '@events';
-import { findRetreatAwaitingRout, getCurrentPhaseState } from '@queries';
+import { getRetreatAwaitingRout, getCurrentPhaseState } from '@queries';
 
 /**
  * Builds the effect that turns a retreat with nowhere to go into a rout
@@ -27,18 +27,8 @@ export function generateTriggerRoutFromRetreatEvent(
     throw new Error(`Retreat rout not expected in phase: ${phaseState.phase}`);
   }
 
-  const location = findRetreatAwaitingRout(state);
-  if (location === undefined) {
-    throw new Error(
-      `No retreat with nowhere to go is waiting for its rout in phase: ${phaseState.phase}`,
-    );
-  }
-
-  // A front-engaged defender is offered the retreat only when it has one to
-  // make (§6.3.2), so a retreat it gave ground to always has a path.
-  if (location.source === 'frontEngagement') {
-    throw new Error('A front engagement retreat always has a legal path');
-  }
+  // A retreat must be waiting to turn into a rout, or the effect is not owed.
+  getRetreatAwaitingRout(state);
 
   const event: TriggerRoutFromRetreatEvent = {
     effectType: TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,

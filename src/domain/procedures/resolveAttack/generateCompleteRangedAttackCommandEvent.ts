@@ -5,9 +5,10 @@ import {
 } from '@events';
 
 /**
- * Generates a CompleteRangedAttackCommandEvent to complete a ranged attack command.
- * This clears the ranged attack resolution state and allows the command resolution
- * to advance to the next command.
+ * Generates a CompleteRangedAttackCommandEvent: a Shoot order ends because no
+ * shooter can be chosen (§4.3.11 step 1). The player's remaining orders are
+ * finished and the resolve step advances. A finished shot is
+ * `completeRangedAttack`'s.
  *
  * @returns A complete CompleteRangedAttackCommandEvent
  */

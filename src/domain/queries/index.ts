@@ -144,7 +144,6 @@ export {
   getAttackApplyStateOfPlayer,
   getMeleeAttackApplyState,
   findNextMeleeAttackApplyToClose,
-  findNextMeleeDefendingPlayer,
   getAttackApplyToClose,
   getReverseStateFromAttackApply,
   getNextMeleeReverseState,

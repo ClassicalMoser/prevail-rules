@@ -57,7 +57,7 @@ rout is ever awaiting;
 in the order they suffer (§7.5.6). These are the
 queries that carry gameplay rather than position, and they are the ones to read
 first when the sequencing is unclear. A selection with no candidate to pick takes
-the `find` prefix and answers `undefined`, like `findNextMeleeDefendingPlayer`.
+the `find` prefix and answers `undefined`, like `findNextMeleeAttackApplyToClose`.
 
 A selection applies its question _while_ it walks, not after. A melee strikes
 both units at once and settles their routs one side at a time, so the side that
@@ -77,7 +77,7 @@ asking without naming a player has no answer there. `getRoutState` and
 and throw when there is not.
 
 `find` and `get` are not a fifth kind. They are a separate axis — whether the
-query is total — and it crosses all four: `findNextMeleeDefendingPlayer` is a
+query is total — and it crosses all four: `findNextMeleeAttackApplyToClose` is a
 selection, not a router. Absence is `undefined`, which is what
 [`DESIGN.md`](../../../../../DESIGN.md) asks of a query. `null` is left to mean
 something, as it does in the options router, where it is "nothing is owed a

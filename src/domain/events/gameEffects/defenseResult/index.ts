@@ -1,7 +1,5 @@
 // Melee or ranged: which attack this defense result belongs to.
 export {
-  ATTACK_RESOLUTION_CONTEXT_VALUES,
-  attackResolutionContextSchema,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from './attackResolutionContext';

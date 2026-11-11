@@ -14,8 +14,10 @@ export { unitMatchesInspirationRange } from './unitMatchesInspirationRange';
 // A unit type against one restriction variant.
 export { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 
-// Membership in a unit list, by value rather than reference.
+// Whether an order may name a unit at all (§4.3.4, §4.3.6).
 export { canBeOrdered } from './canBeOrdered';
+
+// Membership in a unit list, by value rather than reference.
 export { hasUnitInArray } from './hasUnitInArray';
 export { arrayWithoutUnit } from './arrayWithoutUnit';
 

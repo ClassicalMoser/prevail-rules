@@ -1,16 +1,11 @@
 /**
  * Ranged vs melee **attack-resolution** tagging (`'rangedAttack' | 'melee'`).
  *
- * Several effects must patch state under either command-resolution (ranged) or melee
- * attack-apply. The procedure already knows which path is active; carrying that on the event
- * keeps `applyEffects` handlers from re-branching on phase
- * or probing players.
- *
- *
- * Tuple-typed exports use explicit `readonly [...]` annotations for `--isolatedDeclarations`.
+ * The `open*FromAttackApply` events still name which attack's apply they open, and in a melee
+ * whose, because which apply opens next is the sequencer's rule and no query states it yet.
+ * Effects whose target the state already names (`triggerRoutFromRetreat`, `completeAttackApply`,
+ * `resolveReverse`) carry no context: their applies ask the state.
  */
-import { z } from 'zod';
-
 /**
  * Ranged command resolution: single defender, `attackApplyState` on command resolution state.
  */
@@ -25,19 +20,3 @@ export const MELEE_ATTACK_RESOLUTION_CONTEXT = 'melee' as const;
 export type AttackResolutionContext =
   | typeof RANGED_ATTACK_RESOLUTION_CONTEXT
   | typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
-
-/**
- * Values for `z.enum` / iteration. Order matches {@link RANGED_ATTACK_RESOLUTION_CONTEXT} then
- * {@link MELEE_ATTACK_RESOLUTION_CONTEXT}.
- */
-export const ATTACK_RESOLUTION_CONTEXT_VALUES: readonly [
-  typeof RANGED_ATTACK_RESOLUTION_CONTEXT,
-  typeof MELEE_ATTACK_RESOLUTION_CONTEXT,
-] = [RANGED_ATTACK_RESOLUTION_CONTEXT, MELEE_ATTACK_RESOLUTION_CONTEXT];
-
-const _attackResolutionContextSchemaObject: z.ZodType<AttackResolutionContext> =
-  z.enum(ATTACK_RESOLUTION_CONTEXT_VALUES);
-
-/** Zod schema for {@link AttackResolutionContext} (shared by reverse, rout union branch, etc.). */
-export const attackResolutionContextSchema: typeof _attackResolutionContextSchemaObject =
-  _attackResolutionContextSchemaObject;

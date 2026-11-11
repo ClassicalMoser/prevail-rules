@@ -1,50 +1,10 @@
-import type {
-  Command,
-  PlayerSide,
-  Restrictions,
-  UnitWithPlacement,
-} from '@entities';
+import type { Command, PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   canBeOrdered,
   getPlayerUnitsWithPlacementOnBoard,
   unitMatchesInspirationRange,
-  unitTypeMatchesRestrictions,
 } from '@queries';
-
-/**
- * Trait or unit-type filter only (no inspiration range).
- */
-export function unitMatchesTraitAndTypeRestrictions(
-  unitWithPlacement: UnitWithPlacement,
-  restrictions: Restrictions,
-): boolean {
-  const unitType = unitWithPlacement.unit.unitType;
-  const matches = unitTypeMatchesRestrictions(unitType, restrictions);
-  return matches;
-}
-
-/**
- * Full command restrictions: inspiration range (if applicable) + traits/types.
- * Used for `size: 'units'` (every commanded unit) and for the unit a line
- * must hold within range.
- */
-export function unitMatchesRestrictions(
-  unitWithPlacement: UnitWithPlacement,
-  restrictions: Restrictions,
-  gameState: GameState,
-): boolean {
-  if (
-    !unitMatchesInspirationRange(
-      unitWithPlacement.unit,
-      restrictions,
-      gameState,
-    )
-  ) {
-    return false;
-  }
-  return unitMatchesTraitAndTypeRestrictions(unitWithPlacement, restrictions);
-}
 
 /**
  * Returns friendly on-board units eligible under full command restrictions

@@ -41,7 +41,8 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 
 ## Events
 
-- Non-trivial derivation (board scans, phase switches to pick subtrees) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), so apply stays mechanical and replay stays cheap.
+- Non-trivial derivation (board scans, legality, dice) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), so apply stays mechanical and replay stays cheap.
+- Which slot an effect writes to is the state's to say when the state already names it: an apply asks a `@queries` reader (`getRetreatAwaitingRout`, `getAttackApplyToClose`, `findRoutLocation`) rather than reading a context field off the event, so the event and the state cannot disagree.
 - Examples: `StartEngagementEvent` / `ResolveFlankEngagementEvent.defenderWithPlacement`, legal-retreat `Set`s on resolve melee/ranged.
 
 ## Tests

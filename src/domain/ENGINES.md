@@ -75,7 +75,7 @@ Per-choice `isValid*Event` helpers stay inside `@validation`. Callers use
 **Function:** `generateEventFromProcedure(state, effectType, random): GameEffectEvent`
 
 When the game owes an effect rather than waiting on a player, a procedure builds
-the event. There are 28 generators, each named for the event it produces, and the
+the event. There is one generator per game effect, each named for the event it produces, and the
 registry is a switch over `GameEffectType` — not a map, so it cannot be indexed.
 
 The switch is exhaustive: its default assigns `effectType` to `never`. Every

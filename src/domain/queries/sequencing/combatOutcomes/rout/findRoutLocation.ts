@@ -210,10 +210,13 @@ function routInCurrentContext(
  * player has no answer in a melee, where both sides strike at once and both
  * can be routing, so the player is part of the question.
  *
- * Every layer that has to locate a rout reads it here: the sequencer to ask for
- * the next event, legality to enumerate the discard, the procedure to work out
- * the penalty, and settleRout to know what a settled rout closes. Nothing
- * routing is an ordinary state, so this answers rather than throwing.
+ * Whoever has to locate a rout by its owner reads it here: legality and the
+ * discard choice's apply, through `findRoutState`; the procedure that works out
+ * the penalty, through `findRoutAwaitingPenalty`; the rout writer, to know where
+ * to write; and settleRout, to know what a settled rout closes. The sequencer
+ * does not ask: it reads the rout slot on the parent it is already stepping
+ * through. Nothing routing is an ordinary state, so this answers rather than
+ * throwing.
  *
  * @param state - The game state
  * @param player - The player whose rout to find

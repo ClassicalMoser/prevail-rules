@@ -78,8 +78,8 @@ describe('findRetreatAwaitingRout function', () => {
 
   it('names the second player when the retreat with nowhere to go is theirs', () => {
     // The first player's unit has already fallen back; the second player's has
-    // its line of withdrawal cut. Whose retreat it is does not depend on who
-    // holds the initiative.
+    // its line of withdrawal cut. The second player's unit suffers first
+    // (§7.5.6), and its retreat is the one still waiting.
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'north');
     const white = placed('white', 'south');
