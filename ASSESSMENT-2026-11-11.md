@@ -118,6 +118,9 @@ run for the author. It is written down here and not guessed.
   §9.1.3 says so.
 - R3: `ExpectedEventInfo` names `alsoAccepted` for issue-or-stop.
 - R5: the README and two JSDoc blocks say the sequencer owns the order.
+- The missing readers of 3.1, except the three left there.
+- R6, applied to `@queries`: eleven readers renamed to `find*`, in three
+  families, and the queries README states the contract.
 
 Decision points left for the author, found on the way:
 
