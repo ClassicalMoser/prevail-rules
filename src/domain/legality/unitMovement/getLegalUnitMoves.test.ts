@@ -12,7 +12,7 @@ import { getLegalUnitMoves } from './getLegalUnitMoves';
 
 /**
  * GetLegalUnitMoves: every ending an ordered move may reach, each with the
- * path a player submits to make it (A11).
+ * path a player submits to make it.
  */
 describe('getLegalUnitMoves function', () => {
   describe('basic functionality', () => {

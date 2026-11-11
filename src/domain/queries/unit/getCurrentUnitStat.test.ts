@@ -117,7 +117,7 @@ describe('getCurrentUnitStat function', () => {
     });
   });
 
-  describe('a committed card naming two stats (§8.2, B5)', () => {
+  describe('a committed card naming two stats (§8.2)', () => {
     // The card's modifiers as a commitment passes them: +1 Range, +1 Attack.
     const rangeAndAttack = [
       { type: 'range' as const, value: 1 },

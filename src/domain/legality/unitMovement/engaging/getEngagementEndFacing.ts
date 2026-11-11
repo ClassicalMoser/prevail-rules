@@ -15,7 +15,7 @@ import {
  * engaging move, spending 1 Flexibility if the last step was not already
  * facing that way (§6.2.3). Flank and rear approaches keep the facing the
  * step arrived on. Because every approach ends square, on the flank, or
- * from behind, no engagement is ever created 45° off head-on (§6.3.1, A13).
+ * from behind, no engagement is ever created 45° off head-on (§6.3.1).
  *
  * @param board - The board state
  * @param defenderCoordinate - The space being stepped into

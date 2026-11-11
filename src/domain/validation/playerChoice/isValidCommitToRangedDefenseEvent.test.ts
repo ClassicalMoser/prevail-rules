@@ -19,7 +19,7 @@ const defenceCard = createTestCard({ modifiers: ['defense'] });
 const otherDefenceCard = createTestCard({ modifiers: ['defense'] });
 
 /**
- * The target's commitment (§4.3.11 step 5, B1), by membership against
+ * The target's commitment (§4.3.11 step 5), by membership against
  * getLegalCommitToRangedDefenseEvents: its owner commits a Defence card
  * from hand, or refuses.
  *

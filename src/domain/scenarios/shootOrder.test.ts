@@ -21,7 +21,7 @@ import { validatePlayerChoice } from '@validation';
  * Carrying out a Shoot order for one unit (§4.3.11), played through the
  * engines: the player names the shooter, may commit a card for the shot —
  * whose Range reaches one space further — and only then names the target;
- * the target's owner may then commit for Defence or Flexibility (B1, B6).
+ * the target's owner may then commit for Defence or Flexibility (B6).
  *
  * Black's Range-2 unit stands on E-5 facing north. White has a unit on C-7,
  * two ranks out and inside that Range, so black's unit has something to

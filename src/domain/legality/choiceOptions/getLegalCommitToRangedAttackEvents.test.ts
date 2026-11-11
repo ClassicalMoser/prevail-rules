@@ -113,7 +113,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   });
 
   it('a card naming Range and Attack is offered with both, since it counts for the whole shot', () => {
-    // One card, two stats (§8.2, B5): its Range for the aim, its Attack for the blow.
+    // One card, two stats (§8.2): its Range for the aim, its Attack for the blow.
     const rangeAndAttackCard = createTestCard({
       modifiers: ['range', 'attack'],
     });
@@ -131,7 +131,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     ]);
   });
 
-  it('offers the target nothing: its commitment is a separate choice (B1)', () => {
+  it('offers the target nothing: its commitment is a separate choice', () => {
     // White holds an Attack card while its commitment is owed.
     const state = stateAwaitingTargetCommit([attackCard]);
 

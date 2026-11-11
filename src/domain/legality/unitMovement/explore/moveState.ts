@@ -23,7 +23,7 @@ export interface MoveState {
   remainingFlexibility: number;
   /**
    * The steps and turns taken to reach this point, in order — the path a
-   * move event records (A11), so a player can make exactly this move.
+   * move event records, so a player can make exactly this move.
    */
   path: readonly MoveDelta[];
 }

@@ -21,7 +21,7 @@ export interface MoveUnitEvent {
   /** The player who is moving the unit. */
   player: PlayerSide;
   /**
-   * The whole move, step by step and turn by turn (A11). Where the unit
+   * The whole move, step by step and turn by turn. Where the unit
    * ends is wherever the path leaves it; an oblique front approach to an
    * enemy ends with its squaring turn (§6.2.3). An empty path stands the
    * unit in place.

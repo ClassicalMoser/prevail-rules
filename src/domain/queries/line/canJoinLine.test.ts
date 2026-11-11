@@ -85,7 +85,7 @@ describe('canJoinLine function', () => {
       lineFacing,
     );
 
-    // An engaged unit cannot be ordered, so the line stops there (§4.3.5, A1).
+    // An engaged unit cannot be ordered, so the line stops there (§4.3.5).
     const joined = canJoinLine(
       board,
       coordinate,
@@ -110,7 +110,7 @@ describe('canJoinLine function', () => {
       lineFacing,
     );
 
-    // Facing the opposite way would qualify, but being engaged does not (§4.3.5, A1).
+    // Facing the opposite way would qualify, but being engaged does not (§4.3.5).
     const joined = canJoinLine(
       board,
       coordinate,

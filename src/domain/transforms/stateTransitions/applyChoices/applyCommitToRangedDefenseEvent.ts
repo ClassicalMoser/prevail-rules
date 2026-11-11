@@ -10,7 +10,7 @@ import {
 
 /**
  * Applies a CommitToRangedDefenseEvent: the target's owner commits a card
- * for Defence or Flexibility, or refuses (§4.3.11 step 5, B1). A committed card leaves its
+ * for Defence or Flexibility, or refuses (§4.3.11 step 5). A committed card leaves its
  * hand for the discard pile (§8.1), and the shot records it as the target's
  * commitment, which raises the target's thresholds when the shot lands
  * (§8.5).

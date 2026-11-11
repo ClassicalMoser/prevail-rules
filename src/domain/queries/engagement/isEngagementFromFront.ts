@@ -11,7 +11,7 @@ import { getOppositeFacing } from '@queries/facings';
 // exist: a front approach squares up head-on as part of the engaging move
 // (§6.2.3, `getEngagementEndFacing`), so no engagement ends 45° off. The
 // throw in `generateStartEngagementEvent` remains as the guard on that
-// guarantee. (Settled 2026-11-08; was TODO(wrong), A13.)
+// guarantee.
 export function isEngagementFromFront(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,

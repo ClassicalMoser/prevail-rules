@@ -36,7 +36,7 @@ describe('modifiersFromCompletedCommitment function', () => {
   });
 
   it('a card naming two stats gives +1 to both (§8.2)', () => {
-    // A Range and Attack card committed to a shot: both land at once (B5).
+    // A Range and Attack card committed to a shot: both land at once.
     const card = createTestCard({ modifiers: ['range', 'attack'] });
 
     expect(

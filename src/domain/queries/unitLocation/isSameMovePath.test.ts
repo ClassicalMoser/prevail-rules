@@ -2,7 +2,7 @@ import { isSameMovePath } from './isSameMovePath';
 
 /**
  * Two paths are the same move only when every step and turn matches, in
- * order (A11).
+ * order.
  */
 describe('isSameMovePath function', () => {
   it('the same moves in the same order are the same path', () => {

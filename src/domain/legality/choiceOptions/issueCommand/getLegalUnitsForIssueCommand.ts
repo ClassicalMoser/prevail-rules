@@ -101,7 +101,7 @@ function notAlreadyCommanded(
 /**
  * Returns friendly on-board units eligible under full command restrictions
  * (inspiration + traits/types). Excludes already-commanded units, and engaged
- * ones (§4.3.4, A1).
+ * ones (§4.3.4).
  *
  * For `size: 'units'`: selection atoms.
  * For `size: 'lines'`: legal **line starts** (end may lie outside inspiration

@@ -100,7 +100,7 @@ describe('getLegalUnitsForIssueCommand function', () => {
     const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
     const state = updateBoardState(createEmptyGameState('standard'), board);
 
-    // An engaged unit cannot be ordered (§4.3.4, A1), so nobody is offered.
+    // An engaged unit cannot be ordered (§4.3.4), so nobody is offered.
     expect(
       getLegalUnitsForIssueCommand(unrestrictedCommand, 'black', state),
     ).toStrictEqual([]);

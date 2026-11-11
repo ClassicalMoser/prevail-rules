@@ -25,17 +25,17 @@ reproduced, except D5.
 
 **Status (later on 2026-11-10):**
 
-- D1 is fixed. `bebe65e` offers the retreat only when a legal one exists,
-  by the author's ruling, and RULEBOOK §6.3.2 now says so. `e77e91f`
-  completes the retreat family. The failing spec is `18258d7`.
-- D3 is withdrawn. The event number is removed altogether, by the author's ruling: order is the position in `events[]`, and an exact check could not coexist with two players choosing cards at the same moment. `30a28d9` and `3b9588c` are reverted.
+- D1 is fixed. The retreat is offered only when a legal one exists, by the
+  author's ruling, and RULEBOOK §6.3.2 now says so. The retreat family is
+  complete.
+- D3 is withdrawn. The event number is removed altogether, by the author's ruling: order is the position in `events[]`, and an exact check could not coexist with two players choosing cards at the same moment.
 - D5 is withdrawn. Probed both ways in `scenarios/meleeStages.test.ts`
-  (`8be2e00`), it named the right player each time. A melee's second
+  it named the right player each time. A melee's second
   retreat opens only after the first is done, so the caught miss always
   landed on the one open retreat. The dispatch that relied on this is
-  replaced in `e77e91f`.
-- D2 is fixed to the author's design (`9348787`, `1d0ff68`): the endgame judgment waits while the cards are chosen face down (`isChoosingCardsInSecret`) and applies from the reveal. A `submittedTime` on player choices, as a replay record, is agreed and not yet done.
-- D4 is fixed. Commitments and rout discards are face up, so the fault was the fold, not the projection: it read an opponent's hidden hand as owned. The folds now follow the shape of the hand they read (`9e5b563` for commits, then the rout discard, whose event now carries the full cards).
+  replaced.
+- D2 is fixed to the author's design: the endgame judgment waits while the cards are chosen face down (`isChoosingCardsInSecret`) and applies from the reveal. A `submittedTime` on player choices, as a replay record, is agreed and not yet done.
+- D4 is fixed. Commitments and rout discards are face up, so the fault was the fold, not the projection: it read an opponent's hidden hand as owned. The folds now follow the shape of the hand they read (commits, then the rout discard, whose event now carries the full cards).
 
 | #   | Defect                                                                                                                                                                                                                                                                 | Where                                                                                                                                                                               | Rule or contract                                                                 |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -47,7 +47,7 @@ reproduced, except D5.
 
 ## 1A. The design problem behind D1
 
-**Closed by `bebe65e` and `e77e91f`.** What was done against the plan below:
+**Closed.** What was done against the plan below:
 
 - Retreats now have `findRetreatLocation`, a router that answers with the
   parent, and `findRetreatState` is that answer without the parent.
@@ -346,9 +346,10 @@ seven local helpers and every one of its cases now carry commentary.
 - ENGINES: generator count and validation order corrected; the
   `commit*` fold claim is now true (D4 fixed); the expected and router
   sections describe `findExpectedEvent` and the raw throw.
-- RULEBOOK appendix revisited: B7 states the reveal-time judgment, the
-  movement-check catches entry is closed, and the dead `AUDIT.md` pointers
-  and slice labels are explained or dropped.
+- RULEBOOK appendix: closed and settled entries are removed (the history is in
+  version control), along with the body links to them and the source comments
+  that cited them. Left are A3, A5, A16, A17, A18 and B6, each still a
+  difference.
 - `AUDIT.md` lost its stale links and the event-number mention. The deleted
   audit files (`AUDIT_FINDINGS.md`, `SLICES.md`, `TESTING_CHECKLIST.md`) are
   deleted in the working tree and not yet committed.
@@ -390,8 +391,8 @@ seven local helpers and every one of its cases now carry commentary.
 
 - Steps 1–3 are done, except D2's spec, which waits on the author, and the
   writer question in 1A.
-- Step 4: the ENGINES generator count and validation order are corrected
-  (`7968990`), along with the boundaries.ts comments, the RULEBOOK
+- Step 4: the ENGINES generator count and validation order are corrected,
+  along with the boundaries.ts comments, the RULEBOOK
   A3/A6 references, the closed `getNextStepForResolveRally` entry and the
   dead TESTING_CHECKLIST link in the procedures README.
 - Step 4, left for the author:
@@ -401,13 +402,13 @@ seven local helpers and every one of its cases now carry commentary.
   - slice numbers in closed appendix entries;
   - AUDIT.md's dead link, a file with uncommitted edits.
 - Step 5 is done:
-  - `getOtherPlayer` (`da37c2c`);
-  - `getNeighbourSide` in melee support (`1f38a4b`);
-  - `getRallyingPlayer` for four callers (`d289430`);
-  - one commitment offer list (`3faf0e1`), which also removes four
+  - `getOtherPlayer`;
+  - `getNeighbourSide` in melee support;
+  - `getRallyingPlayer` for four callers;
+  - one commitment offer list, which also removes four
     `as readonly string[]` casts.
 - Step 7, partly: `findOwnedPlayerCardState` replaces the hand-visibility
-  catches in four enumerators (`c2fe2b0`).
+  catches in four enumerators.
 - Still open:
   - step 6, the remaining legality catches, mostly in movement predicates
     and the ranged-attack enumerators;
@@ -505,8 +506,8 @@ only the catch-alls.
 | Item                                                              | Where                                                                                | Note                                                                         |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
 | D4 seated client cannot fold an opponent's commit or rout discard | `applyCommitCardDiscard`, `applyChooseRoutDiscardEvent`, `projectEventForVisibility` | Open defect. Shares a seam with the next two.                                |
-| `event as Event`                                                  | `applyEvent.ts:62`                                                                   | Narrowing assertion; a seat's stream holds `'hidden'` where a card is typed. |
-| `visibility` branches asserted                                    | `projectGameForVisibility.ts:31,46,61`                                               | Narrowing; the switch does not narrow `V`.                                   |
+| `event as Event`                                                  | `applyEvent.ts`                                                                      | Narrowing assertion; a seat's stream holds `'hidden'` where a card is typed. |
+| `visibility` branches asserted                                    | `projectGameForVisibility.ts`                                                        | Narrowing; the switch does not narrow `V`.                                   |
 | D2 §11.3 unreachable                                              | `applyChooseCardEvent`, `getExpectedEvent`                                           | Author is re-evaluating.                                                     |
 | Writer question                                                   | `update{Retreat,Reverse,Rout,AttackApply}State`                                      | Author's design call.                                                        |
 
@@ -523,9 +524,9 @@ only the catch-alls.
 
 | Item                                                    | Where                                                                             | Note                                             |
 | ------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Empty state cast authoritative                          | `startNewGame.ts:68`                                                              | Fixed by calling `createInitialGameState` (3.3). |
-| Game cast after a field guard                           | `requestGameStateSnapshot.ts:66`                                                  | A guard on the game removes it.                  |
-| `{}` filled in a loop                                   | `entities/unit/unitStat.ts:31`                                                    | Also a mutation in a declarations module.        |
+| Empty state cast authoritative                          | `startNewGame.ts`                                                                 | Fixed by calling `createInitialGameState` (3.3). |
+| Game cast after a field guard                           | `requestGameStateSnapshot.ts`                                                     | A guard on the game removes it.                  |
+| `{}` filled in a loop                                   | `entities/unit/unitStat.ts`                                                       | Also a mutation in a declarations module.        |
 | Coordinate lists cast to template unions                | `entities/board/*Board/*Coordinates.ts`                                           | Three; each argues its safety in a comment.      |
 | Hand-written "next open apply"                          | `findNextMeleeDefendingPlayer`, closing loop of `getExpectedMeleeResolutionEvent` | Duplicates `getMeleeAppliesInResolutionOrder`.   |
 | Melee slot ternary in writers                           | `updateReverseState`, `updateRoutState`, `updateRetreatState`                     | Belongs to the writer question.                  |

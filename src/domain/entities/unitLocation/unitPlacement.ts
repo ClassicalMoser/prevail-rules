@@ -11,7 +11,7 @@ import { z } from 'zod';
  *
  * TODO(misleading): nothing in this value is specific to a unit; it is a
  * coordinate and a facing. Renaming reaches every layer, so it is recorded
- * rather than done. See AUDIT.md `factories and testing`.
+ * rather than done.
  */
 export interface UnitPlacement {
   coordinate: Coordinate;

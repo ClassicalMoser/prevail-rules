@@ -44,7 +44,7 @@ function pendingTargetOwner<S extends GameState>(
 
 /**
  * Returns every legal commit-to-ranged-defense event for the owner of a
- * shot's target (§4.3.11, B1): one event per card in hand naming Defence or
+ * shot's target (§4.3.11): one event per card in hand naming Defence or
  * Flexibility, with exactly those of its stats (§8.4), plus a refuse option
  * (`committedCard: null`).
  *

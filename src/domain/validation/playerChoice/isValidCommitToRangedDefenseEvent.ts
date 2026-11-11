@@ -8,7 +8,7 @@ import { getLegalCommitToRangedDefenseEvents } from '@legality';
  * Validates a CommitToRangedDefenseEvent by membership against
  * {@link getLegalCommitToRangedDefenseEvents}: the target's owner commits a
  * card from hand that names Defence or Flexibility, with exactly those of
- * its stats as its modifiers, or refuses (§4.3.11 step 5, B1).
+ * its stats as its modifiers, or refuses (§4.3.11 step 5).
  */
 export function isValidCommitToRangedDefenseEvent(
   event: CommitToRangedDefenseEvent,

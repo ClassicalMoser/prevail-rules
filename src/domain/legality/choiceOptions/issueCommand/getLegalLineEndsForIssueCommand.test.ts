@@ -153,7 +153,7 @@ describe('getLegalLineEndsForIssueCommand function', () => {
     const state = updateBoardState(createEmptyGameState('standard'), board);
 
     // A line is one to eight units (§4.3.5), so from E-9 the far end can lie
-    // at most seven places away, either side (A7).
+    // at most seven places away, either side.
     const ends = getLegalLineEndsForIssueCommand(
       unlimitedLineCommand,
       'black',
@@ -201,7 +201,7 @@ describe('getLegalLineEndsForIssueCommand function', () => {
     const state = updateBoardState(createEmptyGameState('standard'), board);
 
     // From E-1 nothing lies to the west, and the line may not exceed eight
-    // units, so E-9 and E-10 are out of reach (§4.3.5, A7).
+    // units, so E-9 and E-10 are out of reach (§4.3.5).
     const ends = getLegalLineEndsForIssueCommand(
       unlimitedLineCommand,
       'black',
@@ -223,7 +223,7 @@ describe('getLegalLineEndsForIssueCommand function', () => {
 
   it('the middle eight of a ten-unit rank is a line, leaving one at each end', () => {
     // A rank of ten friendly units facing north, E-1 to E-10. If the rank is
-    // longer than eight, the player chooses which eight (§4.3.5, A7): named
+    // longer than eight, the player chooses which eight (§4.3.5): named
     // from E-2, the line may run to E-9, leaving E-1 and E-10 out.
     const coordinates: Coordinate[] = [
       'E-1',

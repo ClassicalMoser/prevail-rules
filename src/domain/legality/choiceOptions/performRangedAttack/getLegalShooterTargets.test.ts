@@ -15,7 +15,7 @@ import { getLegalShooterTargets } from './getLegalShooterTargets';
 /**
  * Once a shooter is named and its card committed or refused, the targets
  * open to it are the enemies in its forward arc out to its Range, with any
- * Range on the committed card counted (§4.3.11 steps 2–3, B6).
+ * Range on the committed card counted (§4.3.11 steps 2–3).
  *
  * Black's Range-2 unit stands on E-5 facing north. White has a unit on C-7,
  * two ranks out, and one on B-5, three ranks out — one beyond that Range.

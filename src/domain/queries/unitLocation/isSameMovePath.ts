@@ -3,7 +3,7 @@ import type { MoveDelta } from '@entities';
 /**
  * Whether two paths are the same move, step for step and turn for turn.
  *
- * A path is the identity of a move (A11): a retreat choice names one of the
+ * A path is the identity of a move: a retreat choice names one of the
  * offered retreats by its path, and is matched back to it here.
  *
  * @param first - One path

@@ -4,7 +4,7 @@ import type { ValidationResult } from '@utils';
 import { getLegalMoveDeltas } from '@legality';
 
 /**
- * Whether a submitted path is a legal move (A11), checked the way every
+ * Whether a submitted path is a legal move, checked the way every
  * player choice is: by membership against what `@legality` offers. Each
  * step or turn must be among the moves offered at that point in the path,
  * and the move must be allowed to stop where the path ends — which also

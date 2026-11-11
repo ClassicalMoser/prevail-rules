@@ -34,7 +34,7 @@ export function isValidMoveUnitEvent(
     };
   }
 
-  // The path must be a legal move, every step and turn of it (A11), with
+  // The path must be a legal move, every step and turn of it, with
   // the card committed for it counted (§4.3.10).
   const pathValid = isValidMovePath(
     state,

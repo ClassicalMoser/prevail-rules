@@ -6,7 +6,7 @@ import { isValidMovePath } from './isValidMovePath';
 
 /**
  * A submitted path is valid when each of its moves is one the rules offer
- * at that point, and the move may stop where it ends (A11).
+ * at that point, and the move may stop where it ends.
  */
 describe('isValidMovePath function', () => {
   // A lone black unit on E-5 facing north, for the open-ground cases.

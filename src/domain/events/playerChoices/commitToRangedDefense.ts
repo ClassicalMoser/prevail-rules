@@ -9,7 +9,7 @@ export const COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE =
   'commitToRangedDefense' as const;
 
 /**
- * The stats a shot's target may commit a card for (§8.4, B1): Defence, which
+ * The stats a shot's target may commit a card for (§8.4): Defence, which
  * raises all three of its thresholds against this shot (§8.5); and
  * Flexibility, which shrinks a terrain deficit, and with it the penalty a
  * deficit puts on those same thresholds (§2.5.2). Flexibility adds nothing

@@ -28,7 +28,7 @@ export interface UnitSupportAssignment {
  *
  * TODO(composition): of five fields only `assignments` is documented; every
  * other player choice event documents all of them. Settled by a comment on
- * each field. See AUDIT.md.
+ * each field.
  */
 export interface AssignUnitSupportEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

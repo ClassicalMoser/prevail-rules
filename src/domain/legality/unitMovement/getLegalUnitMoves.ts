@@ -55,7 +55,7 @@ export function getLegalUnitMoves(
 
   // Every ending of an ordered advance, each with the path that reaches it.
   // Two paths to one placement are offered separately: they cost
-  // differently, and the player chooses (A11).
+  // differently, and the player chooses.
   const legalMoves = exploreUnitMoves(
     gameState,
     unitWithPlacement,

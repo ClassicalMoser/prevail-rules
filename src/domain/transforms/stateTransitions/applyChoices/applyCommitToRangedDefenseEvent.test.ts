@@ -15,7 +15,7 @@ import {
 import { applyCommitToRangedDefenseEvent } from './applyCommitToRangedDefenseEvent';
 
 /**
- * The target's commitment (§4.3.11 step 5, B1): once a shot is aimed, the
+ * The target's commitment (§4.3.11 step 5): once a shot is aimed, the
  * target's owner commits a card for Defence or Flexibility, or refuses, and the shot records
  * it for when the blow lands (§8.5).
  */

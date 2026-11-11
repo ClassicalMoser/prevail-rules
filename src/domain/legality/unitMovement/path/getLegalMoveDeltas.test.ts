@@ -4,7 +4,7 @@ import { createGameState } from '@testing';
 import { getLegalMoveDeltas } from './getLegalMoveDeltas';
 
 /**
- * What a player may do next in a move, given the path written so far (A11).
+ * What a player may do next in a move, given the path written so far.
  */
 describe('getLegalMoveDeltas function', () => {
   // A lone black unit on E-5 facing north, Speed 2 and Flexibility 2.

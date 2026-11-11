@@ -10,7 +10,7 @@ import {
 import { followMovePrefix } from './followMovePrefix';
 
 /**
- * The moves a player may make next, given the path written so far (A11):
+ * The moves a player may make next, given the path written so far:
  * the turns the rules allow from here (§5.2.1, §9.1.4), a step if one can be
  * taken, and whether the move may stop here instead. Once the move has
  * entered a space it cannot go on from, all that remains is its squaring

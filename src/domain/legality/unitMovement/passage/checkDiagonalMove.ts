@@ -68,8 +68,7 @@ export function checkDiagonalMove(
   // The step is possible if at least one corner lets the unit slip past.
   // The target space itself is deliberately not asked about here: testing
   // it with the pass-through rule was what made an enemy on the diagonal
-  // unreachable, because an enemy can be engaged but never passed through
-  // (A12).
+  // unreachable, because an enemy can be engaged but never passed through.
   const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
   return canMakeDiagonalMove;
 }

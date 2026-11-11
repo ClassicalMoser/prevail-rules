@@ -31,7 +31,7 @@ export function applyMoveUnitEvent<S extends GameState>(
   const movement = getMovementResolutionState(state);
   const mover = movement.movingUnit;
 
-  // The destination is wherever the validated path leads (A11), read by
+  // The destination is wherever the validated path leads, read by
   // geometry rather than judged again.
   const destination = getPlacementAfterPath(
     state.boardState,

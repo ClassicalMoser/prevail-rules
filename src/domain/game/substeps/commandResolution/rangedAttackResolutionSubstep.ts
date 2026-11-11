@@ -36,7 +36,7 @@ export interface RangedAttackResolutionState {
   attackApplyState: AttackApplyState | 'pending';
   /** The shooter's commitment, made before the target is named. */
   attackingCommitment: Commitment;
-  /** The target's commitment, for Defence or Flexibility, made once it is named (B1). */
+  /** The target's commitment, for Defence or Flexibility, made once it is named. */
   defendingCommitment: Commitment;
   /** Whether the ranged attack resolution substep is complete. */
   completed: boolean;

@@ -261,7 +261,7 @@ describe('getLineSegmentContainingUnit function', () => {
     const anchor = placed(first, 'E-5', 'north');
     const board = addUnitToBoard(engagedBoard, anchor);
 
-    // An engaged unit cannot be ordered, so the rank stops before it (§4.3.5, A1).
+    // An engaged unit cannot be ordered, so the rank stops before it (§4.3.5).
     const segment = getLineSegmentContainingUnit(
       board,
       anchor,

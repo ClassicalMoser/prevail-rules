@@ -14,7 +14,7 @@ import { createTestUnit } from '@testing/unitHelpers';
  * TODO(misleading): the unit is fabricated through `createTestUnit`, which the
  * name does not say; `createTestUnitWithPlacement` would match
  * `createTestUnit` and `createTestCard`. Callers span 38 files, so the rename
- * is its own decision. See AUDIT.md `factories and testing`.
+ * is its own decision.
  */
 export function createUnitWithPlacement(options?: {
   coordinate?: Coordinate;

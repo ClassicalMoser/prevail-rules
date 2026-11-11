@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 
 import { getLegalCommitToRangedDefenseEvents } from './getLegalCommitToRangedDefenseEvents';
 
-/** A card naming Defence: what a shot's target may commit (B1). */
+/** A card naming Defence: what a shot's target may commit. */
 const defenceCard = createTestCard({ modifiers: ['defense'] });
 /** A card naming Attack alone: no use to a target. */
 const attackCard = createTestCard({ modifiers: ['attack'] });
@@ -27,10 +27,9 @@ const flexibilityAttackCard = createTestCard({
 });
 
 /**
- * The target of a shot may commit a card once it is named (§4.3.11 step 5,
- * B1): one event per card in hand naming Defence or Flexibility (§8.4), with
- * exactly those of its stats, plus a refusal, offered to the target's owner
- * only.
+ * The target of a shot may commit a card once it is named (§4.3.11 step 5):
+ * one event per card in hand naming Defence or Flexibility (§8.4), with exactly
+ * those of its stats, plus a refusal, offered to the target's owner only.
  */
 describe('getLegalCommitToRangedDefenseEvents function', () => {
   /** Black shoots at a white unit; the shooter has refused to commit. */

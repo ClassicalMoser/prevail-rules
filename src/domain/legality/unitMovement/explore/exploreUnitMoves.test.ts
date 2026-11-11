@@ -650,7 +650,7 @@ describe('exploreUnitMoves function', () => {
     it('a front approach off the corner squares up as it closes', () => {
       // §6.2.3: a front engagement ends facing directly opposite the
       // defender. The turn is part of the engaging move and spends the
-      // point, so the engagement is offered squared, never 45° off (A13).
+      // point, so the engagement is offered squared, never 45° off.
       const gameState = createGameState([
         {
           coord: 'E-4',

@@ -69,7 +69,7 @@ export function getMoveEnding(
   );
   const endFacing = engagementEnd?.facing ?? state.facing;
   // The squaring turn is written into the path like any other turn, so the
-  // event records the whole motion and costs its point (A11).
+  // event records the whole motion and costs its point.
   const squaringTurn = engagementEnd?.squaringTurn ?? null;
   const path =
     squaringTurn === null ? state.path : [...state.path, squaringTurn];

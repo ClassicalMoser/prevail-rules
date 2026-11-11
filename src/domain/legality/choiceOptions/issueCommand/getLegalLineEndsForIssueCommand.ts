@@ -11,7 +11,7 @@ import { getLegalLineStartsForIssueCommand } from './getLegalUnitsForIssueComman
  * inspiration range included, and the line runs along the unbroken rank
  * containing it. Every unit within seven places of the start, either way
  * along that rank, is an end: a line is 1 to 8 units, and in a rank longer
- * than eight the player chooses which eight (A7). The start itself is always
+ * than eight the player chooses which eight. The start itself is always
  * an end, a line of one.
  *
  * The rank is {@link getLineSegmentContainingUnit}, the one statement of
