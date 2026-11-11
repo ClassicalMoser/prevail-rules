@@ -187,6 +187,7 @@ export {
   getPlayerUnitWithPosition,
   findPositionOfUnit,
   getPositionOfUnit,
+  getUnitWithPlacementOnBoard,
   hasEngagedUnits,
   hasEnemyUnit,
   hasNoUnit,

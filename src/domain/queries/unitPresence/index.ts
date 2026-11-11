@@ -8,3 +8,4 @@ export { isAtPlacement } from './isAtPlacement';
 export { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
 export { findPositionOfUnit } from './findPositionOfUnit';
 export { getPositionOfUnit } from './getPositionOfUnit';
+export { getUnitWithPlacementOnBoard } from './getUnitWithPlacementOnBoard';
