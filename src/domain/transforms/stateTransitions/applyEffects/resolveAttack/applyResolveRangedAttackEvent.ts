@@ -1,16 +1,8 @@
 import type { ResolveRangedAttackEvent } from '@events';
-import type {
-  AttackResult,
-  GameState,
-  IssueCommandsPhaseState,
-  RangedAttackResolutionState,
-} from '@game';
+import type { AttackResult, GameState } from '@game';
 import { createAttackApplyState } from '@factories';
-import {
-  getIssueCommandsPhaseState,
-  getRangedAttackResolutionState,
-} from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { getRangedAttackResolutionState } from '@queries';
+import { updateCommandResolutionState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRangedAttackEvent to the game state.
@@ -27,7 +19,6 @@ export function applyResolveRangedAttackEvent<S extends GameState>(
   event: ResolveRangedAttackEvent,
   state: S,
 ): S {
-  const phaseState = getIssueCommandsPhaseState(state);
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   const defendingUnit = event.defenderWithPlacement.unit;
@@ -42,15 +33,9 @@ export function applyResolveRangedAttackEvent<S extends GameState>(
   // Only the factory decides which slots are due; no substep is written here.
   const attackApplyState = createAttackApplyState(defendingUnit, attackResult);
 
-  const newRangedAttackState: RangedAttackResolutionState = {
+  const resolved = updateCommandResolutionState(state, {
     ...rangedAttackState,
     attackApplyState,
-  };
-
-  const newPhaseState: IssueCommandsPhaseState = {
-    ...phaseState,
-    currentCommandResolutionState: newRangedAttackState,
-  };
-
-  return updatePhaseState(state, newPhaseState);
+  });
+  return resolved;
 }
