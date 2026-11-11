@@ -4,6 +4,9 @@ export { getMeleeAppliesInResolutionOrder } from './getMeleeAppliesInResolutionO
 // The melee currently being resolved.
 export { getMeleeResolutionState } from './getMeleeResolutionState';
 
+// The same, `undefined` between one melee and the next.
+export { findMeleeResolutionState } from './findMeleeResolutionState';
+
 // Both commitments are done, and attack-apply has not opened yet.
 export { getMeleeResolutionReadyForAttackCalculation } from './getMeleeResolutionReadyForAttackCalculation';
 

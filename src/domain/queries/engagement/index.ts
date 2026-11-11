@@ -10,3 +10,6 @@ export {
   getFlankEngagementStateFromMovement,
   getRearEngagementStateFromMovement,
 } from './engagement';
+
+// The front engagement, `undefined` where the getter above throws.
+export { findFrontEngagementStateFromMovement } from './findFrontEngagementStateFromMovement';

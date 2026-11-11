@@ -29,9 +29,15 @@ export { getMovementResolutionState } from './commandResolution';
 // That resolution when the command is a ranged attack.
 export { getRangedAttackResolutionState } from './commandResolution';
 
+// Those same readings, `undefined` when no order is under way.
+export { findCurrentCommandResolutionState } from './commandResolution';
+export { findMovementResolutionState } from './commandResolution';
+export { findRangedAttackResolutionState } from './commandResolution';
+
 // The melee currently being resolved.
 export { getMeleeAppliesInResolutionOrder } from './meleeResolution';
 export { getMeleeResolutionState } from './meleeResolution';
+export { findMeleeResolutionState } from './meleeResolution';
 
 // Both commitments are done, and attack-apply has not opened yet.
 export { getMeleeResolutionReadyForAttackCalculation } from './meleeResolution';
