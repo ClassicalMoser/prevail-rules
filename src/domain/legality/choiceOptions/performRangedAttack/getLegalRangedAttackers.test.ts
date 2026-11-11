@@ -269,5 +269,27 @@ describe('performRangedAttack legality atoms', () => {
         getLegalRangedAttackSupporters(attacker, defender, state),
       ).toStrictEqual([]);
     });
+
+    it('throws when asked outside the issue commands phase, where no shot is being supported', () => {
+      const attacker = createUnitWithPlacement({
+        coordinate: 'E-5',
+        facing: 'north',
+        playerSide: 'black',
+      });
+      const defender = createUnitWithPlacement({
+        coordinate: 'D-5',
+        facing: 'south',
+        playerSide: 'white',
+      });
+      // The players are still choosing their cards.
+      const state = updatePhaseState(createEmptyGameState('standard'), {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      });
+
+      expect(() =>
+        getLegalRangedAttackSupporters(attacker, defender, state),
+      ).toThrow('Expected issueCommands phase, got playCards');
+    });
   });
 });
