@@ -395,7 +395,8 @@ Mostly closed in the third pass: the seat check, the card-state orphans, the
 hand-rolled `hasUnitInArray`/`arrayWithoutUnit`, and the four commitment
 validators. Left:
 
-- `isValidSetupUnitsEvent` keeps its own `unitKey`. Setup is out of scope.
+- ~~`isValidSetupUnitsEvent` keeps its own `unitKey`.~~ Closed with round 0: it
+  checks membership with `hasUnitInArray`.
 - `eachUnitPresentOnce` and `eachCardPresentOnce` are not called by the game; the load
   boundary is the natural one. `eachUnitPresentOnce` ignores reserved units and
   compares identity only, which E1's design makes enough. `getEventStream` and
@@ -870,7 +871,11 @@ game with `createInitialGameState`, so both armies are in reserve and the hands
 dealt (it had used the empty shell, and a new game could not get past setup),
 and opens round 0's stream; `handleNewRound` flushes it when round 1 begins.
 RULEBOOK A5 is updated. The full setup sequence (bid, scenario, Black deploying
-first) is not built. Storing a round's length and dropping
+first) is not built. Setup was brought under the standing rules on the way:
+`getLegalSetupUnits` throws for a side with nothing to place instead of answering
+`null`, the options router lost its empty fallback, and `isValidSetupUnitsEvent`
+lost its unreachable "not expected" and "wrong player" branches and its own
+`unitKey`, checking membership with `hasUnitInArray`. Storing a round's length and dropping
 the number altogether is the author's idea for the walk.
 **Shape change:** the game state loses `currentRoundNumber`; stored states do
 not parse.

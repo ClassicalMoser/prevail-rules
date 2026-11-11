@@ -1,13 +1,9 @@
-import type { UnitInstance } from '@entities';
+import type { Coordinate, UnitInstance } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { SetupUnitsEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalSetupUnits } from '@legality';
-import { isFriendlyUnit, isSameUnitInstance } from '@queries';
-
-function unitKey(unit: UnitInstance): string {
-  return `${unit.playerSide}:${unit.unitType.id}:${unit.instanceNumber}`;
-}
+import { hasUnitInArray, isFriendlyUnit } from '@queries';
 
 /**
  * Validates a SetupUnitsEvent as an integral commit over
@@ -22,21 +18,10 @@ export function isValidSetupUnitsEvent(
   event: SetupUnitsEvent,
   state: GameState,
 ): ValidationResult {
+  // The player is the one the sequencer asked, so they have units to place.
   const legal = getLegalSetupUnits(state, event.player);
-  if (legal === null) {
-    return {
-      errorReason: `Setup units is not expected for ${event.player}`,
-      result: false,
-    };
-  }
 
-  if (event.player !== legal.player) {
-    return {
-      errorReason: `Expected setup from ${legal.player}, got ${event.player}`,
-      result: false,
-    };
-  }
-
+  // The whole army is placed at once (§3.5.1).
   if (event.unitPlacements.length !== legal.units.length) {
     return {
       errorReason: `Expected ${legal.units.length} unit placements, got ${event.unitPlacements.length}`,
@@ -44,61 +29,51 @@ export function isValidSetupUnitsEvent(
     };
   }
 
-  const legalUnitKeys = new Set(legal.units.map(unitKey));
-  const seenUnitKeys = new Set<string>();
-  const seenCoordinates = new Set<string>();
-  const legalCoordinates = new Set(legal.coordinates);
-
+  const placedUnits: UnitInstance[] = [];
+  const usedCoordinates: Coordinate[] = [];
   for (const placement of event.unitPlacements) {
+    // Each placement is one of this player's own units...
     if (!isFriendlyUnit(placement.unit, event.player)) {
       return {
         errorReason: 'Setup placement unit does not belong to the player',
         result: false,
       };
     }
-
-    const key = unitKey(placement.unit);
-    if (!legalUnitKeys.has(key)) {
+    // ...still in reserve...
+    if (!hasUnitInArray(legal.units, placement.unit)) {
       return {
         errorReason: `Unit is not in ${event.player}'s reserved units`,
         result: false,
       };
     }
-    if (seenUnitKeys.has(key)) {
+    // ...placed once.
+    if (hasUnitInArray(placedUnits, placement.unit)) {
       return {
         errorReason: 'Duplicate unit in setup placements',
         result: false,
       };
     }
-    seenUnitKeys.add(key);
+    placedUnits.push(placement.unit);
 
-    if (!legalCoordinates.has(placement.placement.coordinate)) {
+    // Each goes to an empty space of the player's zone, one unit to a space.
+    const { coordinate } = placement.placement;
+    if (!legal.coordinates.includes(coordinate)) {
       return {
-        errorReason: `Coordinate ${placement.placement.coordinate} is not an empty setup-zone space for ${event.player}`,
+        errorReason: `Coordinate ${coordinate} is not an empty setup-zone space for ${event.player}`,
         result: false,
       };
     }
-    if (seenCoordinates.has(placement.placement.coordinate)) {
+    if (usedCoordinates.includes(coordinate)) {
       return {
         errorReason: 'Duplicate coordinate in setup placements',
         result: false,
       };
     }
-    seenCoordinates.add(placement.placement.coordinate);
-
-    // Confirm value-equality against reserved list (not only key shape)
-    const inReserve = legal.units.some((unit) =>
-      isSameUnitInstance(unit, placement.unit),
-    );
-    if (!inReserve) {
-      return {
-        errorReason: `Unit is not in ${event.player}'s reserved units`,
-        result: false,
-      };
-    }
+    usedCoordinates.push(coordinate);
   }
 
-  if (!legalCoordinates.has(event.commanderCoordinate)) {
+  // The commander stands in the zone too, alone or with one of the units.
+  if (!legal.coordinates.includes(event.commanderCoordinate)) {
     return {
       errorReason: `Commander coordinate ${event.commanderCoordinate} is not an empty setup-zone space for ${event.player}`,
       result: false,

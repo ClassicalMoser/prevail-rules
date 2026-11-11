@@ -10,8 +10,6 @@ import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
  *
  * The commander may be committed on any of {@link LegalSetupUnits.coordinates}
  * in the same {@link SetupUnitsEvent} (alone or stacked with a deployed unit).
- *
- * `null` when that player has nothing left in reserve.
  */
 export interface LegalSetupUnits {
   player: PlayerSide;
@@ -30,18 +28,21 @@ export interface LegalSetupUnits {
  * Does not expand placement combinations — UI places each unit onto a zone
  * coordinate and picks a commander coordinate among the same empty zone cells;
  * {@link isValidSetupUnitsEvent} checks integrity of the commit.
+ *
+ * @throws Error when the player has no units left to place
  */
 export function getLegalSetupUnits<S extends GameState>(
   gameState: S,
   player: PlayerSide,
-): LegalSetupUnits | null {
+): LegalSetupUnits {
   const units = gameState.reservedUnits.filter((unit) => {
     // Only this player's reserved units remain to place.
     const belongsToPlayer = isFriendlyUnit(unit, player);
     return belongsToPlayer;
   });
+  // The sequencer asks only a side with units still in reserve (§3.5).
   if (units.length === 0) {
-    return null;
+    throw new Error(`${player} has no units left to place`);
   }
 
   const zone = getSetupZoneCoordinates(gameState.boardState, player);

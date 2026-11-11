@@ -158,11 +158,6 @@ function concretePlayer(playerSource: PlayerSource): PlayerSide | null {
   return playerSource;
 }
 
-/** No unit or space is open for placement: the answer when setup has nothing to offer. */
-function emptySetupUnits(player: PlayerSide): LegalSetupUnits {
-  return { coordinates: [], player, units: [] };
-}
-
 /**
  * Presentation router for legal player-choice options.
  *
@@ -394,8 +389,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     case 'setupUnits': {
       // Each player places their whole army in their own zone, one unit per
       // space (§3.5.1); offer the units and spaces still open.
-      const setupUnits =
-        getLegalSetupUnits(state, player) ?? emptySetupUnits(player);
+      const setupUnits = getLegalSetupUnits(state, player);
       return {
         ...base,
         choiceType: 'setupUnits',

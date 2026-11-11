@@ -46,13 +46,11 @@ vi.mock(import('@expected'), async (importOriginal) => {
 
 /**
  * Choices whose enumerators answer on a bare state: with no round under way
- * a commander is simply not on the board, and nothing is open to place, so
- * they answer "nothing". Every other choice is asked only when it is owed, and
- * throws when it is not.
+ * a commander is simply not on the board, so it answers "nothing". Every other
+ * choice is asked only when it is owed, and throws when it is not.
  */
 const choicesAnsweringOnABareState = [
   'moveCommander',
-  'setupUnits',
 ] as const satisfies readonly PlayerChoiceType[];
 
 /**
@@ -70,6 +68,8 @@ const choicesNeedingRoundUnderWay = [
   ['doneIssuingCommands', 'No current phase state found'],
   ['issueCommand', 'No current phase state found'],
   ['moveUnit', 'No current phase state found'],
+  // A side is asked to set up only while it has units in reserve.
+  ['setupUnits', 'has no units left to place'],
   ['performRangedAttack', 'No current phase state found'],
   ['chooseCard', 'No current phase state found'],
   [
@@ -347,16 +347,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
             expect(options).toMatchObject({
               destinations: [],
               startingCoordinate: null,
-            });
-            break;
-          }
-          case 'setupUnits': {
-            expect(options).toMatchObject({
-              setupUnits: {
-                coordinates: [],
-                player: 'black',
-                units: [],
-              },
             });
             break;
           }
