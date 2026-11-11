@@ -225,8 +225,9 @@ rule. The validator walks the submitted choice through the same offers with
 - Unit support: `getLegalUnitSupportAssignments` holds one place per unit,
   capacity and "use what you have", which is its stopping rule: the player may
   stop exactly when nothing more is offered. The event is a flat list of
-  `{ unit, unitSupport }` in any order. The code no longer says "pool"; the
-  RULEBOOK still does, until the author picks a word.
+  `{ unit, unitSupport }` in any order. Neither the code nor the RULEBOOK says
+  "pool" any more; cards of one kind stack (§10.4.3), and the RULEBOOK says
+  "stack".
 - Issue command (author: a line is named by its ends; range may be traced from
   any unit of it; no maximality). RULEBOOK §4.3.5 and its FAQ say so. The
   event carries a units selection or a line's two ends, and the apply reads
@@ -234,10 +235,6 @@ rule. The validator walks the submitted choice through the same offers with
   `getLegalLines`, since a line is fixed by its ends; a units order is an
   `OpenChoice` from `getLegalUnitsToOrder`.
 
-Left:
-
-- `rulebook.html` is an old render of the RULEBOOK and still states the
-  near-end rule. Nothing references it.
 - The legality README's `isValidLine` still does not exist.
 
 ---

@@ -1066,24 +1066,24 @@ Three things make it less alarming than it sounds. It only happens when you rall
 
 A card always holds at least one place, so every card in your hand contributes.
 
-**10.4.3 Add them up into pools.** Cards naming the same thing combine. Two cards each holding _formation ×2_ make a single pool of _formation ×4_. Cards naming different things stay separate: a _phalanx_ pool and a _generic_ pool are two pools, not one.
+**10.4.3 Stack them.** Cards naming the same thing stack. Two cards each holding _formation ×2_ make a single stack of _formation ×4_. Cards naming different things stay separate: a _phalanx_ stack and a _generic_ stack are two stacks, not one.
 
-**10.4.4 Assign your units to the pools.** You do this yourself: for each pool, name which of your units fill its places. Every unit on your board needs a place in one pool. A unit may take **only one** place, and only in a pool it matches — Punic Citizen Spearmen can go in a _formation_ pool, a _phalanx_ pool, a _melee_ pool or a _generic_ pool, but into exactly one of them. A pool need not be filled if you have no unit that matches it.
+**10.4.4 Assign your units to the stacks.** You do this yourself: for each stack, name which of your units fill its places. Every unit on your board needs a place in one stack. A unit may take **only one** place, and only in a stack it matches — Punic Citizen Spearmen can go in a _formation_ stack, a _phalanx_ stack, a _melee_ stack or a _generic_ stack, but into exactly one of them. A stack need not be filled if you have no unit that matches it.
 
-**10.4.5 Use what you have.** If a place is still open and any uncovered unit could fill it, you must fill it. You are **not** required to find the arrangement that saves the most units. Where a unit could go into either a narrow pool or a broad one, that is your call, and a bad call is allowed to cost you.
+**10.4.5 Use what you have.** If a place is still open and any uncovered unit could fill it, you must fill it. You are **not** required to find the arrangement that saves the most units. Where a unit could go into either a narrow stack or a broad one, that is your call, and a bad call is allowed to cost you.
 
 **10.4.6 Anything left over routs.** Every unit with no place removes itself from the board, all at once (§9.3.3).
 
 **10.4.7 Pay for them together.** Add up the Morale of everything that just routed and discard that many cards. If you cannot, you lose (§11.2).
 
-> _Your cards hold: **Form Up** (formation ×2), **Dash** (generic ×1), **Strike** (generic ×1) — four places in two pools._
+> _Your cards hold: **Form Up** (formation ×2), **Dash** (generic ×1), **Strike** (generic ×1) — four places in two stacks._
 > _Your board has five units: 3 Manipular Legions (formation), 1 Velites, 1 Equites._
 >
 > _Five units, four places. Something is going to break; the only question is what._
 >
-> _The formation pool takes two Legions. The generic pool's two places can take any two of the third Legion, the Velites and the Equites. Put the Legion and the Equites there, and the Velites rout. Pay their Morale, which is nothing._
+> _The formation stack takes two Legions. The generic stack's two places can take any two of the third Legion, the Velites and the Equites. Put the Legion and the Equites there, and the Velites rout. Pay their Morale, which is nothing._
 >
-> _Put the Velites in the generic pool instead, and a Legion or the Equites routs — two Morale instead of none. That assignment is perfectly legal; §10.4.5 does not oblige you to find the better one._
+> _Put the Velites in the generic stack instead, and a Legion or the Equites routs — two Morale instead of none. That assignment is perfectly legal; §10.4.5 does not oblige you to find the better one._
 
 **10.4.8 What this costs you over a battle.** Nothing you commit and nothing you pay in Morale reduces your support, because those cards return. Only burning does, and you burn exactly one card per rally. An army's capacity to hold itself together therefore declines slowly, predictably, and entirely as a consequence of how often you have needed to rally.
 
@@ -1320,8 +1320,6 @@ Things that come up, in the order players tend to hit them.
 
 **Played pile** — cards played in previous rounds, awaiting a rally. §10.1
 
-**Pool** — all the support places your cards grant for one kind of unit, added together. §10.4.3
-
 **Rally** — burn one card from the played pile, take everything else back, then check support. §10.3
 
 **Reverse** — turned 180° in place. §9.2
@@ -1333,6 +1331,8 @@ Things that come up, in the order players tend to hit them.
 **Round Effect** — a standing modifier from your in-play card, applying to qualifying units whether commanded or not. §4.3.7
 
 **Speed limit** — a cap on a unit's printed Speed for any move that touches that terrain, applied before deficit and modifiers. §2.5.1, §5.5.2
+
+**Stack** — all the support places your cards grant for one kind of unit, added together. §10.4.3
 
 **Stand** — a numbered marker for a hidden unit, or a decoy. §3.6
 
