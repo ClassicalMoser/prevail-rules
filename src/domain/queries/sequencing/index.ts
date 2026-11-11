@@ -18,8 +18,6 @@ export { getCurrentInitiative } from './getCurrentInitiative';
 // Events applied so far this round.
 export { getCurrentEventStream } from './getCurrentEventStream';
 
-// The index the next event will take in that stream.
-
 // The command resolution in progress.
 export { getCurrentCommandResolutionState } from './commandResolution';
 
