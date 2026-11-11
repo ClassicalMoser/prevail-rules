@@ -159,9 +159,23 @@ describe('requestGameStateSnapshot function', () => {
     );
   });
 
-  it('returns failure when the game is missing', async () => {
-    // Storage has no game under this id.
-    const ports = createPorts(vi.fn().mockResolvedValue(undefined));
+  it('returns failure when storage answers with no game', async () => {
+    // Storage answers, and holds no game under this id.
+    const ports = createPorts(
+      vi.fn().mockResolvedValue({ data: undefined, result: true }),
+    );
+
+    await expect(
+      requestGameStateSnapshot(gameId, 'mini', 'white', ports),
+    ).resolves.toStrictEqual({
+      errorReason: `Game ${gameId} not found`,
+      result: false,
+    });
+  });
+
+  it('returns failure when storage does not answer at all', async () => {
+    // A port is allowed to hand back nothing for an id it has never seen.
+    const ports = createPorts(vi.fn());
 
     await expect(
       requestGameStateSnapshot(gameId, 'mini', 'white', ports),

@@ -33,12 +33,15 @@ describe('getRoundSnapshot function', () => {
   });
 
   it('returns undefined when no snapshot is stored for the round', async () => {
-    const snapshot = await getRoundSnapshot(
-      'game-1',
-      1,
-      mini,
-      storageReturning(undefined),
-    );
+    // Storage answers, and holds nothing for this round.
+    const empty: RoundSnapshotStorage = {
+      getRoundSnapshot: vi
+        .fn()
+        .mockResolvedValue({ data: undefined, result: true }),
+      saveRoundSnapshot: vi.fn(),
+    };
+
+    const snapshot = await getRoundSnapshot('game-1', 1, mini, empty);
 
     expect(snapshot).toBeUndefined();
   });
