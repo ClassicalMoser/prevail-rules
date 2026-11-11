@@ -52,6 +52,7 @@ export {
   getEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
   findFrontEngagementStateFromMovement,
+  getFrontEngagementStage,
   getFlankEngagementStateFromMovement,
   getRearEngagementStateFromMovement,
   isEngagementFromFront,
@@ -161,6 +162,7 @@ export {
   getNextMeleeRoutState,
   getRearEngagementRoutState,
 } from './sequencing';
+export type { FrontEngagementStage } from './engagement';
 export type {
   RetreatLocation,
   RetreatSource,

@@ -13,3 +13,8 @@ export {
 
 // The front engagement, `undefined` where the getter above throws.
 export { findFrontEngagementStateFromMovement } from './findFrontEngagementStateFromMovement';
+
+// Where a front engagement stands, the one reading both the sequencer and
+// the legal options dispatch on.
+export { getFrontEngagementStage } from './getFrontEngagementStage';
+export type { FrontEngagementStage } from './getFrontEngagementStage';

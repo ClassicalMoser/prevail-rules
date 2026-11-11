@@ -3,7 +3,11 @@ import type { CommitToMovementEvent } from '@events';
 import type { GameState } from '@game';
 import { movementModifierTypes } from '@events';
 import { createCommitToMovementEvent } from '@factories';
-import { getOtherPlayer, findMovementResolutionState } from '@queries';
+import {
+  findMovementResolutionState,
+  getFrontEngagementStage,
+  getOtherPlayer,
+} from '@queries';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -25,10 +29,11 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
     throw new Error('No movement commitment is owed');
   }
 
+  // A front engagement's defender may commit at the start of it (§6.3.2).
   const engagement = crs.engagementState.engagementResolutionState;
   if (
     engagement.engagementType === 'front' &&
-    engagement.defensiveCommitment.commitmentType === 'pending'
+    getFrontEngagementStage(engagement) === 'defenderCommitting'
   ) {
     return getOtherPlayer(crs.engagementState.engagingUnit.playerSide);
   }

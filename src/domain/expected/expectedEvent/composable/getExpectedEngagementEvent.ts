@@ -1,6 +1,7 @@
 import type { ExpectedEventInfo } from '@events';
 import type { EngagementState } from '@game';
-import { getOtherPlayer } from '@queries';
+import { getFrontEngagementStage, getOtherPlayer } from '@queries';
+import { throwIfPending } from '@utils';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
@@ -55,57 +56,66 @@ export function getExpectedEngagementEvent(
     throw new Error('Rear engagement resolution complete but not advanced');
   }
   if (engagementType === 'front') {
-    // If the engagement is from the front,
-    // We need to check if the defensive commitment has been resolved
-    if (resolutionState.defensiveCommitment.commitmentType === 'pending') {
-      return {
-        actionType: 'playerChoice',
-        choiceType: 'commitToMovement',
-        playerSource: defendingPlayer,
-      };
+    const stage = getFrontEngagementStage(resolutionState);
+    switch (stage) {
+      case 'defenderCommitting': {
+        // The defender may commit a card for the fight first (§6.3.2).
+        return {
+          actionType: 'playerChoice',
+          choiceType: 'commitToMovement',
+          playerSource: defendingPlayer,
+        };
+      }
+      case 'retreatBeingWorkedOut': {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'resolveEngageRetreatOption',
+        };
+      }
+      case 'noRetreat': {
+        throw new Error('Defending unit cannot retreat');
+      }
+      case 'defenderDeciding': {
+        return {
+          actionType: 'playerChoice',
+          choiceType: 'chooseWhetherToRetreat',
+          playerSource: defendingPlayer,
+        };
+      }
+      case 'defenderStands': {
+        // The transform that recorded the choice should have closed the
+        // engagement.
+        throw new Error(
+          'Front engagement resolution complete but not marked as completed',
+        );
+      }
+      case 'retreatOpening': {
+        // An accepted retreat opens first, with the retreats worked out by
+        // its procedure, then drives chooseRetreatOption / resolveRetreat.
+        return {
+          actionType: 'gameEffect',
+          effectType: 'openRetreatFromEngagement',
+        };
+      }
+      case 'retreating': {
+        return getExpectedRetreatEvent(
+          throwIfPending(
+            resolutionState.retreatState,
+            'The retreat is not open',
+          ),
+        );
+      }
+      case 'retreated': {
+        // applyResolveRetreat should have marked the engagement complete.
+        throw new Error(
+          'Front engagement retreat completed but engagement not marked as completed',
+        );
+      }
+      default: {
+        const _exhaustive: never = stage;
+        throw new Error(`Invalid front engagement stage: ${_exhaustive}`);
+      }
     }
-    // If the defensive commitment has been resolved,
-    // We need to check if the defending unit can retreat
-    if (resolutionState.defendingUnitCanRetreat === 'pending') {
-      return {
-        actionType: 'gameEffect',
-        effectType: 'resolveEngageRetreatOption',
-      };
-    }
-    if (resolutionState.defendingUnitCanRetreat === false) {
-      throw new Error('Defending unit cannot retreat');
-    }
-    // If the defending unit can retreat, we need to check if it has chosen to retreat
-    if (resolutionState.defendingUnitRetreats === 'pending') {
-      return {
-        actionType: 'playerChoice',
-        choiceType: 'chooseWhetherToRetreat',
-        playerSource: defendingPlayer,
-      };
-    }
-    if (resolutionState.defendingUnitRetreats === false) {
-      // Defending unit chose not to retreat, front engagement resolution should be complete
-      // (but engagementState.completed should be set by the transform)
-      throw new Error(
-        'Front engagement resolution complete but not marked as completed',
-      );
-    }
-
-    // Accepted retreat: it opens first, with the retreats worked out by its
-    // procedure, then drives chooseRetreatOption / resolveRetreat.
-    if (resolutionState.retreatState === 'pending') {
-      return {
-        actionType: 'gameEffect',
-        effectType: 'openRetreatFromEngagement',
-      };
-    }
-    if (!resolutionState.retreatState.completed) {
-      return getExpectedRetreatEvent(resolutionState.retreatState);
-    }
-    // Retreat finished; applyResolveRetreat should have marked engagement complete
-    throw new Error(
-      'Front engagement retreat completed but engagement not marked as completed',
-    );
   }
   throw new Error('Invalid engagement type');
 }

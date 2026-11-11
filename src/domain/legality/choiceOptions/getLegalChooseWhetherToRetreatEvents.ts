@@ -2,7 +2,11 @@ import type { PlayerSide } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import { createChooseWhetherToRetreatEvent } from '@factories';
-import { getOtherPlayer, findFrontEngagementStateFromMovement } from '@queries';
+import {
+  findFrontEngagementStateFromMovement,
+  getFrontEngagementStage,
+  getOtherPlayer,
+} from '@queries';
 
 /**
  * Defending player when a front engagement is awaiting chooseWhetherToRetreat:
@@ -20,17 +24,18 @@ function pendingWhetherToRetreatPlayer<S extends GameState>(
     throw new Error('No front engagement is being resolved');
   }
 
-  const engagement = front.engagementResolutionState;
-  if (engagement.defensiveCommitment.commitmentType === 'pending') {
+  // The defender decides only at its own stage of the engagement.
+  const stage = getFrontEngagementStage(front.engagementResolutionState);
+  if (stage === 'defenderCommitting') {
     throw new Error('The defender has not yet committed');
   }
-  if (engagement.defendingUnitCanRetreat === 'pending') {
+  if (stage === 'retreatBeingWorkedOut') {
     throw new Error('It is not yet known whether the defender can retreat');
   }
-  if (engagement.defendingUnitCanRetreat !== true) {
+  if (stage === 'noRetreat') {
     throw new Error('The defender has nowhere to retreat to');
   }
-  if (engagement.defendingUnitRetreats !== 'pending') {
+  if (stage !== 'defenderDeciding') {
     throw new Error('The defender has already decided whether to retreat');
   }
 
