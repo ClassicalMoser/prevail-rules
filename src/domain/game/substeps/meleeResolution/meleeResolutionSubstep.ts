@@ -12,7 +12,8 @@ import { attackApplyStateSchema } from '../combatOutcomes';
  *
  * This is a **context-specific substep** - it's tied to the `ResolveMeleePhase`.
  * It contains composable substeps:
- * - `AttackApplyState` (one for each player, in initiative order)
+ * - `AttackApplyState` (one for each player, named for the order the players
+ *   hold initiative in)
  *
  * Unlike composable substeps, this state is only used in one specific context.
  * Repeated for each melee that needs to be resolved in a round.
@@ -25,10 +26,11 @@ export interface MeleeResolutionState {
   /**
    * The state of the first player's attack apply.
    *
-   * Both units strike at once and their applies resolve one at a time, in
-   * initiative order, so the slots are named for that order. Which colour
-   * holds the initiative is a rule of the version being played; who owns an
-   * apply is read from its `defendingUnit`.
+   * Both units strike at once, and the slots are named for the order the
+   * players hold initiative in: first and second. The applies take effect
+   * second player's unit first (§7.5.6). Which colour holds the initiative is
+   * a rule of the version being played; who owns an apply is read from its
+   * `defendingUnit`.
    */
   firstPlayerAttackApplyState: AttackApplyState | 'pending';
   /** The state of the second player's attack apply. */

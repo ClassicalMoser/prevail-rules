@@ -35,7 +35,7 @@ export interface RetreatState {
   chosenRetreatPath: MoveDelta[] | 'pending';
   /**
    * Rout nested under this retreat: `'pending'` when the unit has nowhere to
-   * go (a rout is still due), `'bypassed'` when it has legal hexes (a retreat
+   * go (a rout is still due), `'bypassed'` when it has a legal retreat (a retreat
    * with somewhere to go will never rout), or the open `RoutState`.
    */
   routState: RoutState | 'pending' | 'bypassed';

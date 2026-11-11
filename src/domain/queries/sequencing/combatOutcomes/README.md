@@ -80,7 +80,8 @@ and throw when there is not.
 query is total — and it crosses all four: `findNextMeleeDefendingPlayer` is a
 selection, not a router. Absence is `undefined`, which is what
 [`DESIGN.md`](../../../../../DESIGN.md) asks of a query. `null` is left to mean
-something, as it does in the endgame check, where it is a draw.
+something, as it does in the options router, where it is "nothing is owed a
+choice".
 
 A router reads each slot's own sentinel rather than calling the scoped getters,
 so it needs no `try`. That duplicates a little descent knowledge against the

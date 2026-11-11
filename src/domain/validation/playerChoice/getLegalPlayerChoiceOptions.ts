@@ -121,8 +121,8 @@ export type LegalPlayerChoiceOptions =
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'moveUnit';
-      /** The unit whose move is being written; `null` if it cannot be read. */
-      movingUnit: UnitWithPlacement | null;
+      /** The unit whose move is being written. */
+      movingUnit: UnitWithPlacement;
       /**
        * Every legal ending of the move, each with a path to submit, priced
        * with the card committed for it (§4.3.10). Step-by-step offering is

@@ -20,8 +20,9 @@ export interface OpenRetreatFromEngagementEvent {
   /** The type of game effect. */
   effectType: typeof OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE;
   /**
-   * The retreats the defender may make, each as its path (§9.1.3); empty when
-   * it has nowhere to go, and so routs (§9.1.6).
+   * The retreats the defender may make, each as its path (§9.1.3). Never empty:
+   * a defender with nowhere to fall back to stands, and no retreat opens
+   * (§9.1.5).
    */
   retreatPaths: MoveDelta[][];
 }

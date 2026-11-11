@@ -31,6 +31,15 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
     engagementState.targetPlacement.coordinate,
   );
 
+  // A defender with nowhere to fall back to stands, and no retreat opens
+  // for that defender (§9.1.5), so a retreat is recorded with at least one
+  // way back.
+  if (event.retreatPaths.length === 0) {
+    throw new Error(
+      'A defender with nowhere to retreat stands; no retreat opens',
+    );
+  }
+
   // The procedure worked out the legal retreats; they are written as given.
   const retreatState = createOpenedRetreatState(
     retreatingUnit,
