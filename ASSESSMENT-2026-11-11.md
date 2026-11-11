@@ -142,24 +142,29 @@ should not have been asked. Closed, each with a failing spec first:
 - `findMoveEnding`, `findLegalMoveDeltas` and
   `findExpectedAttackApplyStageEvent` (formerly `get*`): their `undefined` is
   a real answer, so they follow the find/get naming.
+- The four enumerators whose `null` meant two things
+  (`getLegalMoveUnits`, `getLegalRangedAttackers`, `getLegalRoutDiscardCards`,
+  `getLegalAssignUnitSupport`): out of turn throws; nobody able to move or
+  shoot is an empty list, which the expected engine and the `complete*Command`
+  transforms read as the end of the order; a hand the seat cannot see is an
+  empty offer, as `findOwnedPlayerCardState` documents. One transform spec
+  had put a movement card in play for a ranged order, which `null` had hidden.
+- The rest of the soft-empty list: `getLegalChooseCardOptions`,
+  `getLegalChooseRetreatOptionEvents`, `getLegalChooseWhetherToRetreatEvents`
+  and the four `getLegalCommitTo*` enumerators throw out of turn. A seat that
+  has already chosen, a spectator, and a hidden hand stay real empty answers.
+  `moveCommander` (a defeated commander is off the board, §4.2.8) and
+  `setupUnits` (setup is out of scope) are unchanged. ENGINES says which empty
+  answers are real.
 
 Decision points left for the author, found on the way:
 
-- **Enumerators whose `null` carries two meanings.** `getLegalMoveUnits` and
-  `getLegalRangedAttackers` answer `null` both for "not expected" and for "no
-  unit can act", and the expected engine and the
-  `completeMovementCommand`/`completeRangedAttackCommand` transforms read the
-  second meaning as their gate. `getLegalRoutDiscardCards` and
-  `getLegalAssignUnitSupport` answer `null` both for "not expected" and for
-  "the hand is hidden from this seat". Separating the meanings is a design
-  choice; each still has a "not expected" refusal in its validator.
-- **The rest of the soft-empty list.** The options router's spec lists the
-  choices whose enumerators answer "nothing" on a state with no round under
-  way: `chooseCard`, `chooseShooter`, `chooseMovingUnit`, `chooseRoutDiscard`,
-  `chooseRetreatOption`, `chooseWhetherToRetreat`, the four `commitTo*`,
-  `moveCommander` and `setupUnits`. By the principle, each is either a fair
-  question with an empty answer or a fault that should throw; they have not
-  been gone through one by one. `setupUnits` is out of scope.
+- **`getLegalChooseCardOptions` was documented as soft** ("does not throw ...
+  so clients can re-enumerate after a peer commits"). It now throws off the
+  chooseCards step, by the no-belt-and-suspenders principle. A client that
+  re-enumerates after both players have chosen has moved past the step and
+  would now be refused loudly; if that is a pattern the clients rely on, this
+  one is for the author to reverse.
 - **Whose rally a cleanup step belongs to.** `getRallyingPlayer` maps the four
   rally steps and throws on `discardPlayedCards` and `complete`.
   `getRallyStepRoutState`, which nothing in the engine calls, and the cleanup
