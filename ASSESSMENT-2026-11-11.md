@@ -535,6 +535,11 @@ closes a rally or moves cleanup on, `updateRetreatRoutState` no longer closes
 the retreat, and `closeRearEngagementWhenRouted` is gone. The author called the
 closes inside the writers "the wrong closure".
 
+**Done (sixth pass, on the author's answer).** `findRoutLocation` throws on a
+rout inside a front engagement's retreat, since a defender with nowhere to go
+is never offered that retreat (§6.3.2). The spec that let such a rout be paid
+now asserts it is refused.
+
 **Verdict: design risk, low.** The four are layers of one chain every caller
 goes through, not four alternatives. The two apply events that settle a rout
 (`applyChooseRoutDiscardEvent`, `applyResolveRoutEvent`) both write through

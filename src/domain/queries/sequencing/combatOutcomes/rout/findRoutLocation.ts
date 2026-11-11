@@ -111,8 +111,7 @@ function routInCurrentContext(
       }
       const resolution = engagement.engagementResolutionState;
       // Engaging from the rear routs the defender outright. Engaging from the
-      // front makes it give ground, and only a defender with nowhere to go
-      // routs from inside that retreat.
+      // front routs nobody.
       if (resolution.engagementType === 'rear') {
         const rearRout = {
           routSlot: resolution.routState,
@@ -121,7 +120,16 @@ function routInCurrentContext(
         return rearRout;
       }
       if (resolution.engagementType === 'front') {
-        return routOnRetreat(resolution.retreatState);
+        // A defender met head-on is offered a retreat only if it has
+        // somewhere to go (§6.3.2), so its retreat never falls into a rout.
+        // One here means the state was built wrong.
+        const held = routOnRetreat(resolution.retreatState);
+        if (held !== undefined && isOpenSubstep(held.routSlot)) {
+          throw new Error(
+            'A front engagement’s retreat holds a rout, which cannot happen: a defender with nowhere to fall back to stands (§6.3.2)',
+          );
+        }
+        return undefined;
       }
       // A flank engagement turns the defender and routs nobody.
       return undefined;
@@ -184,7 +192,8 @@ function routInCurrentContext(
  * Five places hold a rout: the apply on a ranged attack, either side's apply
  * in a melee, a rear engagement during a movement, a rally during cleanup, and
  * a retreat that found nowhere to go — that last one nested inside a retreat,
- * which itself sits on an apply or a front engagement.
+ * which itself sits on an attack's apply. A front engagement's retreat never
+ * holds one (§6.3.2).
  *
  * A rout belongs to the player who discards for it. Asking without naming that
  * player has no answer in a melee, where both sides strike at once and both
@@ -195,12 +204,14 @@ function routInCurrentContext(
  * Settled by deciding whether the sequencer should locate routs here.
  * Every layer that has to locate a rout reads it here: the sequencer to ask for
  * the next event, legality to enumerate the discard, the procedure to work out
- * the penalty. Nothing routing is an ordinary state, so this answers rather
- * than throwing.
+ * the penalty, and settleRout to know what a settled rout closes. Nothing
+ * routing is an ordinary state, so this answers rather than throwing.
  *
  * @param state - The game state
  * @param player - The player whose rout to find
  * @returns That player's rout and its parent, or `undefined` when they have none
+ * @throws Error when a front engagement's retreat holds a rout, which no game
+ * reaches
  */
 export function findRoutLocation(
   state: GameState,
