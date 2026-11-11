@@ -32,15 +32,21 @@ export function isValidChooseCardEvent(
 ): ValidationResult {
   try {
     const legalOptions = getLegalChooseCardOptions(state);
-    const isLegal = legalOptions.some(
+    const legalOption = legalOptions.find(
       (option) =>
         option.player === event.player && option.card.id === event.card.id,
     );
-    if (!isLegal) {
+    if (legalOption === undefined) {
       return {
         result: false,
         errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
       };
+    }
+    // The id names a card the player holds; the card the event shows must be
+    // that card.
+    const sameCard = isSameCardValue(legalOption.card, event.card);
+    if (!sameCard.result) {
+      return sameCard;
     }
     return { result: true };
   } catch (error) {
@@ -51,6 +57,8 @@ export function isValidChooseCardEvent(
   }
 }
 ```
+
+When an event passes a whole card, an id match is not enough: the card the event shows is checked against the card the hand holds with `isSameCardValue`, so a copy that keeps a real id but claims stronger stats is refused with the part that differs. When an event passes only an id, the fold looks the card up and nothing more is checked.
 
 `validatePlayerChoice` still layers **expected** (sequencing) before **legal** (membership). Do not re-encode phase/hand rules in `isValid*` when a `getLegal*` already enumerates them.
 

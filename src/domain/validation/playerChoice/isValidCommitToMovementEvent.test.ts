@@ -58,6 +58,22 @@ describe('isValidCommitToMovementEvent function', () => {
     });
   });
 
+  it("rejects a card that bears a hand card's id but claims stronger stats", () => {
+    // The real card lists Speed once. A copy listing it twice would count
+    // double as a movement bonus (§8.4).
+    const state = stateBlackPendingCommit();
+    const event = createCommitToMovementEvent({
+      committedCard: { ...speedCard, modifiers: ['speed', 'speed'] },
+      modifierTypes: ['speed'],
+      player: 'black',
+    });
+
+    expect(isValidCommitToMovementEvent(event, state)).toStrictEqual({
+      errorReason: `Card ${speedCard.id} differs from the card held in its commit stats`,
+      result: false,
+    });
+  });
+
   it('accepts refusing with null card and empty modifiers', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({

@@ -45,6 +45,21 @@ describe('isValidChooseCardEvent function', () => {
     });
   });
 
+  it("rejects a card that bears a hand card's id but claims a different cost", () => {
+    // The card is shown to every seat as it is chosen, so what the event
+    // says the card is must be what the hand holds.
+    const state = stateChooseCardsBothPending();
+    const event = createChooseCardEvent({
+      card: { ...tempCommandCards[2], cost: tempCommandCards[2].cost + 5 },
+      player: 'black',
+    });
+
+    expect(isValidChooseCardEvent(event, state)).toStrictEqual({
+      errorReason: `Card ${tempCommandCards[2].id} differs from the card held in its cost`,
+      result: false,
+    });
+  });
+
   it('rejects a card that is not in the player hand', () => {
     const state = stateChooseCardsBothPending();
     const event = createChooseCardEvent({

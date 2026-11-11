@@ -1,6 +1,7 @@
 import type { ValidationResult } from '@utils';
 import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
+import { isSameCardValue } from '@queries';
 import { getLegalCommitToMeleeEvents } from '@legality';
 
 function sameModifierTypes(
@@ -24,7 +25,7 @@ export function isValidCommitToMeleeEvent(
 ): ValidationResult {
   try {
     const legalOptions = getLegalCommitToMeleeEvents(state);
-    const isLegal = legalOptions.some((option) => {
+    const legalOption = legalOptions.find((option) => {
       if (option.player !== event.player) {
         return false;
       }
@@ -36,7 +37,7 @@ export function isValidCommitToMeleeEvent(
       }
       return option.committedCard.id === event.committedCard.id;
     });
-    if (!isLegal) {
+    if (legalOption === undefined) {
       const cardLabel =
         event.committedCard === null
           ? 'refuse'
@@ -45,6 +46,17 @@ export function isValidCommitToMeleeEvent(
         errorReason: `Commit to melee is not legal for ${event.player} with ${cardLabel}`,
         result: false,
       };
+    }
+    // The id names a card the player holds; what the event says that card is
+    // must be what it is, since the commitment's stats are read from it.
+    if (legalOption.committedCard !== null && event.committedCard !== null) {
+      const sameCard = isSameCardValue(
+        legalOption.committedCard,
+        event.committedCard,
+      );
+      if (!sameCard.result) {
+        return sameCard;
+      }
     }
     return { result: true };
   } catch (error) {

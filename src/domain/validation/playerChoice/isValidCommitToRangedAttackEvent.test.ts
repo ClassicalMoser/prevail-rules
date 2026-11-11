@@ -59,6 +59,22 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     });
   });
 
+  it("rejects a card that bears a hand card's id but claims stronger stats", () => {
+    // The real card lists Attack once. A copy listing it twice would count
+    // double as a shot's attack bonus (§8.4).
+    const state = stateBlackPendingAttackerCommit();
+    const event = createCommitToRangedAttackEvent({
+      committedCard: { ...attackCard, modifiers: ['attack', 'attack'] },
+      modifierTypes: ['attack'],
+      player: 'black',
+    });
+
+    expect(isValidCommitToRangedAttackEvent(event, state)).toStrictEqual({
+      errorReason: `Card ${attackCard.id} differs from the card held in its commit stats`,
+      result: false,
+    });
+  });
+
   it('rejects committing with an empty modifier list', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({

@@ -59,6 +59,23 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
     ).toStrictEqual({ result: true });
   });
 
+  it("rejects a card that bears a hand card's id but claims stronger stats", () => {
+    // The real card lists Defence once. A copy listing it twice would count
+    // double as a target's defence bonus (§8.4).
+    const event = createCommitToRangedDefenseEvent({
+      committedCard: { ...defenceCard, modifiers: ['defense', 'defense'] },
+      modifierTypes: ['defense'],
+      player: 'white',
+    });
+
+    expect(
+      isValidCommitToRangedDefenseEvent(event, shotAwaitingDefence()),
+    ).toStrictEqual({
+      errorReason: `Card ${defenceCard.id} differs from the card held in its commit stats`,
+      result: false,
+    });
+  });
+
   it('accepts the target’s owner refusing', () => {
     const event = createCommitToRangedDefenseEvent({
       committedCard: null,

@@ -2,6 +2,7 @@ import type { ValidationResult } from '@utils';
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalRoutDiscardCards } from '@legality';
+import { findOwnedPlayerCardState, isSameCardValue } from '@queries';
 
 /**
  * Validates a ChooseRoutDiscardEvent as an integral commit over atomic legal
@@ -9,6 +10,7 @@ import { getLegalRoutDiscardCards } from '@legality';
  * - discard must be expected for this player
  * - exactly `numberToDiscard` unique card IDs
  * - every ID is among the legal hand atoms
+ * - every card shown is the card the hand holds with that ID
  */
 export function isValidChooseRoutDiscardEvent(
   event: ChooseRoutDiscardEvent,
@@ -53,6 +55,22 @@ export function isValidChooseRoutDiscardEvent(
           errorReason: `Command card ${cardId} is not a legal discard for ${event.player}`,
           result: false,
         };
+      }
+    }
+
+    // Each id names a card the player holds; the card the event shows must be
+    // that card, since every seat folds the discard as shown.
+    const hand = findOwnedPlayerCardState(
+      state.cardState,
+      event.player,
+    )?.inHand;
+    for (const shown of event.cards) {
+      const held = hand?.find((card) => card.id === shown.id);
+      if (held !== undefined) {
+        const sameCard = isSameCardValue(held, shown);
+        if (!sameCard.result) {
+          return sameCard;
+        }
       }
     }
 

@@ -2,6 +2,7 @@ import type { ValidationResult } from '@utils';
 import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalChooseCardOptions } from '@legality';
+import { isSameCardValue } from '@queries';
 
 /**
  * Validates whether a ChooseCardEvent is among the legal choose-card options
@@ -21,15 +22,21 @@ export function isValidChooseCardEvent(
 ): ValidationResult {
   try {
     const legalOptions = getLegalChooseCardOptions(state);
-    const isLegal = legalOptions.some(
+    const legalOption = legalOptions.find(
       (option) =>
         option.player === event.player && option.card.id === event.card.id,
     );
-    if (!isLegal) {
+    if (legalOption === undefined) {
       return {
         errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
         result: false,
       };
+    }
+    // The id names a card the player holds; the card the event shows must be
+    // that card, since everyone folds it as shown.
+    const sameCard = isSameCardValue(legalOption.card, event.card);
+    if (!sameCard.result) {
+      return sameCard;
     }
     return { result: true };
   } catch (error) {

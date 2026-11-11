@@ -59,6 +59,24 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     });
   });
 
+  it("rejects a discard that bears a hand card's id but shows a different card", () => {
+    // A discard is face up, so every seat folds the cards the event shows;
+    // each must be the card the hand holds.
+    const state = stateAwaitingWhiteDiscard(2);
+    const event = createChooseRoutDiscardEvent({
+      cards: [
+        { ...tempCommandCards[4], cost: tempCommandCards[4].cost + 5 },
+        tempCommandCards[2],
+      ],
+      player: 'white',
+    });
+
+    expect(isValidChooseRoutDiscardEvent(event, state)).toStrictEqual({
+      errorReason: `Card ${tempCommandCards[4].id} differs from the card held in its cost`,
+      result: false,
+    });
+  });
+
   it('accepts an empty selection when numberToDiscard is 0', () => {
     const state = stateAwaitingWhiteDiscard(0);
     const event = createChooseRoutDiscardEvent({
