@@ -4,7 +4,7 @@ import type { GameState } from '@game';
 import { createTestCard } from '@testing';
 import { updateCurrentInitiative, updatePlayerCardState } from '@transforms';
 
-import { getWinnerFromEmptyHands } from './getWinnerFromEmptyHands';
+import { findWinnerFromEmptyHands } from './findWinnerFromEmptyHands';
 
 /**
  * Empty-hand loss: one empty hand means the other player wins.
@@ -29,23 +29,23 @@ function withHands(
   return next;
 }
 
-describe('getWinnerFromEmptyHands function', () => {
+describe('findWinnerFromEmptyHands function', () => {
   it('continues when both hands have cards', () => {
     const state = withHands([createTestCard()], [createTestCard()]);
 
-    expect(getWinnerFromEmptyHands(state)).toBeUndefined();
+    expect(findWinnerFromEmptyHands(state)).toBeUndefined();
   });
 
   it('black wins when the white hand is empty', () => {
     const state = withHands([], [createTestCard()]);
 
-    expect(getWinnerFromEmptyHands(state)).toBe('black');
+    expect(findWinnerFromEmptyHands(state)).toBe('black');
   });
 
   it('white wins when the black hand is empty', () => {
     const state = withHands([createTestCard()], []);
 
-    expect(getWinnerFromEmptyHands(state)).toBe('white');
+    expect(findWinnerFromEmptyHands(state)).toBe('white');
   });
 
   it('both hands empty at once go to the player who held initiative', () => {
@@ -55,7 +55,7 @@ describe('getWinnerFromEmptyHands function', () => {
     // White held initiative going into this round.
     const state = updateCurrentInitiative(bothEmpty, 'white');
 
-    expect(getWinnerFromEmptyHands(state)).toBe('white');
+    expect(findWinnerFromEmptyHands(state)).toBe('white');
   });
 
   it('the empty-hands tie follows the initiative, not a fixed colour', () => {
@@ -63,12 +63,12 @@ describe('getWinnerFromEmptyHands function', () => {
     // Black held initiative going into this round.
     const state = updateCurrentInitiative(bothEmpty, 'black');
 
-    expect(getWinnerFromEmptyHands(state)).toBe('black');
+    expect(findWinnerFromEmptyHands(state)).toBe('black');
   });
 
   it('a card in the played pile does not fill the hand', () => {
     const state = withHands([createTestCard()], [], [createTestCard()]);
 
-    expect(getWinnerFromEmptyHands(state)).toBe('white');
+    expect(findWinnerFromEmptyHands(state)).toBe('white');
   });
 });

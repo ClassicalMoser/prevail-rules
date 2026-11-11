@@ -13,7 +13,7 @@ import { findRoutOwingDiscard } from '../sequencing/combatOutcomes/rout/findRout
  * @param state - The current game state.
  * @returns Winning side, or `undefined` when no unpayable rout discard is pending.
  */
-export function getWinnerFromUnpayableRoutDiscard(
+export function findWinnerFromUnpayableRoutDiscard(
   state: GameState,
 ): PlayerSide | undefined {
   // This is asked on every state, and most of a game has no rout open, so a

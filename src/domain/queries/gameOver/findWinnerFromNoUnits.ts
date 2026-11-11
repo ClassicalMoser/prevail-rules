@@ -14,7 +14,9 @@ import { isFriendlyUnit } from '../unit/isFriendlyUnit';
  * @param state - The current game state.
  * @returns Winning side, or `undefined` if the game continues.
  */
-export function getWinnerFromNoUnits(state: GameState): PlayerSide | undefined {
+export function findWinnerFromNoUnits(
+  state: GameState,
+): PlayerSide | undefined {
   // An army is in the game while any of it stands on the board or still
   // waits in reserve: during setup nothing has been fielded yet, and an
   // army not yet fielded is not a destroyed one.

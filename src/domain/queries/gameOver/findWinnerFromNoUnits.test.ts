@@ -4,7 +4,7 @@ import type { GameState } from '@game';
 import { createTestUnit, createUnitWithPlacement } from '@testing';
 import { addUnitToBoard, updateBoardState } from '@transforms';
 
-import { getWinnerFromNoUnits } from './getWinnerFromNoUnits';
+import { findWinnerFromNoUnits } from './findWinnerFromNoUnits';
 
 /**
  * No-units loss (§11.4): an army destroyed to the last unit loses, however
@@ -24,27 +24,27 @@ function withUnitOnBoard(
   return next;
 }
 
-describe('getWinnerFromNoUnits function', () => {
+describe('findWinnerFromNoUnits function', () => {
   it('continues while both armies have a unit on the board', () => {
     const base = createEmptyGameState('standard');
     const withWhite = withUnitOnBoard(base, 'white', 'E-5');
     const state = withUnitOnBoard(withWhite, 'black', 'E-6');
 
-    expect(getWinnerFromNoUnits(state)).toBeUndefined();
+    expect(findWinnerFromNoUnits(state)).toBeUndefined();
   });
 
   it('black wins when the white army is destroyed', () => {
     const base = createEmptyGameState('standard');
     const state = withUnitOnBoard(base, 'black', 'E-6');
 
-    expect(getWinnerFromNoUnits(state)).toBe('black');
+    expect(findWinnerFromNoUnits(state)).toBe('black');
   });
 
   it('white wins when the black army is destroyed', () => {
     const base = createEmptyGameState('standard');
     const state = withUnitOnBoard(base, 'white', 'E-5');
 
-    expect(getWinnerFromNoUnits(state)).toBe('white');
+    expect(findWinnerFromNoUnits(state)).toBe('white');
   });
 
   it('an army still in reserve has not been fielded, let alone destroyed', () => {
@@ -68,12 +68,12 @@ describe('getWinnerFromNoUnits function', () => {
       whiteArmy,
     });
 
-    expect(getWinnerFromNoUnits(state)).toBeUndefined();
+    expect(findWinnerFromNoUnits(state)).toBeUndefined();
   });
 
   it('a board with no armies at all is a game not yet begun, not a loss', () => {
     const state = createEmptyGameState('standard');
 
-    expect(getWinnerFromNoUnits(state)).toBeUndefined();
+    expect(findWinnerFromNoUnits(state)).toBeUndefined();
   });
 });

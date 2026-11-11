@@ -16,7 +16,7 @@ import {
   updateRoutState,
 } from '@transforms';
 
-import { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutDiscard';
+import { findWinnerFromUnpayableRoutDiscard } from './findWinnerFromUnpayableRoutDiscard';
 
 /** A hand of `count` cards. The query reads the length; each card mints its own id. */
 function cards(count: number): CommandCard[] {
@@ -80,7 +80,7 @@ function stateAwaitingDiscard(options: {
  * An unpayable rout discard: a penalty that meets or exceeds the hand wins for
  * the other player. A smaller penalty continues.
  */
-describe('getWinnerFromUnpayableRoutDiscard function', () => {
+describe('findWinnerFromUnpayableRoutDiscard function', () => {
   it('continues when the penalty is smaller than the hand', () => {
     const state = stateAwaitingDiscard({
       handSize: 3,
@@ -88,7 +88,7 @@ describe('getWinnerFromUnpayableRoutDiscard function', () => {
       player: 'white',
     });
 
-    expect(getWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
+    expect(findWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
   });
 
   it('black wins when white must discard the whole hand', () => {
@@ -98,7 +98,7 @@ describe('getWinnerFromUnpayableRoutDiscard function', () => {
       player: 'white',
     });
 
-    expect(getWinnerFromUnpayableRoutDiscard(state)).toBe('black');
+    expect(findWinnerFromUnpayableRoutDiscard(state)).toBe('black');
   });
 
   it('white wins when black must discard more cards than the hand holds', () => {
@@ -108,12 +108,12 @@ describe('getWinnerFromUnpayableRoutDiscard function', () => {
       player: 'black',
     });
 
-    expect(getWinnerFromUnpayableRoutDiscard(state)).toBe('white');
+    expect(findWinnerFromUnpayableRoutDiscard(state)).toBe('white');
   });
 
   it('continues when no rout discard is awaiting', () => {
     expect(
-      getWinnerFromUnpayableRoutDiscard(createEmptyGameState('standard')),
+      findWinnerFromUnpayableRoutDiscard(createEmptyGameState('standard')),
     ).toBeUndefined();
   });
 
@@ -122,7 +122,7 @@ describe('getWinnerFromUnpayableRoutDiscard function', () => {
     // Pending command resolution throws. That slice is not open, so the
     // discard is not pending.
     const state = updatePhaseState(empty, createIssueCommandsPhaseState(empty));
-    expect(getWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
+    expect(findWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
   });
 
   it('rethrows when the issue-commands phase has no command resolution field', () => {
@@ -132,6 +132,6 @@ describe('getWinnerFromUnpayableRoutDiscard function', () => {
       step: 'firstPlayerResolveCommands',
     } as typeof state.currentRoundState.currentPhaseState; // omits currentCommandResolutionState; not 'pending'
 
-    expect(() => getWinnerFromUnpayableRoutDiscard(state)).toThrow(TypeError);
+    expect(() => findWinnerFromUnpayableRoutDiscard(state)).toThrow(TypeError);
   });
 });

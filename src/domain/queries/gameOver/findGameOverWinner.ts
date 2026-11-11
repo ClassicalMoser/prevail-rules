@@ -1,9 +1,9 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
 
-import { getWinnerFromEmptyHands } from './getWinnerFromEmptyHands';
-import { getWinnerFromNoUnits } from './getWinnerFromNoUnits';
-import { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutDiscard';
+import { findWinnerFromEmptyHands } from './findWinnerFromEmptyHands';
+import { findWinnerFromNoUnits } from './findWinnerFromNoUnits';
+import { findWinnerFromUnpayableRoutDiscard } from './findWinnerFromUnpayableRoutDiscard';
 
 /**
  * Composed endgame check for router + `gameOver` procedure.
@@ -14,21 +14,21 @@ import { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutD
  * @param state - The current game state.
  * @returns Winning side, or `undefined` if the game continues.
  */
-export function getGameOverWinner(state: GameState): PlayerSide | undefined {
+export function findGameOverWinner(state: GameState): PlayerSide | undefined {
   // The hand is the game's clock: an army with nothing in hand has nothing
   // left to fight with, so it is asked about first (§11.1).
-  const emptyHandWinner = getWinnerFromEmptyHands(state);
+  const emptyHandWinner = findWinnerFromEmptyHands(state);
   if (emptyHandWinner !== undefined) {
     return emptyHandWinner;
   }
   // A Morale cost the hand cannot survive is the same loss, seen one event
   // early (§11.2).
-  const routDiscardWinner = getWinnerFromUnpayableRoutDiscard(state);
+  const routDiscardWinner = findWinnerFromUnpayableRoutDiscard(state);
   if (routDiscardWinner !== undefined) {
     return routDiscardWinner;
   }
   // Last, the rare case: an army destroyed to the last unit loses, however
   // many cards its player still holds (§11.4).
-  const noUnitsWinner = getWinnerFromNoUnits(state);
+  const noUnitsWinner = findWinnerFromNoUnits(state);
   return noUnitsWinner;
 }

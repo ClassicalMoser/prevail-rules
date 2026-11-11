@@ -18,7 +18,7 @@ import {
   updateRoutState,
 } from '@transforms';
 
-import { getGameOverWinner } from './getGameOverWinner';
+import { findGameOverWinner } from './findGameOverWinner';
 
 /**
  * Game over asks empty hands first, then an unpayable rout discard, then a
@@ -73,14 +73,14 @@ function gameOverState(options: {
   return next;
 }
 
-describe('getGameOverWinner function', () => {
+describe('findGameOverWinner function', () => {
   it('continues when both hands have cards', () => {
     const state = gameOverState({
       blackHand: [createTestCard()],
       whiteHand: [createTestCard()],
     });
 
-    expect(getGameOverWinner(state)).toBeUndefined();
+    expect(findGameOverWinner(state)).toBeUndefined();
   });
 
   it('both hands empty at once go to the holder of initiative', () => {
@@ -90,7 +90,7 @@ describe('getGameOverWinner function', () => {
       whiteHand: [],
     });
 
-    expect(getGameOverWinner(state)).toBe('white');
+    expect(findGameOverWinner(state)).toBe('white');
   });
 
   it('black wins on an empty white hand before black pays a rout of 99', () => {
@@ -100,7 +100,7 @@ describe('getGameOverWinner function', () => {
       whiteHand: [],
     });
 
-    expect(getGameOverWinner(state)).toBe('black');
+    expect(findGameOverWinner(state)).toBe('black');
   });
 
   it('white wins when the black army is destroyed, however many cards black holds', () => {
@@ -116,7 +116,7 @@ describe('getGameOverWinner function', () => {
     const board = addUnitToBoard(handsOnly.boardState, survivor);
     const state = updateBoardState(handsOnly, board);
 
-    expect(getGameOverWinner(state)).toBe('white');
+    expect(findGameOverWinner(state)).toBe('white');
   });
 
   it('black wins when white cannot pay a rout of 2', () => {
@@ -126,6 +126,6 @@ describe('getGameOverWinner function', () => {
       whiteHand: [createTestCard()],
     });
 
-    expect(getGameOverWinner(state)).toBe('black');
+    expect(findGameOverWinner(state)).toBe('black');
   });
 });

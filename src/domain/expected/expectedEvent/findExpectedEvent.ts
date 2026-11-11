@@ -2,7 +2,7 @@ import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
 import {
   getCurrentPhaseState,
-  getGameOverWinner,
+  findGameOverWinner,
   isChoosingCardsInSecret,
 } from '@queries';
 import {
@@ -41,7 +41,7 @@ export function findExpectedEvent(
   // between the two choices would let the one that arrived first lose.
   const gameOverWinner = isChoosingCardsInSecret(state)
     ? undefined
-    : getGameOverWinner(state);
+    : findGameOverWinner(state);
   if (gameOverWinner !== undefined) {
     return {
       actionType: 'gameEffect',

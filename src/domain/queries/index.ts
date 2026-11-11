@@ -71,10 +71,10 @@ export {
 
 // Empty hand, an unpayable rout discard, or an army destroyed to the last unit.
 export {
-  getWinnerFromEmptyHands,
-  getWinnerFromUnpayableRoutDiscard,
-  getWinnerFromNoUnits,
-  getGameOverWinner,
+  findWinnerFromEmptyHands,
+  findWinnerFromUnpayableRoutDiscard,
+  findWinnerFromNoUnits,
+  findGameOverWinner,
   isChoosingCardsInSecret,
 } from './gameOver';
 

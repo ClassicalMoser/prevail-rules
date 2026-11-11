@@ -1,7 +1,7 @@
 import type { GameOverEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, GAME_OVER_EFFECT_TYPE } from '@events';
-import { getGameOverWinner } from '@queries';
+import { findGameOverWinner } from '@queries';
 
 /**
  * Generates a GameOverEvent by evaluating empty-hand and unpayable rout-discard
@@ -12,7 +12,7 @@ import { getGameOverWinner } from '@queries';
  * @throws Error if endgame conditions are not met
  */
 export function generateGameOverEvent(state: GameState): GameOverEvent {
-  const winner = getGameOverWinner(state);
+  const winner = findGameOverWinner(state);
   if (winner === undefined) {
     throw new Error('Game over is not expected for the current game state');
   }

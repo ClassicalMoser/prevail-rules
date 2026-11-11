@@ -10,7 +10,7 @@ import type { GameState } from '@game';
  * @param state - The current game state.
  * @returns Winning side, or `undefined` if the game continues.
  */
-export function getWinnerFromEmptyHands(
+export function findWinnerFromEmptyHands(
   state: GameState,
 ): PlayerSide | undefined {
   const whiteEmpty = state.cardState.white.inHand.length === 0;

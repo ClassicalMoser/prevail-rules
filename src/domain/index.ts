@@ -438,10 +438,10 @@ export {
 } from '@queries';
 export {
   calculateInitiative,
-  getGameOverWinner,
+  findGameOverWinner,
   isChoosingCardsInSecret,
-  getWinnerFromEmptyHands,
-  getWinnerFromUnpayableRoutDiscard,
+  findWinnerFromEmptyHands,
+  findWinnerFromUnpayableRoutDiscard,
   getFrontSpaces,
   findRearwardSpace,
   getSingleUnitWithPlacementAtCoordinate,
