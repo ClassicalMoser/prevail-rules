@@ -5,7 +5,6 @@ import {
   createMovementResolutionState,
   createTestUnit,
   createUnitWithPlacement,
-  placed,
 } from '@testing';
 import {
   addCommanderToBoard,
@@ -16,7 +15,7 @@ import {
 
 import { applyCompleteUnitMovementEvent } from './applyCompleteUnitMovementEvent';
 
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 /**
  * After path + engagement finish, completeUnitMovement clears CRS and either
  * waits for the next moveUnit or advances the issue-commands step.
@@ -31,8 +30,13 @@ describe('applyCompleteUnitMovementEvent function', () => {
     const state = createEmptyGameState('standard');
     const leftover = createTestUnit('black', { attack: 2 });
     const movement = createMovementResolutionState(state);
-    const full: GameState = updatePhaseState(
+    // The mover stands where it started, E-5, and goes to E-6.
+    const withMover = updateBoardState(
       state,
+      addUnitToBoard(state.boardState, movement.movingUnit),
+    );
+    const full: GameState = updatePhaseState(
+      withMover,
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: movement,
         remainingUnitsFirstPlayer: [leftover],
@@ -50,9 +54,14 @@ describe('applyCompleteUnitMovementEvent function', () => {
   it('advances to secondPlayerIssueCommands when first player has no remaining units', () => {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state);
-    const full: GameState = updatePhaseState(
+    // The mover stands where it started, E-5, and goes to E-6.
+    const withMover = updateBoardState(
       state,
-      createIssueCommandsPhaseState(state, {
+      addUnitToBoard(state.boardState, movement.movingUnit),
+    );
+    const full: GameState = updatePhaseState(
+      withMover,
+      createIssueCommandsPhaseState(withMover, {
         currentCommandResolutionState: movement,
         remainingUnitsFirstPlayer: [],
         step: 'firstPlayerResolveCommands',
@@ -65,20 +74,11 @@ describe('applyCompleteUnitMovementEvent function', () => {
     expect(phase.step).toBe('secondPlayerIssueCommands');
   });
 
-  it('places the mover onto the target when it was held off-board for engagement', () => {
-    const defender = createUnitWithPlacement({
-      coordinate: 'E-6',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const mover = createTestUnit('black', { attack: 2 });
-    let state = createEmptyGameState('standard');
-    state = updateBoardState(state, addUnitToBoard(state.boardState, defender));
-    const movement = createMovementResolutionState(state, {
-      movingUnit: placed(mover, 'E-6', 'north'),
-      targetPlacement: createUnitPlacement('E-6', 'north'),
-    });
-    state = updatePhaseState(
+  it('throws when the mover is nowhere on the board, since there is no unit to finish the move', () => {
+    // The move was written to E-6, but the mover stands on no space at all.
+    const state = createEmptyGameState('standard');
+    const movement = createMovementResolutionState(state);
+    const full: GameState = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: movement,
@@ -87,13 +87,11 @@ describe('applyCompleteUnitMovementEvent function', () => {
       }),
     );
 
-    const next = applyCompleteUnitMovementEvent(event, state);
-
-    expect(next.boardState.board['E-6']?.unitPresence).toMatchObject({
-      presenceType: 'engaged',
-      primaryUnit: defender.unit,
-      secondaryUnit: mover,
-    });
+    // A move finishes the unit that made it; setting one down from nowhere
+    // would hide whatever took it off the board.
+    expect(() => applyCompleteUnitMovementEvent(event, full)).toThrow(
+      'The moving unit is not on the board',
+    );
   });
 
   it('moves a unit that is still on its starting hex onto the enemy target', () => {
