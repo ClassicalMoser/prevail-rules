@@ -612,7 +612,6 @@ export {
   eachUnitPresentOnce,
   getLegalPlayerChoiceOptions,
   type LegalPlayerChoiceOptions,
-  isValidChooseMeleeResolutionEvent,
   validatePlayerChoice,
 } from '@validation';
 export {
