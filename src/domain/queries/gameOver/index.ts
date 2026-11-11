@@ -8,5 +8,8 @@ export { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutD
 // An army destroyed to the last unit, however many cards its player holds.
 export { getWinnerFromNoUnits } from './getWinnerFromNoUnits';
 
+// Whether the cards are still being chosen face down, before the reveal.
+export { isChoosingCardsInSecret } from './isChoosingCardsInSecret';
+
 // Empty hand first, then the unpayable rout discard, then the destroyed army.
 export { getGameOverWinner } from './getGameOverWinner';

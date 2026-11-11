@@ -1,6 +1,10 @@
 import type { ExpectedEvent, ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import { getCurrentPhaseState, getGameOverWinner } from '@queries';
+import {
+  getCurrentPhaseState,
+  getGameOverWinner,
+  isChoosingCardsInSecret,
+} from '@queries';
 import {
   getExpectedCleanupPhaseEvent,
   getExpectedIssueCommandsPhaseEvent,
@@ -13,8 +17,9 @@ import {
 /**
  * Dispatcher function to identify which event to expect next.
  *
- * Opens with endgame checks (empty hand / unpayable rout discard). When the
- * game is already finished (`winner` set), throws. Otherwise routes by phase.
+ * Opens with endgame checks (empty hand / unpayable rout discard), which wait
+ * while the cards are still being chosen face down (§4.1.1). When the game is
+ * already finished (`winner` set), throws. Otherwise routes by phase.
  * Optional commit discards are never treated as forced costs.
  *
  * @param state - The game state, only argument required.
@@ -28,7 +33,12 @@ export function getExpectedEvent(state: GameState): ExpectedEvent {
     throw new Error('Game is already over');
   }
 
-  const gameOverWinner = getGameOverWinner(state);
+  // The cards are chosen at the same time and revealed together (§4.1.1,
+  // §4.1.2), so a hand emptied by choosing is judged at the reveal. Judging
+  // between the two choices would let the one that arrived first lose.
+  const gameOverWinner = isChoosingCardsInSecret(state)
+    ? undefined
+    : getGameOverWinner(state);
   if (gameOverWinner !== undefined) {
     return {
       actionType: 'gameEffect',

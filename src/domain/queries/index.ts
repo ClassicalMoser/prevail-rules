@@ -71,6 +71,7 @@ export {
   getWinnerFromUnpayableRoutDiscard,
   getWinnerFromNoUnits,
   getGameOverWinner,
+  isChoosingCardsInSecret,
 } from './gameOver';
 
 // Command lines present on the board from a unit.

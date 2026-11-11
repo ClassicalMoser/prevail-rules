@@ -434,6 +434,7 @@ export {
 export {
   calculateInitiative,
   getGameOverWinner,
+  isChoosingCardsInSecret,
   getWinnerFromEmptyHands,
   getWinnerFromUnpayableRoutDiscard,
   getFrontSpaces,
