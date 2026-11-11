@@ -32,15 +32,22 @@ describe('getLegalIssueCommands function', () => {
     });
   });
 
-  it('returns null when not in an issue-commands step', () => {
+  it('throws outside the issue commands phase', () => {
+    // The players are still choosing their cards.
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalIssueCommands(state)).toBeNull();
+
+    // Nothing asks for an order then, so being asked is the caller's mistake.
+    expect(() => getLegalIssueCommands(state)).toThrow(
+      'Expected issueCommands phase, got playCards',
+    );
   });
 
-  it('returns null when remaining commands are empty', () => {
+  it('throws when the player has no orders left to issue', () => {
+    // Black has issued every order; the step should already have moved on to
+    // resolving them.
     const state = updatePhaseState(
       createEmptyGameState('standard'),
       createIssueCommandsPhaseState(createEmptyGameState('standard'), {
@@ -48,6 +55,9 @@ describe('getLegalIssueCommands function', () => {
         step: 'firstPlayerIssueCommands',
       }),
     );
-    expect(getLegalIssueCommands(state)).toBeNull();
+
+    expect(() => getLegalIssueCommands(state)).toThrow(
+      'black has no orders left to issue',
+    );
   });
 });

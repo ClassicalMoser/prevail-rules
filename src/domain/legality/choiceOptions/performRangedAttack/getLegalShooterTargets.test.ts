@@ -76,7 +76,7 @@ describe('getLegalShooterTargets function', () => {
     expect(legal?.shooter).toStrictEqual(shooter);
   });
 
-  it('offers no targets until the shooter has committed or refused', () => {
+  it('throws when asked for targets before the shooter has committed or refused', () => {
     const ready = blackShooting();
     const start = applyEffectsUntilChoice(ready);
     if (start.next === 'gameOver') {
@@ -95,6 +95,10 @@ describe('getLegalShooterTargets function', () => {
       start.state,
     );
 
-    expect(getLegalShooterTargets(named)).toBeNull();
+    // Nothing asks for a target until then, so being asked is the caller's
+    // mistake.
+    expect(() => getLegalShooterTargets(named)).toThrow(
+      'The shooter has not yet committed or refused a card',
+    );
   });
 });
