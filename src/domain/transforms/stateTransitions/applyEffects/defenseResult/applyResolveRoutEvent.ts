@@ -20,11 +20,8 @@ export function applyResolveRoutEvent<S extends GameState>(
   event: ResolveRoutEvent,
   state: S,
 ): S {
-  const routedUnit = event.unitInstances[0];
-  if (routedUnit === undefined) {
-    throw new Error('Rout resolution requires at least one unit instance');
-  }
-  const currentRoutState = getRoutState(state, routedUnit.playerSide);
+  // The player who pays names the rout.
+  const currentRoutState = getRoutState(state, event.player);
 
   // A zero penalty has nothing to choose, so the rout finishes here.
   const closesWithoutDiscard = event.penalty === 0;

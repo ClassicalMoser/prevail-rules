@@ -153,7 +153,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        unitInstances: [routState.unitsToRout[0]],
+        player: routState.player,
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -178,7 +178,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 0,
-        unitInstances: [routState.unitsToRout[0]],
+        player: routState.player,
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -205,7 +205,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 3,
-        unitInstances: [routState.unitsToRout[0]],
+        player: routState.player,
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -236,7 +236,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        unitInstances: [routState.unitsToRout[0]],
+        player: routState.player,
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -261,7 +261,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 1,
-        unitInstances: [routState.unitsToRout[0]],
+        player: routState.player,
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -302,7 +302,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        unitInstances: [routedUnit],
+        player: routedUnit.playerSide,
       };
 
       const newState = applyResolveRoutEvent(event, stateWithRally);
@@ -354,7 +354,7 @@ describe('applyResolveRoutEvent function', () => {
           (sum: number, u) => sum + u.unitType.morale,
           0,
         ),
-        unitInstances: rout.unitsToRout,
+        player: rout.player,
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -392,7 +392,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 0,
-        unitInstances: [createTestUnit('white', { attack: 2 })],
+        player: 'white',
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -417,7 +417,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        unitInstances: [routState.unitsToRout[0]],
+        player: routState.player,
       };
 
       applyResolveRoutEvent(event, state);
@@ -427,23 +427,6 @@ describe('applyResolveRoutEvent function', () => {
   });
 
   describe('errors', () => {
-    it('throws when the event names no routed unit', () => {
-      const state = createStateWithMeleeRout('black');
-
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 2,
-        unitInstances: [],
-      };
-
-      // The routed units are what name their owner, and the owner is what
-      // finds the rout, so an event without one cannot be applied anywhere.
-      expect(() => applyResolveRoutEvent(event, state)).toThrow(
-        'Rout resolution requires at least one unit instance',
-      );
-    });
-
     it('throws when the ranged apply owes a rout that was never opened', () => {
       const state = updateCurrentInitiative(
         createEmptyGameState('standard'),
@@ -465,7 +448,7 @@ describe('applyResolveRoutEvent function', () => {
         effectType: 'resolveRout',
         eventType: 'gameEffect',
         penalty: 2,
-        unitInstances: [unit],
+        player: unit.playerSide,
       };
 
       expect(() => applyResolveRoutEvent(event, stateWithoutRout)).toThrow(

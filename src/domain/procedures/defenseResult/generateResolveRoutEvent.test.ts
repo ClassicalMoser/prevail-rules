@@ -53,7 +53,7 @@ describe('generateResolveRoutEvent function', () => {
     const event = generateResolveRoutEvent(full);
     expect(event.effectType).toBe('resolveRout');
     expect(event.penalty).toBe(defendingUnit.unitType.morale);
-    expect(event.unitInstances).toContain(defendingUnit);
+    expect(event.player).toBe(defendingUnit.playerSide);
   });
 
   it('with both melee sides awaiting their penalty, answers the initiative player’s', () => {
@@ -81,7 +81,7 @@ describe('generateResolveRoutEvent function', () => {
     const full = updatePhaseState(s, phase);
 
     const event = generateResolveRoutEvent(full);
-    expect(event.unitInstances).toContain(blackUnit);
+    expect(event.player).toBe(blackUnit.playerSide);
     expect(event.penalty).toBe(blackUnit.unitType.morale);
   });
 
@@ -119,7 +119,7 @@ describe('generateResolveRoutEvent function', () => {
     );
 
     const event = generateResolveRoutEvent(full);
-    expect(event.unitInstances).toContain(whiteUnit);
+    expect(event.player).toBe(whiteUnit.playerSide);
   });
 
   it('resolves the rout of the units a rally could not cover', () => {
@@ -150,7 +150,7 @@ describe('generateResolveRoutEvent function', () => {
     );
 
     const event = generateResolveRoutEvent(full);
-    expect(event.unitInstances).toContain(unit);
+    expect(event.player).toBe(unit.playerSide);
   });
 
   it('throws when the command being resolved holds no rout', () => {

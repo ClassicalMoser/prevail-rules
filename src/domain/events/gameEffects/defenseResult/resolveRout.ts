@@ -2,12 +2,13 @@
  * Resolve-rout effect: works out what the routing player owes and drives the
  * rout substep (§9.3).
  *
- * The event names the routed units; their owner names the rout, so applying it
- * needs nothing about where the rout sits.
+ * The event names the player who pays; the player names the rout, so applying it
+ * needs nothing about where the rout sits. The routed units are the rout's own,
+ * recorded when it opened.
  */
-import type { UnitInstance } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitInstanceSchema } from '@entities';
+import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 
 import { z } from 'zod';
@@ -23,8 +24,8 @@ export interface ResolveRoutEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_ROUT_EFFECT_TYPE;
-  /** The unit instances that are being routed. */
-  unitInstances: UnitInstance[];
+  /** The player whose units routed, who pays the penalty (§9.3.2). */
+  player: PlayerSide;
   /** The penalty for routing the units (sum of all units' rout penalties). */
   penalty: number;
 }
@@ -35,8 +36,8 @@ const _resolveRoutEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
-    /** The unit instances that are being routed. */
-    unitInstances: z.array(unitInstanceSchema),
+    /** The player whose units routed, who pays the penalty. */
+    player: playerSideSchema,
     /** The penalty for routing the units (sum of all units' rout penalties). */
     penalty: z.number(),
   })
@@ -53,6 +54,6 @@ const _assertExactResolveRoutEvent: AssertExact<
 export const resolveRoutEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRout'>;
-  unitInstances: z.ZodArray<typeof unitInstanceSchema>;
+  player: typeof playerSideSchema;
   penalty: z.ZodNumber;
 }> = _resolveRoutEventSchemaObject;

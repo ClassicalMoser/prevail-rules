@@ -31,6 +31,6 @@ export function generateResolveRoutEvent(state: GameState): ResolveRoutEvent {
     effectType: RESOLVE_ROUT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     penalty: totalPenalty,
-    unitInstances: routState.unitsToRout,
+    player: routState.player,
   };
 }
