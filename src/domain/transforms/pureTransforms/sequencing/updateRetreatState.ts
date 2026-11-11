@@ -1,17 +1,14 @@
 import type { GameState, RetreatState } from '@game';
 import {
+  getAttackApplyStateOfPlayer,
   getCurrentPhaseState,
   getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
-  getMeleeResolutionState,
-  getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
-  hasInitiative,
   isOpenSubstep,
 } from '@queries';
 import { throwIfPending } from '@utils';
+import { updateAttackApplyState } from './updateAttackApplyState';
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
-import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the retreat state updated.
@@ -29,76 +26,44 @@ export function updateRetreatState<S extends GameState>(
   retreatState: RetreatState,
 ): S {
   const phaseState = getCurrentPhaseState(state);
+  if (
+    phaseState.phase !== 'issueCommands' &&
+    phaseState.phase !== 'resolveMelee'
+  ) {
+    throw new Error(
+      `Retreat state update not expected in phase: ${phaseState.phase}`,
+    );
+  }
 
+  // A front engagement from a movement holds its own retreat.
   if (phaseState.phase === 'issueCommands') {
-    const issueState = getIssueCommandsPhaseState(state);
     const commandState = throwIfPending(
-      issueState.currentCommandResolutionState,
+      getIssueCommandsPhaseState(state).currentCommandResolutionState,
       'No command resolution state found',
     );
-
-    if (commandState.commandResolutionType === 'rangedAttack') {
-      const ranged = getRangedAttackResolutionState(state);
-      const attackApply = throwIfPending(
-        ranged.attackApplyState,
-        'No attack apply state found',
-      );
-      // 'bypassed' is a retreat this attack will never resolve.
-      if (!isOpenSubstep(attackApply.retreatState)) {
-        throw new Error('No retreat state found in attack apply state');
+    if (commandState.commandResolutionType === 'movement') {
+      const engagement = getFrontEngagementStateFromMovement(state);
+      if (engagement.engagementResolutionState.retreatState === 'pending') {
+        throw new Error('No retreat state found in front engagement');
       }
-      return updatePhaseState(state, {
-        ...issueState,
-        currentCommandResolutionState: {
-          ...ranged,
-          attackApplyState: { ...attackApply, retreatState },
+      return updateEngagementStateInMovement(state, {
+        ...engagement,
+        engagementResolutionState: {
+          ...engagement.engagementResolutionState,
+          retreatState,
         },
       });
     }
-
-    // movement CRS
-    const engagement = getFrontEngagementStateFromMovement(state);
-    if (engagement.engagementResolutionState.retreatState === 'pending') {
-      throw new Error('No retreat state found in front engagement');
-    }
-    return updateEngagementStateInMovement(state, {
-      ...engagement,
-      engagementResolutionState: {
-        ...engagement.engagementResolutionState,
-        retreatState,
-      },
-    });
   }
 
-  if (phaseState.phase === 'resolveMelee') {
-    const resolveMelee = getResolveMeleePhaseState(state);
-    const melee = getMeleeResolutionState(state);
-    const player = retreatState.retreatingUnit.unit.playerSide;
-
-    // The slots are named for whose unit holds the result, so the owner
-    // picks the slot.
-    const isFirstPlayer = hasInitiative(state, player);
-    const apply = throwIfPending(
-      isFirstPlayer
-        ? melee.firstPlayerAttackApplyState
-        : melee.secondPlayerAttackApplyState,
-      `No ${player} attack apply state found`,
-    );
-    if (!isOpenSubstep(apply.retreatState)) {
-      throw new Error('No retreat state found in attack apply state');
-    }
-    return updatePhaseState(state, {
-      ...resolveMelee,
-      currentMeleeResolutionState: {
-        ...melee,
-        ...(isFirstPlayer
-          ? { firstPlayerAttackApplyState: { ...apply, retreatState } }
-          : { secondPlayerAttackApplyState: { ...apply, retreatState } }),
-      },
-    });
-  }
-
-  throw new Error(
-    `Retreat state update not expected in phase: ${phaseState.phase}`,
+  // Otherwise it sits on the apply of the attack that forced it.
+  const apply = getAttackApplyStateOfPlayer(
+    state,
+    retreatState.retreatingUnit.unit.playerSide,
   );
+  // 'bypassed' is a retreat this attack will never resolve.
+  if (!isOpenSubstep(apply.retreatState)) {
+    throw new Error('No retreat state found in attack apply state');
+  }
+  return updateAttackApplyState(state, { ...apply, retreatState });
 }

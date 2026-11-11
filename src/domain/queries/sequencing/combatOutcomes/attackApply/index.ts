@@ -8,6 +8,9 @@ export { getRangedAttackApplyState } from './getRangedAttackApplyState';
 export { getAttackApplyStateAt } from './getAttackApplyStateAt';
 export type { AttackApplyLocation } from './getAttackApplyStateAt';
 
+// The attack-apply holding a player's unit, in whichever attack is resolving.
+export { getAttackApplyStateOfPlayer } from './getAttackApplyStateOfPlayer';
+
 // Attack-apply for one side of the current melee.
 export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 

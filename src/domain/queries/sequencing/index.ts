@@ -90,6 +90,7 @@ export { getRangedAttackApplyState } from './combatOutcomes';
 
 // The attack-apply a resolution context names.
 export { getAttackApplyStateAt } from './combatOutcomes';
+export { getAttackApplyStateOfPlayer } from './combatOutcomes';
 export type { AttackApplyLocation } from './combatOutcomes';
 
 // Attack-apply for one side of the current melee.

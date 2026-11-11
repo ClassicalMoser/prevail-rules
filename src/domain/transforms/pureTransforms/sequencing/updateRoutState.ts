@@ -1,22 +1,20 @@
 import type { GameState, RoutState } from '@game';
 import {
   findRoutLocation,
-  getRallyingPlayer,
+  getAttackApplyStateOfPlayer,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   getIssueCommandsPhaseState,
-  getMeleeResolutionState,
   getNextStepForResolveRally,
-  getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
-  hasInitiative,
+  getRallyingPlayer,
   isOpenSubstep,
 } from '@queries';
 import { throwIfPending } from '@utils';
-import { updateRetreatRoutState } from './updateRetreatRoutState';
+import { updateAttackApplyState } from './updateAttackApplyState';
 import { updateCleanupStep } from './updateCleanupStep';
+import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 import { updateRallyResolutionState } from './updateRallyResolutionState';
-import { updatePhaseState } from '../state';
+import { updateRetreatRoutState } from './updateRetreatRoutState';
 
 /**
  * Creates a new game state with the rout state updated.
@@ -47,87 +45,41 @@ export function updateRoutState<S extends GameState>(
 
   const phaseState = getCurrentPhaseState(state);
 
+  // A rear engagement from a movement holds its own rout.
   if (phaseState.phase === 'issueCommands') {
-    const issueState = getIssueCommandsPhaseState(state);
     const commandState = throwIfPending(
-      issueState.currentCommandResolutionState,
+      getIssueCommandsPhaseState(state).currentCommandResolutionState,
       'No command resolution state found',
     );
-
-    if (commandState.commandResolutionType === 'rangedAttack') {
-      const ranged = getRangedAttackResolutionState(state);
-      const attackApply = throwIfPending(
-        ranged.attackApplyState,
-        'No attack apply state found',
-      );
-      // 'bypassed' is a rout this attack will never resolve.
-      if (!isOpenSubstep(attackApply.routState)) {
-        throw new Error('No rout state found in attack apply state');
-      }
-      return updatePhaseState(state, {
-        ...issueState,
-        currentCommandResolutionState: {
-          ...ranged,
-          attackApplyState: { ...attackApply, routState },
-        },
-      });
-    }
-
     if (commandState.commandResolutionType === 'movement') {
-      const movement = commandState;
       const engagement = throwIfPending(
-        movement.engagementState,
+        commandState.engagementState,
         'No engagement state found',
       );
       const resolution = engagement.engagementResolutionState;
-      if (resolution.engagementType === 'rear') {
-        return updatePhaseState(state, {
-          ...issueState,
-          currentCommandResolutionState: {
-            ...movement,
-            engagementState: {
-              ...engagement,
-              engagementResolutionState: {
-                ...resolution,
-                routState,
-              },
-            },
-          },
-        });
+      if (resolution.engagementType !== 'rear') {
+        throw new Error(
+          'Rout state update not expected in issueCommands (command type: movement)',
+        );
       }
+      return updateEngagementStateInMovement(state, {
+        ...engagement,
+        engagementResolutionState: { ...resolution, routState },
+      });
     }
-
-    throw new Error(
-      `Rout state update not expected in issueCommands (command type: ${commandState.commandResolutionType})`,
-    );
   }
 
-  if (phaseState.phase === 'resolveMelee') {
-    const resolveMelee = getResolveMeleePhaseState(state);
-    const melee = getMeleeResolutionState(state);
-    const { player } = routState;
-
-    // The slots are named for whose unit holds the result, so the owner
-    // picks the slot.
-    const isFirstPlayer = hasInitiative(state, player);
-    const apply = throwIfPending(
-      isFirstPlayer
-        ? melee.firstPlayerAttackApplyState
-        : melee.secondPlayerAttackApplyState,
-      `No ${player} attack apply state found`,
-    );
+  // Otherwise it sits on the apply of the attack that routed the unit.
+  if (
+    phaseState.phase === 'issueCommands' ||
+    phaseState.phase === 'resolveMelee'
+  ) {
+    const apply = getAttackApplyStateOfPlayer(state, routState.player);
+    // 'bypassed' is a rout this attack will never resolve.
     if (!isOpenSubstep(apply.routState)) {
       throw new Error('No rout state found in attack apply state');
     }
-    return updatePhaseState(state, {
-      ...resolveMelee,
-      currentMeleeResolutionState: {
-        ...melee,
-        ...(isFirstPlayer
-          ? { firstPlayerAttackApplyState: { ...apply, routState } }
-          : { secondPlayerAttackApplyState: { ...apply, routState } }),
-      },
-    });
+    return updateAttackApplyState(state, { ...apply, routState });
   }
 
   if (phaseState.phase === 'cleanup') {

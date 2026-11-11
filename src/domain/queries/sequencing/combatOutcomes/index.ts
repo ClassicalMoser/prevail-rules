@@ -19,7 +19,10 @@ export { isOpenSubstep } from './isOpenSubstep';
 // Attack-apply: on the ranged attack, or on either side of a melee.
 export { getRangedAttackApplyState } from './attackApply';
 export { getMeleeAttackApplyState } from './attackApply';
-export { getAttackApplyStateAt } from './attackApply';
+export {
+  getAttackApplyStateAt,
+  getAttackApplyStateOfPlayer,
+} from './attackApply';
 export type { AttackApplyLocation } from './attackApply';
 export {
   findNextMeleeAttackApplyToClose,

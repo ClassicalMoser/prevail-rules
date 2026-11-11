@@ -137,6 +137,7 @@ export {
   isOpenSubstep,
   getRangedAttackApplyState,
   getAttackApplyStateAt,
+  getAttackApplyStateOfPlayer,
   getMeleeAttackApplyState,
   findNextMeleeAttackApplyToClose,
   findNextMeleeDefendingPlayer,
