@@ -113,7 +113,6 @@ describe('attack apply outcome flow', () => {
     );
 
     const openReverse: OpenReverseFromAttackApplyEvent = {
-      attackResolutionContext: 'rangedAttack',
       effectType: 'openReverseFromAttackApply',
       eventType: 'gameEffect',
     };

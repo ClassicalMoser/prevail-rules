@@ -4,16 +4,9 @@ import type { AttackApplyState, GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from '@events';
 import { getLegalRetreats } from '@legality';
-import {
-  getMeleeAppliesInResolutionOrder,
-  getMeleeResolutionState,
-  getRangedAttackApplyState,
-  getCurrentPhaseState,
-  getPositionOfUnit,
-} from '@queries';
+import { getAttackApplyAwaitingOpen, getPositionOfUnit } from '@queries';
 
 /**
  * The retreats the apply's defender may make from where it stands now
@@ -37,55 +30,22 @@ function retreatPathsFor(
 }
 
 /**
- * Builds the open-retreat-from-attack-apply effect with explicit resolution
- * context so apply does not branch on phase or probe players.
+ * Builds the open-retreat-from-attack-apply effect. The attack already measured
+ * a retreat; the apply it opens on is the state's to name, and this records the
+ * retreats that apply's defender may make, so the log shows what was legal.
  *
- * The attack already measured a retreat; this finds the apply whose retreat
- * slot is still pending, names where that apply lives, and records the
- * retreats its defender may make, so the log shows what was legal.
+ * @param state - A shot or a melee with a retreat waiting to open
+ * @returns The event, carrying each legal retreat as its path
+ * @throws Error when no retreat is waiting to open
  */
 export function generateOpenRetreatFromAttackApplyEvent(
   state: GameState,
 ): OpenRetreatFromAttackApplyEvent {
-  const phaseState = getCurrentPhaseState(state);
-
-  if (phaseState.phase === 'issueCommands') {
-    const apply = getRangedAttackApplyState(state);
-    // A retreat opens only while its slot is still waiting to be written.
-    if (apply.retreatState !== 'pending') {
-      throw new Error('Retreat is not pending on the ranged attack apply');
-    }
-    return {
-      attackResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
-      effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventType: GAME_EFFECT_EVENT_TYPE,
-      retreatPaths: retreatPathsFor(state, apply),
-    };
-  }
-
-  if (phaseState.phase === 'resolveMelee') {
-    // The first retreat still waiting to open, in the order results take
-    // effect: the first player's blow lands first, so the second player's
-    // unit comes first (§7.5.6).
-    const meleeState = getMeleeResolutionState(state);
-    const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
-    const apply = appliesInOrder.find(
-      (candidate) => candidate.retreatState === 'pending',
-    );
-    if (apply === undefined) {
-      throw new Error('No pending retreat on either melee attack apply');
-    }
-    const event: OpenRetreatFromAttackApplyEvent = {
-      attackResolutionContext: 'melee',
-      defendingPlayer: apply.defendingUnit.playerSide,
-      effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventType: GAME_EFFECT_EVENT_TYPE,
-      retreatPaths: retreatPathsFor(state, apply),
-    };
-    return event;
-  }
-
-  throw new Error(
-    `Attack-apply retreat open not expected in phase: ${phaseState.phase}`,
-  );
+  const apply = getAttackApplyAwaitingOpen(state, 'retreat');
+  const event: OpenRetreatFromAttackApplyEvent = {
+    effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
+    eventType: GAME_EFFECT_EVENT_TYPE,
+    retreatPaths: retreatPathsFor(state, apply),
+  };
+  return event;
 }

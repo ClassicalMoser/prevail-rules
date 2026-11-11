@@ -52,7 +52,6 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     retreatPaths: MoveDelta[][],
   ): OpenRetreatFromAttackApplyEvent {
     const event: OpenRetreatFromAttackApplyEvent = {
-      attackResolutionContext: 'rangedAttack',
       effectType: 'openRetreatFromAttackApply',
       eventType: 'gameEffect',
       retreatPaths,

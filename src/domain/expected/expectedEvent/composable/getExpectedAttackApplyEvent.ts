@@ -1,6 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { AttackApplyState } from '@game';
-import { attackApplyStages } from './attackApplyStages';
+import { attackApplyStages } from '@queries';
 import { findExpectedAttackApplyStageEvent } from './findExpectedAttackApplyStageEvent';
 
 /**

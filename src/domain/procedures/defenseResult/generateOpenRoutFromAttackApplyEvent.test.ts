@@ -86,19 +86,18 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
       stateWithRangedPendingRout(),
     );
     expect(event.effectType).toBe('openRoutFromAttackApply');
-    expect(event.attackResolutionContext).toBe('rangedAttack');
-    expect(event).not.toHaveProperty('defendingPlayer');
+    // Which apply it opens on is the state's to name, not the event's.
+    expect(event).toStrictEqual({
+      effectType: 'openRoutFromAttackApply',
+      eventType: 'gameEffect',
+    });
   });
 
-  it('a melee apply with a pending rout names that defending player', () => {
+  it('names the effect for a melee rout waiting to open, and carries nothing', () => {
     const event = generateOpenRoutFromAttackApplyEvent(
       stateWithMeleePendingRout('black'),
     );
     expect(event.effectType).toBe('openRoutFromAttackApply');
-    expect(event.attackResolutionContext).toBe('melee');
-    if (event.attackResolutionContext === 'melee') {
-      expect(event.defendingPlayer).toBe('black');
-    }
   });
 
   it('throws when the phase is not holding an attack apply', () => {

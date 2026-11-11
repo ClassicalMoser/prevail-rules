@@ -167,8 +167,6 @@ export {
   gameEffectEventSchema,
   gameEffects,
   gameEffectTypeSchema,
-  MELEE_ATTACK_RESOLUTION_CONTEXT,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
   OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
@@ -232,7 +230,6 @@ export {
   setupUnitsEventSchema,
 } from '@events';
 export type {
-  AttackResolutionContext,
   CompleteAttackApplyEvent,
   RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
@@ -496,7 +493,8 @@ export {
   isAwaitingRoutDiscard,
   getRetreatState,
   getRoutState,
-  getAttackApplyStateAt,
+  attackApplyStages,
+  getAttackApplyAwaitingOpen,
   getMeleeAttackApplyState,
   getRangedAttackApplyState,
   getCleanupPhaseState,

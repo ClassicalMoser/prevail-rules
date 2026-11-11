@@ -52,7 +52,6 @@ describe('generateOpenRetreatFromAttackApplyEvent function', () => {
       stateWithRangedPendingRetreat(),
     );
     expect(event.effectType).toBe('openRetreatFromAttackApply');
-    expect(event.attackResolutionContext).toBe('rangedAttack');
   });
 
   it('records the one retreat open to a unit with room behind it', () => {

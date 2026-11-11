@@ -10,8 +10,7 @@ import { getRangedAttackApplyState } from './getRangedAttackApplyState';
  * side.
  *
  * This is the reading for a caller that knows the player and not the kind of
- * attack, as the writers of a retreat, a reverse and a rout do; an event that
- * names its context uses `getAttackApplyStateAt`.
+ * attack, as the writers of a retreat, a reverse and a rout do.
  *
  * @param state - The game state, resolving an attack
  * @param player - The player whose unit the apply is about

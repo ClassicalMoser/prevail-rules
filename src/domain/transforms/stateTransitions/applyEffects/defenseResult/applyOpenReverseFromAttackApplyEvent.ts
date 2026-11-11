@@ -1,7 +1,7 @@
 import type { OpenReverseFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createOpenedReverseState } from '@factories';
-import { getAttackApplyStateAt } from '@queries';
+import { getAttackApplyAwaitingOpen } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
 
 /**
@@ -12,20 +12,16 @@ import { updateAttackApplyState } from '@transforms/pureTransforms';
  * step's turn comes. The unit is held by identity — its square is read from
  * the board when the reverse resolves, after any retreat has moved it.
  *
- * @param event - Resolution context from the procedure (trusted log payload)
+ * @param _event - The effect; which apply it opens on is the state's to name
  * @param state - The current game state
  * @returns A new game state with the reverse written on the named attack apply
  */
 export function applyOpenReverseFromAttackApplyEvent<S extends GameState>(
-  event: OpenReverseFromAttackApplyEvent,
+  _event: OpenReverseFromAttackApplyEvent,
   state: S,
 ): S {
-  const apply = getAttackApplyStateAt(state, event);
-
-  // A reverse opens only from a pending slot — already open or bypassed is wrong.
-  if (apply.reverseState !== 'pending') {
-    throw new Error('Reverse is not pending on this attack apply');
-  }
+  // The apply whose reverse opens next, in the order results take effect.
+  const apply = getAttackApplyAwaitingOpen(state, 'reverse');
 
   // The reverse holds the unit by identity; position is read when it resolves.
   const reverseState = createOpenedReverseState(apply.defendingUnit);

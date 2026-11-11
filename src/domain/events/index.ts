@@ -45,14 +45,12 @@ export {
   gameEffectEventSchema,
   gameEffects,
   gameEffectTypeSchema,
-  MELEE_ATTACK_RESOLUTION_CONTEXT,
   OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
   OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
   OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
   openRetreatFromAttackApplyEventSchema,
   openReverseFromAttackApplyEventSchema,
   openRoutFromAttackApplyEventSchema,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
   OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
@@ -81,7 +79,6 @@ export {
   triggerRoutFromRetreatEventSchema,
 } from './gameEffects';
 export type {
-  AttackResolutionContext,
   CompleteAttackApplyEvent,
   RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,

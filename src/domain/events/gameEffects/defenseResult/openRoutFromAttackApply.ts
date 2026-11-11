@@ -1,49 +1,25 @@
-import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-import {
-  MELEE_ATTACK_RESOLUTION_CONTEXT,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
-} from './attackResolutionContext';
-
-/** The type of the open-rout-from-attack-apply game effect. */
+/** The type of the openRoutFromAttackApply game effect. */
 export const OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE =
   'openRoutFromAttackApply' as const;
 
 /**
  * Opens the rout substep on an attack apply whose rout slot is still
  * `'pending'`. The attack already measured a rout; this event writes the
- * substep when that step's turn comes.
- *
- * Procedure sets the branch; apply trusts it.
+ * substep when that step's turn comes. It carries nothing: which apply opens
+ * is the state's to name (`getAttackApplyAwaitingOpen`).
  */
-export type OpenRoutFromAttackApplyEvent =
-  | {
-      /** The type of the event. */
-      eventType: typeof GAME_EFFECT_EVENT_TYPE;
-      /** The type of game effect. */
-      effectType: typeof OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE;
-      /** The apply lives under ranged attack resolution. */
-      attackResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
-    }
-  | {
-      /** The type of the event. */
-      eventType: typeof GAME_EFFECT_EVENT_TYPE;
-      /** The type of game effect. */
-      effectType: typeof OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE;
-      /** The apply lives under this player's melee attack-apply. */
-      attackResolutionContext: typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
-      /** The defending player whose apply still has a pending rout. */
-      defendingPlayer: PlayerSide;
-    };
+export interface OpenRoutFromAttackApplyEvent {
+  /** The type of the event. */
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE;
+}
 
-const _openRoutFromAttackApplySharedFieldsSchemaObject: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE>;
-}> = z
+const _openRoutFromAttackApplyEventSchemaObject = z
   .object({
     /** The type of the event. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
@@ -52,58 +28,17 @@ const _openRoutFromAttackApplySharedFieldsSchemaObject: z.ZodObject<{
   })
   .strict();
 
-const _openRoutFromAttackApplyRangedAttackSchemaObject: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE>;
-  attackResolutionContext: z.ZodLiteral<
-    typeof RANGED_ATTACK_RESOLUTION_CONTEXT
-  >;
-}> = _openRoutFromAttackApplySharedFieldsSchemaObject.merge(
-  z
-    .object({
-      /** Ranged attack resolution path. */
-      attackResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
-    })
-    .strict(),
-);
-
-const _openRoutFromAttackApplyMeleeSchemaObject: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE>;
-  attackResolutionContext: z.ZodLiteral<typeof MELEE_ATTACK_RESOLUTION_CONTEXT>;
-  defendingPlayer: typeof playerSideSchema;
-}> = _openRoutFromAttackApplySharedFieldsSchemaObject.merge(
-  z
-    .object({
-      /** Melee resolution path. */
-      attackResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
-      /** The defending player whose apply still has a pending rout. */
-      defendingPlayer: playerSideSchema,
-    })
-    .strict(),
-);
-
-/** Branches share `effectType`; nested discrimination uses `attackResolutionContext`. */
-const _openRoutFromAttackApplyEventSchemaObject: z.ZodDiscriminatedUnion<
-  [
-    typeof _openRoutFromAttackApplyRangedAttackSchemaObject,
-    typeof _openRoutFromAttackApplyMeleeSchemaObject,
-  ],
-  'attackResolutionContext'
-> = z.discriminatedUnion('attackResolutionContext', [
-  _openRoutFromAttackApplyRangedAttackSchemaObject,
-  _openRoutFromAttackApplyMeleeSchemaObject,
-]);
-
 type OpenRoutFromAttackApplyEventSchemaType = z.infer<
   typeof _openRoutFromAttackApplyEventSchemaObject
 >;
-
-/** The schema for an open-rout-from-attack-apply event. */
-export const openRoutFromAttackApplyEventSchema: typeof _openRoutFromAttackApplyEventSchemaObject =
-  _openRoutFromAttackApplyEventSchemaObject;
 
 const _assertExactOpenRoutFromAttackApplyEvent: AssertExact<
   OpenRoutFromAttackApplyEvent,
   OpenRoutFromAttackApplyEventSchemaType
 > = true;
+
+/** The schema for an openRoutFromAttackApply event. */
+export const openRoutFromAttackApplyEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'openRoutFromAttackApply'>;
+}> = _openRoutFromAttackApplyEventSchemaObject;

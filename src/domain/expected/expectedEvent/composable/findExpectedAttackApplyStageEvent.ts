@@ -1,6 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { AttackApplyState } from '@game';
-import type { AttackApplyStage } from './attackApplyStages';
+import type { AttackApplyStage } from '@queries';
 import { isOpenSubstep } from '@queries';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedReverseEvent } from './getExpectedReverseEvent';

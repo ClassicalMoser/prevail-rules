@@ -1,4 +1,3 @@
-import type { AttackResolutionContext } from '@events';
 import type { GameState, RetreatState } from '@game';
 import { isNone, isPending } from '@utils';
 import { hasInitiative } from '@queries/player';
@@ -6,7 +5,7 @@ import { isFriendlyUnit } from '@queries/unit';
 import { isOpenSubstep } from '../isOpenSubstep';
 
 /** The parent a retreat is held by: an attack's apply, or a front engagement. */
-export type RetreatSource = AttackResolutionContext | 'frontEngagement';
+export type RetreatSource = 'rangedAttack' | 'melee' | 'frontEngagement';
 
 /**
  * A retreat and the parent holding it.

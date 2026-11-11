@@ -1,10 +1,3 @@
-// Melee or ranged: which attack this defense result belongs to.
-export {
-  MELEE_ATTACK_RESOLUTION_CONTEXT,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
-} from './attackResolutionContext';
-export type { AttackResolutionContext } from './attackResolutionContext';
-
 // Defender retreats.
 export { RESOLVE_RETREAT_EFFECT_TYPE } from './resolveRetreat';
 export type { ResolveRetreatEvent } from './resolveRetreat';

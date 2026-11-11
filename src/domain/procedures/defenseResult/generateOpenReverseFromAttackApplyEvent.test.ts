@@ -42,6 +42,5 @@ describe('generateOpenReverseFromAttackApplyEvent function', () => {
       stateWithRangedPendingReverse(),
     );
     expect(event.effectType).toBe('openReverseFromAttackApply');
-    expect(event.attackResolutionContext).toBe('rangedAttack');
   });
 });

@@ -5,8 +5,6 @@
 export { getRangedAttackApplyState } from './getRangedAttackApplyState';
 
 // The attack-apply a resolution context names, for an event that carries one.
-export { getAttackApplyStateAt } from './getAttackApplyStateAt';
-export type { AttackApplyLocation } from './getAttackApplyStateAt';
 
 // The attack-apply holding a player's unit, in whichever attack is resolving.
 export { getAttackApplyStateOfPlayer } from './getAttackApplyStateOfPlayer';
@@ -21,3 +19,10 @@ export { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClo
 export { getAttackApplyToClose } from './getAttackApplyToClose';
 
 // The defender whose melee attack-apply is still open, initiative first.
+
+// The stages an attack's results are carried out in (§7.5.2).
+export { attackApplyStages } from './attackApplyStages';
+export type { AttackApplyStage } from './attackApplyStages';
+
+// The apply whose retreat, reverse or rout opens next.
+export { getAttackApplyAwaitingOpen } from './getAttackApplyAwaitingOpen';

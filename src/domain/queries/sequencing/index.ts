@@ -89,9 +89,12 @@ export { isOpenSubstep } from './combatOutcomes';
 export { getRangedAttackApplyState } from './combatOutcomes';
 
 // The attack-apply a resolution context names.
-export { getAttackApplyStateAt } from './combatOutcomes';
+export {
+  attackApplyStages,
+  getAttackApplyAwaitingOpen,
+} from './combatOutcomes';
 export { getAttackApplyStateOfPlayer } from './combatOutcomes';
-export type { AttackApplyLocation } from './combatOutcomes';
+export type { AttackApplyStage } from './combatOutcomes';
 
 // Attack-apply for one side of the current melee.
 export { getMeleeAttackApplyState } from './combatOutcomes';

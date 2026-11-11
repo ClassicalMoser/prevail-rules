@@ -3,62 +3,28 @@ import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from '@events';
-import {
-  getMeleeAppliesInResolutionOrder,
-  getMeleeResolutionState,
-  getRangedAttackApplyState,
-  getCurrentPhaseState,
-} from '@queries';
+import { getAttackApplyAwaitingOpen } from '@queries';
 
 /**
- * Builds the open-reverse-from-attack-apply effect with explicit resolution
- * context so apply does not branch on phase or probe players.
+ * Builds the open-reverse-from-attack-apply effect. The attack already
+ * measured a reverse; the apply it opens on is the state's to name, so the event
+ * carries nothing, and asking for that apply here is the check that one is
+ * waiting.
  *
- * The attack already measured a reverse; this finds the apply whose reverse
- * slot is still pending and names where that apply lives.
+ * @param state - A shot or a melee with a reverse waiting to open
+ * @returns The event
+ * @throws Error when no reverse is waiting to open
  */
 export function generateOpenReverseFromAttackApplyEvent(
   state: GameState,
 ): OpenReverseFromAttackApplyEvent {
-  const phaseState = getCurrentPhaseState(state);
+  // A reverse must be waiting to open, or the effect is not owed.
+  getAttackApplyAwaitingOpen(state, 'reverse');
 
-  if (phaseState.phase === 'issueCommands') {
-    const apply = getRangedAttackApplyState(state);
-    // A reverse opens only while its slot is still waiting to be written.
-    if (apply.reverseState !== 'pending') {
-      throw new Error('Reverse is not pending on the ranged attack apply');
-    }
-    return {
-      attackResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
-      effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
-  }
-
-  if (phaseState.phase === 'resolveMelee') {
-    // The first reverse still waiting to open, in the order results take
-    // effect: the first player's blow lands first, so the second player's
-    // unit comes first (§7.5.6).
-    const meleeState = getMeleeResolutionState(state);
-    const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
-    const apply = appliesInOrder.find(
-      (candidate) => candidate.reverseState === 'pending',
-    );
-    if (apply === undefined) {
-      throw new Error('No pending reverse on either melee attack apply');
-    }
-    const event: OpenReverseFromAttackApplyEvent = {
-      attackResolutionContext: 'melee',
-      defendingPlayer: apply.defendingUnit.playerSide,
-      effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
-    return event;
-  }
-
-  throw new Error(
-    `Attack-apply reverse open not expected in phase: ${phaseState.phase}`,
-  );
+  const event: OpenReverseFromAttackApplyEvent = {
+    effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
+    eventType: GAME_EFFECT_EVENT_TYPE,
+  };
+  return event;
 }

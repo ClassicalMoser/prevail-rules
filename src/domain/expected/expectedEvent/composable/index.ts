@@ -1,5 +1,3 @@
-export { attackApplyStages } from './attackApplyStages';
-export type { AttackApplyStage } from './attackApplyStages';
 export { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 export { findExpectedAttackApplyStageEvent } from './findExpectedAttackApplyStageEvent';
 export { getExpectedEngagementEvent } from './getExpectedEngagementEvent';

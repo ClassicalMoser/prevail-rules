@@ -1,12 +1,12 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
 import {
+  attackApplyStages,
   findNextMeleeAttackApplyToClose,
   findPlayerOwingMeleeCommitment,
   getMeleeAppliesInResolutionOrder,
 } from '@queries';
 import {
-  attackApplyStages,
   getExpectedAttackApplyEvent,
   findExpectedAttackApplyStageEvent,
 } from '../composable';

@@ -47,8 +47,6 @@ export type {
   CompleteResolveMeleePhaseEvent,
 } from './completePhase';
 export {
-  MELEE_ATTACK_RESOLUTION_CONTEXT,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
   OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
   OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
   OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
@@ -65,7 +63,6 @@ export {
   triggerRoutFromRetreatEventSchema,
 } from './defenseResult';
 export type {
-  AttackResolutionContext,
   OpenRetreatFromAttackApplyEvent,
   OpenReverseFromAttackApplyEvent,
   OpenRoutFromAttackApplyEvent,

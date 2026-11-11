@@ -52,7 +52,6 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
   it('opens a rout listing the defending unit when the slot is pending', () => {
     const { state, defendingUnit } = stateWithPendingRout();
     const event: OpenRoutFromAttackApplyEvent = {
-      attackResolutionContext: 'rangedAttack',
       effectType: 'openRoutFromAttackApply',
       eventType: 'gameEffect',
     };
@@ -76,7 +75,6 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
   it('bypasses retreat and reverse — a routed unit leaves, so those do not happen', () => {
     const { state } = stateWithPendingRout();
     const event: OpenRoutFromAttackApplyEvent = {
-      attackResolutionContext: 'rangedAttack',
       effectType: 'openRoutFromAttackApply',
       eventType: 'gameEffect',
     };

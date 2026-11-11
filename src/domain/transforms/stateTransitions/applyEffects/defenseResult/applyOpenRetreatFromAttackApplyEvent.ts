@@ -1,7 +1,7 @@
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createOpenedRetreatState } from '@factories';
-import { getAttackApplyStateAt, getPositionOfUnit } from '@queries';
+import { getAttackApplyAwaitingOpen, getPositionOfUnit } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
 
 /**
@@ -12,7 +12,7 @@ import { updateAttackApplyState } from '@transforms/pureTransforms';
  * step's turn comes, with the legal retreats its procedure recorded on the
  * event from the board at that moment.
  *
- * @param event - Resolution context from the procedure (trusted log payload)
+ * @param event - The effect; which apply it opens on is the state's to name
  * @param state - The current game state
  * @returns A new game state with the retreat written on the named attack apply
  */
@@ -20,12 +20,8 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
   event: OpenRetreatFromAttackApplyEvent,
   state: S,
 ): S {
-  const apply = getAttackApplyStateAt(state, event);
-
-  // A retreat opens only from a pending slot — already open or bypassed is wrong.
-  if (apply.retreatState !== 'pending') {
-    throw new Error('Retreat is not pending on this attack apply');
-  }
+  // The apply whose retreat opens next, in the order results take effect.
+  const apply = getAttackApplyAwaitingOpen(state, 'retreat');
 
   // The unit's square is read from the board now, in case a prior step moved it.
   const placement = getPositionOfUnit(state.boardState, apply.defendingUnit);

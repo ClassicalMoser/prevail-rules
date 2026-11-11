@@ -140,7 +140,8 @@ export {
   getNextStepForResolveRally,
   isOpenSubstep,
   getRangedAttackApplyState,
-  getAttackApplyStateAt,
+  attackApplyStages,
+  getAttackApplyAwaitingOpen,
   getAttackApplyStateOfPlayer,
   getMeleeAttackApplyState,
   findNextMeleeAttackApplyToClose,
@@ -176,6 +177,7 @@ export type { EngagementType, FrontEngagementStage } from './engagement';
 export type {
   RetreatLocation,
   RetreatSource,
+  AttackApplyStage,
   RoutLocation,
 } from './sequencing';
 

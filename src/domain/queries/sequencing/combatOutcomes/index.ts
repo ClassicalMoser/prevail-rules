@@ -20,10 +20,11 @@ export { isOpenSubstep } from './isOpenSubstep';
 export { getRangedAttackApplyState } from './attackApply';
 export { getMeleeAttackApplyState } from './attackApply';
 export {
-  getAttackApplyStateAt,
+  attackApplyStages,
+  getAttackApplyAwaitingOpen,
   getAttackApplyStateOfPlayer,
 } from './attackApply';
-export type { AttackApplyLocation } from './attackApply';
+export type { AttackApplyStage } from './attackApply';
 export {
   findNextMeleeAttackApplyToClose,
   getAttackApplyToClose,

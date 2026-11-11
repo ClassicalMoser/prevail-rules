@@ -53,7 +53,6 @@ describe('applyOpenReverseFromAttackApplyEvent function', () => {
   it('opens a reverse holding the defending unit by identity', () => {
     const { state, defendingUnit } = stateWithPendingReverse();
     const event: OpenReverseFromAttackApplyEvent = {
-      attackResolutionContext: 'rangedAttack',
       effectType: 'openReverseFromAttackApply',
       eventType: 'gameEffect',
     };

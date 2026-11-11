@@ -1,7 +1,7 @@
 import type { OpenRoutFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createOpenedRoutState } from '@factories';
-import { getAttackApplyStateAt } from '@queries';
+import { getAttackApplyAwaitingOpen } from '@queries';
 import {
   removeUnitsLeavingUnderRout,
   updateAttackApplyState,
@@ -14,20 +14,16 @@ import {
  * turn comes. A rout supersedes retreat and reverse — the unit leaves the board
  * — so those sibling slots are written `'bypassed'` even if their thresholds fell.
  *
- * @param event - Resolution context from the procedure (trusted log payload)
+ * @param _event - The effect; which apply it opens on is the state's to name
  * @param state - The current game state
  * @returns A new game state with the rout written on the named attack apply
  */
 export function applyOpenRoutFromAttackApplyEvent<S extends GameState>(
-  event: OpenRoutFromAttackApplyEvent,
+  _event: OpenRoutFromAttackApplyEvent,
   state: S,
 ): S {
-  const apply = getAttackApplyStateAt(state, event);
-
-  // A rout opens only from a pending slot — already open or bypassed is wrong.
-  if (apply.routState !== 'pending') {
-    throw new Error('Rout is not pending on this attack apply');
-  }
+  // The apply whose rout opens next, in the order results take effect.
+  const apply = getAttackApplyAwaitingOpen(state, 'rout');
 
   // The defender leaves under rout; discard count is filled by resolveRout.
   const routState = createOpenedRoutState(apply.defendingUnit.playerSide, [
