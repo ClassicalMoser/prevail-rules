@@ -32,7 +32,7 @@ export function getRawUnitStat(
   // Get the base stat value
   const baseStat = unit.unitType.stats[stat];
   // Check if the stat is a defense stat
-  const statIsDefense = isDefenseStat(stat).result;
+  const statIsDefense = isDefenseStat(stat);
   // Get the side of the unit
   const unitSide = unit.playerSide;
 

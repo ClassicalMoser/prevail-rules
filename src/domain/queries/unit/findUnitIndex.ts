@@ -13,8 +13,8 @@ export function findUnitIndex(
   members: readonly { unit: UnitInstance }[],
   unit: UnitInstance,
 ): number | undefined {
-  const index = members.findIndex(
-    (member) => isSameUnitInstance(member.unit, unit).result,
+  const index = members.findIndex((member) =>
+    isSameUnitInstance(member.unit, unit),
   );
   return index === -1 ? undefined : index;
 }

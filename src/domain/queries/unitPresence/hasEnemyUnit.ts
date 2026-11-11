@@ -1,43 +1,27 @@
 import type { BoardSpace, PlayerSide } from '@entities';
-import type { ValidationResult } from '@utils';
 import { hasEngagedUnits } from './hasEngagedUnits';
 import { hasSingleUnit } from './hasSingleUnit';
 
 /**
- * Checks if an enemy unit is found in the space.
- * @param playerSide - The side of the player to check for enemy units.
- * @param space - The space to check.
- * @returns True if an enemy unit is found in the space, false otherwise.
+ * Whether an enemy unit stands in the space. An engagement counts as an enemy
+ * for either player: the two sides are not compared.
+ *
+ * @param playerSide - The side of the player to check for enemy units
+ * @param space - The space to check
+ * @returns True if an enemy unit is found in the space
  */
 export function hasEnemyUnit(
   playerSide: PlayerSide,
   space: BoardSpace,
-): ValidationResult {
+): boolean {
   // An engagement counts as an enemy for either player.
-  // The two sides are not compared.
   if (hasEngagedUnits(space.unitPresence)) {
-    return {
-      result: true,
-    };
+    return true;
   }
-  // If the space has a single unit, check if it is an enemy unit.
-  if (hasSingleUnit(space.unitPresence)) {
-    // If the unit is on the wrong side, there is an enemy unit.
-    const unitSide = space.unitPresence.unit.playerSide;
-    const isEnemy = unitSide !== playerSide;
-    if (!isEnemy) {
-      return {
-        errorReason: 'Unit is not an enemy',
-        result: false,
-      };
-    }
-    return {
-      result: true,
-    };
-  }
-  // Otherwise, no unit - no enemy unit.
-  return {
-    errorReason: 'No enemy unit found',
-    result: false,
-  };
+  // A single unit is an enemy when it fights for the other side; an empty
+  // space holds none.
+  const enemy =
+    hasSingleUnit(space.unitPresence) &&
+    space.unitPresence.unit.playerSide !== playerSide;
+  return enemy;
 }

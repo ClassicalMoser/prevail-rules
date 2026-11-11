@@ -1,25 +1,16 @@
 import type { UnitInstance } from '@entities';
-import type { ValidationResult } from '@utils';
 
 /**
- * Determines whether two unit instances have the same unit type.
+ * Whether two unit instances have the same unit type.
  *
  * @param unit1 - The first unit instance
  * @param unit2 - The second unit instance
- * @returns True if both units have the same unitType, false otherwise
+ * @returns True if both units have the same unitType
  */
 export function isSameUnitType(
   unit1: UnitInstance,
   unit2: UnitInstance,
-): ValidationResult {
-  const sameUnitType = unit1.unitType.id === unit2.unitType.id;
-  if (!sameUnitType) {
-    return {
-      errorReason: 'Units have different unit types',
-      result: false,
-    };
-  }
-  return {
-    result: true,
-  };
+): boolean {
+  const same = unit1.unitType.id === unit2.unitType.id;
+  return same;
 }

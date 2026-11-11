@@ -26,7 +26,7 @@ export function isUnengagedUnit(
   return (
     hasSingleUnit(space.unitPresence) &&
     !hasEngagedUnits(space.unitPresence) &&
-    isSameUnitInstance(space.unitPresence.unit, unitWithPlacement.unit).result
+    isSameUnitInstance(space.unitPresence.unit, unitWithPlacement.unit)
   );
 }
 

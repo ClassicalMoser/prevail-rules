@@ -35,11 +35,9 @@ function isSameLine(
   const [one, other] = ends;
   const [otherOne, otherOther] = otherEnds;
   const sameWay =
-    isSameUnitInstance(one, otherOne).result &&
-    isSameUnitInstance(other, otherOther).result;
+    isSameUnitInstance(one, otherOne) && isSameUnitInstance(other, otherOther);
   const reversed =
-    isSameUnitInstance(one, otherOther).result &&
-    isSameUnitInstance(other, otherOne).result;
+    isSameUnitInstance(one, otherOther) && isSameUnitInstance(other, otherOne);
   return sameWay || reversed;
 }
 

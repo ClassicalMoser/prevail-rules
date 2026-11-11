@@ -55,7 +55,7 @@ export function diagonalIsClear(
   // Get the enemy spaces
   const enemySpaces = sharedOrthogonalSpaces.filter((space) => {
     // Check if the space has an enemy unit
-    const { result: hasEnemyUnitResult } = hasEnemyUnit(
+    const hasEnemyUnitResult = hasEnemyUnit(
       playerSide,
       getBoardSpace(board, space),
     );

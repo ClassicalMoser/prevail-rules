@@ -45,7 +45,7 @@ export function checkDiagonalMove(
   if (currentFacing === undefined) {
     throw new Error('The two spaces are not neighbours');
   }
-  const { result: isDiagonalFacingResult } = isDiagonalFacing(currentFacing);
+  const isDiagonalFacingResult = isDiagonalFacing(currentFacing);
   if (!isDiagonalFacingResult) {
     throw new Error('The step is not diagonal');
   }

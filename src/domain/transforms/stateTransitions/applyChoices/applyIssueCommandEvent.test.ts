@@ -87,7 +87,7 @@ describe('applyIssueCommandEvent function', () => {
       // Check unit presence using value equality, not reference equality
       const unitInCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
-      ].some((u) => isSameUnitInstance(u, unit).result);
+      ].some((u) => isSameUnitInstance(u, unit));
       expect(unitInCommandedUnits).toBe(true);
     });
 
@@ -200,7 +200,7 @@ describe('applyIssueCommandEvent function', () => {
       // Check unit presence using value equality, not reference equality
       const unitInCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
-      ].some((u) => isSameUnitInstance(u, unit).result);
+      ].some((u) => isSameUnitInstance(u, unit));
       expect(unitInCommandedUnits).toBe(true);
     });
 
@@ -223,10 +223,10 @@ describe('applyIssueCommandEvent function', () => {
       // Check unit presence using value equality, not reference equality
       const unit1InCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
-      ].some((u) => isSameUnitInstance(u, unit1).result);
+      ].some((u) => isSameUnitInstance(u, unit1));
       const unit2InCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
-      ].some((u) => isSameUnitInstance(u, unit2).result);
+      ].some((u) => isSameUnitInstance(u, unit2));
       expect(unit1InCommandedUnits).toBe(true);
       expect(unit2InCommandedUnits).toBe(true);
       expect(newState.currentRoundState.commandedUnits).toHaveLength(2);

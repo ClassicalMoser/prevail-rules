@@ -50,7 +50,7 @@ export function getStepOption(
   // diagonal (§5.4.5): no slipping between two units standing corner to
   // corner. Whether the step may then end on the space is not this test's
   // question — that is how a diagonal step can still engage an enemy.
-  const { result: isDiagonal } = isDiagonalFacing(state.facing);
+  const isDiagonal = isDiagonalFacing(state.facing);
   if (
     isDiagonal &&
     !checkDiagonalMove(

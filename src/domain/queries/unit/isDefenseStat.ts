@@ -1,5 +1,4 @@
 import type { UnitStatName } from '@entities';
-import type { ValidationResult } from '@utils';
 
 /**
  * The defense stat names (reverse, retreat, rout).
@@ -8,22 +7,14 @@ import type { ValidationResult } from '@utils';
 const defenseStatNames = ['reverse', 'retreat', 'rout'] as const;
 
 /**
- * Checks if a unit stat is a defense stat (reverse, retreat, or rout).
+ * Whether a unit stat is a defense stat (reverse, retreat, or rout).
  *
  * @param stat - The stat name to check
- * @returns True if the stat is a defense stat, false otherwise
+ * @returns True if the stat is a defense stat
  */
-export function isDefenseStat(stat: UnitStatName): ValidationResult {
+export function isDefenseStat(stat: UnitStatName): boolean {
   // The stat is one of the seven; comparing it to each defense stat needs no
   // widening of the list.
   const isDefense = defenseStatNames.some((name) => name === stat);
-  if (!isDefense) {
-    return {
-      errorReason: 'Stat is not a defense stat',
-      result: false,
-    };
-  }
-  return {
-    result: true,
-  };
+  return isDefense;
 }

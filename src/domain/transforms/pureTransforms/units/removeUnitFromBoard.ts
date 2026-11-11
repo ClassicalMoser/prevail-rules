@@ -24,7 +24,7 @@ export function removeUnitFromBoard(
     throw new Error('Cannot remove unit from space with no unit');
   }
   if (hasSingleUnit(existingUnitPresence)) {
-    if (!isSameUnitInstance(existingUnitPresence.unit, unit.unit).result) {
+    if (!isSameUnitInstance(existingUnitPresence.unit, unit.unit)) {
       throw new Error('Unit mismatch');
     }
     const newUnitPresence: NoneUnitPresence = { presenceType: 'none' };
@@ -45,11 +45,11 @@ export function removeUnitFromBoard(
     throw new Error('Invalid unit presence');
   }
 
-  const { result: unitIsPrimary } = isSameUnitInstance(
+  const unitIsPrimary = isSameUnitInstance(
     existingUnitPresence.primaryUnit,
     unit.unit,
   );
-  const { result: unitIsSecondary } = isSameUnitInstance(
+  const unitIsSecondary = isSameUnitInstance(
     existingUnitPresence.secondaryUnit,
     unit.unit,
   );

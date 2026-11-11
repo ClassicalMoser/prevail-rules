@@ -39,7 +39,7 @@ export function isValidCommitment(
     if (option.committedCard === null || event.committedCard === null) {
       return option.committedCard === event.committedCard;
     }
-    return isSameCard(option.committedCard, event.committedCard).result;
+    return isSameCard(option.committedCard, event.committedCard);
   });
   if (legalOption === undefined) {
     const cardLabel =

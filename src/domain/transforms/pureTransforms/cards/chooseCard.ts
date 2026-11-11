@@ -16,13 +16,13 @@ export function chooseCard(
   card: CommandCard,
 ): OwnedCardState {
   const { inHand } = owned;
-  const cardInHand = inHand.find((c) => isSameCard(c, card).result);
+  const cardInHand = inHand.find((c) => isSameCard(c, card));
 
   if (!cardInHand) {
     throw new Error(`Command card ${card.id} not found in player's hand`);
   }
 
-  const newHand = inHand.filter((c) => !isSameCard(c, card).result);
+  const newHand = inHand.filter((c) => !isSameCard(c, card));
 
   return {
     ...owned,

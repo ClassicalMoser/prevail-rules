@@ -47,7 +47,7 @@ export function isAtPlacement(
 
   // If the friendly unit is not the same as the unit on the board, the unit is not at the placement.
   // Compare by value since UnitInstance is identified by playerSide, unitType, and instanceNumber.
-  const { result: isSameUnit } = isSameUnitInstance(
+  const isSameUnit = isSameUnitInstance(
     friendlyUnitWithPlacement.unit,
     unitWithPlacement.unit,
   );

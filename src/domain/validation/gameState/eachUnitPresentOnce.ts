@@ -37,7 +37,7 @@ export function eachUnitPresentOnce(
     // Since Sets use referential equality, we need to find the matching unit first
     const removeExpectedUnit = (unit: UnitInstance): ValidationResult => {
       for (const expected of expectedUnits) {
-        if (isSameUnitInstance(expected, unit).result) {
+        if (isSameUnitInstance(expected, unit)) {
           expectedUnits.delete(expected);
           return {
             result: true,
@@ -52,9 +52,7 @@ export function eachUnitPresentOnce(
 
     // Helper to check if unit was already seen
     const hasSeenUnit = (unit: UnitInstance): ValidationResult => {
-      const found = seenInGame.some(
-        (seen) => isSameUnitInstance(seen, unit).result,
-      );
+      const found = seenInGame.some((seen) => isSameUnitInstance(seen, unit));
       if (found) {
         return {
           errorReason: 'Duplicate unit on board',

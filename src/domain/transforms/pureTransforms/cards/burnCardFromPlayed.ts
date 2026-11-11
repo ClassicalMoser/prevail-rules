@@ -15,14 +15,14 @@ export function burnCardFromPlayed(
   owned: OwnedCardState,
   card: CommandCard,
 ): OwnedCardState {
-  const cardIndex = owned.played.findIndex((c) => isSameCard(c, card).result);
+  const cardIndex = owned.played.findIndex((c) => isSameCard(c, card));
   if (cardIndex === -1) {
     throw new Error(
       `Command card ${card.id} not found in player's played cards`,
     );
   }
 
-  const newPlayed = owned.played.filter((c) => !isSameCard(c, card).result);
+  const newPlayed = owned.played.filter((c) => !isSameCard(c, card));
   const newBurnt = [...owned.burnt, card];
 
   return {

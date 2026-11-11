@@ -28,7 +28,7 @@ export function eachCardPresentOnce(
       // A Set compares by reference, so find the matching card by value first
       const removeExpectedCard = (card: CommandCard): boolean => {
         for (const expected of expectedCards) {
-          if (isSameCard(expected, card).result) {
+          if (isSameCard(expected, card)) {
             expectedCards.delete(expected);
             return true;
           }
@@ -38,7 +38,7 @@ export function eachCardPresentOnce(
 
       // Helper to check if card was already seen in this player's state
       const hasSeenCard = (card: CommandCard): boolean =>
-        seenInPlayerState.some((seen) => isSameCard(seen, card).result);
+        seenInPlayerState.some((seen) => isSameCard(seen, card));
 
       // Helper to process a single card
       const processCard = (card: CommandCard | null): ValidationResult => {

@@ -31,8 +31,8 @@ export function isValidPerformRangedAttackEvent(
   }
 
   // The target must be one the shooter can reach, its card counted.
-  const target = legal.targets.find(
-    (candidate) => isSameUnitWithPlacement(candidate, event.targetUnit).result,
+  const target = legal.targets.find((candidate) =>
+    isSameUnitWithPlacement(candidate, event.targetUnit),
   );
   if (target === undefined) {
     return {

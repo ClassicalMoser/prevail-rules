@@ -36,7 +36,7 @@ export function findPositionOfUnit(
 
     // Check single unit presence
     if (hasSingleUnit(unitPresence)) {
-      if (isSameUnitInstance(unitPresence.unit, unit).result) {
+      if (isSameUnitInstance(unitPresence.unit, unit)) {
         const placement: UnitPlacement = {
           coordinate,
           facing: unitPresence.facing,
@@ -47,7 +47,7 @@ export function findPositionOfUnit(
     }
 
     // Engaged. The primary keeps its stored facing.
-    if (isSameUnitInstance(unitPresence.primaryUnit, unit).result) {
+    if (isSameUnitInstance(unitPresence.primaryUnit, unit)) {
       const primaryPlacement: UnitPlacement = {
         coordinate,
         facing: unitPresence.primaryFacing,
@@ -55,7 +55,7 @@ export function findPositionOfUnit(
       return primaryPlacement;
     }
     // The secondary faces opposite the primary.
-    if (isSameUnitInstance(unitPresence.secondaryUnit, unit).result) {
+    if (isSameUnitInstance(unitPresence.secondaryUnit, unit)) {
       const secondaryPlacement: UnitPlacement = {
         coordinate,
         facing: getOppositeFacing(unitPresence.primaryFacing),

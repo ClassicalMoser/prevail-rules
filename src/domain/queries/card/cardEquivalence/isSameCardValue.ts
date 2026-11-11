@@ -27,9 +27,11 @@ export function isSameCardValue(
   held: CommandCard,
   given: CommandCard,
 ): ValidationResult {
-  const sameCard = isSameCard(held, given);
-  if (!sameCard.result) {
-    return sameCard;
+  if (!isSameCard(held, given)) {
+    return {
+      errorReason: `Cards ${held.id} and ${given.id} are different cards`,
+      result: false,
+    };
   }
 
   // Each part in turn, so the reason says which one was altered.

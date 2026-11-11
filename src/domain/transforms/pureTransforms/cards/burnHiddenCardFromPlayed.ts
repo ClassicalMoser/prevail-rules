@@ -15,8 +15,8 @@ export function burnHiddenCardFromPlayed(
   hidden: HiddenCardState,
   card: CommandCard,
 ): HiddenCardState {
-  const cardIndex = hidden.played.findIndex(
-    (playedCard) => isSameCard(playedCard, card).result,
+  const cardIndex = hidden.played.findIndex((playedCard) =>
+    isSameCard(playedCard, card),
   );
   if (cardIndex === -1) {
     throw new Error(
@@ -25,7 +25,7 @@ export function burnHiddenCardFromPlayed(
   }
 
   const played = hidden.played.filter(
-    (playedCard) => !isSameCard(playedCard, card).result,
+    (playedCard) => !isSameCard(playedCard, card),
   );
   const burnt = [...hidden.burnt, card];
   const next: HiddenCardState = {

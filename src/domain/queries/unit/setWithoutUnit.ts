@@ -14,7 +14,7 @@ export function setWithoutUnit(
   unit: UnitInstance,
 ): Set<UnitInstance> {
   const remaining = new Set(
-    [...units].filter((member) => !isSameUnitInstance(member, unit).result),
+    [...units].filter((member) => !isSameUnitInstance(member, unit)),
   );
   return remaining;
 }

@@ -64,7 +64,7 @@ export function getExpectedMovementResolutionEvent(
     gameState.boardState,
     resolutionState.targetPlacement.coordinate,
   );
-  if (hasEnemyUnit(player, targetSpace).result) {
+  if (hasEnemyUnit(player, targetSpace)) {
     return {
       actionType: 'gameEffect',
       effectType: 'startEngagement',

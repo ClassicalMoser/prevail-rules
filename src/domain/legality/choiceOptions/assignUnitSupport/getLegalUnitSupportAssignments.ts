@@ -23,7 +23,7 @@ export function isSameUnitSupportAssignment(
 ): boolean {
   const same =
     areUnitSupportsEqual(a.unitSupport, b.unitSupport) &&
-    isSameUnitInstance(a.unit, b.unit).result;
+    isSameUnitInstance(a.unit, b.unit);
   return same;
 }
 

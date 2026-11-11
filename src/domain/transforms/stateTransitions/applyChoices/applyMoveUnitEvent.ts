@@ -51,7 +51,7 @@ export function applyMoveUnitEvent<S extends GameState>(
   // Into an enemy, the mover waits, and so does a commander riding with it;
   // onto open ground, both move now.
   const targetSpace = getBoardSpace(state.boardState, destination.coordinate);
-  const enteringEnemy = hasEnemyUnit(event.player, targetSpace).result;
+  const enteringEnemy = hasEnemyUnit(event.player, targetSpace);
   const arrived = { ...mover, placement: destination };
   const movingUnit = enteringEnemy ? mover : arrived;
   const board = enteringEnemy

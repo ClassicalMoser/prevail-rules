@@ -27,9 +27,9 @@ describe('hasEnemyUnit function', () => {
     it('returns false when there is no unit', () => {
       const board = createEmptyStandardBoard();
       const space = boardSpaceAt(board, coordinate);
-      const { result: blackResult } = hasEnemyUnit('black', space);
+      const blackResult = hasEnemyUnit('black', space);
       expect(blackResult).toBe(false);
-      const { result: whiteResult } = hasEnemyUnit('white', space);
+      const whiteResult = hasEnemyUnit('white', space);
       expect(whiteResult).toBe(false);
     });
   });
@@ -38,22 +38,19 @@ describe('hasEnemyUnit function', () => {
     it('returns false when there is a friendly unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space = boardSpaceAt(board, coordinate);
-      const { result } = hasEnemyUnit('black', space);
-      expect(result).toBe(false);
+      expect(hasEnemyUnit('black', space)).toBe(false);
     });
 
     it('returns true when there is an enemy unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'white');
       const space = boardSpaceAt(board, coordinate);
-      const { result } = hasEnemyUnit('black', space);
-      expect(result).toBe(true);
+      expect(hasEnemyUnit('black', space)).toBe(true);
     });
 
     it('returns true for white player when there is a black enemy unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space = boardSpaceAt(board, coordinate);
-      const { result } = hasEnemyUnit('white', space);
-      expect(result).toBe(true);
+      expect(hasEnemyUnit('white', space)).toBe(true);
     });
   });
 
@@ -69,9 +66,9 @@ describe('hasEnemyUnit function', () => {
       const space = boardSpaceAt(board, coordinate);
 
       // Engaged units always contain an enemy for both sides
-      const { result: blackResult } = hasEnemyUnit('black', space);
+      const blackResult = hasEnemyUnit('black', space);
       expect(blackResult).toBe(true);
-      const { result: whiteResult } = hasEnemyUnit('white', space);
+      const whiteResult = hasEnemyUnit('white', space);
       expect(whiteResult).toBe(true);
     });
   });
@@ -84,8 +81,7 @@ describe('hasEnemyUnit function', () => {
         presenceType: 'invalid',
       } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
 
-      const { result } = hasEnemyUnit('black', space);
-      expect(result).toBe(false);
+      expect(hasEnemyUnit('black', space)).toBe(false);
     });
   });
 });

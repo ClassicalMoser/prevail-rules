@@ -1,5 +1,4 @@
 import type { CommandCard } from '@entities';
-import type { ValidationResult } from '@utils';
 
 /**
  * Whether two cards are the same card: the card's id names one card in an
@@ -11,17 +10,9 @@ import type { ValidationResult } from '@utils';
  *
  * @param card1 - The first card
  * @param card2 - The second card
- * @returns A passing result when both name the same card, with the two ids otherwise
+ * @returns True when both name the same card
  */
-export function isSameCard(
-  card1: CommandCard,
-  card2: CommandCard,
-): ValidationResult {
-  if (card1.id !== card2.id) {
-    return {
-      errorReason: `Cards ${card1.id} and ${card2.id} are different cards`,
-      result: false,
-    };
-  }
-  return { result: true };
+export function isSameCard(card1: CommandCard, card2: CommandCard): boolean {
+  const same = card1.id === card2.id;
+  return same;
 }

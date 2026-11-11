@@ -75,7 +75,7 @@ export function getLegalRangedAttackSupporters(
 
   const supporters: UnitWithPlacement[] = [];
   for (const unit of remaining) {
-    if (isSameUnitInstance(unit, attacker.unit).result) {
+    if (isSameUnitInstance(unit, attacker.unit)) {
       continue;
     }
     if (!isFriendlyUnit(unit, player)) {

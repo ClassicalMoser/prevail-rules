@@ -1,25 +1,16 @@
 import type { UnitInstance } from '@entities';
-import type { ValidationResult } from '@utils';
 
 /**
- * Determines whether two unit instances have the same instance number.
+ * Whether two unit instances have the same instance number.
  *
  * @param unit1 - The first unit instance
  * @param unit2 - The second unit instance
- * @returns True if both units have the same instanceNumber, false otherwise
+ * @returns True if both units have the same instanceNumber
  */
 export function isSameInstanceNumber(
   unit1: UnitInstance,
   unit2: UnitInstance,
-): ValidationResult {
-  const sameInstanceNumber = unit1.instanceNumber === unit2.instanceNumber;
-  if (!sameInstanceNumber) {
-    return {
-      errorReason: 'Units have different instance numbers',
-      result: false,
-    };
-  }
-  return {
-    result: true,
-  };
+): boolean {
+  const same = unit1.instanceNumber === unit2.instanceNumber;
+  return same;
 }

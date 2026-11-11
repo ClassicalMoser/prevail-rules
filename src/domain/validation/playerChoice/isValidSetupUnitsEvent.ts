@@ -87,8 +87,8 @@ export function isValidSetupUnitsEvent(
     seenCoordinates.add(placement.placement.coordinate);
 
     // Confirm value-equality against reserved list (not only key shape)
-    const inReserve = legal.units.some(
-      (unit) => isSameUnitInstance(unit, placement.unit).result,
+    const inReserve = legal.units.some((unit) =>
+      isSameUnitInstance(unit, placement.unit),
     );
     if (!inReserve) {
       return {

@@ -13,8 +13,6 @@ export function arrayWithoutUnit(
   units: readonly UnitInstance[],
   unit: UnitInstance,
 ): UnitInstance[] {
-  const remaining = units.filter(
-    (member) => !isSameUnitInstance(member, unit).result,
-  );
+  const remaining = units.filter((member) => !isSameUnitInstance(member, unit));
   return remaining;
 }

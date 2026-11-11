@@ -13,35 +13,30 @@ describe('isSameUnitInstance function', () => {
   it('returns true when both units are the same instance (all properties match)', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 1);
-    const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(true);
+    expect(isSameUnitInstance(unit1, unit2)).toBe(true);
   });
 
   it('returns true when comparing a unit to itself', () => {
     const unit = createUnitInstance('black', flexibility1UnitType, 1);
-    const { result } = isSameUnitInstance(unit, unit);
-    expect(result).toBe(true);
+    expect(isSameUnitInstance(unit, unit)).toBe(true);
   });
 
   it('returns false when units have different player sides', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('white', flexibility1UnitType, 1);
-    const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(false);
+    expect(isSameUnitInstance(unit1, unit2)).toBe(false);
   });
 
   it('returns false when units have different unit types', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility2UnitType, 1);
-    const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(false);
+    expect(isSameUnitInstance(unit1, unit2)).toBe(false);
   });
 
   it('returns false when units have different instance numbers', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 2);
-    const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(false);
+    expect(isSameUnitInstance(unit1, unit2)).toBe(false);
   });
 
   it('returns true when two objects share side, type, and instance number', () => {
@@ -49,14 +44,12 @@ describe('isSameUnitInstance function', () => {
     // Create a new unit with same properties (different reference)
     const unit2 = createUnitInstance('black', flexibility1UnitType, 1);
     expect(unit1).not.toBe(unit2); // Different references
-    const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(true); // But same by value
+    expect(isSameUnitInstance(unit1, unit2)).toBe(true); // But same by value
   });
 
   it('returns false when the instance number is the only difference', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 2);
-    const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(false);
+    expect(isSameUnitInstance(unit1, unit2)).toBe(false);
   });
 });

@@ -41,7 +41,7 @@ export function isValidRangedAttackSupporters(
     named.push(supporter.unit);
 
     // The shooter adds its own shot already; it cannot add +1 as well.
-    if (isSameUnitWithPlacement(supporter, attacker).result) {
+    if (isSameUnitWithPlacement(supporter, attacker)) {
       const selfSupport: ValidationResult = {
         errorReason: 'Attacker cannot also be listed as a supporter',
         result: false,
@@ -50,8 +50,8 @@ export function isValidRangedAttackSupporters(
     }
 
     // It must be able to make this same shot on its own.
-    const isOffered = legalSupporters.some(
-      (candidate) => isSameUnitWithPlacement(candidate, supporter).result,
+    const isOffered = legalSupporters.some((candidate) =>
+      isSameUnitWithPlacement(candidate, supporter),
     );
     if (!isOffered) {
       const cannotShoot: ValidationResult = {

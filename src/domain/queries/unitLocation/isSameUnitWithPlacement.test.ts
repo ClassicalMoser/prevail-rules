@@ -15,12 +15,12 @@ describe('isSameUnitWithPlacement function', () => {
   const otherUnit = createTestUnit('black', { instanceNumber: 2 });
 
   it('the same unit placed the same way matches', () => {
-    const { result } = isSameUnitWithPlacement(
-      placed(unit, 'E-5', 'north'),
-      placed(sameUnit, 'E-5', 'north'),
-    );
-
-    expect(result).toBe(true);
+    expect(
+      isSameUnitWithPlacement(
+        placed(unit, 'E-5', 'north'),
+        placed(sameUnit, 'E-5', 'north'),
+      ),
+    ).toBe(true);
   });
 
   it('the same unit facing another way does not match', () => {
@@ -29,18 +29,15 @@ describe('isSameUnitWithPlacement function', () => {
         placed(unit, 'E-5', 'north'),
         placed(sameUnit, 'E-5', 'south'),
       ),
-    ).toStrictEqual({
-      errorReason: 'The same unit, placed differently',
-      result: false,
-    });
+    ).toBe(false);
   });
 
   it('another unit on the same placement does not match', () => {
-    const { result } = isSameUnitWithPlacement(
-      placed(unit, 'E-5', 'north'),
-      placed(otherUnit, 'E-5', 'north'),
-    );
-
-    expect(result).toBe(false);
+    expect(
+      isSameUnitWithPlacement(
+        placed(unit, 'E-5', 'north'),
+        placed(otherUnit, 'E-5', 'north'),
+      ),
+    ).toBe(false);
   });
 });

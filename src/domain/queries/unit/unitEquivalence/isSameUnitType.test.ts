@@ -13,34 +13,29 @@ describe('isSameUnitType function', () => {
   it('returns true when both units have the same unit type', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 2);
-    const { result } = isSameUnitType(unit1, unit2);
-    expect(result).toBe(true);
+    expect(isSameUnitType(unit1, unit2)).toBe(true);
   });
 
   it('returns false when units have different unit types', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility2UnitType, 1);
-    const { result } = isSameUnitType(unit1, unit2);
-    expect(result).toBe(false);
+    expect(isSameUnitType(unit1, unit2)).toBe(false);
   });
 
   it('returns true when comparing a unit to itself', () => {
     const unit = createUnitInstance('black', flexibility1UnitType, 1);
-    const { result } = isSameUnitType(unit, unit);
-    expect(result).toBe(true);
+    expect(isSameUnitType(unit, unit)).toBe(true);
   });
 
   it('returns true when the sides differ and the unit type matches', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('white', flexibility1UnitType, 1);
-    const { result } = isSameUnitType(unit1, unit2);
-    expect(result).toBe(true);
+    expect(isSameUnitType(unit1, unit2)).toBe(true);
   });
 
   it('returns true when the instance numbers differ and the unit type matches', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 3);
-    const { result } = isSameUnitType(unit1, unit2);
-    expect(result).toBe(true);
+    expect(isSameUnitType(unit1, unit2)).toBe(true);
   });
 });

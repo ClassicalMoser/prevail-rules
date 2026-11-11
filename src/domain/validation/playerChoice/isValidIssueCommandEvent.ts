@@ -27,7 +27,7 @@ function isValidUnitsOrder(
   const refused = findRefusal(
     units,
     (soFar) => getLegalUnitsToOrder(command, player, state, soFar),
-    (a, b) => isSameUnitInstance(a, b).result,
+    (a, b) => isSameUnitInstance(a, b),
   );
   if (refused === undefined) {
     const valid: ValidationResult = { result: true };

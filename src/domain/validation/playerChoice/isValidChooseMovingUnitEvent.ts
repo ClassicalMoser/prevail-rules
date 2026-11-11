@@ -24,8 +24,8 @@ export function isValidChooseMovingUnitEvent(
   }
 
   // Who it is and where it stands must both match an offered unit.
-  const offered = legal.units.some(
-    (candidate) => isSameUnitWithPlacement(candidate, event.unit).result,
+  const offered = legal.units.some((candidate) =>
+    isSameUnitWithPlacement(candidate, event.unit),
   );
   if (!offered) {
     return {

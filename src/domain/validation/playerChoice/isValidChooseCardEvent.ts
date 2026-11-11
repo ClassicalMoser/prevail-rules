@@ -23,8 +23,7 @@ export function isValidChooseCardEvent(
   const legalOptions = getLegalChooseCardOptions(state);
   const legalOption = legalOptions.find(
     (option) =>
-      option.player === event.player &&
-      isSameCard(option.card, event.card).result,
+      option.player === event.player && isSameCard(option.card, event.card),
   );
   if (legalOption === undefined) {
     return {

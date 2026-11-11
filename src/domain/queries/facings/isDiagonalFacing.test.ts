@@ -7,23 +7,15 @@ import { isDiagonalFacing } from './isDiagonalFacing';
  */
 describe('isDiagonalFacing function', () => {
   it('northEast is a diagonal facing', () => {
-    expect(isDiagonalFacing('northEast')).toStrictEqual({
-      result: true,
-    });
+    expect(isDiagonalFacing('northEast')).toBe(true);
   });
 
   it('north is not a diagonal facing', () => {
-    expect(isDiagonalFacing('north')).toStrictEqual({
-      errorReason: 'Facing is not a diagonal facing',
-      result: false,
-    });
+    expect(isDiagonalFacing('north')).toBe(false);
   });
 
   it('an unknown facing is not a diagonal facing', () => {
     // 'invalid' is not a facing. The cast is what lets the check see a value outside the eight.
-    expect(isDiagonalFacing('invalid' as UnitFacing)).toStrictEqual({
-      errorReason: 'Facing is not a diagonal facing',
-      result: false,
-    });
+    expect(isDiagonalFacing('invalid' as UnitFacing)).toBe(false);
   });
 });

@@ -41,10 +41,7 @@ export function getLegalUnitMoves(
     throw new Error('No movable unit at starting position');
   }
   // Check if the reported unit is present at the starting position
-  const sameUnit = isSameUnitInstance(
-    boardSpace.unitPresence.unit,
-    unit,
-  ).result;
+  const sameUnit = isSameUnitInstance(boardSpace.unitPresence.unit, unit);
   if (!sameUnit) {
     throw new Error('Unit is not present at the starting position');
   }

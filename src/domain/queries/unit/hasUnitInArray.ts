@@ -13,6 +13,6 @@ export function hasUnitInArray(
   units: readonly UnitInstance[],
   unit: UnitInstance,
 ): boolean {
-  const found = units.some((member) => isSameUnitInstance(member, unit).result);
+  const found = units.some((member) => isSameUnitInstance(member, unit));
   return found;
 }
