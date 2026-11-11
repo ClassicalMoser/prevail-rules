@@ -18,38 +18,10 @@ export function createInitialGameState(options: {
 }): AuthoritativeGameState {
   const { whiteArmy, blackArmy } = options;
 
-  // TODO(composition): the four cases below call the same function with the
-  // same argument; `createEmptyGameState` already looks the board size up from
-  // the mode, so this switch adds only the exhaustiveness check. Settled by
-  // dropping it, or by saying what a mode will add beyond its board size.
-  let emptyGameState;
-  switch (options.gameMode) {
-    // Tutorial shell: small board, empty piles. Hand and reserves are filled below.
-    case 'tutorial': {
-      emptyGameState = createEmptyGameState(options.gameMode);
-      break;
-    }
-    // Mini shell: small board, empty piles.
-    case 'mini': {
-      emptyGameState = createEmptyGameState(options.gameMode);
-      break;
-    }
-    // Standard shell: standard board, empty piles.
-    case 'standard': {
-      emptyGameState = createEmptyGameState(options.gameMode);
-      break;
-    }
-    // Epic shell: large board, empty piles.
-    case 'epic': {
-      emptyGameState = createEmptyGameState(options.gameMode);
-      break;
-    }
-    // GameModeName is a closed catalog; this keeps a drifted value from dealing a game.
-    default: {
-      const _exhaustive: never = options.gameMode;
-      throw new Error(`Unknown gameMode: ${_exhaustive}`);
-    }
-  }
+  // The mode catalog says which board a mode is played on, and an unknown mode
+  // is refused there, so every mode starts from the same empty shell: that
+  // board with empty piles. Hands and reserves are filled below.
+  const emptyGameState = createEmptyGameState(options.gameMode);
 
   // An army is a list of unit types with a count of each. Every one of those
   // units is a separate piece to be placed, so each gets its own instance.

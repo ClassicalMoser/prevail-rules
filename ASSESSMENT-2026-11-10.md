@@ -228,8 +228,11 @@ Section 4 records. Open:
 - `createInitialGameState` still has no production caller. `startNewGame`
   builds with `createEmptyGameState` and parses the result, which removed the
   cast but not the duplication.
-- The "next open apply in resolution order" selection is still written by hand
-  (`findNextMeleeDefendingPlayer` carries the `TODO(composition)`).
+- Closed since: the "next open apply in resolution order" selection is now
+  `findNextMeleeAttackApplyToClose`, asked by both the sequencer and
+  `findNextMeleeDefendingPlayer`; the inspiration-range rule is
+  `unitMatchesInspirationRange` in `@queries`; a side's units on the board are
+  defined by `getPlayerUnitsWithPlacementOnBoard`.
 - The melee defender-to-slot ternary in the three writers belongs to the
   writer question.
 
@@ -479,17 +482,17 @@ full; see 3.2.
 
 ### Still open
 
-| Item                                                     | Where                                                                             | Note                                                      |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| `submittedTime` on player choices as a replay record     | events, `applyEvent`                                                              | Agreed, not built. Do it before production.               |
-| Writer question                                          | `update{Retreat,Reverse,Rout,AttackApply}State`                                   | Author's design call; the melee slot ternary belongs here |
-| `createInitialGameState` has no production caller        | `startNewGame.ts`                                                                 | Start-up builds with `createEmptyGameState` and parses    |
-| Hand-written "next open apply"                           | `findNextMeleeDefendingPlayer`, closing loop of `getExpectedMeleeResolutionEvent` | Duplicates `getMeleeAppliesInResolutionOrder`             |
-| 38 spec assertions in 18 files, 35 without STYLE comment | specs                                                                             |                                                           |
-| Headers on exported and local functions                  | see 3.5                                                                           | Not recounted                                             |
-| About 744 spec titles beginning "should" or "given"      | specs                                                                             | STYLE                                                     |
-| Commentary, layer by layer                               | validation and transforms first                                                   |                                                           |
-| "See AUDIT.md" comments in source                        | `unitWithPlacement.ts`, `assignUnitSupport.ts`, `unitPlacement.ts`                | The file no longer holds those findings                   |
+| Item                                                     | Where                                                                                                                                                                                                                                                               | Note                                                      |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `submittedTime` on player choices as a replay record     | events, `applyEvent`                                                                                                                                                                                                                                                | Agreed, not built. Do it before production.               |
+| Writer question                                          | `update{Retreat,Reverse,Rout,AttackApply}State`                                                                                                                                                                                                                     | Author's design call; the melee slot ternary belongs here |
+| `createInitialGameState` has no production caller        | `startNewGame.ts`                                                                                                                                                                                                                                                   | Start-up builds with `createEmptyGameState` and parses    |
+| 38 spec assertions in 18 files, 35 without STYLE comment | specs                                                                                                                                                                                                                                                               |                                                           |
+| Headers on exported and local functions                  | see 3.5                                                                                                                                                                                                                                                             | Not recounted                                             |
+| About 744 spec titles beginning "should" or "given"      | specs                                                                                                                                                                                                                                                               | STYLE                                                     |
+| Seven `TODO` marks, each a decision for the author       | `UnitPlacement` and `createUnitWithPlacement` renames; the board-size factory lookup; the rally rout's `'bypassed'`; whether the sequencer locates routs through `findRoutLocation`; the rout getters with no production caller; the melee defender-to-slot ternary | Left for the author                                       |
+| Commentary, layer by layer                               | validation and transforms first                                                                                                                                                                                                                                     |                                                           |
+| "See AUDIT.md" comments in source                        | `unitWithPlacement.ts`, `assignUnitSupport.ts`, `unitPlacement.ts`                                                                                                                                                                                                  | The file no longer holds those findings                   |
 
 ## 5A. Outstanding as written at `5698dc6`
 
