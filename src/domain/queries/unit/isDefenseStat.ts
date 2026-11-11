@@ -14,7 +14,9 @@ const defenseStatNames = ['reverse', 'retreat', 'rout'] as const;
  * @returns True if the stat is a defense stat, false otherwise
  */
 export function isDefenseStat(stat: UnitStatName): ValidationResult {
-  const isDefense = (defenseStatNames as readonly string[]).includes(stat);
+  // The stat is one of the seven; comparing it to each defense stat needs no
+  // widening of the list.
+  const isDefense = defenseStatNames.some((name) => name === stat);
   if (!isDefense) {
     return {
       errorReason: 'Stat is not a defense stat',
