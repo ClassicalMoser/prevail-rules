@@ -3,7 +3,10 @@ import type { GameState } from '@game';
 import type { Event } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
-import { createResolveMeleePhaseState } from '@testing';
+import {
+  createMeleeResolutionState,
+  createResolveMeleePhaseState,
+} from '@testing';
 
 import {
   updatePhaseState,
@@ -76,6 +79,22 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
         space: 'E-6',
       },
     ]);
+  });
+
+  it('offers nothing while a melee is under way, because the next is chosen once it is resolved', () => {
+    // One melee is being fought, and two more engagements still wait.
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
+    const phase = createResolveMeleePhaseState(base, {
+      currentMeleeResolutionState: createMeleeResolutionState(base),
+      remainingEngagements: ['E-5', 'E-6'],
+    });
+    const state = updatePhaseState(base, phase);
+
+    // The order of the melees is chosen between them, not during one (§4.4.2).
+    expect(getLegalChooseMeleeResolutionEvents(state)).toStrictEqual([]);
   });
 
   it('throws when there are no remaining engagements (caller should advance phase)', () => {
