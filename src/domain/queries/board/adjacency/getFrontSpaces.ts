@@ -1,7 +1,7 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getAdjacentFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../steps/getForwardSpace';
+import { findForwardSpace } from '../steps/findForwardSpace';
 
 /**
  * Get the front spaces for a given coordinate and facing, including diagonals
@@ -22,7 +22,7 @@ export function getFrontSpaces(
   // Array of coordinates and undefined values
   const forwardSpaces = new Set(
     forwardFacings.map((forwardFacing) =>
-      getForwardSpace(board, coordinate, forwardFacing),
+      findForwardSpace(board, coordinate, forwardFacing),
     ),
   );
 

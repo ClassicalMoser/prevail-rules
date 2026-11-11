@@ -1,4 +1,8 @@
-import { getForwardSpace, getRearwardSpace, isDiagonalFacing } from '@queries';
+import {
+  findForwardSpace,
+  findRearwardSpace,
+  isDiagonalFacing,
+} from '@queries';
 import type { MoveContext } from './moveContext';
 import type { MoveState } from './moveState';
 import { canMoveThrough, checkDiagonalMove } from '../passage';
@@ -30,7 +34,7 @@ export function getStepOption(
 
   // A retreat moves rearward, away from the facing; an advance follows it.
   const getSpaceInDirection =
-    context.direction === 'advance' ? getForwardSpace : getRearwardSpace;
+    context.direction === 'advance' ? findForwardSpace : findRearwardSpace;
   const board = context.gameState.boardState;
   const nextCoordinate = getSpaceInDirection(
     board,

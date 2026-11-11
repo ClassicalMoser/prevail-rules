@@ -71,10 +71,10 @@ Movement legality (`getLegalUnitMoves`, `getLegalMoveDeltas`, commander moves) l
 
 **Queries** (`queries/`) extract information. Failure modes differ by function — document each one; do not assume a single convention:
 
-| Function          | Missing / out of bounds                           | Malformed input                                                               |
-| ----------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `getBoardSpace`   | **throws** (coordinate absent from `board.board`) | n/a (key lookup)                                                              |
-| `getForwardSpace` | returns **`undefined`** (step leaves the board)   | **throws** (bad coordinate string, row/column outside layout, invalid facing) |
+| Function           | Missing / out of bounds                           | Malformed input                                                               |
+| ------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `getBoardSpace`    | **throws** (coordinate absent from `board.board`) | n/a (key lookup)                                                              |
+| `findForwardSpace` | returns **`undefined`** (step leaves the board)   | **throws** (bad coordinate string, row/column outside layout, invalid facing) |
 
 **Validators** let throws from getters fall through to the entry point's boundary, which turns them into a `FailValidationResult`. They treat `undefined` from directional queries as a normal negative case (not an exception).
 

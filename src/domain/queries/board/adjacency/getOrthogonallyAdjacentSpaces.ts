@@ -1,7 +1,7 @@
 import type { Board, Coordinate } from '@entities';
 import { orthogonalFacings } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../steps/getForwardSpace';
+import { findForwardSpace } from '../steps/findForwardSpace';
 
 /**
  * Get the orthogonally adjacent spaces for a given coordinate.
@@ -17,7 +17,7 @@ export function getOrthogonallyAdjacentSpaces(
   // Get the orthogonal spaces
   const orthogonalSpaces = new Set(
     orthogonalFacings.map((facing) =>
-      getForwardSpace(board, coordinate, facing),
+      findForwardSpace(board, coordinate, facing),
     ),
   );
   // Filter out undefined values

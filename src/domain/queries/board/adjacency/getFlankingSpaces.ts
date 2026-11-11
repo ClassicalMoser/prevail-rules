@@ -1,7 +1,7 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getOrthogonalFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../steps/getForwardSpace';
+import { findForwardSpace } from '../steps/findForwardSpace';
 
 /**
  * Get the flanking spaces for a given coordinate and facing,
@@ -21,7 +21,7 @@ export function getFlankingSpaces(
   // Set of coordinates and undefined values
   const flankingSpaces = new Set(
     orthogonalFacings.map((flankFacing) =>
-      getForwardSpace(board, coordinate, flankFacing),
+      findForwardSpace(board, coordinate, flankFacing),
     ),
   );
   // Filter out undefined values

@@ -1,7 +1,7 @@
 import type { Board, Coordinate } from '@entities';
 import { unitFacings } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../steps/getForwardSpace';
+import { findForwardSpace } from '../steps/findForwardSpace';
 
 /**
  * Get the adjacent spaces for a given coordinate.
@@ -16,7 +16,7 @@ export function getAdjacentSpaces(
 ): Set<Coordinate> {
   // One space in each of the eight directions from the given coordinate
   const adjacentSpaces = new Set(
-    unitFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
+    unitFacings.map((facing) => findForwardSpace(board, coordinate, facing)),
   );
 
   // Filter out undefined values

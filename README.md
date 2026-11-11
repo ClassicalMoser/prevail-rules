@@ -53,7 +53,7 @@ Board size is runtime state (`board.boardType`), not a type parameter. Coordinat
 ```typescript
 const board: Board = createEmptyStandardBoard(); // boardType: 'standard'
 const space = getBoardSpace(board, 'E-5');
-const offBoard = getForwardSpace(board, 'A-1', 'north'); // undefined
+const offBoard = findForwardSpace(board, 'A-1', 'north'); // undefined
 ```
 
 Card visibility _does_ earn a type parameter — it constrains which card fields are readable. See [`src/domain/entities/README.md`](./src/domain/entities/README.md).

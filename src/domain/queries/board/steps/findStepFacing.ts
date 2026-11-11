@@ -1,6 +1,6 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { unitFacings } from '@entities';
-import { getForwardSpace } from './getForwardSpace';
+import { findForwardSpace } from './findForwardSpace';
 
 /**
  * The way a unit must face to step from one space into a neighbouring one.
@@ -13,13 +13,13 @@ import { getForwardSpace } from './getForwardSpace';
  * @param to - The space the step enters
  * @returns The facing that steps from one into the other; `undefined` when the two are not neighbours
  */
-export function getStepFacing(
+export function findStepFacing(
   board: Board,
   from: Coordinate,
   to: Coordinate,
 ): UnitFacing | undefined {
   const facing = unitFacings.find(
-    (candidate) => getForwardSpace(board, from, candidate) === to,
+    (candidate) => findForwardSpace(board, from, candidate) === to,
   );
   return facing;
 }

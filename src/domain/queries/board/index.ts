@@ -23,10 +23,10 @@ export {
 // One step forward, forward to the edge, one step rearward, and the facing a
 // step between two neighbours was taken on.
 export {
-  getForwardSpace,
+  findForwardSpace,
   getForwardSpacesToEdge,
-  getRearwardSpace,
-  getStepFacing,
+  findRearwardSpace,
+  findStepFacing,
 } from './steps';
 
 // Every coordinate on the board.

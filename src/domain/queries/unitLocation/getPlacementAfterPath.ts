@@ -1,5 +1,5 @@
 import type { Board, MoveDelta, UnitPlacement } from '@entities';
-import { getForwardSpace, getRearwardSpace } from '../board/steps';
+import { findForwardSpace, findRearwardSpace } from '../board/steps';
 import { getTurnedFacing } from '../facings/getTurnedFacing';
 
 /**
@@ -23,7 +23,7 @@ export function getPlacementAfterPath(
   direction: 'advance' | 'retreat',
 ): UnitPlacement | undefined {
   const getSpaceInDirection =
-    direction === 'advance' ? getForwardSpace : getRearwardSpace;
+    direction === 'advance' ? findForwardSpace : findRearwardSpace;
   let { coordinate, facing } = start;
 
   for (const delta of path) {

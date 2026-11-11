@@ -1,7 +1,7 @@
 import type { Board, Coordinate } from '@entities';
 import { diagonalFacings } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../steps/getForwardSpace';
+import { findForwardSpace } from '../steps/findForwardSpace';
 
 /**
  * Get the diagonally adjacent spaces for a given coordinate.
@@ -16,7 +16,9 @@ export function getDiagonallyAdjacentSpaces(
 ): Set<Coordinate> {
   // Get the diagonal spaces
   const diagonalSpaces = new Set(
-    diagonalFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
+    diagonalFacings.map((facing) =>
+      findForwardSpace(board, coordinate, facing),
+    ),
   );
   // Filter out undefined values
   const validDiagonalSpaces = filterUndefinedSpaces(diagonalSpaces);

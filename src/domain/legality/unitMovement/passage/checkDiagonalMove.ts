@@ -2,8 +2,8 @@ import type { Coordinate, PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import {
   getAdjacentFacings,
-  getForwardSpace,
-  getStepFacing,
+  findForwardSpace,
+  findStepFacing,
   isDiagonalFacing,
 } from '@queries';
 import { canMoveThrough } from './canMoveThrough';
@@ -37,7 +37,7 @@ export function checkDiagonalMove(
   // A step goes straight ahead (§5.1.3), so the two spaces fix its facing.
   // Only a diagonal step has corners to pass between; asking of any other
   // is a fault in the caller, not a rule.
-  const currentFacing = getStepFacing(
+  const currentFacing = findStepFacing(
     board,
     currentCoordinate,
     targetCoordinate,
@@ -57,7 +57,7 @@ export function checkDiagonalMove(
   const orthogonalPassThroughSpaces: Coordinate[] = Array.from(
     adjacentFacings,
     (adjacentFacing) =>
-      getForwardSpace(board, currentCoordinate, adjacentFacing),
+      findForwardSpace(board, currentCoordinate, adjacentFacing),
   ).filter((space) => space !== undefined);
 
   // Filter out spaces that we can't move through

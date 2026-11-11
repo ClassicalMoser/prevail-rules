@@ -12,7 +12,7 @@ const facings = new Set<UnitFacing>(unitFacings);
  * Returns `undefined` when that step would leave the board. Throws on a malformed
  * coordinate string, a row/column outside this board’s layout, or an invalid facing.
  */
-export function getForwardSpace(
+export function findForwardSpace(
   board: Board,
   coordinate: Coordinate,
   facing: UnitFacing,

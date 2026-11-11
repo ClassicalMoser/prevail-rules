@@ -4,7 +4,7 @@ import { unitFacings } from '@entities';
 import {
   diagonalIsClear,
   getBoardSpace,
-  getForwardSpace,
+  findForwardSpace,
   hasEnemyUnit,
   isDiagonalFacing,
 } from '@queries';
@@ -47,7 +47,7 @@ export function exploreCommanderMoves(
     // Explore in each direction
     for (const facing of unitFacings) {
       // Get the next space in the direction
-      const nextSpace = getForwardSpace(board, currentCoordinate, facing);
+      const nextSpace = findForwardSpace(board, currentCoordinate, facing);
       if (nextSpace === undefined) {
         // If there is no space in the direction, we stop
         continue;

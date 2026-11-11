@@ -3,7 +3,7 @@ import {
   getBoardSpace,
   getNeighbourSide,
   getOppositeFacing,
-  getStepFacing,
+  findStepFacing,
   getTurnedFacing,
   hasSingleUnit,
 } from '@queries';
@@ -38,7 +38,7 @@ export function getEngagementEndFacing(
   // A step only ever goes straight ahead (§5.1.3), so the facing it arrived
   // on is fixed by the two spaces. Spaces that are not neighbours were not
   // joined by a step at all.
-  const steppedFacing = getStepFacing(
+  const steppedFacing = findStepFacing(
     board,
     approachCoordinate,
     defenderCoordinate,
