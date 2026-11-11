@@ -4,7 +4,7 @@ This directory contains validation functions that check whether game actions, st
 
 ## Core Principle
 
-**Validation functions return a `ValidationResult` and never throw.**
+**The validation entry points return a `ValidationResult` and never throw.** Each has exactly one boundary that turns a fault into a refusal; everything beneath a boundary throws at the site that found the fault, and does not catch it on the way up.
 
 ```typescript
 type ValidationResult =
@@ -18,7 +18,7 @@ Callers branch on `result` and surface `errorReason` when rejecting an event. Se
 
 1. **Return type**: Always `ValidationResult` (never a bare `boolean`, never `throws` for rule failure).
 2. **Failure shape**: Every `result: false` includes a specific `errorReason` string.
-3. **Error handling**: Wrap bodies that call throwing getters / legality enumerators in try/catch; map caught errors to `{ result: false, errorReason }`.
+3. **Error handling**: Do not catch inside a per-choice validator. A getter or legality enumerator that throws is left to throw, with its own specific message. The entry point (`validatePlayerChoice`, `eachCardPresentOnce`, `eachUnitPresentOnce`) catches once and returns `failFromFault`, which keeps that message under what was being validated. Nothing between the throw and the boundary catches or rewords it.
 4. **Naming**: Prefer `is*`, `can*`, `matches*`, or `validate*` (e.g. internal `isValidChooseCardEvent`, public `validatePlayerChoice`).
 
 ## Player choices: enumerate then membership
@@ -30,31 +30,24 @@ export function isValidChooseCardEvent(
   event: ChooseCardEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalChooseCardOptions(state);
-    const legalOption = legalOptions.find(
-      (option) =>
-        option.player === event.player && option.card.id === event.card.id,
-    );
-    if (legalOption === undefined) {
-      return {
-        result: false,
-        errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
-      };
-    }
-    // The id names a card the player holds; the card the event shows must be
-    // that card.
-    const sameCard = isSameCardValue(legalOption.card, event.card);
-    if (!sameCard.result) {
-      return sameCard;
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalChooseCardOptions(state);
+  const legalOption = legalOptions.find(
+    (option) =>
+      option.player === event.player && option.card.id === event.card.id,
+  );
+  if (legalOption === undefined) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
     };
   }
+  // The id names a card the player holds; the card the event shows must be
+  // that card.
+  const sameCard = isSameCardValue(legalOption.card, event.card);
+  if (!sameCard.result) {
+    return sameCard;
+  }
+  return { result: true };
 }
 ```
 
@@ -83,18 +76,18 @@ Movement legality (`getLegalUnitMoves`, `getLegalMoveDeltas`, commander moves) l
 | `getBoardSpace`   | **throws** (coordinate absent from `board.board`) | n/a (key lookup)                                                              |
 | `getForwardSpace` | returns **`undefined`** (step leaves the board)   | **throws** (bad coordinate string, row/column outside layout, invalid facing) |
 
-**Validators** catch throws from getters and turn them into `FailValidationResult`. They treat `undefined` from directional queries as a normal negative case (not an exception).
+**Validators** let throws from getters fall through to the entry point's boundary, which turns them into a `FailValidationResult`. They treat `undefined` from directional queries as a normal negative case (not an exception).
 
 Do not write “queries throw, validation catches” as a blanket rule — only some getters throw.
 
 ## Authoritative game state
 
-Player-choice legality validators that use `getLegal*` take authoritative `GameState` (both hands readable). Card visibility is still a type parameter elsewhere when a function must constrain readable card fields. Board size is not a type parameter — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).
+Player-choice legality validators that use `getLegal*` take authoritative `GameState` (both hands readable). Card visibility is a `visibility` tag on `GameState`, which a `switch` narrows when a function must constrain readable card fields. Board size is not a type parameter — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).
 
 ## Testing
 
 Titles, fixtures, and setup follow [`STYLE.md`](../../../STYLE.md). For this layer specifically:
 
 - Assert `result: false` **and** a meaningful `errorReason` for illegal cases.
-- Assert that getter / enumerator throws become `result: false`, not uncaught exceptions.
+- Assert at a per-choice validator that a getter / enumerator throw is left to throw, naming its cause; assert at the entry point (`validatePlayerChoice`) that it becomes `result: false`, not an uncaught exception.
 - Cover membership pass/fail; leave enumeration depth to colocated `getLegal*.test.ts`.

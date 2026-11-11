@@ -49,7 +49,7 @@ describe('isValidChooseMeleeResolutionEvent function', () => {
     expect(validation.errorReason).toContain('E-6');
   });
 
-  it('rejects when not in resolveMelee', () => {
+  it('throws, naming the phase, when the game is not resolving melee', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -59,11 +59,9 @@ describe('isValidChooseMeleeResolutionEvent function', () => {
       space: 'E-5',
     });
 
-    const validation = isValidChooseMeleeResolutionEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason.length).toBeGreaterThan(0);
+    // Choosing the next engagement belongs to the melee phase.
+    expect(() => isValidChooseMeleeResolutionEvent(event, state)).toThrow(
+      'Expected resolveMelee phase, got playCards',
+    );
   });
 });

@@ -23,46 +23,39 @@ export function isValidCommitToMovementEvent(
   event: CommitToMovementEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalCommitToMovementEvents(state);
-    const legalOption = legalOptions.find((option) => {
-      if (option.player !== event.player) {
-        return false;
-      }
-      if (!sameModifierTypes(option.modifierTypes, event.modifierTypes)) {
-        return false;
-      }
-      if (option.committedCard === null || event.committedCard === null) {
-        return option.committedCard === event.committedCard;
-      }
-      return isSameCard(option.committedCard, event.committedCard).result;
-    });
-    if (legalOption === undefined) {
-      const cardLabel =
-        event.committedCard === null
-          ? 'refuse'
-          : `card ${event.committedCard.id}`;
-      return {
-        errorReason: `Commit to movement is not legal for ${event.player} with ${cardLabel}`,
-        result: false,
-      };
+  const legalOptions = getLegalCommitToMovementEvents(state);
+  const legalOption = legalOptions.find((option) => {
+    if (option.player !== event.player) {
+      return false;
     }
-    // The id names a card the player holds; what the event says that card is
-    // must be what it is, since the commitment's stats are read from it.
-    if (legalOption.committedCard !== null && event.committedCard !== null) {
-      const sameCard = isSameCardValue(
-        legalOption.committedCard,
-        event.committedCard,
-      );
-      if (!sameCard.result) {
-        return sameCard;
-      }
+    if (!sameModifierTypes(option.modifierTypes, event.modifierTypes)) {
+      return false;
     }
-    return { result: true };
-  } catch (error) {
+    if (option.committedCard === null || event.committedCard === null) {
+      return option.committedCard === event.committedCard;
+    }
+    return isSameCard(option.committedCard, event.committedCard).result;
+  });
+  if (legalOption === undefined) {
+    const cardLabel =
+      event.committedCard === null
+        ? 'refuse'
+        : `card ${event.committedCard.id}`;
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Commit to movement is not legal for ${event.player} with ${cardLabel}`,
       result: false,
     };
   }
+  // The id names a card the player holds; what the event says that card is
+  // must be what it is, since the commitment's stats are read from it.
+  if (legalOption.committedCard !== null && event.committedCard !== null) {
+    const sameCard = isSameCardValue(
+      legalOption.committedCard,
+      event.committedCard,
+    );
+    if (!sameCard.result) {
+      return sameCard;
+    }
+  }
+  return { result: true };
 }

@@ -13,24 +13,16 @@ export function isValidChooseRetreatOptionEvent(
   event: ChooseRetreatOptionEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalChooseRetreatOptionEvents(state);
-    const isLegal = legalOptions.some(
-      (option) =>
-        option.player === event.player &&
-        isSameMovePath(option.path, event.path),
-    );
-    if (!isLegal) {
-      return {
-        errorReason: `Retreat path ${event.path.join(', ')} is not one offered to ${event.player}`,
-        result: false,
-      };
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalChooseRetreatOptionEvents(state);
+  const isLegal = legalOptions.some(
+    (option) =>
+      option.player === event.player && isSameMovePath(option.path, event.path),
+  );
+  if (!isLegal) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Retreat path ${event.path.join(', ')} is not one offered to ${event.player}`,
       result: false,
     };
   }
+  return { result: true };
 }

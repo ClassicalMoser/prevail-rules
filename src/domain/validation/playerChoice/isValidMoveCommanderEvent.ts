@@ -15,23 +15,16 @@ export function isValidMoveCommanderEvent(
   event: MoveCommanderEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalDestinations = getLegalCommanderMoves(
-      event.player,
-      state,
-      event.from,
-    );
-    if (!legalDestinations.has(event.to)) {
-      return {
-        errorReason: `Destination ${event.to} is not a legal commander move for ${event.player} from ${event.from}`,
-        result: false,
-      };
-    }
-    return { result: true };
-  } catch (error) {
+  const legalDestinations = getLegalCommanderMoves(
+    event.player,
+    state,
+    event.from,
+  );
+  if (!legalDestinations.has(event.to)) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Destination ${event.to} is not a legal commander move for ${event.player} from ${event.from}`,
       result: false,
     };
   }
+  return { result: true };
 }

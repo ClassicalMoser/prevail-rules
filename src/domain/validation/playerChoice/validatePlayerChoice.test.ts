@@ -2,9 +2,17 @@ import { tempCommandCards } from '@sampleValues';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
-import { updateCardState } from '@testing';
+import {
+  createMoveCommandersPhaseState,
+  createPlayableGame,
+  updateCardState,
+} from '@testing';
 
-import { updatePhaseState } from '@transforms';
+import {
+  addCommanderToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
 import {
@@ -120,5 +128,39 @@ describe('validatePlayerChoice function', () => {
     }
     expect(validation.errorReason).toContain('chooseCard');
     expect(validation.errorReason).toContain('moveCommander');
+  });
+
+  it('turns a fault found while checking legality into a refusal that names the cause', () => {
+    // White holds the initiative, so white moves its commander first, and the
+    // game is waiting on exactly that choice. But the commander stands on E-5,
+    // and the event moves one from E-6, which is a fault in the event.
+    const game = createPlayableGame(
+      [
+        { coord: 'A-1', facing: 'south', player: 'white' },
+        { coord: 'I-9', facing: 'north', player: 'black' },
+      ],
+      { initiative: 'white' },
+    );
+    const withCommander = updateBoardState(
+      game,
+      addCommanderToBoard(game.boardState, 'white', 'E-5'),
+    );
+    const state = updatePhaseState(
+      withCommander,
+      createMoveCommandersPhaseState(),
+    );
+    const event = createMoveCommanderEvent({
+      from: 'E-6',
+      player: 'white',
+      to: 'E-7',
+    });
+
+    const validation = validatePlayerChoice(event, state);
+
+    expect(validation).toStrictEqual({
+      errorReason:
+        'Error validating player choice: Starting position does not contain specified commander',
+      result: false,
+    });
   });
 });

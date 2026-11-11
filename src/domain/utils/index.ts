@@ -24,6 +24,9 @@ export type { RandomSource } from './randomSource';
 // Narrow away `undefined`, or throw.
 export { throwIfUndefined } from './throwIfMissing';
 
+// A thrown fault, as the refusal a validator's boundary returns.
+export { failFromFault } from './failFromFault';
+
 // Pass, fail, and the union. Validators return this and do not throw.
 export {
   failValidationResultSchema,

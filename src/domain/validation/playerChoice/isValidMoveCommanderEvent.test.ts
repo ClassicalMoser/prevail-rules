@@ -43,7 +43,7 @@ describe('isValidMoveCommanderEvent function', () => {
     expect(validation.errorReason).toContain('I-9');
   });
 
-  it('rejects when the commander is not at the starting position', () => {
+  it('throws when the commander is not at the starting position', () => {
     const state = stateWithCommanderAt('E-5');
     const event = createMoveCommanderEvent({
       from: 'E-6',
@@ -51,13 +51,10 @@ describe('isValidMoveCommanderEvent function', () => {
       to: 'E-7',
     });
 
-    const validation = isValidMoveCommanderEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toMatch(
-      /Starting position does not contain specified commander/iu,
+    // A move from a space the commander is not on is a fault in the event,
+    // not a move to weigh; the boundary turns it into a refusal.
+    expect(() => isValidMoveCommanderEvent(event, state)).toThrow(
+      'Starting position does not contain specified commander',
     );
   });
 });

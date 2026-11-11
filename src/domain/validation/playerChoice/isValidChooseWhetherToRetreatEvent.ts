@@ -11,24 +11,17 @@ export function isValidChooseWhetherToRetreatEvent(
   event: ChooseWhetherToRetreatEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalChooseWhetherToRetreatEvents(state);
-    const isLegal = legalOptions.some(
-      (option) =>
-        option.player === event.player &&
-        option.choosesToRetreat === event.choosesToRetreat,
-    );
-    if (!isLegal) {
-      return {
-        errorReason: `Choose whether to retreat is not legal for ${event.player}`,
-        result: false,
-      };
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalChooseWhetherToRetreatEvents(state);
+  const isLegal = legalOptions.some(
+    (option) =>
+      option.player === event.player &&
+      option.choosesToRetreat === event.choosesToRetreat,
+  );
+  if (!isLegal) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Choose whether to retreat is not legal for ${event.player}`,
       result: false,
     };
   }
+  return { result: true };
 }

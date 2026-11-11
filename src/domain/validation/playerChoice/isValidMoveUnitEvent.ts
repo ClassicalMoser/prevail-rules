@@ -19,51 +19,44 @@ export function isValidMoveUnitEvent(
   event: MoveUnitEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const movement = getMovementResolutionState(state);
-    if (movement.targetPlacement !== 'pending') {
-      return {
-        errorReason: 'This unit has already moved',
-        result: false,
-      };
-    }
-    const mover = movement.movingUnit;
-    if (mover.unit.playerSide !== event.player) {
-      return {
-        errorReason: `Expected the move from ${mover.unit.playerSide}, got ${event.player}`,
-        result: false,
-      };
-    }
-
-    // The path must be a legal move, every step and turn of it (A11), with
-    // the card committed for it counted (§4.3.10).
-    const pathValid = isValidMovePath(
-      state,
-      mover,
-      event.path,
-      'advance',
-      modifiersFromCompletedCommitment(movement.commitment),
-    );
-    if (!pathValid.result) {
-      return pathValid;
-    }
-
-    // Only a commander standing with the unit can ride along.
-    if (event.moveCommander) {
-      const space = getBoardSpace(state.boardState, mover.placement.coordinate);
-      if (!space.commanders.includes(event.player)) {
-        return {
-          errorReason: `Cannot move commander with unit: commander not at ${mover.placement.coordinate}`,
-          result: false,
-        };
-      }
-    }
-
-    return { result: true };
-  } catch (error) {
+  const movement = getMovementResolutionState(state);
+  if (movement.targetPlacement !== 'pending') {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: 'This unit has already moved',
       result: false,
     };
   }
+  const mover = movement.movingUnit;
+  if (mover.unit.playerSide !== event.player) {
+    return {
+      errorReason: `Expected the move from ${mover.unit.playerSide}, got ${event.player}`,
+      result: false,
+    };
+  }
+
+  // The path must be a legal move, every step and turn of it (A11), with
+  // the card committed for it counted (§4.3.10).
+  const pathValid = isValidMovePath(
+    state,
+    mover,
+    event.path,
+    'advance',
+    modifiersFromCompletedCommitment(movement.commitment),
+  );
+  if (!pathValid.result) {
+    return pathValid;
+  }
+
+  // Only a commander standing with the unit can ride along.
+  if (event.moveCommander) {
+    const space = getBoardSpace(state.boardState, mover.placement.coordinate);
+    if (!space.commanders.includes(event.player)) {
+      return {
+        errorReason: `Cannot move commander with unit: commander not at ${mover.placement.coordinate}`,
+        result: false,
+      };
+    }
+  }
+
+  return { result: true };
 }

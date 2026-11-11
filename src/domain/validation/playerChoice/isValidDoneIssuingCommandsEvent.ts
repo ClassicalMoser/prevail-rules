@@ -10,29 +10,19 @@ export function isValidDoneIssuingCommandsEvent(
   event: DoneIssuingCommandsEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalDoneIssuingCommandsEvents(state);
-    if (legalOptions === null) {
-      return {
-        errorReason:
-          'Done issuing commands is not expected in the current state',
-        result: false,
-      };
-    }
-    const isLegal = legalOptions.some(
-      (option) => option.player === event.player,
-    );
-    if (!isLegal) {
-      return {
-        errorReason: `Done issuing commands is not legal for ${event.player}`,
-        result: false,
-      };
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalDoneIssuingCommandsEvents(state);
+  if (legalOptions === null) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: 'Done issuing commands is not expected in the current state',
       result: false,
     };
   }
+  const isLegal = legalOptions.some((option) => option.player === event.player);
+  if (!isLegal) {
+    return {
+      errorReason: `Done issuing commands is not legal for ${event.player}`,
+      result: false,
+    };
+  }
+  return { result: true };
 }

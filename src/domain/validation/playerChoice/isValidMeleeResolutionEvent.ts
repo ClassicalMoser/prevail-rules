@@ -15,23 +15,15 @@ export function isValidChooseMeleeResolutionEvent(
   event: ChooseMeleeResolutionEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalChooseMeleeResolutionEvents(state);
-    const isLegal = legalOptions.some(
-      (option) =>
-        option.player === event.player && option.space === event.space,
-    );
-    if (!isLegal) {
-      return {
-        errorReason: `Space ${event.space} is not a legal melee resolution choice for ${event.player}`,
-        result: false,
-      };
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalChooseMeleeResolutionEvents(state);
+  const isLegal = legalOptions.some(
+    (option) => option.player === event.player && option.space === event.space,
+  );
+  if (!isLegal) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Space ${event.space} is not a legal melee resolution choice for ${event.player}`,
       result: false,
     };
   }
+  return { result: true };
 }

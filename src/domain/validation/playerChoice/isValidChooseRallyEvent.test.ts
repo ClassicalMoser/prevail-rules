@@ -50,7 +50,7 @@ describe('isValidChooseRallyEvent function', () => {
     expect(validation.errorReason).toContain('black');
   });
 
-  it('rejects when not in a chooseRally step', () => {
+  it('throws, naming the phase, when the game is not in cleanup', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -60,13 +60,10 @@ describe('isValidChooseRallyEvent function', () => {
       player: 'black',
     });
 
-    const validation = isValidChooseRallyEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toMatch(
-      /Expected cleanup phase|Not in choose rally step/iu,
+    // Choosing to rally belongs to cleanup, so the enumerator refuses to list
+    // options anywhere else; the boundary turns that into a refusal.
+    expect(() => isValidChooseRallyEvent(event, state)).toThrow(
+      'Expected cleanup phase, got playCards',
     );
   });
 });

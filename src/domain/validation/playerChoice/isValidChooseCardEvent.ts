@@ -20,30 +20,23 @@ export function isValidChooseCardEvent(
   event: ChooseCardEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalChooseCardOptions(state);
-    const legalOption = legalOptions.find(
-      (option) =>
-        option.player === event.player &&
-        isSameCard(option.card, event.card).result,
-    );
-    if (legalOption === undefined) {
-      return {
-        errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
-        result: false,
-      };
-    }
-    // The id names a card the player holds; the card the event shows must be
-    // that card, since everyone folds it as shown.
-    const sameCard = isSameCardValue(legalOption.card, event.card);
-    if (!sameCard.result) {
-      return sameCard;
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalChooseCardOptions(state);
+  const legalOption = legalOptions.find(
+    (option) =>
+      option.player === event.player &&
+      isSameCard(option.card, event.card).result,
+  );
+  if (legalOption === undefined) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
       result: false,
     };
   }
+  // The id names a card the player holds; the card the event shows must be
+  // that card, since everyone folds it as shown.
+  const sameCard = isSameCardValue(legalOption.card, event.card);
+  if (!sameCard.result) {
+    return sameCard;
+  }
+  return { result: true };
 }

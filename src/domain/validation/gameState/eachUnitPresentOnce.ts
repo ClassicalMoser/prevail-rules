@@ -1,5 +1,6 @@
 import type { Board, UnitCount, UnitInstance } from '@entities';
 import type { ValidationResult } from '@utils';
+import { failFromFault } from '@utils';
 import { createUnitInstance } from '@factories';
 import {
   getBoardCoordinates,
@@ -131,10 +132,7 @@ export function eachUnitPresentOnce(
       result: true,
     };
   } catch (error) {
-    // Any error means the game state is invalid
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
-      result: false,
-    };
+    // Any fault means the game state cannot be judged consistent.
+    return failFromFault(error, 'checking each unit is present once');
   }
 }

@@ -1,4 +1,5 @@
 import type { ValidationResult } from '@utils';
+import { failFromFault } from '@utils';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
 import { validateExpectedChoice } from './validateExpectedChoice';
@@ -36,12 +37,8 @@ export function validatePlayerChoice(
 
     return validateLegalPlayerChoice(safelyParsed.data, state);
   } catch (error) {
-    return {
-      errorReason:
-        error instanceof Error
-          ? `Error validating player choice: ${error.message}`
-          : 'Unknown error validating player choice',
-      result: false,
-    };
+    // The one place a fault becomes a refusal: everything beneath it throws
+    // at the site that found the fault, and is not caught on the way up.
+    return failFromFault(error, 'validating player choice');
   }
 }

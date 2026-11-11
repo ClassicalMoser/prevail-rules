@@ -68,6 +68,7 @@ export {
 } from '@entities';
 export {
   defaultRandom,
+  failFromFault,
   failValidationResultSchema,
   passValidationResultSchema,
   validationResultSchema,

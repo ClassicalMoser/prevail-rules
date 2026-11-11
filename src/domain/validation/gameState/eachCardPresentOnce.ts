@@ -1,6 +1,7 @@
 import type { CommandCard } from '@entities';
 import type { AuthoritativeCardState, OwnedCardState } from '@game';
 import type { FailValidationResult, ValidationResult } from '@utils';
+import { failFromFault } from '@utils';
 import { isSameCard } from '@queries';
 
 export function eachCardPresentOnce(
@@ -135,11 +136,8 @@ export function eachCardPresentOnce(
     return {
       result: true,
     };
-  } catch {
-    // Any error means the game state is invalid
-    return {
-      errorReason: 'Unknown error',
-      result: false,
-    };
+  } catch (error) {
+    // Any fault means the game state cannot be judged consistent.
+    return failFromFault(error, 'checking each card is present once');
   }
 }

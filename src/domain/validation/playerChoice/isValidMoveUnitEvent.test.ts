@@ -131,7 +131,7 @@ describe('isValidMoveUnitEvent function', () => {
     });
   });
 
-  it('refuses a move when no unit is moving', () => {
+  it('throws, naming the phase, when no command is being carried out', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -142,6 +142,9 @@ describe('isValidMoveUnitEvent function', () => {
       player: 'black',
     });
 
-    expect(isValidMoveUnitEvent(event, state).result).toBe(false);
+    // A unit moves only while a Move order is carried out.
+    expect(() => isValidMoveUnitEvent(event, state)).toThrow(
+      'Not in issueCommands phase',
+    );
   });
 });

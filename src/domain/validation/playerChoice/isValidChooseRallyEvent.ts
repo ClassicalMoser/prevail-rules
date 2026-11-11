@@ -15,24 +15,17 @@ export function isValidChooseRallyEvent(
   event: ChooseRallyEvent,
   state: GameState,
 ): ValidationResult {
-  try {
-    const legalOptions = getLegalChooseRallyEvent(state);
-    const isLegal = legalOptions.some(
-      (option) =>
-        option.player === event.player &&
-        option.performRally === event.performRally,
-    );
-    if (!isLegal) {
-      return {
-        errorReason: `Choose rally option is not legal for ${event.player}`,
-        result: false,
-      };
-    }
-    return { result: true };
-  } catch (error) {
+  const legalOptions = getLegalChooseRallyEvent(state);
+  const isLegal = legalOptions.some(
+    (option) =>
+      option.player === event.player &&
+      option.performRally === event.performRally,
+  );
+  if (!isLegal) {
     return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: `Choose rally option is not legal for ${event.player}`,
       result: false,
     };
   }
+  return { result: true };
 }

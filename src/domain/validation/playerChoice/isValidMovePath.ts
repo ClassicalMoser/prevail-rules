@@ -27,52 +27,44 @@ export function isValidMovePath(
   direction: 'advance' | 'retreat',
   commitmentModifiers?: Modifier[],
 ): ValidationResult {
-  try {
-    // Every move must be one of those offered after the moves before it.
-    for (const [index, delta] of path.entries()) {
-      const offered = getLegalMoveDeltas(
-        gameState,
-        unitWithPlacement,
-        path.slice(0, index),
-        direction,
-        commitmentModifiers,
-      );
-      if (offered === undefined || !offered.next.has(delta)) {
-        const refused: ValidationResult = {
-          errorReason: `Move ${index + 1} (${delta}) is not one the unit may make there`,
-          result: false,
-        };
-        return refused;
-      }
-    }
-
-    // And the move must be allowed to stop where the path ends.
-    const atEnd = getLegalMoveDeltas(
+  // Every move must be one of those offered after the moves before it.
+  for (const [index, delta] of path.entries()) {
+    const offered = getLegalMoveDeltas(
       gameState,
       unitWithPlacement,
-      path,
+      path.slice(0, index),
       direction,
       commitmentModifiers,
     );
-    if (atEnd === undefined || !atEnd.mayStop) {
-      const stillOwed = atEnd === undefined ? [] : [...atEnd.next];
-      const cannotStop: ValidationResult = {
-        errorReason:
-          stillOwed.length === 0
-            ? 'The move may not stop there'
-            : `The move may not stop there; it may go on with ${stillOwed.join(' or ')}`,
+    if (offered === undefined || !offered.next.has(delta)) {
+      const refused: ValidationResult = {
+        errorReason: `Move ${index + 1} (${delta}) is not one the unit may make there`,
         result: false,
       };
-      return cannotStop;
+      return refused;
     }
+  }
 
-    const valid: ValidationResult = { result: true };
-    return valid;
-  } catch (error) {
-    const fault: ValidationResult = {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+  // And the move must be allowed to stop where the path ends.
+  const atEnd = getLegalMoveDeltas(
+    gameState,
+    unitWithPlacement,
+    path,
+    direction,
+    commitmentModifiers,
+  );
+  if (atEnd === undefined || !atEnd.mayStop) {
+    const stillOwed = atEnd === undefined ? [] : [...atEnd.next];
+    const cannotStop: ValidationResult = {
+      errorReason:
+        stillOwed.length === 0
+          ? 'The move may not stop there'
+          : `The move may not stop there; it may go on with ${stillOwed.join(' or ')}`,
       result: false,
     };
-    return fault;
+    return cannotStop;
   }
+
+  const valid: ValidationResult = { result: true };
+  return valid;
 }
