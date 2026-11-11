@@ -35,7 +35,6 @@ describe('applyDoneIssuingCommandsEvent function', () => {
     state = addUnitsToCommandedUnits(state, [unit]);
 
     const event = createDoneIssuingCommandsEvent({
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -59,7 +58,6 @@ describe('applyDoneIssuingCommandsEvent function', () => {
 
     const newState = applyDoneIssuingCommandsEvent(
       createDoneIssuingCommandsEvent({
-        eventNumber: 0,
         player: 'white',
       }),
       state,

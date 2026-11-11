@@ -40,7 +40,6 @@ describe('isValidChooseShooterEvent function', () => {
     );
     // Black names the unit on E-5, where it stands.
     const event = createChooseShooterEvent({
-      eventNumber: 0,
       player: 'black',
       unit: ordered,
     });
@@ -58,7 +57,6 @@ describe('isValidChooseShooterEvent function', () => {
     );
     // The same unit, claimed to stand one space off.
     const event = createChooseShooterEvent({
-      eventNumber: 0,
       player: 'black',
       unit: { ...ordered, placement: { coordinate: 'D-5', facing: 'north' } },
     });
@@ -77,7 +75,6 @@ describe('isValidChooseShooterEvent function', () => {
     );
     // White tries to name black's shooter during black's order.
     const event = createChooseShooterEvent({
-      eventNumber: 0,
       player: 'white',
       unit: ordered,
     });
@@ -99,7 +96,6 @@ describe('isValidChooseShooterEvent function', () => {
       'E-5',
     );
     const event = createChooseShooterEvent({
-      eventNumber: 0,
       player: 'black',
       unit: ordered,
     });

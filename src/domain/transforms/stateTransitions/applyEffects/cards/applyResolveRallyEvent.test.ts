@@ -37,7 +37,6 @@ describe('applyResolveRallyEvent function', () => {
     const event: ResolveRallyEvent = {
       card,
       effectType: 'resolveRally' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
       player: 'white' as const,
     };
@@ -102,7 +101,6 @@ describe('applyResolveRallyEvent function', () => {
     const event: ResolveRallyEvent = {
       card,
       effectType: 'resolveRally',
-      eventNumber: 0,
       eventType: 'gameEffect',
       player: 'white',
     };
@@ -157,7 +155,6 @@ describe('applyResolveRallyEvent function', () => {
     const event: ResolveRallyEvent = {
       card: burned,
       effectType: 'resolveRally',
-      eventNumber: 0,
       eventType: 'gameEffect',
       player: 'black',
     };
@@ -230,7 +227,6 @@ describe('applyResolveRallyEvent function', () => {
     const event: ResolveRallyEvent = {
       card: burned,
       effectType: 'resolveRally',
-      eventNumber: 0,
       eventType: 'gameEffect',
       player: 'white',
     };
@@ -290,7 +286,6 @@ describe('applyResolveRallyEvent function', () => {
     const event: ResolveRallyEvent = {
       card: burned,
       effectType: 'resolveRally',
-      eventNumber: 0,
       eventType: 'gameEffect',
       player: 'white',
     };

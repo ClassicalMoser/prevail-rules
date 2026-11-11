@@ -9,14 +9,12 @@ describe('createChooseShooterEvent function', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
 
     const event = createChooseShooterEvent({
-      eventNumber: 2,
       player: 'black',
       unit,
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseShooter',
-      eventNumber: 2,
       eventType: 'playerChoice',
       player: 'black',
       unit,

@@ -14,8 +14,6 @@ export interface ResolveFlankEngagementEvent {
   effectType: typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE;
   /** The defender with placement. */
   defenderWithPlacement: UnitWithPlacement;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The new facing of the defending unit. */
   newFacing: UnitFacing;
 }
@@ -24,7 +22,6 @@ const _resolveFlankEngagementEventSchemaObject = z
   .object({
     defenderWithPlacement: unitWithPlacementSchema,
     effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     newFacing: unitFacingSchema,
   })
@@ -43,7 +40,6 @@ const _assertExactResolveFlankEngagementEvent: AssertExact<
 export const resolveFlankEngagementEventSchema: z.ZodObject<{
   defenderWithPlacement: typeof unitWithPlacementSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   newFacing: typeof unitFacingSchema;
 }> = _resolveFlankEngagementEventSchemaObject;

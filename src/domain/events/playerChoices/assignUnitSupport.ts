@@ -34,7 +34,6 @@ export interface AssignUnitSupportEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   choiceType: typeof ASSIGN_UNIT_SUPPORT_CHOICE_TYPE;
   player: PlayerSide;
-  eventNumber: number;
   /** Per-grant assignments (omit unused grants). */
   assignments: UnitSupportAssignment[];
 }
@@ -53,7 +52,6 @@ const _assignUnitSupportEventSchemaObject = z
   .object({
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(ASSIGN_UNIT_SUPPORT_CHOICE_TYPE),
-    eventNumber: z.number(),
     player: playerSideSchema,
     assignments: z.array(unitSupportAssignmentSchemaObject),
   })
@@ -71,7 +69,6 @@ const _assertExactAssignUnitSupportEvent: AssertExact<
 export const assignUnitSupportEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'assignUnitSupport'>;
-  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   assignments: z.ZodArray<typeof unitSupportAssignmentSchemaObject>;
 }> = _assignUnitSupportEventSchemaObject;

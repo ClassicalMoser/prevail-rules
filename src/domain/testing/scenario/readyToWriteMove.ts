@@ -17,13 +17,13 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  * @param state - A game waiting for the player to name the unit to move
  * @param unit - The unit to move, standing where the board has it
  * @param commitment - The card committed and what it adds, or `null` to decline
- * @returns The game waiting for the `moveUnit`, and the number that event must carry
+ * @returns The game waiting for the `moveUnit`
  */
 export function readyToWriteMove(
   state: GameStateForVisibility<'authoritative'>,
   unit: UnitWithPlacement,
   commitment: { card: CommandCard; modifierTypes: MovementModifier[] } | null,
-): { state: GameStateForVisibility<'authoritative'>; eventNumber: number } {
+): GameStateForVisibility<'authoritative'> {
   const player = unit.unit.playerSide;
 
   // The player names the unit whose move this is...
@@ -34,7 +34,6 @@ export function readyToWriteMove(
   const named = applyEffectsUntilChoice(
     applyEvent(
       createChooseMovingUnitEvent({
-        eventNumber: start.next.expectedEventNumber,
         player,
         unit,
       }),
@@ -50,7 +49,6 @@ export function readyToWriteMove(
     applyEvent(
       createCommitToMovementEvent({
         committedCard: commitment?.card ?? null,
-        eventNumber: named.next.expectedEventNumber,
         modifierTypes: commitment?.modifierTypes ?? [],
         player,
       }),
@@ -61,9 +59,5 @@ export function readyToWriteMove(
     throw new Error('The game ended before the move was written');
   }
 
-  const ready = {
-    eventNumber: committed.next.expectedEventNumber,
-    state: committed.state,
-  };
-  return ready;
+  return committed.state;
 }

@@ -48,7 +48,6 @@ import {
  * taken from `random`, so a caller that fixes the source fixes the game.
  *
  * @param state - The current game state
- * @param eventNumber - The ordered index of this event in the round (zero-indexed)
  * @param effectType - The type of game effect to generate
  * @param random - The source any drawing procedure takes its draw from
  * @returns The generated game effect event with the specific type for the effect
@@ -58,94 +57,93 @@ import {
  */
 export function generateEventFromProcedure(
   state: GameStateForVisibility<'authoritative'>,
-  eventNumber: number,
   effectType: GameEffectType,
   random: RandomSource,
 ): GameEffectEvent {
   switch (effectType) {
     case 'completeAttackApply': {
-      return generateCompleteAttackApplyEvent(state, eventNumber);
+      return generateCompleteAttackApplyEvent(state);
     }
     case 'completeCleanupPhase': {
-      return generateCompleteCleanupPhaseEvent(state, eventNumber);
+      return generateCompleteCleanupPhaseEvent(state);
     }
     case 'completeIssueCommandsPhase': {
-      return generateCompleteIssueCommandsPhaseEvent(state, eventNumber);
+      return generateCompleteIssueCommandsPhaseEvent(state);
     }
     case 'completeMeleeResolution': {
-      return generateCompleteMeleeResolutionEvent(eventNumber);
+      return generateCompleteMeleeResolutionEvent();
     }
     case 'completeMoveCommandersPhase': {
-      return generateCompleteMoveCommandersPhaseEvent(state, eventNumber);
+      return generateCompleteMoveCommandersPhaseEvent(state);
     }
     case 'completeMovementCommand': {
-      return generateCompleteMovementCommandEvent(eventNumber);
+      return generateCompleteMovementCommandEvent();
     }
     case 'completePlayCardsPhase': {
-      return generateCompletePlayCardsPhaseEvent(state, eventNumber);
+      return generateCompletePlayCardsPhaseEvent(state);
     }
     case 'completeRangedAttackCommand': {
-      return generateCompleteRangedAttackCommandEvent(eventNumber);
+      return generateCompleteRangedAttackCommandEvent();
     }
     case 'completeResolveMeleePhase': {
-      return generateCompleteResolveMeleePhaseEvent(state, eventNumber);
+      return generateCompleteResolveMeleePhaseEvent(state);
     }
     case 'completeUnitMovement': {
-      return generateCompleteUnitMovementEvent(eventNumber);
+      return generateCompleteUnitMovementEvent();
     }
     case 'discardPlayedCards': {
-      return generateDiscardPlayedCardsEvent(state, eventNumber);
+      return generateDiscardPlayedCardsEvent(state);
     }
     case 'gameOver': {
-      return generateGameOverEvent(state, eventNumber);
+      return generateGameOverEvent(state);
     }
     case 'openRetreatFromAttackApply': {
-      return generateOpenRetreatFromAttackApplyEvent(state, eventNumber);
+      return generateOpenRetreatFromAttackApplyEvent(state);
     }
     case 'openReverseFromAttackApply': {
-      return generateOpenReverseFromAttackApplyEvent(state, eventNumber);
+      return generateOpenReverseFromAttackApplyEvent(state);
     }
     case 'openRoutFromAttackApply': {
-      return generateOpenRoutFromAttackApplyEvent(state, eventNumber);
+      return generateOpenRoutFromAttackApplyEvent(state);
     }
     case 'openRetreatFromEngagement': {
-      return generateOpenRetreatFromEngagementEvent(state, eventNumber);
+      return generateOpenRetreatFromEngagementEvent(state);
     }
     case 'resolveEngageRetreatOption': {
-      return generateResolveEngageRetreatOptionEvent(state, eventNumber);
+      return generateResolveEngageRetreatOptionEvent(state);
     }
     case 'resolveFlankEngagement': {
-      return generateResolveFlankEngagementEvent(state, eventNumber);
+      return generateResolveFlankEngagementEvent(state);
     }
     case 'resolveInitiative': {
-      return generateResolveInitiativeEvent(state, eventNumber);
+      return generateResolveInitiativeEvent(state);
     }
     case 'resolveMelee': {
-      return generateResolveMeleeEvent(state, eventNumber);
+      return generateResolveMeleeEvent(state);
     }
     case 'resolveRally': {
-      return generateResolveRallyEvent(state, eventNumber, random);
+      return generateResolveRallyEvent(state, random);
     }
     case 'resolveRangedAttack': {
-      return generateResolveRangedAttackEvent(state, eventNumber);
+      return generateResolveRangedAttackEvent(state);
     }
     case 'resolveRetreat': {
-      return generateResolveRetreatEvent(state, eventNumber);
+      return generateResolveRetreatEvent(state);
     }
     case 'resolveReverse': {
-      return generateResolveReverseEvent(state, eventNumber);
+      return generateResolveReverseEvent(state);
     }
     case 'resolveRout': {
-      return generateResolveRoutEvent(state, eventNumber);
+      return generateResolveRoutEvent(state);
     }
     case 'revealCards': {
-      return generateRevealCardsEvent(state, eventNumber);
+      return generateRevealCardsEvent(state);
     }
     case 'startEngagement': {
-      return generateStartEngagementEvent(state, eventNumber);
+      return generateStartEngagementEvent(state);
     }
     case 'triggerRoutFromRetreat': {
-      return generateTriggerRoutFromRetreatEvent(state, eventNumber);
+      return generateTriggerRoutFromRetreatEvent(state);
     }
 
     default: {

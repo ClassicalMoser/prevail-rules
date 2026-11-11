@@ -41,12 +41,11 @@ function slowerAttackerEngagesFromC9(): GameStateForVisibility<'authoritative'> 
   const ready = readyToWriteMove(resolving, attacker, null);
   const moved = applyEvent(
     createMoveUnitEvent({
-      eventNumber: ready.eventNumber,
       moveCommander: false,
       path: ['step', 'step'],
       player: 'black',
     }),
-    ready.state,
+    ready,
   );
   return moved;
 }
@@ -65,7 +64,6 @@ describe('a front engagement on a faster defender', () => {
     const declined = applyEvent(
       createCommitToMovementEvent({
         committedCard: null,
-        eventNumber: commitment.expectedEventNumber,
         modifierTypes: [],
         player: 'white',
       }),

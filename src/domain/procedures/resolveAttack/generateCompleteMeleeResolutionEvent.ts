@@ -9,15 +9,11 @@ import {
  * This clears the currentMeleeResolutionState and allows the phase to continue
  * to the next engagement or complete.
  *
- * @param eventNumber - The position this event takes in the round's event stream
  * @returns A complete CompleteMeleeResolutionEvent
  */
-export function generateCompleteMeleeResolutionEvent(
-  eventNumber: number,
-): CompleteMeleeResolutionEvent {
+export function generateCompleteMeleeResolutionEvent(): CompleteMeleeResolutionEvent {
   return {
     effectType: COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

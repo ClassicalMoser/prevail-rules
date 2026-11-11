@@ -10,8 +10,6 @@ export interface CompleteMeleeResolutionEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _completeMeleeResolutionEventSchemaObject = z
@@ -20,8 +18,6 @@ const _completeMeleeResolutionEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
   })
   .strict();
 
@@ -38,5 +34,4 @@ const _assertExactCompleteMeleeResolutionEvent: AssertExact<
 export const completeMeleeResolutionEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeMeleeResolution'>;
-  eventNumber: z.ZodNumber;
 }> = _completeMeleeResolutionEventSchemaObject;

@@ -20,8 +20,6 @@ export interface ChooseMovingUnitEvent {
   choiceType: typeof CHOOSE_MOVING_UNIT_CHOICE_TYPE;
   /** The player carrying out the order. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The unit that moves next, and where it stands. */
   unit: UnitWithPlacement;
 }
@@ -31,7 +29,6 @@ const _chooseMovingUnitEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(CHOOSE_MOVING_UNIT_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     unit: unitWithPlacementSchema,
   })
   .strict();
@@ -50,6 +47,5 @@ export const chooseMovingUnitEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof CHOOSE_MOVING_UNIT_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   unit: typeof unitWithPlacementSchema;
 }> = _chooseMovingUnitEventSchemaObject;

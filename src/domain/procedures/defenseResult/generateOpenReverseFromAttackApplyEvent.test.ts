@@ -40,7 +40,6 @@ describe('generateOpenReverseFromAttackApplyEvent function', () => {
   it('a ranged apply with a pending reverse names the ranged context', () => {
     const event = generateOpenReverseFromAttackApplyEvent(
       stateWithRangedPendingReverse(),
-      0,
     );
     expect(event.effectType).toBe('openReverseFromAttackApply');
     expect(event.attackResolutionContext).toBe('rangedAttack');

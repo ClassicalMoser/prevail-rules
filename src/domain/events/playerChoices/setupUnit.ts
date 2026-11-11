@@ -18,8 +18,6 @@ export interface SetupUnitsEvent {
   choiceType: typeof SETUP_UNITS_CHOICE_TYPE;
   /** The player who is setting up the units. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The units to setup, each with its placement. */
   unitPlacements: UnitWithPlacement[];
   /**
@@ -34,7 +32,6 @@ const _setupUnitsEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     commanderCoordinate: coordinateSchema,
     unitPlacements: z.array(unitWithPlacementSchema),
   })
@@ -52,7 +49,6 @@ export const setupUnitsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   commanderCoordinate: typeof coordinateSchema;
   unitPlacements: z.ZodArray<typeof unitWithPlacementSchema>;
 }> = _setupUnitsEventSchemaObject;

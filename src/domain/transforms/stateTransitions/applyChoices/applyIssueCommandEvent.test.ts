@@ -63,7 +63,6 @@ describe('applyIssueCommandEvent function', () => {
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
         command,
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
         units: [unit],
@@ -96,7 +95,6 @@ describe('applyIssueCommandEvent function', () => {
         {
           choiceType: 'issueCommand',
           command,
-          eventNumber: 0,
           eventType: 'playerChoice',
           player: 'black',
           units: [unit],
@@ -126,7 +124,6 @@ describe('applyIssueCommandEvent function', () => {
         {
           choiceType: 'issueCommand',
           command,
-          eventNumber: 0,
           eventType: 'playerChoice',
           player: 'white',
           units: [unit],
@@ -156,7 +153,6 @@ describe('applyIssueCommandEvent function', () => {
         {
           choiceType: 'issueCommand',
           command: first,
-          eventNumber: 0,
           eventType: 'playerChoice',
           player: 'black',
           units: [unit],
@@ -180,7 +176,6 @@ describe('applyIssueCommandEvent function', () => {
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
         command,
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
         units: [unit],
@@ -213,7 +208,6 @@ describe('applyIssueCommandEvent function', () => {
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
         command,
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
         units: [unit1, unit2],
@@ -248,7 +242,6 @@ describe('applyIssueCommandEvent function', () => {
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
         command,
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
         units: [unit],

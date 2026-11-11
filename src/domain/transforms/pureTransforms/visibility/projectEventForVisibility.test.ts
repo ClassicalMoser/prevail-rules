@@ -7,7 +7,6 @@ describe('projectEventForVisibility function', () => {
   const chooseCard: ChooseCardEvent = {
     card: tempCommandCards[0],
     choiceType: 'chooseCard',
-    eventNumber: 0,
     eventType: 'playerChoice',
     player: 'white',
   };
@@ -47,7 +46,6 @@ describe('projectEventForVisibility function', () => {
     const commit = {
       choiceType: 'commitToMovement' as const,
       committedCard: tempCommandCards[0],
-      eventNumber: 1,
       eventType: 'playerChoice' as const,
       modifierTypes: ['speed' as const],
       player: 'white' as const,
@@ -63,7 +61,6 @@ describe('projectEventForVisibility function', () => {
     const reveal: RevealCardsEvent = {
       black: tempCommandCards[1],
       effectType: 'revealCards',
-      eventNumber: 2,
       eventType: 'gameEffect',
       white: tempCommandCards[0],
     };

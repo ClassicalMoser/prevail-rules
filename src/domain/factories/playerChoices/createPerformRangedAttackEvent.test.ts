@@ -9,7 +9,6 @@ describe('createPerformRangedAttackEvent function', () => {
     const targetUnit = createUnitWithPlacement({ coordinate: 'E-5' });
 
     const event = createPerformRangedAttackEvent({
-      eventNumber: 3,
       player: 'white',
       supportingUnits,
       targetUnit,
@@ -17,7 +16,6 @@ describe('createPerformRangedAttackEvent function', () => {
 
     expect(event).toStrictEqual({
       choiceType: 'performRangedAttack',
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
       supportingUnits,

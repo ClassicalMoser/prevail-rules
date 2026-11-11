@@ -51,7 +51,6 @@ describe('getLegalCommitToMeleeEvents function', () => {
       {
         choiceType: 'commitToMelee',
         committedCard: attackCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['attack'],
         player: 'white',
@@ -59,7 +58,6 @@ describe('getLegalCommitToMeleeEvents function', () => {
       {
         choiceType: 'commitToMelee',
         committedCard: null,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: [],
         player: 'white',
@@ -81,7 +79,6 @@ describe('getLegalCommitToMeleeEvents function', () => {
       {
         choiceType: 'commitToMelee',
         committedCard: null,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: [],
         player: 'white',

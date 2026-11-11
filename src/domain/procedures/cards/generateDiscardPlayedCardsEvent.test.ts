@@ -11,20 +11,14 @@ import { createEmptyGameState } from '@factories';
 describe('generateDiscardPlayedCardsEvent function', () => {
   it('given any game state, emits gameEffect with effectType discardPlayedCards', () => {
     const state: GameState = createEmptyGameState('standard');
-    const event = generateDiscardPlayedCardsEvent(state, 0);
+    const event = generateDiscardPlayedCardsEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('discardPlayedCards');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateDiscardPlayedCardsEvent(
-      createEmptyGameState('standard'),
-      0,
-    );
-    const b = generateDiscardPlayedCardsEvent(
-      createEmptyGameState('standard'),
-      0,
-    );
+    const a = generateDiscardPlayedCardsEvent(createEmptyGameState('standard'));
+    const b = generateDiscardPlayedCardsEvent(createEmptyGameState('standard'));
     expect(a).toStrictEqual(b);
   });
 });

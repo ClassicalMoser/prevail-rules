@@ -25,7 +25,6 @@ import {
  */
 export function generateResolveReverseEvent(
   state: GameState,
-  eventNumber: number,
 ): ResolveReverseEvent {
   const phaseState = getCurrentPhaseState(state);
 
@@ -69,7 +68,6 @@ export function generateResolveReverseEvent(
   return {
     attackResolutionContext,
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     newUnitPlacement: {
       placement: {

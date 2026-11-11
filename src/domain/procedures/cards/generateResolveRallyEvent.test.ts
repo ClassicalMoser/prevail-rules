@@ -39,7 +39,7 @@ describe('generateResolveRallyEvent function', () => {
 
   it('uses initiative player on firstPlayerResolveRally and burns from their played pile', () => {
     const full = cleanupResolveRallyState('black');
-    const event = generateResolveRallyEvent(full, 0, defaultRandom);
+    const event = generateResolveRallyEvent(full, defaultRandom);
     expect(event.effectType).toBe('resolveRally');
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
@@ -62,7 +62,7 @@ describe('generateResolveRallyEvent function', () => {
       withPlayed,
       createCleanupPhaseState({ step: 'secondPlayerResolveRally' }),
     );
-    const event = generateResolveRallyEvent(full, 0, defaultRandom);
+    const event = generateResolveRallyEvent(full, defaultRandom);
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
   });
@@ -84,7 +84,7 @@ describe('generateResolveRallyEvent function', () => {
       withPlayed,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
-    const event = generateResolveRallyEvent(full, 0, defaultRandom);
+    const event = generateResolveRallyEvent(full, defaultRandom);
     expect(event.player).toBe('white');
     expect(full.cardState.white.played).toContain(event.card);
   });
@@ -120,20 +120,20 @@ describe('generateResolveRallyEvent function', () => {
 
   it('burns the first played card when the source draws zero', () => {
     const { first, full } = cleanupWithThreePlayed();
-    const event = generateResolveRallyEvent(full, 0, fixedRandom(0));
+    const event = generateResolveRallyEvent(full, fixedRandom(0));
     expect(event.card.id).toBe(first.id);
   });
 
   it('burns the last played card when the source draws near one', () => {
     const { full, third } = cleanupWithThreePlayed();
-    const event = generateResolveRallyEvent(full, 0, fixedRandom(0.99));
+    const event = generateResolveRallyEvent(full, fixedRandom(0.99));
     expect(event.card.id).toBe(third.id);
   });
 
   it('burns the same card twice from one fixed source', () => {
     const { full } = cleanupWithThreePlayed();
-    const first = generateResolveRallyEvent(full, 0, fixedRandom(0.5));
-    const second = generateResolveRallyEvent(full, 0, fixedRandom(0.5));
+    const first = generateResolveRallyEvent(full, fixedRandom(0.5));
+    const second = generateResolveRallyEvent(full, fixedRandom(0.5));
     expect(second.card.id).toBe(first.card.id);
   });
 
@@ -143,7 +143,7 @@ describe('generateResolveRallyEvent function', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
-    expect(() => generateResolveRallyEvent(full, 0, defaultRandom)).toThrow(
+    expect(() => generateResolveRallyEvent(full, defaultRandom)).toThrow(
       'Player black has no played cards to burn for rally',
     );
   });
@@ -154,7 +154,7 @@ describe('generateResolveRallyEvent function', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    expect(() => generateResolveRallyEvent(full, 0, defaultRandom)).toThrow(
+    expect(() => generateResolveRallyEvent(full, defaultRandom)).toThrow(
       'Cleanup phase is not on a resolveRally step: firstPlayerChooseRally',
     );
   });
@@ -165,7 +165,7 @@ describe('generateResolveRallyEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRallyEvent(full, 0, defaultRandom)).toThrow(
+    expect(() => generateResolveRallyEvent(full, defaultRandom)).toThrow(
       'Expected cleanup phase, got playCards',
     );
   });

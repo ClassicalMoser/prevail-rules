@@ -41,8 +41,6 @@ export interface CommitToRangedDefenseEvent {
   choiceType: typeof COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE;
   /** The target's owner, committing (or refusing). */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /**
    * Card from hand to commit, or `null` to refuse / decline the commitment
    * without spending a card.
@@ -65,8 +63,6 @@ const _commitToRangedDefenseEventSchemaObject = z
     choiceType: z.literal(COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE),
     /** The target's owner, committing (or refusing). */
     player: playerSideSchema,
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /**
      * Card from hand to commit, or `null` to refuse / decline the commitment
      * without spending a card.
@@ -91,7 +87,6 @@ export const commitToRangedDefenseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToRangedDefense'>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   committedCard: z.ZodNullable<typeof commandCardSchema>;
   modifierTypes: z.ZodArray<typeof rangedDefenseModifierTypesEnum>;
 }> = _commitToRangedDefenseEventSchemaObject;

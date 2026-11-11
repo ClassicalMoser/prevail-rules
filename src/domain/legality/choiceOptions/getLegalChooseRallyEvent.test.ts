@@ -14,7 +14,6 @@ import {
 import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
 
 import { createEmptyGameState } from '@factories';
-import { throwIfUndefined } from '@utils';
 
 const chooseRallyBase = {
   choiceType: 'chooseRally' as const,
@@ -61,13 +60,11 @@ describe('getLegalChooseRallyEvent function', () => {
     expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
-        eventNumber: 0,
         performRally: true,
         player: 'white',
       },
       {
         ...chooseRallyBase,
-        eventNumber: 0,
         performRally: false,
         player: 'white',
       },
@@ -83,13 +80,11 @@ describe('getLegalChooseRallyEvent function', () => {
     expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
-        eventNumber: 0,
         performRally: true,
         player: 'white',
       },
       {
         ...chooseRallyBase,
-        eventNumber: 0,
         performRally: false,
         player: 'white',
       },
@@ -108,37 +103,10 @@ describe('getLegalChooseRallyEvent function', () => {
     expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
-        eventNumber: 0,
         performRally: false,
         player: 'white',
       },
     ]);
-  });
-
-  it('uses getNextEventNumber for eventNumber', () => {
-    const prior: readonly Event[] = [
-      {
-        black: tempCommandCards[0],
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-        white: tempCommandCards[1],
-      },
-    ];
-    const state = stateChooseRally({
-      eventStream: prior,
-      step: 'firstPlayerChooseRally',
-    });
-
-    const options = getLegalChooseRallyEvent(state);
-
-    expect(options).toHaveLength(2);
-    expect(
-      throwIfUndefined(options[0], 'expected first rally option').eventNumber,
-    ).toBe(1);
-    expect(
-      throwIfUndefined(options[1], 'expected second rally option').eventNumber,
-    ).toBe(1);
   });
 
   it('throws when cleanup step is not a choose-rally step', () => {

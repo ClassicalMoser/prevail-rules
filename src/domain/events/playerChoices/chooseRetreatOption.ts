@@ -13,8 +13,6 @@ export interface ChooseRetreatOptionEvent {
   choiceType: typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE;
   /** The player who is choosing the retreat option. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /**
    * The retreat chosen, named by its path (§9.1.3). Where it ends is read
    * from the path, as a move's is; a commander in the unit's space always
@@ -28,7 +26,6 @@ const _chooseRetreatOptionEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     path: z.array(moveDeltaSchema),
   })
   .strict();
@@ -47,6 +44,5 @@ export const chooseRetreatOptionEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   path: z.ZodArray<typeof moveDeltaSchema>;
 }> = _chooseRetreatOptionEventSchemaObject;

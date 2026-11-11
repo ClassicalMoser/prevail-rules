@@ -6,7 +6,3 @@ import type { ExpectedPlayerInput } from './expectedPlayerInput';
  * Used by orchestrator to determine what action to take next.
  */
 export type ExpectedEventInfo = ExpectedPlayerInput | ExpectedGameEffect;
-
-export type ExpectedEvent = ExpectedEventInfo & {
-  expectedEventNumber: number;
-};

@@ -31,7 +31,6 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
 
   const event: CompleteCleanupPhaseEvent = {
     effectType: 'completeCleanupPhase',
-    eventNumber: 0,
     eventType: 'gameEffect',
   };
 

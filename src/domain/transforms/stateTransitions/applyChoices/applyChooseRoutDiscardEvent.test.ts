@@ -72,7 +72,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
     const event: ChooseRoutDiscardEvent = {
       cardIds: [],
       choiceType: 'chooseRoutDiscard',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
     };
@@ -105,7 +104,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
     const event: ChooseRoutDiscardEvent = {
       cardIds: [],
       choiceType: 'chooseRoutDiscard',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
     };
@@ -168,7 +166,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
       {
         cardIds: [tempCommandCards[2].id],
         choiceType: 'chooseRoutDiscard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
       },
@@ -234,7 +231,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
   const whitePaysFirstCard = {
     cardIds: [tempCommandCards[2].id],
     choiceType: 'chooseRoutDiscard' as const,
-    eventNumber: 0,
     eventType: 'playerChoice' as const,
     player: 'white' as const,
   };
@@ -358,7 +354,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
     const event: ChooseRoutDiscardEvent = {
       cardIds: [],
       choiceType: 'chooseRoutDiscard',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
     };
@@ -377,7 +372,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
     const event: ChooseRoutDiscardEvent = {
       cardIds: [],
       choiceType: 'chooseRoutDiscard',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
     };

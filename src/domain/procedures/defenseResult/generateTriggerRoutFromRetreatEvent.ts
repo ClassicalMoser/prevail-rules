@@ -15,13 +15,11 @@ import { findRetreatAwaitingRout, getCurrentPhaseState } from '@queries';
  * searching again.
  *
  * @param state - A retreat with no legal path whose rout has not opened
- * @param eventNumber - The ordered index of this event in the round
  * @returns The event, naming where the retreat is held
  * @throws Error outside a shot, engagement or melee; or when no retreat is waiting to turn into a rout
  */
 export function generateTriggerRoutFromRetreatEvent(
   state: GameState,
-  eventNumber: number,
 ): TriggerRoutFromRetreatEvent {
   // A retreat can fall into a rout in a shot, engagement or melee only.
   const phaseState = getCurrentPhaseState(state);
@@ -42,7 +40,6 @@ export function generateTriggerRoutFromRetreatEvent(
   if (location.source === 'rangedAttack') {
     const ranged: TriggerRoutFromRetreatEvent = {
       effectType: TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
       retreatResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
     };
@@ -54,7 +51,6 @@ export function generateTriggerRoutFromRetreatEvent(
     // retreat this is.
     const melee: TriggerRoutFromRetreatEvent = {
       effectType: TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
       retreatResolutionContext: MELEE_ATTACK_RESOLUTION_CONTEXT,
       retreatingPlayer: location.retreatState.retreatingUnit.unit.playerSide,

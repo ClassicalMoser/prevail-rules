@@ -53,7 +53,6 @@ import {
 /** Shared fields echoed from {@link getExpectedEvent} for actor presentation. */
 interface LegalPlayerChoiceOptionsBase {
   playerSource: PlayerSource;
-  expectedEventNumber: number;
 }
 
 export type LegalPlayerChoiceOptions =
@@ -218,7 +217,6 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
   }
 
   const base: LegalPlayerChoiceOptionsBase = {
-    expectedEventNumber: expected.expectedEventNumber,
     playerSource: expected.playerSource,
   };
   const player =

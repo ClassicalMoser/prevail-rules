@@ -18,7 +18,6 @@ function issueCommandsCompleteEvent(
 ): CompleteIssueCommandsPhaseEvent {
   return {
     effectType: 'completeIssueCommandsPhase',
-    eventNumber: 0,
     eventType: 'gameEffect',
     remainingEngagements,
   };

@@ -19,8 +19,6 @@ export interface ResolveMeleeEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The coordinate of the engagement. */
   location: Coordinate;
   /** The white player's unit with placement. */
@@ -48,7 +46,6 @@ const _resolveMeleeEventSchemaObject = z
     blackUnitRouted: z.boolean(),
     blackUnitWithPlacement: unitWithPlacementSchema,
     effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     location: coordinateSchema,
     whiteUnitRetreated: z.boolean(),
@@ -74,7 +71,6 @@ export const resolveMeleeEventSchema: z.ZodObject<{
   blackUnitRouted: z.ZodBoolean;
   blackUnitWithPlacement: typeof unitWithPlacementSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   location: typeof coordinateSchema;
   whiteUnitRetreated: z.ZodBoolean;

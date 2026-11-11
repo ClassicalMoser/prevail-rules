@@ -20,14 +20,11 @@ export interface CompleteIssueCommandsPhaseEvent {
   effectType: typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE;
   /** The remaining engagements. */
   remainingEngagements: Coordinate[];
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _completeIssueCommandsPhaseEventSchemaObject = z
   .object({
     effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     remainingEngagements: z.array(coordinateSchema),
   })
@@ -45,7 +42,6 @@ const _assertExactCompleteIssueCommandsPhaseEvent: AssertExact<
 /** The schema for a complete issue commands phase event. */
 export const completeIssueCommandsPhaseEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   remainingEngagements: z.ZodArray<typeof coordinateSchema>;
 }> = _completeIssueCommandsPhaseEventSchemaObject;

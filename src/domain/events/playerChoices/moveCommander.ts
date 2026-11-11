@@ -14,8 +14,6 @@ export interface MoveCommanderEvent {
   choiceType: typeof MOVE_COMMANDER_CHOICE_TYPE;
   /** The player who is moving the commander. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The coordinate the commander is moving from. */
   from: Coordinate;
   /** The coordinate the commander is moving to. */
@@ -27,7 +25,6 @@ const _moveCommanderEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(MOVE_COMMANDER_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     from: coordinateSchema,
     to: coordinateSchema,
   })
@@ -47,7 +44,6 @@ export const moveCommanderEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof MOVE_COMMANDER_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   from: typeof coordinateSchema;
   to: typeof coordinateSchema;
 }> = _moveCommanderEventSchemaObject;

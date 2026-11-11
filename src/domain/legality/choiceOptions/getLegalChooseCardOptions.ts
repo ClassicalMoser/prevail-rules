@@ -2,7 +2,7 @@ import type { PlayerSide } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { createChooseCardEvent } from '@factories';
-import { getNextEventNumber, getOwnedPlayerCardState } from '@queries';
+import { getOwnedPlayerCardState } from '@queries';
 
 function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
   const { cardState } = gameState;
@@ -37,7 +37,7 @@ function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
 /**
  * Returns every legal choose-card choice visible under the given game state's
  * card visibility: each pending owned player's in-hand cards as complete
- * {@link ChooseCardEvent} payloads (with `eventNumber` from the round stream).
+ * {@link ChooseCardEvent} payloads.
  *
  * - Authoritative: options for every player still choosing (`awaitingPlay === null`).
  * - Player-seen: only the viewing player's options (never reads the hidden hand).
@@ -61,14 +61,13 @@ export function getLegalChooseCardOptions<S extends GameState>(
     return [];
   }
 
-  const eventNumber = getNextEventNumber(gameState);
   const pendingPlayers = pendingOwnedPlayers(gameState);
   const result: ChooseCardEvent[] = [];
 
   for (const player of pendingPlayers) {
     const hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
     for (const card of hand) {
-      result.push(createChooseCardEvent({ player, eventNumber, card }));
+      result.push(createChooseCardEvent({ player, card }));
     }
   }
 

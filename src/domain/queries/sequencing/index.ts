@@ -17,7 +17,6 @@ export { getCurrentInitiative } from './getCurrentInitiative';
 export { getCurrentEventStream } from './getCurrentEventStream';
 
 // The index the next event will take in that stream.
-export { getNextEventNumber } from './getNextEventNumber';
 
 // The command resolution in progress.
 export { getCurrentCommandResolutionState } from './commandResolution';

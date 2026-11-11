@@ -44,11 +44,9 @@ describe('advanceEffects function', () => {
     getExpectedEventMock.mockReturnValueOnce({
       actionType: 'gameEffect',
       effectType: 'gameOver',
-      expectedEventNumber: 0,
     });
     generateEventFromProcedureMock.mockReturnValue({
       effectType: 'gameOver',
-      eventNumber: 0,
       eventType: 'gameEffect',
       winner: 'black',
     });
@@ -78,17 +76,14 @@ describe('advanceEffects function', () => {
       .mockReturnValueOnce({
         actionType: 'gameEffect',
         effectType: 'revealCards',
-        expectedEventNumber: 0,
       })
       .mockReturnValueOnce({
         actionType: 'playerChoice',
         choiceType: 'chooseCard',
-        expectedEventNumber: 1,
         playerSource: 'bothPlayers',
       });
     generateEventFromProcedureMock.mockReturnValue({
       effectType: 'revealCards',
-      eventNumber: 0,
       eventType: 'gameEffect',
     });
     processEventMock.mockResolvedValue({

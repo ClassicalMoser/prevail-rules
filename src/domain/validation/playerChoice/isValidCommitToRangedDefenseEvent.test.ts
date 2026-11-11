@@ -50,7 +50,6 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
   it('accepts the target’s owner committing its Defence card', () => {
     const event = createCommitToRangedDefenseEvent({
       committedCard: defenceCard,
-      eventNumber: 0,
       modifierTypes: ['defense'],
       player: 'white',
     });
@@ -63,7 +62,6 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
   it('accepts the target’s owner refusing', () => {
     const event = createCommitToRangedDefenseEvent({
       committedCard: null,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'white',
     });
@@ -76,7 +74,6 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
   it('refuses a Defence card the target’s owner does not hold', () => {
     const event = createCommitToRangedDefenseEvent({
       committedCard: otherDefenceCard,
-      eventNumber: 0,
       modifierTypes: ['defense'],
       player: 'white',
     });
@@ -90,7 +87,6 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
     // Black, the shooter, has no say in the target's Defence.
     const event = createCommitToRangedDefenseEvent({
       committedCard: null,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'black',
     });

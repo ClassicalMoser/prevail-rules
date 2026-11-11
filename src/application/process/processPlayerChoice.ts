@@ -4,7 +4,6 @@ import type { PlayerChoiceEvent } from '@events';
 import { isAuthoritativeGameState } from '@queries';
 import type { GameStateForVisibility } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
-import { getExpectedEvent } from '@expected';
 import { validatePlayerChoice } from '@validation';
 import { getGameState } from '@application/composable';
 import { processEvent } from './processEvent';
@@ -37,14 +36,6 @@ export async function processPlayerChoice(
   if (!validation.result) {
     return {
       errorReason: validation.errorReason,
-      result: false,
-    };
-  }
-
-  const expected = getExpectedEvent(gameState);
-  if (expected.expectedEventNumber !== playerChoice.eventNumber) {
-    return {
-      errorReason: 'Event number mismatch',
       result: false,
     };
   }

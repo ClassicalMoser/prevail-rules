@@ -37,7 +37,6 @@ describe('applyPlayerChoiceEvent function', () => {
     const state = createEmptyGameState('standard');
     const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -53,7 +52,6 @@ describe('applyPlayerChoiceEvent function', () => {
     const state = createEmptyGameState('standard');
     const event = {
       choiceType: 'unknown',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
       // The default branch needs a choiceType the union forbids.

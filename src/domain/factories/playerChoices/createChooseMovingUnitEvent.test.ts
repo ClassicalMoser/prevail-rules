@@ -8,14 +8,12 @@ describe('createChooseMovingUnitEvent function', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
 
     const event = createChooseMovingUnitEvent({
-      eventNumber: 2,
       player: 'black',
       unit,
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseMovingUnit',
-      eventNumber: 2,
       eventType: 'playerChoice',
       player: 'black',
       unit,

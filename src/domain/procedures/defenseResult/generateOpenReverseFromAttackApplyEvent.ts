@@ -21,7 +21,6 @@ import {
  */
 export function generateOpenReverseFromAttackApplyEvent(
   state: GameState,
-  eventNumber: number,
 ): OpenReverseFromAttackApplyEvent {
   const phaseState = getCurrentPhaseState(state);
 
@@ -34,7 +33,6 @@ export function generateOpenReverseFromAttackApplyEvent(
     return {
       attackResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
       effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
@@ -55,7 +53,6 @@ export function generateOpenReverseFromAttackApplyEvent(
       attackResolutionContext: 'melee',
       defendingPlayer: apply.defendingUnit.playerSide,
       effectType: OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
     return event;

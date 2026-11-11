@@ -15,14 +15,12 @@ describe('createAssignUnitSupportEvent function', () => {
 
     const event = createAssignUnitSupportEvent({
       assignments,
-      eventNumber: 3,
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       assignments,
       choiceType: 'assignUnitSupport',
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
     });

@@ -38,10 +38,9 @@ function bothHoldTheirLastCard() {
 function chooseOnlyCard(
   state: ReturnType<typeof bothHoldTheirLastCard>,
   player: PlayerSide,
-  eventNumber: number,
 ) {
   const [card] = getOwnedPlayerCardState(state.cardState, player).inHand;
-  const event = createChooseCardEvent({ card, eventNumber, player });
+  const event = createChooseCardEvent({ card, player });
   const validation = validatePlayerChoice(event, state);
   if (!validation.result) {
     throw new Error(
@@ -57,7 +56,7 @@ describe('both players playing their last card in Phase 1', () => {
 
     // Black chooses its only card, face down. White has not chosen yet.
     const { state, next } = applyEffectsUntilChoice(
-      chooseOnlyCard(start, 'black', 0),
+      chooseOnlyCard(start, 'black'),
     );
 
     // Choosing is simultaneous: black's face-down card is not yet in play,
@@ -72,11 +71,7 @@ describe('both players playing their last card in Phase 1', () => {
   it('gives the game to the initiative held going into the round, once both reveal', () => {
     const start = bothHoldTheirLastCard();
 
-    const bothChosen = chooseOnlyCard(
-      chooseOnlyCard(start, 'black', 0),
-      'white',
-      1,
-    );
+    const bothChosen = chooseOnlyCard(chooseOnlyCard(start, 'black'), 'white');
     const { state, next } = applyEffectsUntilChoice(bothChosen);
 
     // Both hands are empty in the same instant, which only the reveal makes
@@ -91,16 +86,14 @@ describe('both players playing their last card in Phase 1', () => {
 
     const blackFirst = applyEffectsUntilChoice(
       chooseOnlyCard(
-        applyEffectsUntilChoice(chooseOnlyCard(start, 'black', 0)).state,
+        applyEffectsUntilChoice(chooseOnlyCard(start, 'black')).state,
         'white',
-        1,
       ),
     );
     const whiteFirst = applyEffectsUntilChoice(
       chooseOnlyCard(
-        applyEffectsUntilChoice(chooseOnlyCard(start, 'white', 0)).state,
+        applyEffectsUntilChoice(chooseOnlyCard(start, 'white')).state,
         'black',
-        1,
       ),
     );
 

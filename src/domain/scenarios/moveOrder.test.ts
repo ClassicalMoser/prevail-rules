@@ -69,7 +69,6 @@ describe('a Move order', () => {
     const named = applyEffectsUntilChoice(
       applyEvent(
         createChooseMovingUnitEvent({
-          eventNumber: start.next.expectedEventNumber,
           player: 'black',
           unit: mover,
         }),
@@ -84,10 +83,9 @@ describe('a Move order', () => {
   });
 
   it('counts a card committed for Speed toward the move', () => {
-    const { state, eventNumber } = namedAndCommitted(speedCard);
+    const state = namedAndCommitted(speedCard);
     // Three steps north: one more than the unit's Speed of 2.
     const move = createMoveUnitEvent({
-      eventNumber,
       moveCommander: false,
       path: ['step', 'step', 'step'],
       player: 'black',
@@ -108,9 +106,8 @@ describe('a Move order', () => {
   });
 
   it('without the card, the same move is more than the unit can make', () => {
-    const { state, eventNumber } = namedAndCommitted(null);
+    const state = namedAndCommitted(null);
     const move = createMoveUnitEvent({
-      eventNumber,
       moveCommander: false,
       path: ['step', 'step', 'step'],
       player: 'black',

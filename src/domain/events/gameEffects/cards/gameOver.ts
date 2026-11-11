@@ -17,8 +17,6 @@ export interface GameOverEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof GAME_OVER_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The winning player. */
   winner: PlayerSide;
 }
@@ -29,8 +27,6 @@ const _gameOverEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(GAME_OVER_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The winning player. */
     winner: playerSideSchema,
   })
@@ -47,6 +43,5 @@ const _assertExactGameOverEvent: AssertExact<
 export const gameOverEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'gameOver'>;
-  eventNumber: z.ZodNumber;
   winner: typeof playerSideSchema;
 }> = _gameOverEventSchemaObject;

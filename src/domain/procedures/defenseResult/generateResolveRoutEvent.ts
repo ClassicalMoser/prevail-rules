@@ -14,14 +14,10 @@ import { findRoutAwaitingPenalty } from '@queries';
  * effect writes the penalty to the slot it came from.
  *
  * @param state - The current game state
- * @param eventNumber - The ordered index of the event in the round
  * @returns A complete ResolveRoutEvent with the routed unit and penalty
  * @throws Error if no rout is awaiting its penalty
  */
-export function generateResolveRoutEvent(
-  state: GameState,
-  eventNumber: number,
-): ResolveRoutEvent {
+export function generateResolveRoutEvent(state: GameState): ResolveRoutEvent {
   const location = findRoutAwaitingPenalty(state);
   if (location === undefined) {
     throw new Error('No rout is awaiting its penalty');
@@ -35,7 +31,6 @@ export function generateResolveRoutEvent(
 
   return {
     effectType: RESOLVE_ROUT_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     penalty: totalPenalty,
     routResolutionSource: source,

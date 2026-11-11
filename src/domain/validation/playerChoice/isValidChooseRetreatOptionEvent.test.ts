@@ -55,7 +55,6 @@ describe('isValidChooseRetreatOptionEvent function', () => {
   it('accepts a retreat option listed on the retreat substep', () => {
     const state = stateWithRangedRetreat();
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: optionB,
     });
@@ -68,7 +67,6 @@ describe('isValidChooseRetreatOptionEvent function', () => {
   it('rejects a path that is not among legalRetreatPaths', () => {
     const state = stateWithRangedRetreat();
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: ['turnAbout', 'step'],
     });
@@ -87,7 +85,6 @@ describe('isValidChooseRetreatOptionEvent function', () => {
       step: 'chooseCards',
     });
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: optionA,
     });

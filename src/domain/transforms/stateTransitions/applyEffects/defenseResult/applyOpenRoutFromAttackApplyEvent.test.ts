@@ -54,7 +54,6 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     const event: OpenRoutFromAttackApplyEvent = {
       attackResolutionContext: 'rangedAttack',
       effectType: 'openRoutFromAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
     };
 
@@ -79,7 +78,6 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     const event: OpenRoutFromAttackApplyEvent = {
       attackResolutionContext: 'rangedAttack',
       effectType: 'openRoutFromAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
     };
 

@@ -20,8 +20,6 @@ export interface MoveUnitEvent {
   choiceType: typeof MOVE_UNIT_CHOICE_TYPE;
   /** The player who is moving the unit. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /**
    * The whole move, step by step and turn by turn (A11). Where the unit
    * ends is wherever the path leaves it; an oblique front approach to an
@@ -38,7 +36,6 @@ const _moveUnitEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     moveCommander: z.boolean(),
     path: z.array(moveDeltaSchema),
   })
@@ -56,7 +53,6 @@ export const moveUnitEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof MOVE_UNIT_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   moveCommander: z.ZodBoolean;
   path: z.ZodArray<typeof moveDeltaSchema>;
 }> = _moveUnitEventSchemaObject;

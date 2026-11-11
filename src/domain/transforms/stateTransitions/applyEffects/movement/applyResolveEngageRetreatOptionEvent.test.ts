@@ -56,7 +56,6 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     const event: ResolveEngageRetreatOptionEvent = {
       defendingUnitCanRetreat: true,
       effectType: 'resolveEngageRetreatOption' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     };
 
@@ -113,7 +112,6 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       {
         defendingUnitCanRetreat: false,
         effectType: 'resolveEngageRetreatOption',
-        eventNumber: 0,
         eventType: 'gameEffect',
       },
       full,

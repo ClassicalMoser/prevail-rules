@@ -9,7 +9,7 @@ export {
 export type { Event, EventType } from './eventType';
 
 // What the engine expects next: an effect, a choice, or the union of both.
-export type { ExpectedEvent, ExpectedEventInfo } from './expectedEvent';
+export type { ExpectedEventInfo } from './expectedEvent';
 export type { ExpectedPlayerInput, PlayerSource } from './expectedEvent';
 export type { ExpectedGameEffect } from './expectedEvent';
 

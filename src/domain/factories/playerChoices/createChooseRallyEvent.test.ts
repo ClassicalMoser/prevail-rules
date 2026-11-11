@@ -5,14 +5,12 @@ describe('createChooseRallyEvent function', () => {
     expect.hasAssertions();
 
     const event = createChooseRallyEvent({
-      eventNumber: 3,
       performRally: true,
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseRally',
-      eventNumber: 3,
       eventType: 'playerChoice',
       performRally: true,
       player: 'white',

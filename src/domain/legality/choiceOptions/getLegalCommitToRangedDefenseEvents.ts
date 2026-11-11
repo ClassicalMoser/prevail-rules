@@ -3,7 +3,6 @@ import type { CommitToRangedDefenseEvent } from '@events';
 import type { GameState } from '@game';
 import { rangedDefenseModifierTypes } from '@events';
 import { createCommitToRangedDefenseEvent } from '@factories';
-import { getNextEventNumber } from '@queries';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -62,7 +61,6 @@ export function getLegalCommitToRangedDefenseEvents<S extends GameState>(
     return none;
   }
 
-  const eventNumber = getNextEventNumber(gameState);
   // Each card in hand naming a stat this commitment applies, then the
   // refusal, which is always open (§8.3, §8.4).
   const offers = getCommitmentOffers(
@@ -73,7 +71,6 @@ export function getLegalCommitToRangedDefenseEvents<S extends GameState>(
   const events = offers.map((offer) =>
     createCommitToRangedDefenseEvent({
       committedCard: offer.committedCard,
-      eventNumber,
       modifierTypes: offer.modifierTypes,
       player,
     }),

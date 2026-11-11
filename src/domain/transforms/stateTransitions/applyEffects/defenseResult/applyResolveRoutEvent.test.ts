@@ -138,7 +138,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rangedAttack',
@@ -165,7 +164,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 0,
         routResolutionSource: 'rangedAttack',
@@ -194,7 +192,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 3,
         routResolutionSource: 'rangedAttack',
@@ -227,7 +224,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'melee',
@@ -254,7 +250,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 1,
         routResolutionSource: 'melee',
@@ -294,7 +289,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rally',
@@ -345,7 +339,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: rout.unitsToRout.reduce(
           (sum: number, u) => sum + u.unitType.morale,
@@ -388,7 +381,6 @@ describe('applyResolveRoutEvent function', () => {
       const state = createStateWithRearEngagementRoutAwaitingPenalty();
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 0,
         routResolutionSource: 'rearEngagementMovement',
@@ -415,7 +407,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rangedAttack',
@@ -434,7 +425,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'melee',
@@ -464,7 +454,6 @@ describe('applyResolveRoutEvent function', () => {
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
-        eventNumber: 0,
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rangedAttack',

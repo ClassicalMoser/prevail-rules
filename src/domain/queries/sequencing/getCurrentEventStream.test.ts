@@ -13,7 +13,6 @@ describe('getCurrentEventStream function', () => {
     const events: readonly Event[] = [
       {
         effectType: 'completeMovementCommand',
-        eventNumber: 0,
         eventType: 'gameEffect',
       },
     ];

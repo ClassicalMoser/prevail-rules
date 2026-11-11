@@ -19,8 +19,6 @@ export interface CompleteAttackApplyEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_ATTACK_APPLY_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The type of attack. */
   attackType: AttackType;
   /** The defending player whose unit was attacked. */
@@ -30,7 +28,6 @@ export interface CompleteAttackApplyEvent {
 const _completeAttackApplyEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_ATTACK_APPLY_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   attackType: typeof attackTypeSchema;
   defendingPlayer: typeof playerSideSchema;
 }> = z
@@ -39,8 +36,6 @@ const _completeAttackApplyEventSchemaObject: z.ZodObject<{
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(COMPLETE_ATTACK_APPLY_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** Mirrors {@link CompleteAttackApplyEvent.attackType}. */
     attackType: attackTypeSchema,
     /** Mirrors {@link CompleteAttackApplyEvent.defendingPlayer}. */
@@ -56,7 +51,6 @@ type CompleteAttackApplyEventSchemaType = z.infer<
 export const completeAttackApplyEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_ATTACK_APPLY_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   attackType: typeof attackTypeSchema;
   defendingPlayer: typeof playerSideSchema;
 }> = _completeAttackApplyEventSchemaObject;

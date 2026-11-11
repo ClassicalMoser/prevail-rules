@@ -43,7 +43,7 @@ describe('generateResolveRoutEvent function', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRoutEvent(full, 0);
+    const event = generateResolveRoutEvent(full);
     expect(event.effectType).toBe('resolveRout');
     expect(event.routResolutionSource).toBe('rangedAttack');
     expect(event.penalty).toBe(defendingUnit.unitType.morale);
@@ -71,7 +71,7 @@ describe('generateResolveRoutEvent function', () => {
     });
     const full = updatePhaseState(s, phase);
 
-    const event = generateResolveRoutEvent(full, 0);
+    const event = generateResolveRoutEvent(full);
     expect(event.routResolutionSource).toBe('melee');
     expect(event.unitInstances).toContain(blackUnit);
     expect(event.penalty).toBe(blackUnit.unitType.morale);
@@ -83,7 +83,7 @@ describe('generateResolveRoutEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRoutEvent(full, 0)).toThrow(
+    expect(() => generateResolveRoutEvent(full)).toThrow(
       'No rout is awaiting its penalty',
     );
   });
@@ -104,7 +104,7 @@ describe('generateResolveRoutEvent function', () => {
       }),
     );
 
-    const event = generateResolveRoutEvent(full, 0);
+    const event = generateResolveRoutEvent(full);
     expect(event.routResolutionSource).toBe('rearEngagementMovement');
     expect(event.unitInstances).toContain(whiteUnit);
   });
@@ -133,7 +133,7 @@ describe('generateResolveRoutEvent function', () => {
       }),
     );
 
-    const event = generateResolveRoutEvent(full, 0);
+    const event = generateResolveRoutEvent(full);
     expect(event.routResolutionSource).toBe('rally');
     expect(event.unitInstances).toContain(unit);
   });
@@ -152,7 +152,7 @@ describe('generateResolveRoutEvent function', () => {
       }),
     );
 
-    expect(() => generateResolveRoutEvent(full, 0)).toThrow(
+    expect(() => generateResolveRoutEvent(full)).toThrow(
       'No rout is awaiting its penalty',
     );
   });

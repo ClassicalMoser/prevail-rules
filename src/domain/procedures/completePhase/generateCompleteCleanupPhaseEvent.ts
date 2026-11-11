@@ -14,13 +14,11 @@ import {
  */
 export function generateCompleteCleanupPhaseEvent(
   state: GameState,
-  eventNumber: number,
 ): CompleteCleanupPhaseEvent {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     effectType: COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

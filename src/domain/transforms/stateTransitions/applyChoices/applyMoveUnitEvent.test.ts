@@ -60,7 +60,6 @@ describe('applyMoveUnitEvent function', () => {
     // The transform reads where the path leads; legality was settled before.
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
-        eventNumber: 2,
         moveCommander: false,
         path: [
           'turnRight',
@@ -110,7 +109,6 @@ describe('applyMoveUnitEvent function', () => {
     // One step from E-5 into the enemy on D-5, already head-on.
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
-        eventNumber: 2,
         moveCommander: false,
         path: ['step'],
         player: 'black',
@@ -133,7 +131,7 @@ describe('applyMoveUnitEvent function', () => {
       facing: 'north',
     });
     // The written move is what the engagement starts from.
-    expect(generateStartEngagementEvent(moved, 3).engagementType).toBe('front');
+    expect(generateStartEngagementEvent(moved).engagementType).toBe('front');
   });
 
   it('a commander riding onto open ground arrives with the unit', () => {
@@ -153,7 +151,6 @@ describe('applyMoveUnitEvent function', () => {
     // One step north, from E-5 to D-5, the commander riding along.
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
-        eventNumber: 2,
         moveCommander: true,
         path: ['step'],
         player: 'black',
@@ -191,7 +188,6 @@ describe('applyMoveUnitEvent function', () => {
     // One step from E-5 into the enemy on D-5, the commander riding along.
     const moved = applyMoveUnitEvent(
       createMoveUnitEvent({
-        eventNumber: 2,
         moveCommander: true,
         path: ['step'],
         player: 'black',

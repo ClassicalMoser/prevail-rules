@@ -49,7 +49,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: speedCard,
-      eventNumber: 0,
       modifierTypes: ['speed'],
       player: 'black',
     });
@@ -63,7 +62,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: null,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'black',
     });
@@ -77,7 +75,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: speedCard,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'black',
     });
@@ -89,7 +86,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: otherCard,
-      eventNumber: 0,
       modifierTypes: ['speed'],
       player: 'black',
     });
@@ -104,7 +100,6 @@ describe('isValidCommitToMovementEvent function', () => {
     });
     const event = createCommitToMovementEvent({
       committedCard: speedCard,
-      eventNumber: 0,
       modifierTypes: ['speed'],
       player: 'black',
     });

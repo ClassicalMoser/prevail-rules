@@ -20,7 +20,6 @@ import { toRemainingCommands } from './toRemainingCommands';
  */
 export function generateCompleteMoveCommandersPhaseEvent(
   state: GameState,
-  eventNumber: number,
 ): CompleteMoveCommandersPhaseEvent {
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
@@ -39,7 +38,6 @@ export function generateCompleteMoveCommandersPhaseEvent(
 
   return {
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     remainingCommandsFirstPlayer,
     remainingCommandsSecondPlayer,

@@ -17,7 +17,7 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  * @param state - A game waiting for the player to name the shooter
  * @param unit - The shooter, standing where the board has it
  * @param commitment - The card committed and what it adds, or `null` to decline
- * @returns The game waiting for the `performRangedAttack`, and the number that event must carry
+ * @returns The game waiting for the `performRangedAttack`
  */
 export function readyToAimShot(
   state: GameStateForVisibility<'authoritative'>,
@@ -26,7 +26,7 @@ export function readyToAimShot(
     card: CommandCard;
     modifierTypes: RangedAttackModifier[];
   } | null,
-): { state: GameStateForVisibility<'authoritative'>; eventNumber: number } {
+): GameStateForVisibility<'authoritative'> {
   const player = unit.unit.playerSide;
 
   // The player names the unit whose shot this is...
@@ -37,7 +37,6 @@ export function readyToAimShot(
   const named = applyEffectsUntilChoice(
     applyEvent(
       createChooseShooterEvent({
-        eventNumber: start.next.expectedEventNumber,
         player,
         unit,
       }),
@@ -53,7 +52,6 @@ export function readyToAimShot(
     applyEvent(
       createCommitToRangedAttackEvent({
         committedCard: commitment?.card ?? null,
-        eventNumber: named.next.expectedEventNumber,
         modifierTypes: commitment?.modifierTypes ?? [],
         player,
       }),
@@ -64,9 +62,5 @@ export function readyToAimShot(
     throw new Error('The game ended before the shot was aimed');
   }
 
-  const ready = {
-    eventNumber: committed.next.expectedEventNumber,
-    state: committed.state,
-  };
-  return ready;
+  return committed.state;
 }

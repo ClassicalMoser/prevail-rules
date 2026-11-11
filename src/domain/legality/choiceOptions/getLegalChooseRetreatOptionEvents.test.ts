@@ -74,14 +74,12 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     expect(events).toStrictEqual([
       {
         choiceType: 'chooseRetreatOption',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
         path: optionA,
       },
       {
         choiceType: 'chooseRetreatOption',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
         path: optionB,
@@ -132,14 +130,12 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     expect(getLegalChooseRetreatOptionEvents(engagementState)).toStrictEqual([
       {
         choiceType: 'chooseRetreatOption',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
         path: optionA,
       },
       {
         choiceType: 'chooseRetreatOption',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
         path: optionB,

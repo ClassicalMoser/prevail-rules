@@ -64,12 +64,11 @@ function rearAttack(options: {
   const ready = readyToWriteMove(resolving, attacker, null);
   const moved = applyEvent(
     createMoveUnitEvent({
-      eventNumber: ready.eventNumber,
       moveCommander: false,
       path: ['step'],
       player: 'black',
     }),
-    ready.state,
+    ready,
   );
   return moved;
 }
@@ -112,7 +111,6 @@ describe('a rear engagement', () => {
     const paid = applyEvent(
       createChooseRoutDiscardEvent({
         cardIds: [first.id, second.id],
-        eventNumber: next.expectedEventNumber,
         player: 'white',
       }),
       awaitingDiscard,

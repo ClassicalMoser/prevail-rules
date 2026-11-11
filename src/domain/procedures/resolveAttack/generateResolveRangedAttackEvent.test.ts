@@ -61,13 +61,13 @@ describe('generateResolveRangedAttackEvent function', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    const event = generateResolveRangedAttackEvent(full, 0);
+    const event = generateResolveRangedAttackEvent(full);
     expect(event.retreated).toBe(true);
   });
 
   it('given spearmen mirror below retreat threshold, retreated is false', () => {
     const full = rangedResolutionGameState();
-    const event = generateResolveRangedAttackEvent(full, 0);
+    const event = generateResolveRangedAttackEvent(full);
     expect(event.effectType).toBe('resolveRangedAttack');
     expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
@@ -90,7 +90,7 @@ describe('generateResolveRangedAttackEvent function', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
+    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
       'Defending commitment is still pending',
     );
   });
@@ -111,7 +111,7 @@ describe('generateResolveRangedAttackEvent function', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
+    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
       'Attacking commitment is still pending',
     );
   });
@@ -132,7 +132,7 @@ describe('generateResolveRangedAttackEvent function', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
+    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
       'Attack apply state already exists',
     );
   });

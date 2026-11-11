@@ -57,7 +57,6 @@ describe('applyChooseCardEvent function', () => {
       const event: ChooseCardEvent = {
         card: tempCommandCards[0],
         choiceType: 'chooseCard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
       };
@@ -86,7 +85,6 @@ describe('applyChooseCardEvent function', () => {
       const event: ChooseCardEvent = {
         card: tempCommandCards[1],
         choiceType: 'chooseCard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
       };
@@ -118,7 +116,6 @@ describe('applyChooseCardEvent function', () => {
       const firstEvent: ChooseCardEvent = {
         card: tempCommandCards[0],
         choiceType: 'chooseCard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
       };
@@ -134,7 +131,6 @@ describe('applyChooseCardEvent function', () => {
       const secondEvent: ChooseCardEvent = {
         card: tempCommandCards[1],
         choiceType: 'chooseCard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
       };
@@ -156,7 +152,6 @@ describe('applyChooseCardEvent function', () => {
       const event: ChooseCardEvent = {
         card: tempCommandCards[0],
         choiceType: 'chooseCard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
       };
@@ -200,7 +195,6 @@ describe('applyChooseCardEvent function', () => {
         {
           card: 'hidden',
           choiceType: 'chooseCard',
-          eventNumber: 0,
           eventType: 'playerChoice',
           player: 'black',
         },
@@ -214,7 +208,6 @@ describe('applyChooseCardEvent function', () => {
         {
           card: tempCommandCards[1],
           choiceType: 'chooseCard',
-          eventNumber: 1,
           eventType: 'playerChoice',
           player: 'white',
         },
@@ -239,7 +232,6 @@ describe('applyChooseCardEvent function', () => {
       const event: ChooseCardEvent = {
         card: tempCommandCards[0],
         choiceType: 'chooseCard',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
       };

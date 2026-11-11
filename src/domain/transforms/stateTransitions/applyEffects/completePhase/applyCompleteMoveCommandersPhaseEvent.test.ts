@@ -16,7 +16,6 @@ import { createEmptyGameState } from '@factories';
 function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPhaseEvent {
   return {
     effectType: 'completeMoveCommandersPhase',
-    eventNumber: 0,
     eventType: 'gameEffect',
     remainingCommandsFirstPlayer: [tempCommandCards[0].command],
     remainingCommandsSecondPlayer: [tempCommandCards[1].command],
@@ -29,7 +28,6 @@ function moveCommandersCompleteEvent(
 ): CompleteMoveCommandersPhaseEvent {
   return {
     effectType: 'completeMoveCommandersPhase',
-    eventNumber: 0,
     eventType: 'gameEffect',
     remainingCommandsFirstPlayer: first,
     remainingCommandsSecondPlayer: second,

@@ -60,7 +60,6 @@ describe('applyResolveRangedAttackEvent function', () => {
     return {
       defenderWithPlacement,
       effectType: 'resolveRangedAttack',
-      eventNumber: 0,
       eventType: 'gameEffect',
       retreated: false,
       reversed: false,

@@ -50,7 +50,6 @@ describe('applyChooseShooterEvent function', () => {
     // Black names the unit on E-5 to shoot.
     const named = applyChooseShooterEvent(
       createChooseShooterEvent({
-        eventNumber: 0,
         player: 'black',
         unit: shooter,
       }),
@@ -85,7 +84,6 @@ describe('applyChooseShooterEvent function', () => {
     // Black names the unit on E-5; each unit shoots once.
     const named = applyChooseShooterEvent(
       createChooseShooterEvent({
-        eventNumber: 0,
         player: 'black',
         unit: shooter,
       }),

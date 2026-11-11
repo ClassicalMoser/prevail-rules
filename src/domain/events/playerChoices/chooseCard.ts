@@ -15,8 +15,6 @@ export interface ChooseCardEvent {
   choiceType: typeof CHOOSE_CARD_CHOICE_TYPE;
   /** The player who is choosing the card. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The card to choose from the player's hand. */
   card: CommandCard;
 }
@@ -29,8 +27,6 @@ const _chooseCardEventSchemaObject = z
     choiceType: z.literal(CHOOSE_CARD_CHOICE_TYPE),
     /** The player who is choosing the card. */
     player: playerSideSchema,
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The card to choose from the player's hand. */
     card: commandCardSchema,
   })
@@ -49,6 +45,5 @@ export const chooseCardEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'chooseCard'>;
   player: z.ZodType<PlayerSide>;
-  eventNumber: z.ZodNumber;
   card: z.ZodType<CommandCard>;
 }> = _chooseCardEventSchemaObject;

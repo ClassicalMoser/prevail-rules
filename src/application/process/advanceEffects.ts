@@ -27,7 +27,6 @@ export async function advanceEffects(
   while (expectedEvent.actionType === 'gameEffect') {
     const event: GameEffectEvent = generateEventFromProcedure(
       currentGameState,
-      expectedEvent.expectedEventNumber,
       expectedEvent.effectType,
       ports.random,
     );

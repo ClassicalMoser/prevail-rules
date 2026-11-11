@@ -19,8 +19,6 @@ export interface OpenRetreatFromEngagementEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /**
    * The retreats the defender may make, each as its path (§9.1.3); empty when
    * it has nowhere to go, and so routs (§9.1.6).
@@ -34,8 +32,6 @@ const _openRetreatFromEngagementEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The retreats the defender may make, each as its path. */
     retreatPaths: z.array(z.array(moveDeltaSchema)),
   })
@@ -54,6 +50,5 @@ const _assertExactOpenRetreatFromEngagementEvent: AssertExact<
 export const openRetreatFromEngagementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'openRetreatFromEngagement'>;
-  eventNumber: z.ZodNumber;
   retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _openRetreatFromEngagementEventSchemaObject;

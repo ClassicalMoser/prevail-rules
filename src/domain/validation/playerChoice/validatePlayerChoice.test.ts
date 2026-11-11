@@ -48,7 +48,6 @@ describe('validatePlayerChoice function', () => {
     });
     const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -88,7 +87,6 @@ describe('validatePlayerChoice function', () => {
 
     const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -109,7 +107,6 @@ describe('validatePlayerChoice function', () => {
   it('fails when choice type does not match the expected choice', () => {
     const state = stateInPlayCardsChooseCards();
     const event: PlayerChoiceEvent = createMoveCommanderEvent({
-      eventNumber: 0,
       from: 'E-5',
       player: 'black',
       to: 'E-6',

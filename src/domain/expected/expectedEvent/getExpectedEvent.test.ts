@@ -109,7 +109,7 @@ describe('getExpectedEvent function', () => {
 
     const result = getExpectedEvent(state);
 
-    expect(result).toStrictEqual({ ...delegateReturn, expectedEventNumber: 0 });
+    expect(result).toStrictEqual(delegateReturn);
     expect(getCurrentPhaseStateMock).toHaveBeenCalledWith(state);
     expect(delegatedMock).toHaveBeenCalledWith(state);
   }
@@ -175,7 +175,6 @@ describe('getExpectedEvent function', () => {
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
-      expectedEventNumber: 0,
       playerSource: 'white',
     });
     expect(getExpectedSetupUnitsEventMock).toHaveBeenCalledWith(state);
@@ -192,7 +191,6 @@ describe('getExpectedEvent function', () => {
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
-      expectedEventNumber: 0,
     });
     expect(getExpectedSetupUnitsEventMock).not.toHaveBeenCalled();
     expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
@@ -212,7 +210,6 @@ describe('getExpectedEvent function', () => {
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
-      expectedEventNumber: 0,
     });
     expect(getExpectedPlayCardsPhaseEventMock).not.toHaveBeenCalled();
   });
@@ -228,7 +225,6 @@ describe('getExpectedEvent function', () => {
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
-      expectedEventNumber: 0,
     });
   });
 
@@ -264,7 +260,6 @@ describe('getExpectedEvent function', () => {
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
-      expectedEventNumber: 0,
     });
     expect(getExpectedCleanupPhaseEventMock).not.toHaveBeenCalled();
   });

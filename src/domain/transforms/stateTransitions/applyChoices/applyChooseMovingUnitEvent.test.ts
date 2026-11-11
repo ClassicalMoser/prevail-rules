@@ -70,7 +70,6 @@ describe('applyChooseMovingUnitEvent function', () => {
 
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
-        eventNumber: 0,
         player: 'black',
         unit: first,
       }),
@@ -89,7 +88,6 @@ describe('applyChooseMovingUnitEvent function', () => {
 
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
-        eventNumber: 0,
         player: 'black',
         unit: first,
       }),
@@ -108,7 +106,6 @@ describe('applyChooseMovingUnitEvent function', () => {
     // Name the first unit, write its move (one step north), complete it.
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
-        eventNumber: 0,
         player: 'black',
         unit: first,
       }),
@@ -117,7 +114,6 @@ describe('applyChooseMovingUnitEvent function', () => {
     const moved = applyMoveUnitEvent(
       {
         choiceType: 'moveUnit',
-        eventNumber: 1,
         eventType: 'playerChoice',
         moveCommander: false,
         path: ['step'],
@@ -128,7 +124,6 @@ describe('applyChooseMovingUnitEvent function', () => {
     const done = applyCompleteUnitMovementEvent(
       {
         effectType: 'completeUnitMovement',
-        eventNumber: 2,
         eventType: 'gameEffect',
       },
       moved,

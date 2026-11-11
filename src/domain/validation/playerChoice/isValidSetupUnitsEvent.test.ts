@@ -20,7 +20,6 @@ describe('isValidSetupUnitsEvent function', () => {
     };
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'A-3',
-      eventNumber: 0,
       player: 'white',
       unitPlacements: [placed(unit, 'A-3', 'south')],
     });
@@ -39,7 +38,6 @@ describe('isValidSetupUnitsEvent function', () => {
     };
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'A-4',
-      eventNumber: 0,
       player: 'white',
       unitPlacements: [placed(unit, 'A-3', 'south')],
     });
@@ -58,7 +56,6 @@ describe('isValidSetupUnitsEvent function', () => {
     };
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
-      eventNumber: 0,
       player: 'white',
       unitPlacements: [placed(unit, 'E-5', 'south')],
     });
@@ -76,7 +73,6 @@ describe('isValidSetupUnitsEvent function', () => {
     };
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'L-3',
-      eventNumber: 0,
       player: 'black',
       unitPlacements: [placed(unit1, 'L-3', 'north')],
     });
@@ -93,7 +89,6 @@ describe('isValidSetupUnitsEvent function', () => {
     };
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
-      eventNumber: 0,
       player: 'white',
       unitPlacements: [placed(unit, 'A-3', 'south')],
     });

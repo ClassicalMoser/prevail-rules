@@ -51,7 +51,6 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     const state = stateAwaitingWhiteDiscard(2);
     const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[4].id, tempCommandCards[2].id],
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -64,7 +63,6 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     const state = stateAwaitingWhiteDiscard(0);
     const event = createChooseRoutDiscardEvent({
       cardIds: [],
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -77,7 +75,6 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     const state = stateAwaitingWhiteDiscard(2);
     const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[2].id],
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -93,7 +90,6 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     const state = stateAwaitingWhiteDiscard(2);
     const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[2].id, tempCommandCards[2].id],
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -109,7 +105,6 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     const state = stateAwaitingWhiteDiscard(1);
     const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[0].id],
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -128,7 +123,6 @@ describe('isValidChooseRoutDiscardEvent function', () => {
     });
     const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[2].id],
-      eventNumber: 0,
       player: 'white',
     });
 

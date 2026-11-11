@@ -47,7 +47,6 @@ describe('getLegalCommitToMovementEvents function', () => {
   const refuseBlack = {
     choiceType: 'commitToMovement' as const,
     committedCard: null,
-    eventNumber: 0,
     eventType: 'playerChoice' as const,
     modifierTypes: [] as const,
     player: 'black' as const,
@@ -60,7 +59,6 @@ describe('getLegalCommitToMovementEvents function', () => {
       {
         choiceType: 'commitToMovement',
         committedCard: speedCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['speed'],
         player: 'black',
@@ -76,7 +74,6 @@ describe('getLegalCommitToMovementEvents function', () => {
       {
         choiceType: 'commitToMovement',
         committedCard: speedCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['speed'],
         player: 'black',
@@ -110,7 +107,6 @@ describe('getLegalCommitToMovementEvents function', () => {
       {
         choiceType: 'commitToMovement',
         committedCard: speedCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['speed'],
         player: 'white',
@@ -118,7 +114,6 @@ describe('getLegalCommitToMovementEvents function', () => {
       {
         choiceType: 'commitToMovement',
         committedCard: null,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: [],
         player: 'white',

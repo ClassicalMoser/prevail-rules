@@ -46,7 +46,6 @@ function retreatPathsFor(
  */
 export function generateOpenRetreatFromAttackApplyEvent(
   state: GameState,
-  eventNumber: number,
 ): OpenRetreatFromAttackApplyEvent {
   const phaseState = getCurrentPhaseState(state);
 
@@ -59,7 +58,6 @@ export function generateOpenRetreatFromAttackApplyEvent(
     return {
       attackResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
       effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
       retreatPaths: retreatPathsFor(state, apply),
     };
@@ -81,7 +79,6 @@ export function generateOpenRetreatFromAttackApplyEvent(
       attackResolutionContext: 'melee',
       defendingPlayer: apply.defendingUnit.playerSide,
       effectType: OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
       retreatPaths: retreatPathsFor(state, apply),
     };

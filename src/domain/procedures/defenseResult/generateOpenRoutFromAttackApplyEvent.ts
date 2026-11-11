@@ -21,7 +21,6 @@ import {
  */
 export function generateOpenRoutFromAttackApplyEvent(
   state: GameState,
-  eventNumber: number,
 ): OpenRoutFromAttackApplyEvent {
   const phaseState = getCurrentPhaseState(state);
 
@@ -34,7 +33,6 @@ export function generateOpenRoutFromAttackApplyEvent(
     return {
       attackResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
       effectType: OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
@@ -55,7 +53,6 @@ export function generateOpenRoutFromAttackApplyEvent(
       attackResolutionContext: 'melee',
       defendingPlayer: apply.defendingUnit.playerSide,
       effectType: OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
     return event;

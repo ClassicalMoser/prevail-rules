@@ -11,7 +11,6 @@ describe('createCommitToRangedAttackEvent function', () => {
 
     const event = createCommitToRangedAttackEvent({
       committedCard,
-      eventNumber: 3,
       modifierTypes,
       player: 'white',
     });
@@ -19,7 +18,6 @@ describe('createCommitToRangedAttackEvent function', () => {
     expect(event).toStrictEqual({
       choiceType: 'commitToRangedAttack',
       committedCard,
-      eventNumber: 3,
       eventType: 'playerChoice',
       modifierTypes,
       player: 'white',

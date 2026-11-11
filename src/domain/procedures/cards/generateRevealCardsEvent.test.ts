@@ -33,7 +33,7 @@ describe('generateRevealCardsEvent function', () => {
 
   it('emits gameEffect with effectType revealCards and both card payloads', () => {
     const state = createStateWithAwaitingPlay();
-    const event = generateRevealCardsEvent(state, 0);
+    const event = generateRevealCardsEvent(state);
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('revealCards');
@@ -49,7 +49,7 @@ describe('generateRevealCardsEvent function', () => {
       createOwnedCardState({ awaitingPlay: null }),
     );
 
-    expect(() => generateRevealCardsEvent(stateMissingBlack, 0)).toThrow(
+    expect(() => generateRevealCardsEvent(stateMissingBlack)).toThrow(
       'Black player has no card awaiting play',
     );
   });
@@ -62,7 +62,7 @@ describe('generateRevealCardsEvent function', () => {
       createOwnedCardState({ awaitingPlay: null }),
     );
 
-    expect(() => generateRevealCardsEvent(stateMissingWhite, 0)).toThrow(
+    expect(() => generateRevealCardsEvent(stateMissingWhite)).toThrow(
       'White player has no card awaiting play',
     );
   });

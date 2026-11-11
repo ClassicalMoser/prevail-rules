@@ -18,12 +18,10 @@ import {
  * offered the retreat only when it has one to make (§6.3.2).
  *
  * @param state - A movement whose front engagement's defender chose to retreat
- * @param eventNumber - The ordered index of this event in the round
  * @returns The event, carrying each legal retreat as its path
  */
 export function generateOpenRetreatFromEngagementEvent(
   state: GameState,
-  eventNumber: number,
 ): OpenRetreatFromEngagementEvent {
   const engagementState = getFrontEngagementStateFromMovement(state);
 
@@ -36,7 +34,6 @@ export function generateOpenRetreatFromEngagementEvent(
 
   const event: OpenRetreatFromEngagementEvent = {
     effectType: OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     retreatPaths,
   };

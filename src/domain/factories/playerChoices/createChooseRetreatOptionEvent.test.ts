@@ -7,14 +7,12 @@ describe('createChooseRetreatOptionEvent function', () => {
     const path = ['turnLeft', 'step'] as const;
 
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 3,
       player: 'white',
       path: [...path],
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseRetreatOption',
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
       path: [...path],

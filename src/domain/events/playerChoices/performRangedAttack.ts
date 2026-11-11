@@ -20,8 +20,6 @@ export interface PerformRangedAttackEvent {
   choiceType: typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE;
   /** The shooting player. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The enemy unit being shot at, and where it stands. */
   targetUnit: UnitWithPlacement;
   /** Other units of the same order spending their shots on this one (§7.3.4). */
@@ -33,7 +31,6 @@ const _performRangedAttackEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(PERFORM_RANGED_ATTACK_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     supportingUnits: z.array(unitWithPlacementSchema),
     targetUnit: unitWithPlacementSchema,
   })
@@ -53,7 +50,6 @@ export const performRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   supportingUnits: z.ZodArray<typeof unitWithPlacementSchema>;
   targetUnit: typeof unitWithPlacementSchema;
 }> = _performRangedAttackEventSchemaObject;

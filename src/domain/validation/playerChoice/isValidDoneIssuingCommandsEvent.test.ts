@@ -25,7 +25,6 @@ describe('isValidDoneIssuingCommandsEvent function', () => {
     expect(
       isValidDoneIssuingCommandsEvent(
         createDoneIssuingCommandsEvent({
-          eventNumber: 0,
           player: 'black',
         }),
         state,
@@ -45,7 +44,6 @@ describe('isValidDoneIssuingCommandsEvent function', () => {
     expect(
       isValidDoneIssuingCommandsEvent(
         createDoneIssuingCommandsEvent({
-          eventNumber: 0,
           player: 'white',
         }),
         state,

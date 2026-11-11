@@ -13,7 +13,6 @@ import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
  * for {@link getLegalAssignUnitSupport}.
  *
  * @param state - The current game state
- * @param eventNumber - The ordered index of this event in the round (zero-indexed)
  * @param random - The source of the draw that picks the burnt card
  * @returns A complete ResolveRallyEvent with the selected card
  * @throws Error if player has no played cards to burn
@@ -31,7 +30,6 @@ import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
  */
 export function generateResolveRallyEvent(
   state: GameState,
-  eventNumber: number,
   random: RandomSource,
 ): ResolveRallyEvent {
   // Only a resolve step burns a card; choosing to rally burns nothing yet.
@@ -61,7 +59,6 @@ export function generateResolveRallyEvent(
   return {
     card: cardToBurn,
     effectType: RESOLVE_RALLY_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     player: rallyingPlayer,
   };

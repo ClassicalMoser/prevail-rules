@@ -15,8 +15,6 @@ export interface ChooseMeleeResolutionEvent {
   choiceType: typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE;
   /** The player who is choosing the melee resolution. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The space the melee is occurring in. */
   space: Coordinate;
 }
@@ -26,7 +24,6 @@ const _chooseMeleeResolutionEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
     player: playerSideSchema,
-    eventNumber: z.number(),
     space: coordinateSchema,
   })
   .strict();
@@ -45,6 +42,5 @@ export const chooseMeleeResolutionEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   space: typeof coordinateSchema;
 }> = _chooseMeleeResolutionEventSchemaObject;

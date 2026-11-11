@@ -24,7 +24,6 @@ import { createEmptyGameState, createUnitPlacement } from '@factories';
 describe('applyCompleteUnitMovementEvent function', () => {
   const event = {
     effectType: 'completeUnitMovement' as const,
-    eventNumber: 0,
     eventType: 'gameEffect' as const,
   };
 

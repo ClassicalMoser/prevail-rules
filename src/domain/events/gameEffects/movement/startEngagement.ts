@@ -12,8 +12,6 @@ export interface StartEngagementEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof START_ENGAGEMENT_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The type of engagement. */
   engagementType: EngagementType;
   /** The defender with placement. */
@@ -25,7 +23,6 @@ const _startEngagementEventSchemaObject = z
     defenderWithPlacement: unitWithPlacementSchema,
     effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
     engagementType: engagementTypeSchema,
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   })
   .strict();
@@ -44,6 +41,5 @@ export const startEngagementEventSchema: z.ZodObject<{
   defenderWithPlacement: typeof unitWithPlacementSchema;
   effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
   engagementType: typeof engagementTypeSchema;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
 }> = _startEngagementEventSchemaObject;

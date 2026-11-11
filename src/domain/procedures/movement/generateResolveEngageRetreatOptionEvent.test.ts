@@ -81,7 +81,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       defendingSpeed: 4,
       engagingSpeed: 2,
     });
-    const event = generateResolveEngageRetreatOptionEvent(full, 0);
+    const event = generateResolveEngageRetreatOptionEvent(full);
     expect(event.defendingUnitCanRetreat).toBe(true);
   });
 
@@ -90,7 +90,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       defendingSpeed: 2,
       engagingSpeed: 4,
     });
-    const event = generateResolveEngageRetreatOptionEvent(full, 0);
+    const event = generateResolveEngageRetreatOptionEvent(full);
     expect(event.defendingUnitCanRetreat).toBe(false);
   });
 
@@ -101,7 +101,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       engagingCardModifiers: ['speed'],
       engagingSpeed: 3,
     });
-    const event = generateResolveEngageRetreatOptionEvent(full, 0);
+    const event = generateResolveEngageRetreatOptionEvent(full);
     expect(event.defendingUnitCanRetreat).toBe(false);
   });
 
@@ -114,7 +114,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       },
       engagingSpeed: 3,
     });
-    const event = generateResolveEngageRetreatOptionEvent(full, 0);
+    const event = generateResolveEngageRetreatOptionEvent(full);
     expect(event.defendingUnitCanRetreat).toBe(true);
   });
 
@@ -154,7 +154,6 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     // the enemy on D-5, already head-on.
     state = applyEvent(
       createChooseMovingUnitEvent({
-        eventNumber: 0,
         player: 'black',
         unit: engager,
       }),
@@ -163,7 +162,6 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     state = applyEvent(
       createCommitToMovementEvent({
         committedCard: null,
-        eventNumber: 1,
         modifierTypes: [],
         player: 'black',
       }),
@@ -171,17 +169,16 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     );
     state = applyEvent(
       createMoveUnitEvent({
-        eventNumber: 2,
         moveCommander: false,
         path: ['step'],
         player: 'black',
       }),
       state,
     );
-    const start = generateStartEngagementEvent(state, 3);
+    const start = generateStartEngagementEvent(state);
     state = applyEvent(start, state);
 
-    const event = generateResolveEngageRetreatOptionEvent(state, 4);
+    const event = generateResolveEngageRetreatOptionEvent(state);
 
     // Commander is on E-5. Range 0 reaches that hex and not D-5.
     // Engager 3+1 is not slower than defender 4.

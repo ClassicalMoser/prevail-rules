@@ -37,7 +37,6 @@ describe('isValidChooseCardEvent function', () => {
     const state = stateChooseCardsBothPending();
     const event = createChooseCardEvent({
       card: tempCommandCards[2],
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -50,7 +49,6 @@ describe('isValidChooseCardEvent function', () => {
     const state = stateChooseCardsBothPending();
     const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -69,7 +67,6 @@ describe('isValidChooseCardEvent function', () => {
     });
     const event = createChooseCardEvent({
       card: tempCommandCards[2],
-      eventNumber: 0,
       player: 'black',
     });
 

@@ -42,7 +42,6 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
     const state = stateAwaitingWhetherToRetreat();
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -55,7 +54,6 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
     const state = stateAwaitingWhetherToRetreat();
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: false,
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -68,7 +66,6 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
     const state = stateAwaitingWhetherToRetreat();
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'black',
     });
 
@@ -82,7 +79,6 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
     });
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'white',
     });
 

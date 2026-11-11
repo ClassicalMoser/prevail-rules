@@ -41,11 +41,11 @@ Asks two separate questions in order: is this choice **expected**, from
 event is parsed against its schema, so the legality check reads a well-formed
 payload. A failure at any step returns a reason.
 
-The event number is not judged here. `expectedEventNumber` says what the next
-event will take, and the caller stamps events with it. That keeps the engine
-out of arrival order: two players choosing their cards at the same moment
-(§4.1.1) cannot both know the number their own choice will take, so the engine
-accepts a choice it expects whatever number it carries.
+Events carry no number. The order of the round is the order of its `events[]`,
+and the position in that array is the cursor for replay and undo. That keeps
+the engine out of arrival order: two players choosing their cards at the same
+moment (§4.1.1) cannot both know what position their own choice will take, so
+the engine accepts a choice it expects whenever it arrives.
 
 It never throws. Queries beneath it do, so it wraps them and turns a throw into
 an `errorReason`. Everything a caller needs is in the returned
@@ -68,7 +68,7 @@ Per-choice `isValid*Event` helpers stay inside `@validation`. Callers use
 
 **Location:** [`procedures/procedureRegistry.ts`](./procedures/procedureRegistry.ts)
 
-**Function:** `generateEventFromProcedure(state, eventNumber, effectType, random): GameEffectEvent`
+**Function:** `generateEventFromProcedure(state, effectType, random): GameEffectEvent`
 
 When the game owes an effect rather than waiting on a player, a procedure builds
 the event. There are 28 generators, each named for the event it produces, and the
@@ -90,12 +90,7 @@ happens before a choice is applied, not again here.
 ```typescript
 import { generateEventFromProcedure } from '@procedures';
 
-const event = generateEventFromProcedure(
-  state,
-  expected.expectedEventNumber,
-  expected.effectType,
-  random,
-);
+const event = generateEventFromProcedure(state, expected.effectType, random);
 const newState = applyEvent(event, state);
 ```
 
@@ -103,11 +98,10 @@ const newState = applyEvent(event, state);
 
 **Location:** [`expected/expectedEvent/getExpectedEvent.ts`](./expected/expectedEvent/getExpectedEvent.ts)
 
-**Function:** `getExpectedEvent(state: GameState): ExpectedEvent`
+**Function:** `getExpectedEvent(state: GameState): ExpectedEventInfo`
 
-Takes state alone and says what comes next. `ExpectedEvent` is
-`ExpectedEventInfo` — `ExpectedPlayerInput | ExpectedGameEffect` — plus the
-`expectedEventNumber` the next event will take in the round.
+Takes state alone and says what comes next. `ExpectedEventInfo` is
+`ExpectedPlayerInput | ExpectedGameEffect`.
 
 It checks the endgame first, and throws when the game has already been won,
 because a finished game expects nothing. From there it reads the current phase
@@ -138,7 +132,7 @@ may not import expected.
 
 It returns `null` when the next action is a game effect, and also when
 `getExpectedEvent` throws. Otherwise it discriminates by `choiceType` and
-carries `playerSource`, `expectedEventNumber`, and either the full `events[]`
+carries `playerSource`, and either the full `events[]`
 for an atomic choice or named root atoms for a compound one. Follow-ups that
 depend on a selection stay on their own helpers — `getLegalUnitMoves` (every
 ending with a path to it), `getLegalMoveDeltas` (the next step or turn of a

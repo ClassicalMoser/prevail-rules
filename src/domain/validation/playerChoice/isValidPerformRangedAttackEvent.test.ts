@@ -74,14 +74,10 @@ describe('isValidPerformRangedAttackEvent function', () => {
   }
 
   function event(
-    partial: Omit<
-      PerformRangedAttackEvent,
-      'choiceType' | 'eventType' | 'eventNumber'
-    >,
+    partial: Omit<PerformRangedAttackEvent, 'choiceType' | 'eventType'>,
   ): PerformRangedAttackEvent {
     // Every case in this file is the first event of the round.
     return createPerformRangedAttackEvent({
-      eventNumber: 0,
       ...partial,
     });
   }

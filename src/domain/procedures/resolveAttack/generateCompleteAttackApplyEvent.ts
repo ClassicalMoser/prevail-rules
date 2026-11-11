@@ -20,7 +20,6 @@ import type { GameState } from '@game';
  */
 export function generateCompleteAttackApplyEvent(
   state: GameState,
-  eventNumber: number,
 ): CompleteAttackApplyEvent {
   const phaseState = getCurrentPhaseState(state);
 
@@ -30,7 +29,6 @@ export function generateCompleteAttackApplyEvent(
       attackType: 'ranged',
       defendingPlayer: attackApply.defendingUnit.playerSide,
       effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
@@ -50,7 +48,6 @@ export function generateCompleteAttackApplyEvent(
       attackType: 'melee',
       defendingPlayer,
       effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }

@@ -33,7 +33,6 @@ import { setupUnitsEventSchema } from './setupUnit';
 export interface ProjectedChooseCardEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   choiceType: typeof CHOOSE_CARD_CHOICE_TYPE;
-  eventNumber: number;
   player: PlayerSide;
   card: CommandCard | HiddenCard;
 }
@@ -42,7 +41,6 @@ const _projectedChooseCardEventSchemaObject = z
   .object({
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     choiceType: z.literal(CHOOSE_CARD_CHOICE_TYPE),
-    eventNumber: z.number(),
     player: playerSideSchema,
     card: z.union([commandCardSchema, hiddenCardSchema]),
   })

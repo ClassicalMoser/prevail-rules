@@ -10,7 +10,6 @@ describe('createIssueCommandEvent function', () => {
 
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 3,
       player: 'white',
       units,
     });
@@ -18,7 +17,6 @@ describe('createIssueCommandEvent function', () => {
     expect(event).toStrictEqual({
       choiceType: 'issueCommand',
       command,
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
       units,

@@ -49,7 +49,7 @@ describe('generateResolveMeleeEvent function', () => {
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
-    const event = generateResolveMeleeEvent(full, 0);
+    const event = generateResolveMeleeEvent(full);
     expect(event.whiteUnitRetreated).toBe(true);
     expect(event.blackUnitRetreated).toBe(true);
   });
@@ -95,7 +95,7 @@ describe('generateResolveMeleeEvent function', () => {
 
     it("without it, a blow that reaches the unit's Reverse turns it", () => {
       // Black's blow of 5 meets white's Reverse of 5.
-      const event = generateResolveMeleeEvent(cavalryMelee(['attack']), 0);
+      const event = generateResolveMeleeEvent(cavalryMelee(['attack']));
 
       expect(event.whiteUnitReversed).toBe(true);
     });
@@ -103,7 +103,7 @@ describe('generateResolveMeleeEvent function', () => {
     it("with it, the unit's thresholds rise by 1 and the same blow does not turn it", () => {
       // White's Reverse is 6 for this fight, above black's blow of 5. Its
       // Retreat of 4 is still reached.
-      const event = generateResolveMeleeEvent(cavalryMelee(['defense']), 0);
+      const event = generateResolveMeleeEvent(cavalryMelee(['defense']));
 
       expect(event.whiteUnitReversed).toBe(false);
       expect(event.whiteUnitRetreated).toBe(true);
@@ -115,7 +115,6 @@ describe('generateResolveMeleeEvent function', () => {
       // black, its Reverse would be 6 and the blow would fall short.
       const event = generateResolveMeleeEvent(
         cavalryMelee(['attack', 'defense']),
-        0,
       );
 
       expect(event.blackUnitReversed).toBe(true);
@@ -126,7 +125,7 @@ describe('generateResolveMeleeEvent function', () => {
 
   it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat', () => {
     const full = meleeResolutionGameState();
-    const event = generateResolveMeleeEvent(full, 0);
+    const event = generateResolveMeleeEvent(full);
     expect(event.effectType).toBe('resolveMelee');
     expect(event.location).toBe('E-5');
     expect(event.whiteUnitWithPlacement.unit.playerSide).toBe('white');
@@ -150,7 +149,7 @@ describe('generateResolveMeleeEvent function', () => {
       currentMeleeResolutionState: melee,
     });
     const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
+    expect(() => generateResolveMeleeEvent(full)).toThrow(
       'Second player commitment is still pending',
     );
   });
@@ -161,7 +160,7 @@ describe('generateResolveMeleeEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
+    expect(() => generateResolveMeleeEvent(full)).toThrow(
       'Not in resolveMelee phase',
     );
   });
@@ -176,7 +175,7 @@ describe('generateResolveMeleeEvent function', () => {
     };
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
+    expect(() => generateResolveMeleeEvent(full)).toThrow(
       'Units not found on board',
     );
   });

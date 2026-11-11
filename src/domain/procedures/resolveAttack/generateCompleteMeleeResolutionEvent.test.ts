@@ -7,7 +7,7 @@ import { generateCompleteMeleeResolutionEvent } from './generateCompleteMeleeRes
  */
 describe('generateCompleteMeleeResolutionEvent function', () => {
   it('given any game state, emits gameEffect with effectType completeMeleeResolution', () => {
-    const event = generateCompleteMeleeResolutionEvent(0);
+    const event = generateCompleteMeleeResolutionEvent();
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeMeleeResolution');
   });

@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 describe('generateCompleteCleanupPhaseEvent function', () => {
   it('given any game state, emits gameEffect with effectType completeCleanupPhase', () => {
     const state: GameState = createEmptyGameState('standard');
-    const event = generateCompleteCleanupPhaseEvent(state, 0);
+    const event = generateCompleteCleanupPhaseEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeCleanupPhase');
   });
@@ -19,11 +19,9 @@ describe('generateCompleteCleanupPhaseEvent function', () => {
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
     const a = generateCompleteCleanupPhaseEvent(
       createEmptyGameState('standard'),
-      0,
     );
     const b = generateCompleteCleanupPhaseEvent(
       createEmptyGameState('standard'),
-      0,
     );
     expect(a).toStrictEqual(b);
   });

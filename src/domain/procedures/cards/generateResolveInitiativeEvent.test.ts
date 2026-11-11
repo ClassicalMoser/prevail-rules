@@ -76,7 +76,7 @@ describe('generateResolveInitiativeEvent function', () => {
         'black',
       );
 
-      const event = generateResolveInitiativeEvent(state, 0);
+      const event = generateResolveInitiativeEvent(state);
 
       expect(event.player).toBe('white');
       expect(event.eventType).toBe('gameEffect');
@@ -104,7 +104,7 @@ describe('generateResolveInitiativeEvent function', () => {
         'white',
       );
 
-      const event = generateResolveInitiativeEvent(state, 0);
+      const event = generateResolveInitiativeEvent(state);
 
       expect(event.player).toBe('black');
       expect(event.eventType).toBe('gameEffect');
@@ -121,7 +121,7 @@ describe('generateResolveInitiativeEvent function', () => {
         card,
         'black',
       );
-      const eventWithBlack = generateResolveInitiativeEvent(stateWithBlack, 0);
+      const eventWithBlack = generateResolveInitiativeEvent(stateWithBlack);
       expect(eventWithBlack.player).toBe('black');
 
       // Tie break: white when currentInitiative is white
@@ -130,7 +130,7 @@ describe('generateResolveInitiativeEvent function', () => {
         card,
         'white',
       );
-      const eventWithWhite = generateResolveInitiativeEvent(stateWithWhite, 0);
+      const eventWithWhite = generateResolveInitiativeEvent(stateWithWhite);
       expect(eventWithWhite.player).toBe('white');
     });
   });
@@ -144,9 +144,9 @@ describe('generateResolveInitiativeEvent function', () => {
         step: 'chooseCards',
       });
 
-      expect(() =>
-        generateResolveInitiativeEvent(stateWithWrongStep, 0),
-      ).toThrow('Play cards phase is not on assignInitiative step');
+      expect(() => generateResolveInitiativeEvent(stateWithWrongStep)).toThrow(
+        'Play cards phase is not on assignInitiative step',
+      );
     });
 
     it('given white inPlay null at assignInitiative, throws', () => {
@@ -173,7 +173,7 @@ describe('generateResolveInitiativeEvent function', () => {
         step: 'assignInitiative',
       });
 
-      expect(() => generateResolveInitiativeEvent(stateWithPhase, 0)).toThrow(
+      expect(() => generateResolveInitiativeEvent(stateWithPhase)).toThrow(
         'White player has no card in play',
       );
     });
@@ -202,7 +202,7 @@ describe('generateResolveInitiativeEvent function', () => {
         step: 'assignInitiative',
       });
 
-      expect(() => generateResolveInitiativeEvent(stateWithPhase, 0)).toThrow(
+      expect(() => generateResolveInitiativeEvent(stateWithPhase)).toThrow(
         'Black player has no card in play',
       );
     });

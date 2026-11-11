@@ -43,7 +43,6 @@ describe('applyCommitToMovementEvent function', () => {
     const event: CommitToMovementEvent = {
       choiceType: 'commitToMovement',
       committedCard: tempCommandCards[0],
-      eventNumber: 0,
       eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',
@@ -80,7 +79,6 @@ describe('applyCommitToMovementEvent function', () => {
     const event: CommitToMovementEvent = {
       choiceType: 'commitToMovement',
       committedCard: tempCommandCards[0],
-      eventNumber: 0,
       eventType: 'playerChoice',
       modifierTypes: [],
       player: 'white',
@@ -119,7 +117,6 @@ describe('applyCommitToMovementEvent function', () => {
     const event: CommitToMovementEvent = {
       choiceType: 'commitToMovement',
       committedCard: null,
-      eventNumber: 0,
       eventType: 'playerChoice',
       modifierTypes: [],
       player: 'white',
@@ -157,7 +154,6 @@ describe('applyCommitToMovementEvent function', () => {
     const event: CommitToMovementEvent = {
       choiceType: 'commitToMovement',
       committedCard: card,
-      eventNumber: 0,
       eventType: 'playerChoice',
       modifierTypes: ['speed'],
       player: 'white',
@@ -198,7 +194,6 @@ describe('applyCommitToMovementEvent function', () => {
     const event: CommitToMovementEvent = {
       choiceType: 'commitToMovement',
       committedCard: tempCommandCards[0],
-      eventNumber: 0,
       eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',

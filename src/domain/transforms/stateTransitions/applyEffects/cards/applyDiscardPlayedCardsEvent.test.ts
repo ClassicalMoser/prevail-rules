@@ -18,7 +18,6 @@ import { createEmptyGameState } from '@factories';
 describe('applyDiscardPlayedCardsEvent function', () => {
   const event = {
     effectType: 'discardPlayedCards' as const,
-    eventNumber: 0,
     eventType: 'gameEffect' as const,
   } satisfies DiscardPlayedCardsEvent;
 

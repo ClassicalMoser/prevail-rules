@@ -17,7 +17,6 @@ import {
  * can retreat during a front engagement.
  *
  * @param state - The current game state
- * @param eventNumber - The ordered index of this event in the round
  * @returns A complete ResolveEngageRetreatOptionEvent. Retreat is possible if the defending
  * unit has a higher current speed value than the engaging unit, and has a legal retreat
  * to make. Each player's committed card applies only to their own unit.
@@ -25,7 +24,6 @@ import {
  */
 export function generateResolveEngageRetreatOptionEvent(
   state: GameState,
-  eventNumber: number,
 ): ResolveEngageRetreatOptionEvent {
   const movementResolutionState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
@@ -68,7 +66,6 @@ export function generateResolveEngageRetreatOptionEvent(
   return {
     defendingUnitCanRetreat,
     effectType: RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

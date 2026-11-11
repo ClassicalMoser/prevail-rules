@@ -14,13 +14,11 @@ import {
  */
 export function generateDiscardPlayedCardsEvent(
   state: GameState,
-  eventNumber: number,
 ): DiscardPlayedCardsEvent {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     effectType: DISCARD_PLAYED_CARDS_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

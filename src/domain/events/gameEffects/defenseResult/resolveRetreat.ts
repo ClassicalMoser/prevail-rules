@@ -19,14 +19,11 @@ export interface ResolveRetreatEvent {
    * from this path and its starting position, never stored beside them.
    */
   path: MoveDelta[];
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _resolveRetreatEventSchemaObject = z
   .object({
     effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     path: z.array(moveDeltaSchema),
     startingPosition: unitWithPlacementSchema,
@@ -45,7 +42,6 @@ const _assertExactResolveRetreatEvent: AssertExact<
 /** The schema for a resolve retreat event. */
 export const resolveRetreatEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   path: z.ZodArray<typeof moveDeltaSchema>;
   startingPosition: typeof unitWithPlacementSchema;

@@ -97,7 +97,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
 
   it('given ranged resolution with retreat substep, retreatResolutionContext is rangedAttack', () => {
     const full = stateWithRangedRetreat();
-    const event = generateTriggerRoutFromRetreatEvent(full, 0);
+    const event = generateTriggerRoutFromRetreatEvent(full);
     expect(event.effectType).toBe('triggerRoutFromRetreat');
     expect(event.retreatResolutionContext).toBe('rangedAttack');
     expect(event).not.toHaveProperty('retreatingPlayer');
@@ -105,7 +105,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
 
   it('given melee with only white in retreat apply, context melee and retreatingPlayer white', () => {
     const full = stateWithMeleeRetreat('white');
-    const event = generateTriggerRoutFromRetreatEvent(full, 0);
+    const event = generateTriggerRoutFromRetreatEvent(full);
     expect(event.effectType).toBe('triggerRoutFromRetreat');
     expect(event.retreatResolutionContext).toBe('melee');
     if (event.retreatResolutionContext === 'melee') {
@@ -140,7 +140,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     });
     const full = updatePhaseState(s, phase);
 
-    const event = generateTriggerRoutFromRetreatEvent(full, 0);
+    const event = generateTriggerRoutFromRetreatEvent(full);
     expect(event.retreatResolutionContext).toBe('melee');
     if (event.retreatResolutionContext === 'melee') {
       expect(event.retreatingPlayer).toBe('white');
@@ -154,7 +154,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateTriggerRoutFromRetreatEvent(full, 0)).toThrow(
+    expect(() => generateTriggerRoutFromRetreatEvent(full)).toThrow(
       'Retreat rout not expected in phase: playCards',
     );
   });

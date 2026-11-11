@@ -1,6 +1,6 @@
 import type { ChooseRetreatOptionEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
-import { findRetreatState, getNextEventNumber } from '@queries';
+import { findRetreatState } from '@queries';
 import { createChooseRetreatOptionEvent } from '@factories';
 
 /**
@@ -49,13 +49,11 @@ export function getLegalChooseRetreatOptionEvents<S extends GameState>(
     return [];
   }
 
-  const eventNumber = getNextEventNumber(gameState);
   const player = retreatState.retreatingUnit.unit.playerSide;
 
   // Each offered retreat is chosen by naming its path.
   const choices = retreatState.legalRetreatPaths.map((path) =>
     createChooseRetreatOptionEvent({
-      eventNumber,
       path: [...path],
       player,
     }),

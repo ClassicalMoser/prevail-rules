@@ -24,7 +24,6 @@ describe('applyRevealCardsEvent function', () => {
     return {
       black,
       effectType: 'revealCards',
-      eventNumber: 0,
       eventType: 'gameEffect',
       white,
     };

@@ -81,7 +81,6 @@ describe('a Shoot order', () => {
     const named = applyEffectsUntilChoice(
       applyEvent(
         createChooseShooterEvent({
-          eventNumber: start.next.expectedEventNumber,
           player: 'black',
           unit: shooter,
         }),
@@ -96,14 +95,13 @@ describe('a Shoot order', () => {
   });
 
   it('a card committed for Range reaches a target one space beyond the shooter’s Range', () => {
-    const { state, eventNumber } = namedAndCommitted(rangeCard);
+    const state = namedAndCommitted(rangeCard);
     // B-5 is three ranks out: one more than the shooter's Range of 2.
     const target = getSingleUnitWithPlacementAtCoordinate(
       state.boardState,
       'B-5',
     );
     const shot = createPerformRangedAttackEvent({
-      eventNumber,
       player: 'black',
       supportingUnits: [],
       targetUnit: target,
@@ -119,13 +117,12 @@ describe('a Shoot order', () => {
   });
 
   it('without the card, the same target is out of reach', () => {
-    const { state, eventNumber } = namedAndCommitted(null);
+    const state = namedAndCommitted(null);
     const target = getSingleUnitWithPlacementAtCoordinate(
       state.boardState,
       'B-5',
     );
     const shot = createPerformRangedAttackEvent({
-      eventNumber,
       player: 'black',
       supportingUnits: [],
       targetUnit: target,
@@ -135,7 +132,7 @@ describe('a Shoot order', () => {
   });
 
   it('once the target is named, its owner is asked for its commitment', () => {
-    const { state, eventNumber } = namedAndCommitted(rangeCard);
+    const state = namedAndCommitted(rangeCard);
     const target = getSingleUnitWithPlacementAtCoordinate(
       state.boardState,
       'B-5',
@@ -144,7 +141,6 @@ describe('a Shoot order', () => {
     const aimed = applyEffectsUntilChoice(
       applyEvent(
         createPerformRangedAttackEvent({
-          eventNumber,
           player: 'black',
           supportingUnits: [],
           targetUnit: target,

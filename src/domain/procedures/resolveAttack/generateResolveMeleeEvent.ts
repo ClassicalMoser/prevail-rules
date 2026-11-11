@@ -27,10 +27,7 @@ import {
  * @returns A complete ResolveMeleeEvent with location and results for both units
  * @throws Error if not in a valid state for melee resolution
  */
-export function generateResolveMeleeEvent(
-  state: GameState,
-  eventNumber: number,
-): ResolveMeleeEvent {
+export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   const meleeCoordinate = meleeState.location;
 
@@ -113,7 +110,6 @@ export function generateResolveMeleeEvent(
     blackUnitRouted: blackUnitResult.unitRouted,
     blackUnitWithPlacement: blackUnit,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     location: meleeCoordinate,
     whiteUnitRetreated: whiteUnitResult.unitRetreated,

@@ -15,8 +15,6 @@ export interface DiscardPlayedCardsEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof DISCARD_PLAYED_CARDS_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _discardPlayedCardsEventSchemaObject = z
@@ -25,8 +23,6 @@ const _discardPlayedCardsEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(DISCARD_PLAYED_CARDS_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
   })
   .strict();
 
@@ -43,5 +39,4 @@ const _assertExactDiscardPlayedCardsEvent: AssertExact<
 export const discardPlayedCardsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'discardPlayedCards'>;
-  eventNumber: z.ZodNumber;
 }> = _discardPlayedCardsEventSchemaObject;

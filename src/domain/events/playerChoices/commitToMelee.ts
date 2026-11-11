@@ -26,8 +26,6 @@ export interface CommitToMeleeEvent {
   choiceType: typeof COMMIT_TO_MELEE_CHOICE_TYPE;
   /** The player who is committing (or refusing). */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /**
    * Card from hand to commit, or `null` to refuse / decline the commitment
    * without spending a card.
@@ -51,8 +49,6 @@ const _commitToMeleeEventSchemaObject = z
     choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
     /** The player who is committing (or refusing). */
     player: playerSideSchema,
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /**
      * Card from hand to commit, or `null` to refuse / decline the commitment
      * without spending a card.
@@ -77,7 +73,6 @@ export const commitToMeleeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToMelee'>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   committedCard: z.ZodNullable<typeof commandCardSchema>;
   modifierTypes: z.ZodArray<typeof meleeModifierTypesEnum>;
 }> = _commitToMeleeEventSchemaObject;

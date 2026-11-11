@@ -18,8 +18,6 @@ export interface DoneIssuingCommandsEvent {
   choiceType: typeof DONE_ISSUING_COMMANDS_CHOICE_TYPE;
   /** The player who is done issuing. */
   player: PlayerSide;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _doneIssuingCommandsEventSchemaObject = z
@@ -30,8 +28,6 @@ const _doneIssuingCommandsEventSchemaObject = z
     choiceType: z.literal(DONE_ISSUING_COMMANDS_CHOICE_TYPE),
     /** The player who is done issuing. */
     player: playerSideSchema,
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
   })
   .strict();
 
@@ -49,5 +45,4 @@ export const doneIssuingCommandsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'doneIssuingCommands'>;
   player: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
 }> = _doneIssuingCommandsEventSchemaObject;

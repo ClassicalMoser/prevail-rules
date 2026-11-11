@@ -69,7 +69,6 @@ describe('applyStartEngagementEvent function', () => {
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'front' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     };
 
@@ -97,7 +96,6 @@ describe('applyStartEngagementEvent function', () => {
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     };
 
@@ -132,7 +130,6 @@ describe('applyStartEngagementEvent function', () => {
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     };
 
@@ -162,7 +159,6 @@ describe('applyStartEngagementEvent function', () => {
         defenderWithPlacement,
         effectType: 'startEngagement',
         engagementType: 'rear',
-        eventNumber: 0,
         eventType: 'gameEffect',
       },
       state,
@@ -180,7 +176,6 @@ describe('applyStartEngagementEvent function', () => {
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'flank' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     };
 
@@ -208,7 +203,6 @@ describe('applyStartEngagementEvent function', () => {
   it('given bogus engagementType siege cast, throws unknown engagement type', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       // Intentionally bad type cast to test error path

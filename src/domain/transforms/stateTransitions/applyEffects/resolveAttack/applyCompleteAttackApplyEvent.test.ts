@@ -95,7 +95,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
         attackType: 'ranged',
         defendingPlayer: 'white',
         effectType: 'completeAttackApply',
-        eventNumber: 0,
         eventType: 'gameEffect',
       };
 
@@ -113,7 +112,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
         attackType: 'ranged',
         defendingPlayer: 'white',
         effectType: 'completeAttackApply',
-        eventNumber: 0,
         eventType: 'gameEffect',
       };
 
@@ -148,7 +146,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
         attackType: 'melee',
         defendingPlayer: 'black',
         effectType: 'completeAttackApply',
-        eventNumber: 0,
         eventType: 'gameEffect',
       };
 
@@ -182,7 +179,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
         attackType: 'melee',
         defendingPlayer: 'white',
         effectType: 'completeAttackApply',
-        eventNumber: 0,
         eventType: 'gameEffect',
       };
 
@@ -209,7 +205,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
         attackType: 'ranged',
         defendingPlayer: 'white',
         effectType: 'completeAttackApply',
-        eventNumber: 0,
         eventType: 'gameEffect',
       };
 
@@ -235,7 +230,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
         attackType: 'melee',
         defendingPlayer: 'white',
         effectType: 'completeAttackApply',
-        eventNumber: 0,
         eventType: 'gameEffect',
       };
 
@@ -247,7 +241,6 @@ describe('applyCompleteAttackApplyEvent function', () => {
     it('given attackType siege cast, throws unknown attack type for completeAttackApply', () => {
       const state = createEmptyGameState('standard');
       const event: CompleteAttackApplyEvent = {
-        eventNumber: 0,
         eventType: 'gameEffect' as const,
         effectType: 'completeAttackApply',
         // Intentionally bad type cast to test error path

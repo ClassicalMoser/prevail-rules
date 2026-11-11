@@ -53,7 +53,6 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     const { state } = createStateWithFrontEngagement();
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -73,7 +72,6 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     const { state } = createStateWithFrontEngagement();
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: false,
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -95,7 +93,6 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
       getFrontEngagementStateFromMovement(state).engagementResolutionState;
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -114,7 +111,6 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     );
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'white',
     });
 
@@ -131,7 +127,6 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     const stateInPhase = updatePhaseState(state, phaseState);
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 0,
       player: 'white',
     });
 

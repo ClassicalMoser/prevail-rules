@@ -1,11 +1,7 @@
 import type { ChooseRallyEvent } from '@events';
 import type { GameState } from '@game';
 import { createChooseRallyEvent } from '@factories';
-import {
-  getCleanupPhaseState,
-  getNextEventNumber,
-  getRallyingPlayer,
-} from '@queries';
+import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
 
 /**
  * The rally choices open to the player whose turn it is to choose (§10.3).
@@ -32,9 +28,6 @@ export function getLegalChooseRallyEvent(
     throw new Error('Not in choose rally step');
   }
 
-  // Get the next event number
-  const eventNumber = getNextEventNumber(gameState);
-
   // The first player chooses first, then the second (§10.3).
   const choosingPlayer = getRallyingPlayer(gameState);
 
@@ -44,7 +37,6 @@ export function getLegalChooseRallyEvent(
 
   const result = performRallyChoices.map((performRally) =>
     createChooseRallyEvent({
-      eventNumber,
       performRally,
       player: choosingPlayer,
     }),

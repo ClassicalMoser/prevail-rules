@@ -81,7 +81,6 @@ describe('applyPerformRangedAttackEvent function', () => {
     // Black aims at the white unit alone.
     const aimed = applyPerformRangedAttackEvent(
       createPerformRangedAttackEvent({
-        eventNumber: 0,
         player: 'black',
         supportingUnits: [],
         targetUnit: target,
@@ -134,7 +133,6 @@ describe('applyPerformRangedAttackEvent function', () => {
     // Black names one supporter (§7.3.4).
     const aimed = applyPerformRangedAttackEvent(
       createPerformRangedAttackEvent({
-        eventNumber: 0,
         player: 'black',
         supportingUnits: [supporter],
         targetUnit: target,

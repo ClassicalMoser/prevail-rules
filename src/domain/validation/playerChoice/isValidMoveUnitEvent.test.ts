@@ -59,7 +59,6 @@ describe('isValidMoveUnitEvent function', () => {
     const state = stateAwaitingMove();
     // One step straight ahead, from E-5 to D-5.
     const event = createMoveUnitEvent({
-      eventNumber: 2,
       moveCommander: false,
       path: ['step'],
       player: 'black',
@@ -77,7 +76,6 @@ describe('isValidMoveUnitEvent function', () => {
       },
     });
     const event = createMoveUnitEvent({
-      eventNumber: 2,
       moveCommander: false,
       path: ['step', 'step', 'step'],
       player: 'black',
@@ -89,7 +87,6 @@ describe('isValidMoveUnitEvent function', () => {
   it('without a committed card, the longer move is refused', () => {
     const state = stateAwaitingMove();
     const event = createMoveUnitEvent({
-      eventNumber: 2,
       moveCommander: false,
       path: ['step', 'step', 'step'],
       player: 'black',
@@ -101,7 +98,6 @@ describe('isValidMoveUnitEvent function', () => {
   it('accepts a rider when the commander shares the unit space', () => {
     const state = stateAwaitingMove({ withCommander: true });
     const event = createMoveUnitEvent({
-      eventNumber: 2,
       moveCommander: true,
       path: ['step'],
       player: 'black',
@@ -113,7 +109,6 @@ describe('isValidMoveUnitEvent function', () => {
   it('refuses a rider when the commander stands elsewhere', () => {
     const state = stateAwaitingMove();
     const event = createMoveUnitEvent({
-      eventNumber: 2,
       moveCommander: true,
       path: ['step'],
       player: 'black',
@@ -125,7 +120,6 @@ describe('isValidMoveUnitEvent function', () => {
   it("refuses a move from the side whose unit it isn't", () => {
     const state = stateAwaitingMove();
     const event = createMoveUnitEvent({
-      eventNumber: 2,
       moveCommander: false,
       path: ['step'],
       player: 'white',
@@ -143,7 +137,6 @@ describe('isValidMoveUnitEvent function', () => {
       step: 'chooseCards',
     });
     const event = createMoveUnitEvent({
-      eventNumber: 0,
       moveCommander: false,
       path: ['step'],
       player: 'black',

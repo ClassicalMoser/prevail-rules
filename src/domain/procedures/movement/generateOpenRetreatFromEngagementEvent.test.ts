@@ -50,12 +50,10 @@ describe('generateOpenRetreatFromEngagementEvent function', () => {
     // §9.1.3: the smallest retreat is one step straight back.
     const event = generateOpenRetreatFromEngagementEvent(
       defenderChoseToRetreat(),
-      4,
     );
 
     expect(event).toStrictEqual({
       effectType: 'openRetreatFromEngagement',
-      eventNumber: 4,
       eventType: 'gameEffect',
       retreatPaths: [['step']],
     });
@@ -66,7 +64,6 @@ describe('generateOpenRetreatFromEngagementEvent function', () => {
     // and stepping back are the two smallest retreats left (§9.1.3, §9.1.4).
     const event = generateOpenRetreatFromEngagementEvent(
       defenderChoseToRetreat(true),
-      4,
     );
 
     expect(event.retreatPaths).toStrictEqual([

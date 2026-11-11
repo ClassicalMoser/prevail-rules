@@ -47,7 +47,6 @@ describe('applyGameEffectEvent function', () => {
     const state = createEmptyGameState('standard');
     const event = {
       effectType: 'discardPlayedCards' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     } as GameEffectEvent & { player: PlayerSide };
 
@@ -63,7 +62,6 @@ describe('applyGameEffectEvent function', () => {
     const state = createEmptyGameState('standard');
     const event = {
       effectType: 'unknown',
-      eventNumber: 0,
       eventType: 'gameEffect',
       // Intentional type error to test the function
     } as unknown as GameEffectEvent & { player: PlayerSide };

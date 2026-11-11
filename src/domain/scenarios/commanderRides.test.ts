@@ -23,10 +23,7 @@ import { validatePlayerChoice } from '@validation';
 function blackReadyToWriteMove(options: {
   start: 'E-5' | 'F-5';
   whiteDefender?: 'E-5';
-}): {
-  state: GameStateForVisibility<'authoritative'>;
-  eventNumber: number;
-} {
+}): GameStateForVisibility<'authoritative'> {
   const game = createPlayableGame(
     [
       { coord: options.start, facing: 'north', player: 'black' },
@@ -64,10 +61,9 @@ function blackReadyToWriteMove(options: {
 
 describe('a commander riding with a moving unit', () => {
   it('arrives with the unit when the player says it rides', () => {
-    const { state, eventNumber } = blackReadyToWriteMove({ start: 'E-5' });
+    const state = blackReadyToWriteMove({ start: 'E-5' });
     // One step north, from E-5 to D-5, the commander riding along.
     const move = createMoveUnitEvent({
-      eventNumber,
       moveCommander: true,
       path: ['step'],
       player: 'black',
@@ -82,10 +78,9 @@ describe('a commander riding with a moving unit', () => {
   });
 
   it('stays behind when the player leaves it', () => {
-    const { state, eventNumber } = blackReadyToWriteMove({ start: 'E-5' });
+    const state = blackReadyToWriteMove({ start: 'E-5' });
     // The same step, with the commander left where it stands.
     const move = createMoveUnitEvent({
-      eventNumber,
       moveCommander: false,
       path: ['step'],
       player: 'black',
@@ -102,12 +97,11 @@ describe('a commander riding with a moving unit', () => {
     // §6.3.3: black's unit on F-5 steps into the back of white's unit on
     // E-5. The defender routs at once and the attacker takes its space, and
     // the commander riding with it takes the space too.
-    const { state, eventNumber } = blackReadyToWriteMove({
+    const state = blackReadyToWriteMove({
       start: 'F-5',
       whiteDefender: 'E-5',
     });
     const move = createMoveUnitEvent({
-      eventNumber,
       moveCommander: true,
       path: ['step'],
       player: 'black',

@@ -10,7 +10,7 @@ import { createEmptyGameState } from '@factories';
 describe('generateCompleteResolveMeleePhaseEvent function', () => {
   it('given any game state, emits gameEffect with effectType completeResolveMeleePhase', () => {
     const state: GameState = createEmptyGameState('standard');
-    const event = generateCompleteResolveMeleePhaseEvent(state, 0);
+    const event = generateCompleteResolveMeleePhaseEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeResolveMeleePhase');
   });
@@ -18,11 +18,9 @@ describe('generateCompleteResolveMeleePhaseEvent function', () => {
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
     const a = generateCompleteResolveMeleePhaseEvent(
       createEmptyGameState('standard'),
-      0,
     );
     const b = generateCompleteResolveMeleePhaseEvent(
       createEmptyGameState('standard'),
-      0,
     );
     expect(a).toStrictEqual(b);
   });

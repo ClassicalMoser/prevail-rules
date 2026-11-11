@@ -13,13 +13,11 @@ import { findRetreatAwaitingMove, getCurrentPhaseState } from '@queries';
  * unit on the board.
  *
  * @param state - The current game state
- * @param eventNumber - The event's place in the round
  * @returns The retreat to carry out: the unit where it stands, and its path
  * @throws Error outside a shot, engagement or melee; or when no retreat has its path settled and its move still to make
  */
 export function generateResolveRetreatEvent(
   state: GameState,
-  eventNumber: number,
 ): ResolveRetreatEvent {
   // Retreats are carried out in a shot or engagement (issueCommands) and in
   // a melee (resolveMelee), and nowhere else.
@@ -52,7 +50,6 @@ export function generateResolveRetreatEvent(
 
   const gameEffectEvent: ResolveRetreatEvent = {
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     path,
     startingPosition: retreatState.retreatingUnit,

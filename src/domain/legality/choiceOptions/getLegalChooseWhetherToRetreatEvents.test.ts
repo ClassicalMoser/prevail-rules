@@ -42,14 +42,12 @@ describe('getLegalChooseWhetherToRetreatEvents function', () => {
       {
         choiceType: 'chooseWhetherToRetreat',
         choosesToRetreat: true,
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
       },
       {
         choiceType: 'chooseWhetherToRetreat',
         choosesToRetreat: false,
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
       },

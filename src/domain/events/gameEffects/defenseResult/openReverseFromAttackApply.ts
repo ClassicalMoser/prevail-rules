@@ -28,8 +28,6 @@ export type OpenReverseFromAttackApplyEvent =
       effectType: typeof OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE;
       /** The apply lives under ranged attack resolution. */
       attackResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: number;
     }
   | {
       /** The type of the event. */
@@ -40,8 +38,6 @@ export type OpenReverseFromAttackApplyEvent =
       attackResolutionContext: typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
       /** The defending player whose apply still has a pending reverse. */
       defendingPlayer: PlayerSide;
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: number;
     };
 
 const _openReverseFromAttackApplySharedFieldsSchemaObject: z.ZodObject<{
@@ -62,14 +58,11 @@ const _openReverseFromAttackApplyRangedAttackSchemaObject: z.ZodObject<{
   attackResolutionContext: z.ZodLiteral<
     typeof RANGED_ATTACK_RESOLUTION_CONTEXT
   >;
-  eventNumber: z.ZodNumber;
 }> = _openReverseFromAttackApplySharedFieldsSchemaObject.merge(
   z
     .object({
       /** Ranged attack resolution path. */
       attackResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: z.number(),
     })
     .strict(),
 );
@@ -79,7 +72,6 @@ const _openReverseFromAttackApplyMeleeSchemaObject: z.ZodObject<{
   effectType: z.ZodLiteral<typeof OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE>;
   attackResolutionContext: z.ZodLiteral<typeof MELEE_ATTACK_RESOLUTION_CONTEXT>;
   defendingPlayer: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
 }> = _openReverseFromAttackApplySharedFieldsSchemaObject.merge(
   z
     .object({
@@ -87,8 +79,6 @@ const _openReverseFromAttackApplyMeleeSchemaObject: z.ZodObject<{
       attackResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
       /** The defending player whose apply still has a pending reverse. */
       defendingPlayer: playerSideSchema,
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: z.number(),
     })
     .strict(),
 );

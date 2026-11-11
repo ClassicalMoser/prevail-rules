@@ -48,7 +48,6 @@ describe('applyResolveInitiativeEvent function', () => {
 
       const event: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
-        eventNumber: 0,
         eventType: 'gameEffect',
         player: 'black',
       };
@@ -63,7 +62,6 @@ describe('applyResolveInitiativeEvent function', () => {
 
       const event: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
-        eventNumber: 0,
         eventType: 'gameEffect',
         player: 'white',
       };
@@ -80,14 +78,12 @@ describe('applyResolveInitiativeEvent function', () => {
 
       const blackEvent: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
-        eventNumber: 0,
         eventType: 'gameEffect',
         player: 'black',
       };
 
       const whiteEvent: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
-        eventNumber: 0,
         eventType: 'gameEffect',
         player: 'white',
       };
@@ -111,7 +107,6 @@ describe('applyResolveInitiativeEvent function', () => {
 
       const event: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
-        eventNumber: 0,
         eventType: 'gameEffect',
         player: 'black',
       };
@@ -135,7 +130,6 @@ describe('applyResolveInitiativeEvent function', () => {
 
       const event: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
-        eventNumber: 0,
         eventType: 'gameEffect',
         player: 'black',
       };

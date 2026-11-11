@@ -14,13 +14,11 @@ import {
  */
 export function generateCompleteResolveMeleePhaseEvent(
   state: GameState,
-  eventNumber: number,
 ): CompleteResolveMeleePhaseEvent {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     effectType: COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

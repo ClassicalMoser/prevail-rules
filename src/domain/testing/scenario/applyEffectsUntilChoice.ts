@@ -1,4 +1,4 @@
-import type { ExpectedEvent } from '@events';
+import type { ExpectedEventInfo } from '@events';
 import type { GameStateForVisibility } from '@game';
 import type { RandomSource } from '@utils';
 import { getExpectedEvent } from '@expected';
@@ -23,7 +23,7 @@ export function applyEffectsUntilChoice(
   state: GameStateForVisibility<'authoritative'>,
 ): {
   state: GameStateForVisibility<'authoritative'>;
-  next: ExpectedEvent | 'gameOver';
+  next: ExpectedEventInfo | 'gameOver';
 } {
   // Always the first of anything drawn: scenarios must not vary run to run.
   const fixedRandom: RandomSource = { nextFloat: () => 0 };
@@ -41,7 +41,6 @@ export function applyEffectsUntilChoice(
     }
     const effect = generateEventFromProcedure(
       current,
-      expected.expectedEventNumber,
       expected.effectType,
       fixedRandom,
     );

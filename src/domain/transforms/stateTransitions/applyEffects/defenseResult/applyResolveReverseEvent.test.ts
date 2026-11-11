@@ -116,7 +116,6 @@ describe('applyResolveReverseEvent function', () => {
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
-        eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
         // The event records where the unit stood when it turned, which the
@@ -155,7 +154,6 @@ describe('applyResolveReverseEvent function', () => {
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
-        eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
         // The event records where the unit stood when it turned, which the
@@ -205,7 +203,6 @@ describe('applyResolveReverseEvent function', () => {
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
-        eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
         // The event records where the unit stood when it turned, which the
@@ -244,7 +241,6 @@ describe('applyResolveReverseEvent function', () => {
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
         effectType: 'resolveReverse',
-        eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
         // The event records where the unit stood when it turned, which the
@@ -287,7 +283,6 @@ describe('applyResolveReverseEvent function', () => {
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
         effectType: 'resolveReverse',
-        eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
         // The event records where the unit stood when it turned, which the
@@ -331,7 +326,6 @@ describe('applyResolveReverseEvent function', () => {
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
-        eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
         // The event records where the unit stood when it turned, which the

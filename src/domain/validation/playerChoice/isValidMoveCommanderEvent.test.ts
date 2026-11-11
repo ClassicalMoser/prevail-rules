@@ -16,7 +16,6 @@ describe('isValidMoveCommanderEvent function', () => {
   it('accepts a destination within commander move range', () => {
     const state = stateWithCommanderAt('E-5');
     const event = createMoveCommanderEvent({
-      eventNumber: 0,
       from: 'E-5',
       player: 'white',
       to: 'E-6',
@@ -31,7 +30,6 @@ describe('isValidMoveCommanderEvent function', () => {
     // From A-1, I-9 is farther than COMMANDER_MOVE_DISTANCE (entire board corners).
     const state = stateWithCommanderAt('A-1');
     const event = createMoveCommanderEvent({
-      eventNumber: 0,
       from: 'A-1',
       player: 'white',
       to: 'I-9',
@@ -48,7 +46,6 @@ describe('isValidMoveCommanderEvent function', () => {
   it('rejects when the commander is not at the starting position', () => {
     const state = stateWithCommanderAt('E-5');
     const event = createMoveCommanderEvent({
-      eventNumber: 0,
       from: 'E-6',
       player: 'white',
       to: 'E-7',

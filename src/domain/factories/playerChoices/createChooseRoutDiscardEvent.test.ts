@@ -7,14 +7,12 @@ describe('createChooseRoutDiscardEvent function', () => {
 
     const event = createChooseRoutDiscardEvent({
       cardIds,
-      eventNumber: 3,
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       cardIds,
       choiceType: 'chooseRoutDiscard',
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
     });

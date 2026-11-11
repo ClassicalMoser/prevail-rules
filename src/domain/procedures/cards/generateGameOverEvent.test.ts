@@ -17,9 +17,8 @@ describe('generateGameOverEvent function', () => {
       white: { ...base.cardState.white, inHand: [] },
     });
 
-    expect(generateGameOverEvent(state, 3)).toStrictEqual({
+    expect(generateGameOverEvent(state)).toStrictEqual({
       effectType: 'gameOver',
-      eventNumber: 3,
       eventType: 'gameEffect',
       winner: 'black',
     });
@@ -37,7 +36,7 @@ describe('generateGameOverEvent function', () => {
     // White held initiative going into this round.
     const state = updateCurrentInitiative(emptyHands, 'white');
 
-    expect(generateGameOverEvent(state, 0).winner).toBe('white');
+    expect(generateGameOverEvent(state).winner).toBe('white');
   });
 
   it('throws when the game is not over', () => {
@@ -53,7 +52,7 @@ describe('generateGameOverEvent function', () => {
         inHand: [createTestCard()],
       },
     });
-    expect(() => generateGameOverEvent(state, 0)).toThrow(
+    expect(() => generateGameOverEvent(state)).toThrow(
       'Game over is not expected for the current game state',
     );
   });

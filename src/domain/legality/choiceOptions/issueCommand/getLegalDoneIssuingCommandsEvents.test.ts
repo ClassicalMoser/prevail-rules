@@ -23,7 +23,6 @@ describe('getLegalDoneIssuingCommandsEvents function', () => {
     expect(getLegalDoneIssuingCommandsEvents(state)).toStrictEqual([
       {
         choiceType: 'doneIssuingCommands',
-        eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
       },

@@ -61,7 +61,6 @@ describe('applyResolveMeleeEvent function', () => {
       blackUnitRouted: false,
       blackUnitWithPlacement: placements.blackUnitWithPlacement,
       effectType: 'resolveMelee',
-      eventNumber: 0,
       eventType: 'gameEffect',
       location: 'E-5',
       whiteUnitRetreated: false,

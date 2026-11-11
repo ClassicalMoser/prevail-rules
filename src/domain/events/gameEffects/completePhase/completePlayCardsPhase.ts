@@ -12,8 +12,6 @@ export interface CompletePlayCardsPhaseEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _completePlayCardsPhaseEventSchemaObject = z
@@ -22,8 +20,6 @@ const _completePlayCardsPhaseEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
   })
   .strict();
 
@@ -40,5 +36,4 @@ const _assertExactCompletePlayCardsPhaseEvent: AssertExact<
 export const completePlayCardsPhaseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completePlayCardsPhase'>;
-  eventNumber: z.ZodNumber;
 }> = _completePlayCardsPhaseEventSchemaObject;

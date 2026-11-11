@@ -57,7 +57,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
     const { state } = awaitingSupportState();
     const event = createAssignUnitSupportEvent({
       assignments: [],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
@@ -76,7 +75,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [unit],
         },
       ],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
@@ -109,7 +107,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
     });
     const event = createAssignUnitSupportEvent({
       assignments: [],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
@@ -148,7 +145,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
     });
     const event = createAssignUnitSupportEvent({
       assignments: [],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
@@ -192,7 +188,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [unit],
         },
       ],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
@@ -236,7 +231,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [unit, other],
         },
       ],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
@@ -255,7 +249,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [other],
         },
       ],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
@@ -273,7 +266,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
         { unitSupport, units: [unit] },
         { unitSupport, units: [] },
       ],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
@@ -357,7 +349,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [typed],
         },
       ],
-      eventNumber: 0,
       player: 'white',
     });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
@@ -366,7 +357,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
   it('given wrong phase, is invalid', () => {
     const event = createAssignUnitSupportEvent({
       assignments: [],
-      eventNumber: 0,
       player: 'white',
     });
     expect(

@@ -1,4 +1,4 @@
-import type { ExpectedEvent, ExpectedEventInfo } from '@events';
+import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
 import {
   getCurrentPhaseState,
@@ -23,12 +23,10 @@ import {
  * Optional commit discards are never treated as forced costs.
  *
  * @param state - The game state, only argument required.
- * @returns Discriminator information to identify which event and number to expect next,
+ * @returns Discriminator information to identify which event to expect next,
  * as well as which player(s) to expect input from.
  */
-export function getExpectedEvent(state: GameState): ExpectedEvent {
-  const eventNumber = state.currentRoundState.events.length;
-
+export function getExpectedEvent(state: GameState): ExpectedEventInfo {
   if (state.winner !== undefined) {
     throw new Error('Game is already over');
   }
@@ -43,7 +41,6 @@ export function getExpectedEvent(state: GameState): ExpectedEvent {
     return {
       actionType: 'gameEffect',
       effectType: 'gameOver',
-      expectedEventNumber: eventNumber,
     };
   }
 
@@ -83,8 +80,5 @@ export function getExpectedEvent(state: GameState): ExpectedEvent {
     }
   }
 
-  return {
-    ...info,
-    expectedEventNumber: eventNumber,
-  };
+  return info;
 }

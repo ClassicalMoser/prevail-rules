@@ -24,7 +24,6 @@ describe('applyEvent function', () => {
     const state = createEmptyGameState('standard');
     const event: Event = createChooseCardEvent({
       card: tempCommandCards[0],
-      eventNumber: 0,
       player: 'black',
     });
     const mockReturnState = {
@@ -46,7 +45,6 @@ describe('applyEvent function', () => {
     const event: Event = {
       black: tempCommandCards[0],
       effectType: 'revealCards' as const,
-      eventNumber: 0,
       eventType: 'gameEffect',
       white: tempCommandCards[1],
     };
@@ -69,14 +67,12 @@ describe('applyEvent function', () => {
     const event1: Event = {
       card: tempCommandCards[0],
       choiceType: 'chooseCard',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
     };
     const event2: Event = {
       black: tempCommandCards[0],
       effectType: 'revealCards' as const,
-      eventNumber: 1,
       eventType: 'gameEffect',
       white: tempCommandCards[1],
     };

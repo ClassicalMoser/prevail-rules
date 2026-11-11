@@ -10,8 +10,6 @@ export interface CompleteMovementCommandEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _completeMovementCommandEventSchemaObject = z
@@ -20,8 +18,6 @@ const _completeMovementCommandEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
   })
   .strict();
 
@@ -38,5 +34,4 @@ const _assertExactCompleteMovementCommandEvent: AssertExact<
 export const completeMovementCommandEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeMovementCommand'>;
-  eventNumber: z.ZodNumber;
 }> = _completeMovementCommandEventSchemaObject;

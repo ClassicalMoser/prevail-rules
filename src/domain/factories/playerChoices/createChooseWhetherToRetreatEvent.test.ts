@@ -6,14 +6,12 @@ describe('createChooseWhetherToRetreatEvent function', () => {
 
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
-      eventNumber: 3,
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseWhetherToRetreat',
       choosesToRetreat: true,
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
     });

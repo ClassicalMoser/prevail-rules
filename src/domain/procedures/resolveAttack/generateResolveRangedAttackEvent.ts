@@ -28,7 +28,6 @@ import {
  */
 export function generateResolveRangedAttackEvent(
   state: GameState,
-  eventNumber: number,
 ): ResolveRangedAttackEvent {
   const rangedAttackState = getRangedAttackResolutionState(state);
 
@@ -101,7 +100,6 @@ export function generateResolveRangedAttackEvent(
   return {
     defenderWithPlacement,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     retreated: attackResult.unitRetreated,
     reversed: attackResult.unitReversed,

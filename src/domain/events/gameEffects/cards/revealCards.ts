@@ -18,8 +18,6 @@ export interface RevealCardsEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof REVEAL_CARDS_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** Black's revealed card (was awaiting play). */
   black: CommandCard;
   /** White's revealed card (was awaiting play). */
@@ -32,8 +30,6 @@ const _revealCardsEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(REVEAL_CARDS_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** Black's revealed card (was awaiting play). */
     black: commandCardSchema,
     /** White's revealed card (was awaiting play). */
@@ -52,7 +48,6 @@ const _assertExactRevealCardsEvent: AssertExact<
 export const revealCardsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'revealCards'>;
-  eventNumber: z.ZodNumber;
   black: z.ZodType<CommandCard>;
   white: z.ZodType<CommandCard>;
 }> = _revealCardsEventSchemaObject;

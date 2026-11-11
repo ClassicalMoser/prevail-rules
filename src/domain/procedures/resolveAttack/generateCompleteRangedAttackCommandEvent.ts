@@ -9,15 +9,11 @@ import {
  * This clears the ranged attack resolution state and allows the command resolution
  * to advance to the next command.
  *
- * @param eventNumber - The position this event takes in the round's event stream
  * @returns A complete CompleteRangedAttackCommandEvent
  */
-export function generateCompleteRangedAttackCommandEvent(
-  eventNumber: number,
-): CompleteRangedAttackCommandEvent {
+export function generateCompleteRangedAttackCommandEvent(): CompleteRangedAttackCommandEvent {
   return {
     effectType: COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

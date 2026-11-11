@@ -86,7 +86,6 @@ function meleeResolvedWith(
       blackUnitRouted: results.blackRouted ?? false,
       blackUnitWithPlacement: black,
       effectType: 'resolveMelee',
-      eventNumber: 0,
       eventType: 'gameEffect',
       location: 'E-5',
       whiteUnitRetreated: results.whiteRetreated ?? false,

@@ -12,7 +12,6 @@ describe('updateRoundEventStream function', () => {
       {
         black: tempCommandCards[0],
         effectType: 'revealCards',
-        eventNumber: 0,
         eventType: 'gameEffect',
         white: tempCommandCards[1],
       },

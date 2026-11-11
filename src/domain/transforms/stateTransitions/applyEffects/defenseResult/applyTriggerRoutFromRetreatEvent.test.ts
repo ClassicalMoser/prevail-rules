@@ -114,7 +114,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         retreatResolutionContext: 'rangedAttack',
       };
@@ -139,7 +138,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         retreatResolutionContext: 'rangedAttack',
       };
@@ -166,7 +164,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         retreatResolutionContext: 'melee',
         retreatingPlayer: 'black',
@@ -190,7 +187,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         retreatResolutionContext: 'melee',
         retreatingPlayer: 'white',
@@ -238,7 +234,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       );
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         retreatResolutionContext: 'rangedAttack',
       };
@@ -258,7 +253,6 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
         effectType: 'triggerRoutFromRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         retreatResolutionContext: 'rangedAttack',
       };

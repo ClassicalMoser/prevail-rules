@@ -8,14 +8,12 @@ describe('createChooseCardEvent function', () => {
 
     const event = createChooseCardEvent({
       card,
-      eventNumber: 3,
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       card,
       choiceType: 'chooseCard',
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
     });

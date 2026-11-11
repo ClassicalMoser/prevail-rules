@@ -11,7 +11,6 @@ describe('createCommitToMovementEvent function', () => {
 
     const event = createCommitToMovementEvent({
       committedCard,
-      eventNumber: 3,
       modifierTypes,
       player: 'white',
     });
@@ -19,7 +18,6 @@ describe('createCommitToMovementEvent function', () => {
     expect(event).toStrictEqual({
       choiceType: 'commitToMovement',
       committedCard,
-      eventNumber: 3,
       eventType: 'playerChoice',
       modifierTypes,
       player: 'white',

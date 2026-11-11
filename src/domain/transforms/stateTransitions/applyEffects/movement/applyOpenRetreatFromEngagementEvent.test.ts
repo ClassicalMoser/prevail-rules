@@ -49,7 +49,6 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     const next = applyOpenRetreatFromEngagementEvent(
       {
         effectType: 'openRetreatFromEngagement',
-        eventNumber: 4,
         eventType: 'gameEffect',
         retreatPaths,
       },

@@ -1,5 +1,9 @@
 import { tempCommandCards } from '@sampleValues';
-import type { ExpectedEvent, PlayerChoiceType, PlayerSource } from '@events';
+import type {
+  ExpectedEventInfo,
+  PlayerChoiceType,
+  PlayerSource,
+} from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
@@ -24,7 +28,7 @@ import { createEmptyGameState } from '@factories';
 const mocks = vi.hoisted(() => ({
   getExpectedEventMock: vi.fn(),
   actualGetExpectedEvent: undefined as
-    | ((state: GameState) => ExpectedEvent)
+    | ((state: GameState) => ExpectedEventInfo)
     | undefined,
 }));
 
@@ -77,10 +81,9 @@ describe('getLegalPlayerChoiceOptions function', () => {
     choiceType: PlayerChoiceType,
     playerSource: PlayerSource = 'black',
   ): void {
-    const expected: ExpectedEvent = {
+    const expected: ExpectedEventInfo = {
       actionType: 'playerChoice',
       choiceType,
-      expectedEventNumber: 0,
       playerSource,
     };
     mocks.getExpectedEventMock.mockReturnValue(expected);
@@ -248,7 +251,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
         expect(options).not.toBeNull();
         expect(options?.choiceType).toBe(choiceType);
         expect(options?.playerSource).toBe('black');
-        expect(options?.expectedEventNumber).toBe(0);
 
         switch (choiceType) {
           case 'chooseCard':

@@ -7,7 +7,7 @@ import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovemen
  */
 describe('generateCompleteUnitMovementEvent function', () => {
   it('emits gameEffect with effectType completeUnitMovement', () => {
-    const event = generateCompleteUnitMovementEvent(0);
+    const event = generateCompleteUnitMovementEvent();
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeUnitMovement');
   });

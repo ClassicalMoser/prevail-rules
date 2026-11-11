@@ -25,7 +25,6 @@ describe('isValidChooseMeleeResolutionEvent function', () => {
   it('accepts a remaining engagement for the initiative player', () => {
     const state = stateWithRemaining(['E-5', 'E-6']);
     const event = createChooseMeleeResolutionEvent({
-      eventNumber: 0,
       player: 'black',
       space: 'E-5',
     });
@@ -38,7 +37,6 @@ describe('isValidChooseMeleeResolutionEvent function', () => {
   it('rejects a space that is not among remaining engagements', () => {
     const state = stateWithRemaining(['E-5']);
     const event = createChooseMeleeResolutionEvent({
-      eventNumber: 0,
       player: 'black',
       space: 'E-6',
     });
@@ -57,7 +55,6 @@ describe('isValidChooseMeleeResolutionEvent function', () => {
       step: 'chooseCards',
     });
     const event = createChooseMeleeResolutionEvent({
-      eventNumber: 0,
       player: 'black',
       space: 'E-5',
     });

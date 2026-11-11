@@ -12,7 +12,6 @@ import { createEmptyGameState } from '@factories';
 
 const chooseCardBase = {
   choiceType: 'chooseCard' as const,
-  eventNumber: 0,
   eventType: 'playerChoice' as const,
 };
 
@@ -42,14 +41,11 @@ describe('getLegalChooseCardOptions function', () => {
     });
   }
 
-  it('returns each in-hand card as a full ChooseCardEvent with eventNumber when both still choose', () => {
+  it('returns each in-hand card as a full ChooseCardEvent when both still choose', () => {
     const state = stateChooseCardsBothPending();
     const options = getLegalChooseCardOptions(state);
 
     expect(options).toHaveLength(3);
-    for (const o of options) {
-      expect(o.eventNumber).toBe(0);
-    }
     expect(options.filter((o) => o.player === 'black')).toStrictEqual([
       { ...chooseCardBase, card: tempCommandCards[2], player: 'black' },
     ]);
@@ -231,13 +227,12 @@ describe('getLegalChooseCardOptions function', () => {
       expect(getLegalChooseCardOptions(state)).toStrictEqual([]);
     });
 
-    it('after black commits, whiteSeen refresh stamps the next eventNumber', () => {
+    it("offers only white's cards on white's seat once black has chosen", () => {
       const base = stateChooseCardsBothPending();
       const prior: readonly Event[] = [
         {
           card: tempCommandCards[2],
           choiceType: 'chooseCard',
-          eventNumber: 0,
           eventType: 'playerChoice',
           player: 'black',
         },
@@ -267,7 +262,6 @@ describe('getLegalChooseCardOptions function', () => {
         {
           ...chooseCardBase,
           card: tempCommandCards[3],
-          eventNumber: 1,
           player: 'white',
         },
       ]);

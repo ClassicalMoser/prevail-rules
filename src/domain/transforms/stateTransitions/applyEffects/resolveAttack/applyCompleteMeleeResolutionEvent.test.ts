@@ -33,7 +33,6 @@ describe('applyCompleteMeleeResolutionEvent function', () => {
 
     const event: CompleteMeleeResolutionEvent = {
       effectType: 'completeMeleeResolution' as const,
-      eventNumber: 0,
       eventType: 'gameEffect' as const,
     };
 

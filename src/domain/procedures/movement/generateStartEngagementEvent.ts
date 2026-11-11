@@ -21,7 +21,6 @@ import { throwIfPending } from '@utils';
  */
 export function generateStartEngagementEvent(
   state: GameState,
-  eventNumber: number,
 ): StartEngagementEvent {
   const movementResolutionState = getMovementResolutionState(state);
 
@@ -47,7 +46,6 @@ export function generateStartEngagementEvent(
       defenderWithPlacement,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'rear',
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
@@ -58,7 +56,6 @@ export function generateStartEngagementEvent(
       defenderWithPlacement,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'flank',
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
@@ -69,7 +66,6 @@ export function generateStartEngagementEvent(
       defenderWithPlacement,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'front',
-      eventNumber,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }

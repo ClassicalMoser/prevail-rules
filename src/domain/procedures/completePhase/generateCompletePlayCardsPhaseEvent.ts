@@ -14,13 +14,11 @@ import {
  */
 export function generateCompletePlayCardsPhaseEvent(
   state: GameState,
-  eventNumber: number,
 ): CompletePlayCardsPhaseEvent {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     effectType: COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

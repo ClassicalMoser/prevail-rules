@@ -84,7 +84,6 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
   it('a ranged apply with a pending rout names the ranged context', () => {
     const event = generateOpenRoutFromAttackApplyEvent(
       stateWithRangedPendingRout(),
-      0,
     );
     expect(event.effectType).toBe('openRoutFromAttackApply');
     expect(event.attackResolutionContext).toBe('rangedAttack');
@@ -94,7 +93,6 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
   it('a melee apply with a pending rout names that defending player', () => {
     const event = generateOpenRoutFromAttackApplyEvent(
       stateWithMeleePendingRout('black'),
-      0,
     );
     expect(event.effectType).toBe('openRoutFromAttackApply');
     expect(event.attackResolutionContext).toBe('melee');
@@ -108,7 +106,7 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateOpenRoutFromAttackApplyEvent(full, 0)).toThrow(
+    expect(() => generateOpenRoutFromAttackApplyEvent(full)).toThrow(
       'Attack-apply rout open not expected in phase: playCards',
     );
   });

@@ -19,7 +19,6 @@ describe('generateEventFromProcedure function', () => {
       const state = procedureRegistryStateFactories[effectType]();
       const event = generateEventFromProcedure(
         state,
-        0,
         effectType,
         defaultRandom,
       );
@@ -35,7 +34,6 @@ describe('generateEventFromProcedure function', () => {
     expect(() =>
       generateEventFromProcedure(
         state,
-        0,
         'notARealEffect' as GameEffectType,
         defaultRandom,
       ),

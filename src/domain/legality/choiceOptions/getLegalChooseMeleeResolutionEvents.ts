@@ -3,7 +3,6 @@ import type { GameState } from '@game';
 import { createChooseMeleeResolutionEvent } from '@factories';
 import {
   getCurrentInitiative,
-  getNextEventNumber,
   getRemainingMeleeEngagements,
   getResolveMeleePhaseState,
 } from '@queries';
@@ -15,9 +14,6 @@ export function getLegalChooseMeleeResolutionEvents(
   if (phaseState.step !== 'resolveMelee') {
     throw new Error('Not in resolve melee phase');
   }
-
-  // Get the next event number
-  const eventNumber = getNextEventNumber(gameState);
 
   // Get the active player
   const activePlayer = getCurrentInitiative(gameState);
@@ -34,7 +30,6 @@ export function getLegalChooseMeleeResolutionEvents(
     result.push(
       createChooseMeleeResolutionEvent({
         player: activePlayer,
-        eventNumber,
         space: engagementCoordinate,
       }),
     );

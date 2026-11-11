@@ -54,7 +54,6 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     const event: OpenRetreatFromAttackApplyEvent = {
       attackResolutionContext: 'rangedAttack',
       effectType: 'openRetreatFromAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
       retreatPaths,
     };

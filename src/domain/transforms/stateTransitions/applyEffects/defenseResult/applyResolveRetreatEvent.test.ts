@@ -118,7 +118,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -147,7 +146,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -175,7 +173,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -199,7 +196,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -223,7 +219,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -254,7 +249,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -281,7 +275,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -306,7 +299,6 @@ describe('applyResolveRetreatEvent function', () => {
       // enough of them carry the unit past the board's edge.
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: Array.from({ length: 40 }, () => 'step' as const),
         startingPosition: retreatState.retreatingUnit,
@@ -327,7 +319,6 @@ describe('applyResolveRetreatEvent function', () => {
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,
@@ -371,7 +362,6 @@ describe('applyResolveRetreatEvent function', () => {
       const retreatState = getFrontEngagementRetreatState(withEngagement);
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
-        eventNumber: 0,
         eventType: 'gameEffect',
         path: ['step'],
         startingPosition: retreatState.retreatingUnit,

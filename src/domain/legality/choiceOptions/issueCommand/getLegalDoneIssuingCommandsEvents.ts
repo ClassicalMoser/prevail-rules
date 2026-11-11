@@ -1,7 +1,7 @@
 import type { DoneIssuingCommandsEvent } from '@events';
 import type { GameState } from '@game';
 import { createDoneIssuingCommandsEvent } from '@factories';
-import { getNextEventNumber, getOtherPlayer } from '@queries';
+import { getOtherPlayer } from '@queries';
 
 /**
  * Legal `doneIssuingCommands` events for the active issue step.
@@ -41,7 +41,6 @@ export function getLegalDoneIssuingCommandsEvents(
   return [
     createDoneIssuingCommandsEvent({
       player,
-      eventNumber: getNextEventNumber(gameState),
     }),
   ];
 }

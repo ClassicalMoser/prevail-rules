@@ -1,4 +1,3 @@
-import { tempCommandCards } from '@sampleValues';
 import type { Coordinate } from '@entities';
 import type { GameState } from '@game';
 import type { Event } from '@events';
@@ -11,7 +10,6 @@ import {
   updateRoundEventStream,
   updateCurrentInitiative,
 } from '@transforms';
-import { throwIfUndefined } from '@utils';
 import { createEmptyGameState } from '@factories';
 
 import { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
@@ -61,21 +59,18 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     expect(options).toStrictEqual([
       {
         choiceType: 'chooseMeleeResolution',
-        eventNumber: 0,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
         player: 'white',
         space: 'E-4',
       },
       {
         choiceType: 'chooseMeleeResolution',
-        eventNumber: 0,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
         player: 'white',
         space: 'E-5',
       },
       {
         choiceType: 'chooseMeleeResolution',
-        eventNumber: 0,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
         player: 'white',
         space: 'E-6',
@@ -89,36 +84,6 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     expect(() => getLegalChooseMeleeResolutionEvents(state)).toThrow(
       'No legal choose melee resolution events',
     );
-  });
-
-  it('uses getNextEventNumber for eventNumber on each option', () => {
-    const prior: readonly Event[] = [
-      {
-        black: tempCommandCards[0],
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-        white: tempCommandCards[1],
-      },
-      {
-        black: tempCommandCards[0],
-        effectType: 'revealCards',
-        eventNumber: 1,
-        eventType: 'gameEffect',
-        white: tempCommandCards[1],
-      },
-    ];
-    const state = stateChoosingMeleeEngagement({
-      eventStream: prior,
-      remaining: ['E-5'] as const,
-    });
-
-    const options = getLegalChooseMeleeResolutionEvents(state);
-
-    expect(options).toHaveLength(1);
-    expect(
-      throwIfUndefined(options[0], 'expected one legal option').eventNumber,
-    ).toBe(2);
   });
 
   it('throws when there is no current phase state', () => {

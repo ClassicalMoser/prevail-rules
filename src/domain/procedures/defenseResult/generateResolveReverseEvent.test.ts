@@ -44,7 +44,7 @@ describe('generateResolveReverseEvent function', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveReverseEvent(full, 0);
+    const event = generateResolveReverseEvent(full);
     expect(event.effectType).toBe('resolveReverse');
     expect(event.attackResolutionContext).toBe('rangedAttack');
     expect(event.unitInstance).toStrictEqual(unitWithPlacement);
@@ -76,7 +76,7 @@ describe('generateResolveReverseEvent function', () => {
     });
     const full = updatePhaseState(s, phase);
 
-    const event = generateResolveReverseEvent(full, 0);
+    const event = generateResolveReverseEvent(full);
     expect(event.effectType).toBe('resolveReverse');
     expect(event.attackResolutionContext).toBe('melee');
     // White holds initiative and strikes first, so black's unit is the second
@@ -89,7 +89,7 @@ describe('generateResolveReverseEvent function', () => {
 
   it('given empty game with no phase slice, throws no current phase state', () => {
     const full = createEmptyGameState('standard');
-    expect(() => generateResolveReverseEvent(full, 0)).toThrow(
+    expect(() => generateResolveReverseEvent(full)).toThrow(
       'No current phase state found',
     );
   });
@@ -99,7 +99,7 @@ describe('generateResolveReverseEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveReverseEvent(full, 0)).toThrow(
+    expect(() => generateResolveReverseEvent(full)).toThrow(
       'Reverse resolution not expected in phase: playCards',
     );
   });

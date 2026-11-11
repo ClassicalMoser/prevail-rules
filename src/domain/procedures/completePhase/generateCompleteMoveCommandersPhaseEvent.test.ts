@@ -38,7 +38,7 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
   it('given both inPlay populated, maps each side command into remainingCommands sets', () => {
     const state = createGameStateInCompleteStep();
 
-    const event = generateCompleteMoveCommandersPhaseEvent(state, 0);
+    const event = generateCompleteMoveCommandersPhaseEvent(state);
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeMoveCommandersPhase');
@@ -62,7 +62,7 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
       step: 'complete',
     });
 
-    const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase, 0);
+    const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase);
 
     expect(event.remainingCommandsFirstPlayer).toHaveLength(0);
     expect(event.remainingCommandsSecondPlayer).toHaveLength(0);
@@ -83,7 +83,7 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
       step: 'complete',
     });
 
-    const event = generateCompleteMoveCommandersPhaseEvent(state, 0);
+    const event = generateCompleteMoveCommandersPhaseEvent(state);
 
     expect(event.remainingCommandsFirstPlayer).toStrictEqual([
       tempCommandCards[1].command,
@@ -105,7 +105,7 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
       step: 'complete',
     });
 
-    const event = generateCompleteMoveCommandersPhaseEvent(inComplete, 0);
+    const event = generateCompleteMoveCommandersPhaseEvent(inComplete);
 
     const expectedSlot = { ...multiLineCard.command, number: 1 };
     expect(event.remainingCommandsFirstPlayer).toStrictEqual([

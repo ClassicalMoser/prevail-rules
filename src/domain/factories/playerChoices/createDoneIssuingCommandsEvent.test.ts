@@ -5,13 +5,11 @@ describe('createDoneIssuingCommandsEvent function', () => {
     expect.hasAssertions();
 
     const event = createDoneIssuingCommandsEvent({
-      eventNumber: 3,
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       choiceType: 'doneIssuingCommands',
-      eventNumber: 3,
       eventType: 'playerChoice',
       player: 'white',
     });

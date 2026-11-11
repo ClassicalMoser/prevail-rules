@@ -20,15 +20,12 @@ export interface ResolveRangedAttackEvent {
   retreated: boolean;
   /** The defender with placement. */
   defenderWithPlacement: UnitWithPlacement;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _resolveRangedAttackEventSchemaObject = z
   .object({
     defenderWithPlacement: unitWithPlacementSchema,
     effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     retreated: z.boolean(),
     reversed: z.boolean(),
@@ -49,7 +46,6 @@ const _assertExactResolveRangedAttackEvent: AssertExact<
 export const resolveRangedAttackEventSchema: z.ZodObject<{
   defenderWithPlacement: typeof unitWithPlacementSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   retreated: z.ZodBoolean;
   reversed: z.ZodBoolean;

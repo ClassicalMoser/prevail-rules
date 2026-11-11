@@ -6,7 +6,7 @@ import { generateCompleteRangedAttackCommandEvent } from './generateCompleteRang
  */
 describe('generateCompleteRangedAttackCommandEvent function', () => {
   it('given any game state, emits gameEffect with effectType completeRangedAttackCommand', () => {
-    const event = generateCompleteRangedAttackCommandEvent(0);
+    const event = generateCompleteRangedAttackCommandEvent();
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeRangedAttackCommand');
   });

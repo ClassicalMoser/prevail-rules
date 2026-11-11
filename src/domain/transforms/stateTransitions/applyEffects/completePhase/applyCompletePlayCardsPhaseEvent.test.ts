@@ -26,7 +26,6 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
 
     const event: CompletePlayCardsPhaseEvent = {
       effectType: 'completePlayCardsPhase',
-      eventNumber: 0,
       eventType: 'gameEffect',
     };
 
@@ -53,7 +52,6 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
     const next = applyCompletePlayCardsPhaseEvent(
       {
         effectType: 'completePlayCardsPhase',
-        eventNumber: 0,
         eventType: 'gameEffect',
       },
       full,

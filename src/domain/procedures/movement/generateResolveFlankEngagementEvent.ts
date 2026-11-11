@@ -21,7 +21,6 @@ import {
  */
 export function generateResolveFlankEngagementEvent(
   state: GameState,
-  eventNumber: number,
 ): ResolveFlankEngagementEvent {
   const engagementState = getFlankEngagementStateFromMovement(state);
 
@@ -39,7 +38,6 @@ export function generateResolveFlankEngagementEvent(
   return {
     defenderWithPlacement,
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
-    eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     newFacing,
   };

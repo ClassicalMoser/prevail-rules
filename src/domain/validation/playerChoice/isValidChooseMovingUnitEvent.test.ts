@@ -47,7 +47,6 @@ describe('isValidChooseMovingUnitEvent function', () => {
 
   it('accepts an ordered unit still to move', () => {
     const event = createChooseMovingUnitEvent({
-      eventNumber: 0,
       player: 'black',
       unit: ordered,
     });
@@ -60,7 +59,6 @@ describe('isValidChooseMovingUnitEvent function', () => {
   it('refuses the unit named where it does not stand', () => {
     // The same unit, claimed to stand one space off.
     const event = createChooseMovingUnitEvent({
-      eventNumber: 0,
       player: 'black',
       unit: { ...ordered, placement: { coordinate: 'D-5', facing: 'north' } },
     });
@@ -72,7 +70,6 @@ describe('isValidChooseMovingUnitEvent function', () => {
 
   it('refuses the other side naming a unit', () => {
     const event = createChooseMovingUnitEvent({
-      eventNumber: 0,
       player: 'white',
       unit: ordered,
     });
@@ -91,7 +88,6 @@ describe('isValidChooseMovingUnitEvent function', () => {
       step: 'chooseCards',
     });
     const event = createChooseMovingUnitEvent({
-      eventNumber: 0,
       player: 'black',
       unit: ordered,
     });

@@ -29,8 +29,6 @@ export type OpenRetreatFromAttackApplyEvent =
       effectType: typeof OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE;
       /** The apply lives under ranged attack resolution. */
       attackResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: number;
       /** The retreats the unit may make, each as its path (§9.1.3); empty when it routs instead (§9.1.6). */
       retreatPaths: MoveDelta[][];
     }
@@ -43,8 +41,6 @@ export type OpenRetreatFromAttackApplyEvent =
       attackResolutionContext: typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
       /** The defending player whose apply still has a pending retreat. */
       defendingPlayer: PlayerSide;
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: number;
       /** The retreats the unit may make, each as its path (§9.1.3); empty when it routs instead (§9.1.6). */
       retreatPaths: MoveDelta[][];
     };
@@ -67,15 +63,12 @@ const _openRetreatFromAttackApplyRangedAttackSchemaObject: z.ZodObject<{
   attackResolutionContext: z.ZodLiteral<
     typeof RANGED_ATTACK_RESOLUTION_CONTEXT
   >;
-  eventNumber: z.ZodNumber;
   retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _openRetreatFromAttackApplySharedFieldsSchemaObject.merge(
   z
     .object({
       /** Ranged attack resolution path. */
       attackResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: z.number(),
       /** The retreats the unit may make, each as its path. */
       retreatPaths: z.array(z.array(moveDeltaSchema)),
     })
@@ -87,7 +80,6 @@ const _openRetreatFromAttackApplyMeleeSchemaObject: z.ZodObject<{
   effectType: z.ZodLiteral<typeof OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE>;
   attackResolutionContext: z.ZodLiteral<typeof MELEE_ATTACK_RESOLUTION_CONTEXT>;
   defendingPlayer: typeof playerSideSchema;
-  eventNumber: z.ZodNumber;
   retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _openRetreatFromAttackApplySharedFieldsSchemaObject.merge(
   z
@@ -96,8 +88,6 @@ const _openRetreatFromAttackApplyMeleeSchemaObject: z.ZodObject<{
       attackResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
       /** The defending player whose apply still has a pending retreat. */
       defendingPlayer: playerSideSchema,
-      /** The ordered index of the event in the round, zero-indexed. */
-      eventNumber: z.number(),
       /** The retreats the unit may make, each as its path. */
       retreatPaths: z.array(z.array(moveDeltaSchema)),
     })

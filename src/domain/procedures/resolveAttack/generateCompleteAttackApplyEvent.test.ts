@@ -86,11 +86,10 @@ describe('generateCompleteAttackApplyEvent function', () => {
   it('given ranged stack with white defender apply, emits ranged completeAttackApply for white', () => {
     const state = createStateWithRangedAttackApply();
 
-    expect(generateCompleteAttackApplyEvent(state, 0)).toStrictEqual({
+    expect(generateCompleteAttackApplyEvent(state)).toStrictEqual({
       attackType: 'ranged',
       defendingPlayer: 'white',
       effectType: 'completeAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
     });
   });
@@ -98,11 +97,10 @@ describe('generateCompleteAttackApplyEvent function', () => {
   it('given black initiative and only black apply incomplete, emits melee for defending black', () => {
     const state = createStateWithMeleeApply('black');
 
-    expect(generateCompleteAttackApplyEvent(state, 0)).toStrictEqual({
+    expect(generateCompleteAttackApplyEvent(state)).toStrictEqual({
       attackType: 'melee',
       defendingPlayer: 'black',
       effectType: 'completeAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
     });
   });
@@ -110,11 +108,10 @@ describe('generateCompleteAttackApplyEvent function', () => {
   it('given same stack with white still incomplete after black done, emits melee for white', () => {
     const state = createStateWithMeleeApply('white');
 
-    expect(generateCompleteAttackApplyEvent(state, 0)).toStrictEqual({
+    expect(generateCompleteAttackApplyEvent(state)).toStrictEqual({
       attackType: 'melee',
       defendingPlayer: 'white',
       effectType: 'completeAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
     });
   });
@@ -122,7 +119,7 @@ describe('generateCompleteAttackApplyEvent function', () => {
   it('given melee with both applies already complete, throws no incomplete apply', () => {
     const state = createStateWithMeleeApply();
 
-    expect(() => generateCompleteAttackApplyEvent(state, 0)).toThrow(
+    expect(() => generateCompleteAttackApplyEvent(state)).toThrow(
       'No incomplete attack apply state found in melee resolution',
     );
   });
@@ -130,7 +127,7 @@ describe('generateCompleteAttackApplyEvent function', () => {
   it('given bare empty state without phase, throws no current phase state', () => {
     const state = createEmptyGameState('standard');
 
-    expect(() => generateCompleteAttackApplyEvent(state, 0)).toThrow(
+    expect(() => generateCompleteAttackApplyEvent(state)).toThrow(
       'No current phase state found',
     );
   });
@@ -138,7 +135,7 @@ describe('generateCompleteAttackApplyEvent function', () => {
   it('given cleanup phase, throws completeAttackApply phase guard', () => {
     const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, createCleanupPhaseState());
-    expect(() => generateCompleteAttackApplyEvent(full, 0)).toThrow(
+    expect(() => generateCompleteAttackApplyEvent(full)).toThrow(
       'completeAttackApply not expected in phase: cleanup',
     );
   });

@@ -77,7 +77,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   const refuseBlack = {
     choiceType: 'commitToRangedAttack' as const,
     committedCard: null,
-    eventNumber: 0,
     eventType: 'playerChoice' as const,
     modifierTypes: [] as const,
     player: 'black' as const,
@@ -90,7 +89,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
       {
         choiceType: 'commitToRangedAttack',
         committedCard: attackCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['attack'],
         player: 'black',
@@ -106,7 +104,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
       {
         choiceType: 'commitToRangedAttack',
         committedCard: rangeCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['range'],
         player: 'black',
@@ -126,7 +123,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
       {
         choiceType: 'commitToRangedAttack',
         committedCard: rangeAndAttackCard,
-        eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['range', 'attack'],
         player: 'black',

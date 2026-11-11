@@ -60,7 +60,7 @@ describe('generateResolveRetreatEvent function', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRetreatEvent(full, 0);
+    const event = generateResolveRetreatEvent(full);
     expect(event.effectType).toBe('resolveRetreat');
     expect(event.startingPosition).toStrictEqual(unitWithPlacement);
     expect(event.path).toStrictEqual(['step']);
@@ -108,7 +108,7 @@ describe('generateResolveRetreatEvent function', () => {
 
     // White holds initiative and strikes first, so black's unit, the second
     // player's, is the one that falls back first.
-    const event = generateResolveRetreatEvent(full, 0);
+    const event = generateResolveRetreatEvent(full);
     expect(event.startingPosition.unit).toBe(blackUnit);
     expect(event.path).toStrictEqual(['step']);
   });
@@ -120,7 +120,7 @@ describe('generateResolveRetreatEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
+    expect(() => generateResolveRetreatEvent(full)).toThrow(
       'Retreat resolution not expected in phase: playCards',
     );
   });
@@ -147,7 +147,7 @@ describe('generateResolveRetreatEvent function', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
+    expect(() => generateResolveRetreatEvent(full)).toThrow(
       'No retreat has been chosen yet',
     );
   });

@@ -50,7 +50,6 @@ describe('generateOpenRetreatFromAttackApplyEvent function', () => {
   it('a ranged apply with a pending retreat names the ranged context', () => {
     const event = generateOpenRetreatFromAttackApplyEvent(
       stateWithRangedPendingRetreat(),
-      0,
     );
     expect(event.effectType).toBe('openRetreatFromAttackApply');
     expect(event.attackResolutionContext).toBe('rangedAttack');
@@ -61,7 +60,6 @@ describe('generateOpenRetreatFromAttackApplyEvent function', () => {
     // back, and it is worked out here so the log shows what was legal.
     const event = generateOpenRetreatFromAttackApplyEvent(
       stateWithRangedPendingRetreat(),
-      0,
     );
 
     expect(event.retreatPaths).toStrictEqual([['step']]);
@@ -72,7 +70,6 @@ describe('generateOpenRetreatFromAttackApplyEvent function', () => {
     // and stepping back are the two smallest retreats left (§9.1.3, §9.1.4).
     const event = generateOpenRetreatFromAttackApplyEvent(
       stateWithRangedPendingRetreat(true),
-      0,
     );
 
     expect(event.retreatPaths).toStrictEqual([

@@ -9,7 +9,6 @@ describe('applyGameOverEvent function', () => {
     const state = createEmptyGameState('standard');
     const event: GameOverEvent = {
       effectType: 'gameOver',
-      eventNumber: 0,
       eventType: 'gameEffect',
       winner: 'white',
     };
@@ -25,7 +24,6 @@ describe('applyGameOverEvent function', () => {
     const state = createEmptyGameState('standard');
     const event: GameOverEvent = {
       effectType: 'gameOver',
-      eventNumber: 0,
       eventType: 'gameEffect',
       winner: 'black',
     };

@@ -55,7 +55,6 @@ describe('applyOpenReverseFromAttackApplyEvent function', () => {
     const event: OpenReverseFromAttackApplyEvent = {
       attackResolutionContext: 'rangedAttack',
       effectType: 'openReverseFromAttackApply',
-      eventNumber: 0,
       eventType: 'gameEffect',
     };
 

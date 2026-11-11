@@ -75,7 +75,6 @@ describe('attack apply outcome flow', () => {
     // Its procedure works out where the unit may go.
     const openRetreat = generateEventFromProcedure(
       start,
-      0,
       'openRetreatFromAttackApply',
       { nextFloat: () => 0 },
     );
@@ -99,7 +98,6 @@ describe('attack apply outcome flow', () => {
 
     const resolveRetreat: ResolveRetreatEvent = {
       effectType: 'resolveRetreat',
-      eventNumber: 1,
       eventType: 'gameEffect',
       path: chosen,
       startingPosition: retreat.retreatingUnit,
@@ -117,7 +115,6 @@ describe('attack apply outcome flow', () => {
     const openReverse: OpenReverseFromAttackApplyEvent = {
       attackResolutionContext: 'rangedAttack',
       effectType: 'openReverseFromAttackApply',
-      eventNumber: 2,
       eventType: 'gameEffect',
     };
     const afterReverseOpen = applyOpenReverseFromAttackApplyEvent(
@@ -153,7 +150,6 @@ describe('attack apply outcome flow', () => {
 
     const event: TriggerRoutFromRetreatEvent = {
       effectType: 'triggerRoutFromRetreat',
-      eventNumber: 0,
       eventType: 'gameEffect',
       retreatResolutionContext: 'rangedAttack',
     };

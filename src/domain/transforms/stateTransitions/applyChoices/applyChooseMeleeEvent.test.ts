@@ -33,7 +33,6 @@ describe('applyChooseMeleeEvent function', () => {
     const state = createStateInResolveMeleeStep(['E-5', 'E-6']);
     const event: ChooseMeleeResolutionEvent = {
       choiceType: 'chooseMeleeResolution',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
       space: 'E-5',
@@ -55,7 +54,6 @@ describe('applyChooseMeleeEvent function', () => {
 
     const event: ChooseMeleeResolutionEvent = {
       choiceType: 'chooseMeleeResolution',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
       space: 'E-6',

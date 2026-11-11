@@ -22,7 +22,6 @@ describe('applySetupUnitsEvent function', () => {
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
-      eventNumber: 0,
       player: 'black',
       unitPlacements: [unitWithPlacement],
     });
@@ -67,7 +66,6 @@ describe('applySetupUnitsEvent function', () => {
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
-      eventNumber: 0,
       player: 'black',
       unitPlacements: [blackUnit],
     });
@@ -95,7 +93,6 @@ describe('applySetupUnitsEvent function', () => {
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'L-4',
-      eventNumber: 0,
       player: 'black',
       unitPlacements: [unit],
     });
@@ -122,7 +119,6 @@ describe('applySetupUnitsEvent function', () => {
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
-      eventNumber: 0,
       player: 'black',
       unitPlacements: [unitWithPlacement],
     });

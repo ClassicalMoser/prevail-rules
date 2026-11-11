@@ -31,14 +31,13 @@ describe('generateCompletePlayCardsPhaseEvent function', () => {
   describe('state-independent payload', () => {
     const expectedEvent = {
       effectType: COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
-      eventNumber: 0,
       eventType: GAME_EFFECT_EVENT_TYPE,
     };
 
     it('given playCards complete step, emits literal completePlayCardsPhase effect', () => {
       const state = createGameStateInCompleteStep();
 
-      expect(generateCompletePlayCardsPhaseEvent(state, 0)).toStrictEqual(
+      expect(generateCompletePlayCardsPhaseEvent(state)).toStrictEqual(
         expectedEvent,
       );
     });
@@ -62,14 +61,14 @@ describe('generateCompletePlayCardsPhaseEvent function', () => {
         },
       } satisfies GameState;
 
+      expect(generateCompletePlayCardsPhaseEvent(stateBlackInit)).toStrictEqual(
+        expectedEvent,
+      );
+      expect(generateCompletePlayCardsPhaseEvent(stateWhiteInit)).toStrictEqual(
+        expectedEvent,
+      );
       expect(
-        generateCompletePlayCardsPhaseEvent(stateBlackInit, 0),
-      ).toStrictEqual(expectedEvent);
-      expect(
-        generateCompletePlayCardsPhaseEvent(stateWhiteInit, 0),
-      ).toStrictEqual(expectedEvent);
-      expect(
-        generateCompletePlayCardsPhaseEvent(stateDifferentRound, 0),
+        generateCompletePlayCardsPhaseEvent(stateDifferentRound),
       ).toStrictEqual(expectedEvent);
     });
   });

@@ -68,7 +68,6 @@ describe('applyAssignUnitSupportEvent function', () => {
         },
       ],
       choiceType: 'assignUnitSupport',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
     };
@@ -122,7 +121,6 @@ describe('applyAssignUnitSupportEvent function', () => {
     const event: AssignUnitSupportEvent = {
       assignments: [],
       choiceType: 'assignUnitSupport',
-      eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
     };

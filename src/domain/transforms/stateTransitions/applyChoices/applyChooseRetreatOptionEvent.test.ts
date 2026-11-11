@@ -66,7 +66,6 @@ describe('applyChooseRetreatOptionEvent function', () => {
   it('given ranged retreat flow, white chooses the right-turn retreat, the retreat substep records it', () => {
     const state = createStateWithRangedAttackRetreat();
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: chosenPath,
     });
@@ -122,7 +121,6 @@ describe('applyChooseRetreatOptionEvent function', () => {
   it('given white melee retreat apply, white chooses the right-turn retreat, the white retreat records it', () => {
     const state = createStateWithMeleeRetreat('white');
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: chosenPath,
     });
@@ -136,7 +134,6 @@ describe('applyChooseRetreatOptionEvent function', () => {
   it('given black melee retreat apply, black chooses the right-turn retreat, the black retreat records it', () => {
     const state = createStateWithMeleeRetreat('black');
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'black',
       path: chosenPath,
     });
@@ -177,7 +174,6 @@ describe('applyChooseRetreatOptionEvent function', () => {
       }),
     );
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: chosenPath,
     });
@@ -192,7 +188,6 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const state = createStateWithRangedAttackRetreat();
     // A turn about and a step is not one of the two ways back on offer.
     const event = createChooseRetreatOptionEvent({
-      eventNumber: 0,
       player: 'white',
       path: ['turnAbout', 'step'],
     });

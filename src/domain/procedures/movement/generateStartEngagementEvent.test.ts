@@ -53,7 +53,7 @@ describe('generateStartEngagementEvent function', () => {
       engagingFacing: 'north',
     });
 
-    const event = generateStartEngagementEvent(full, 0);
+    const event = generateStartEngagementEvent(full);
     expect(event.defenderWithPlacement.unit).toBe(defender);
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-6');
     expect(event.defenderWithPlacement.placement.facing).toBe('south');
@@ -65,7 +65,7 @@ describe('generateStartEngagementEvent function', () => {
       defenderFacing: 'north',
       engagingFacing: 'north',
     });
-    expect(generateStartEngagementEvent(full, 0).engagementType).toBe('rear');
+    expect(generateStartEngagementEvent(full).engagementType).toBe('rear');
   });
 
   it('given defender south and engaging east (orthogonal), engagementType is flank', () => {
@@ -73,7 +73,7 @@ describe('generateStartEngagementEvent function', () => {
       defenderFacing: 'south',
       engagingFacing: 'east',
     });
-    expect(generateStartEngagementEvent(full, 0).engagementType).toBe('flank');
+    expect(generateStartEngagementEvent(full).engagementType).toBe('flank');
   });
 
   it('given defender south and engaging north (head-on), engagementType is front', () => {
@@ -81,7 +81,7 @@ describe('generateStartEngagementEvent function', () => {
       defenderFacing: 'south',
       engagingFacing: 'north',
     });
-    expect(generateStartEngagementEvent(full, 0).engagementType).toBe('front');
+    expect(generateStartEngagementEvent(full).engagementType).toBe('front');
   });
 
   it('given diagonal defender facing with engaging south, throws classification error', () => {
@@ -89,7 +89,7 @@ describe('generateStartEngagementEvent function', () => {
       defenderFacing: 'northEast',
       engagingFacing: 'south',
     });
-    expect(() => generateStartEngagementEvent(full, 0)).toThrow(
+    expect(() => generateStartEngagementEvent(full)).toThrow(
       'Unable to determine engagement type. Engaging facing: south, Defending facing: northEast',
     );
   });

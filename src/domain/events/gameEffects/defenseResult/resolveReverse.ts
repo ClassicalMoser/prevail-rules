@@ -23,15 +23,12 @@ export interface ResolveReverseEvent {
    * Set by `generateResolveReverseEvent` in `src/domain/procedures/`.
    */
   attackResolutionContext: AttackResolutionContext;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
 }
 
 const _resolveReverseEventSchemaObject = z
   .object({
     attackResolutionContext: attackResolutionContextSchema,
     effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     newUnitPlacement: unitWithPlacementSchema,
     unitInstance: unitWithPlacementSchema,
@@ -51,7 +48,6 @@ const _assertExactResolveReverseEvent: AssertExact<
 export const resolveReverseEventSchema: z.ZodObject<{
   attackResolutionContext: typeof attackResolutionContextSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   newUnitPlacement: typeof unitWithPlacementSchema;
   unitInstance: typeof unitWithPlacementSchema;

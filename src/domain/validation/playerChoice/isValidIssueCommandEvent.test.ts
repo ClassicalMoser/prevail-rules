@@ -57,7 +57,6 @@ describe('isValidIssueCommandEvent function', () => {
     const { state, unit } = stateReadyToIssue(command);
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 0,
       player: 'black',
       units: [unit.unit],
     });
@@ -90,7 +89,6 @@ describe('isValidIssueCommandEvent function', () => {
     );
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 0,
       player: 'black',
       units: [unit.unit],
     });
@@ -123,7 +121,6 @@ describe('isValidIssueCommandEvent function', () => {
     );
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 0,
       player: 'black',
       units: [unit.unit, other.unit],
     });
@@ -147,7 +144,6 @@ describe('isValidIssueCommandEvent function', () => {
     const { state } = stateReadyToIssue(command);
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 0,
       player: 'black',
       units: [],
     });
@@ -186,7 +182,6 @@ describe('isValidIssueCommandEvent function', () => {
     );
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 0,
       player: 'black',
       units: [far.unit],
     });
@@ -207,7 +202,6 @@ describe('isValidIssueCommandEvent function', () => {
     });
     const event = createIssueCommandEvent({
       command,
-      eventNumber: 0,
       player: 'black',
       units: [unit.unit],
     });

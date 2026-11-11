@@ -49,7 +49,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: attackCard,
-      eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'white',
     });
@@ -63,7 +62,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: attackCard,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'white',
     });
@@ -75,7 +73,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: otherCard,
-      eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'white',
     });
@@ -90,7 +87,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     });
     const event = createCommitToMeleeEvent({
       committedCard: attackCard,
-      eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'white',
     });
@@ -102,7 +98,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: null,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'white',
     });

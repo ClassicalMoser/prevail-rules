@@ -20,7 +20,6 @@ import { createEmptyGameState } from '@factories';
 
 const event = {
   effectType: 'completeRangedAttackCommand' as const,
-  eventNumber: 0,
   eventType: 'gameEffect' as const,
 } satisfies CompleteRangedAttackCommandEvent;
 

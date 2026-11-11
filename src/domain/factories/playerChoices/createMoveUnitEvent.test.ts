@@ -5,7 +5,6 @@ describe('createMoveUnitEvent function', () => {
     expect.hasAssertions();
     // A path the factory carries through as given; it does not judge it.
     const event = createMoveUnitEvent({
-      eventNumber: 3,
       moveCommander: true,
       path: ['turnRight', 'step'],
       player: 'white',
@@ -13,7 +12,6 @@ describe('createMoveUnitEvent function', () => {
 
     expect(event).toStrictEqual({
       choiceType: 'moveUnit',
-      eventNumber: 3,
       eventType: 'playerChoice',
       moveCommander: true,
       path: ['turnRight', 'step'],

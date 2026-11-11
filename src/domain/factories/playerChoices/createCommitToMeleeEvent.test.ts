@@ -8,7 +8,6 @@ describe('createCommitToMeleeEvent function', () => {
 
     const event = createCommitToMeleeEvent({
       committedCard: card,
-      eventNumber: 2,
       modifierTypes: ['attack', 'defense'],
       player: 'black',
     });
@@ -16,7 +15,6 @@ describe('createCommitToMeleeEvent function', () => {
     expect(event).toStrictEqual({
       choiceType: 'commitToMelee',
       committedCard: card,
-      eventNumber: 2,
       eventType: 'playerChoice',
       modifierTypes: ['attack', 'defense'],
       player: 'black',
@@ -28,7 +26,6 @@ describe('createCommitToMeleeEvent function', () => {
 
     const event = createCommitToMeleeEvent({
       committedCard: null,
-      eventNumber: 0,
       modifierTypes: [],
       player: 'white',
     });
@@ -36,7 +33,6 @@ describe('createCommitToMeleeEvent function', () => {
     expect(event).toStrictEqual({
       choiceType: 'commitToMelee',
       committedCard: null,
-      eventNumber: 0,
       eventType: 'playerChoice',
       modifierTypes: [],
       player: 'white',

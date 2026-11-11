@@ -47,7 +47,7 @@ describe('getLegalShooterTargets function', () => {
       'E-5',
     );
     // Black names its unit and commits the card for Range.
-    const { state } = readyToAimShot(ready, shooter, {
+    const state = readyToAimShot(ready, shooter, {
       card: rangeCard,
       modifierTypes: ['range'],
     });
@@ -67,7 +67,7 @@ describe('getLegalShooterTargets function', () => {
       'E-5',
     );
     // Black names its unit and refuses to commit.
-    const { state } = readyToAimShot(ready, shooter, null);
+    const state = readyToAimShot(ready, shooter, null);
 
     const legal = getLegalShooterTargets(state);
 
@@ -92,7 +92,6 @@ describe('getLegalShooterTargets function', () => {
     // Black names its unit; its commitment is still owed (§4.3.11 step 2).
     const named = applyEvent(
       createChooseShooterEvent({
-        eventNumber: start.next.expectedEventNumber,
         player: 'black',
         unit: shooter,
       }),

@@ -19,7 +19,6 @@ describe('isValidChooseRallyEvent function', () => {
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
     const event = createChooseRallyEvent({
-      eventNumber: 0,
       performRally: false,
       player: 'white',
     });
@@ -39,7 +38,6 @@ describe('isValidChooseRallyEvent function', () => {
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
     const event = createChooseRallyEvent({
-      eventNumber: 0,
       performRally: true,
       player: 'black',
     });
@@ -58,7 +56,6 @@ describe('isValidChooseRallyEvent function', () => {
       step: 'chooseCards',
     });
     const event = createChooseRallyEvent({
-      eventNumber: 0,
       performRally: true,
       player: 'black',
     });

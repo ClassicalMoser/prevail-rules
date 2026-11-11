@@ -40,7 +40,6 @@ describe('applyCommitToRangedAttackEvent function', () => {
     );
     const event = createCommitToRangedAttackEvent({
       committedCard: tempCommandCards[0],
-      eventNumber: 0,
       modifierTypes: [],
       player: 'black',
     });

@@ -20,8 +20,6 @@ export interface CompleteMoveCommandersPhaseEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /**
    * Remaining commands for the initiative player for the new issue-commands phase.
    * Derived from that player's in-play card when the procedure runs; apply trusts the log.
@@ -36,7 +34,6 @@ export interface CompleteMoveCommandersPhaseEvent {
 const _completeMoveCommandersPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
   remainingCommandsFirstPlayer: z.ZodArray<typeof commandSchema>;
   remainingCommandsSecondPlayer: z.ZodArray<typeof commandSchema>;
 }> = z
@@ -45,8 +42,6 @@ const _completeMoveCommandersPhaseEventSchemaObject: z.ZodObject<{
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** Mirrors `remainingCommandsFirstPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
     remainingCommandsFirstPlayer: z.array(commandSchema),
     /** Mirrors `remainingCommandsSecondPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
@@ -67,7 +62,6 @@ const _assertExactCompleteMoveCommandersPhaseEvent: AssertExact<
 export const completeMoveCommandersPhaseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeMoveCommandersPhase'>;
-  eventNumber: z.ZodNumber;
   remainingCommandsFirstPlayer: z.ZodArray<typeof commandSchema>;
   remainingCommandsSecondPlayer: z.ZodArray<typeof commandSchema>;
 }> = _completeMoveCommandersPhaseEventSchemaObject;

@@ -34,7 +34,7 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
     const base = createGameStateWithEngagedUnits(black, white, 'E-5');
     const stateWithPhase = stateInIssueCommandsComplete(base);
 
-    const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase, 0);
+    const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase);
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeIssueCommandsPhase');
@@ -44,7 +44,7 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
   it('given empty board and phase complete, remainingEngagements is empty', () => {
     const stateWithPhase = stateInIssueCommandsComplete();
 
-    const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase, 0);
+    const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase);
 
     expect(event.remainingEngagements).toHaveLength(0);
   });
@@ -57,8 +57,8 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
       createGameStateWithEngagedUnits(black, white, 'E-5'),
     );
 
-    const eventEmpty = generateCompleteIssueCommandsPhaseEvent(empty, 0);
-    const eventEngaged = generateCompleteIssueCommandsPhaseEvent(engaged, 0);
+    const eventEmpty = generateCompleteIssueCommandsPhaseEvent(empty);
+    const eventEngaged = generateCompleteIssueCommandsPhaseEvent(engaged);
 
     expect(eventEmpty.remainingEngagements).toHaveLength(0);
     expect(eventEngaged.remainingEngagements).toContain('E-5');
