@@ -214,28 +214,30 @@ Direction (author, 2026-11-11): legality predicates that validation calls, as
 author has been least hands-on here. Nothing is built.
 
 Decided later the same day: a choice too large to list whole is offered a
-part at a time, as a `PartOffer` (`@utils`) of what may come next and whether
-the choice may stop; a rule that binds the whole choice is a stopping rule.
-The validator walks the submitted choice through the same offers with
-`findRefusedPart` and only words the refusal. ENGINES says so. Done:
+part at a time, as an `OpenChoice` (`@utils`) of what may come next and
+whether the choice may stop; a rule that binds the whole choice is a stopping
+rule. The validator walks the submitted choice through the same offers with
+`findRefusal` and only words the refusal; the reasons sit beside the offer in
+`@legality`. ENGINES says so. Done:
 
-- Moves: `LegalMoveDeltas` is `PartOffer<MoveDelta>`, and `isValidMovePath`
+- Moves: `LegalMoveDeltas` is `OpenChoice<MoveDelta>`, and `isValidMovePath`
   walks it.
-- Unit support: `getSupportPlacementOffer` holds one place per unit, pool
-  capacity and "use what you have" (its stopping rule: the player may stop
-  exactly when nothing more is offered). The validator walks it; the reasons
-  for a refusal sit beside the offer. Pool identity in validation now uses
-  `areUnitSupportsEqual`. One message changed: a unit named twice under one
-  pool is refused as "assigned support more than once", as it is across pools.
+- Unit support: `getLegalUnitSupportAssignments` holds one place per unit,
+  capacity and "use what you have", which is its stopping rule: the player may
+  stop exactly when nothing more is offered. The event is a flat list of
+  `{ unit, unitSupport }` in any order. The code no longer says "pool"; the
+  RULEBOOK still does, until the author picks a word.
+- Issue command (author: a line is named by its ends; range may be traced from
+  any unit of it; no maximality). RULEBOOK §4.3.5 and its FAQ say so. The
+  event carries a units selection or a line's two ends, and the apply reads
+  the units between the ends off the board. Lines are listed whole by
+  `getLegalLines`, since a line is fixed by its ends; a units order is an
+  `OpenChoice` from `getLegalUnitsToOrder`.
 
 Left:
 
-- Issue command, which waits on the author: should a line order's event name
-  only its two ends, with the engine working out the rank between them? Then
-  the validator's "exactly the rank between the ends" check goes away.
-- The assignUnitSupport event groups units by pool and refuses a pool listed
-  twice. That is the event's shape, not a rule; a flat list of placements
-  would match the offer's parts. For the author.
+- `rulebook.html` is an old render of the RULEBOOK and still states the
+  near-end rule. Nothing references it.
 - The legality README's `isValidLine` still does not exist.
 
 ---
