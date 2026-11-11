@@ -33,7 +33,6 @@ export {
   updateBoardState,
   updateCommandResolutionState,
   updateCurrentInitiative,
-  updateCurrentRoundNumber,
   updateWinner,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,

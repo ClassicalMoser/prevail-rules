@@ -28,7 +28,8 @@ describe('applyEvent function', () => {
     });
     const mockReturnState = {
       ...state,
-      currentRoundNumber: 99,
+      // A marker: the result is the state the delegate returned.
+      currentInitiative: 'white' as const,
     };
     vi.mocked(applyPlayerChoiceEvent).mockReturnValue(mockReturnState);
 
@@ -36,7 +37,7 @@ describe('applyEvent function', () => {
 
     expect(applyPlayerChoiceEvent).toHaveBeenCalledWith(event, state);
     expect(applyGameEffectEvent).not.toHaveBeenCalled();
-    expect(result.currentRoundNumber).toBe(99);
+    expect(result.currentInitiative).toBe('white');
     expect(result.currentRoundState.events).toStrictEqual([event]);
   });
 
@@ -50,7 +51,8 @@ describe('applyEvent function', () => {
     };
     const mockReturnState = {
       ...state,
-      currentRoundNumber: 1,
+      // A marker: the result is the state the delegate returned.
+      currentInitiative: 'white' as const,
     };
     vi.mocked(applyGameEffectEvent).mockReturnValue(mockReturnState);
 
@@ -58,7 +60,7 @@ describe('applyEvent function', () => {
 
     expect(applyGameEffectEvent).toHaveBeenCalledWith(event, state);
     expect(applyPlayerChoiceEvent).not.toHaveBeenCalled();
-    expect(result.currentRoundNumber).toBe(1);
+    expect(result.currentInitiative).toBe('white');
     expect(result.currentRoundState.events).toStrictEqual([event]);
   });
 

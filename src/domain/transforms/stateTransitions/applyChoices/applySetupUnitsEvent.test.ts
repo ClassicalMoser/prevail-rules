@@ -39,7 +39,6 @@ describe('applySetupUnitsEvent function', () => {
       'black',
     ]);
     expect(newState.reservedUnits).toStrictEqual([]);
-    expect(newState.currentRoundNumber).toBe(1);
     expect(newState.currentRoundState.roundNumber).toBe(1);
     expect(newState.currentRoundState.currentPhaseState).toStrictEqual({
       phase: 'playCards',
@@ -74,7 +73,8 @@ describe('applySetupUnitsEvent function', () => {
 
     expect(newState.reservedUnits).toStrictEqual([whiteUnit.unit]);
     expect(newState.currentRoundState.currentPhaseState).toBe('none');
-    expect(newState.currentRoundNumber).toBe(0);
+    // Setup is still round 0.
+    expect(newState.currentRoundState.roundNumber).toBe(0);
     expect(newState.boardState.board['E-5']?.commanders).toStrictEqual([
       'black',
     ]);

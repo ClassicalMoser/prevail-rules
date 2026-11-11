@@ -17,10 +17,12 @@ export async function handleNewRound(
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   const { roundSnapshotStorage, eventStreamStorage } = ports;
+  // The round that has just begun: round 1 when setup is done.
+  const roundNumber = gameState.currentRoundState.roundNumber;
 
   const roundSnapshotResult = await roundSnapshotStorage.saveRoundSnapshot(
     gameId,
-    gameState.currentRoundNumber,
+    roundNumber,
     gameState,
   );
   if (!roundSnapshotResult.result) {
@@ -31,10 +33,10 @@ export async function handleNewRound(
   }
 
   // If this is not the first round, flush the event stream from the previous round
-  if (gameState.currentRoundNumber > 1) {
+  if (roundNumber > 1) {
     const eventStreamResult = await eventStreamStorage.flushEventStream(
       gameId,
-      gameState.currentRoundNumber - 1,
+      roundNumber - 1,
     );
     if (!eventStreamResult.result) {
       return {
@@ -47,7 +49,7 @@ export async function handleNewRound(
   // Create a new event stream for the current round
   const newEventStreamResult = await eventStreamStorage.newEventStream(
     gameId,
-    gameState.currentRoundNumber,
+    roundNumber,
   );
   if (!newEventStreamResult.result) {
     return {

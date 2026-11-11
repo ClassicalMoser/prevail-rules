@@ -48,16 +48,13 @@ describe('applyRoundEndEvent function', () => {
       expect(phase.step).toBe('chooseCards');
     });
 
-    it('given cleanup.complete, currentRoundState.roundNumber and currentRoundNumber both increment', () => {
+    it('given cleanup.complete, the round number increments', () => {
       const state = createGameStateInCleanupCompleteStep();
       const priorRound = state.currentRoundState.roundNumber;
-      const priorCurrent = state.currentRoundNumber;
 
       const newState = applyRoundEndEvent(event, state);
 
       expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
-      expect(newState.currentRoundNumber).toBe(priorRound + 1);
-      expect(newState.currentRoundNumber).not.toBe(priorCurrent);
     });
 
     it('given seeded completedPhases and commandedUnits, next state clears both sets', () => {

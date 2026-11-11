@@ -11,8 +11,6 @@ import { z } from 'zod';
  * Board size lives only on {@link Board.boardType} (`boardState.boardType`).
  */
 export interface GameStateBase {
-  /** The current round number of the game. */
-  currentRoundNumber: number;
   /** Which player currently has initiative. */
   currentInitiative: PlayerSide;
   /** Units not yet placed on the board. */
@@ -37,7 +35,6 @@ export interface GameStateBase {
 export const gameStateBaseSchema: z.ZodObject<{
   boardState: typeof boardSchema;
   currentInitiative: typeof playerSideSchema;
-  currentRoundNumber: z.ZodInt;
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
@@ -46,7 +43,6 @@ export const gameStateBaseSchema: z.ZodObject<{
   .object({
     boardState: boardSchema,
     currentInitiative: playerSideSchema,
-    currentRoundNumber: z.int().min(0),
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),

@@ -10,9 +10,6 @@ describe('createEmptyGameState function', () => {
   it('starts black on a standard board with empty piles and no phase', () => {
     const gameState = createEmptyGameState('standard');
 
-    // Setup is round 0. The round state already waits for round 1, the first
-    // round played, and nothing has happened in it yet.
-    expect(gameState.currentRoundNumber).toBe(0);
     // Setup is round 0; the first round to be played is 1.
     expect(gameState.currentRoundState.roundNumber).toBe(0);
     expect(gameState.currentRoundState.completedPhases).toStrictEqual([]);

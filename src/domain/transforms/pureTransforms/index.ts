@@ -64,7 +64,6 @@ export {
   addCompletedPhase,
   markPhaseAsComplete,
   updateCurrentInitiative,
-  updateCurrentRoundNumber,
   updatePhaseState,
   updateRoundEventStream,
   updateRoundState,

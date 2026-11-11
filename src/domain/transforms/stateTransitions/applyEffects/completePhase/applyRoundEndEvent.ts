@@ -2,10 +2,7 @@ import type { RoundEndEvent } from '@events';
 import type { GameState, PlayCardsPhaseState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import {
-  updateCurrentRoundNumber,
-  updateRoundState,
-} from '@transforms/pureTransforms';
+import { updateRoundState } from '@transforms/pureTransforms';
 
 /**
  * Applies a RoundEndEvent to the game state.
@@ -32,7 +29,7 @@ export function applyRoundEndEvent<S extends GameState>(
   };
 
   // Update the round state
-  const stateWithRound = updateRoundState(state, {
+  const advanced = updateRoundState(state, {
     commandedUnits: [],
     completedPhases: [],
     currentPhaseState: newPhaseState,
@@ -40,9 +37,5 @@ export function applyRoundEndEvent<S extends GameState>(
     roundNumber: newRoundNumber,
   });
 
-  // Update the game state with the new round number
-  const finalState = updateCurrentRoundNumber(stateWithRound, newRoundNumber);
-
-  // Return the final state
-  return finalState;
+  return advanced;
 }

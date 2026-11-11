@@ -54,7 +54,6 @@ describe('generateCompletePlayCardsPhaseEvent function', () => {
       );
       const stateDifferentRound = {
         ...createGameStateInCompleteStep(),
-        currentRoundNumber: 99,
         currentRoundState: {
           ...base.currentRoundState,
           roundNumber: 100,

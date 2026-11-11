@@ -31,8 +31,6 @@ function shell(board: Board): AuthoritativeGameState {
     cardState: createCardState(),
     // Black always begins the game with the initiative.
     currentInitiative: 'black',
-    // Round number is zero during setup.
-    currentRoundNumber: 0,
     // Setup is round 0, with its own events; the first round to be played is
     // round 1, which setup starts once every unit is placed.
     currentRoundState: {

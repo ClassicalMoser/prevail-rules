@@ -290,7 +290,8 @@ Left for the author:
   the front engagement state's `defendingUnitCanRetreat` is `retreatPaths`.
   The `completeCleanupPhase` effect is now `roundEnd` (with `RoundEndEvent`,
   `roundEndEventSchema`, `ROUND_END_EFFECT_TYPE`, `generateRoundEndEvent` and
-  `applyRoundEndEvent`).
+  `applyRoundEndEvent`). The game state's `currentRoundNumber` and the
+  `updateCurrentRoundNumber` transform are gone.
 
 ---
 
@@ -402,9 +403,8 @@ validators. Left:
 
 ### 3.4 State and event shapes
 
-- The round number is stored twice (`gameStateBase.currentRoundNumber`,
-  `roundState.roundNumber`), kept in step by two writers, read from different
-  copies, created as 0 and 1, and bounded differently by the two schemas.
+- ~~The round number is stored twice.~~ Closed in the seventh pass: only
+  `roundState.roundNumber` remains (see 7.7).
 - Melee results are keyed by colour in `resolveMelee` and by initiative in the
   state, and the attack result is spelled three ways (`resolveMelee`,
   `resolveRangedAttack`, `AttackResult`). `applyResolveMeleeEvent` translates.
@@ -799,7 +799,25 @@ handled on purpose (the log starts empty); the setup boundary is not. Options:
 shape cost; the application then files setup under round 1, a policy change for
 the round-0 stream), recommended; (3) remove `roundState.roundNumber`.
 
-**Decided (author, 2026-11-11):** round 0 has its own event structure (setup
+**Done (seventh pass, on the author's answers).** The effect that ends a round
+is `roundEnd`. `gameStateBase.currentRoundNumber` and `updateCurrentRoundNumber`
+are gone; `roundState.roundNumber` is the one number, and it is 0 during setup
+(its schema is `min(0)`; `createEmptyGameState` says so) and 1 once setup places
+the last unit. `processEvent` files an event under the round it was applied in,
+so setup's events are round 0's, and `handleNewRound` reads the round that has
+begun. An event that changes the round number ends the round it was applied in,
+so round 1's log starts empty whether `roundEnd` or the last setup event began
+it (failing spec first: `scenarios/roundBoundary.test.ts`). The expected engine
+already has its explicit round-zero case: `findExpectedEvent` answers
+`getExpectedSetupUnitsEvent` while the phase is `'none'`. **Left:** the
+application never creates a stream or snapshot for round 0 (`startNewGame`
+creates none, and nothing flushes round 0); round 0 has its own structure and
+is not built out, so this waits for it. Storing a round's length and dropping
+the number altogether is the author's idea for the walk.
+**Shape change:** the game state loses `currentRoundNumber`; stored states do
+not parse.
+
+**Decided earlier (author, 2026-11-11):** round 0 has its own event structure (setup
 only, not built out), so setup is not forced into the round-1 log and stream
 rules. The event that ends a round may be better named `roundEnd` than
 `completeCleanupPhase` (rename, to confirm). The ranged skip divergence in 7.2

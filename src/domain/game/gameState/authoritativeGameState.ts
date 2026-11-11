@@ -31,7 +31,6 @@ export interface AuthoritativeGameState extends GameStateBase {
 const _authoritativeGameStateSchemaObject: z.ZodObject<{
   boardState: typeof boardSchema;
   currentInitiative: typeof playerSideSchema;
-  currentRoundNumber: z.ZodInt;
   currentRoundState: typeof authoritativeRoundStateSchema;
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;

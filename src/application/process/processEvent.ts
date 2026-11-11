@@ -20,9 +20,12 @@ export async function processEvent<S extends GameState>(
   // applied throws here and leaves the stream as it was.
   const newGameState = applyEvent(event, gameState);
 
+  // An event is filed under the round it was applied in: setup's are round 0's.
+  const roundNumber = gameState.currentRoundState.roundNumber;
+
   const addEventResult = await ports.eventStreamStorage.addEventToStream(
     gameId,
-    gameState.currentRoundNumber,
+    roundNumber,
     event,
   );
   if (!addEventResult.result) {
@@ -47,7 +50,7 @@ export async function processEvent<S extends GameState>(
   }
 
   // Round advance (cleanup → next round, or setup → round 1)
-  if (newGameState.currentRoundNumber !== gameState.currentRoundNumber) {
+  if (newGameState.currentRoundState.roundNumber !== roundNumber) {
     const handleNewRoundResult = await handleNewRound(
       gameId,
       newGameState,

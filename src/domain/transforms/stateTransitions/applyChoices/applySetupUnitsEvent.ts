@@ -7,7 +7,6 @@ import {
   addUnitToBoard,
   removeUnitFromReserve,
   updateBoardState,
-  updateCurrentRoundNumber,
   updateRoundState,
 } from '@transforms/pureTransforms';
 
@@ -62,7 +61,6 @@ export function applySetupUnitsEvent<S extends GameState>(
       events: [],
       roundNumber: 1,
     });
-    newGameState = updateCurrentRoundNumber(newGameState, 1);
   }
 
   return newGameState;
