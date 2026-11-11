@@ -1,5 +1,6 @@
 import type { Restrictions, UnitInstance } from '@entities';
 import type { GameState } from '@game';
+import { NO_INSPIRATION_RANGE } from '@ruleValues';
 import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance';
 import { findCommanderSpace } from '../board/findCommanderSpace';
 import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
@@ -7,7 +8,7 @@ import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 /**
  * Whether a card's inspiration range reaches a unit (§4.2.7): the unit must
  * stand within that many spaces of its own commander. A range printed as
- * unrestricted (stored as a negative number) reaches every unit wherever it
+ * unrestricted (`NO_INSPIRATION_RANGE`) reaches every unit wherever it
  * stands, and a commander who has fallen reaches no one (§4.2.8).
  *
  * Asked when a command is issued and every time a round effect's stat is read,
@@ -25,8 +26,8 @@ export function unitMatchesInspirationRange(
   gameState: GameState,
 ): boolean {
   const { inspirationRangeRestriction } = restrictions;
-  // No restriction: every unit is within reach.
-  if (inspirationRangeRestriction < 0) {
+  // A range printed as "—" reaches every unit (§4.2.7).
+  if (inspirationRangeRestriction <= NO_INSPIRATION_RANGE) {
     return true;
   }
   const commanderSpace = findCommanderSpace(

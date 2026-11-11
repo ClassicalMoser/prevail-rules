@@ -1,6 +1,6 @@
 import type { Trait } from '@ruleValues';
 import type { AssertExact } from '@utils';
-import { traitSchema } from '@ruleValues';
+import { NO_INSPIRATION_RANGE, traitSchema } from '@ruleValues';
 import { z } from 'zod';
 
 /**
@@ -19,7 +19,7 @@ const _noTypeRestrictionsSchemaObject = z
     /** No trait or unit-type filter applies. */
     restrictionType: z.literal('none'),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
-    inspirationRangeRestriction: z.int().min(-1).max(10),
+    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE).max(10),
   })
   .strict();
 
@@ -57,7 +57,7 @@ const _traitRestrictionsSchemaObject = z
     /** The unit must have every listed trait. */
     restrictionType: z.literal('trait'),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
-    inspirationRangeRestriction: z.int().min(-1).max(10),
+    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE).max(10),
     /** The traits that must be present on the unit for the command or round effect to be applied. */
     traitRestrictions: z.array(traitSchema).min(1),
   })
@@ -98,7 +98,7 @@ const _unitTypeRestrictionsSchemaObject = z
     /** The unit must be one of the listed unit types. */
     restrictionType: z.literal('unitType'),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
-    inspirationRangeRestriction: z.int().min(-1).max(10),
+    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE).max(10),
     /** The unique identifiers of the unit types that can be included in the command or round effect. */
     unitRestrictions: z.array(z.uuid()).min(1),
   })

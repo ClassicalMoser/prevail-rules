@@ -5,6 +5,14 @@ export const MIN_FLEXIBILITY_THRESHOLD = 6 as const;
 /** The maximum distance a commander can move in a single move. */
 export const COMMANDER_MOVE_DISTANCE = 4 as const;
 
+/**
+ * The inspiration range of a card whose range is printed as "—": it reaches
+ * every unit, wherever the commander stands (§4.2.7). A printed range of 0 is
+ * the commander's own space, so "no restriction" cannot be a number a range
+ * could be; it is the one value below zero.
+ */
+export const NO_INSPIRATION_RANGE = -1 as const;
+
 /** The maximum number of units that can be included in a line. */
 export const MAX_LINE_LENGTH = 8 as const;
 
