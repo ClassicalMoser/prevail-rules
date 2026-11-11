@@ -24,15 +24,13 @@ export function unitTypeMatchesRestrictions(
       const traits = restrictions.traitRestrictions;
       const noUnitTypes: string[] = [];
       const matched = matchesUnitRequirements(unitType, traits, noUnitTypes);
-      const result = matched.result;
-      return result;
+      return matched;
     }
     case 'unitType': {
       const noTraits: Trait[] = [];
       const unitTypeIds = restrictions.unitRestrictions;
       const matched = matchesUnitRequirements(unitType, noTraits, unitTypeIds);
-      const result = matched.result;
-      return result;
+      return matched;
     }
     default: {
       const unreachable: never = restrictions;

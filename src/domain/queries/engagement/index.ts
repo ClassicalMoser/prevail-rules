@@ -1,3 +1,7 @@
+// How an engagement is met: front, flank, or rear, by the way the two face.
+export { findEngagementType } from './findEngagementType';
+export type { EngagementType } from './findEngagementType';
+
 // Front, flank, or rear relative to the defender's facing.
 export { isEngagementFromFront } from './isEngagementFromFront';
 export { isEngagementFromFlank } from './isEngagementFromFlank';

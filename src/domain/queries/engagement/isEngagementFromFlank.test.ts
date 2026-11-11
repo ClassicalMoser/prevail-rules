@@ -5,28 +5,18 @@ import { isEngagementFromFlank } from './isEngagementFromFlank';
  */
 describe('isEngagementFromFlank function', () => {
   it('an attacker facing perpendicular right of the defender is a flank engagement', () => {
-    expect(isEngagementFromFlank('east', 'north')).toStrictEqual({
-      result: true,
-    });
+    expect(isEngagementFromFlank('east', 'north')).toBe(true);
   });
 
   it('an attacker facing perpendicular left of the defender is a flank engagement', () => {
-    expect(isEngagementFromFlank('west', 'north')).toStrictEqual({
-      result: true,
-    });
+    expect(isEngagementFromFlank('west', 'north')).toBe(true);
   });
 
   it('an attacker facing the defender head-on is not a flank engagement', () => {
-    expect(isEngagementFromFlank('south', 'north')).toStrictEqual({
-      errorReason: 'Attacker is not facing orthogonal to the defender',
-      result: false,
-    });
+    expect(isEngagementFromFlank('south', 'north')).toBe(false);
   });
 
   it('an attacker facing the same way as the defender is not a flank engagement', () => {
-    expect(isEngagementFromFlank('north', 'north')).toStrictEqual({
-      errorReason: 'Attacker is not facing orthogonal to the defender',
-      result: false,
-    });
+    expect(isEngagementFromFlank('north', 'north')).toBe(false);
   });
 });

@@ -4,15 +4,13 @@ import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
   getMovementResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
-  isEngagementFromFlank,
-  isEngagementFromFront,
-  isEngagementFromRear,
+  findEngagementType,
 } from '@queries';
 import { throwIfPending } from '@utils';
 /**
  * Generates a StartEngagementEvent by determining the engagement type
  * based on the relative facing of the engaging unit and defending unit.
- * Checks in priority order: rear, flank, front.
+ * The rear is read first, then the flank, then the front (`findEngagementType`).
  * This is called when a unit first moves into an enemy space.
  *
  * @param state - The current game state
@@ -38,40 +36,17 @@ export function generateStartEngagementEvent(
   );
   const defendingFacing = defenderWithPlacement.placement.facing;
 
-  // Check engagement type in priority order: rear, flank, front
-  // Rear is most severe, so check it first
-  const rearCheck = isEngagementFromRear(engagingFacing, defendingFacing);
-  if (rearCheck.result) {
-    return {
-      defenderWithPlacement,
-      effectType: START_ENGAGEMENT_EFFECT_TYPE,
-      engagementType: 'rear',
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
+  // How the engaging unit meets the defender decides what the engagement is.
+  const engagementType = findEngagementType(engagingFacing, defendingFacing);
+  if (engagementType === undefined) {
+    throw new Error(
+      `Unable to determine engagement type. Engaging facing: ${engagingFacing}, Defending facing: ${defendingFacing}`,
+    );
   }
-
-  const flankCheck = isEngagementFromFlank(engagingFacing, defendingFacing);
-  if (flankCheck.result) {
-    return {
-      defenderWithPlacement,
-      effectType: START_ENGAGEMENT_EFFECT_TYPE,
-      engagementType: 'flank',
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
-  }
-
-  const frontCheck = isEngagementFromFront(engagingFacing, defendingFacing);
-  if (frontCheck.result) {
-    return {
-      defenderWithPlacement,
-      effectType: START_ENGAGEMENT_EFFECT_TYPE,
-      engagementType: 'front',
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
-  }
-
-  // If none of the checks passed, this is an invalid state
-  throw new Error(
-    `Unable to determine engagement type. Engaging facing: ${engagingFacing}, Defending facing: ${defendingFacing}`,
-  );
+  return {
+    defenderWithPlacement,
+    effectType: START_ENGAGEMENT_EFFECT_TYPE,
+    engagementType,
+    eventType: GAME_EFFECT_EVENT_TYPE,
+  };
 }

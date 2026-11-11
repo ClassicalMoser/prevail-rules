@@ -1,23 +1,18 @@
 import type { UnitFacing } from '@entities';
-import type { ValidationResult } from '@utils';
 import { getOrthogonalFacings } from '@queries/facings';
 
 /**
- * Whether the attacker meets the defender from the flank.
- * The attacker's facing must be one of the two facings perpendicular to the defender.
+ * Whether the attacker meets the defender from the flank (§6.3.4): its facing
+ * is one of the two perpendicular to the defender's.
+ *
+ * @param attackerFacing - Which way the engaging unit faces
+ * @param defenderFacing - Which way the defender faces
+ * @returns True when the engagement is from the flank
  */
 export function isEngagementFromFlank(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
-): ValidationResult {
-  const requiredFacings = getOrthogonalFacings(defenderFacing);
-  if (requiredFacings.has(attackerFacing)) {
-    return {
-      result: true,
-    };
-  }
-  return {
-    errorReason: 'Attacker is not facing orthogonal to the defender',
-    result: false,
-  };
+): boolean {
+  const fromFlank = getOrthogonalFacings(defenderFacing).has(attackerFacing);
+  return fromFlank;
 }
