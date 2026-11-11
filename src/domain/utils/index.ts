@@ -24,6 +24,11 @@ export type { RandomSource } from './randomSource';
 // Narrow away `undefined`, or throw.
 export { throwIfUndefined } from './throwIfMissing';
 
+// A choice made a part at a time: what may come next and whether it may stop,
+// and the first place a submitted choice left those offers.
+export type { PartOffer, PartRefusal } from './partOffer';
+export { findRefusedPart } from './findRefusedPart';
+
 // A thrown fault, as the refusal a validator's boundary returns.
 export { failFromFault } from './failFromFault';
 
