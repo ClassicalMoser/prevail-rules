@@ -12,7 +12,7 @@ import {
 import { throwIfPending } from '@utils';
 import { updateAttackApplyState } from './updateAttackApplyState';
 import { updateCleanupStep } from './updateCleanupStep';
-import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
+import { updateRearEngagementResolutionState } from './updateRearEngagementResolutionState';
 import { updateRallyResolutionState } from './updateRallyResolutionState';
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
@@ -62,10 +62,7 @@ export function updateRoutState<S extends GameState>(
           'Rout state update not expected in issueCommands (command type: movement)',
         );
       }
-      return updateEngagementStateInMovement(state, {
-        ...engagement,
-        engagementResolutionState: { ...resolution, routState },
-      });
+      return updateRearEngagementResolutionState(state, { routState });
     }
   }
 

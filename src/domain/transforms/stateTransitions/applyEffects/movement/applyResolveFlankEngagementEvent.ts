@@ -1,14 +1,10 @@
 import type { ResolveFlankEngagementEvent } from '@events';
-import type {
-  EngagementState,
-  FlankEngagementResolutionState,
-  GameState,
-} from '@game';
-import { getFlankEngagementStateFromMovement } from '@queries';
+import type { GameState } from '@game';
 import {
+  completeEngagementInMovement,
   moveUnitOnBoard,
   updateBoardState,
-  updateEngagementStateInMovement,
+  updateFlankEngagementResolutionState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -21,9 +17,6 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
   event: ResolveFlankEngagementEvent,
   state: S,
 ): S {
-  const engagementState = getFlankEngagementStateFromMovement(state);
-  const flankResolutionState = engagementState.engagementResolutionState;
-
   const { unit, placement } = event.defenderWithPlacement;
 
   // The defender is dragged round to face the engaging unit (§6.3.4).
@@ -32,20 +25,11 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
     facing: event.newFacing,
   });
 
-  const newFlankResolutionState: FlankEngagementResolutionState = {
-    ...flankResolutionState,
-    defenderRotated: true,
-  };
-
-  const newEngagementState: EngagementState = {
-    ...engagementState,
-    completed: true,
-    engagementResolutionState: newFlankResolutionState,
-  };
-
-  const updated = updateEngagementStateInMovement(
-    updateBoardState(state, updatedBoard),
-    newEngagementState,
+  const turned = completeEngagementInMovement(
+    updateFlankEngagementResolutionState(
+      updateBoardState(state, updatedBoard),
+      { defenderRotated: true },
+    ),
   );
-  return updated;
+  return turned;
 }

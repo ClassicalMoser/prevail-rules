@@ -52,6 +52,7 @@ export {
   getEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
   findFrontEngagementStateFromMovement,
+  findRearEngagementStateFromMovement,
   getFrontEngagementStage,
   getFlankEngagementStateFromMovement,
   getRearEngagementStateFromMovement,

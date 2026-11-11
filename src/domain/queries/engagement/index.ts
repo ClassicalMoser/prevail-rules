@@ -13,6 +13,7 @@ export {
 
 // The front engagement, `undefined` where the getter above throws.
 export { findFrontEngagementStateFromMovement } from './findFrontEngagementStateFromMovement';
+export { findRearEngagementStateFromMovement } from './findRearEngagementStateFromMovement';
 
 // Where a front engagement stands, the one reading both the sequencer and
 // the legal options dispatch on.

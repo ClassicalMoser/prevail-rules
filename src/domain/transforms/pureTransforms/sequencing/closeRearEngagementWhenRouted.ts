@@ -1,6 +1,7 @@
 import type { GameState } from '@game';
-import { isNone, isPending } from '@utils';
-import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
+import { findRearEngagementStateFromMovement } from '@queries';
+import { completeEngagementInMovement } from './completeEngagementInMovement';
+import { updateRearEngagementResolutionState } from './updateRearEngagementResolutionState';
 
 /**
  * Ends a rear engagement once its rout is settled. A rear engagement is
@@ -18,29 +19,18 @@ import { updateEngagementStateInMovement } from './updateEngagementStateInMoveme
 export function closeRearEngagementWhenRouted<S extends GameState>(
   state: S,
 ): S {
-  // Only a movement under way in the issue-commands phase can hold one.
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (isNone(phaseState) || phaseState.phase !== 'issueCommands') {
-    return state;
-  }
-  const command = phaseState.currentCommandResolutionState;
-  if (isPending(command) || command.commandResolutionType !== 'movement') {
-    return state;
-  }
-  const engagement = command.engagementState;
-  if (isPending(engagement)) {
-    return state;
-  }
-  const resolution = engagement.engagementResolutionState;
-  if (resolution.engagementType !== 'rear' || !resolution.routState.completed) {
+  // Only a rear engagement whose rout is paid is ready to close.
+  const rear = findRearEngagementStateFromMovement(state);
+  if (
+    rear === undefined ||
+    !rear.engagementResolutionState.routState.completed
+  ) {
     return state;
   }
 
   // The rout is paid: the rear engagement, and its resolution, are done.
-  const closed = updateEngagementStateInMovement(state, {
-    ...engagement,
-    completed: true,
-    engagementResolutionState: { ...resolution, completed: true },
-  });
+  const closed = completeEngagementInMovement(
+    updateRearEngagementResolutionState(state, { completed: true }),
+  );
   return closed;
 }

@@ -1,7 +1,9 @@
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import type { GameState } from '@game';
-import { getFrontEngagementStateFromMovement } from '@queries';
-import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
+import {
+  completeEngagementInMovement,
+  updateFrontEngagementResolutionState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseWhetherToRetreatEvent: the defender engaged from the front,
@@ -18,28 +20,19 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
   event: ChooseWhetherToRetreatEvent,
   state: S,
 ): S {
-  const engagementState = getFrontEngagementStateFromMovement(state);
-
   // Standing its ground ends the engagement here; the melee comes later.
   if (!event.choosesToRetreat) {
-    const stood = updateEngagementStateInMovement(state, {
-      ...engagementState,
-      completed: true,
-      engagementResolutionState: {
-        ...engagementState.engagementResolutionState,
+    const stood = completeEngagementInMovement(
+      updateFrontEngagementResolutionState(state, {
         defendingUnitRetreats: false,
-      },
-    });
+      }),
+    );
     return stood;
   }
 
   // Falling back: the retreat opens next, once its options are worked out.
-  const retreating = updateEngagementStateInMovement(state, {
-    ...engagementState,
-    engagementResolutionState: {
-      ...engagementState.engagementResolutionState,
-      defendingUnitRetreats: true,
-    },
+  const retreating = updateFrontEngagementResolutionState(state, {
+    defendingUnitRetreats: true,
   });
   return retreating;
 }

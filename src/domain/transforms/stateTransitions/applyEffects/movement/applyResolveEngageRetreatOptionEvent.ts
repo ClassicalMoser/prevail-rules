@@ -1,7 +1,9 @@
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
-import { getFrontEngagementStateFromMovement } from '@queries';
-import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
+import {
+  completeEngagementInMovement,
+  updateFrontEngagementResolutionState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveEngageRetreatOptionEvent to the game state.
@@ -17,25 +19,21 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
   event: ResolveEngageRetreatOptionEvent,
   state: S,
 ): S {
-  const engagementState = getFrontEngagementStateFromMovement(state);
-  const frontResolutionState = engagementState.engagementResolutionState;
+  // The defender may fall back only where there is somewhere to fall back to
+  // (§9.1.5). With nowhere to go the engagement ends here, and the two units
+  // stand engaged for the melee in Phase 4.
+  if (!event.defendingUnitCanRetreat) {
+    const stands = completeEngagementInMovement(
+      updateFrontEngagementResolutionState(state, {
+        defendingUnitCanRetreat: false,
+        defendingUnitRetreats: false,
+      }),
+    );
+    return stands;
+  }
 
-  // Update front engagement resolution state with retreat option.
-  // If the defender cannot retreat, engagement ends here (stay for Phase 4 melee).
-  const newFrontResolutionState = {
-    ...frontResolutionState,
-    defendingUnitCanRetreat: event.defendingUnitCanRetreat,
-    defendingUnitRetreats: event.defendingUnitCanRetreat
-      ? frontResolutionState.defendingUnitRetreats
-      : false,
-  };
-
-  const newEngagementState = {
-    ...engagementState,
-    completed: event.defendingUnitCanRetreat ? engagementState.completed : true,
-    engagementResolutionState: newFrontResolutionState,
-  };
-
-  const updated = updateEngagementStateInMovement(state, newEngagementState);
-  return updated;
+  const mayRetreat = updateFrontEngagementResolutionState(state, {
+    defendingUnitCanRetreat: true,
+  });
+  return mayRetreat;
 }

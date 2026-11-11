@@ -5,7 +5,7 @@ import {
   getFrontEngagementStateFromMovement,
   getSingleUnitWithPlacementAtCoordinate,
 } from '@queries';
-import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
+import { updateFrontEngagementResolutionState } from '@transforms/pureTransforms';
 
 /**
  * Applies an OpenRetreatFromEngagementEvent: the retreat of a defender that
@@ -37,12 +37,6 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
     event.retreatPaths,
   );
 
-  const opened = updateEngagementStateInMovement(state, {
-    ...engagementState,
-    engagementResolutionState: {
-      ...engagementState.engagementResolutionState,
-      retreatState,
-    },
-  });
+  const opened = updateFrontEngagementResolutionState(state, { retreatState });
   return opened;
 }

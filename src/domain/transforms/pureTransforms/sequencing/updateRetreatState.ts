@@ -8,7 +8,7 @@ import {
 } from '@queries';
 import { throwIfPending } from '@utils';
 import { updateAttackApplyState } from './updateAttackApplyState';
-import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
+import { updateFrontEngagementResolutionState } from './updateFrontEngagementResolutionState';
 
 /**
  * Creates a new game state with the retreat state updated.
@@ -46,13 +46,7 @@ export function updateRetreatState<S extends GameState>(
       if (engagement.engagementResolutionState.retreatState === 'pending') {
         throw new Error('No retreat state found in front engagement');
       }
-      return updateEngagementStateInMovement(state, {
-        ...engagement,
-        engagementResolutionState: {
-          ...engagement.engagementResolutionState,
-          retreatState,
-        },
-      });
+      return updateFrontEngagementResolutionState(state, { retreatState });
     }
   }
 

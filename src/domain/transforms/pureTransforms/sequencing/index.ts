@@ -23,6 +23,12 @@ export { updateIssueCommandsStep } from './updateIssueCommandsStep';
 export { openCommandResolution } from './openCommandResolution';
 export { clearCommandResolution } from './clearCommandResolution';
 
+// An engagement under way, by kind, and its finishing.
+export { updateFrontEngagementResolutionState } from './updateFrontEngagementResolutionState';
+export { updateFlankEngagementResolutionState } from './updateFlankEngagementResolutionState';
+export { updateRearEngagementResolutionState } from './updateRearEngagementResolutionState';
+export { completeEngagementInMovement } from './completeEngagementInMovement';
+
 // Phase 4: the melee under way, and the commander moves' step.
 export { openMeleeResolution } from './openMeleeResolution';
 export { clearMeleeResolution } from './clearMeleeResolution';

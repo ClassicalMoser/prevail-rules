@@ -1,12 +1,9 @@
 import type { CommitToMovementEvent } from '@events';
 import type { GameState, MovementResolutionState } from '@game';
-import {
-  getFrontEngagementStateFromMovement,
-  getMovementResolutionState,
-} from '@queries';
+import { getMovementResolutionState } from '@queries';
 import {
   updateCommandResolutionState,
-  updateEngagementStateInMovement,
+  updateFrontEngagementResolutionState,
 } from '@transforms/pureTransforms';
 
 import {
@@ -47,13 +44,8 @@ export function applyCommitToMovementEvent<S extends GameState>(
     movementState.engagementState.engagementResolutionState.defensiveCommitment
       .commitmentType === 'pending'
   ) {
-    const engagementState = getFrontEngagementStateFromMovement(stateWithCards);
-    return updateEngagementStateInMovement(stateWithCards, {
-      ...engagementState,
-      engagementResolutionState: {
-        ...engagementState.engagementResolutionState,
-        defensiveCommitment: newCommitment,
-      },
+    return updateFrontEngagementResolutionState(stateWithCards, {
+      defensiveCommitment: newCommitment,
     });
   }
 
