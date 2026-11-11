@@ -20,5 +20,5 @@ Models rarely comment enough, and never do without prompting. [`STYLE.md`](./STY
 - [`src/domain/entities/README.md`](./src/domain/entities/README.md) — Intro to domain docs
 - [`AUDIT_PROCESS.md`](./AUDIT_PROCESS.md) — Rules for running an audit
 - [`src/domain/AUDIT.md`](./src/domain/AUDIT.md) — Main WIP at the moment
-- [`ASSESSMENT-2026-11-10.md`](./ASSESSMENT-2026-11-10.md) – Current open findings from first scout and subsequent mitigation work
+- [`ASSESSMENT-2026-11-11.md`](./ASSESSMENT-2026-11-11.md) – Current open findings from first scout and subsequent mitigation work
 - [`RULEBOOK.md`](./RULEBOOK.md) — The design intent the engine must match. The appendix records where the code still differs.
