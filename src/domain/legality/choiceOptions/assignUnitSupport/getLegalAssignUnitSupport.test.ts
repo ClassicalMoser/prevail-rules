@@ -12,10 +12,10 @@ import { getLegalAssignUnitSupport } from './getLegalAssignUnitSupport';
 import { createEmptyGameState } from '@factories';
 
 describe('getLegalAssignUnitSupport function', () => {
-  it('given not on resolve-rally awaiting support, returns null', () => {
-    expect(
+  it('throws when no round is under way, where nothing asks', () => {
+    expect(() =>
       getLegalAssignUnitSupport(createEmptyGameState('standard')),
-    ).toBeNull();
+    ).toThrow('No current phase state found');
   });
 
   it('given awaiting support assignment, returns categories with eligible units', () => {

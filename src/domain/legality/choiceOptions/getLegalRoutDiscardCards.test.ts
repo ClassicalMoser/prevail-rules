@@ -100,22 +100,27 @@ describe('getLegalRoutDiscardCards function', () => {
     });
   });
 
-  it('returns null when no rout discard is awaiting', () => {
+  it('throws when no rout is awaiting a discard, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalRoutDiscardCards(state)).toBeNull();
+
+    expect(() => getLegalRoutDiscardCards(state)).toThrow(
+      'No rout is awaiting a discard',
+    );
   });
 
-  it('returns null when cards are already chosen', () => {
+  it('throws when the cards are already chosen, since the discard is no longer owed', () => {
     const state = stateAwaitingDiscard({
       cardsChosen: true,
       numberToDiscard: 1,
       player: 'white',
       step: 'firstPlayerResolveRally',
     });
-    expect(getLegalRoutDiscardCards(state)).toBeNull();
+    expect(() => getLegalRoutDiscardCards(state)).toThrow(
+      'No rout is awaiting a discard',
+    );
   });
 
   it('still returns available cards when the hand is smaller than numberToDiscard', () => {
@@ -166,7 +171,7 @@ describe('getLegalRoutDiscardCards function', () => {
     });
   });
 
-  it('whiteSeen returns null when black must discard', () => {
+  it("whiteSeen answers black's count with no cards when black must discard, since white cannot see black's hand", () => {
     const authoritative = stateAwaitingDiscard({
       initiative: 'white',
       numberToDiscard: 1,
@@ -190,6 +195,12 @@ describe('getLegalRoutDiscardCards function', () => {
       },
     };
 
-    expect(getLegalRoutDiscardCards(whiteSeen)).toBeNull();
+    // A hidden hand is an ordinary state for a seated client: white sees
+    // that black must discard one card, and none to choose from.
+    expect(getLegalRoutDiscardCards(whiteSeen)).toStrictEqual({
+      cardIds: [],
+      numberToDiscard: 1,
+      player: 'black',
+    });
   });
 });

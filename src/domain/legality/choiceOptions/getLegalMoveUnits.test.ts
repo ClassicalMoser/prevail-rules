@@ -70,20 +70,30 @@ describe('getLegalMoveUnits function', () => {
     });
   });
 
-  it('returns null when not awaiting moveUnit', () => {
+  it('throws when asked outside the issue commands phase, where nothing asks', () => {
+    // The players are still choosing their cards.
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalMoveUnits(state)).toBeNull();
+
+    expect(() => getLegalMoveUnits(state)).toThrow(
+      'Expected issueCommands phase, got playCards',
+    );
   });
 
-  it('returns null when the remaining unit is not on the board', () => {
+  it('answers that nobody can move when the remaining unit is not on the board', () => {
+    // The commanded unit routed earlier and no longer stands anywhere.
     const { state } = stateAwaitingMoveUnit({ withUnitOnBoard: false });
-    expect(getLegalMoveUnits(state)).toBeNull();
+
+    // That is a real answer, not a mistake: the order ends with no move made.
+    expect(getLegalMoveUnits(state)).toStrictEqual({
+      player: 'black',
+      units: [],
+    });
   });
 
-  it('returns null when the in-play command is not movement', () => {
+  it('throws when the card in play is not a movement order', () => {
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -110,6 +120,8 @@ describe('getLegalMoveUnits function', () => {
       }),
     );
 
-    expect(getLegalMoveUnits(state)).toBeNull();
+    expect(() => getLegalMoveUnits(state)).toThrow(
+      'The card black has in play is not a movement order',
+    );
   });
 });

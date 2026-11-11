@@ -83,7 +83,7 @@ describe('performRangedAttack legality atoms', () => {
       });
     });
 
-    it('excludes units with range 0', () => {
+    it('answers that nobody can shoot when the only unit has range 0', () => {
       const meleeOnly = createUnitWithPlacement({
         coordinate: 'E-5',
         facing: 'north',
@@ -91,10 +91,15 @@ describe('performRangedAttack legality atoms', () => {
         unitOptions: { range: 0 },
       });
       const state = awaitingResolve([meleeOnly], [meleeOnly]);
-      expect(getLegalRangedAttackers(state)).toBeNull();
+
+      // A real answer: the order ends with no shot taken.
+      expect(getLegalRangedAttackers(state)).toStrictEqual({
+        attackers: [],
+        player: 'black',
+      });
     });
 
-    it('returns null when units have range but no legal target', () => {
+    it('answers that nobody can shoot when units have range but no legal target', () => {
       const attacker = createUnitWithPlacement({
         coordinate: 'E-5',
         facing: 'north',
@@ -102,18 +107,26 @@ describe('performRangedAttack legality atoms', () => {
         unitOptions: { range: 2 },
       });
       const state = awaitingResolve([attacker], [attacker]);
-      expect(getLegalRangedAttackers(state)).toBeNull();
+
+      // A unit with nothing to shoot at is passed over (§4.3.11 step 1).
+      expect(getLegalRangedAttackers(state)).toStrictEqual({
+        attackers: [],
+        player: 'black',
+      });
     });
 
-    it('returns null when not awaiting performRangedAttack', () => {
+    it('throws when asked outside the issue commands phase, where nothing asks', () => {
+      // The players are still choosing their cards.
       const state = updatePhaseState(createEmptyGameState('standard'), {
         phase: PLAY_CARDS_PHASE,
         step: 'chooseCards',
       });
-      expect(getLegalRangedAttackers(state)).toBeNull();
+      expect(() => getLegalRangedAttackers(state)).toThrow(
+        'Expected issueCommands phase, got playCards',
+      );
     });
 
-    it('returns null when in-play command is not rangedAttack', () => {
+    it('throws when the card in play is not a ranged attack order', () => {
       const attacker = createUnitWithPlacement({
         coordinate: 'E-5',
         facing: 'north',
@@ -137,7 +150,9 @@ describe('performRangedAttack legality atoms', () => {
           step: 'firstPlayerResolveCommands',
         }),
       );
-      expect(getLegalRangedAttackers(state)).toBeNull();
+      expect(() => getLegalRangedAttackers(state)).toThrow(
+        'The card black has in play is not a ranged attack order',
+      );
     });
   });
 
