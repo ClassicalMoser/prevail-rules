@@ -23,7 +23,6 @@ export {
   projectEventForVisibility,
   projectGameStateForVisibility,
 } from './visibility';
-export type { ProjectedEvent } from './visibility';
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,

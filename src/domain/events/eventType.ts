@@ -1,11 +1,17 @@
 import type { AssertExact } from '@utils';
 import type { GameEffectEvent } from './gameEffects';
-import type { PlayerChoiceEvent } from './playerChoices';
+import type {
+  PlayerChoiceEvent,
+  ProjectedPlayerChoiceEvent,
+} from './playerChoices';
 
 import { z } from 'zod';
 import { eventTypes } from './eventTypeLiterals';
 import { gameEffectEventSchema } from './gameEffects';
-import { playerChoiceEventSchema } from './playerChoices';
+import {
+  playerChoiceEventSchema,
+  projectedPlayerChoiceEventSchema,
+} from './playerChoices';
 
 export {
   eventTypes,
@@ -58,3 +64,30 @@ const _assertExactEvent: AssertExact<Event, EventSchemaType> = true;
 
 /** The schema for all game events. */
 export const eventSchema: z.ZodType<Event> = _eventSchemaObject;
+
+/**
+ * An event as a seat or a spectator receives it: a game effect as it is, and a
+ * player choice with the secret taken out. Of the choices only `chooseCard` is
+ * secret, since a card laid face down stays hidden until the reveal (§4.1.1);
+ * commitments and discards are face up (§8) and travel as they are.
+ *
+ * Every {@link Event} is also a `ProjectedEvent`, since a seat's own choice is
+ * not hidden from it.
+ */
+export type ProjectedEvent = ProjectedPlayerChoiceEvent | GameEffectEvent;
+
+const _projectedEventSchemaObject = z.union([
+  projectedPlayerChoiceEventSchema,
+  gameEffectEventSchema,
+]);
+
+type ProjectedEventSchemaType = z.infer<typeof _projectedEventSchemaObject>;
+
+const _assertExactProjectedEvent: AssertExact<
+  ProjectedEvent,
+  ProjectedEventSchemaType
+> = true;
+
+/** The schema for an event as a seat or a spectator receives it. */
+export const projectedEventSchema: z.ZodType<ProjectedEvent> =
+  _projectedEventSchemaObject;

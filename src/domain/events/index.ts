@@ -1,12 +1,13 @@
 // Event kinds: a game effect or a player choice.
 export {
   eventSchema,
+  projectedEventSchema,
   eventTypes,
   eventTypeSchema,
   GAME_EFFECT_EVENT_TYPE,
   PLAYER_CHOICE_EVENT_TYPE,
 } from './eventType';
-export type { Event, EventType } from './eventType';
+export type { Event, EventType, ProjectedEvent } from './eventType';
 
 // What the engine expects next: an effect, a choice, or the union of both.
 export type { ExpectedEventInfo } from './expectedEvent';

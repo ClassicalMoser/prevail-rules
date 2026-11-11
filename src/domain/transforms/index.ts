@@ -46,5 +46,4 @@ export {
   updateRoundState,
   updateRoutState,
 } from './pureTransforms';
-export type { ProjectedEvent } from './pureTransforms';
 export { applyEvent } from './stateTransitions';

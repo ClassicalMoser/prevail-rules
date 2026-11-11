@@ -7,9 +7,10 @@ import type {
   playerSideSchema,
   unitInstanceSchema,
 } from '@entities';
-import type { roundStateSchema } from '@game/roundState';
+import type { AuthoritativeRoundState } from '@game/roundState';
 
 import { z } from 'zod';
+import { authoritativeRoundStateSchema } from '@game/roundState';
 import { authoritativeCardStateSchema } from '@game/cardState';
 import { gameStateBaseSchema } from './gameStateBase';
 
@@ -21,6 +22,8 @@ import { gameStateBaseSchema } from './gameStateBase';
 export interface AuthoritativeGameState extends GameStateBase {
   /** The view this state is. */
   visibility: 'authoritative';
+  /** The round, with the event log this view may read. */
+  currentRoundState: AuthoritativeRoundState;
   /** The cards this view may read. */
   cardState: AuthoritativeCardState;
 }
@@ -29,7 +32,7 @@ const _authoritativeGameStateSchemaObject: z.ZodObject<{
   boardState: typeof boardSchema;
   currentInitiative: typeof playerSideSchema;
   currentRoundNumber: z.ZodInt;
-  currentRoundState: typeof roundStateSchema;
+  currentRoundState: typeof authoritativeRoundStateSchema;
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
@@ -39,6 +42,7 @@ const _authoritativeGameStateSchemaObject: z.ZodObject<{
 }> = gameStateBaseSchema.merge(
   z
     .object({
+      currentRoundState: authoritativeRoundStateSchema,
       cardState: authoritativeCardStateSchema,
       visibility: z.literal('authoritative'),
     })

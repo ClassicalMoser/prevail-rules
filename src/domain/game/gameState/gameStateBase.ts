@@ -1,22 +1,18 @@
 import type { Board, PlayerSide, UnitInstance } from '@entities';
-import type { RoundState } from '@game/roundState';
 
 import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
-import { roundStateSchema } from '@game/roundState';
 
 /**
- * What every view of a game's state holds, whoever is looking: the board, the
- * round, who has initiative, and what has been lost. A view adds its
- * `visibility` and the cards that visibility may read.
+ * What every view of a game's state holds, whoever is looking: the board, who
+ * has initiative, and what has been lost. A view adds its `visibility`, the
+ * cards that visibility may read, and the round with the event log it may read.
  *
  * Board size lives only on {@link Board.boardType} (`boardState.boardType`).
  */
 export interface GameStateBase {
   /** The current round number of the game. */
   currentRoundNumber: number;
-  /** The state of the current round of the game. */
-  currentRoundState: RoundState;
   /** Which player currently has initiative. */
   currentInitiative: PlayerSide;
   /** Units not yet placed on the board. */
@@ -42,7 +38,6 @@ export const gameStateBaseSchema: z.ZodObject<{
   boardState: typeof boardSchema;
   currentInitiative: typeof playerSideSchema;
   currentRoundNumber: z.ZodInt;
-  currentRoundState: typeof roundStateSchema;
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
@@ -52,7 +47,6 @@ export const gameStateBaseSchema: z.ZodObject<{
     boardState: boardSchema,
     currentInitiative: playerSideSchema,
     currentRoundNumber: z.int().min(0),
-    currentRoundState: roundStateSchema,
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),

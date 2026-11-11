@@ -136,6 +136,7 @@ export {
   COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
   eventSchema,
+  projectedEventSchema,
   eventTypes,
   eventTypeSchema,
   GAME_EFFECT_EVENT_TYPE,
@@ -249,6 +250,7 @@ export type {
   CompleteUnitMovementEvent,
   DiscardPlayedCardsEvent,
   Event,
+  ProjectedEvent,
   EventType,
   GameEffectEvent,
   GameOverEvent,
@@ -367,7 +369,9 @@ export {
   rallyResolutionStateSchema,
   resolveMeleePhaseStateSchema,
   resolveMeleePhaseSteps,
+  authoritativeRoundStateSchema,
   roundStateSchema,
+  seenRoundStateSchema,
 } from '@game';
 export {
   rangedAttackResolutionStateSchema,
@@ -397,7 +401,10 @@ export type {
   PlayCardsPhaseStep,
   ResolveMeleePhaseState,
   ResolveMeleePhaseStep,
+  AuthoritativeRoundState,
   RoundState,
+  RoundStateBase,
+  SeenRoundState,
 } from '@game';
 export type {
   CommandResolutionState,
@@ -655,7 +662,6 @@ export {
   updateBoardState,
   updateCommandResolutionState,
 } from '@transforms';
-export type { ProjectedEvent } from '@transforms';
 export {
   updateCurrentInitiative,
   updateCurrentRoundNumber,

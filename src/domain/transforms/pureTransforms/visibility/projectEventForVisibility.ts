@@ -1,12 +1,5 @@
 import type { PlayerSide } from '@entities';
-import type {
-  Event,
-  GameEffectEvent,
-  ProjectedPlayerChoiceEvent,
-} from '@events';
-
-/** Event as delivered to one seat after hidden-information redaction. */
-export type ProjectedEvent = ProjectedPlayerChoiceEvent | GameEffectEvent;
+import type { Event, ProjectedEvent } from '@events';
 
 /**
  * Projects an authoritative event for one observer.

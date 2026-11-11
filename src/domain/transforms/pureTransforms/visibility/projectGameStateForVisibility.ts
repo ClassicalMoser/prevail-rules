@@ -1,13 +1,16 @@
+import type { PlayerSide } from '@entities';
 import type {
   AuthoritativeGameState,
   BlackSeenGameState,
   GameState,
   GameStateVisibility,
+  SeenRoundState,
   SpectatorGameState,
   WhiteSeenGameState,
 } from '@game';
 
 import { toHiddenCardState } from '../cards/toHiddenCardState';
+import { projectEventForVisibility } from './projectEventForVisibility';
 
 /**
  * Projects the authoritative game state into what one viewer may see, for
@@ -25,11 +28,21 @@ export function projectGameStateForVisibility(
 ): GameState {
   const { cardState } = state;
 
+  // The round's log goes to the viewer as the viewer would have received each
+  // event, so a card the opponent laid face down is not in it.
+  const roundFor = (observer: PlayerSide | 'spectator'): SeenRoundState => ({
+    ...state.currentRoundState,
+    events: state.currentRoundState.events.map((event) =>
+      projectEventForVisibility(event, observer),
+    ),
+  });
+
   switch (visibility) {
     case 'whiteSeen': {
       // White keeps their own cards; black's private piles are hidden.
       const whiteSeen: WhiteSeenGameState = {
         ...state,
+        currentRoundState: roundFor('white'),
         cardState: {
           black: toHiddenCardState(cardState.black),
           visibility: 'whiteSeen',
@@ -43,6 +56,7 @@ export function projectGameStateForVisibility(
       // Black keeps their own cards; white's private piles are hidden.
       const blackSeen: BlackSeenGameState = {
         ...state,
+        currentRoundState: roundFor('black'),
         cardState: {
           black: cardState.black,
           visibility: 'blackSeen',
@@ -56,6 +70,7 @@ export function projectGameStateForVisibility(
       // A spectator owns neither hand.
       const spectator: SpectatorGameState = {
         ...state,
+        currentRoundState: roundFor('spectator'),
         cardState: {
           black: toHiddenCardState(cardState.black),
           visibility: 'spectator',
