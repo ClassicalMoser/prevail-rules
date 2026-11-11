@@ -39,10 +39,10 @@ export {
   getLegalSetupUnits,
   combineSupportCategoriesFromHand,
   getLegalAssignUnitSupport,
-  getSupportPlacementOffer,
-  isSameSupportPlacement,
-  describeRefusedSupportPlacement,
-  describeSupportPool,
+  getLegalUnitSupportAssignments,
+  isSameUnitSupportAssignment,
+  getAssignmentRefusalReason,
+  getUnitSupportLabel,
   getLegalUnitsForIssueCommand,
   getSetupZoneCoordinates,
   isCommandIssuable,
@@ -60,7 +60,6 @@ export type {
   LegalSetupUnits,
   LegalAssignUnitSupport,
   LegalSupportCategory,
-  SupportPlacement,
 } from './choiceOptions';
 export { getLegalCommanderMoves } from './commanderMovement';
 export { canReverseUnit } from './combatOutcomes';

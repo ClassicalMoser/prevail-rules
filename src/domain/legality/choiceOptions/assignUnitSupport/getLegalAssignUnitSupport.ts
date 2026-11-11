@@ -24,7 +24,7 @@ export interface LegalSupportCategory {
  *
  * Categories are summed from the hand by support kind (type / trait / generic).
  * Does not expand assignment combinations — callers fill places one unit at a
- * time from {@link getSupportPlacementOffer}, which holds the rules of
+ * time from {@link getLegalUnitSupportAssignments}, which holds the rules of
  * capacity, one place per unit and **local maximality** (no unused slot may
  * still cover an uncovered unit; uncoverable units then rout on apply).
  * Global allocation optimality is not required.

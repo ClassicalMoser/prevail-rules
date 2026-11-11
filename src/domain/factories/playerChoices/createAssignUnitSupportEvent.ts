@@ -9,7 +9,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required: a
  * default would hide a choice the caller means.
  *
- * @param fields - `assignments` per-grant assignments (omit unused grants);
+ * @param fields - `assignments`, one per unit given a place, in any order;
  * `player`
  * @returns The event
  */

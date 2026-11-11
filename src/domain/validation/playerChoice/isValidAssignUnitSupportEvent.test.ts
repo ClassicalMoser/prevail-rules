@@ -62,7 +62,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
-  it('given covering every unit a pool can cover, leaving uncoverable units, is valid', () => {
+  it('given covering every unit a unit support can cover, leaving uncoverable units, is valid', () => {
     const { state, unit } = awaitingSupportState();
     const event = createAssignUnitSupportEvent({
       assignments: [
@@ -72,7 +72,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
             supportType: 'unitType',
             unitTypeId: unit.unitType.id,
           },
-          units: [unit],
+          unit,
         },
       ],
       player: 'white',
@@ -80,7 +80,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
-  it('given empty assignments when no pools can cover anyone, is valid (all rout)', () => {
+  it('given empty assignments when no unit support can cover anyone, is valid (all rout)', () => {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -185,7 +185,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
       assignments: [
         {
           unitSupport: { count: 1, supportType: 'generic' },
-          units: [unit],
+          unit,
         },
       ],
       player: 'white',
@@ -226,10 +226,8 @@ describe('isValidAssignUnitSupportEvent function', () => {
     });
     const event = createAssignUnitSupportEvent({
       assignments: [
-        {
-          unitSupport: { count: 1, supportType: 'generic' },
-          units: [unit, other],
-        },
+        { unit, unitSupport: { count: 1, supportType: 'generic' } },
+        { unit: other, unitSupport: { count: 1, supportType: 'generic' } },
       ],
       player: 'white',
     });
@@ -246,7 +244,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
             supportType: 'unitType',
             unitTypeId: unit.unitType.id,
           },
-          units: [other],
+          unit: other,
         },
       ],
       player: 'white',
@@ -254,21 +252,26 @@ describe('isValidAssignUnitSupportEvent function', () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
-  it('given duplicate unitSupport assignments, is invalid', () => {
+  it('refuses the same unit given the same place twice, since a unit takes only one place', () => {
     const { state, unit } = awaitingSupportState();
     const unitSupport = {
       count: 1,
       supportType: 'unitType' as const,
       unitTypeId: unit.unitType.id,
     };
+    // The unit is listed twice under the one unit support (§10.4.4).
     const event = createAssignUnitSupportEvent({
       assignments: [
-        { unitSupport, units: [unit] },
-        { unitSupport, units: [] },
+        { unit, unitSupport },
+        { unit, unitSupport },
       ],
       player: 'white',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      errorReason: 'Unit is assigned support more than once',
+      result: false,
+    });
   });
 
   it('given suboptimal trait-on-type while type slot idles and another unit dies, is valid', () => {
@@ -336,7 +339,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
       step: 'firstPlayerResolveRally',
     });
 
-    // Burn trait on typed; leave type pool unused; traitOnly uncovered and
+    // Burn trait on typed; leave the unit-type support unused; traitOnly uncovered and
     // no remaining capacity matches them → legal but not globally optimal.
     const event = createAssignUnitSupportEvent({
       assignments: [
@@ -346,7 +349,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
             supportType: 'trait',
             trait: 'formation',
           },
-          units: [typed],
+          unit: typed,
         },
       ],
       player: 'white',

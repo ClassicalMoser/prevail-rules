@@ -9,7 +9,7 @@ describe('createAssignUnitSupportEvent function', () => {
     const assignments: UnitSupportAssignment[] = [
       {
         unitSupport: { count: 1, supportType: 'generic' },
-        units: [createTestUnit('white')],
+        unit: createTestUnit('white'),
       },
     ];
 

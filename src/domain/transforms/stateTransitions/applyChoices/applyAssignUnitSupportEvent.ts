@@ -19,11 +19,9 @@ export function applyAssignUnitSupportEvent<S extends GameState>(
   state: S,
 ): S {
   const covered: UnitInstance[] = [];
-  for (const assignment of event.assignments) {
-    for (const unit of assignment.units) {
-      if (!hasUnitInArray(covered, unit)) {
-        covered.push(unit);
-      }
+  for (const { unit } of event.assignments) {
+    if (!hasUnitInArray(covered, unit)) {
+      covered.push(unit);
     }
   }
 

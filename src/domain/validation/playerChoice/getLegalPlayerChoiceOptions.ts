@@ -218,9 +218,10 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
 
   switch (expected.choiceType) {
     case 'assignUnitSupport': {
-      // After a rally the player must give each unit a place in a pool of places
-      // their hand's cards hold (§10.4.4); offer the pools and the units still
-      // unplaced. Whatever is left over routs (§10.4.6).
+      // After a rally the player must give each unit a place under the unit
+      // support their hand's cards hold (§10.4.4); offer that support and the
+      // units that match it, and the places are filled one at a time from
+      // getLegalUnitSupportAssignments. Whatever is left over routs (§10.4.6).
       const assignUnitSupport =
         getLegalAssignUnitSupport(state) ?? emptyAssignUnitSupport(player);
       return {

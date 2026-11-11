@@ -64,7 +64,7 @@ describe('applyAssignUnitSupportEvent function', () => {
             supportType: 'unitType',
             unitTypeId: covered.unitType.id,
           },
-          units: [covered],
+          unit: covered,
         },
       ],
       choiceType: 'assignUnitSupport',

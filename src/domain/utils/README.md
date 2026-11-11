@@ -10,4 +10,4 @@ Small technical helpers with no domain schemas and no imports from other layers.
 - `throwIfPending` / `throwIfBypassed` / `throwIfNone` — a sentinel slot is not the value a caller asked for
 - `throwIfUndefined` — narrow away a missing value, or throw
 - `randomSource` — a draw a caller can fix, so replaying a stored event does not roll again
-- `partOffer` / `findRefusedPart` — a choice too large to list whole is offered a part at a time, with whether it may stop; a validator walks a submitted choice through the same offers
+- `openChoice` / `findRefusal` — a choice too large to list whole is offered a part at a time, with whether it may stop; a validator walks a submitted choice through the same offers

@@ -124,7 +124,7 @@ export type {
 } from '@entities';
 export type {
   FailValidationResult,
-  PartOffer,
+  OpenChoice,
   PassValidationResult,
   RandomSource,
   ValidationResult,
@@ -578,8 +578,8 @@ export {
   getLegalSetupUnits,
   combineSupportCategoriesFromHand,
   getLegalAssignUnitSupport,
-  getSupportPlacementOffer,
-  isSameSupportPlacement,
+  getLegalUnitSupportAssignments,
+  isSameUnitSupportAssignment,
   getLegalUnitsForIssueCommand,
   getSetupZoneCoordinates,
   getLegalRetreats,
@@ -598,7 +598,6 @@ export type {
   LegalSetupUnits,
   LegalAssignUnitSupport,
   LegalSupportCategory,
-  SupportPlacement,
   LegalMoveDeltas,
   MoveResult,
 } from '@legality';

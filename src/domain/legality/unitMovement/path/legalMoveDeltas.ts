@@ -1,5 +1,5 @@
 import type { MoveDelta } from '@entities';
-import type { PartOffer } from '@utils';
+import type { OpenChoice } from '@utils';
 
 /**
  * What a player may do next in a move they are writing: which steps and
@@ -8,4 +8,4 @@ import type { PartOffer } from '@utils';
  * turn-reverse-step input alike — and a validator checks each submitted
  * move against them.
  */
-export type LegalMoveDeltas = PartOffer<MoveDelta>;
+export type LegalMoveDeltas = OpenChoice<MoveDelta>;

@@ -1,4 +1,4 @@
-import type { PartOffer, PartRefusal } from './partOffer';
+import type { OpenChoice, ChoiceRefusal } from './openChoice';
 
 /** A value compared by `===`: two equal literals are the same part. */
 type Literal = string | number | boolean;
@@ -21,20 +21,20 @@ type Literal = string | number | boolean;
  * @returns The first refusal, or `undefined` when every part was offered and
  * the choice may stop where it ends
  */
-export function findRefusedPart<Part extends Literal>(
+export function findRefusal<Part extends Literal>(
   parts: readonly Part[],
-  offerAfter: (soFar: readonly Part[]) => PartOffer<Part>,
-): PartRefusal<Part> | undefined;
-export function findRefusedPart<Part>(
+  offerAfter: (soFar: readonly Part[]) => OpenChoice<Part>,
+): ChoiceRefusal<Part> | undefined;
+export function findRefusal<Part>(
   parts: readonly Part[],
-  offerAfter: (soFar: readonly Part[]) => PartOffer<Part>,
+  offerAfter: (soFar: readonly Part[]) => OpenChoice<Part>,
   isSame: (a: Part, b: Part) => boolean,
-): PartRefusal<Part> | undefined;
-export function findRefusedPart<Part>(
+): ChoiceRefusal<Part> | undefined;
+export function findRefusal<Part>(
   parts: readonly Part[],
-  offerAfter: (soFar: readonly Part[]) => PartOffer<Part>,
+  offerAfter: (soFar: readonly Part[]) => OpenChoice<Part>,
   isSame: (a: Part, b: Part) => boolean = (a, b) => a === b,
-): PartRefusal<Part> | undefined {
+): ChoiceRefusal<Part> | undefined {
   // Every part must be one of those offered after the parts before it.
   for (const [index, part] of parts.entries()) {
     const offered = offerAfter(parts.slice(0, index));
@@ -42,7 +42,7 @@ export function findRefusedPart<Part>(
       isSame(candidate, part),
     );
     if (!wasOffered) {
-      const notOffered: PartRefusal<Part> = {
+      const notOffered: ChoiceRefusal<Part> = {
         index,
         offered,
         refusal: 'notOffered',
@@ -54,7 +54,7 @@ export function findRefusedPart<Part>(
   // And the choice must be allowed to stop where it ends.
   const atEnd = offerAfter(parts);
   if (!atEnd.mayStop) {
-    const mayNotStop: PartRefusal<Part> = {
+    const mayNotStop: ChoiceRefusal<Part> = {
       offered: atEnd,
       refusal: 'mayNotStop',
     };

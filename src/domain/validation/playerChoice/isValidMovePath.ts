@@ -3,7 +3,7 @@ import type { GameState } from '@game';
 import type { LegalMoveDeltas } from '@legality';
 import type { ValidationResult } from '@utils';
 import { findLegalMoveDeltas } from '@legality';
-import { findRefusedPart, throwIfUndefined } from '@utils';
+import { findRefusal, throwIfUndefined } from '@utils';
 
 /**
  * Whether a submitted path is a legal move, checked the way every
@@ -45,7 +45,7 @@ export function isValidMovePath(
 
   // Every move must be one of those offered after the moves before it, and
   // the move must be allowed to stop where the path ends.
-  const refused = findRefusedPart(path, offerAfter);
+  const refused = findRefusal(path, offerAfter);
   if (refused === undefined) {
     const valid: ValidationResult = { result: true };
     return valid;

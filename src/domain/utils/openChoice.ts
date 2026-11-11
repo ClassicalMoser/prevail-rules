@@ -13,7 +13,7 @@
  * choice as a whole: a move that entered a front obliquely owes its squaring
  * turn, and a player with support still able to cover a unit must use it.
  */
-export interface PartOffer<Part> {
+export interface OpenChoice<Part> {
   /** The parts that may come next. */
   next: readonly Part[];
   /** Whether the choice may end here. */
@@ -24,16 +24,16 @@ export interface PartOffer<Part> {
  * Where a submitted choice left its offers: a part that was not among those
  * offered at its point, or an end where the choice may not stop.
  */
-export type PartRefusal<Part> =
+export type ChoiceRefusal<Part> =
   | {
       refusal: 'notOffered';
       /** The position of the part that was not offered. */
       index: number;
       /** What was offered at that point instead. */
-      offered: PartOffer<Part>;
+      offered: OpenChoice<Part>;
     }
   | {
       refusal: 'mayNotStop';
       /** What was offered where the choice ended. */
-      offered: PartOffer<Part>;
+      offered: OpenChoice<Part>;
     };

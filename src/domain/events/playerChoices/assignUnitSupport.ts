@@ -12,12 +12,14 @@ import { z } from 'zod';
 export const ASSIGN_UNIT_SUPPORT_CHOICE_TYPE = 'assignUnitSupport' as const;
 
 /**
- * Units assigned to one summed hand grant (length ≤ that grant’s count).
+ * One unit taking one place under one unit support the hand's cards sum to
+ * (§10.4.3–10.4.4).
  */
 export interface UnitSupportAssignment {
-  /** Echo of a legal {@link UnitSupport} atom from the hand. */
+  /** The unit support, as the hand sums it; echoed from the legal options. */
   unitSupport: UnitSupport;
-  units: UnitInstance[];
+  /** The unit taking a place under it. */
+  unit: UnitInstance;
 }
 
 /**
@@ -25,6 +27,8 @@ export interface UnitSupportAssignment {
  * Assignment must be locally maximal (use every slot that can still cover
  * someone uncovered); global allocation optimality is not required.
  * Units left uncovered lose support and are routed.
+ *
+ * The assignments are a set: the order they are listed in does not matter.
  */
 export interface AssignUnitSupportEvent {
   /** The type of the event. */
@@ -33,17 +37,17 @@ export interface AssignUnitSupportEvent {
   choiceType: typeof ASSIGN_UNIT_SUPPORT_CHOICE_TYPE;
   /** The player who rallied and is now placing their units under the hand's cards. */
   player: PlayerSide;
-  /** Per-grant assignments (omit unused grants). */
+  /** One entry per unit given a place, in any order. */
   assignments: UnitSupportAssignment[];
 }
 
 const unitSupportAssignmentSchemaObject: z.ZodObject<{
   unitSupport: typeof unitSupportSchema;
-  units: z.ZodArray<typeof unitInstanceSchema>;
+  unit: typeof unitInstanceSchema;
 }> = z
   .object({
     unitSupport: unitSupportSchema,
-    units: z.array(unitInstanceSchema),
+    unit: unitInstanceSchema,
   })
   .strict();
 

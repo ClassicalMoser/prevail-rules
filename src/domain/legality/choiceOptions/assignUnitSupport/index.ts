@@ -5,9 +5,8 @@ export {
   type LegalSupportCategory,
 } from './getLegalAssignUnitSupport';
 export {
-  describeRefusedSupportPlacement,
-  describeSupportPool,
-  getSupportPlacementOffer,
-  isSameSupportPlacement,
-  type SupportPlacement,
-} from './getSupportPlacementOffer';
+  getAssignmentRefusalReason,
+  getLegalUnitSupportAssignments,
+  getUnitSupportLabel,
+  isSameUnitSupportAssignment,
+} from './getLegalUnitSupportAssignments';
