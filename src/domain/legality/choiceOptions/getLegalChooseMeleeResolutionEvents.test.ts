@@ -81,7 +81,7 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     ]);
   });
 
-  it('offers nothing while a melee is under way, because the next is chosen once it is resolved', () => {
+  it('throws when asked while a melee is under way, because the next is chosen once it is resolved', () => {
     // One melee is being fought, and two more engagements still wait.
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -94,7 +94,11 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     const state = updatePhaseState(base, phase);
 
     // The order of the melees is chosen between them, not during one (§4.4.2).
-    expect(getLegalChooseMeleeResolutionEvents(state)).toStrictEqual([]);
+    // Nothing asks for the order mid-melee, so being asked is the caller's
+    // mistake, and it is loud rather than an empty offer.
+    expect(() => getLegalChooseMeleeResolutionEvents(state)).toThrow(
+      'A melee is under way; the next is chosen once it is resolved',
+    );
   });
 
   it('throws when there are no remaining engagements (caller should advance phase)', () => {
