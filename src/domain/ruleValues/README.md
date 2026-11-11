@@ -2,7 +2,7 @@
 
 Import as `@ruleValues`.
 
-Constants the rules share. This layer may import types from the layers `boundaries.ts` allows. It does not import their values.
+Constants the rules share. This layer imports nothing from the domain: `@entities` imports its values, so an import back would be a cycle. A list here carries its own literal type, and the layer that uses it checks it against the domain's type there.
 
 - `ruleValues` — the shared numeric and named constants
 - `traits` — unit traits

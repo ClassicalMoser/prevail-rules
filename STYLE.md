@@ -14,6 +14,12 @@ An exported function has an explicit return type. `isolatedDeclarations` require
 
 No overloads, unless a single signature cannot say the return. An overload is a second assertion of the type.
 
+A router or switch that only dispatches, one branch per case, may be long; its branches must not hand-roll operations. When splitting modules grows a folder past about a dozen, group them into sub-folders by what each part answers in the game, with one barrel per folder.
+
+## Names
+
+Names use the game's own vocabulary. Do not drop a word that carries meaning (`attack` in `firstPlayerAttackApplyState`), coin a term the rules do not use, or borrow a connotation the game lacks ("fire" for a ranged attack). Prefer the existing term even when it is a little long. A reader that answers `undefined` for an absence is a `find*`; one that throws is a `get*` ([`DESIGN.md`](./DESIGN.md)).
+
 ```typescript
 const white = updatePlayerCardState(base, 'white', whiteCardState);
 const cleanup = updatePhaseState(white, cleanupPhase);
@@ -25,11 +31,15 @@ return next;
 
 The project is strict about both. Do not use a type assertion (`as`, `!`) or `@ts-ignore`. The exception is a test that must pass a value the type forbids, and only in a `*.test.ts` file, with a comment on that line saying why.
 
+An assertion is a narrowing the compiler cannot check: `as Foo`, `x!`, `as unknown as`. `as const`, a widening `as readonly …`, and a `never` in an exhaustive default define a type the compiler verifies; they are not assertions.
+
 ## Commentary
 
 Commentary is extensive. 25% comments inside a function body is not too much; JSDoc does not count toward it. The measure is comment lines inside bodies over code lines inside bodies: nothing outside a body is in either count, and blank lines are in neither. In a struct the lines inside the body are the JSDoc on each member, so those count; the block above a declaration does not, however long it is. `pnpm check:commentary` reports it per layer. It renders no verdict and gates nothing: a comment restating the code raises the number and makes the file worse, so whether commentary is any good is a judgment for the read, not a measure. Leave existing function commentary in place, including `@param` and `@returns`. JSDoc-style comments ahead of declarations are good for IDE readability, and every function and every struct has one. That is a separate requirement from the 25%, and neither one discharges the other. Keep a new header short: a few lines saying what the thing is and why it exists. Three paragraphs is not a better header. A shorter header is not a cleanup, so leave a long one alone. When a helper does several steps, comment each step: what it writes, and why a factory is still there.
 
 Where a step encodes a rule of the game, the comment names the rule. That is the line carrying the meaning, and a comment there that gives the operation instead — or the chain of states a lookup walks through — spends the line and loses it. Where no rule is at stake, the step still has an intended purpose and use, and that is what the comment says. A label naming the operation is not enough: it repeats what the reader can see and leaves out why the step is there and what the next one does with it. Every step has a reason; only some of those reasons are rules.
+
+A comment refers to code by name — a function, a type, a spec — so that a search finds it. It does not cite a commit hash, a line number, or another document with "see …"; those break when the code moves.
 
 A comment must match the code beneath it. One describing a parameter, a branch or a value that is not there is worse than silence, because a reader trusts it and goes looking for what it promised. A comment holding a place for a real one later is the same failure in advance: it costs a line, passes review because something is there, and teaches a reader to skim.
 

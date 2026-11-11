@@ -21,9 +21,17 @@ Lint is Oxlint. The config is [`oxlint.config.ts`](./oxlint.config.ts), built fr
 
 `pnpm check:commentary` reports in-body commentary density per layer. It cannot fail, and it is not a target to hit: padding a body raises the number and makes the file worse.
 
+## Changing behaviour
+
+A change to what the engine does starts with a spec that fails, in its own commit, and then the fix in the next. A rule question, or a choice about an event's public shape, is the author's: describe it and ask before writing either.
+
+Before deleting a function nothing calls, find who should be calling it: a caller-less function is usually the twin of a hand-rolled copy elsewhere. Some have no caller on purpose, as API for the packages built on these rules or as integrity checks not yet wired in.
+
 ## Commits
 
-Subjects follow [Conventional Commits](https://www.conventionalcommits.org): a type, an optional scope in parentheses, an optional `!` for a breaking change, then a colon, a space and a description. The types are `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. [`.githooks/commit-msg`](./.githooks/commit-msg) checks it.
+One kind of change per commit. Subjects follow [Conventional Commits](https://www.conventionalcommits.org): a type, an optional scope in parentheses, an optional `!` for a breaking change, then a colon, a space and a description. The types are `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. A subject has at most one scope. [`.githooks/commit-msg`](./.githooks/commit-msg) checks it.
+
+`pnpm lint` scans the whole working tree, including any git worktree made inside it (such as `.claude/worktrees/`), so a worktree left there fails the pre-commit hook until it is removed.
 
 Both hooks are inert until git is pointed at them, which is a local choice and not done for you:
 

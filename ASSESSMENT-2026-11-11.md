@@ -19,23 +19,8 @@ with `roundEnd`; the game ends when a hand is empty, a rout cannot be paid, or a
 army is gone (§11). Every event stream, round 0's included, is opened when its
 round begins and flushed when the next begins.
 
-The design has settled on these, and new work follows them:
-
-- **One source for each fact.** An event names a unit by identity and carries
-  only what the state does not already hold: a result the procedure measured
-  (an `AttackResult`, retreat paths, a penalty, a facing). Which slot an effect
-  writes to is the state's to say, through a `@queries` reader
-  (`findRoutLocation`, `getRetreatAwaitingRout`, `getAttackApplyToClose`,
-  `getAttackApplyAwaitingOpen`, `getMeleeCombatants`), never a context field
-  on the event.
-- **Layers.** Only a query walks the state; only a transform writes it; an
-  event apply composes queries and transforms. No block is inlined, least of
-  all one written elsewhere too.
-- **Faults.** Asking a question that should not be asked throws a clear,
-  specific message. There is no soft second guard behind the gate's owner, and
-  only the validation entry point catches.
-- **Choices too large to list** are offered a part at a time (`OpenChoice`),
-  and the validator walks the offers.
+The design rules new work follows are in [`DESIGN.md`](./DESIGN.md) (layers, faults,
+events and rounds) and [`src/domain/ENGINES.md`](./src/domain/ENGINES.md).
 
 ## Open: design questions for the author's walk
 

@@ -21,10 +21,10 @@ export const boundaries: BoundaryConfig[] = [
   },
   {
     alias: '@ruleValues',
-    allowTypeImportsFrom: ['@entities', '@events', '@utils'],
+    allowTypeImportsFrom: ['@utils'],
     dir: 'domain/ruleValues',
     identifier: '@ruleValues',
-    // Type imports ONLY, strictly for core rule definitions
+    // Rule constants. Nothing from the domain: @entities imports these values.
   },
   {
     alias: '@entities',

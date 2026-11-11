@@ -15,18 +15,18 @@ How those functions are shaped is [`DESIGN.md`](../../DESIGN.md). The call entri
 
 ## Above this layer
 
-The domain does not store games, talk to clients, or advance a session. That work sits on top of it:
+Phase order, initiative, combat and the flow of a round are the domain's own:
+the expected engine says what comes next, a procedure builds each effect the game
+owes, and the transform engine applies it ([`ENGINES.md`](./ENGINES.md)). The
+domain does not store games, talk to clients, or run a session. That work sits on
+top of it, in `src/application`:
 
-1. **Event sourcing.** Persist the event stream, replay it, validate before persisting, and snapshot for speed.
+1. **Event sourcing.** Persist the event stream, one per round, replay it, validate before persisting, and snapshot for speed.
 2. **Commands.** Turn a user action into a domain event, validate it, queue it, and check who may send it.
 3. **Read model.** Projections of the current state, a cache of legal moves, board views, and history.
-4. **Phase management.** Advance a phase when its requirements are met, tell clients, and track whose turn it is inside the phase.
-5. **Initiative.** Calculate it from the cards played, resolve a tie, and keep it for the round.
-6. **Combat.** Orchestrate melee and ranged resolution, support, and applying the outcome.
-7. **Flow.** Rounds, phase order, and triggering the next game-effect event.
-8. **Client interface.** Accept events, serve the current state and queries, and push updates.
-9. **Persistence.** Save and load a game, its event stream, and its snapshots, and migrate when the schema changes.
-10. **Errors.** Validate before execution, check the state after, recover, and log the change.
+4. **Client interface.** Accept events, serve the current state and queries, and push updates.
+5. **Persistence.** Save and load a game, its event stream, and its snapshots, and migrate when the schema changes.
+6. **Errors.** Validate before execution, check the state after, recover, and log the change.
 
 ## Related
 

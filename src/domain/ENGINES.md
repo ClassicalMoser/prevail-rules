@@ -51,9 +51,10 @@ the engine out of arrival order: two players choosing their cards at the same
 moment (§4.1.1) cannot both know what position their own choice will take, so
 the engine accepts a choice it expects whenever it arrives.
 
-It never throws. Queries beneath it do, so it wraps them and turns a throw into
-an `errorReason`. Everything a caller needs is in the returned
-`ValidationResult`.
+It never throws. Queries and enumerators beneath it do, and nothing between them
+catches; this entry point catches once (`failFromFault`) and turns the throw into
+an `errorReason` that keeps its message. Everything a caller needs is in the
+returned `ValidationResult`.
 
 ```typescript
 import { validatePlayerChoice } from '@validation';
@@ -91,6 +92,12 @@ records the result.
 Procedures trust the state they are given as internally consistent. Validation
 happens before a choice is applied, not again here.
 
+The event a procedure builds records what it measured or decided: an attack's
+result, the retreats a unit may make, a Morale penalty. It does not record which
+slot the effect writes to; the apply asks the state for that through the same
+query the procedure used (`getAttackApplyAwaitingOpen`, `getRetreatAwaitingRout`,
+`getAttackApplyToClose`), so the two cannot disagree.
+
 ```typescript
 import { generateEventFromProcedure } from '@procedures';
 
@@ -110,9 +117,12 @@ Takes state alone and says what comes next. `ExpectedEventInfo` is
 It checks the endgame first. A finished game expects nothing, so
 `findExpectedEvent` answers `undefined` for it and `getExpectedEvent`, which
 insists, throws. A caller that is asking whether anything is owed uses the
-find; one that already knows the game is going on uses the get. From there it reads the current phase
-and delegates to the phase and substep queries, which is why this layer reads
-sequencing and leaves rules to `@legality`.
+find; one that already knows the game is going on uses the get. Before the
+first phase it is round 0, setup: it asks the side holding the initiative to
+place its army, then the other side, and then expects `roundEnd`, which begins
+round 1. From there it reads the current phase and delegates to the phase and
+substep queries, which is why this layer reads sequencing and leaves rules to
+`@legality`.
 
 ```typescript
 import { getExpectedEvent } from '@expected';

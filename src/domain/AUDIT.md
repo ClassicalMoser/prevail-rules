@@ -140,7 +140,6 @@ Walk folders in IDE order (alphabetical).
 ### `transforms/` (`@transforms`)
 
 - [ ] `transforms/`
-  - [ ] `initializations/`
   - [ ] `pureTransforms/`
   - [ ] `stateTransitions/`
 
