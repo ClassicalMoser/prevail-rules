@@ -58,6 +58,7 @@ export {
   addUnitsToCommandedUnits,
   addUnitToBoard,
   addUnitToRouted,
+  moveUnitOnBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,
   removeUnitsLeavingUnderRout,

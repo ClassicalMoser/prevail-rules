@@ -651,6 +651,7 @@ export {
   markPhaseAsComplete,
   moveBothInPlayToPlayed,
   moveCardToPlayed,
+  moveUnitOnBoard,
   projectEventForVisibility,
   projectGameStateForVisibility,
   removeCommanderFromBoard,
