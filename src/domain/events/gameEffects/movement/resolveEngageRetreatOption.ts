@@ -1,4 +1,6 @@
+import type { MoveDelta } from '@entities';
 import type { AssertExact } from '@utils';
+import { moveDeltaSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -10,8 +12,12 @@ export interface ResolveEngageRetreatOptionEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE;
-  /** Whether the defending unit can retreat. */
-  defendingUnitCanRetreat: boolean;
+  /**
+   * The retreats the defender may make, each as its path (§9.1.3). Empty when
+   * the defender has nowhere to fall back to or is not the faster, so it
+   * stands (§6.3.2).
+   */
+  retreatPaths: MoveDelta[][];
 }
 
 const _resolveEngageRetreatOptionEventSchemaObject = z
@@ -20,8 +26,8 @@ const _resolveEngageRetreatOptionEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE),
-    /** Whether the defending unit can retreat. */
-    defendingUnitCanRetreat: z.boolean(),
+    /** The retreats the defender may make, each as its path. */
+    retreatPaths: z.array(z.array(moveDeltaSchema)),
   })
   .strict();
 
@@ -38,5 +44,5 @@ const _assertExactResolveEngageRetreatOptionEvent: AssertExact<
 export const resolveEngageRetreatOptionEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveEngageRetreatOption'>;
-  defendingUnitCanRetreat: z.ZodBoolean;
+  retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _resolveEngageRetreatOptionEventSchemaObject;

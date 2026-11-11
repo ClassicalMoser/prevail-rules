@@ -1,4 +1,4 @@
-import type { Commitment } from '@game';
+import type { Commitment, FrontEngagementResolutionState } from '@game';
 import {
   createFrontEngagementState,
   createRetreatState,
@@ -53,7 +53,7 @@ describe('getFrontEngagementStage function', () => {
   it('leaves a defender with nowhere to go standing', () => {
     expect(
       stageOf({
-        defendingUnitCanRetreat: false,
+        retreatPaths: [],
         defensiveCommitment: committed,
       }),
     ).toBe('noRetreat');
@@ -62,7 +62,7 @@ describe('getFrontEngagementStage function', () => {
   it('asks a defender that can fall back whether it will', () => {
     expect(
       stageOf({
-        defendingUnitCanRetreat: true,
+        retreatPaths: [['step']],
         defensiveCommitment: committed,
       }),
     ).toBe('defenderDeciding');
@@ -71,7 +71,7 @@ describe('getFrontEngagementStage function', () => {
   it('records a defender that chose to stand', () => {
     expect(
       stageOf({
-        defendingUnitCanRetreat: true,
+        retreatPaths: [['step']],
         defendingUnitRetreats: false,
         defensiveCommitment: committed,
       }),
@@ -79,8 +79,8 @@ describe('getFrontEngagementStage function', () => {
   });
 
   it('opens, carries out and finishes the retreat a defender accepts', () => {
-    const accepted = {
-      defendingUnitCanRetreat: true,
+    const accepted: Partial<FrontEngagementResolutionState> = {
+      retreatPaths: [['step']],
       defendingUnitRetreats: true,
       defensiveCommitment: committed,
     };

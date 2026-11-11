@@ -285,7 +285,9 @@ Left for the author:
   `settleRout`. `updateHiddenPlayerCardState`
   stays gone (`updatePlayerCards` and `replaceHiddenPlayerCardState` write a
   hidden hand). New effect `completeRangedAttack`: a shot ends with it, and
-  `completeRangedAttackCommand` ends only the order.
+  `completeRangedAttackCommand` ends only the order. `resolveEngageRetreatOption` carries `retreatPaths` where it carried
+  `defendingUnitCanRetreat`, `openRetreatFromEngagement` carries nothing, and
+  the front engagement state's `defendingUnitCanRetreat` is `retreatPaths`.
 
 ---
 
@@ -650,6 +652,17 @@ entering a commander's space), the list earns its place; then keep it and put
 both readers behind one named query.
 
 ### 7.4 A front-engagement retreat's paths are computed twice
+
+**Done (seventh pass, on the author's yes; at most two paths, so carrying them
+does not clutter the event).** `resolveEngageRetreatOption` carries
+`retreatPaths` (empty means the defender stands, or is not the faster), and the
+front engagement's resolution state holds `retreatPaths: 'pending' | MoveDelta[][]`
+in place of `defendingUnitCanRetreat`. `openRetreatFromEngagement` carries
+nothing: its apply opens the retreat with the paths the engagement holds, and
+throws when they are still pending or empty. One fact, recorded once. The two
+path cases (one step back; a tie when an enemy holds the way straight back)
+moved to `generateResolveEngageRetreatOptionEvent`'s spec. **Shape change:**
+both events and the front engagement state; stored logs do not parse.
 
 **Verdict: design risk.** `generateResolveEngageRetreatOptionEvent` and
 `generateOpenRetreatFromEngagementEvent` both look up the defender, build the

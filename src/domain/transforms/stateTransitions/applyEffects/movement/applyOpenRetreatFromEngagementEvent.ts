@@ -5,22 +5,23 @@ import {
   getFrontEngagementStateFromMovement,
   getSingleUnitWithPlacementAtCoordinate,
 } from '@queries';
+import { throwIfPending } from '@utils';
 import { updateFrontEngagementResolutionState } from '@transforms/pureTransforms';
 
 /**
  * Applies an OpenRetreatFromEngagementEvent: the retreat of a defender that
  * chose to fall back from a front engagement (§6.3.2) is opened, with the
- * retreats its procedure recorded on the event.
+ * retreats the engagement recorded when it worked out the retreat option.
  *
  * Event is assumed pre-validated (a front engagement whose defender chose to
  * retreat, and whose retreat is not yet open).
  *
- * @param event - The legal retreats, as the procedure found them
+ * @param _event - The event carries nothing; the paths are the engagement's
  * @param state - The current game state
  * @returns A new game state with the defender's retreat open
  */
 export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
-  event: OpenRetreatFromEngagementEvent,
+  _event: OpenRetreatFromEngagementEvent,
   state: S,
 ): S {
   const engagementState = getFrontEngagementStateFromMovement(state);
@@ -31,20 +32,21 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
     engagementState.targetPlacement.coordinate,
   );
 
-  // A defender with nowhere to fall back to stands, and no retreat opens
-  // for that defender (§6.3.2, §9.1.5), so a retreat is recorded with at least one
-  // way back.
-  if (event.retreatPaths.length === 0) {
+  // The retreats were worked out when the retreat option was resolved. A
+  // defender with nowhere to fall back to stands, and no retreat opens for
+  // that defender (§6.3.2, §9.1.5), so one is opened only with a way back.
+  const retreatPaths = throwIfPending(
+    engagementState.engagementResolutionState.retreatPaths,
+    'The retreat option has not been resolved yet',
+  );
+  if (retreatPaths.length === 0) {
     throw new Error(
       'A defender with nowhere to retreat stands; no retreat opens',
     );
   }
 
-  // The procedure worked out the legal retreats; they are written as given.
-  const retreatState = createOpenedRetreatState(
-    retreatingUnit,
-    event.retreatPaths,
-  );
+  // The retreats are written as the engagement recorded them.
+  const retreatState = createOpenedRetreatState(retreatingUnit, retreatPaths);
 
   const opened = updateFrontEngagementResolutionState(state, { retreatState });
   return opened;

@@ -38,7 +38,11 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
 } from './phaseStateHelpers';
-import { createTestCard, updateCardState } from './testHelpers';
+import {
+  createTestCard,
+  legalRetreatsOf,
+  updateCardState,
+} from './testHelpers';
 import { createTestUnit, createUnitByStat } from './unitHelpers';
 
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
@@ -233,17 +237,19 @@ export const procedureRegistryStateFactories: Record<
     state.cardState.black.inPlay = createTestCard();
     // A defender engaged from the front, fast enough to get away, that has
     // chosen to fall back; its retreat is not open yet.
-    const front = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
-      defendingUnitRetreats: true,
-    });
     const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        coordinate: front.targetPlacement.coordinate,
+        coordinate: createFrontEngagementState().targetPlacement.coordinate,
         facing: 'south',
       },
       unit: createTestUnit('white'),
     };
+    // The retreat option was resolved with a way back, and the defender chose
+    // to take it.
+    const front = createFrontEngagementState({
+      defendingUnitRetreats: true,
+      retreatPaths: legalRetreatsOf(defenderWithPlacement),
+    });
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defenderWithPlacement),

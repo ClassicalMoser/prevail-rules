@@ -100,7 +100,7 @@ describe('getExpectedEngagementEvent function', () => {
 
   it('given resolve the retreat option when the defender can retreat but has not chosen yet', () => {
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: 'pending' as const,
+      retreatPaths: 'pending' as const,
       defendingUnitRetreats: 'pending' as const,
       defensiveCommitment: {
         card: createTestCard(),
@@ -116,7 +116,7 @@ describe('getExpectedEngagementEvent function', () => {
 
   it('given retreat is still undecided, asks the defender whether to retreat', () => {
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       defendingUnitRetreats: 'pending' as const,
       defensiveCommitment: {
         card: createTestCard(),
@@ -135,7 +135,7 @@ describe('getExpectedEngagementEvent function', () => {
     // §6.3.2: the defender accepted, and its retreat is not open yet; the
     // effect that opens it works out where it may go.
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),
@@ -160,7 +160,7 @@ describe('getExpectedEngagementEvent function', () => {
       playerSide: 'black',
     });
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),
@@ -183,7 +183,7 @@ describe('getExpectedEngagementEvent function', () => {
   it('expects resolveRetreat when the accepted retreat already has its path chosen', () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),
@@ -205,7 +205,7 @@ describe('getExpectedEngagementEvent function', () => {
 
   it('given when the defender cannot retreat, throws', () => {
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: false,
+      retreatPaths: [],
       defendingUnitRetreats: 'pending' as const,
       defensiveCommitment: {
         card: createTestCard(),
@@ -220,7 +220,7 @@ describe('getExpectedEngagementEvent function', () => {
 
   it('given when retreat is denied but the state is not marked complete, throws', () => {
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       defendingUnitRetreats: false,
       defensiveCommitment: {
         card: createTestCard(),
@@ -236,7 +236,7 @@ describe('getExpectedEngagementEvent function', () => {
   it('throws when nested retreat is completed but engagement is not marked complete', () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),

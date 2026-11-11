@@ -19,7 +19,7 @@ describe('getLegalChooseWhetherToRetreatEvents function', () => {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
-        defendingUnitCanRetreat: true,
+        retreatPaths: [['step']],
         defendingUnitRetreats: 'pending',
         defensiveCommitment: {
           card: createTestCard(),
@@ -68,7 +68,7 @@ describe('getLegalChooseWhetherToRetreatEvents function', () => {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
-        defendingUnitCanRetreat: false,
+        retreatPaths: [],
         defendingUnitRetreats: 'pending',
         defensiveCommitment: {
           card: createTestCard(),

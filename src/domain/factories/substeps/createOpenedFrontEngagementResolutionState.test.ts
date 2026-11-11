@@ -7,7 +7,7 @@ import { createOpenedFrontEngagementResolutionState } from './createOpenedFrontE
 describe('createOpenedFrontEngagementResolutionState function', () => {
   it('opens a front engagement with the defender yet to commit, and nothing decided', () => {
     expect(createOpenedFrontEngagementResolutionState()).toStrictEqual({
-      defendingUnitCanRetreat: 'pending',
+      retreatPaths: 'pending',
       defendingUnitRetreats: 'pending',
       defensiveCommitment: { commitmentType: 'pending' },
       engagementType: 'front',

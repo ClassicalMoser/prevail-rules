@@ -111,7 +111,7 @@ export function generateEventFromProcedure(
       return generateOpenRoutFromAttackApplyEvent(state);
     }
     case 'openRetreatFromEngagement': {
-      return generateOpenRetreatFromEngagementEvent(state);
+      return generateOpenRetreatFromEngagementEvent();
     }
     case 'resolveEngageRetreatOption': {
       return generateResolveEngageRetreatOptionEvent(state);

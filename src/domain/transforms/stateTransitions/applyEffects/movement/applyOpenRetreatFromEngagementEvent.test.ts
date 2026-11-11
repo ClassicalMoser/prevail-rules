@@ -24,7 +24,9 @@ import { applyOpenRetreatFromEngagementEvent } from './applyOpenRetreatFromEngag
 describe('applyOpenRetreatFromEngagementEvent function', () => {
   const defender = placed(createTestUnit('white'), 'E-5', 'north');
 
-  function defenderChoseToRetreat(): GameState {
+  function defenderChoseToRetreat(
+    retreatPaths: MoveDelta[][] | 'pending' = [['step']],
+  ): GameState {
     const state = createEmptyGameState('standard');
     const withBoard = {
       ...state,
@@ -32,7 +34,7 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     };
     // The defender could get away, and chose to; its retreat is not open.
     const front = createFrontEngagementState({
-      defendingUnitCanRetreat: true,
+      retreatPaths,
       defendingUnitRetreats: true,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
@@ -44,15 +46,14 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     return updatePhaseState(withBoard, phase);
   }
 
-  /** Opens the retreat with the given recorded paths and reads it back. */
-  function openedWith(retreatPaths: MoveDelta[][]) {
+  /** Opens the retreat with the paths the engagement recorded and reads it back. */
+  function openedWith(retreatPaths: MoveDelta[][] | 'pending') {
     const next = applyOpenRetreatFromEngagementEvent(
       {
         effectType: 'openRetreatFromEngagement',
         eventType: 'gameEffect',
-        retreatPaths,
       },
-      defenderChoseToRetreat(),
+      defenderChoseToRetreat(retreatPaths),
     );
     const { retreatState } =
       getFrontEngagementStateFromMovement(next).engagementResolutionState;
@@ -74,8 +75,8 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
   });
 
   it('a tie is opened for the defender to choose', () => {
-    // Two equally small retreats, as the procedure finds them when an enemy
-    // stands behind the defender.
+    // Two equally small retreats, as the engagement recorded them when an
+    // enemy stands behind the defender.
     const retreat = openedWith([
       ['turnLeft', 'step'],
       ['turnRight', 'step'],
@@ -88,12 +89,20 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     expect(retreat.chosenRetreatPath).toBe('pending');
   });
 
-  it('throws when no retreat is recorded, since a defender with nowhere to go stands', () => {
+  it('throws when the engagement recorded no retreat, since a defender with nowhere to go stands', () => {
     // A front-engaged defender may fall back only where there is somewhere to
     // fall back to (§9.1.5); with nowhere it stands and the units fight on, so
     // no retreat is ever opened for it.
     expect(() => openedWith([])).toThrow(
       'A defender with nowhere to retreat stands; no retreat opens',
+    );
+  });
+
+  it('throws when the retreat option has not been resolved yet', () => {
+    // The paths are recorded when the engagement resolves the retreat option,
+    // before the defender decides; opening earlier has nothing to open with.
+    expect(() => openedWith('pending')).toThrow(
+      'The retreat option has not been resolved yet',
     );
   });
 });

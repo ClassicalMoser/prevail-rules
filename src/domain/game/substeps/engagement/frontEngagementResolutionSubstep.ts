@@ -1,6 +1,8 @@
+import type { MoveDelta } from '@entities';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
 import type { RetreatState } from '../combatOutcomes';
+import { moveDeltaSchema } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
 import { retreatStateSchema } from '../combatOutcomes';
@@ -11,8 +13,12 @@ export interface FrontEngagementResolutionState {
   engagementType: 'front';
   /** The commitment of the defending player. */
   defensiveCommitment: Commitment;
-  /** Whether the defending unit can retreat. */
-  defendingUnitCanRetreat: 'pending' | boolean;
+  /**
+   * The retreats the defender may make, each as its path (§9.1.3), worked out
+   * once the defender's commitment is in. Empty means it has nowhere to fall
+   * back to, or is not the faster, and stands (§6.3.2).
+   */
+  retreatPaths: 'pending' | MoveDelta[][];
   /** Whether the defending unit chooses to retreat. */
   defendingUnitRetreats: 'pending' | boolean;
   /**
@@ -28,8 +34,8 @@ const _frontEngagementResolutionStateSchemaObject = z
     engagementType: z.literal('front'),
     /** The commitment of the defending player. */
     defensiveCommitment: commitmentSchema,
-    /** Whether the defending unit can retreat. */
-    defendingUnitCanRetreat: z.boolean().or(z.literal('pending')),
+    /** The retreats the defender may make, each as its path. */
+    retreatPaths: z.array(z.array(moveDeltaSchema)).or(z.literal('pending')),
     /** Whether the defending unit chooses to retreat. */
     defendingUnitRetreats: z.boolean().or(z.literal('pending')),
     /** Nested retreat substep once the defender accepts retreat. */
@@ -45,7 +51,7 @@ type FrontEngagementResolutionStateSchemaType = z.infer<
 export const frontEngagementResolutionStateSchema: z.ZodObject<{
   engagementType: z.ZodLiteral<'front'>;
   defensiveCommitment: z.ZodType<Commitment>;
-  defendingUnitCanRetreat: z.ZodType<'pending' | boolean>;
+  retreatPaths: z.ZodType<'pending' | MoveDelta[][]>;
   defendingUnitRetreats: z.ZodType<'pending' | boolean>;
   retreatState: z.ZodType<RetreatState | 'pending'>;
 }> = _frontEngagementResolutionStateSchemaObject;

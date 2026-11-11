@@ -38,10 +38,11 @@ export function getFrontEngagementStage(
   if (resolution.defensiveCommitment.commitmentType === 'pending') {
     return 'defenderCommitting';
   }
-  if (resolution.defendingUnitCanRetreat === 'pending') {
+  if (resolution.retreatPaths === 'pending') {
     return 'retreatBeingWorkedOut';
   }
-  if (!resolution.defendingUnitCanRetreat) {
+  // No path to fall back along: the defender stands (§6.3.2).
+  if (resolution.retreatPaths.length === 0) {
     return 'noRetreat';
   }
   if (resolution.defendingUnitRetreats === 'pending') {

@@ -9,7 +9,7 @@ import type { FrontEngagementResolutionState } from '@game';
  */
 export function createOpenedFrontEngagementResolutionState(): FrontEngagementResolutionState {
   const resolution: FrontEngagementResolutionState = {
-    defendingUnitCanRetreat: 'pending',
+    retreatPaths: 'pending',
     defendingUnitRetreats: 'pending',
     defensiveCommitment: { commitmentType: 'pending' },
     engagementType: 'front',

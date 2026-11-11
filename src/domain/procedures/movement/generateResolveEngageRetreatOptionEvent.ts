@@ -13,13 +13,15 @@ import {
   modifiersFromCompletedCommitment,
 } from '@queries';
 /**
- * Generates a ResolveEngageRetreatOptionEvent by determining if the defending unit
- * can retreat during a front engagement.
+ * Generates a ResolveEngageRetreatOptionEvent by working out the retreats the
+ * defending unit may make during a front engagement.
  *
  * @param state - The current game state
- * @returns A complete ResolveEngageRetreatOptionEvent. Retreat is possible if the defending
- * unit has a higher current speed value than the engaging unit, and has a legal retreat
- * to make. Each player's committed card applies only to their own unit.
+ * @returns A complete ResolveEngageRetreatOptionEvent carrying each retreat as
+ * its path. There are some only if the defending unit has a higher current speed
+ * value than the engaging unit, and a legal retreat to make; otherwise the
+ * list is empty and the defender stands. Each player's committed card applies
+ * only to their own unit.
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveEngageRetreatOptionEvent(
@@ -62,13 +64,13 @@ export function generateResolveEngageRetreatOptionEvent(
   // card the defender committed counts toward the retreat it is weighing,
   // as it did toward the Speed it is compared on (§6.3.2).
   const outpacesEngager = defendingSpeed > engagingSpeed;
-  const defendingUnitCanRetreat =
-    outpacesEngager &&
-    getLegalRetreats(defender, state, defendingCommitmentModifiers).length > 0;
+  const retreatPaths = outpacesEngager
+    ? getLegalRetreats(defender, state, defendingCommitmentModifiers)
+    : [];
 
   return {
-    defendingUnitCanRetreat,
     effectType: RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
+    retreatPaths,
   };
 }

@@ -15,8 +15,9 @@ import { applyResolveEngageRetreatOptionEvent } from './applyResolveEngageRetrea
 
 import { createEmptyGameState } from '@factories';
 /**
- * Procedure output for front engagement: copies `defendingUnitCanRetreat` onto the nested
- * front engagement resolution state under the movement CRS.
+ * Procedure output for front engagement: records the retreats the defender may make on the
+ * front engagement resolution state under the movement CRS. With none, the defender stands
+ * and the engagement ends (§6.3.2).
  */
 describe('applyResolveEngageRetreatOptionEvent function', () => {
   /** Default front engagement factory with black engager speed 2 for retreat eligibility math. */
@@ -28,7 +29,7 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     };
   }
 
-  it('given front engagement and event defendingUnitCanRetreat true, movement slice stores true', () => {
+  it('records the retreats the defender may make, and leaves the engagement open', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 3);
@@ -54,7 +55,7 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     );
 
     const event: ResolveEngageRetreatOptionEvent = {
-      defendingUnitCanRetreat: true,
+      retreatPaths: [['step']],
       effectType: 'resolveEngageRetreatOption' as const,
       eventType: 'gameEffect' as const,
     };
@@ -76,11 +77,11 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     if (res.engagementType !== 'front') {
       throw new Error('front');
     }
-    expect(res.defendingUnitCanRetreat).toBe(true);
+    expect(res.retreatPaths).toStrictEqual([['step']]);
     expect(engagement.completed).toBe(false);
   });
 
-  it('given defendingUnitCanRetreat false, marks front engagement complete (stay for melee)', () => {
+  it('with no retreat to make, the defender stands and the engagement is complete', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 2);
@@ -110,7 +111,7 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
 
     const next = applyResolveEngageRetreatOptionEvent(
       {
-        defendingUnitCanRetreat: false,
+        retreatPaths: [],
         effectType: 'resolveEngageRetreatOption',
         eventType: 'gameEffect',
       },
@@ -132,8 +133,6 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     if (engagement.engagementResolutionState.engagementType !== 'front') {
       throw new Error('front');
     }
-    expect(engagement.engagementResolutionState.defendingUnitCanRetreat).toBe(
-      false,
-    );
+    expect(engagement.engagementResolutionState.retreatPaths).toStrictEqual([]);
   });
 });

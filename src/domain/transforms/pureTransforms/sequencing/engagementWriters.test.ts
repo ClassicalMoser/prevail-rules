@@ -44,11 +44,13 @@ describe('the engagement resolution writers', () => {
 
     const front = getFrontEngagementStateFromMovement(
       updateFrontEngagementResolutionState(state, {
-        defendingUnitCanRetreat: true,
+        retreatPaths: [['step']],
       }),
     );
 
-    expect(front.engagementResolutionState.defendingUnitCanRetreat).toBe(true);
+    expect(front.engagementResolutionState.retreatPaths).toStrictEqual([
+      ['step'],
+    ]);
     expect(front.engagementResolutionState.defendingUnitRetreats).toBe(
       'pending',
     );
@@ -60,7 +62,7 @@ describe('the engagement resolution writers', () => {
 
     expect(() =>
       updateFrontEngagementResolutionState(flanked, {
-        defendingUnitCanRetreat: true,
+        retreatPaths: [['step']],
       }),
     ).toThrow('Engagement type is not front');
   });

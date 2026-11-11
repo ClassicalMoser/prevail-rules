@@ -35,7 +35,7 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     const phaseState = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: createMovementResolutionState(withBoard, {
         engagementState: createFrontEngagementState({
-          defendingUnitCanRetreat: true,
+          retreatPaths: [['step']],
           defensiveCommitment: { commitmentType: 'declined' },
         }),
         targetPlacement: defendingUnit.placement,

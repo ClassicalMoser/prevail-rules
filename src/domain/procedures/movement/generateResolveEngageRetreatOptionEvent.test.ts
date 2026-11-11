@@ -6,6 +6,7 @@ import {
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
+  createTestUnit,
   createUnitByStat,
   createUnitWithPlacement,
   placed,
@@ -35,6 +36,7 @@ function buildStateWithFrontEngagement(options: {
   engagingSpeed: number;
   engagingCardModifiers?: StatModifier[];
   defensiveCommitment?: Commitment;
+  enemyBehindDefender?: boolean;
 }): GameState {
   const state = createEmptyGameState('standard');
   state.cardState.black.inPlay = createTestCard({
@@ -55,10 +57,17 @@ function buildStateWithFrontEngagement(options: {
     engagementState.targetPlacement.coordinate,
     'south',
   );
-  const withBoard = {
-    ...state,
-    boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
-  };
+  const withDefender = addUnitToBoard(state.boardState, defenderWithPlacement);
+  // An enemy behind a south-facing defender stands on the space north of it,
+  // facing away, so it holds the way straight back without cutting off every
+  // retreat (§9.1.5).
+  const boardState = options.enemyBehindDefender
+    ? addUnitToBoard(
+        withDefender,
+        placed(createTestUnit('black', { instanceNumber: 7 }), 'D-5', 'north'),
+      )
+    : withDefender;
+  const withBoard = { ...state, boardState };
   const movement = createMovementResolutionState(withBoard, {
     engagementState,
     targetPlacement: engagementState.targetPlacement,
@@ -72,26 +81,45 @@ function buildStateWithFrontEngagement(options: {
 }
 
 /**
- * Front engagement: defendingUnitCanRetreat is true iff defender’s current speed exceeds
- * engager’s. Each player's committed card applies only to their own unit.
+ * Front engagement: the defender has retreats to make iff its current speed exceeds
+ * the engager’s and it has somewhere to go; otherwise the list is empty and it stands. Each player's committed card applies only to their own unit.
  */
 describe('generateResolveEngageRetreatOptionEvent function', () => {
-  it('given defender speed 4 and engager speed 2, defendingUnitCanRetreat is true', () => {
+  it('records the one retreat open to a faster defender with room behind it', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 4,
       engagingSpeed: 2,
     });
     const event = generateResolveEngageRetreatOptionEvent(full);
-    expect(event.defendingUnitCanRetreat).toBe(true);
+    // §9.1.3: the smallest retreat is one step straight back.
+    expect(event.retreatPaths).toStrictEqual([['step']]);
   });
 
-  it('given defender speed 2 and engager speed 4, defendingUnitCanRetreat is false', () => {
+  it('records both equally small retreats when the way straight back is held', () => {
+    const full = buildStateWithFrontEngagement({
+      defendingSpeed: 4,
+      enemyBehindDefender: true,
+      engagingSpeed: 2,
+    });
+
+    const event = generateResolveEngageRetreatOptionEvent(full);
+
+    // An enemy behind the defender blocks the step straight back; turning 45°
+    // either way and stepping back are the two smallest retreats left
+    // (§9.1.3, §9.1.4).
+    expect(event.retreatPaths).toStrictEqual([
+      ['turnLeft', 'step'],
+      ['turnRight', 'step'],
+    ]);
+  });
+
+  it('records no retreat for a defender that is not the faster', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 2,
       engagingSpeed: 4,
     });
     const event = generateResolveEngageRetreatOptionEvent(full);
-    expect(event.defendingUnitCanRetreat).toBe(false);
+    expect(event.retreatPaths).toStrictEqual([]);
   });
 
   it('given the mover committed +1 speed, does not apply that card to the defender', () => {
@@ -102,10 +130,10 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       engagingSpeed: 3,
     });
     const event = generateResolveEngageRetreatOptionEvent(full);
-    expect(event.defendingUnitCanRetreat).toBe(false);
+    expect(event.retreatPaths).toStrictEqual([]);
   });
 
-  it('given only the defender committed +1 speed, defendingUnitCanRetreat is true', () => {
+  it('counts a speed card only the defender committed, so it may retreat', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 3,
       defensiveCommitment: {
@@ -115,7 +143,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       engagingSpeed: 3,
     });
     const event = generateResolveEngageRetreatOptionEvent(full);
-    expect(event.defendingUnitCanRetreat).toBe(true);
+    expect(event.retreatPaths.length).toBeGreaterThan(0);
   });
 
   it('a speed round effect in inspiration range uses the engager hex it has not left yet', () => {
@@ -181,6 +209,6 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
 
     // Commander is on E-5. Range 0 reaches that hex and not D-5.
     // Engager 3+1 is not slower than defender 4.
-    expect(event.defendingUnitCanRetreat).toBe(false);
+    expect(event.retreatPaths).toStrictEqual([]);
   });
 });

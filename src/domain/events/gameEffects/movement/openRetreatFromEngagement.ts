@@ -1,6 +1,4 @@
-import type { MoveDelta } from '@entities';
 import type { AssertExact } from '@utils';
-import { moveDeltaSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -10,21 +8,15 @@ export const OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE =
 
 /**
  * Opens the retreat of a defender engaged from the front that has chosen to
- * fall back (§6.3.2). The retreats it may make are worked out when the event
- * is built, and recorded on it, so the log shows what was legal; applying it
- * only writes them into the engagement.
+ * fall back (§6.3.2). The retreats it may make were recorded when the
+ * engagement worked out whether the defender could retreat, so this carries
+ * nothing: applying it opens the retreat with the paths the engagement holds.
  */
 export interface OpenRetreatFromEngagementEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE;
-  /**
-   * The retreats the defender may make, each as its path (§9.1.3). Never empty:
-   * a defender with nowhere to fall back to stands, and no retreat opens
-   * (§6.3.2, §9.1.5).
-   */
-  retreatPaths: MoveDelta[][];
 }
 
 const _openRetreatFromEngagementEventSchemaObject = z
@@ -33,8 +25,6 @@ const _openRetreatFromEngagementEventSchemaObject = z
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE),
-    /** The retreats the defender may make, each as its path. */
-    retreatPaths: z.array(z.array(moveDeltaSchema)),
   })
   .strict();
 
@@ -51,5 +41,4 @@ const _assertExactOpenRetreatFromEngagementEvent: AssertExact<
 export const openRetreatFromEngagementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'openRetreatFromEngagement'>;
-  retreatPaths: z.ZodArray<z.ZodArray<typeof moveDeltaSchema>>;
 }> = _openRetreatFromEngagementEventSchemaObject;
