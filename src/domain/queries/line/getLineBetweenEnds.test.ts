@@ -74,4 +74,19 @@ describe('getLineBetweenEnds function', () => {
       ),
     ).toThrow('The two ends of the line do not stand on one unbroken rank');
   });
+
+  it('throws that the first end is not on the board, when it is not', () => {
+    // A unit that was never placed cannot begin a line, and the message says
+    // so rather than blaming the rank.
+    const offBoard = createTestUnit('black', { attack: 3, instanceNumber: 9 });
+
+    expect(() =>
+      getLineBetweenEnds(
+        board,
+        [offBoard, unitAt('E-1').unit],
+        unrestricted,
+        [],
+      ),
+    ).toThrow('Unit not found on board');
+  });
 });
