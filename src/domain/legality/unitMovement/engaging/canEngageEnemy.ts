@@ -1,7 +1,7 @@
 import type { Board, Coordinate, PlayerSide } from '@entities';
 import {
   getBoardSpace,
-  getNeighbourSide,
+  findNeighbourSide,
   getSpacesBehind,
   hasSingleUnit,
   isFriendlyUnit,
@@ -42,7 +42,7 @@ export function canEngageEnemy(
 
   // Which of the defender's spaces the step left decides whether this
   // engagement is legal (§6.2).
-  const approach = getNeighbourSide(
+  const approach = findNeighbourSide(
     board,
     destinationCoordinate,
     destinationSpace.unitPresence.facing,

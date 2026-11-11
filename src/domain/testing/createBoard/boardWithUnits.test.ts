@@ -1,4 +1,4 @@
-import { getPlayerUnitWithPosition } from '@queries';
+import { findPlayerUnitWithPosition } from '@queries';
 import { placed } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
@@ -16,8 +16,8 @@ describe('createBoardWithUnits function', () => {
       placed(unit2, 'E-6', 'south'),
     ]);
     expect(board.boardType).toBe('standard');
-    const atE5 = getPlayerUnitWithPosition(board, 'E-5', 'black');
-    const atE6 = getPlayerUnitWithPosition(board, 'E-6', 'white');
+    const atE5 = findPlayerUnitWithPosition(board, 'E-5', 'black');
+    const atE6 = findPlayerUnitWithPosition(board, 'E-6', 'white');
     expect(atE5?.unit).toBe(unit1);
     expect(atE6?.unit).toBe(unit2);
   });

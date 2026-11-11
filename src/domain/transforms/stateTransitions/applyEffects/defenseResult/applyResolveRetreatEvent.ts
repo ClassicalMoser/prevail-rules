@@ -4,7 +4,7 @@ import {
   getBoardSpace,
   getFrontEngagementStateFromMovement,
   findRetreatLocation,
-  getPlacementAfterPath,
+  findPlacementAfterPath,
 } from '@queries';
 import {
   moveCommanderOnBoard,
@@ -32,7 +32,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
 ): S {
   // Where the unit ends is wherever its retreat path leads from where it
   // stood, read by geometry: the path was judged when it was offered.
-  const landing = getPlacementAfterPath(
+  const landing = findPlacementAfterPath(
     state.boardState,
     event.startingPosition.placement,
     event.path,

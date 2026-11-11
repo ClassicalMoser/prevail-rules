@@ -1,5 +1,5 @@
 import {
-  getPlayerUnitWithPosition,
+  findPlayerUnitWithPosition,
   getSingleUnitWithPlacementAtCoordinate,
 } from '@queries';
 import { throwIfUndefined } from '@utils';
@@ -57,7 +57,7 @@ describe('getLegalRetreats function', () => {
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
-        getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
+        findPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
       );
 
@@ -110,7 +110,7 @@ describe('getLegalRetreats function', () => {
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
-        getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
+        findPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
       );
       const retreats = getLegalRetreats(unit, gameState);
@@ -141,7 +141,7 @@ describe('getLegalRetreats function', () => {
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
-        getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
+        findPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
       );
       const retreats = getLegalRetreats(unit, gameState);
@@ -172,7 +172,7 @@ describe('getLegalRetreats function', () => {
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
-        getPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
+        findPlayerUnitWithPosition(gameState.boardState, 'G-8', 'black'),
         'Unit not found',
       );
       const retreats = getLegalRetreats(unit, gameState);

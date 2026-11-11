@@ -29,7 +29,7 @@ import { hasSingleUnit } from './hasSingleUnit';
  * @example
  * ```typescript
  * // Find friendly unit at a position
- * const unit = getPlayerUnitWithPosition(board, "E-5", "black");
+ * const unit = findPlayerUnitWithPosition(board, "E-5", "black");
  * if (unit) {
  *   console.log(`Found ${unit.unit.unitType.name} at ${unit.placement.coordinate}`);
  * }
@@ -38,11 +38,11 @@ import { hasSingleUnit } from './hasSingleUnit';
  * @example
  * ```typescript
  * // Handle engaged units
- * const unit = getPlayerUnitWithPosition(board, "E-5", "black");
+ * const unit = findPlayerUnitWithPosition(board, "E-5", "black");
  * // If black unit is secondary in engagement, facing will be opposite primary
  * ```
  */
-export function getPlayerUnitWithPosition(
+export function findPlayerUnitWithPosition(
   board: Board,
   coordinate: Coordinate,
   playerSide: PlayerSide,

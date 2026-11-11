@@ -4,11 +4,11 @@ import {
   getAdjacentSpaces,
   getBoardSpace,
   getDiagonallyAdjacentSpaces,
-  getNeighbourSide,
+  findNeighbourSide,
   getSpacesBehind,
 } from '@queries/board';
 import {
-  getPlayerUnitWithPosition,
+  findPlayerUnitWithPosition,
   hasEngagedUnits,
   hasNoUnit,
 } from '@queries/unitPresence';
@@ -56,7 +56,7 @@ export function getMeleeSupportValue(
     }
 
     // Otherwise, get the friendly unit at the space
-    const friendlyUnit = getPlayerUnitWithPosition(board, space, playerSide);
+    const friendlyUnit = findPlayerUnitWithPosition(board, space, playerSide);
     if (friendlyUnit === undefined) {
       // Unit is not friendly and so cannot support, skip
       continue;
@@ -87,7 +87,7 @@ export function getMeleeSupportValue(
   // its front spaces, looking at it, +2; in its flanking spaces, off to a
   // side, +1; behind it, looking away, nothing.
   for (const potentialSupportUnit of potentialSupportUnits) {
-    const side = getNeighbourSide(
+    const side = findNeighbourSide(
       board,
       potentialSupportUnit.placement.coordinate,
       potentialSupportUnit.placement.facing,

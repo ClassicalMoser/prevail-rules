@@ -14,7 +14,7 @@ Failure modes are per function. Do not assume every getter throws, or that every
 
 - `board/` — a space, its neighbors, front / flank / rear, areas, one step forward or back (`getBoardSpace`, `getAdjacentSpaces`, `getFrontSpaces`, `getFlankingSpaces`, `getBackSpaces`, `getSpacesAhead`, `getSpacesBehind`, `findForwardSpace`, `findRearwardSpace`)
 - `facings/` — opposite, left, right, adjacent, orthogonal
-- `unit/` and `unitPresence/` — a unit's stats, friendliness, and position (`getPlayerUnitWithPosition`)
+- `unit/` and `unitPresence/` — a unit's stats, friendliness, and position (`findPlayerUnitWithPosition`)
 - `unitLocation/` — whether two placements, or two units with their placements, are the same (`isSamePlacement`, `isSameUnitWithPlacement`)
 - `line/` — who may stand in a line (`canJoinLine`) and the unbroken rank through a unit (`getLineSegmentContainingUnit`)
 - `sequencing/` — the phase, step, and substep currently in progress

@@ -1,5 +1,5 @@
 import type { AuthoritativeGameState } from '@game';
-import { getPlayerUnitWithPosition } from '@queries';
+import { findPlayerUnitWithPosition } from '@queries';
 import {
   applyEffectsUntilChoice,
   createMeleeResolutionState,
@@ -70,8 +70,8 @@ function meleeResolvedWith(
     }),
   );
 
-  const black = getPlayerUnitWithPosition(melee.boardState, 'E-5', 'black');
-  const white = getPlayerUnitWithPosition(melee.boardState, 'E-5', 'white');
+  const black = findPlayerUnitWithPosition(melee.boardState, 'E-5', 'black');
+  const white = findPlayerUnitWithPosition(melee.boardState, 'E-5', 'white');
   if (black === undefined || white === undefined) {
     throw new Error('Both units should stand on E-5');
   }
@@ -110,10 +110,10 @@ describe('a melee carried out a stage at a time', () => {
     });
 
     // Black fell back one space, still facing the way it did.
-    const black = getPlayerUnitWithPosition(state.boardState, 'F-5', 'black');
+    const black = findPlayerUnitWithPosition(state.boardState, 'F-5', 'black');
     expect(black?.placement.facing).toBe('north');
     // White is no longer engaged, so it turns about where it stood (§7.5.5).
-    const white = getPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
+    const white = findPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
     expect(white?.placement.facing).toBe('north');
   });
 
@@ -126,8 +126,8 @@ describe('a melee carried out a stage at a time', () => {
       whiteReversed: true,
     });
 
-    const black = getPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
-    const white = getPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
+    const black = findPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
+    const white = findPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
     expect(black?.placement.facing).toBe('north');
     expect(white?.placement.facing).toBe('south');
   });
@@ -158,7 +158,7 @@ describe('a melee carried out a stage at a time', () => {
     expect(next).toBe('gameOver');
     expect(state.winner).toBe('black');
     // Black's unit was never routed: its turn never came.
-    const black = getPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
+    const black = findPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
     expect(black?.unit.playerSide).toBe('black');
   });
 
@@ -180,7 +180,7 @@ describe('a melee carried out a stage at a time', () => {
       playerSource: 'white',
     });
     // Black's unit has not fallen back yet: its retreat comes after white's.
-    const black = getPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
+    const black = findPlayerUnitWithPosition(state.boardState, 'E-5', 'black');
     expect(black?.unit.playerSide).toBe('black');
   });
 
@@ -195,7 +195,7 @@ describe('a melee carried out a stage at a time', () => {
     );
 
     // White's unit falls back first, out of E-5.
-    const white = getPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
+    const white = findPlayerUnitWithPosition(state.boardState, 'E-5', 'white');
     expect(white).toBeUndefined();
     // Black's retreat comes second, and it cannot make it, so black's unit
     // routs in its place and black is the one asked for Morale (§7.5.6) —

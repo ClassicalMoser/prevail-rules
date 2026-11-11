@@ -16,7 +16,7 @@ import { getFrontSpaces } from './getFrontSpaces';
  * @param neighbour - The space being asked about
  * @returns `'front'`, `'flank'` or `'back'`, or `undefined` when the space is not next to the unit
  */
-export function getNeighbourSide(
+export function findNeighbourSide(
   board: Board,
   coordinate: Coordinate,
   facing: UnitFacing,

@@ -1,7 +1,7 @@
 import type { Restrictions, UnitInstance } from '@entities';
 import type { GameState } from '@game';
 import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance';
-import { getCommanderSpace } from '../board/getCommanderSpace';
+import { findCommanderSpace } from '../board/findCommanderSpace';
 import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 
 /**
@@ -29,7 +29,7 @@ export function unitMatchesInspirationRange(
   if (inspirationRangeRestriction < 0) {
     return true;
   }
-  const commanderSpace = getCommanderSpace(
+  const commanderSpace = findCommanderSpace(
     unit.playerSide,
     gameState.boardState,
   );

@@ -16,7 +16,7 @@ import { getTurnedFacing } from '../facings/getTurnedFacing';
  * @param direction - Whether a step goes ahead (advance) or behind (retreat)
  * @returns The placement after the last step or turn; `undefined` if a step would leave the board
  */
-export function getPlacementAfterPath(
+export function findPlacementAfterPath(
   board: Board,
   start: UnitPlacement,
   path: readonly MoveDelta[],

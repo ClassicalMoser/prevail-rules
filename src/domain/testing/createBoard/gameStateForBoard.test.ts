@@ -1,4 +1,4 @@
-import { getPlayerUnitWithPosition } from '@queries';
+import { findPlayerUnitWithPosition } from '@queries';
 import { placed } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
@@ -16,7 +16,7 @@ describe('createGameStateWithSingleUnit function', () => {
     const state = createGameStateWithSingleUnit('E-5', 'black');
     expect(state.boardState.boardType).toBe('standard');
     expect(
-      getPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),
+      findPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),
     ).toBeDefined();
   });
 });
@@ -41,10 +41,10 @@ describe('createGameStateWithUnits function', () => {
       placed(unit2, 'E-6', 'south'),
     ]);
     expect(
-      getPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),
+      findPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),
     ).toBeDefined();
     expect(
-      getPlayerUnitWithPosition(state.boardState, 'E-6', 'white'),
+      findPlayerUnitWithPosition(state.boardState, 'E-6', 'white'),
     ).toBeDefined();
   });
 });

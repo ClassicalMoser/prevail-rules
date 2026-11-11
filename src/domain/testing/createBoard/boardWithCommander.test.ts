@@ -1,4 +1,4 @@
-import { getPlayerUnitWithPosition } from '@queries';
+import { findPlayerUnitWithPosition } from '@queries';
 import { createBoardWithCommander } from './boardWithCommander';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 
@@ -15,6 +15,6 @@ describe('createBoardWithCommander function', () => {
     const base = createBoardWithSingleUnit('E-6', 'black');
     const board = createBoardWithCommander('white', 'E-5', base);
     expect(board.board['E-5']?.commanders).toStrictEqual(['white']);
-    expect(getPlayerUnitWithPosition(board, 'E-6', 'black')).toBeDefined();
+    expect(findPlayerUnitWithPosition(board, 'E-6', 'black')).toBeDefined();
   });
 });

@@ -1,6 +1,6 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { ValidationResult } from '@utils';
-import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
+import { findPlayerUnitWithPosition } from './findPlayerUnitWithPosition';
 import { isSameUnitInstance } from '../unit/unitEquivalence';
 
 /**
@@ -20,7 +20,7 @@ export function isAtPlacement(
   const friendlySide = unitWithPlacement.unit.playerSide;
 
   // Get the friendly unit at the coordinate
-  const friendlyUnitWithPlacement = getPlayerUnitWithPosition(
+  const friendlyUnitWithPlacement = findPlayerUnitWithPosition(
     board,
     boardCoordinate,
     friendlySide,

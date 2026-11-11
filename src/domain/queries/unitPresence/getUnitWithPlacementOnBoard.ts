@@ -1,5 +1,5 @@
 import type { Board, UnitInstance, UnitWithPlacement } from '@entities';
-import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
+import { findPlayerUnitWithPosition } from './findPlayerUnitWithPosition';
 import { getPositionOfUnit } from './getPositionOfUnit';
 
 /**
@@ -21,7 +21,7 @@ export function getUnitWithPlacementOnBoard(
   const placement = getPositionOfUnit(board, unit);
 
   // The unit held in that space, which is the board's copy and not the name's.
-  const held = getPlayerUnitWithPosition(
+  const held = findPlayerUnitWithPosition(
     board,
     placement.coordinate,
     unit.playerSide,

@@ -5,7 +5,7 @@ export { hasEngagedUnits } from './hasEngagedUnits';
 
 export { hasEnemyUnit } from './hasEnemyUnit';
 export { isAtPlacement } from './isAtPlacement';
-export { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
+export { findPlayerUnitWithPosition } from './findPlayerUnitWithPosition';
 export { findPositionOfUnit } from './findPositionOfUnit';
 export { getPositionOfUnit } from './getPositionOfUnit';
 export { getUnitWithPlacementOnBoard } from './getUnitWithPlacementOnBoard';

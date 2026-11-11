@@ -9,7 +9,7 @@ import { getBoardSpace } from './getBoardSpace';
  * @param board - The board to search
  * @returns The board coordinate containing the commander, or undefined if not found
  */
-export function getCommanderSpace(
+export function findCommanderSpace(
   side: PlayerSide,
   board: Board,
 ): Coordinate | undefined {

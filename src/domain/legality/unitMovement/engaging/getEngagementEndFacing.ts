@@ -1,7 +1,7 @@
 import type { Board, Coordinate, MoveTurn, UnitFacing } from '@entities';
 import {
   getBoardSpace,
-  getNeighbourSide,
+  findNeighbourSide,
   getOppositeFacing,
   findStepFacing,
   getTurnedFacing,
@@ -49,7 +49,7 @@ export function getEngagementEndFacing(
 
   // Which of the defender's spaces the step left decides the manner of the
   // engagement (§6.2). Only a front approach forces the facing.
-  const approach = getNeighbourSide(
+  const approach = findNeighbourSide(
     board,
     defenderCoordinate,
     defenderFacing,

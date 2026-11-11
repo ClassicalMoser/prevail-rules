@@ -471,7 +471,7 @@ export {
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   unitMatchesSupport,
-  getPlayerUnitWithPosition,
+  findPlayerUnitWithPosition,
   hasEngagedUnits,
   hasNoUnit,
   hasSingleUnit,

@@ -8,18 +8,18 @@ import {
 } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 
-import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
+import { findPlayerUnitWithPosition } from './findPlayerUnitWithPosition';
 
 /**
  * GetPlayerUnitWithPosition: unit + placement at a coordinate for a player (single or engaged slot).
  */
-describe('getPlayerUnitWithPosition function', () => {
+describe('findPlayerUnitWithPosition function', () => {
   const coordinate: Coordinate = 'E-5';
 
   describe('empty space', () => {
     it('returns undefined for an empty space', () => {
       const board = createEmptyStandardBoard();
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeUndefined();
     });
@@ -30,7 +30,7 @@ describe('getPlayerUnitWithPosition function', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeDefined();
       expect(result?.unit).toBe(unit);
@@ -44,7 +44,7 @@ describe('getPlayerUnitWithPosition function', () => {
         placed(enemyUnit, coordinate, 'north'),
       ]);
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeUndefined();
     });
@@ -65,7 +65,7 @@ describe('getPlayerUnitWithPosition function', () => {
         const unit = createTestUnit('black', { attack: 3 });
         const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
 
-        const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+        const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
         expect(result).toBeDefined();
         expect(result?.placement.facing).toBe(facing);
@@ -79,7 +79,7 @@ describe('getPlayerUnitWithPosition function', () => {
         placed(unit, testCoordinate, 'north'),
       ]);
 
-      const result = getPlayerUnitWithPosition(board, testCoordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, testCoordinate, 'black');
 
       expect(result).toBeDefined();
       expect(result?.placement.coordinate).toBe(testCoordinate);
@@ -97,7 +97,7 @@ describe('getPlayerUnitWithPosition function', () => {
         'north',
       );
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeDefined();
       expect(result?.unit).toBe(primaryUnit);
@@ -115,7 +115,7 @@ describe('getPlayerUnitWithPosition function', () => {
         'north',
       );
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeDefined();
       expect(result?.unit).toBe(secondaryUnit);
@@ -134,7 +134,7 @@ describe('getPlayerUnitWithPosition function', () => {
         primaryFacing,
       );
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeDefined();
       expect(result?.unit).toBe(secondaryUnit);
@@ -163,7 +163,7 @@ describe('getPlayerUnitWithPosition function', () => {
           primaryFacing,
         );
 
-        const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+        const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
         expect(result).toBeDefined();
         expect(result?.unit).toBe(secondaryUnit);
@@ -181,7 +181,7 @@ describe('getPlayerUnitWithPosition function', () => {
         placed(blackUnit, coordinate, 'north'),
       ]);
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeDefined();
       expect(result?.unit.playerSide).toBe('black');
@@ -193,7 +193,7 @@ describe('getPlayerUnitWithPosition function', () => {
         placed(whiteUnit, coordinate, 'north'),
       ]);
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'white');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'white');
 
       expect(result).toBeDefined();
       expect(result?.unit.playerSide).toBe('white');
@@ -205,7 +205,7 @@ describe('getPlayerUnitWithPosition function', () => {
         placed(whiteUnit, coordinate, 'north'),
       ]);
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'black');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'black');
 
       expect(result).toBeUndefined();
     });
@@ -216,7 +216,7 @@ describe('getPlayerUnitWithPosition function', () => {
         placed(blackUnit, coordinate, 'north'),
       ]);
 
-      const result = getPlayerUnitWithPosition(board, coordinate, 'white');
+      const result = findPlayerUnitWithPosition(board, coordinate, 'white');
 
       expect(result).toBeUndefined();
     });
@@ -230,7 +230,7 @@ describe('getPlayerUnitWithPosition function', () => {
         const unit = createTestUnit('black', { attack: 3 });
         const board = createBoardWithUnits([placed(unit, coord, 'north')]);
 
-        const result = getPlayerUnitWithPosition(board, coord, 'black');
+        const result = findPlayerUnitWithPosition(board, coord, 'black');
 
         expect(result).toBeDefined();
         expect(result?.placement.coordinate).toBe(coord);
@@ -241,7 +241,7 @@ describe('getPlayerUnitWithPosition function', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
 
-      const result = getPlayerUnitWithPosition(board, 'A-1', 'black');
+      const result = findPlayerUnitWithPosition(board, 'A-1', 'black');
 
       expect(result).toBeUndefined();
     });
@@ -249,7 +249,7 @@ describe('getPlayerUnitWithPosition function', () => {
     it('throws when space is invalid', () => {
       const board = createEmptyStandardBoard();
       expect(() =>
-        getPlayerUnitWithPosition(board, 'invalid' as Coordinate, 'black'),
+        findPlayerUnitWithPosition(board, 'invalid' as Coordinate, 'black'),
       ).toThrow(
         new Error('Coordinate invalid does not exist on standard board.'),
       );

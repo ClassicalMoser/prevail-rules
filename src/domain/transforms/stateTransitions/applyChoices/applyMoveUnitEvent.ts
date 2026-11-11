@@ -3,7 +3,7 @@ import type { GameState, MovementResolutionState } from '@game';
 import {
   getBoardSpace,
   getMovementResolutionState,
-  getPlacementAfterPath,
+  findPlacementAfterPath,
   hasEnemyUnit,
 } from '@queries';
 import {
@@ -32,7 +32,7 @@ export function applyMoveUnitEvent<S extends GameState>(
 
   // The destination is wherever the validated path leads, read by
   // geometry rather than judged again.
-  const destination = getPlacementAfterPath(
+  const destination = findPlacementAfterPath(
     state.boardState,
     mover.placement,
     event.path,

@@ -6,4 +6,4 @@ export { isSamePlacement } from './isSamePlacement';
 export { isSameUnitWithPlacement } from './isSameUnitWithPlacement';
 
 // Where a path of steps and turns leaves a unit, by geometry alone.
-export { getPlacementAfterPath } from './getPlacementAfterPath';
+export { findPlacementAfterPath } from './findPlacementAfterPath';

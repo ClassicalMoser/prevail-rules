@@ -1,4 +1,4 @@
-import { getPlayerUnitWithPosition } from '@queries';
+import { findPlayerUnitWithPosition } from '@queries';
 import { createBoard, createGameState } from './createGameStateFromSpec';
 
 /**
@@ -11,12 +11,12 @@ describe('createGameState function', () => {
       ['E-6', 'white'],
     ]);
     expect(gameState.boardState.boardType).toBe('standard');
-    const blackUnit = getPlayerUnitWithPosition(
+    const blackUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const whiteUnit = getPlayerUnitWithPosition(
+    const whiteUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
@@ -32,12 +32,12 @@ describe('createGameState function', () => {
       ['E-5', 'black', 'north'],
       ['E-6', 'white', 'south'],
     ]);
-    const blackUnit = getPlayerUnitWithPosition(
+    const blackUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const whiteUnit = getPlayerUnitWithPosition(
+    const whiteUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
@@ -51,12 +51,12 @@ describe('createGameState function', () => {
       { coord: 'E-5', player: 'black' },
       { coord: 'E-6', facing: 'east', player: 'white' },
     ]);
-    const blackUnit = getPlayerUnitWithPosition(
+    const blackUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const whiteUnit = getPlayerUnitWithPosition(
+    const whiteUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
@@ -70,12 +70,12 @@ describe('createGameState function', () => {
       { attack: 3, coord: 'E-5', flexibility: 1, player: 'black' },
       { attack: 4, coord: 'E-6', player: 'white' },
     ]);
-    const blackUnit = getPlayerUnitWithPosition(
+    const blackUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const whiteUnit = getPlayerUnitWithPosition(
+    const whiteUnit = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
@@ -90,17 +90,17 @@ describe('createGameState function', () => {
       ['E-6', 'black'],
       ['E-7', 'black'],
     ]);
-    const unit1 = getPlayerUnitWithPosition(
+    const unit1 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const unit2 = getPlayerUnitWithPosition(
+    const unit2 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'black',
     );
-    const unit3 = getPlayerUnitWithPosition(
+    const unit3 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-7',
       'black',
@@ -115,12 +115,12 @@ describe('createGameState function', () => {
       { coord: 'E-5', instanceNumber: 5, player: 'black' },
       { coord: 'E-6', instanceNumber: 10, player: 'black' },
     ]);
-    const unit1 = getPlayerUnitWithPosition(
+    const unit1 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const unit2 = getPlayerUnitWithPosition(
+    const unit2 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'black',
@@ -134,12 +134,12 @@ describe('createGameState function', () => {
       { coord: 'E-5', instanceNumber: 1, player: 'black' },
       { coord: 'E-6', instanceNumber: 1, player: 'white' },
     ]);
-    const unit1 = getPlayerUnitWithPosition(
+    const unit1 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const unit2 = getPlayerUnitWithPosition(
+    const unit2 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
@@ -155,22 +155,22 @@ describe('createGameState function', () => {
       ['E-7', 'black'],
       ['E-8', 'white'],
     ]);
-    const unit1 = getPlayerUnitWithPosition(
+    const unit1 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const unit2 = getPlayerUnitWithPosition(
+    const unit2 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
     );
-    const unit3 = getPlayerUnitWithPosition(
+    const unit3 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-7',
       'black',
     );
-    const unit4 = getPlayerUnitWithPosition(
+    const unit4 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-8',
       'white',
@@ -198,17 +198,17 @@ describe('createGameState function', () => {
       { coord: 'E-6', facing: 'east', player: 'white' },
       ['E-7', 'black', 'south'],
     ]);
-    const unit1 = getPlayerUnitWithPosition(
+    const unit1 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-5',
       'black',
     );
-    const unit2 = getPlayerUnitWithPosition(
+    const unit2 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-6',
       'white',
     );
-    const unit3 = getPlayerUnitWithPosition(
+    const unit3 = findPlayerUnitWithPosition(
       gameState.boardState,
       'E-7',
       'black',
@@ -226,8 +226,8 @@ describe('createBoard function', () => {
       ['E-6', 'white'],
     ]);
     expect(board.boardType).toBe('standard');
-    const blackUnit = getPlayerUnitWithPosition(board, 'E-5', 'black');
-    const whiteUnit = getPlayerUnitWithPosition(board, 'E-6', 'white');
+    const blackUnit = findPlayerUnitWithPosition(board, 'E-5', 'black');
+    const whiteUnit = findPlayerUnitWithPosition(board, 'E-6', 'white');
     expect(blackUnit).toBeDefined();
     expect(whiteUnit).toBeDefined();
   });
@@ -237,8 +237,8 @@ describe('createBoard function', () => {
       { attack: 3, coord: 'E-5', player: 'black' },
       { coord: 'E-6', flexibility: 2, player: 'white' },
     ]);
-    const blackUnit = getPlayerUnitWithPosition(board, 'E-5', 'black');
-    const whiteUnit = getPlayerUnitWithPosition(board, 'E-6', 'white');
+    const blackUnit = findPlayerUnitWithPosition(board, 'E-5', 'black');
+    const whiteUnit = findPlayerUnitWithPosition(board, 'E-6', 'white');
     expect(blackUnit).toBeDefined();
     expect(whiteUnit).toBeDefined();
   });

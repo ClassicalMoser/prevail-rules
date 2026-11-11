@@ -10,7 +10,7 @@ import type {
 import { getBoardSpace } from '@queries/board';
 import { hasUnitInArray, unitTypeMatchesRestrictions } from '@queries/unit';
 import {
-  getPlayerUnitWithPosition,
+  findPlayerUnitWithPosition,
   hasEngagedUnits,
 } from '@queries/unitPresence';
 
@@ -46,7 +46,11 @@ export function canJoinLine(
   restrictions: Restrictions,
   commandedUnits: readonly UnitInstance[],
 ): UnitWithPlacement | undefined {
-  const playerUnit = getPlayerUnitWithPosition(board, coordinate, friendlySide);
+  const playerUnit = findPlayerUnitWithPosition(
+    board,
+    coordinate,
+    friendlySide,
+  );
   // No friendly unit: empty space or enemy.
   if (playerUnit === undefined) {
     return undefined;

@@ -45,7 +45,7 @@ import type {
   MoveResult,
 } from '@legality';
 import {
-  getCommanderSpace,
+  findCommanderSpace,
   getMovementResolutionState,
   modifiersFromCompletedCommitment,
 } from '@queries';
@@ -352,7 +352,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // The first player moves their commander, then the second (§4.2.1); offer
       // where this commander may go, or nothing if it is not on the board.
       const startingCoordinate =
-        getCommanderSpace(player, state.boardState) ?? null;
+        findCommanderSpace(player, state.boardState) ?? null;
       if (startingCoordinate === null) {
         return {
           ...base,

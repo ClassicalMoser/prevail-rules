@@ -17,7 +17,7 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { getPlayerUnitWithPosition } from '@queries/unitPresence';
+import { findPlayerUnitWithPosition } from '@queries/unitPresence';
 
 import { getMeleeSupportValue } from './getMeleeSupportValue';
 
@@ -25,7 +25,7 @@ function supportAt(
   board: ReturnType<typeof createBoardWithUnits>,
   coordinate: 'E-5' | 'A-1',
 ): number {
-  const unit = getPlayerUnitWithPosition(board, coordinate, 'black');
+  const unit = findPlayerUnitWithPosition(board, coordinate, 'black');
   if (!unit) {
     throw new Error(`Expected a black unit at ${coordinate}`);
   }

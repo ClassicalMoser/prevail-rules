@@ -7,7 +7,7 @@ export {
   getFrontSpaces,
   getFlankingSpaces,
   getBackSpaces,
-  getNeighbourSide,
+  findNeighbourSide,
 } from './adjacency';
 
 // Regions: inline, half-plane, ahead, behind, arc, within distance.
@@ -42,7 +42,7 @@ export { getBoardSpace } from './getBoardSpace';
 export { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlacementAtCoordinate';
 
 // Space occupied by a side's commander.
-export { getCommanderSpace } from './getCommanderSpace';
+export { findCommanderSpace } from './findCommanderSpace';
 
 // Whether the diagonal between two spaces is free of enemy units.
 export { diagonalIsClear } from './diagonalIsClear';

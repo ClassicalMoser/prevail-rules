@@ -5,7 +5,7 @@ import {
   applyAttackValue,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeSupportValue,
-  getPlayerUnitWithPosition,
+  findPlayerUnitWithPosition,
   getRawUnitStat,
   hasInitiative,
   modifiersFromCompletedCommitment,
@@ -31,12 +31,12 @@ export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   const meleeCoordinate = meleeState.location;
 
-  const whiteUnit = getPlayerUnitWithPosition(
+  const whiteUnit = findPlayerUnitWithPosition(
     state.boardState,
     meleeCoordinate,
     'white',
   );
-  const blackUnit = getPlayerUnitWithPosition(
+  const blackUnit = findPlayerUnitWithPosition(
     state.boardState,
     meleeCoordinate,
     'black',

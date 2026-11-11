@@ -95,7 +95,7 @@ Walk folders in IDE order (alphabetical).
 
 - [ ] `queries/` — scout (adversarial review) 2026-11-08; marks in place, awaiting human read
   - [ ] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
-  - [ ] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
+  - [ ] `board/` — spaces, `diagonalIsClear`, `findCommanderSpace`
     - [ ] `adjacency/`
     - [ ] `areas/`
     - [ ] `steps/` — forward, forward to the edge, rearward

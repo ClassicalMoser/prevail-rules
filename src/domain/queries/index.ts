@@ -6,11 +6,11 @@ export {
   diagonalIsClear,
   getAdjacentSpaces,
   getBackSpaces,
-  getNeighbourSide,
+  findNeighbourSide,
   getBoardCoordinates,
   getBoardCoordinatesWithEngagedUnits,
   getBoardSpace,
-  getCommanderSpace,
+  findCommanderSpace,
   getDiagonallyAdjacentSpaces,
   getFlankingSpaces,
   findForwardSpace,
@@ -184,7 +184,7 @@ export {
 // Whether two placements, or two units with their placements, are the same;
 // and where a path of steps and turns leaves a unit.
 export {
-  getPlacementAfterPath,
+  findPlacementAfterPath,
   isSameMovePath,
   isSamePlacement,
   isSameUnitWithPlacement,
@@ -193,7 +193,7 @@ export {
 // What stands on a space, where a unit is standing, and whether an enemy
 // occupies the space.
 export {
-  getPlayerUnitWithPosition,
+  findPlayerUnitWithPosition,
   findPositionOfUnit,
   getPositionOfUnit,
   getUnitWithPlacementOnBoard,

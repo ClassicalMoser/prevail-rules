@@ -17,4 +17,4 @@ export { getFlankingSpaces } from './getFlankingSpaces';
 export { getBackSpaces } from './getBackSpaces';
 
 // Which of those three sides a given neighbour lies on.
-export { getNeighbourSide } from './getNeighbourSide';
+export { findNeighbourSide } from './findNeighbourSide';
