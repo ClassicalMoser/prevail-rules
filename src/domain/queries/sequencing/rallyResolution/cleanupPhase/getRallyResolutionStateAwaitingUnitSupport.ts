@@ -1,5 +1,6 @@
 import type { GameState, RallyResolutionState } from '@game';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
+import { isAwaitingUnitSupport } from './isAwaitingUnitSupport';
 
 /**
  * Rally resolution state for the current resolve-rally step after the rally burn effect has been
@@ -18,11 +19,12 @@ export function getRallyResolutionStateAwaitingUnitSupport(
 ): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
   // Support is assigned only after the burn, and only while the list is still pending.
-  if (!rallyState.rallyResolved) {
-    throw new Error('Rally has not been resolved yet');
-  }
-  if (rallyState.unitsLostSupport !== 'pending') {
-    throw new Error('Units lost support already resolved');
+  if (!isAwaitingUnitSupport(rallyState)) {
+    throw new Error(
+      rallyState.rallyResolved
+        ? 'Units lost support already resolved'
+        : 'Rally has not been resolved yet',
+    );
   }
   return rallyState;
 }

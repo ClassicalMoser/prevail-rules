@@ -4,6 +4,9 @@ export { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
 // That rally after the player chose to rally, before the burn.
 export { getRallyResolutionStateAwaitingBurn } from './getRallyResolutionStateAwaitingBurn';
 
+// Whether a rally is at the point where its player assigns unit support.
+export { isAwaitingUnitSupport } from './isAwaitingUnitSupport';
+
 // That rally after the burn, before support is assigned.
 export { getRallyResolutionStateAwaitingUnitSupport } from './getRallyResolutionStateAwaitingUnitSupport';
 

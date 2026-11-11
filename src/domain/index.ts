@@ -520,6 +520,7 @@ export {
   getRallyResolutionState,
   getRallyResolutionStateAwaitingBurn,
   getRallyResolutionStateAwaitingUnitSupport,
+  isAwaitingUnitSupport,
   getRallyResolutionStateForCurrentStep,
   getRangedAttackResolutionState,
   getRearEngagementStateFromMovement,

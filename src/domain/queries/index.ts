@@ -112,6 +112,7 @@ export {
   getRallyResolutionStateAwaitingUnitSupport,
   getIsFirstPlayerForResolveRallyStep,
   getRallyingPlayer,
+  isAwaitingUnitSupport,
   getNextStepForResolveRally,
   isOpenSubstep,
   getRangedAttackApplyState,

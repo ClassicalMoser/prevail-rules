@@ -1,12 +1,12 @@
 import type { PlayerSide, UnitInstance, UnitSupport } from '@entities';
 import type { GameState } from '@game';
 import {
-  getCleanupPhaseState,
   findOwnedPlayerCardState,
+  getCurrentRallyResolutionState,
   getPlayerUnitsOnBoard,
-  getRallyResolutionStateAwaitingUnitSupport,
-  unitMatchesSupport,
   getRallyingPlayer,
+  isAwaitingUnitSupport,
+  unitMatchesSupport,
 } from '@queries';
 
 import { combineSupportCategoriesFromHand } from './combineSupportCategoriesFromHand';
@@ -43,10 +43,9 @@ export interface LegalAssignUnitSupport {
 export function getLegalAssignUnitSupport<S extends GameState>(
   gameState: S,
 ): LegalAssignUnitSupport | null {
-  let phaseState;
-  try {
-    phaseState = getCleanupPhaseState(gameState);
-  } catch {
+  // Support is assigned in cleanup, after a rally has been resolved.
+  const phaseState = gameState.currentRoundState.currentPhaseState;
+  if (phaseState === 'none' || phaseState.phase !== 'cleanup') {
     return null;
   }
 
@@ -57,13 +56,12 @@ export function getLegalAssignUnitSupport<S extends GameState>(
     return null;
   }
 
-  const player = getRallyingPlayer(gameState);
-
-  try {
-    getRallyResolutionStateAwaitingUnitSupport(gameState, player);
-  } catch {
+  // Not yet burnt, or already assigned: nothing is due.
+  if (!isAwaitingUnitSupport(getCurrentRallyResolutionState(gameState))) {
     return null;
   }
+
+  const player = getRallyingPlayer(gameState);
 
   // Only the rallying player's seat can see the support cards in its hand.
   const owned = findOwnedPlayerCardState(gameState.cardState, player);
