@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
-import { meleeModifierTypes } from '@events';
+import { MELEE_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToMeleeEvent } from '@factories';
 import {
   findMeleeResolutionState,
@@ -54,7 +54,7 @@ export function getLegalCommitToMeleeEvents<S extends GameState>(
   const offers = getCommitmentOffers(
     gameState.cardState,
     player,
-    meleeModifierTypes,
+    MELEE_COMMITMENT_MODIFIERS,
   );
   const events = offers.map((offer) =>
     createCommitToMeleeEvent({

@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { CommitToRangedDefenseEvent } from '@events';
 import type { GameState } from '@game';
-import { rangedDefenseModifierTypes } from '@events';
+import { RANGED_DEFENSE_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToRangedDefenseEvent } from '@factories';
 import { findRangedAttackResolutionState } from '@queries';
 import { getCommitmentOffers } from './commitment';
@@ -54,7 +54,7 @@ export function getLegalCommitToRangedDefenseEvents<S extends GameState>(
   const offers = getCommitmentOffers(
     gameState.cardState,
     player,
-    rangedDefenseModifierTypes,
+    RANGED_DEFENSE_COMMITMENT_MODIFIERS,
   );
   const events = offers.map((offer) =>
     createCommitToRangedDefenseEvent({

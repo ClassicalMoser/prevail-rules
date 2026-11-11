@@ -1,4 +1,4 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
@@ -7,25 +7,6 @@ import { z } from 'zod';
 /** The type of the commit to ranged defense event. */
 export const COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE =
   'commitToRangedDefense' as const;
-
-/**
- * The stats a shot's target may commit a card for (§8.4): Defence, which
- * raises all three of its thresholds against this shot (§8.5); and
- * Flexibility, which shrinks a terrain deficit, and with it the penalty a
- * deficit puts on those same thresholds (§2.5.2). Flexibility adds nothing
- * until terrain lands. Range and Attack are not here: they belong to the
- * shooter, which commits on its own (`commitToRangedAttack`).
- */
-export const rangedDefenseModifierTypes = ['defense', 'flexibility'] as const;
-/** A stat the target's commitment may apply. */
-export type RangedDefenseModifier = (typeof rangedDefenseModifierTypes)[number];
-
-// Type-level guarantee that RangedDefenseModifier extends StatModifier
-const _assertRangedDefenseModifierExtendsStatModifier: [
-  RangedDefenseModifier,
-] extends [StatModifier]
-  ? true
-  : never = true;
 
 /**
  * The target's commitment in a ranged attack (§4.3.11 step 5, §7.4.5): once

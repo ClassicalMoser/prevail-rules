@@ -21,6 +21,14 @@ export {
   STANDARD_MIN_ARMY_MORALE_VALUE,
 } from './ruleValues';
 
+// What each moment a card may be committed at accepts (§8.4).
+export {
+  MELEE_COMMITMENT_MODIFIERS,
+  MOVEMENT_COMMITMENT_MODIFIERS,
+  RANGED_ATTACK_COMMITMENT_MODIFIERS,
+  RANGED_DEFENSE_COMMITMENT_MODIFIERS,
+} from './commitmentModifiers';
+
 // Unit traits.
 export { traits, traitSchema } from './traits';
 export type { Trait } from './traits';

@@ -156,22 +156,13 @@ export {
 export type { PerformRangedAttackEvent } from './playerChoices';
 export { performRangedAttackEventSchema } from './playerChoices';
 export type { CommitToMovementEvent } from './playerChoices';
-export {
-  commitToMovementEventSchema,
-  movementModifierTypes,
-} from './playerChoices';
+export { commitToMovementEventSchema } from './playerChoices';
 export type { CommitToRangedAttackEvent } from './playerChoices';
-export {
-  commitToRangedAttackEventSchema,
-  rangedAttackModifierTypes,
-} from './playerChoices';
+export { commitToRangedAttackEventSchema } from './playerChoices';
 export type { CommitToRangedDefenseEvent } from './playerChoices';
-export {
-  commitToRangedDefenseEventSchema,
-  rangedDefenseModifierTypes,
-} from './playerChoices';
+export { commitToRangedDefenseEventSchema } from './playerChoices';
 export type { CommitToMeleeEvent } from './playerChoices';
-export { commitToMeleeEventSchema, meleeModifierTypes } from './playerChoices';
+export { commitToMeleeEventSchema } from './playerChoices';
 export type { ChooseMeleeResolutionEvent } from './playerChoices';
 export { chooseMeleeResolutionEventSchema } from './playerChoices';
 export type { ChooseWhetherToRetreatEvent } from './playerChoices';
@@ -184,10 +175,6 @@ export type { ChooseRallyEvent } from './playerChoices';
 export { chooseRallyEventSchema } from './playerChoices';
 export type {
   AssignUnitSupportEvent,
-  MeleeModifier,
-  MovementModifier,
-  RangedAttackModifier,
-  RangedDefenseModifier,
   UnitSupportAssignment,
 } from './playerChoices';
 export {

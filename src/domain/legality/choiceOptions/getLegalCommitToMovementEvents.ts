@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { CommitToMovementEvent } from '@events';
 import type { GameState } from '@game';
-import { movementModifierTypes } from '@events';
+import { MOVEMENT_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToMovementEvent } from '@factories';
 import {
   findMovementResolutionState,
@@ -64,7 +64,7 @@ export function getLegalCommitToMovementEvents<S extends GameState>(
   const offers = getCommitmentOffers(
     gameState.cardState,
     player,
-    movementModifierTypes,
+    MOVEMENT_COMMITMENT_MODIFIERS,
   );
   const events = offers.map((offer) =>
     createCommitToMovementEvent({

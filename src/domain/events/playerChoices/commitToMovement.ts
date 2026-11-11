@@ -1,4 +1,4 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
@@ -6,17 +6,6 @@ import { z } from 'zod';
 
 /** The type of the commit to movement event. */
 export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement' as const;
-
-/** The stats a mover's or a front-engaged defender's commitment may apply (§8.4). */
-export const movementModifierTypes = ['speed', 'flexibility'] as const;
-export type MovementModifier = (typeof movementModifierTypes)[number];
-
-// Type-level guarantee that MovementModifier extends StatModifier
-const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
-  StatModifier,
-]
-  ? true
-  : never = true;
 
 /** An event to commit a card to a unit's movement — or refuse (`committedCard` null). */
 export interface CommitToMovementEvent {

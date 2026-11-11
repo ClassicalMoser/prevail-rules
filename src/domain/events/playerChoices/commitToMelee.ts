@@ -1,4 +1,4 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
@@ -6,17 +6,6 @@ import { z } from 'zod';
 
 /** The type of the commit to melee event. */
 export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee' as const;
-
-/** The stats a melee commitment may apply (§8.4). */
-export const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
-export type MeleeModifier = (typeof meleeModifierTypes)[number];
-
-// Type-level guarantee that MeleeModifier extends StatModifier
-const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [
-  StatModifier,
-]
-  ? true
-  : never = true;
 
 /** An event to commit a card to melee — or refuse (`committedCard` null). */
 export interface CommitToMeleeEvent {
