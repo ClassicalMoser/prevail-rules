@@ -2,6 +2,7 @@ import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import {
   getAttackApplyStateOfPlayer,
+  getPositionOfUnit,
   getReverseStateFromAttackApply,
 } from '@queries';
 import { throwIfBypassed } from '@utils';
@@ -23,16 +24,21 @@ export function applyResolveReverseEvent<S extends GameState>(
   event: ResolveReverseEvent,
   state: S,
 ): S {
-  // The unit turns about where it stands.
+  // The unit turns about where it stands, to the facing the procedure worked out.
+  const standing = getPositionOfUnit(state.boardState, event.unit);
+  const finalPosition = {
+    coordinate: standing.coordinate,
+    facing: event.facing,
+  };
   const addedUnitBoard = moveUnitOnBoard(
     state.boardState,
-    event.unitInstance.unit,
-    event.newUnitPlacement.placement,
+    event.unit,
+    finalPosition,
   );
 
   const attackApplyState = getAttackApplyStateOfPlayer(
     state,
-    event.unitInstance.unit.playerSide,
+    event.unit.playerSide,
   );
 
   const currentReverseState = throwIfBypassed(
@@ -43,7 +49,7 @@ export function applyResolveReverseEvent<S extends GameState>(
   const newReverseState: ReverseState = {
     ...currentReverseState,
     completed: true,
-    finalPosition: event.newUnitPlacement.placement,
+    finalPosition,
   };
 
   const stateWithUpdatedReverse = updateReverseState(state, newReverseState);

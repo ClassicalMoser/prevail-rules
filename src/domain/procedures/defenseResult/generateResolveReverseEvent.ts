@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import { canReverseUnit } from '@legality';
@@ -49,22 +48,10 @@ export function generateResolveReverseEvent(
     ? getOppositeFacing(placement.facing)
     : placement.facing;
 
-  // The event records where the unit stood when it turned.
-  const reversingUnit: UnitWithPlacement = {
-    placement,
-    unit: reverseState.reversingUnit,
-  };
-
   return {
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    newUnitPlacement: {
-      placement: {
-        coordinate: placement.coordinate,
-        facing: newFacing,
-      },
-      unit: reverseState.reversingUnit,
-    },
-    unitInstance: reversingUnit,
+    facing: newFacing,
+    unit: reverseState.reversingUnit,
   };
 }
