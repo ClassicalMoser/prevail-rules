@@ -4,6 +4,7 @@ import {
   createCommitToRangedDefenseEvent,
   createPerformRangedAttackEvent,
 } from '@factories';
+import { getLegalRangedAttackers } from '@legality';
 import {
   getOwnedPlayerCardState,
   getSingleUnitWithPlacementAtCoordinate,
@@ -243,5 +244,124 @@ describe('a card committed to a shot', () => {
     expect(state.boardState.board['B-5']?.unitPresence.presenceType).toBe(
       'single',
     );
+  });
+});
+
+/**
+ * A Shoot order with several shooters (§4.3.11): each shot is its own step,
+ * and a unit with no target when the next shooter is chosen is skipped for
+ * that choice only. A later shot may change the board so that it has one.
+ *
+ * Black orders three units. A, on E-1, shoots a white unit two ranks out on
+ * C-1. B, on A-5 facing south with a Range of 1, has nothing in reach at first:
+ * the white cavalry on C-5 is two ranks off. C, on E-5, shoots that cavalry
+ * with an Attack card committed, so it falls back a space, to B-5, and so into
+ * B's reach.
+ */
+describe('a Shoot order with several shooters', () => {
+  // C's own Attack of 2 falls short of the cavalry's Retreat of 3; the card
+  // committed to its shot makes it 3, which reaches it.
+  const attackCard = createTestCard({ modifiers: ['attack'] });
+
+  function threeShooters() {
+    const game = createPlayableGame(
+      [
+        { coord: 'E-1', facing: 'north', player: 'black', range: 2 },
+        {
+          coord: 'A-5',
+          facing: 'south',
+          instanceNumber: 2,
+          player: 'black',
+          range: 1,
+        },
+        {
+          coord: 'E-5',
+          facing: 'north',
+          instanceNumber: 3,
+          player: 'black',
+          range: 2,
+        },
+        { coord: 'C-1', facing: 'south', player: 'white' },
+        {
+          coord: 'C-5',
+          facing: 'south',
+          instanceNumber: 2,
+          player: 'white',
+          unitType: getUnitByTrait('cavalry'),
+        },
+      ],
+      { hands: { black: [attackCard, createTestCard()] }, initiative: 'black' },
+    );
+    const at = (coordinate: 'E-1' | 'A-5' | 'E-5' | 'C-1' | 'C-5') =>
+      getSingleUnitWithPlacementAtCoordinate(game.boardState, coordinate);
+    const order = resolvingShootOrder(game, [
+      at('E-1').unit,
+      at('A-5').unit,
+      at('E-5').unit,
+    ]);
+    return { at, order };
+  }
+
+  /** The named shooter shoots the named target, and the target's owner declines to defend. */
+  function shootsAndIsUndefended(
+    state: AuthoritativeGameState,
+    shooter: ReturnType<typeof getSingleUnitWithPlacementAtCoordinate>,
+    target: ReturnType<typeof getSingleUnitWithPlacementAtCoordinate>,
+    committed: typeof attackCard | null = null,
+  ) {
+    const aimed = applyEffectsUntilChoice(
+      applyEvent(
+        createPerformRangedAttackEvent({
+          player: 'black',
+          supportingUnits: [],
+          targetUnit: target,
+        }),
+        readyToAimShot(state, shooter, committed),
+      ),
+    );
+    const defended = applyEffectsUntilChoice(
+      applyEvent(
+        createCommitToRangedDefenseEvent({
+          committedCard: null,
+          player: 'white',
+        }),
+        aimed.state,
+      ),
+    );
+    return defended;
+  }
+
+  it('offers a unit that had no target at one shot once a later shot gives it one', () => {
+    const { at, order } = threeShooters();
+
+    // A shoots first. B has nothing in reach at this moment, so only A and C
+    // were offered, and B is skipped for this choice (§4.3.11 step 1).
+    const afterA = shootsAndIsUndefended(order, at('E-1'), at('C-1'));
+    // C then shoots the cavalry, which falls back to B-5, into B's reach.
+    const afterC = shootsAndIsUndefended(
+      afterA.state,
+      at('E-5'),
+      at('C-5'),
+      attackCard,
+    );
+
+    // The cavalry did fall back to B-5, one space from B.
+    expect(
+      afterC.state.boardState.board['B-5']?.unitPresence.presenceType,
+    ).toBe('single');
+
+    // B has a target now, so it is offered to shoot: the order is not over.
+    if (afterC.next === 'gameOver') {
+      throw new Error('The game should not be over');
+    }
+    expect(afterC.next).toMatchObject({
+      actionType: 'playerChoice',
+      choiceType: 'chooseShooter',
+      playerSource: 'black',
+    });
+    const offered = getLegalRangedAttackers(afterC.state).attackers.map(
+      (entry) => entry.unit,
+    );
+    expect(offered).toStrictEqual([at('A-5').unit]);
   });
 });
