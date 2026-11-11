@@ -7,6 +7,9 @@ export { getOwnedPlayerCardState } from './getOwnedPlayerCardState';
 export { findCardInPlay } from './findCardInPlay';
 export { getCardInPlay } from './getCardInPlay';
 
+// Whether both players have a card waiting to be revealed.
+export { haveBothPlayersChosenCards } from './haveBothPlayersChosenCards';
+
 // Lower initiative number wins; a tie keeps the current holder.
 export { calculateInitiative } from './calculateInitiative';
 

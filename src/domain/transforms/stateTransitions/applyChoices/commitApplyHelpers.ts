@@ -1,11 +1,9 @@
 import type { CommandCard, PlayerSide } from '@entities';
 import type { Commitment, GameState } from '@game';
-import { findOwnedPlayerCardState, getHiddenPlayerCardState } from '@queries';
 import {
   discardCardsFromHand,
   discardShownCardFromHiddenHand,
-  replaceHiddenPlayerCardState,
-  replaceOwnedPlayerCardState,
+  updatePlayerCards,
 } from '@transforms/pureTransforms';
 
 export function commitmentFromCommittedCard(
@@ -38,30 +36,9 @@ export function applyCommitCardDiscard<S extends GameState>(
     return state;
   }
 
-  const ownedPlayerCardState = findOwnedPlayerCardState(
-    state.cardState,
-    player,
-  );
-  if (ownedPlayerCardState === undefined) {
-    const hiddenPlayerCardState = getHiddenPlayerCardState(
-      state.cardState,
-      player,
-    );
-    return {
-      ...state,
-      cardState: replaceHiddenPlayerCardState(
-        state.cardState,
-        player,
-        discardShownCardFromHiddenHand(hiddenPlayerCardState, committedCard),
-      ),
-    };
-  }
-  return {
-    ...state,
-    cardState: replaceOwnedPlayerCardState(
-      state.cardState,
-      player,
-      discardCardsFromHand(ownedPlayerCardState, [committedCard.id]),
-    ),
-  };
+  const committed = updatePlayerCards(state, player, {
+    hidden: (hidden) => discardShownCardFromHiddenHand(hidden, committedCard),
+    owned: (owned) => discardCardsFromHand(owned, [committedCard.id]),
+  });
+  return committed;
 }

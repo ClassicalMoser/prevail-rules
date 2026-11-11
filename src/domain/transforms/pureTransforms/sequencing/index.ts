@@ -12,8 +12,9 @@ export { updateReverseState } from './updateReverseState';
 // One player's rally, written to the slot their initiative gives it.
 export { updateRallyResolutionState } from './updateRallyResolutionState';
 
-// The cleanup step.
+// The cleanup step, and the play cards step.
 export { updateCleanupStep } from './updateCleanupStep';
+export { updatePlayCardsStep } from './updatePlayCardsStep';
 
 // Phase 3, by player: the orders and units still to go, the step, and the
 // one unit's move or shot under way.

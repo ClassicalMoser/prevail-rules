@@ -1,7 +1,11 @@
 import type { RevealCardsEvent } from '@events';
 import type { GameState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
-import { revealBothAwaitingCards } from '@transforms/pureTransforms';
+import {
+  replaceCardState,
+  revealBothAwaitingCards,
+  updatePlayCardsStep,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a RevealCardsEvent to the game state.
@@ -19,20 +23,18 @@ export function applyRevealCardsEvent<S extends GameState>(
   event: RevealCardsEvent,
   state: S,
 ): S {
-  const phaseState = getPlayCardsPhaseState(state);
+  // Cards are revealed only while playing cards.
+  getPlayCardsPhaseState(state);
 
-  return {
-    ...state,
-    cardState: revealBothAwaitingCards(state.cardState, {
+  // Both cards turn face up together (§4.1.2), and initiative is assigned
+  // next.
+  const revealed = replaceCardState(
+    state,
+    revealBothAwaitingCards(state.cardState, {
       black: event.black,
       white: event.white,
     }),
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: {
-        ...phaseState,
-        step: 'assignInitiative',
-      },
-    },
-  };
+  );
+  const assigning = updatePlayCardsStep(revealed, 'assignInitiative');
+  return assigning;
 }

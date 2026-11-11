@@ -2,6 +2,7 @@ import type { DiscardPlayedCardsEvent } from '@events';
 import type { GameState } from '@game';
 import {
   moveBothInPlayToPlayed,
+  replaceCardState,
   updateCleanupStep,
 } from '@transforms/pureTransforms';
 
@@ -22,10 +23,10 @@ export function applyDiscardPlayedCardsEvent<S extends GameState>(
   state: S,
 ): S {
   // The played cards go to the played pile, and the rallies begin (§10.3).
-  const stateWithCards = {
-    ...state,
-    cardState: moveBothInPlayToPlayed(state.cardState),
-  };
+  const stateWithCards = replaceCardState(
+    state,
+    moveBothInPlayToPlayed(state.cardState),
+  );
   const rallying = updateCleanupStep(stateWithCards, 'firstPlayerChooseRally');
   return rallying;
 }

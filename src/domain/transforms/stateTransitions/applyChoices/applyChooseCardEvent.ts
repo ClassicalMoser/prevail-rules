@@ -1,37 +1,20 @@
 import type { ChooseCardEvent, ProjectedChooseCardEvent } from '@events';
-import type { GameState, PlayCardsPhaseState } from '@game';
+import type { GameState } from '@game';
 import {
   getHiddenPlayerCardState,
   getOwnedPlayerCardState,
-  getPlayCardsPhaseState,
+  haveBothPlayersChosenCards,
 } from '@queries';
 import {
   chooseCard,
   chooseHiddenCard,
+  replaceCardState,
   replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
-  updatePhaseState,
+  updatePlayCardsStep,
 } from '@transforms/pureTransforms';
 
 type ChooseCardApplyEvent = ChooseCardEvent | ProjectedChooseCardEvent;
-
-function advanceIfBothChosen<S extends GameState>(
-  state: S,
-  currentPhaseState: PlayCardsPhaseState,
-): S {
-  const bothPlayersChosen =
-    state.cardState.black.awaitingPlay !== null &&
-    state.cardState.white.awaitingPlay !== null;
-
-  if (!bothPlayersChosen) {
-    return updatePhaseState(state, currentPhaseState);
-  }
-
-  return updatePhaseState(state, {
-    ...currentPhaseState,
-    step: 'revealCards',
-  });
-}
 
 /**
  * Applies a choose-card event to authoritative or seat-visible state.
@@ -45,29 +28,33 @@ export function applyChooseCardEvent<S extends GameState>(
   state: S,
 ): S {
   const { player, card } = event;
-  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state);
 
-  if (card === 'hidden') {
-    const hiddenSlice = getHiddenPlayerCardState(state.cardState, player);
-    const stateWithUpdatedPlayer = {
-      ...state,
-      cardState: replaceHiddenPlayerCardState(
-        state.cardState,
-        player,
-        chooseHiddenCard(hiddenSlice),
-      ),
-    };
-    return advanceIfBothChosen(stateWithUpdatedPlayer, currentPhaseState);
+  // The card is chosen face down: hidden on a seat that cannot see this
+  // player's hand, shown on one that can.
+  const chosen =
+    card === 'hidden'
+      ? replaceCardState(
+          state,
+          replaceHiddenPlayerCardState(
+            state.cardState,
+            player,
+            chooseHiddenCard(getHiddenPlayerCardState(state.cardState, player)),
+          ),
+        )
+      : replaceCardState(
+          state,
+          replaceOwnedPlayerCardState(
+            state.cardState,
+            player,
+            chooseCard(getOwnedPlayerCardState(state.cardState, player), card),
+          ),
+        );
+
+  // Both players choose at once; the cards are revealed once both are in
+  // (§4.1.1).
+  if (!haveBothPlayersChosenCards(chosen.cardState)) {
+    return chosen;
   }
-
-  const ownedCardState = getOwnedPlayerCardState(state.cardState, player);
-  const stateWithUpdatedPlayer = {
-    ...state,
-    cardState: replaceOwnedPlayerCardState(
-      state.cardState,
-      player,
-      chooseCard(ownedCardState, card),
-    ),
-  };
-  return advanceIfBothChosen(stateWithUpdatedPlayer, currentPhaseState);
+  const revealing = updatePlayCardsStep(chosen, 'revealCards');
+  return revealing;
 }

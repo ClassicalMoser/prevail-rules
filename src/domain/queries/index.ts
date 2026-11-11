@@ -38,6 +38,7 @@ export {
   isSameCard,
   isSameCardValue,
   calculateInitiative,
+  haveBothPlayersChosenCards,
   findCardInPlay,
   getCardInPlay,
   findMatchingCommand,

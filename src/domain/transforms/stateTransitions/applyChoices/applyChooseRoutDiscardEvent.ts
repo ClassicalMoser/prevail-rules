@@ -1,16 +1,11 @@
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  findOwnedPlayerCardState,
-  getHiddenPlayerCardState,
-  getRoutState,
-} from '@queries';
+import { getRoutState } from '@queries';
 import {
   closeRearEngagementWhenRouted,
   discardCardsFromHand,
   discardShownCardFromHiddenHand,
-  replaceHiddenPlayerCardState,
-  replaceOwnedPlayerCardState,
+  updatePlayerCards,
   updateRoutState,
 } from '@transforms/pureTransforms';
 
@@ -38,33 +33,14 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
   // The event names the player, and in a melee each side can be routing.
   const routState = getRoutState(state, event.player);
 
-  const owned = findOwnedPlayerCardState(state.cardState, event.player);
-  let next: S;
-  if (owned === undefined) {
-    const hidden = getHiddenPlayerCardState(state.cardState, event.player);
-    let discardedHidden = hidden;
-    for (const shown of event.cards) {
-      discardedHidden = discardShownCardFromHiddenHand(discardedHidden, shown);
-    }
-    next = {
-      ...state,
-      cardState: replaceHiddenPlayerCardState(
-        state.cardState,
-        event.player,
-        discardedHidden,
-      ),
-    };
-  } else {
-    const cardIds = event.cards.map((card) => card.id);
-    next = {
-      ...state,
-      cardState: replaceOwnedPlayerCardState(
-        state.cardState,
-        event.player,
-        discardCardsFromHand(owned, cardIds),
-      ),
-    };
-  }
+  // The cards leave the hand as the seat holds them: shown where it can see
+  // the hand, counted where it cannot (§4.1.2).
+  const cardIds = event.cards.map((card) => card.id);
+  let next = updatePlayerCards(state, event.player, {
+    hidden: (hidden) =>
+      event.cards.reduce(discardShownCardFromHiddenHand, hidden),
+    owned: (owned) => discardCardsFromHand(owned, cardIds),
+  });
 
   const completedRout = {
     ...routState,
