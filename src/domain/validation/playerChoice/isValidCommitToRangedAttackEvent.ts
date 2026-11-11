@@ -1,8 +1,8 @@
 import type { ValidationResult } from '@utils';
 import type { CommitToRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
-import { isSameCard, isSameCardValue } from '@queries';
 import { getLegalCommitToRangedAttackEvents } from '@legality';
+import { isValidCommitment } from './isValidCommitment';
 
 /**
  * Validates a CommitToRangedAttackEvent by membership against
@@ -13,35 +13,6 @@ export function isValidCommitToRangedAttackEvent(
   state: GameState,
 ): ValidationResult {
   const legalOptions = getLegalCommitToRangedAttackEvents(state);
-  const legalOption = legalOptions.find((option) => {
-    if (option.player !== event.player) {
-      return false;
-    }
-    if (option.committedCard === null || event.committedCard === null) {
-      return option.committedCard === event.committedCard;
-    }
-    return isSameCard(option.committedCard, event.committedCard).result;
-  });
-  if (legalOption === undefined) {
-    const cardLabel =
-      event.committedCard === null
-        ? 'refuse'
-        : `card ${event.committedCard.id}`;
-    return {
-      errorReason: `Commit to ranged attack is not legal for ${event.player} with ${cardLabel}`,
-      result: false,
-    };
-  }
-  // The id names a card the player holds; what the event says that card is
-  // must be what it is, since the commitment's stats are read from it.
-  if (legalOption.committedCard !== null && event.committedCard !== null) {
-    const sameCard = isSameCardValue(
-      legalOption.committedCard,
-      event.committedCard,
-    );
-    if (!sameCard.result) {
-      return sameCard;
-    }
-  }
-  return { result: true };
+  const validation = isValidCommitment(event, legalOptions, 'ranged attack');
+  return validation;
 }
