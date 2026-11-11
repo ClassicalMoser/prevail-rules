@@ -2,13 +2,17 @@ import type { GameEffectEvent } from '@events';
 import type { AuthoritativeGameState } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { generateEventFromProcedure } from '@procedures';
-import { getExpectedEvent } from '@expected';
+import { findExpectedEvent } from '@expected';
 import { processEvent } from './processEvent';
 import type { GameModeName } from '@entities';
 
 /**
  * Advances the game state up to the next player choice.
  * Procedures need full card info, so the state must be authoritative.
+ *
+ * A game that has already finished owes nothing, so there is nothing to
+ * advance: that is answered as a refusal, not thrown. A game that finishes
+ * while advancing is a success; the loop stops because nothing more is owed.
  *
  * @param gameId - The ID of the game to advance.
  * @param gameMode - The game mode.
@@ -23,8 +27,15 @@ export async function advanceEffects(
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   let currentGameState = gameState;
-  let expectedEvent = getExpectedEvent(gameState);
-  while (expectedEvent.actionType === 'gameEffect') {
+  let expectedEvent = findExpectedEvent(gameState);
+  if (expectedEvent === undefined) {
+    const alreadyOver: PortResponse<void> = {
+      errorReason: 'The game is already over',
+      result: false,
+    };
+    return alreadyOver;
+  }
+  while (expectedEvent?.actionType === 'gameEffect') {
     const event: GameEffectEvent = generateEventFromProcedure(
       currentGameState,
       expectedEvent.effectType,
@@ -41,13 +52,8 @@ export async function advanceEffects(
       return processResult;
     }
     currentGameState = processResult.data;
-    if (currentGameState.winner !== undefined) {
-      return {
-        data: undefined,
-        result: true,
-      };
-    }
-    expectedEvent = getExpectedEvent(currentGameState);
+    // A game that has just ended owes nothing more, and the loop stops.
+    expectedEvent = findExpectedEvent(currentGameState);
   }
   return {
     data: undefined,

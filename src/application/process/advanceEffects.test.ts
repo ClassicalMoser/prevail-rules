@@ -57,7 +57,7 @@ describe('advanceEffects function', () => {
     expect(generateEventFromProcedureMock).not.toHaveBeenCalled();
   });
 
-  it('stops after applying gameOver without re-querying expected event', async () => {
+  it('stops once the game is over, because a finished game owes nothing', async () => {
     const initial = createEmptyGameState('standard');
     const withEmptyWhite = updateCardState(initial, {
       ...initial.cardState,
@@ -65,10 +65,13 @@ describe('advanceEffects function', () => {
     });
     const finished = { ...withEmptyWhite, winner: 'black' as const };
 
-    getExpectedEventMock.mockReturnValueOnce({
-      actionType: 'gameEffect',
-      effectType: 'gameOver',
-    });
+    // The game owes its ending; once that is applied it owes nothing.
+    findExpectedEventMock
+      .mockReturnValueOnce({
+        actionType: 'gameEffect',
+        effectType: 'gameOver',
+      })
+      .mockReturnValueOnce(undefined);
     generateEventFromProcedureMock.mockReturnValue({
       effectType: 'gameOver',
       eventType: 'gameEffect',
@@ -89,14 +92,14 @@ describe('advanceEffects function', () => {
     expect(result).toStrictEqual({ data: undefined, result: true });
     expect(generateEventFromProcedureMock).toHaveBeenCalledTimes(1);
     expect(processEventMock).toHaveBeenCalledTimes(1);
-    expect(getExpectedEventMock).toHaveBeenCalledTimes(1);
+    expect(findExpectedEventMock).toHaveBeenCalledTimes(2);
   });
 
   it('continues the loop for non-terminal game effects until a non-effect', async () => {
     const state = createEmptyGameState('standard');
     const afterReveal = { ...state };
 
-    getExpectedEventMock
+    findExpectedEventMock
       .mockReturnValueOnce({
         actionType: 'gameEffect',
         effectType: 'revealCards',
@@ -118,7 +121,7 @@ describe('advanceEffects function', () => {
     const result = await advanceEffects('game-1', 'standard', state, ports);
 
     expect(result).toStrictEqual({ data: undefined, result: true });
-    expect(getExpectedEventMock).toHaveBeenCalledTimes(2);
+    expect(findExpectedEventMock).toHaveBeenCalledTimes(2);
     expect(processEventMock).toHaveBeenCalledTimes(1);
   });
 });

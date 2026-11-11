@@ -6,7 +6,7 @@ import type {
   PlayerSource,
 } from '@events';
 import type { GameState } from '@game';
-import { getExpectedEvent } from '@expected';
+import { findExpectedEvent } from '@expected';
 /**
  * Small helper function to compare a narrow PlayerSide to the broader PlayerSource.
  *
@@ -36,9 +36,17 @@ export function validateExpectedChoice(
   event: PlayerChoiceEvent,
   state: GameState,
 ): ValidationResult {
-  // A game that cannot say what comes next is a fault, thrown where it was
-  // found and turned into a refusal by `validatePlayerChoice`.
-  const expected: ExpectedEventInfo = getExpectedEvent(state);
+  // A finished game expects nothing, so a choice sent after the battle is
+  // over is refused for that reason. That is a fact about the game, not a
+  // fault in it.
+  const expected: ExpectedEventInfo | undefined = findExpectedEvent(state);
+  if (expected === undefined) {
+    const over: ValidationResult = {
+      errorReason: 'The game is over, so no choice is expected',
+      result: false,
+    };
+    return over;
+  }
 
   // Ensure that we are expecting a player choice
   if (expected.actionType !== 'playerChoice') {
