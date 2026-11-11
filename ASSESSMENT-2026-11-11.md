@@ -157,6 +157,52 @@ should not have been asked. Closed, each with a failing spec first:
   `setupUnits` (setup is out of scope) are unchanged. ENGINES says which empty
   answers are real.
 
+**Run log (2026-11-11, third pass).** The author's principles, which settle most
+layer questions without asking: only a query walks the tree; only a transform
+mutates state; event applies compose and delegate; inlining a block is wrong,
+and wrong twice when it is inlined elsewhere. Closed, each with a failing spec
+first where a behaviour changed:
+
+- The `TODO(wrong)` in `applyCompleteUnitMovementEvent`: it asks
+  `findPositionOfUnit`, and a mover on neither space throws.
+- `getCardInPlay` and `findCardInPlay` replace eight inline reads of the card
+  in play. A missing card throws where the commander-moves procedure read it
+  as "no orders" and the expected engine read it as "Move".
+- Whose rally a step is on is read once (`findRallyingPlayer`,
+  `findRallyResolutionState`) and written once (`updateRallyResolutionState`,
+  `updateCleanupStep`). `getRallyStepRoutState` and
+  `getIsFirstPlayerForResolveRallyStep` are gone, and past the rallies no stale
+  rally rout is located.
+- A front engagement's stage is read once (`getFrontEngagementStage`), and the
+  sequencer and both legal enumerators dispatch on it.
+- Phase 3 is written through one transform per slot, and the applies compose
+  them: `getCommandingPlayer`, `updateRemainingUnitsForPlayer`,
+  `updateRemainingCommandsForPlayer`, `updateIssueCommandsStep`,
+  `openCommandResolution`, `clearCommandResolution`, and the two blocks
+  `beginResolvingCommands` and `finishResolvingCommands` that five applies had
+  written out by hand. Phase 4 and the commander moves likewise
+  (`openMeleeResolution`, `clearMeleeResolution`, `updateMoveCommandersStep`).
+- A fresh rout, retreat and melee have factories (`createOpenedRoutState`,
+  `createOpenedRetreatState`, `createOpenedMeleeResolutionState`);
+  `@testing`'s `createRetreatState` delegates to the retreat one, so a single
+  legal path is chosen at once as the engine does.
+- The retreat, reverse and rout writers read their apply through
+  `getAttackApplyStateOfPlayer` and write it through `updateAttackApplyState`;
+  an engagement is written one part at a time
+  (`updateFront-`, `-Flank-` and `-RearEngagementResolutionState`,
+  `completeEngagementInMovement`), and `findRearEngagementStateFromMovement`
+  replaces a tree walk inside a transform. The orphan `attackApplyContext` is
+  deleted.
+- A player's cards change through `updatePlayerCards`, which reads the seat;
+  `replaceCardState` and `updatePlayCardsStep` write back. The three seat
+  checks and the card-state orphans are gone.
+- `getLegalRangedAttackSupporters` throws outside Phase 3, as the other
+  enumerators do. An engagement retreat recorded with no path throws, since a
+  front-engaged defender with nowhere to go stands.
+- The four `isValidCommitTo*Event` are one judgement (`isValidCommitment`);
+  `findUnitIndex` and `findRankSpanBetweenEnds` replace restated lookups.
+- Stale documents in Section 4, except where noted there.
+
 Decision points left for the author, found on the way:
 
 - **`getLegalChooseCardOptions` was documented as soft** ("does not throw ...
@@ -165,18 +211,6 @@ Decision points left for the author, found on the way:
   re-enumerates after both players have chosen has moved past the step and
   would now be refused loudly; if that is a pattern the clients rely on, this
   one is for the author to reverse.
-- **Whose rally a cleanup step belongs to.** `getRallyingPlayer` maps the four
-  rally steps and throws on `discardPlayedCards` and `complete`.
-  `getRallyStepRoutState`, which nothing in the engine calls, and the cleanup
-  branch of `findRoutLocation` repeat the mapping loosely, reading the second
-  player's slot on every step that is not the first player's, and
-  `findRoutLocation` ignores its `player` there. A proposal is with the
-  author: one mapping in `getRallyingPlayer` with a total `findRallyingPlayer`
-  twin, `findRoutLocation` reading through it, and `getRallyStepRoutState`
-  removed.
-- **`applyCompleteUnitMovementEvent`.** A mover that is on neither its start
-  space nor its destination is set down from nowhere. It looks unreachable and
-  is marked `TODO(wrong)`.
 - **The combatOutcomes README** described `getNextMeleeRoutState` as asking the
   initiative player's side first; it asks the second player's. Corrected with
   R5.
@@ -251,33 +285,17 @@ replaced, in a scout pass; most of these wait on the author choosing a shape.
 
 ### 3.1 Missing readers
 
-Added in the first pass: `getRemainingUnitsForPlayer` and
-`getRemainingCommandsForPlayer` (nine read sites moved onto them),
-`find*` twins for the order under way, the shot, the melee and the front
-engagement (six enumerators moved onto them), `findRetreatAwaitingChoice`,
-and `findPlayerOwingMeleeCommitment`, which `@expected` and `@legality` both
-ask.
-
-Left, each for a stated reason:
-
-- **Phase 3 writes.** The first or second player's slot is still chosen by
-  hand when it is written (the choice applies, both `applyComplete*CommandEvent`s,
-  `applyDoneIssuingCommandsEvent`). It waits on the writer question.
-- **Whose rally it is.** Every derivation of the rallying _player_ already
-  asks `getRallyingPlayer`. What remains maps a rally step to a _slot_
-  (`getCurrentRallyResolutionState`, `getRallyResolutionStateForCurrentStep`,
-  `updateRallyResolutionStateForCurrentStep`, the router copy in
-  `findRoutLocation`), and three readers have no caller
-  (`getRallyResolutionState`, `getIsFirstPlayerForResolveRallyStep`,
-  `getRallyStepRoutState`). They disagree on `discardPlayedCards` and
-  `complete`: `getRallyingPlayer` throws there, `getRallyStepRoutState` reads
-  the second player's slot. Which is the rule is the author's.
-- **The front-engagement gates** are written in `getLegalChooseWhetherToRetreatEvents`
-  and again in `getExpectedEngagementEvent`. Unlike the melee commit order, the
-  gates are several tests in sequence, and the reader model does not say what
-  one selection for them should answer.
+Closed. The first pass added the per-player Phase 3 readers, the total `find*`
+twins for the order under way, the shot, the melee and the front engagement,
+`findRetreatAwaitingChoice` and `findPlayerOwingMeleeCommitment`. The third
+pass settled the three left over: Phase 3 slot writes, whose rally it is, and
+the front-engagement gates (see the third-pass run log).
 
 ### 3.2 Combat outcomes
+
+Mostly closed in the third pass: the five hand-replaced slots, the retreat and
+rout built by hand, the orphan `attackApplyContext`, and the writers that each
+walked to the attack apply. Left:
 
 - The attack-apply events name their parent in four vocabularies:
   `attackResolutionContext` + `defendingPlayer` (the `open*FromAttackApply`
@@ -285,50 +303,30 @@ Left, each for a stated reason:
   (`resolveReverse`), `retreatResolutionContext` + `retreatingPlayer`
   (`triggerRoutFromRetreat`), and `attackType` + `defendingPlayer`
   (`completeAttackApply`). The last two make their transforms dispatch by hand.
-- `transforms/pureTransforms/sequencing/attackApplyContext.ts` has no caller;
-  its reader duplicates `getAttackApplyStateAt`. `updateMeleeAttackApplyState`
-  and the melee branch of `updateAttackApplyState` write the same slot.
-- A freshly opened retreat (one smallest path is carried out, §9.1.3; none
-  leaves a rout pending, §9.1.6) is built by hand in
-  `applyOpenRetreatFromAttackApplyEvent` and `applyOpenRetreatFromEngagementEvent`.
-  `@testing`'s `createRetreatState` copies it but always leaves the path
-  `'pending'`, a state the engine never makes with one path. A fresh rout state
-  is built four times. `createAttackApplyState` is the precedent for a factory.
+  It is an event's public shape, so it is the author's.
 - A settled rout closes its parent four ways: inside `updateRoutState` (which
   also advances the cleanup step), inside `updateRetreatRoutState`, only if the
   caller remembers `closeRearEngagementWhenRouted`, and by a separate
-  `completeAttackApply` effect. _Plausible_ as a risk.
-- Five transforms replace an open slot by hand where `updateCommandResolutionState`,
-  `updateEngagementStateInMovement` or `updateMeleeResolutionState` would do:
-  `applyStartEngagementEvent`, `applyResolveEngageRetreatOptionEvent`,
-  `applyResolveFlankEngagementEvent`, `applyResolveRangedAttackEvent`,
-  `applyResolveMeleeEvent`. Separate from the writer question.
+  `completeAttackApply` effect. _Plausible_ as a risk; not yet scouted.
 - A front-engagement retreat's paths are computed twice:
   `generateResolveEngageRetreatOptionEvent` emits only a boolean, and
   `generateOpenRetreatFromEngagementEvent` computes them again.
 
 ### 3.3 Cards, units and validation
 
-- "May this seat see that hand" is asked three ways: a local switch in
-  `applyResolveRallyEvent`, `findOwnedPlayerCardState`, and an orphan
-  `transforms/pureTransforms/cards/getOwnedPlayerCardState.ts` with no
-  importer. The shape-of-hand discard fold is written once for one card and
-  once for many (`commitApplyHelpers`, `applyChooseRoutDiscardEvent`).
-- `updatePlayerCardState` has only `@testing` callers and
-  `updateHiddenPlayerCardState` none; production spreads `cardState` by hand in
-  five places. `testing/README.md` names the former as the production writer.
-- `hasUnitInArray` and `arrayWithoutUnit` are hand-rolled in
-  `applyChooseShooterEvent`, `applyAssignUnitSupportEvent`,
-  `applyPerformRangedAttackEvent` and `applyUnitsLostSupportAfterRally`.
-- The four `isValidCommitTo*Event` are one function. `unitKey` has three copies
-  (`isValidIssueCommandEvent`, `isValidAssignUnitSupportEvent`,
-  `isValidSetupUnitsEvent`), each a second way of saying who a unit is.
+Mostly closed in the third pass: the seat check, the card-state orphans, the
+hand-rolled `hasUnitInArray`/`arrayWithoutUnit`, and the four commitment
+validators. Left:
+
+- `isValidSetupUnitsEvent` keeps its own `unitKey`. Setup is out of scope.
 - `eachUnitPresentOnce` and `eachCardPresentOnce` have no caller; the load
   boundary is the natural one. `eachUnitPresentOnce` ignores reserved units and
   compares identity only, which E1's design makes enough. `getEventStream` and
   `getRoundSnapshot` have no caller: nothing rebuilds state from the stream.
 - Who may be ordered (§4.3.4, §4.3.6) is checked in `getLegalUnitsForIssueCommand`
   and again in `canJoinLine`. They agree today. _Plausible._
+- `@testing`'s `updateCardState` replaces the whole card state, which
+  `replaceCardState` now does in production; the fixture setter could delegate.
 
 ### 3.4 State and event shapes
 
@@ -339,9 +337,6 @@ Left, each for a stated reason:
   state, and the attack result is spelled three ways (`resolveMelee`,
   `resolveRangedAttack`, `AttackResult`). `applyResolveMeleeEvent` translates.
   `@events` cannot import `@game`, so a shared shape would sit in `@entities`.
-- Enumerators answer "nothing" three ways: `null`, `[]` or a throw.
-  `getLegalPlayerChoiceOptions` keeps six `empty*` builders to turn `null` back
-  into an empty offer. E2 is what `null` carrying three meanings costs.
 - `completeRangedAttackCommand` closes one shot and the whole order; the
   transform tells which by re-running legality, which is how E2 reaches the
   fold. Movement has a per-unit effect. _Plausible._
@@ -384,27 +379,14 @@ Left, each for a stated reason:
 
 ## 4. Stale documents and comments
 
-- `queries/sequencing/combatOutcomes/README.md`: line 79 says the endgame uses
-  `null` for a draw; line 48 gives the rout order backwards (R5).
-- `game/substeps/meleeResolution/meleeResolutionSubstep.ts`: the JSDoc on
-  `firstPlayerAttackApplyState` says the applies resolve in initiative order.
-  `applyResolveMeleeEvent.ts:53` repeats it.
-- `events/gameEffects/movement/openRetreatFromEngagement.ts`: says an empty
-  list routs, which the D1 ruling made impossible.
-- `applyEvent.ts:29-30`: says commit events arrive with `'hidden'` cards;
-  commitments are never projected.
-- `events/README.md`: lists 14 of 19 choices and names a
-  `ResolveEngagementEvent` that does not exist.
-- `testing/README.md`: `updatePlayerCardState` as the production writer.
-- `legality/README.md`: `isValidLine`.
-- `retreatSubstep.ts:38`: "legal hexes".
-- `getLegalPlayerChoiceOptions.ts:124-125`: types `movingUnit` as `| null`,
-  which never comes.
-- `isValidChooseMeleeResolutionEvent` is exported from `@validation` and the
-  package, against ENGINES §2.
-- `getExpectedIssueCommandsPhaseEvent.ts:120-123` and
-  `generateCompleteMoveCommandersPhaseEvent.ts:30-37` read a missing in-play
-  card as "Move" or "no commands" instead of throwing.
+Closed in the third pass: each of the twelve listed spots was corrected, or the
+code it described was changed (the in-play card reads, the exported per-choice
+validator). One thing to check: the `openRetreatFromEngagement` fix rests on
+§6.3.2 and §9.1.5 (a front-engaged defender may fall back only where there is
+somewhere to go, and otherwise stands). The "D1 ruling" the old entry named is
+not in the RULEBOOK, so if D1 said something else about a defender with no
+retreat, that fix, and the throw it added in `applyOpenRetreatFromEngagementEvent`,
+are the ones to revisit.
 
 ---
 
