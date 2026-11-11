@@ -1,7 +1,3 @@
-export {
-  getAttackApplyStateFromContext,
-  updateAttackApplySubstep,
-} from './attackApplyContext';
 export { updateAttackApplyState } from './updateAttackApplyState';
 export { updateCommandResolutionState } from './updateCommandResolutionState';
 export { updateEngagementStateInMovement } from './updateEngagementStateInMovement';

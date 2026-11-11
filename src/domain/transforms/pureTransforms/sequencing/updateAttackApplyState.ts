@@ -1,13 +1,7 @@
 import type { AttackApplyState, GameState } from '@game';
-import {
-  getCurrentPhaseState,
-  getIssueCommandsPhaseState,
-  getMeleeResolutionState,
-  getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
-  hasInitiative,
-} from '@queries';
-import { updatePhaseState } from '../state';
+import { getCurrentPhaseState, getRangedAttackResolutionState } from '@queries';
+import { updateCommandResolutionState } from './updateCommandResolutionState';
+import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
 
 /**
  * Creates a new game state with the attack apply state updated.
@@ -24,38 +18,23 @@ export function updateAttackApplyState<S extends GameState>(
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const issueState = getIssueCommandsPhaseState(state);
     const ranged = getRangedAttackResolutionState(state);
     if (ranged.attackApplyState === 'pending') {
       throw new Error(
         'No attack apply state found in ranged attack resolution state',
       );
     }
-    return updatePhaseState(state, {
-      ...issueState,
-      currentCommandResolutionState: {
-        ...ranged,
-        attackApplyState,
-      },
-    });
+    return updateCommandResolutionState(state, { ...ranged, attackApplyState });
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMelee = getResolveMeleePhaseState(state);
-    const melee = getMeleeResolutionState(state);
-    const player = attackApplyState.defendingUnit.playerSide;
-
     // The slots are named for whose unit holds the result, so the owner
     // picks the slot.
-    return updatePhaseState(state, {
-      ...resolveMelee,
-      currentMeleeResolutionState: {
-        ...melee,
-        ...(hasInitiative(state, player)
-          ? { firstPlayerAttackApplyState: attackApplyState }
-          : { secondPlayerAttackApplyState: attackApplyState }),
-      },
-    });
+    return updateMeleeAttackApplyState(
+      state,
+      attackApplyState.defendingUnit.playerSide,
+      attackApplyState,
+    );
   }
 
   throw new Error(
