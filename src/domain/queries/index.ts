@@ -79,7 +79,11 @@ export {
 } from './gameOver';
 
 // Command lines present on the board from a unit.
-export { canJoinLine, getLineSegmentContainingUnit } from './line';
+export {
+  canJoinLine,
+  getLineBetweenEnds,
+  getLineSegmentContainingUnit,
+} from './line';
 
 // The other seat.
 export { getOtherPlayer } from './player';

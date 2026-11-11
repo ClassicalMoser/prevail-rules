@@ -4,9 +4,14 @@ import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
-import { createTestUnit, updateCardState } from '@testing';
+import {
+  createBoardWithFacingRow,
+  createTestCommand,
+  createTestUnit,
+  updateCardState,
+} from '@testing';
 
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updateBoardState, updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
@@ -65,7 +70,7 @@ describe('applyIssueCommandEvent function', () => {
         command,
         eventType: 'playerChoice',
         player: 'black',
-        units: [unit],
+        selection: { selectionType: 'units', units: [unit] },
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -97,7 +102,7 @@ describe('applyIssueCommandEvent function', () => {
           command,
           eventType: 'playerChoice',
           player: 'black',
-          units: [unit],
+          selection: { selectionType: 'units', units: [unit] },
         },
         state,
       );
@@ -126,7 +131,7 @@ describe('applyIssueCommandEvent function', () => {
           command,
           eventType: 'playerChoice',
           player: 'white',
-          units: [unit],
+          selection: { selectionType: 'units', units: [unit] },
         },
         state,
       );
@@ -155,7 +160,7 @@ describe('applyIssueCommandEvent function', () => {
           command: first,
           eventType: 'playerChoice',
           player: 'black',
-          units: [unit],
+          selection: { selectionType: 'units', units: [unit] },
         },
         state,
       );
@@ -178,7 +183,7 @@ describe('applyIssueCommandEvent function', () => {
         command,
         eventType: 'playerChoice',
         player: 'white',
-        units: [unit],
+        selection: { selectionType: 'units', units: [unit] },
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -210,7 +215,7 @@ describe('applyIssueCommandEvent function', () => {
         command,
         eventType: 'playerChoice',
         player: 'black',
-        units: [unit1, unit2],
+        selection: { selectionType: 'units', units: [unit1, unit2] },
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -244,7 +249,7 @@ describe('applyIssueCommandEvent function', () => {
         command,
         eventType: 'playerChoice',
         player: 'black',
-        units: [unit],
+        selection: { selectionType: 'units', units: [unit] },
       };
 
       applyIssueCommandEvent(event, state);
@@ -258,5 +263,45 @@ describe('applyIssueCommandEvent function', () => {
         originalCommandedUnitsSize,
       );
     });
+  });
+
+  it('gives a line order to every unit between its two ends', () => {
+    // Black's rank of four, E-1 to E-4, facing north, and a line order.
+    const lineCommand = createTestCommand({
+      number: 1,
+      restrictions: {
+        inspirationRangeRestriction: -1,
+        restrictionType: 'none',
+      },
+      size: 'lines',
+    });
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1', 'E-2', 'E-3', 'E-4'],
+    });
+    const base = updateBoardState(createGameStateWithCommands(), board);
+    const state = updatePhaseState(base, {
+      ...getIssueCommandsPhaseState(base),
+      remainingCommandsFirstPlayer: [lineCommand],
+    });
+
+    // Black names the line by its ends, E-3 then E-1.
+    const event: IssueCommandEvent = {
+      choiceType: 'issueCommand',
+      command: lineCommand,
+      eventType: 'playerChoice',
+      player: 'black',
+      selection: {
+        ends: [unitAt('E-3').unit, unitAt('E-1').unit],
+        selectionType: 'line',
+      },
+    };
+    const issued = applyIssueCommandEvent(event, state);
+
+    // The three units from E-1 to E-3 are commanded; E-4 is not.
+    expect(issued.currentRoundState.commandedUnits).toStrictEqual([
+      unitAt('E-1').unit,
+      unitAt('E-2').unit,
+      unitAt('E-3').unit,
+    ]);
   });
 });

@@ -1,57 +1,63 @@
-import type { UnitInstance, UnitWithPlacement } from '@entities';
 import type { ValidationResult } from '@utils';
-import type { IssueCommandEvent } from '@events';
+import type { IssueCommandEvent, UnitsOrderSelection } from '@events';
+import type { Command, PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import {
+  findLegalLine,
   getLegalIssueCommands,
-  getLegalLineEndsForIssueCommand,
-  getLegalUnitsForIssueCommand,
+  getLegalLines,
+  getLegalUnitsToOrder,
+  getLineRefusalReason,
+  getUnitsOrderRefusalReason,
 } from '@legality';
-import {
-  findMatchingCommand,
-  getLineSegmentContainingUnit,
-  getPositionOfUnit,
-  isSameUnitInstance,
-} from '@queries';
+import { findMatchingCommand, isSameUnitInstance } from '@queries';
+import { findRefusal } from '@utils';
 
-function unitKey(unit: UnitInstance): string {
-  return `${unit.playerSide}:${unit.unitType.id}:${unit.instanceNumber}`;
-}
-
-function toPlacements(
-  units: readonly UnitInstance[],
+/**
+ * A units order: each unit must have been offered after the units before
+ * it, and the order must take at least one (§4.3.2).
+ */
+function isValidUnitsOrder(
+  command: Command,
+  player: PlayerSide,
   state: GameState,
-): UnitWithPlacement[] {
-  return units.map((unit) => ({
-    placement: getPositionOfUnit(state.boardState, unit),
-    unit,
-  }));
-}
-
-function sameOrderedUnitKeys(
-  a: readonly string[],
-  b: readonly string[],
-): boolean {
-  if (a.length !== b.length) {
-    return false;
+  selection: UnitsOrderSelection,
+): ValidationResult {
+  const { units } = selection;
+  const refused = findRefusal(
+    units,
+    (soFar) => getLegalUnitsToOrder(command, player, state, soFar),
+    (a, b) => isSameUnitInstance(a, b).result,
+  );
+  if (refused === undefined) {
+    const valid: ValidationResult = { result: true };
+    return valid;
   }
-  return a.every((key, index) => key === b[index]);
+
+  if (refused.refusal === 'notOffered') {
+    const notOffered: ValidationResult = {
+      errorReason: getUnitsOrderRefusalReason(command, units, refused.index),
+      result: false,
+    };
+    return notOffered;
+  }
+
+  const empty: ValidationResult = {
+    errorReason: `Expected 1..${command.number} units, got 0`,
+    result: false,
+  };
+  return empty;
 }
 
 /**
- * Validates an IssueCommandEvent as an integral commit over atoms:
- * - {@link getLegalIssueCommands} (player + remaining commands)
- * - {@link getLegalUnitsForIssueCommand} (units / line **starts**)
- * - {@link getLegalLineEndsForIssueCommand} (ends for a chosen start)
+ * Validates an IssueCommandEvent by membership against what `@legality`
+ * offers:
+ * - {@link getLegalIssueCommands}: the player, and the orders still to give
+ * - a units order: each unit as offered by {@link getLegalUnitsToOrder}
+ * - a line order: its two ends naming one of {@link getLegalLines}
  *
- * `size: 'units'`: `1..command.number` unique fully-restricted units
- * (`number` is a **cap**, not a hard quota).
- *
- * `size: 'lines'`: UI picks start then end (singleton start=end is a line).
- * Inspiration range applies to the **start** only; trait/type restrictions
- * apply along the segment. Remaining grants are seeded as `number: 1` slots
- * (lines ×N expanded when completing move-commanders); `event.units` must be
- * the contiguous start–end segment for that single line.
+ * Remaining line grants are seeded as `number: 1` slots (lines ×N expanded
+ * when completing move-commanders), so each line order names one line.
  */
 export function isValidIssueCommandEvent(
   event: IssueCommandEvent,
@@ -77,42 +83,23 @@ export function isValidIssueCommandEvent(
     };
   }
 
-  const uniqueKeys = new Set(event.units.map(unitKey));
-  if (uniqueKeys.size !== event.units.length) {
-    return {
-      errorReason: 'Duplicate units in issue command selection',
-      result: false,
-    };
-  }
-
+  // A units order names units, and a lines order names a line.
+  const { selection } = event;
   if (matchingCommand.size === 'units') {
-    if (
-      event.units.length === 0 ||
-      event.units.length > matchingCommand.number
-    ) {
+    if (selection.selectionType !== 'units') {
       return {
-        errorReason: `Expected 1..${matchingCommand.number} units, got ${event.units.length}`,
+        errorReason: 'A units order is given to units, not to a line',
         result: false,
       };
     }
-    const eligible = getLegalUnitsForIssueCommand(
-      matchingCommand,
-      event.player,
-      state,
-    );
-    for (const unit of event.units) {
-      const found = eligible.some(
-        (candidate) => isSameUnitInstance(candidate.unit, unit).result,
-      );
-      if (!found) {
-        return {
-          errorReason:
-            'Unit is not eligible for this command under its restrictions',
-          result: false,
-        };
-      }
-    }
-    return { result: true };
+    return isValidUnitsOrder(matchingCommand, event.player, state, selection);
+  }
+
+  if (selection.selectionType !== 'line') {
+    return {
+      errorReason: 'A lines order is given to a line, named by its two ends',
+      result: false,
+    };
   }
 
   // size === 'lines' — remaining slots should already be number: 1
@@ -123,73 +110,20 @@ export function isValidIssueCommandEvent(
     };
   }
 
-  if (event.units.length === 0) {
+  // The two ends must name one of the lines that may be ordered (§4.3.5).
+  const lines = getLegalLines(matchingCommand, event.player, state);
+  if (findLegalLine(lines, selection.ends) === undefined) {
     return {
-      errorReason: 'Line command requires at least one unit',
+      errorReason: getLineRefusalReason(
+        matchingCommand,
+        event.player,
+        state,
+        selection.ends,
+      ),
       result: false,
     };
   }
 
-  const placements = toPlacements(event.units, state);
-  const start = placements.at(0);
-  const end = placements.at(-1);
-  if (start === undefined || end === undefined) {
-    return {
-      errorReason: 'Line command requires at least one unit',
-      result: false,
-    };
-  }
-
-  // The end named second must be one the line may run to from the first
-  // (§4.3.5); that also refuses a start that cannot begin a line.
-  const legalEnds = getLegalLineEndsForIssueCommand(
-    matchingCommand,
-    event.player,
-    state,
-    start,
-  );
-  if (
-    !legalEnds.some(
-      (candidate) => isSameUnitInstance(candidate.unit, end.unit).result,
-    )
-  ) {
-    return {
-      errorReason: 'Line end is not reachable from the chosen start',
-      result: false,
-    };
-  }
-
-  // The units submitted must be exactly the rank between the two ends,
-  // named in either direction.
-  const rank = getLineSegmentContainingUnit(
-    state.boardState,
-    start,
-    matchingCommand.restrictions,
-    state.currentRoundState.commandedUnits,
-  );
-  const startIndex = rank.findIndex(
-    (uwp) => isSameUnitInstance(uwp.unit, start.unit).result,
-  );
-  const endIndex = rank.findIndex(
-    (uwp) => isSameUnitInstance(uwp.unit, end.unit).result,
-  );
-  const low = Math.min(startIndex, endIndex);
-  const high = Math.max(startIndex, endIndex);
-  const expectedKeys = rank
-    .slice(low, high + 1)
-    .map((uwp) => unitKey(uwp.unit));
-  const eventKeys = event.units.map(unitKey);
-  const matchesForward = sameOrderedUnitKeys(eventKeys, expectedKeys);
-  const matchesReverse = sameOrderedUnitKeys(
-    eventKeys,
-    expectedKeys.toReversed(),
-  );
-  if (!matchesForward && !matchesReverse) {
-    return {
-      errorReason: 'Submitted units do not match the start–end line segment',
-      result: false,
-    };
-  }
-
-  return { result: true };
+  const valid: ValidationResult = { result: true };
+  return valid;
 }

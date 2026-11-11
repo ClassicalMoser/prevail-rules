@@ -188,7 +188,7 @@ function emptySetupUnits(player: PlayerSide): LegalSetupUnits {
  *
  * Uses {@link getExpectedEvent} for what/who, then packages the matching
  * `@legality` root atoms or event lists. Selection-dependent follow-ups
- * (destinations, targets, line ends, …) stay on their existing helpers.
+ * (destinations, targets, lines, …) stay on their existing helpers.
  *
  * Lives in `@validation` (not `@legality`) because it composes `@expected` +
  * `@legality` — legality cannot import expected under the layer boundaries.

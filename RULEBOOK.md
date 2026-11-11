@@ -558,13 +558,13 @@ An **engaged** unit cannot be ordered. It is locked in its fight until the engag
 **4.3.5 Lines.** A **line** is a rank of your own units standing shoulder to shoulder:
 
 - Every unit lies in the **flanking space** of the one beside it — that is, the line runs _across_ their facing, not along it.
-- Every unit faces the **same direction, or exactly the opposite** direction as the unit you name first. A rank that has about-faced is still a rank.
+- Every unit faces the **same direction as the others, or exactly the opposite**. A rank that has about-faced is still a rank.
 - The line is **unbroken**: no gaps, no enemies, no non-qualifying units in the middle.
 - A line is **1 to 8 units** long.
 
-You select a line by naming its two ends. The **near end you name must satisfy the full restrictions** including inspiration range; the **rest of the line need only satisfy the trait and type restrictions**. A line therefore reaches beyond your general's voice, so long as it starts within it.
+You select a line by naming its two ends, in either order; a line of one names the same unit twice. **At least one unit in the line must satisfy the full restrictions**, inspiration range included; **every unit need only satisfy the trait and type restrictions**. A line therefore reaches beyond your general's voice, so long as some part of it stands within it.
 
-If an unbroken rank is longer than eight units, you choose which eight.
+You may order any unbroken stretch of a rank, from one unit to eight. Nothing obliges you to take the whole rank, or the longest stretch you could.
 
 **An engaged unit breaks the line.** It cannot be commanded (§4.3.4), and a line is not allowed to run past it: commanding a line means every unit in it is commanded, with no silent passengers. Its space holds an enemy besides, which the unbroken test already refuses. A looser rule — the line flowing past its engaged members — may come back if play-tests miss it; until then the simple rule stands.
 
@@ -1250,7 +1250,7 @@ Things that come up, in the order players tend to hit them.
 
 **"Can a line include a unit I already commanded?"** No, and the line stops there rather than jumping over it. §4.3.6
 
-**"How far does a line reach from my general?"** The end you name first must be within inspiration range. The rest of the line need only match the trait and type restrictions — it can run right off into the distance. §4.3.5
+**"How far does a line reach from my general?"** One unit of the line must be within inspiration range — any one, an end or the middle. The rest need only match the trait and type restrictions, so the line can run right off into the distance either way. §4.3.5
 
 **"My card says 4 units. Do I have to order four?"** No. It is a maximum. You may order fewer, or none. §4.3.2
 

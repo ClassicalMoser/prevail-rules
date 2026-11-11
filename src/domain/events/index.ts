@@ -132,7 +132,12 @@ export type { ChooseCardEvent } from './playerChoices';
 export { chooseCardEventSchema } from './playerChoices';
 export type { MoveCommanderEvent } from './playerChoices';
 export { moveCommanderEventSchema } from './playerChoices';
-export type { IssueCommandEvent } from './playerChoices';
+export type {
+  IssueCommandEvent,
+  LineOrderSelection,
+  OrderSelection,
+  UnitsOrderSelection,
+} from './playerChoices';
 export { issueCommandEventSchema } from './playerChoices';
 export type { DoneIssuingCommandsEvent } from './playerChoices';
 export { doneIssuingCommandsEventSchema } from './playerChoices';

@@ -2,3 +2,5 @@
 export { canJoinLine } from './canJoinLine';
 // The unbroken rank a line is drawn from; a line is any run of up to eight of it.
 export { getLineSegmentContainingUnit } from './getLineSegmentContainingUnit';
+// The units of a line named by its two ends.
+export { getLineBetweenEnds } from './getLineBetweenEnds';

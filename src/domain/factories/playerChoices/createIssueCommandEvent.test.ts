@@ -6,12 +6,15 @@ describe('createIssueCommandEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
     expect.hasAssertions();
     const command = createTestCommand();
-    const units = [createTestUnit('white')];
+    const selection = {
+      selectionType: 'units' as const,
+      units: [createTestUnit('white')],
+    };
 
     const event = createIssueCommandEvent({
       command,
       player: 'white',
-      units,
+      selection,
     });
 
     expect(event).toStrictEqual({
@@ -19,7 +22,7 @@ describe('createIssueCommandEvent function', () => {
       command,
       eventType: 'playerChoice',
       player: 'white',
-      units,
+      selection,
     });
   });
 });

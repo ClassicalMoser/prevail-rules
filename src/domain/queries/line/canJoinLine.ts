@@ -22,7 +22,8 @@ import {
  * - Facing the line's way or exactly the opposite: a rank that has
  *   about-faced is still a rank.
  * - Matching the order's trait and type restrictions. Inspiration range is
- *   asked only of the end named first, not here.
+ *   asked of the line as a whole, which needs only one unit within it, not
+ *   here.
  * - Not already commanded this round: a line cannot be drawn through one
  *   (§4.3.6).
  * - Not engaged: an engaged unit cannot be commanded, and a line does not

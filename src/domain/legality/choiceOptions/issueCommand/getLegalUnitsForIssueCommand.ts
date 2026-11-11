@@ -28,7 +28,8 @@ export function unitMatchesTraitAndTypeRestrictions(
 
 /**
  * Full command restrictions: inspiration range (if applicable) + traits/types.
- * Used for `size: 'units'` (every commanded unit) and for **line starts**.
+ * Used for `size: 'units'` (every commanded unit) and for the unit a line
+ * must hold within range.
  */
 export function unitMatchesRestrictions(
   unitWithPlacement: UnitWithPlacement,
@@ -78,9 +79,10 @@ function notAlreadyCommanded(
  * (inspiration + traits/types). Excludes already-commanded units, and engaged
  * ones (§4.3.4).
  *
- * For `size: 'units'`: selection atoms.
- * For `size: 'lines'`: legal **line starts** (end may lie outside inspiration
- * range; see {@link getLegalLineEndsForIssueCommand}).
+ * For `size: 'units'`: the units that may be chosen (see
+ * {@link getLegalUnitsToOrder}).
+ * For `size: 'lines'`: the units a line may be traced from, since every line
+ * needs one unit within inspiration range (see {@link getLegalLines}).
  */
 export function getLegalUnitsForIssueCommand(
   command: Command,
@@ -94,7 +96,7 @@ export function getLegalUnitsForIssueCommand(
     if (!notAlreadyCommanded(unitWithPlacement, gameState)) {
       continue;
     }
-    // An engaged unit cannot be ordered, alone or to begin a line.
+    // An engaged unit cannot be ordered, alone or in a line.
     if (!notEngaged(unitWithPlacement, gameState)) {
       continue;
     }
@@ -111,7 +113,3 @@ export function getLegalUnitsForIssueCommand(
 
   return result;
 }
-
-/** Alias: line starts are the same atoms as fully restriction-eligible units. */
-export const getLegalLineStartsForIssueCommand: typeof getLegalUnitsForIssueCommand =
-  getLegalUnitsForIssueCommand;

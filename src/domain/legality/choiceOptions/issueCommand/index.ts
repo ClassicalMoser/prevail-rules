@@ -3,9 +3,17 @@ export {
   getLegalIssueCommands,
   type LegalIssueCommands,
 } from './getLegalIssueCommands';
-export { getLegalLineEndsForIssueCommand } from './getLegalLineEndsForIssueCommand';
 export {
-  getLegalLineStartsForIssueCommand,
+  findLegalLine,
+  getLegalLines,
+  getLineRefusalReason,
+  type LegalLine,
+} from './getLegalLines';
+export {
+  getLegalUnitsToOrder,
+  getUnitsOrderRefusalReason,
+} from './getLegalUnitsToOrder';
+export {
   getLegalUnitsForIssueCommand,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,

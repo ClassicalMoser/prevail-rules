@@ -20,13 +20,17 @@ export { getLegalCommitToRangedDefenseEvents } from './getLegalCommitToRangedDef
 export {
   getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
-  getLegalLineEndsForIssueCommand,
-  getLegalLineStartsForIssueCommand,
+  getLegalLines,
+  findLegalLine,
+  getLineRefusalReason,
+  getLegalUnitsToOrder,
+  getUnitsOrderRefusalReason,
   getLegalUnitsForIssueCommand,
   isCommandIssuable,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
   type LegalIssueCommands,
+  type LegalLine,
 } from './issueCommand';
 export { getLegalMoveUnits, type LegalMoveUnits } from './getLegalMoveUnits';
 export {

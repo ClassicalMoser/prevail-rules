@@ -61,7 +61,7 @@ describe('isValidIssueCommandEvent function', () => {
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: [unit.unit],
+      selection: { selectionType: 'units', units: [unit.unit] },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
@@ -93,7 +93,7 @@ describe('isValidIssueCommandEvent function', () => {
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: [unit.unit],
+      selection: { selectionType: 'units', units: [unit.unit] },
     });
 
     expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
@@ -125,7 +125,7 @@ describe('isValidIssueCommandEvent function', () => {
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: [unit.unit, other.unit],
+      selection: { selectionType: 'units', units: [unit.unit, other.unit] },
     });
 
     expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
@@ -148,7 +148,7 @@ describe('isValidIssueCommandEvent function', () => {
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: [],
+      selection: { selectionType: 'units', units: [] },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
@@ -186,7 +186,7 @@ describe('isValidIssueCommandEvent function', () => {
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: [far.unit],
+      selection: { selectionType: 'units', units: [far.unit] },
     });
 
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
@@ -229,12 +229,15 @@ describe('isValidIssueCommandEvent function', () => {
       }),
     );
 
-    // Black orders the whole rank. Range is traced from any unit in the
-    // line, not only from an end (§4.3.5).
+    // Black orders the whole rank, naming its two ends. Range is traced from
+    // any unit in the line, not only from an end (§4.3.5).
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: coordinates.map((coordinate) => unitAt(coordinate).unit),
+      selection: {
+        ends: [unitAt('E-1').unit, unitAt('E-8').unit],
+        selectionType: 'line',
+      },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
@@ -256,7 +259,7 @@ describe('isValidIssueCommandEvent function', () => {
     const event = createIssueCommandEvent({
       command,
       player: 'black',
-      units: [unit.unit],
+      selection: { selectionType: 'units', units: [unit.unit] },
     });
 
     // An order given while the cards are being chosen is refused by the

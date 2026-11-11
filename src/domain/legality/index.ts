@@ -28,8 +28,11 @@ export {
   canUnitRangedAttackTarget,
   getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
-  getLegalLineEndsForIssueCommand,
-  getLegalLineStartsForIssueCommand,
+  getLegalLines,
+  findLegalLine,
+  getLineRefusalReason,
+  getLegalUnitsToOrder,
+  getUnitsOrderRefusalReason,
   getLegalMoveUnits,
   getLegalShooterTargets,
   getLegalRangedAttackers,
@@ -53,6 +56,7 @@ export {
 } from './choiceOptions';
 export type {
   LegalIssueCommands,
+  LegalLine,
   LegalMoveUnits,
   LegalShooterTargets,
   LegalRangedAttackers,

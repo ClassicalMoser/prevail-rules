@@ -11,7 +11,12 @@ export type { MoveCommanderEvent } from './moveCommander';
 export { moveCommanderEventSchema } from './moveCommander';
 
 // Issue one command from the active card.
-export type { IssueCommandEvent } from './issueCommand';
+export type {
+  IssueCommandEvent,
+  LineOrderSelection,
+  OrderSelection,
+  UnitsOrderSelection,
+} from './issueCommand';
 export { issueCommandEventSchema } from './issueCommand';
 
 // Stop issuing commands with slots left unused.

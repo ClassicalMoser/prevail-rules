@@ -11,8 +11,8 @@ import {
  * commands they may still spend.
  *
  * Eligible units/lines for a chosen command are enumerated separately via
- * {@link getLegalUnitsForIssueCommand} (units / line starts) and
- * {@link getLegalLineEndsForIssueCommand} (ends for a start).
+ * {@link getLegalUnitsToOrder} (the units of a units order) and
+ * {@link getLegalLines} (every line a lines order may take).
  *
  */
 export interface LegalIssueCommands {

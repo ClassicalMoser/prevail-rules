@@ -3,6 +3,7 @@ import type { GameState, IssueCommandsPhaseState } from '@game';
 import {
   findMatchingCommand,
   getIssueCommandsPhaseState,
+  getLineBetweenEnds,
   isFriendlyUnit,
   getRemainingCommandsForPlayer,
 } from '@queries';
@@ -14,7 +15,8 @@ import {
 
 /**
  * Applies an IssueCommandEvent to the game state.
- * Removes the command from remaining commands and adds the units to commandedUnits.
+ * Removes the command from remaining commands and adds the units it orders,
+ * or the line between its two ends, to commandedUnits.
  * When that player's remaining commands are exhausted on their issue step, advances
  * to the matching resolve-commands step and seeds `remainingUnits*` for resolution.
  * Event is assumed pre-validated (issueCommands phase, command in that player's remaining commands).
@@ -29,8 +31,19 @@ export function applyIssueCommandEvent<S extends GameState>(
 ): S {
   const phaseState = getIssueCommandsPhaseState(state);
   const { player } = event;
-  const { command } = event;
-  const { units } = event;
+  const { command, selection } = event;
+
+  // A units order names its units. A line order names only its ends, and
+  // the board says who stands between them (§4.3.5).
+  const units =
+    selection.selectionType === 'units'
+      ? selection.units
+      : getLineBetweenEnds(
+          state.boardState,
+          selection.ends,
+          command.restrictions,
+          state.currentRoundState.commandedUnits,
+        ).map((member) => member.unit);
 
   // Determine if this is the first or second player
   const isFirstPlayer = player === state.currentInitiative;

@@ -10,7 +10,7 @@ import { isSameUnitInstance } from './unitEquivalence';
  * @returns True when a member matches by value
  */
 export function hasUnitInArray(
-  units: UnitInstance[],
+  units: readonly UnitInstance[],
   unit: UnitInstance,
 ): boolean {
   const found = units.some((member) => isSameUnitInstance(member, unit).result);

@@ -146,7 +146,8 @@ for an atomic choice or named root atoms for a compound one. Follow-ups that
 depend on a selection stay on their own helpers — `getLegalUnitMoves` (every
 ending with a path to it), `findLegalMoveDeltas` (the next step or turn of a
 path being written), `getLegalRangedAttackTargets`,
-`getLegalLineEndsForIssueCommand`, `getLegalUnitSupportAssignments`.
+`getLegalLines` (every line a lines order may take, listed whole),
+`getLegalUnitsToOrder`, `getLegalUnitSupportAssignments`.
 
 A choice too large to list whole is offered a part at a time, as a
 `OpenChoice` (`@utils`): the parts that may come next after the parts chosen
@@ -155,8 +156,10 @@ choice is a stopping rule: a move owes its squaring turn (§6.2.3), and a
 player must fill any support place an uncovered unit could take (§10.4.5).
 The validator walks the submitted choice through the same offers with
 `findRefusal` and only words the refusal, so a client is never refused
-by a rule its offers did not show. Moves (`findLegalMoveDeltas`) and unit
-support (`getLegalUnitSupportAssignments`) are offered this way.
+by a rule its offers did not show. Moves (`findLegalMoveDeltas`), the units
+of a units order (`getLegalUnitsToOrder`) and unit support
+(`getLegalUnitSupportAssignments`) are offered this way. A line is fixed by
+its two ends, so lines are few enough to list whole.
 
 ## How they fit
 
