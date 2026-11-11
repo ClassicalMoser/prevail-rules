@@ -46,9 +46,12 @@ where it is — usually because an event told it — and wants the substep there
 These throw when the context does not hold what they name.
 
 **A selection picks among candidates by a rule of the game.** `getNextMeleeRoutState`
-resolves the initiative player's side first because the rules say so.
+resolves the second player's unit first, because that unit routs first (§7.5.6).
 `findRoutOwingDiscard` picks the side that still owes cards;
-`findRoutAwaitingPenalty` picks the rout `resolveRout` is due for;
+`findRoutAwaitingPenalty` picks the rout `resolveRout` is due for. Both ask the
+initiative player's side first, which settles a tie that never arises: the
+sequencer owns the order of routs and opens them one at a time, so at most one
+rout is ever awaiting;
 `findRetreatAwaitingMove` and `findRetreatAwaitingRout` pick the retreat
 `resolveRetreat` or `triggerRoutFromRetreat` is due for, asking after the units
 in the order they suffer (§7.5.6). These are the

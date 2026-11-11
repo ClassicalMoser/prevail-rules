@@ -12,8 +12,10 @@ import { findRoutLocation } from './findRoutLocation';
  * parent comes back too, because applying that effect has to write the penalty
  * to the slot it came from.
  *
- * Both sides are asked after in initiative order, and the question is asked
- * together with the walk: a side whose penalty is already known still holds its
+ * Both sides are asked after, the initiative player's first. That order
+ * decides nothing: the sequencer owns the order of routs (the second player's
+ * unit first, §7.5.6) and opens them one at a time, so at most one is ever
+ * awaiting. The question is asked together with the walk: a side whose penalty is already known still holds its
  * rout, so a walk that answered with the first rout it found would answer about
  * the wrong player.
  *

@@ -7,8 +7,9 @@ import { isAwaitingRoutDiscard } from './isAwaitingRoutDiscard';
  * The rout waiting on its owner's discard, whichever player owes it.
  *
  * A rout belongs to one player, and a melee holds one per side, so both sides
- * are asked after — in initiative order, which is the order their applies
- * resolve in.
+ * are asked after, the initiative player's first. That order decides nothing:
+ * the sequencer owns the order of routs (the second player's unit first,
+ * §7.5.6) and opens them one at a time, so at most one is ever owed.
  *
  * The question is asked together with the walk rather than after it: a side
  * whose rout is already paid for still has that rout on its apply, so a walk
