@@ -1,22 +1,11 @@
 import type { ChooseRallyEvent } from '@events';
-import type { GameState, RallyResolutionState } from '@game';
+import type { GameState } from '@game';
+import { createOpenedRallyResolutionState } from '@factories';
 import { getNextStepForChooseRally, getRallyingPlayer } from '@queries';
 import {
   updateCleanupStep,
   updateRallyResolutionState,
 } from '@transforms/pureTransforms';
-
-function initialRallyResolutionState(
-  playerRallied: boolean,
-): RallyResolutionState {
-  return {
-    completed: false,
-    playerRallied,
-    rallyResolved: false,
-    routState: 'pending',
-    unitsLostSupport: 'pending',
-  };
-}
 
 /**
  * Applies a ChooseRallyEvent to the game state.
@@ -40,7 +29,7 @@ export function applyChooseRallyEvent<S extends GameState>(
   const withRally = updateRallyResolutionState(
     state,
     getRallyingPlayer(state),
-    initialRallyResolutionState(performRally),
+    createOpenedRallyResolutionState(performRally),
   );
   const newGameState = updateCleanupStep(withRally, nextStep);
   return newGameState;

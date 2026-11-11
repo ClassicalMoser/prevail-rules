@@ -10,7 +10,12 @@ import type {
   ReverseState,
   RoutState,
 } from '@game';
-import { createOpenedRetreatState } from '@factories';
+import {
+  createOpenedRallyResolutionState,
+  createOpenedRetreatState,
+  createOpenedReverseState,
+  createOpenedRoutState,
+} from '@factories';
 
 /**
  * Creates a RetreatState for a unit forced back by combat (§9.1).
@@ -43,15 +48,8 @@ export function createRoutState(
   unit: UnitInstance,
   overrides?: Partial<RoutState>,
 ): RoutState {
-  return {
-    cardsChosen: false,
-    completed: false,
-    numberToDiscard: 'pending',
-    player,
-    substepType: 'rout',
-    unitsToRout: [unit],
-    ...overrides,
-  };
+  const opened = createOpenedRoutState(player, [unit]);
+  return { ...opened, ...overrides };
 }
 
 /**
@@ -61,13 +59,8 @@ export function createReverseState(
   unit: UnitInstance,
   overrides?: Partial<ReverseState>,
 ): ReverseState {
-  return {
-    completed: false,
-    finalPosition: 'pending',
-    reversingUnit: unit,
-    substepType: 'reverse',
-    ...overrides,
-  };
+  const opened = createOpenedReverseState(unit);
+  return { ...opened, ...overrides };
 }
 
 /**
@@ -76,12 +69,6 @@ export function createReverseState(
 export function createRallyResolutionState(
   overrides?: Partial<RallyResolutionState>,
 ): RallyResolutionState {
-  return {
-    completed: false,
-    playerRallied: false,
-    rallyResolved: false,
-    routState: 'pending',
-    unitsLostSupport: 'pending',
-    ...overrides,
-  };
+  const opened = createOpenedRallyResolutionState(false);
+  return { ...opened, ...overrides };
 }

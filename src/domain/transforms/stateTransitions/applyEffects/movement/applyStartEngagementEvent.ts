@@ -1,10 +1,11 @@
 import type { StartEngagementEvent } from '@events';
-import { createOpenedRoutState } from '@factories';
-import type {
-  EngagementResolutionState,
-  EngagementState,
-  GameState,
-} from '@game';
+import type { GameState } from '@game';
+import {
+  createOpenedEngagementState,
+  createOpenedFlankEngagementResolutionState,
+  createOpenedFrontEngagementResolutionState,
+  createOpenedRearEngagementResolutionState,
+} from '@factories';
 import { getMovementResolutionState } from '@queries';
 import {
   carryRidingCommander,
@@ -39,52 +40,30 @@ export function applyStartEngagementEvent<S extends GameState>(
   );
   const defendingUnit = event.defenderWithPlacement.unit;
   const engagingUnit = movementState.movingUnit.unit;
-  const defendingPlayer = defendingUnit.playerSide;
 
-  // Create the appropriate engagement resolution state based on engagement type
-  const engagementResolutionState: EngagementResolutionState = (() => {
+  // How the engaging unit meets the defender decides how the engagement opens.
+  const engagementResolutionState = (() => {
     switch (event.engagementType) {
       case 'rear': {
-        // Rear engagement: seed rout; penalty filled by resolveRout
-        return {
-          completed: false,
-          engagementType: 'rear' as const,
-          routState: createOpenedRoutState(defendingPlayer, [defendingUnit]),
-        };
+        return createOpenedRearEngagementResolutionState(defendingUnit);
       }
       case 'flank': {
-        // Flank engagement: defender will be rotated
-        return {
-          defenderRotated: false,
-          engagementType: 'flank' as const,
-        };
+        return createOpenedFlankEngagementResolutionState();
       }
       case 'front': {
-        // Front engagement: requires check for defensive commitment
-        return {
-          defendingUnitCanRetreat: 'pending',
-          defendingUnitRetreats: 'pending',
-          defensiveCommitment: { commitmentType: 'pending' as const },
-          engagementType: 'front' as const,
-          retreatState: 'pending',
-        };
+        return createOpenedFrontEngagementResolutionState();
       }
       default: {
-        // Exhaustiveness check for TypeScript
         const _exhaustive: never = event.engagementType;
         throw new Error(`Unknown engagement type: ${_exhaustive}`);
       }
     }
   })();
-
-  // Create engagement state
-  const engagementState: EngagementState = {
-    completed: false,
+  const engagementState = createOpenedEngagementState(
     engagementResolutionState,
     engagingUnit,
-    substepType: 'engagementResolution' as const,
     targetPlacement,
-  };
+  );
 
   const withEngagement = updateEngagementStateInMovement(
     state,

@@ -1,4 +1,5 @@
 import type { GameState } from '@game';
+import { replaceCardState } from '@transforms';
 
 /**
  * Test-harness helper: returns a new game state with its card state replaced,
@@ -24,8 +25,6 @@ export function updateCardState<S extends GameState>(
   state: S,
   cardState: S['cardState'],
 ): S {
-  return {
-    ...state,
-    cardState,
-  };
+  const updated = replaceCardState(state, cardState);
+  return updated;
 }

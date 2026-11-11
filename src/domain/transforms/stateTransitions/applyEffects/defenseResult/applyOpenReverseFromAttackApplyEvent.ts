@@ -1,5 +1,6 @@
 import type { OpenReverseFromAttackApplyEvent } from '@events';
-import type { GameState, ReverseState } from '@game';
+import type { GameState } from '@game';
+import { createOpenedReverseState } from '@factories';
 import { getAttackApplyStateAt } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
 
@@ -27,12 +28,7 @@ export function applyOpenReverseFromAttackApplyEvent<S extends GameState>(
   }
 
   // The reverse holds the unit by identity; position is read when it resolves.
-  const reverseState: ReverseState = {
-    completed: false,
-    finalPosition: 'pending',
-    reversingUnit: apply.defendingUnit,
-    substepType: 'reverse',
-  };
+  const reverseState = createOpenedReverseState(apply.defendingUnit);
 
   const nextApply = {
     ...apply,

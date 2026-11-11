@@ -7,7 +7,12 @@ import type {
 } from '@game';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
-import { createRoutState } from './substepStates';
+import {
+  createOpenedEngagementState,
+  createOpenedFlankEngagementResolutionState,
+  createOpenedFrontEngagementResolutionState,
+  createOpenedRearEngagementResolutionState,
+} from '@factories';
 
 const defaultEngagingUnit = (): UnitInstance =>
   createUnitWithPlacement({ playerSide: 'black' }).unit;
@@ -25,20 +30,16 @@ export function createFrontEngagementState(
 ): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
-  return {
-    completed: false,
-    engagementResolutionState: {
-      defendingUnitCanRetreat: 'pending',
-      defendingUnitRetreats: 'pending',
-      defensiveCommitment: { commitmentType: 'pending' },
-      engagementType: 'front',
-      retreatState: 'pending',
-      ...overrides,
-    },
-    engagingUnit: defaultEngagingUnit(),
-    substepType: 'engagementResolution',
-    targetPlacement: defaultTargetPlacement,
+  const resolution: FrontEngagementResolutionState = {
+    ...createOpenedFrontEngagementResolutionState(),
+    ...overrides,
   };
+  const engagement = createOpenedEngagementState(
+    resolution,
+    defaultEngagingUnit(),
+    defaultTargetPlacement,
+  );
+  return { ...engagement, engagementResolutionState: resolution };
 }
 
 /**
@@ -49,37 +50,35 @@ export function createFlankEngagementState(
 ): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
-  return {
-    completed: false,
-    engagementResolutionState: {
-      defenderRotated: false,
-      engagementType: 'flank',
-      ...overrides,
-    },
-    engagingUnit: defaultEngagingUnit(),
-    substepType: 'engagementResolution',
-    targetPlacement: defaultTargetPlacement,
+  const resolution: FlankEngagementResolutionState = {
+    ...createOpenedFlankEngagementResolutionState(),
+    ...overrides,
   };
+  const engagement = createOpenedEngagementState(
+    resolution,
+    defaultEngagingUnit(),
+    defaultTargetPlacement,
+  );
+  return { ...engagement, engagementResolutionState: resolution };
 }
 
 /**
- * Creates a rear EngagementState with sensible defaults.
+ * Creates a rear EngagementState with sensible defaults: white's unit is
+ * engaged from the rear, and its rout is open.
  */
 export function createRearEngagementState(
   overrides?: Partial<RearEngagementResolutionState>,
 ): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
-  return {
-    completed: false,
-    engagementResolutionState: {
-      completed: false,
-      engagementType: 'rear',
-      routState: createRoutState('white', createTestUnit('white')),
-      ...overrides,
-    },
-    engagingUnit: defaultEngagingUnit(),
-    substepType: 'engagementResolution',
-    targetPlacement: defaultTargetPlacement,
+  const resolution: RearEngagementResolutionState = {
+    ...createOpenedRearEngagementResolutionState(createTestUnit('white')),
+    ...overrides,
   };
+  const engagement = createOpenedEngagementState(
+    resolution,
+    defaultEngagingUnit(),
+    defaultTargetPlacement,
+  );
+  return { ...engagement, engagementResolutionState: resolution };
 }

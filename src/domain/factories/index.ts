@@ -59,7 +59,13 @@ export { createUnitInstance } from './unit';
 // The attack-apply an attack leaves behind, with each outcome due or bypassed.
 export {
   createAttackApplyState,
+  createOpenedEngagementState,
+  createOpenedFlankEngagementResolutionState,
+  createOpenedFrontEngagementResolutionState,
   createOpenedMeleeResolutionState,
+  createOpenedRearEngagementResolutionState,
+  createOpenedRallyResolutionState,
   createOpenedRetreatState,
+  createOpenedReverseState,
   createOpenedRoutState,
 } from './substeps';
