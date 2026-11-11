@@ -86,23 +86,32 @@ export function normalizeUnitPlacement(
 
 /**
  * Assigns instance numbers to specs.
- * Auto-assigned numbers increment sequentially (1, 2, 3, ...).
+ * Auto-assigned numbers count up from 1 for each player's units of each type,
+ * as an army numbers its copies of a unit type (§3.1), so no layout of one
+ * side passes the limit on copies of a type. A spec that names no unit type
+ * counts with the others that name none.
  * Explicitly specified numbers are preserved (duplicates allowed).
  */
 export function assignInstanceNumbers(
   specs: UnitPlacementSpec[],
 ): { spec: UnitPlacementSpec; instanceNumber: number }[] {
-  let nextAutoNumber = 1;
+  // The last number given to each player's units of each type.
+  const lastNumber = new Map<string, number>();
   const result: { spec: UnitPlacementSpec; instanceNumber: number }[] = [];
 
   for (const spec of specs) {
     const explicit = getExplicitInstanceNumber(spec);
     if (explicit !== undefined) {
       result.push({ instanceNumber: explicit, spec });
-    } else {
-      result.push({ instanceNumber: nextAutoNumber, spec });
-      nextAutoNumber++;
+      continue;
     }
+    const [player, unitTypeId] = Array.isArray(spec)
+      ? [spec[1], undefined]
+      : [spec.player, spec.unitType?.id];
+    const key = `${player}:${unitTypeId ?? 'default'}`;
+    const instanceNumber = (lastNumber.get(key) ?? 0) + 1;
+    lastNumber.set(key, instanceNumber);
+    result.push({ instanceNumber, spec });
   }
 
   return result;

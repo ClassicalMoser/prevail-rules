@@ -270,10 +270,10 @@ Left for the author:
   caller. That was before the author said functions with no caller may be
   consumer API. It writes the hand of a seat that cannot see it, which is what
   a client holds. Restore it, or leave it gone?
-- **The test helper `assignInstanceNumbers`** numbers units 1, 2, 3… across both
-  players and all unit types. A layout of more than 12 auto-numbered units would
-  get numbers the schema now rejects. Nothing parses them and no spec does it
-  today; numbering per player and type would match the game.
+- ~~**The test helper `assignInstanceNumbers`** numbered units across both
+  players and all unit types.~~ Done (seventh pass): it numbers per player and
+  unit type, as an army does, so no layout of one side passes the limit of 12.
+  One spec expected the old overall numbering and was corrected.
 - **Public exports removed this session**, for the client/server handoff list:
   `meleeModifierTypes` and its three sibling tables with their four types
   (moved to `@ruleValues` under new names), `isValidChooseMeleeResolutionEvent`,

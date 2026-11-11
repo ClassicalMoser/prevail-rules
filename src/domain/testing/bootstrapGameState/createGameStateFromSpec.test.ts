@@ -178,7 +178,9 @@ describe('createGameState function', () => {
     expect(unit1?.unit.instanceNumber).toBe(1);
     expect(unit2?.unit.instanceNumber).toBe(12);
     expect(unit3?.unit.instanceNumber).toBe(2);
-    expect(unit4?.unit.instanceNumber).toBe(3);
+    // White numbers its own units: its auto-numbered one is its first, since
+    // the explicit 12 was given by hand and is not counted.
+    expect(unit4?.unit.instanceNumber).toBe(1);
   });
 
   it('given accept custom initiative', () => {
