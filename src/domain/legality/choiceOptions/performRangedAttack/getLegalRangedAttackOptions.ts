@@ -3,6 +3,7 @@ import type { GameState } from '@game';
 import {
   getBoardCoordinates,
   getBoardSpace,
+  getIssueCommandsPhaseState,
   getOtherPlayer,
   findPositionOfUnit,
   hasSingleUnit,
@@ -57,16 +58,17 @@ export function getLegalRangedAttackTargets(
  *
  * Each supporter is judged at its own Range: the shooter's committed card
  * helps the shooter alone (§8.4.1), so it does not stretch a supporter's arc.
+ *
+ * @throws Error outside the issue commands phase
  */
 export function getLegalRangedAttackSupporters(
   attacker: UnitWithPlacement,
   target: UnitWithPlacement,
   gameState: GameState,
 ): UnitWithPlacement[] {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'issueCommands') {
-    return [];
-  }
+  // Supporters are asked for only while a shot is being carried out, in
+  // Phase 3; being asked at any other time is the caller's mistake.
+  getIssueCommandsPhaseState(gameState);
 
   const player = attacker.unit.playerSide;
   const remaining = getRemainingUnitsForPlayer(gameState, player);
