@@ -12,7 +12,7 @@ import {
 import {
   addUnitToBoard,
   carryRidingCommander,
-  removeUnitFromBoard,
+  moveUnitOnBoard,
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -57,18 +57,23 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
     moverWithPlacement,
   ).result;
   const leavingStartingHex = stillOnStartingHex && !moverAlreadyPresent;
-  const boardAfterLift = leavingStartingHex
-    ? removeUnitFromBoard(state.boardState, moverWithPlacement)
-    : state.boardState;
   const arrival = {
     placement: targetPlacement,
     unit: mover,
   };
   // A front or flank engagement places the mover only now; a commander
   // riding with it comes off the start space with it (§4.3.10).
-  const boardWithUnit = moverAlreadyPresent
-    ? state.boardState
-    : addUnitToBoard(boardAfterLift, arrival);
+  // TODO(wrong): a mover that is neither on its start space nor already at
+  // its destination is not on the board, and is set down from nowhere. This
+  // looks unreachable (a rear engagement and open ground both place the mover
+  // before the move completes); what would settle it is a spec that reaches
+  // it, or a throw here.
+  let boardWithUnit = state.boardState;
+  if (leavingStartingHex) {
+    boardWithUnit = moveUnitOnBoard(state.boardState, mover, targetPlacement);
+  } else if (!moverAlreadyPresent) {
+    boardWithUnit = addUnitToBoard(state.boardState, arrival);
+  }
   const boardWithMover = leavingStartingHex
     ? carryRidingCommander(
         boardWithUnit,

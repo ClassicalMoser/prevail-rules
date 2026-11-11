@@ -7,9 +7,8 @@ import {
   getPlacementAfterPath,
 } from '@queries';
 import {
-  addUnitToBoard,
   moveCommanderOnBoard,
-  removeUnitFromBoard,
+  moveUnitOnBoard,
   updateBoardState,
   updateEngagementStateInMovement,
   updateRetreatState,
@@ -42,14 +41,13 @@ export function applyResolveRetreatEvent<S extends GameState>(
   if (landing === undefined) {
     throw new Error('The retreat path leaves the board');
   }
-  const arrived = { placement: landing, unit: event.startingPosition.unit };
 
   // Move the unit on the board
-  const removedUnitBoard = removeUnitFromBoard(
+  const unitMovedBoard = moveUnitOnBoard(
     state.boardState,
-    event.startingPosition,
+    event.startingPosition.unit,
+    landing,
   );
-  const unitMovedBoard = addUnitToBoard(removedUnitBoard, arrived);
 
   // A commander standing with the retreating unit always goes with it
   // (§9.1.8). Only the unit's own commander: an enemy commander that rode

@@ -11,9 +11,8 @@ import {
   getMovementResolutionState,
 } from '@queries';
 import {
-  addUnitToBoard,
   carryRidingCommander,
-  removeUnitFromBoard,
+  moveUnitOnBoard,
   removeUnitsLeavingUnderRout,
   updateBoardState,
   updatePhaseState,
@@ -131,10 +130,7 @@ export function applyStartEngagementEvent<S extends GameState>(
   const attackerPlaced = updateBoardState(
     defenderGone,
     carryRidingCommander(
-      addUnitToBoard(
-        removeUnitFromBoard(defenderGone.boardState, movementState.movingUnit),
-        arrived,
-      ),
+      moveUnitOnBoard(defenderGone.boardState, engagingUnit, targetPlacement),
       movementState,
       targetPlacement.coordinate,
     ),

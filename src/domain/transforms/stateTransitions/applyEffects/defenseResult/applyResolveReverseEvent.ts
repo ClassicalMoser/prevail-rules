@@ -6,8 +6,7 @@ import {
 } from '@queries';
 import { throwIfBypassed } from '@utils';
 import {
-  addUnitToBoard,
-  removeUnitFromBoard,
+  moveUnitOnBoard,
   updateBoardState,
   updateReverseState,
 } from '@transforms/pureTransforms';
@@ -24,13 +23,11 @@ export function applyResolveReverseEvent<S extends GameState>(
   event: ResolveReverseEvent,
   state: S,
 ): S {
-  const removedUnitBoard = removeUnitFromBoard(
+  // The unit turns about where it stands.
+  const addedUnitBoard = moveUnitOnBoard(
     state.boardState,
-    event.unitInstance,
-  );
-  const addedUnitBoard = addUnitToBoard(
-    removedUnitBoard,
-    event.newUnitPlacement,
+    event.unitInstance.unit,
+    event.newUnitPlacement.placement,
   );
 
   const attackApplyState = getAttackApplyStateAt(state, {

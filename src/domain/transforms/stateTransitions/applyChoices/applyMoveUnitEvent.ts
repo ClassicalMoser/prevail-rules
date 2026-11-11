@@ -7,9 +7,8 @@ import {
   hasEnemyUnit,
 } from '@queries';
 import {
-  addUnitToBoard,
   carryRidingCommander,
-  removeUnitFromBoard,
+  moveUnitOnBoard,
   updateBoardState,
   updateCommandResolutionState,
 } from '@transforms/pureTransforms';
@@ -58,7 +57,7 @@ export function applyMoveUnitEvent<S extends GameState>(
   const board = enteringEnemy
     ? state.boardState
     : carryRidingCommander(
-        addUnitToBoard(removeUnitFromBoard(state.boardState, mover), arrived),
+        moveUnitOnBoard(state.boardState, mover.unit, destination),
         written,
         destination.coordinate,
       );

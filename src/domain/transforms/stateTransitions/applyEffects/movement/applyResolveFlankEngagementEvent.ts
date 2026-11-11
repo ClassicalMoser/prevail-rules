@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
 import type {
   EngagementState,
@@ -13,8 +12,7 @@ import {
   getMovementResolutionState,
 } from '@queries';
 import {
-  addUnitToBoard,
-  removeUnitFromBoard,
+  moveUnitOnBoard,
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -36,19 +34,11 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
 
   const { unit, placement } = event.defenderWithPlacement;
 
-  const removedUnitBoard = removeUnitFromBoard(
-    state.boardState,
-    event.defenderWithPlacement,
-  );
-
-  const newUnitWithPlacement: UnitWithPlacement = {
-    placement: {
-      ...placement,
-      facing: event.newFacing,
-    },
-    unit,
-  };
-  const updatedBoard = addUnitToBoard(removedUnitBoard, newUnitWithPlacement);
+  // The defender is dragged round to face the engaging unit (§6.3.4).
+  const updatedBoard = moveUnitOnBoard(state.boardState, unit, {
+    ...placement,
+    facing: event.newFacing,
+  });
 
   const newFlankResolutionState: FlankEngagementResolutionState = {
     ...flankResolutionState,
