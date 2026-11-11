@@ -13,7 +13,7 @@ import {
  *
  * No Vitest imports.
  */
-import type { GameStateForVisibility, IssueCommandsPhaseState } from '@game';
+import type { AuthoritativeGameState, IssueCommandsPhaseState } from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
@@ -44,9 +44,9 @@ import { createTestUnit, createUnitByStat } from './unitHelpers';
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
 export const procedureRegistryStateFactories: Record<
   GameEffectType,
-  () => GameStateForVisibility
+  () => AuthoritativeGameState
 > = {
-  completeAttackApply: (): GameStateForVisibility => {
+  completeAttackApply: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -70,10 +70,10 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(stateWithUnit, phaseState);
   },
 
-  completeCleanupPhase: (): GameStateForVisibility =>
+  completeCleanupPhase: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  completeIssueCommandsPhase: (): GameStateForVisibility => {
+  completeIssueCommandsPhase: (): AuthoritativeGameState => {
     const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
@@ -89,10 +89,10 @@ export const procedureRegistryStateFactories: Record<
     );
   },
 
-  completeMeleeResolution: (): GameStateForVisibility =>
+  completeMeleeResolution: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  completeMoveCommandersPhase: (): GameStateForVisibility => {
+  completeMoveCommandersPhase: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
@@ -105,28 +105,28 @@ export const procedureRegistryStateFactories: Record<
     });
   },
 
-  completePlayCardsPhase: (): GameStateForVisibility =>
+  completePlayCardsPhase: (): AuthoritativeGameState =>
     updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     }),
 
-  completeMovementCommand: (): GameStateForVisibility =>
+  completeMovementCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  completeRangedAttackCommand: (): GameStateForVisibility =>
+  completeRangedAttackCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  completeResolveMeleePhase: (): GameStateForVisibility =>
+  completeResolveMeleePhase: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  completeUnitMovement: (): GameStateForVisibility =>
+  completeUnitMovement: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  discardPlayedCards: (): GameStateForVisibility =>
+  discardPlayedCards: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  gameOver: (): GameStateForVisibility => {
+  gameOver: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
     return updateCardState(base, {
       ...base.cardState,
@@ -134,7 +134,7 @@ export const procedureRegistryStateFactories: Record<
     });
   },
 
-  openRetreatFromAttackApply: (): GameStateForVisibility => {
+  openRetreatFromAttackApply: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -164,7 +164,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  openReverseFromAttackApply: (): GameStateForVisibility => {
+  openReverseFromAttackApply: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -194,7 +194,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  openRoutFromAttackApply: (): GameStateForVisibility => {
+  openRoutFromAttackApply: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -224,7 +224,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  openRetreatFromEngagement: (): GameStateForVisibility => {
+  openRetreatFromEngagement: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     // A defender engaged from the front, fast enough to get away, that has
@@ -256,7 +256,7 @@ export const procedureRegistryStateFactories: Record<
     );
   },
 
-  resolveEngageRetreatOption: (): GameStateForVisibility => {
+  resolveEngageRetreatOption: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 4);
@@ -288,7 +288,7 @@ export const procedureRegistryStateFactories: Record<
     );
   },
 
-  resolveFlankEngagement: (): GameStateForVisibility => {
+  resolveFlankEngagement: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
@@ -316,7 +316,7 @@ export const procedureRegistryStateFactories: Record<
     );
   },
 
-  resolveInitiative: (): GameStateForVisibility => {
+  resolveInitiative: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -335,7 +335,7 @@ export const procedureRegistryStateFactories: Record<
     });
   },
 
-  resolveMelee: (): GameStateForVisibility => {
+  resolveMelee: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -359,7 +359,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(s, phase);
   },
 
-  resolveRally: (): GameStateForVisibility => {
+  resolveRally: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
     const played = 'black' as const;
     const card = createTestCard();
@@ -376,7 +376,7 @@ export const procedureRegistryStateFactories: Record<
     );
   },
 
-  resolveRangedAttack: (): GameStateForVisibility => {
+  resolveRangedAttack: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -399,7 +399,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveRetreat: (): GameStateForVisibility => {
+  resolveRetreat: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -435,7 +435,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveReverse: (): GameStateForVisibility => {
+  resolveReverse: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -462,7 +462,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveRout: (): GameStateForVisibility => {
+  resolveRout: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -487,7 +487,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  revealCards: (): GameStateForVisibility => {
+  revealCards: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
     return updateCardState(base, {
       ...base.cardState,
@@ -502,7 +502,7 @@ export const procedureRegistryStateFactories: Record<
     });
   },
 
-  startEngagement: (): GameStateForVisibility => {
+  startEngagement: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
@@ -535,7 +535,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  triggerRoutFromRetreat: (): GameStateForVisibility => {
+  triggerRoutFromRetreat: (): AuthoritativeGameState => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {

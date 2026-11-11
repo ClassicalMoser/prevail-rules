@@ -1,22 +1,27 @@
 import type { AssertExact } from '@utils';
-import type { GameStateForVisibility } from './gameStateForVisibility';
+import type { SpectatorCardState } from '@game/cardState';
+import type { GameStateBase } from './gameStateBase';
 
-import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { spectatorCardStateSchema } from '@game/cardState';
-import { roundStateSchema } from '@game/roundState';
+import { gameStateBaseSchema } from './gameStateBase';
 
-const _spectatorGameStateSchemaObject = z
-  .object({
-    boardState: boardSchema,
+/**
+ * The game state as a spectator: both hands hidden.
+ * The `visibility` tag names the view, and the card state is the one that
+ * view may read, so the two cannot disagree.
+ */
+export interface SpectatorGameState extends GameStateBase {
+  /** The view this state is. */
+  visibility: 'spectator';
+  /** The cards this view may read. */
+  cardState: SpectatorCardState;
+}
+
+const _spectatorGameStateSchemaObject = gameStateBaseSchema
+  .extend({
     cardState: spectatorCardStateSchema,
-    currentInitiative: playerSideSchema,
-    currentRoundNumber: z.int().min(0),
-    currentRoundState: roundStateSchema,
-    lostCommanders: z.array(playerSideSchema),
-    reservedUnits: z.array(unitInstanceSchema),
-    routedUnits: z.array(unitInstanceSchema),
-    winner: playerSideSchema.optional(),
+    visibility: z.literal('spectator'),
   })
   .strict();
 
@@ -24,12 +29,11 @@ type SpectatorGameStateSchemaType = z.infer<
   typeof _spectatorGameStateSchemaObject
 >;
 
-/** Schema for spectator {@link GameStateForVisibility}. */
-export const spectatorGameStateSchema: z.ZodType<
-  GameStateForVisibility<'spectator'>
-> = _spectatorGameStateSchemaObject;
+/** Schema for {@link SpectatorGameState}. */
+export const spectatorGameStateSchema: z.ZodType<SpectatorGameState> =
+  _spectatorGameStateSchemaObject;
 
-const _assertExactSpectatorGameState: AssertExact<
-  GameStateForVisibility<'spectator'>,
+const _assertSpectatorGameState: AssertExact<
+  SpectatorGameState,
   SpectatorGameStateSchemaType
 > = true;

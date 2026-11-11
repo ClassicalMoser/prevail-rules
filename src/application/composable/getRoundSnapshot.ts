@@ -1,5 +1,5 @@
 import type { GameMode } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { RoundSnapshotStorage } from '@application/ports';
 import { parseLegalGameStateForMode } from '../utils/parseLegalGame';
 
@@ -20,7 +20,7 @@ export async function getRoundSnapshot(
   roundNumber: number,
   gameMode: GameMode,
   roundSnapshotStorage: RoundSnapshotStorage,
-): Promise<GameStateForVisibility<'authoritative'> | undefined> {
+): Promise<AuthoritativeGameState | undefined> {
   const result = await roundSnapshotStorage.getRoundSnapshot(
     gameId,
     roundNumber,

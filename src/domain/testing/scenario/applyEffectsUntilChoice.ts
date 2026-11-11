@@ -1,5 +1,5 @@
 import type { ExpectedEventInfo } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { RandomSource } from '@utils';
 import { getExpectedEvent } from '@expected';
 import { generateEventFromProcedure } from '@procedures';
@@ -19,10 +19,8 @@ import { applyEvent } from '@transforms';
  * @param state - The state to run from
  * @returns The state where play stops, and the player choice it waits on — or `'gameOver'`
  */
-export function applyEffectsUntilChoice(
-  state: GameStateForVisibility<'authoritative'>,
-): {
-  state: GameStateForVisibility<'authoritative'>;
+export function applyEffectsUntilChoice(state: AuthoritativeGameState): {
+  state: AuthoritativeGameState;
   next: ExpectedEventInfo | 'gameOver';
 } {
   // Always the first of anything drawn: scenarios must not vary run to run.

@@ -1,5 +1,5 @@
 import type { Board, BoardType, GameModeName } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { gameModes } from '@entities';
 import { createCardState } from './createCardState';
 import {
@@ -23,7 +23,7 @@ const emptyBoardBySize: Record<BoardType, () => Board> = {
  * The game before anyone has mustered: the board it is played on, empty hands
  * and piles, and a round that has not begun.
  */
-function shell(board: Board): GameStateForVisibility<'authoritative'> {
+function shell(board: Board): AuthoritativeGameState {
   return {
     boardState: board,
     // Authoritative because the engine creates the game; a seat's view is
@@ -49,6 +49,8 @@ function shell(board: Board): GameStateForVisibility<'authoritative'> {
     lostCommanders: [],
     reservedUnits: [],
     routedUnits: [],
+    // The full record: both hands in view, as `cardState` above.
+    visibility: 'authoritative',
   };
 }
 
@@ -58,7 +60,7 @@ function shell(board: Board): GameStateForVisibility<'authoritative'> {
  */
 export function createEmptyGameState(
   name: GameModeName,
-): GameStateForVisibility<'authoritative'> {
+): AuthoritativeGameState {
   // The mode catalog is the one place a mode's board size is written down;
   // the game rules check a game's board against the same catalog.
   const mode = gameModes.find((entry) => entry.name === name);

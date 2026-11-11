@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createChooseMovingUnitEvent, createMoveUnitEvent } from '@factories';
 import {
   getOwnedPlayerCardState,
@@ -25,7 +25,7 @@ import { validatePlayerChoice } from '@validation';
  */
 const speedCard = createTestCard({ modifiers: ['speed'] });
 
-function blackReadyToMove(): GameStateForVisibility<'authoritative'> {
+function blackReadyToMove(): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },

@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { getPlayerUnitWithPosition } from '@queries';
 import {
   applyEffectsUntilChoice,
@@ -40,7 +40,7 @@ function meleeResolvedWith(
   whiteHand = 3,
   extraUnits: Parameters<typeof createPlayableGame>[0] = [],
 ): {
-  state: GameStateForVisibility<'authoritative'>;
+  state: AuthoritativeGameState;
   next: ReturnType<typeof applyEffectsUntilChoice>['next'];
 } {
   const game = createPlayableGame(

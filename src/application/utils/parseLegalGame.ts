@@ -1,5 +1,5 @@
 import type { GameModeName } from '@entities';
-import type { Game, GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState, Game } from '@game';
 import type { PortResponse } from '@application/ports';
 import { legalGameSchema, legalGameStateSchema } from '@validation';
 import { z } from 'zod';
@@ -46,7 +46,7 @@ export function parseLegalGameForMode(
 export function parseLegalGameStateForMode(
   gameMode: GameModeName,
   data: unknown,
-): PortResponse<GameStateForVisibility<'authoritative'>> {
+): PortResponse<AuthoritativeGameState> {
   const parsed = legalGameStateSchema(gameMode).safeParse(data);
   if (!parsed.success) {
     return {

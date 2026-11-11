@@ -1,5 +1,5 @@
 import type { Army, Board, GameModeName } from '@entities';
-import type { Game, GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState, Game } from '@game';
 
 import { authoritativeGameStateSchema, gameSchema } from '@game';
 import type { z } from 'zod';
@@ -49,7 +49,7 @@ export const legalGameSchema: z.ZodType<Game> =
  */
 export function legalGameStateSchema(
   gameMode: GameModeName,
-): z.ZodType<GameStateForVisibility<'authoritative'>> {
+): z.ZodType<AuthoritativeGameState> {
   const schema = authoritativeGameStateSchema.superRefine((state, ctx) => {
     refineGameModeBoardSize({ gameMode, gameState: state }, ctx, [
       'boardState',

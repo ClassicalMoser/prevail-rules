@@ -42,7 +42,6 @@ export {
   getHiddenPlayerCardState,
   findOwnedPlayerCardState,
   getOwnedPlayerCardState,
-  isAuthoritativeGameState,
   modifiersFromCompletedCommitment,
 } from './card';
 

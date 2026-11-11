@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { WhiteSeenGameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import { createTestCard, updateCardState } from '@testing';
 import { toHiddenCardState } from '@transforms/pureTransforms';
@@ -37,8 +37,9 @@ describe('applyCommitCardDiscard function', () => {
       ...base.cardState.black,
       inHand: [committed, kept],
     };
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+    const whiteSeen: WhiteSeenGameState = {
       ...base,
+      visibility: 'whiteSeen',
       cardState: {
         black: toHiddenCardState(black),
         visibility: 'whiteSeen',

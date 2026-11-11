@@ -1,7 +1,7 @@
 import type { GameModeName } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { PlayerChoiceEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { validatePlayerChoice } from '@validation';
 import { getGameState } from '@application/composable';
@@ -12,7 +12,7 @@ export async function processPlayerChoice(
   gameMode: GameModeName,
   playerChoice: PlayerChoiceEvent,
   ports: EnginePorts,
-): Promise<PortResponse<GameStateForVisibility<'authoritative'>>> {
+): Promise<PortResponse<AuthoritativeGameState>> {
   const loaded = await getGameState(gameId, gameMode, ports.gameStorage);
   if (!loaded.result) {
     return loaded;

@@ -1,6 +1,6 @@
 import { throwIfNone } from '@utils';
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { GameState, GameStateForVisibility } from '@game';
+import type { GameState, WhiteSeenGameState } from '@game';
 import {
   createCleanupPhaseState,
   createTestCard,
@@ -56,9 +56,10 @@ describe('applyDiscardPlayedCardsEvent function', () => {
     const base = createEmptyGameState('standard');
     const blackCard = createTestCard();
     const whiteCard = createTestCard();
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = updatePhaseState(
+    const whiteSeen: WhiteSeenGameState = updatePhaseState(
       {
         ...base,
+        visibility: 'whiteSeen',
         cardState: {
           visibility: 'whiteSeen',
           white: { ...base.cardState.white, inPlay: whiteCard, played: [] },

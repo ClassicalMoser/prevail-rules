@@ -1,22 +1,27 @@
 import type { AssertExact } from '@utils';
-import type { GameStateForVisibility } from './gameStateForVisibility';
+import type { BlackSeenCardState } from '@game/cardState';
+import type { GameStateBase } from './gameStateBase';
 
-import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { blackSeenCardStateSchema } from '@game/cardState';
-import { roundStateSchema } from '@game/roundState';
+import { gameStateBaseSchema } from './gameStateBase';
 
-const _blackSeenGameStateSchemaObject = z
-  .object({
-    boardState: boardSchema,
+/**
+ * The game state as black's seat: black's own cards in view, white's hidden.
+ * The `visibility` tag names the view, and the card state is the one that
+ * view may read, so the two cannot disagree.
+ */
+export interface BlackSeenGameState extends GameStateBase {
+  /** The view this state is. */
+  visibility: 'blackSeen';
+  /** The cards this view may read. */
+  cardState: BlackSeenCardState;
+}
+
+const _blackSeenGameStateSchemaObject = gameStateBaseSchema
+  .extend({
     cardState: blackSeenCardStateSchema,
-    currentInitiative: playerSideSchema,
-    currentRoundNumber: z.int().min(0),
-    currentRoundState: roundStateSchema,
-    lostCommanders: z.array(playerSideSchema),
-    reservedUnits: z.array(unitInstanceSchema),
-    routedUnits: z.array(unitInstanceSchema),
-    winner: playerSideSchema.optional(),
+    visibility: z.literal('blackSeen'),
   })
   .strict();
 
@@ -24,12 +29,11 @@ type BlackSeenGameStateSchemaType = z.infer<
   typeof _blackSeenGameStateSchemaObject
 >;
 
-/** Schema for black-seen {@link GameStateForVisibility}. */
-export const blackSeenGameStateSchema: z.ZodType<
-  GameStateForVisibility<'blackSeen'>
-> = _blackSeenGameStateSchemaObject;
+/** Schema for {@link BlackSeenGameState}. */
+export const blackSeenGameStateSchema: z.ZodType<BlackSeenGameState> =
+  _blackSeenGameStateSchemaObject;
 
-const _assertExactBlackSeenGameState: AssertExact<
-  GameStateForVisibility<'blackSeen'>,
+const _assertBlackSeenGameState: AssertExact<
+  BlackSeenGameState,
   BlackSeenGameStateSchemaType
 > = true;

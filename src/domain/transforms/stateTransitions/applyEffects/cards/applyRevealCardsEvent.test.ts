@@ -1,6 +1,10 @@
 import { tempCommandCards } from '@sampleValues';
 import type { RevealCardsEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type {
+  AuthoritativeGameState,
+  BlackSeenGameState,
+  WhiteSeenGameState,
+} from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
 import { updateCardState } from '@testing';
@@ -30,10 +34,8 @@ describe('applyRevealCardsEvent function', () => {
   }
 
   /** PlayCards.revealCards with black/white awaitingPlay set and inPlay empty. */
-  function createGameStateInRevealCardsStep(): GameStateForVisibility<'authoritative'> {
-    const state = createEmptyGameState(
-      'standard',
-    ) as GameStateForVisibility<'authoritative'>;
+  function createGameStateInRevealCardsStep(): AuthoritativeGameState {
+    const state = createEmptyGameState('standard') as AuthoritativeGameState;
 
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
@@ -85,8 +87,9 @@ describe('applyRevealCardsEvent function', () => {
     it('reveals owned white from state and black from event payload', () => {
       const base = createGameStateInRevealCardsStep();
       const whiteCard = tempCommandCards[1];
-      const state: GameStateForVisibility<'whiteSeen'> = {
+      const state: WhiteSeenGameState = {
         ...base,
+        visibility: 'whiteSeen',
         cardState: {
           visibility: 'whiteSeen',
           white: {
@@ -122,8 +125,9 @@ describe('applyRevealCardsEvent function', () => {
     it('reveals owned black from state and white from event payload', () => {
       const base = createGameStateInRevealCardsStep();
       const blackCard = tempCommandCards[0];
-      const state: GameStateForVisibility<'blackSeen'> = {
+      const state: BlackSeenGameState = {
         ...base,
+        visibility: 'blackSeen',
         cardState: {
           visibility: 'blackSeen',
           black: {

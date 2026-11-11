@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createChooseShooterEvent, createEmptyGameState } from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
@@ -16,7 +16,7 @@ import { isValidChooseShooterEvent } from './isValidChooseShooterEvent';
  * a white unit stands two ranks ahead on C-5, inside that Range.
  */
 describe('isValidChooseShooterEvent function', () => {
-  function resolvingOrder(): GameStateForVisibility<'authoritative'> {
+  function resolvingOrder(): AuthoritativeGameState {
     const game = createPlayableGame(
       [
         { coord: 'E-5', facing: 'north', player: 'black', range: 2 },

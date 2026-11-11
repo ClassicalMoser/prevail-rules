@@ -1,5 +1,5 @@
 import type { PlayerSide, Board } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { UnitPlacementSpec } from './unitPlacementSpec';
 import { createBoardWithUnits } from '@testing/createBoard';
 
@@ -16,7 +16,7 @@ import { updateCurrentInitiative } from '@transforms';
 export function createGameState(
   units: UnitPlacementSpec[],
   options?: { currentInitiative?: PlayerSide },
-): GameStateForVisibility {
+): AuthoritativeGameState {
   const gameState =
     options?.currentInitiative === undefined
       ? createEmptyGameState('standard')

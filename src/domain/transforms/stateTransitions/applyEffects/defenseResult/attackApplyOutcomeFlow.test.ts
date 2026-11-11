@@ -4,7 +4,7 @@ import type {
   ResolveRetreatEvent,
   TriggerRoutFromRetreatEvent,
 } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
 import { generateEventFromProcedure } from '@procedures';
 import {
@@ -42,7 +42,7 @@ describe('attack apply outcome flow', () => {
   function rangedApplyShell(
     defendingUnit: ReturnType<typeof createTestUnit>,
     attackApply: ReturnType<typeof createAttackApplyState>,
-  ): GameStateForVisibility<'authoritative'> {
+  ): AuthoritativeGameState {
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const empty = createEmptyGameState('standard');
     const withBoard = {

@@ -1,22 +1,27 @@
 import type { AssertExact } from '@utils';
-import type { GameStateForVisibility } from './gameStateForVisibility';
+import type { AuthoritativeCardState } from '@game/cardState';
+import type { GameStateBase } from './gameStateBase';
 
-import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { authoritativeCardStateSchema } from '@game/cardState';
-import { roundStateSchema } from '@game/roundState';
+import { gameStateBaseSchema } from './gameStateBase';
 
-const _authoritativeGameStateSchemaObject = z
-  .object({
-    boardState: boardSchema,
+/**
+ * The game state as the full record: both hands in view.
+ * The `visibility` tag names the view, and the card state is the one that
+ * view may read, so the two cannot disagree.
+ */
+export interface AuthoritativeGameState extends GameStateBase {
+  /** The view this state is. */
+  visibility: 'authoritative';
+  /** The cards this view may read. */
+  cardState: AuthoritativeCardState;
+}
+
+const _authoritativeGameStateSchemaObject = gameStateBaseSchema
+  .extend({
     cardState: authoritativeCardStateSchema,
-    currentInitiative: playerSideSchema,
-    currentRoundNumber: z.int().min(0),
-    currentRoundState: roundStateSchema,
-    lostCommanders: z.array(playerSideSchema),
-    reservedUnits: z.array(unitInstanceSchema),
-    routedUnits: z.array(unitInstanceSchema),
-    winner: playerSideSchema.optional(),
+    visibility: z.literal('authoritative'),
   })
   .strict();
 
@@ -24,12 +29,11 @@ type AuthoritativeGameStateSchemaType = z.infer<
   typeof _authoritativeGameStateSchemaObject
 >;
 
-/** Schema for authoritative {@link GameStateForVisibility}. */
-export const authoritativeGameStateSchema: z.ZodType<
-  GameStateForVisibility<'authoritative'>
-> = _authoritativeGameStateSchemaObject;
+/** Schema for {@link AuthoritativeGameState}. */
+export const authoritativeGameStateSchema: z.ZodType<AuthoritativeGameState> =
+  _authoritativeGameStateSchemaObject;
 
-const _assertExactAuthoritativeGameState: AssertExact<
-  GameStateForVisibility<'authoritative'>,
+const _assertAuthoritativeGameState: AssertExact<
+  AuthoritativeGameState,
   AuthoritativeGameStateSchemaType
 > = true;

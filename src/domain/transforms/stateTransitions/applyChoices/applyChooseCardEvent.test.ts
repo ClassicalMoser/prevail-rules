@@ -173,6 +173,7 @@ describe('applyChooseCardEvent function', () => {
       );
       const whiteSeen = {
         ...authoritative,
+        visibility: 'whiteSeen' as const,
         cardState: {
           visibility: 'whiteSeen' as const,
           white: {

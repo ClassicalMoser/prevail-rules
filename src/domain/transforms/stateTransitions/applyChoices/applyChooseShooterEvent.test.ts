@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createChooseShooterEvent } from '@factories';
 import {
   getIssueCommandsPhaseState,
@@ -18,7 +18,7 @@ import { applyChooseShooterEvent } from './applyChooseShooterEvent';
  * Black carries out a Shoot order for two Range-2 units on E-5 and E-3; a
  * white unit stands in front of them so the army is in the field.
  */
-function blackShootingWithTwo(): GameStateForVisibility<'authoritative'> {
+function blackShootingWithTwo(): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: 'E-5', facing: 'north', player: 'black', range: 2 },

@@ -1,11 +1,11 @@
 import { tempCommandCards } from '@sampleValues';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 
 import { projectGameStateForVisibility } from './projectGameStateForVisibility';
 
 import { createEmptyGameState } from '@factories';
 
-function authoritativeState(): GameStateForVisibility<'authoritative'> {
+function authoritativeState(): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   return {
     ...gameState,

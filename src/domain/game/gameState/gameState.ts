@@ -1,6 +1,9 @@
 import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import type { GameStateForVisibility } from './gameStateForVisibility';
+import type { AuthoritativeGameState } from './authoritativeGameState';
+import type { BlackSeenGameState } from './blackSeenGameState';
+import type { SpectatorGameState } from './spectatorGameState';
+import type { WhiteSeenGameState } from './whiteSeenGameState';
 
 import { z } from 'zod';
 import { authoritativeGameStateSchema } from './authoritativeGameState';
@@ -9,16 +12,14 @@ import { spectatorGameStateSchema } from './spectatorGameState';
 import { whiteSeenGameStateSchema } from './whiteSeenGameState';
 
 /**
- * Game state at any visibility.
- * Union of four concrete visibility states (not an object-of-unions), so a
- * wide {@link GameState} is not assignable to {@link GameStateForVisibility}
- * for a specific visibility without narrowing.
+ * Game state at any visibility: the union of the four views, told apart by
+ * `visibility`, so a `switch` on it narrows the state and its cards together.
  */
 export type GameState =
-  | GameStateForVisibility<'authoritative'>
-  | GameStateForVisibility<'whiteSeen'>
-  | GameStateForVisibility<'blackSeen'>
-  | GameStateForVisibility<'spectator'>;
+  | AuthoritativeGameState
+  | WhiteSeenGameState
+  | BlackSeenGameState
+  | SpectatorGameState;
 
 /**
  * Players whose card slice is owned (full card info) under game state `S`.
@@ -26,11 +27,11 @@ export type GameState =
  * A spectator view owns neither side.
  */
 export type OwnedPlayerForGameState<S extends GameState> =
-  S extends GameStateForVisibility<'authoritative'>
+  S extends AuthoritativeGameState
     ? PlayerSide
-    : S extends GameStateForVisibility<'whiteSeen'>
+    : S extends WhiteSeenGameState
       ? 'white'
-      : S extends GameStateForVisibility<'blackSeen'>
+      : S extends BlackSeenGameState
         ? 'black'
         : never;
 
@@ -39,11 +40,11 @@ export type OwnedPlayerForGameState<S extends GameState> =
  * Authoritative has no hidden side (`never`). A spectator hides both.
  */
 export type UnownedPlayerForGameState<S extends GameState> =
-  S extends GameStateForVisibility<'whiteSeen'>
+  S extends WhiteSeenGameState
     ? 'black'
-    : S extends GameStateForVisibility<'blackSeen'>
+    : S extends BlackSeenGameState
       ? 'white'
-      : S extends GameStateForVisibility<'spectator'>
+      : S extends SpectatorGameState
         ? PlayerSide
         : never;
 

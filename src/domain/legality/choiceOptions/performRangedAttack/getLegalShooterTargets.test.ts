@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createChooseShooterEvent } from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
@@ -22,7 +22,7 @@ import { getLegalShooterTargets } from './getLegalShooterTargets';
  */
 const rangeCard = createTestCard({ modifiers: ['range'] });
 
-function blackShooting(): GameStateForVisibility<'authoritative'> {
+function blackShooting(): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: 'E-5', facing: 'north', player: 'black', range: 2 },

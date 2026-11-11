@@ -10,6 +10,7 @@ describe('updateHiddenPlayerCardState function', () => {
     const base = createEmptyGameState('standard');
     const state = {
       ...base,
+      visibility: 'whiteSeen' as const,
       cardState: {
         visibility: 'whiteSeen' as const,
         white: base.cardState.white,
@@ -40,6 +41,7 @@ describe('updateHiddenPlayerCardState function', () => {
     const base = createEmptyGameState('standard');
     const state = {
       ...base,
+      visibility: 'blackSeen' as const,
       cardState: {
         visibility: 'blackSeen' as const,
         black: base.cardState.black,
@@ -70,6 +72,7 @@ describe('updateHiddenPlayerCardState function', () => {
     const base = createEmptyGameState('standard');
     const state = {
       ...base,
+      visibility: 'whiteSeen' as const,
       cardState: {
         visibility: 'whiteSeen' as const,
         white: base.cardState.white,

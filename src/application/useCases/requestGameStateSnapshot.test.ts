@@ -5,7 +5,7 @@ import {
 } from '@sampleValues';
 import type { EnginePorts } from '@application/ports';
 import { defaultRandom } from '@utils';
-import type { Game, GameStateForVisibility } from '@game';
+import type { BlackSeenGameState, Game } from '@game';
 import { createUnitWithPlacement } from '@testing';
 
 import { createEmptyGameState } from '@factories';
@@ -86,9 +86,7 @@ function createPorts(
   };
 }
 
-function projectAsBlackSeen(
-  game: Game,
-): GameStateForVisibility<'blackSeen'>['cardState'] {
+function projectAsBlackSeen(game: Game): BlackSeenGameState['cardState'] {
   return {
     black: game.gameState.cardState.black,
     visibility: 'blackSeen',

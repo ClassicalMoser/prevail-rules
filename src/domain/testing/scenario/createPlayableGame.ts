@@ -1,5 +1,5 @@
 import type { CommandCard, PlayerSide } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { UnitPlacementSpec } from '../bootstrapGameState/unitPlacementSpec';
 import { createGameState } from '@testing/bootstrapGameState';
 import { getCardsByCount } from '../testHelpers/cardHelpers';
@@ -23,7 +23,7 @@ export function createPlayableGame(
     hands?: Partial<Record<PlayerSide, number | CommandCard[]>>;
     initiative?: PlayerSide;
   },
-): GameStateForVisibility<'authoritative'> {
+): AuthoritativeGameState {
   const placed = createGameState(units, {
     currentInitiative: options?.initiative,
   });

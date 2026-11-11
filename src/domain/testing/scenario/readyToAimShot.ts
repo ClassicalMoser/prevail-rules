@@ -1,6 +1,6 @@
 import type { CommandCard, UnitWithPlacement } from '@entities';
 import type { RangedAttackModifier } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import {
   createChooseShooterEvent,
   createCommitToRangedAttackEvent,
@@ -20,13 +20,13 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  * @returns The game waiting for the `performRangedAttack`
  */
 export function readyToAimShot(
-  state: GameStateForVisibility<'authoritative'>,
+  state: AuthoritativeGameState,
   unit: UnitWithPlacement,
   commitment: {
     card: CommandCard;
     modifierTypes: RangedAttackModifier[];
   } | null,
-): GameStateForVisibility<'authoritative'> {
+): AuthoritativeGameState {
   const player = unit.unit.playerSide;
 
   // The player names the unit whose shot this is...

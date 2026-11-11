@@ -1,5 +1,9 @@
 import type { ResolveRallyEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type {
+  BlackSeenGameState,
+  SpectatorGameState,
+  WhiteSeenGameState,
+} from '@game';
 import { throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 
@@ -63,8 +67,9 @@ describe('applyResolveRallyEvent function', () => {
     const base = createEmptyGameState('standard');
     base.currentInitiative = 'white';
     const card = createTestCard();
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+    const whiteSeen: WhiteSeenGameState = {
       ...base,
+      visibility: 'whiteSeen',
       cardState: {
         visibility: 'whiteSeen',
         white: {
@@ -118,8 +123,9 @@ describe('applyResolveRallyEvent function', () => {
     const burned = createTestCard();
     const stillPlayed = createTestCard();
     const discarded = createTestCard();
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+    const whiteSeen: WhiteSeenGameState = {
       ...base,
+      visibility: 'whiteSeen',
       cardState: {
         visibility: 'whiteSeen',
         white: {
@@ -193,8 +199,9 @@ describe('applyResolveRallyEvent function', () => {
     base.currentInitiative = 'white';
     const burned = createTestCard();
     const discarded = createTestCard();
-    const blackSeen: GameStateForVisibility<'blackSeen'> = {
+    const blackSeen: BlackSeenGameState = {
       ...base,
+      visibility: 'blackSeen',
       cardState: {
         visibility: 'blackSeen',
         black: base.cardState.black,
@@ -245,8 +252,9 @@ describe('applyResolveRallyEvent function', () => {
     base.currentInitiative = 'white';
     const burned = createTestCard();
     const discarded = createTestCard();
-    const spectator: GameStateForVisibility<'spectator'> = {
+    const spectator: SpectatorGameState = {
       ...base,
+      visibility: 'spectator',
       cardState: {
         visibility: 'spectator',
         black: {

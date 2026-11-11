@@ -1,6 +1,6 @@
 import type { CommandCard, UnitWithPlacement } from '@entities';
 import type { MovementModifier } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import {
   createChooseMovingUnitEvent,
   createCommitToMovementEvent,
@@ -20,10 +20,10 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  * @returns The game waiting for the `moveUnit`
  */
 export function readyToWriteMove(
-  state: GameStateForVisibility<'authoritative'>,
+  state: AuthoritativeGameState,
   unit: UnitWithPlacement,
   commitment: { card: CommandCard; modifierTypes: MovementModifier[] } | null,
-): GameStateForVisibility<'authoritative'> {
+): AuthoritativeGameState {
   const player = unit.unit.playerSide;
 
   // The player names the unit whose move this is...

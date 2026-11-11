@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import {
   createChooseShooterEvent,
   createPerformRangedAttackEvent,
@@ -30,7 +30,7 @@ import { validatePlayerChoice } from '@validation';
  */
 const rangeCard = createTestCard({ modifiers: ['range'] });
 
-function blackReadyToShoot(): GameStateForVisibility<'authoritative'> {
+function blackReadyToShoot(): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: 'E-5', facing: 'north', player: 'black', range: 2 },

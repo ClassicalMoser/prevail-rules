@@ -1,5 +1,5 @@
 import type { GameEffectEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { generateEventFromProcedure } from '@procedures';
 import { getExpectedEvent } from '@expected';
@@ -19,7 +19,7 @@ import type { GameModeName } from '@entities';
 export async function advanceEffects(
   gameId: string,
   gameMode: GameModeName,
-  gameState: GameStateForVisibility<'authoritative'>,
+  gameState: AuthoritativeGameState,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   let currentGameState = gameState;

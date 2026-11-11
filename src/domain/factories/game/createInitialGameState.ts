@@ -1,5 +1,5 @@
 import type { Army, GameModeName } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 
 import { createUnitInstance } from '@factories/unit';
 import { createEmptyGameState } from './createEmptyGameState';
@@ -15,7 +15,7 @@ export function createInitialGameState(options: {
   gameMode: GameModeName;
   whiteArmy: Army;
   blackArmy: Army;
-}): GameStateForVisibility<'authoritative'> {
+}): AuthoritativeGameState {
   const { whiteArmy, blackArmy } = options;
 
   // TODO(composition): the four cases below call the same function with the

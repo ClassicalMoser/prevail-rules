@@ -1,6 +1,6 @@
 import type { GameEffectEvent, GameEffectType } from '@events';
 import type { RandomSource } from '@utils';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import {
   generateDiscardPlayedCardsEvent,
   generateGameOverEvent,
@@ -56,7 +56,7 @@ import {
  * WARNING: Game state is trusted as internally consistent for this function.
  */
 export function generateEventFromProcedure(
-  state: GameStateForVisibility<'authoritative'>,
+  state: AuthoritativeGameState,
   effectType: GameEffectType,
   random: RandomSource,
 ): GameEffectEvent {

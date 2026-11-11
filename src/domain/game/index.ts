@@ -3,14 +3,23 @@ export { gameSchema } from './game';
 export type { Game } from './game';
 
 // Runtime state
-export { authoritativeGameStateSchema, gameStateSchema } from './gameState';
+export {
+  authoritativeGameStateSchema,
+  blackSeenGameStateSchema,
+  gameStateSchema,
+  spectatorGameStateSchema,
+  whiteSeenGameStateSchema,
+} from './gameState';
 export type {
-  CardStateForVisibility,
+  AuthoritativeGameState,
+  BlackSeenGameState,
   GameState,
-  GameStateForVisibility,
+  GameStateBase,
   GameStateVisibility,
   OwnedPlayerForGameState,
+  SpectatorGameState,
   UnownedPlayerForGameState,
+  WhiteSeenGameState,
 } from './gameState';
 
 // Card piles / visibility

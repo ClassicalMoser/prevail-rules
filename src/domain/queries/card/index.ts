@@ -1,6 +1,3 @@
-// Whether a game state is the full record, with every hand in view.
-export { isAuthoritativeGameState } from './isAuthoritativeGameState';
-
 // Owned and hidden views of a player's card piles.
 export { getHiddenPlayerCardState } from './getHiddenPlayerCardState';
 export { findOwnedPlayerCardState } from './findOwnedPlayerCardState';

@@ -1,7 +1,9 @@
 import type {
+  BlackSeenGameState,
   HiddenCardState,
-  GameStateForVisibility,
+  SpectatorGameState,
   UnownedPlayerForGameState,
+  WhiteSeenGameState,
 } from '@game';
 
 /**
@@ -17,10 +19,7 @@ import type {
  * @returns A new game state with the updated player card state
  */
 export function updateHiddenPlayerCardState<
-  S extends
-    | GameStateForVisibility<'whiteSeen'>
-    | GameStateForVisibility<'blackSeen'>
-    | GameStateForVisibility<'spectator'>,
+  S extends WhiteSeenGameState | BlackSeenGameState | SpectatorGameState,
 >(
   state: S,
   player: UnownedPlayerForGameState<S>,

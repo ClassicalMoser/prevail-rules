@@ -1,6 +1,6 @@
 import { tempCommandCards } from '@sampleValues';
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { WhiteSeenGameState } from '@game';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
   getIssueCommandsPhaseState,
@@ -358,8 +358,9 @@ describe('applyChooseRoutDiscardEvent function', () => {
       'black',
     );
     const blackHand = [createTestCard(), createTestCard()];
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+    const whiteSeen: WhiteSeenGameState = {
       ...full,
+      visibility: 'whiteSeen',
       cardState: {
         black: toHiddenCardState({
           ...full.cardState.black,

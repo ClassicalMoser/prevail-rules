@@ -10,7 +10,8 @@ Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) lives on 
 
 ```
 Game (authoritative)
-  └─ GameState / GameStateForVisibility
+  └─ GameState (told apart by `visibility`)
+       ├─ AuthoritativeGameState | WhiteSeenGameState | BlackSeenGameState | SpectatorGameState
        ├─ boardState, cardState, reserved/routed units, …
        └─ RoundState
             └─ PhaseState (discriminated on phase)

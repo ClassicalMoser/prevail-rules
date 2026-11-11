@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createChooseRoutDiscardEvent, createMoveUnitEvent } from '@factories';
 import {
   getIssueCommandsPhaseState,
@@ -27,7 +27,7 @@ function rearAttack(options: {
   defenderMorale: number;
   whiteHasAnotherUnit: boolean;
   whiteCommanderWithDefender?: boolean;
-}): GameStateForVisibility<'authoritative'> {
+}): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: 'F-5', facing: 'north', player: 'black' },

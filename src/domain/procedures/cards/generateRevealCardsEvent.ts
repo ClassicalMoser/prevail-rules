@@ -1,5 +1,5 @@
 import type { RevealCardsEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from '@events';
 import { getOwnedPlayerCardState } from '@queries';
 
@@ -13,7 +13,7 @@ import { getOwnedPlayerCardState } from '@queries';
  * @throws Error if either player has no card awaiting play
  */
 export function generateRevealCardsEvent(
-  state: GameStateForVisibility<'authoritative'>,
+  state: AuthoritativeGameState,
 ): RevealCardsEvent {
   const blackCardState = getOwnedPlayerCardState(state.cardState, 'black');
   const whiteCardState = getOwnedPlayerCardState(state.cardState, 'white');

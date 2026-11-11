@@ -1,5 +1,5 @@
 import { tempCommandCards } from '@sampleValues';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState, WhiteSeenGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createCleanupPhaseState,
@@ -26,7 +26,7 @@ describe('getLegalRoutDiscardCards function', () => {
     handCardIndexes?: readonly number[];
     cardsChosen?: boolean;
     initiative?: 'white' | 'black';
-  }): GameStateForVisibility<'authoritative'> {
+  }): AuthoritativeGameState {
     const initiative = options.initiative ?? 'white';
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -138,8 +138,9 @@ describe('getLegalRoutDiscardCards function', () => {
       player: 'white',
       step: 'firstPlayerResolveRally',
     });
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+    const whiteSeen: WhiteSeenGameState = {
       ...authoritative,
+      visibility: 'whiteSeen',
       cardState: {
         visibility: 'whiteSeen',
         white: {
@@ -172,8 +173,9 @@ describe('getLegalRoutDiscardCards function', () => {
       player: 'black',
       step: 'secondPlayerResolveRally',
     });
-    const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
+    const whiteSeen: WhiteSeenGameState = {
       ...authoritative,
+      visibility: 'whiteSeen',
       cardState: {
         visibility: 'whiteSeen',
         white: authoritative.cardState.white,

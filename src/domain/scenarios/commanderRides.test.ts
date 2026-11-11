@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createMoveUnitEvent } from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
@@ -23,7 +23,7 @@ import { validatePlayerChoice } from '@validation';
 function blackReadyToWriteMove(options: {
   start: 'E-5' | 'F-5';
   whiteDefender?: 'E-5';
-}): GameStateForVisibility<'authoritative'> {
+}): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: options.start, facing: 'north', player: 'black' },

@@ -1,5 +1,5 @@
 import { tempCommandCards } from '@sampleValues';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { updateCardState } from '@testing';
@@ -19,7 +19,7 @@ describe('getExpectedPlayCardsPhaseEvent function', () => {
    */
   function createGameStateInPlayCardsStep(
     step: 'chooseCards' | 'revealCards' | 'assignInitiative' | 'complete',
-  ): GameStateForVisibility {
+  ): AuthoritativeGameState {
     const state = createEmptyGameState('standard');
 
     const stateWithPhase = updatePhaseState(state, {

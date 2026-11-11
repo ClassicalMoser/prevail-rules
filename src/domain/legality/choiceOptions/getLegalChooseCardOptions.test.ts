@@ -1,6 +1,11 @@
 import { tempCommandCards } from '@sampleValues';
 import type { Event } from '@events';
-import type { GameState, GameStateForVisibility } from '@game';
+import type {
+  BlackSeenGameState,
+  GameState,
+  SpectatorGameState,
+  WhiteSeenGameState,
+} from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { updateCardState } from '@testing';
 
@@ -121,8 +126,9 @@ describe('getLegalChooseCardOptions function', () => {
   describe('player-seen visibility', () => {
     it('whiteSeen returns only white hand options while white is still choosing', () => {
       const base = stateChooseCardsBothPending();
-      const state: GameStateForVisibility<'whiteSeen'> = {
+      const state: WhiteSeenGameState = {
         ...base,
+        visibility: 'whiteSeen',
         cardState: {
           visibility: 'whiteSeen',
           white: {
@@ -149,8 +155,9 @@ describe('getLegalChooseCardOptions function', () => {
 
     it('blackSeen returns only black hand options while black is still choosing', () => {
       const base = stateChooseCardsBothPending();
-      const state: GameStateForVisibility<'blackSeen'> = {
+      const state: BlackSeenGameState = {
         ...base,
+        visibility: 'blackSeen',
         cardState: {
           visibility: 'blackSeen',
           black: {
@@ -176,8 +183,9 @@ describe('getLegalChooseCardOptions function', () => {
 
     it('spectator returns no options while both players are still choosing', () => {
       const base = stateChooseCardsBothPending();
-      const state: GameStateForVisibility<'spectator'> = {
+      const state: SpectatorGameState = {
         ...base,
+        visibility: 'spectator',
         cardState: {
           visibility: 'spectator',
           black: {
@@ -204,8 +212,9 @@ describe('getLegalChooseCardOptions function', () => {
 
     it('whiteSeen returns empty when white has already committed', () => {
       const base = stateChooseCardsBothPending();
-      const state: GameStateForVisibility<'whiteSeen'> = {
+      const state: WhiteSeenGameState = {
         ...base,
+        visibility: 'whiteSeen',
         cardState: {
           visibility: 'whiteSeen',
           white: {
@@ -238,8 +247,9 @@ describe('getLegalChooseCardOptions function', () => {
         },
       ];
       const withEvents = updateRoundEventStream(base, prior);
-      const state: GameStateForVisibility<'whiteSeen'> = {
+      const state: WhiteSeenGameState = {
         ...withEvents,
+        visibility: 'whiteSeen',
         cardState: {
           visibility: 'whiteSeen',
           white: {

@@ -1,5 +1,5 @@
 import type { UnitInstance } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createIssueCommandsPhaseState } from '@testing/phaseStateHelpers';
 import { createTestCard, createTestCommand } from '../testHelpers/cardHelpers';
 import { updatePhaseState, updatePlayerCardState } from '@transforms';
@@ -16,9 +16,9 @@ import { updatePhaseState, updatePlayerCardState } from '@transforms';
  * @returns The game, waiting for the first `moveUnit`
  */
 export function resolvingMoveOrder(
-  state: GameStateForVisibility<'authoritative'>,
+  state: AuthoritativeGameState,
   units: readonly UnitInstance[],
-): GameStateForVisibility<'authoritative'> {
+): AuthoritativeGameState {
   // The order being carried out is the Move card the initiative holder
   // played this round.
   const mover = state.currentInitiative;

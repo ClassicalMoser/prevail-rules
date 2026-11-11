@@ -1,6 +1,6 @@
 import type { Army, GameModeName } from '@entities';
 import type { AssertExact } from '@utils';
-import type { GameStateForVisibility } from '@game/gameState';
+import type { AuthoritativeGameState } from '@game/gameState';
 
 import { armySchema, gameModeNames } from '@entities';
 import { z } from 'zod';
@@ -18,7 +18,7 @@ import { authoritativeGameStateSchema } from '@game/gameState';
  */
 export interface Game {
   gameMode: GameModeName;
-  gameState: GameStateForVisibility<'authoritative'>;
+  gameState: AuthoritativeGameState;
   /** The unique identifier of the game. */
   id: string;
   /** The unique identifier of the player on the black side of the game. */

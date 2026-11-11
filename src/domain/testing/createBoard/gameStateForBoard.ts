@@ -6,7 +6,7 @@ import type {
   UnitType,
   UnitWithPlacement,
 } from '@entities';
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
@@ -26,7 +26,7 @@ export function createGameStateWithSingleUnit(
     facing?: UnitFacing;
     instanceNumber?: number;
   },
-): GameStateForVisibility {
+): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithSingleUnit(coord, playerSide, options);
   return { ...gameState, boardState: board };
@@ -40,7 +40,7 @@ export function createGameStateWithEngagedUnits(
   secondaryUnit: UnitInstance,
   coord: Coordinate = 'E-5',
   primaryFacing: UnitFacing = 'north',
-): GameStateForVisibility {
+): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithEngagedUnits(
     primaryUnit,
@@ -56,7 +56,7 @@ export function createGameStateWithEngagedUnits(
  */
 export function createGameStateWithUnits(
   units: UnitWithPlacement[],
-): GameStateForVisibility {
+): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithUnits(units);
   return { ...gameState, boardState: board };

@@ -1,4 +1,4 @@
-import type { GameStateForVisibility } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createCommitToMovementEvent, createMoveUnitEvent } from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
@@ -20,7 +20,7 @@ import { applyEvent } from '@transforms';
  * marches north from C-9 into white's front. Each side keeps a second unit
  * far from the fight, so neither army is down to its last unit (§11.4).
  */
-function slowerAttackerEngagesFromC9(): GameStateForVisibility<'authoritative'> {
+function slowerAttackerEngagesFromC9(): AuthoritativeGameState {
   const game = createPlayableGame(
     [
       { coord: 'C-9', facing: 'north', player: 'black', speed: 2 },
