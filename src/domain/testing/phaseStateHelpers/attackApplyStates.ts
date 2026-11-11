@@ -145,11 +145,11 @@ export function createAttackApplyStateWithRout(
   defendingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
-  // Rout is the hardest threshold to reach, so a real rout cleared the other
-  // two on the way up. The factory bypasses them all the same.
+  // A blow that reached only Rout, so the rout is the one result due. A blow
+  // that also reached Retreat or Reverse carries those out first (§7.5.2).
   const measured: AttackResult = {
-    unitRetreated: true,
-    unitReversed: true,
+    unitRetreated: false,
+    unitReversed: false,
     unitRouted: true,
   };
   const apply = attackApplyFromResult(defendingUnit, measured);

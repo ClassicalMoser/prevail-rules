@@ -3,19 +3,20 @@ import { createTestUnit } from '@testing';
 import { createAttackApplyState } from './createAttackApplyState';
 
 describe('createAttackApplyState function', () => {
-  it('opens the rout and bypasses the steps it supersedes', () => {
+  it('leaves every result reached due, the rout as well as the retreat and reverse', () => {
     const defender = createTestUnit('white', { attack: 2 });
-    // Rout is the hardest threshold, so an attack that routs cleared the other
-    // two as well. The unit still only routs.
+    // Rout is the hardest threshold, so an attack that routs often cleared the
+    // other two as well. Each is carried out in its place (§7.5.2): the unit
+    // falls back and turns about before it routs.
     const apply = createAttackApplyState(defender, {
       unitRetreated: true,
       unitReversed: true,
       unitRouted: true,
     });
 
+    expect(apply.retreatState).toBe('pending');
+    expect(apply.reverseState).toBe('pending');
     expect(apply.routState).toBe('pending');
-    expect(apply.retreatState).toBe('bypassed');
-    expect(apply.reverseState).toBe('bypassed');
   });
 
   it('opens both the retreat and the reverse when the attack reached both', () => {

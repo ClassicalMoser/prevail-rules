@@ -86,17 +86,3 @@ The author runs these during the walk, once implementation holds still.
 - 28 `as never` / `as unknown` casts in specs, each to be checked for the
   STYLE comment.
 - Spec rework generally.
-
-## Open: a rule question
-
-- **Does a routing unit carry out its retreat first?** §7.5.3 says a unit that
-  reaches Rout "may ignore its own retreat and reverse"; §7.5.6 says a unit
-  going to rout stays on the board until the rout stage, so the unit engaged with
-  it does not reverse. The attack-apply factory always bypasses a routing unit's
-  retreat and reverse. In a melee that decides whether the opponent may turn
-  about (§7.5.5), whether a commander with the routing unit goes back with it
-  (§9.1.8), and whether a unit whose retreat is impossible routs early in the
-  retreat stage, which changes who pays Morale first (§11.2). Options: it always
-  ignores them (the code; §7.5.3's "may" becomes "does"); the routing side
-  chooses (a new player choice in the retreat stage); or it always falls back
-  first.

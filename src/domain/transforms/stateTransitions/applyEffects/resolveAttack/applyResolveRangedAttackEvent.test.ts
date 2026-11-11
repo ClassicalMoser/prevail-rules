@@ -100,7 +100,7 @@ describe('applyResolveRangedAttackEvent function', () => {
     expect(apply.attackResult.unitRouted).toBe(true);
     expect(apply.routState).toBe('pending');
     expect(apply.defendingUnit).toBe(defender);
-    // A rout supersedes retreat and reverse.
+    // The shot reached only Rout, so the rout is the one result due.
     expect(apply.retreatState).toBe('bypassed');
     expect(apply.reverseState).toBe('bypassed');
   });

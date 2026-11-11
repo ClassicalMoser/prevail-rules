@@ -133,7 +133,7 @@ describe('applyResolveMeleeEvent function', () => {
       melee.firstPlayerAttackApplyState,
       'apply',
     );
-    // A rout supersedes retreat and reverse even if those thresholds also fell.
+    // White's unit was hit only to rout, so its rout is the one result due.
     expect(whiteApply.routState).toBe('pending');
     expect(whiteApply.retreatState).toBe('bypassed');
     expect(whiteApply.reverseState).toBe('bypassed');

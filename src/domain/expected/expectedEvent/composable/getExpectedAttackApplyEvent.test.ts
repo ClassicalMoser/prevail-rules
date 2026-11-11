@@ -37,8 +37,8 @@ describe('getExpectedAttackApplyEvent function', () => {
       const unit = createTestUnit('white', { attack: 2 });
       // Factory leaves the rout pending; nothing is written yet.
       const attackApplyState = createPendingAttackApply(unit, {
-        unitRetreated: true,
-        unitReversed: true,
+        unitRetreated: false,
+        unitReversed: false,
         unitRouted: true,
       });
 
@@ -76,10 +76,10 @@ describe('getExpectedAttackApplyEvent function', () => {
       );
     });
 
-    it('a unit hit past every threshold opens only its rout', () => {
+    it('a unit hit past every threshold falls back first', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      // §7.5.3: a unit that routs ignores its own retreat and reverse, so the
-      // factory leaves those two bypassed and only the rout is due.
+      // §7.5.2: every result is carried out in its place, so a unit that will
+      // rout still falls back and turns about first.
       const attackApplyState = createPendingAttackApply(unit, {
         unitRetreated: true,
         unitReversed: true,
@@ -88,20 +88,20 @@ describe('getExpectedAttackApplyEvent function', () => {
 
       expectGameEffect(
         getExpectedAttackApplyEvent(attackApplyState),
-        'openRoutFromAttackApply',
+        'openRetreatFromAttackApply',
       );
     });
   });
 
   describe('rout priority', () => {
-    it('a routed unit with its lower results bypassed resolves its rout', () => {
+    it('a routed unit with nothing below its rout resolves its rout', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      // §7.5.3: the rout is open and the retreat and reverse the same blow
-      // reached are bypassed, so the rout is the only thing left to resolve.
+      // The blow reached only Rout, and the rout is open, so it is the only
+      // thing left to resolve.
       const attackApplyState = createAttackApplyStateWithNothingDue(unit, {
         attackResult: {
-          unitRetreated: true,
-          unitReversed: true,
+          unitRetreated: false,
+          unitReversed: false,
           unitRouted: true,
         },
         retreatState: 'bypassed',

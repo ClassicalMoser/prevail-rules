@@ -9,10 +9,17 @@ import {
 import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
+  createRetreatState,
+  createReverseState,
   createTestUnit,
+  legalRetreatsOf,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updateAttackApplyState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyOpenRoutFromAttackApplyEvent } from './applyOpenRoutFromAttackApplyEvent';
 
@@ -72,16 +79,30 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     expect(next.routedUnits).toContainEqual(defendingUnit);
   });
 
-  it('bypasses retreat and reverse — a routed unit leaves, so those do not happen', () => {
-    const { state } = stateWithPendingRout();
-    const event: OpenRoutFromAttackApplyEvent = {
-      effectType: 'openRoutFromAttackApply',
-      eventType: 'gameEffect',
-    };
+  it('leaves the retreat and reverse already carried out as they were', () => {
+    const { state, defendingUnit } = stateWithPendingRout();
+    // The rout comes last (§7.5.2): by its turn the unit has fallen back and
+    // turned about, and those results stay recorded.
+    const before = getRangedAttackApplyState(state);
+    const standing = placed(defendingUnit, 'E-5', 'north');
+    const retreated = createRetreatState(standing, legalRetreatsOf(standing), {
+      chosenRetreatPath: ['step'],
+      completed: true,
+    });
+    const reversed = createReverseState(defendingUnit, { completed: true });
+    const ready = updateAttackApplyState(state, {
+      ...before,
+      retreatState: retreated,
+      reverseState: reversed,
+    });
 
-    const next = applyOpenRoutFromAttackApplyEvent(event, state);
+    const next = applyOpenRoutFromAttackApplyEvent(
+      { effectType: 'openRoutFromAttackApply', eventType: 'gameEffect' },
+      ready,
+    );
+
     const apply = getRangedAttackApplyState(next);
-    expect(apply.retreatState).toBe('bypassed');
-    expect(apply.reverseState).toBe('bypassed');
+    expect(apply.retreatState).toStrictEqual(retreated);
+    expect(apply.reverseState).toStrictEqual(reversed);
   });
 });

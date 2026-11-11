@@ -11,8 +11,7 @@ import {
  * Opens the rout substep on an attack apply whose rout slot is still pending.
  *
  * The attack already measured a rout; this writes the substep when that step's
- * turn comes. A rout supersedes retreat and reverse — the unit leaves the board
- * — so those sibling slots are written `'bypassed'` even if their thresholds fell.
+ * turn comes, after any retreat and reverse the attack reached (§7.5.2).
  *
  * @param _event - The effect; which apply it opens on is the state's to name
  * @param state - The current game state
@@ -30,13 +29,9 @@ export function applyOpenRoutFromAttackApplyEvent<S extends GameState>(
     apply.defendingUnit,
   ]);
 
-  // A rout supersedes: retreat and reverse do not happen to a unit that leaves.
-  const nextApply = {
-    ...apply,
-    retreatState: 'bypassed' as const,
-    reverseState: 'bypassed' as const,
-    routState,
-  };
+  // The rout comes last (§7.5.2): any retreat and reverse this attack reached
+  // have already been carried out, and stay as they were.
+  const nextApply = { ...apply, routState };
   const withRoutOpen = updateAttackApplyState(state, nextApply);
   // The unit leaves when the rout opens, not when the discard is paid.
   return removeUnitsLeavingUnderRout(withRoutOpen, routState.unitsToRout);

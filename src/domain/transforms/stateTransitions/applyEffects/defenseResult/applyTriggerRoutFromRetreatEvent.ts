@@ -11,8 +11,10 @@ import {
 /**
  * Applies a TriggerRoutFromRetreatEvent to the game state.
  * Creates a rout state in the retreat state when there are no legal retreat options.
- * A rout supersedes reverse on the parent attack apply, so that slot is bypassed —
- * a unit that leaves cannot still be due to reverse.
+ * The rout takes the place of the retreat the unit could not make (§7.5.6), and
+ * the unit leaves the board now. So nothing later in the order can happen to
+ * it: a reverse still due on the apply is bypassed, and so is a rout the attack
+ * reached too, which this rout has already carried out.
  *
  * The event carries nothing: the retreat waiting for its rout is the state's to name.
  *
@@ -33,12 +35,13 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
 
   const withNestedRout = updateRetreatRoutState(state, routState);
 
-  // The retreat stays open (it holds this nested rout). Reverse on the apply
-  // cannot still be due once the unit is routing off the board.
+  // The retreat stays open (it holds this nested rout). A unit routing off the
+  // board now cannot still be due to turn about, or to rout a second time.
   const apply = getAttackApplyStateOfPlayer(withNestedRout, retreatingPlayer);
   const nextApply = {
     ...apply,
     reverseState: 'bypassed' as const,
+    routState: 'bypassed' as const,
   };
   const withReverseBypassed = updateAttackApplyState(withNestedRout, nextApply);
   // The unit leaves when the rout opens, not when the discard is paid.

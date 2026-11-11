@@ -73,7 +73,8 @@ function routOnRetreat(
  * The rout an attack apply is accountable for: the one the attack opened
  * outright, or the one its retreat fell into.
  *
- * A rout supersedes a retreat, so an apply never holds both.
+ * An apply holds an open rout of its own or one its retreat fell into, never
+ * both: a retreat that falls into a rout closes the apply's own.
  *
  * @param apply - The attack apply
  * @param source - Which attack this apply belongs to
