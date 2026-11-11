@@ -12,21 +12,14 @@ export function isSameUnitType(
   unit1: UnitInstance,
   unit2: UnitInstance,
 ): ValidationResult {
-  try {
-    const sameUnitType = unit1.unitType.id === unit2.unitType.id;
-    if (!sameUnitType) {
-      return {
-        errorReason: 'Units have different unit types',
-        result: false,
-      };
-    }
+  const sameUnitType = unit1.unitType.id === unit2.unitType.id;
+  if (!sameUnitType) {
     return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: 'Units have different unit types',
       result: false,
     };
   }
+  return {
+    result: true,
+  };
 }

@@ -2,7 +2,6 @@ import { getUnitByStatValue } from '@testing';
 import { createUnitInstance } from '@factories';
 
 import { isSameUnitInstance } from './isSameUnitInstance';
-import type { UnitInstance } from '@entities';
 
 /**
  * IsSameUnitInstance: Determines whether two unit instances are the same unit.
@@ -58,16 +57,6 @@ describe('isSameUnitInstance function', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 2);
     const { result } = isSameUnitInstance(unit1, unit2);
-    expect(result).toBe(false);
-  });
-
-  it('returns false when comparing a unit to undefined', () => {
-    const unit = createUnitInstance('black', flexibility1UnitType, 1);
-    // Intentional type error to test the function
-    const { result } = isSameUnitInstance(
-      unit,
-      undefined as unknown as UnitInstance,
-    );
     expect(result).toBe(false);
   });
 });

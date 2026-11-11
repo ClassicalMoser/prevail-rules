@@ -9,68 +9,57 @@ import { isSameUnitInstance } from '../unit/unitEquivalence';
  * @param board - The board state
  * @param unitWithPlacement - The unit with its placement
  * @returns ValidationResult indicating if the unit is at the placement
+ * @throws Error when the placement names a coordinate that is not on the board
  */
 export function isAtPlacement(
   board: Board,
   unitWithPlacement: UnitWithPlacement,
 ): ValidationResult {
-  // TODO(composition): the catch turns any fault (a missing coordinate
-  // included) into "not at the placement", the shape AUDIT.md flags in
-  // `legality`; `applyCompleteUnitMovementEvent` then skips the removal.
-  // Settled by catching only the expected negative, or reporting the message.
-  try {
-    // Get the declared coordinate of the unit on the board.
-    const boardCoordinate = unitWithPlacement.placement.coordinate;
-    const friendlySide = unitWithPlacement.unit.playerSide;
+  // Get the declared coordinate of the unit on the board.
+  const boardCoordinate = unitWithPlacement.placement.coordinate;
+  const friendlySide = unitWithPlacement.unit.playerSide;
 
-    // Get the friendly unit at the coordinate
-    const friendlyUnitWithPlacement = getPlayerUnitWithPosition(
-      board,
-      boardCoordinate,
-      friendlySide,
-    );
+  // Get the friendly unit at the coordinate
+  const friendlyUnitWithPlacement = getPlayerUnitWithPosition(
+    board,
+    boardCoordinate,
+    friendlySide,
+  );
 
-    // If there's no friendly unit at the coordinate, the unit is not at the placement.
-    if (!friendlyUnitWithPlacement) {
-      return {
-        errorReason: 'No friendly unit at coordinate',
-        result: false,
-      };
-    }
-
-    // If the friendly unit is not facing the same direction as the declared facing, the unit is not at the placement.
-    if (
-      friendlyUnitWithPlacement.placement.facing !==
-      unitWithPlacement.placement.facing
-    ) {
-      return {
-        errorReason: 'Declared facing does not match facing of unit present',
-        result: false,
-      };
-    }
-
-    // If the friendly unit is not the same as the unit on the board, the unit is not at the placement.
-    // Compare by value since UnitInstance is identified by playerSide, unitType, and instanceNumber.
-    const { result: isSameUnit } = isSameUnitInstance(
-      friendlyUnitWithPlacement.unit,
-      unitWithPlacement.unit,
-    );
-    if (!isSameUnit) {
-      return {
-        errorReason: 'Unit is not at the placement',
-        result: false,
-      };
-    }
-
-    // If all checks pass, the unit is at the placement.
+  // If there's no friendly unit at the coordinate, the unit is not at the placement.
+  if (!friendlyUnitWithPlacement) {
     return {
-      result: true,
-    };
-  } catch (error) {
-    // Any error means the unit is not at the placement.
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: 'No friendly unit at coordinate',
       result: false,
     };
   }
+
+  // If the friendly unit is not facing the same direction as the declared facing, the unit is not at the placement.
+  if (
+    friendlyUnitWithPlacement.placement.facing !==
+    unitWithPlacement.placement.facing
+  ) {
+    return {
+      errorReason: 'Declared facing does not match facing of unit present',
+      result: false,
+    };
+  }
+
+  // If the friendly unit is not the same as the unit on the board, the unit is not at the placement.
+  // Compare by value since UnitInstance is identified by playerSide, unitType, and instanceNumber.
+  const { result: isSameUnit } = isSameUnitInstance(
+    friendlyUnitWithPlacement.unit,
+    unitWithPlacement.unit,
+  );
+  if (!isSameUnit) {
+    return {
+      errorReason: 'Unit is not at the placement',
+      result: false,
+    };
+  }
+
+  // If all checks pass, the unit is at the placement.
+  return {
+    result: true,
+  };
 }

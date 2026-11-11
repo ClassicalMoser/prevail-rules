@@ -87,16 +87,5 @@ describe('hasEnemyUnit function', () => {
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(false);
     });
-
-    it('returns false when unitPresence is missing required properties', () => {
-      const board = createEmptyStandardBoard();
-      const space = boardSpaceAt(board, coordinate);
-      space.unitPresence = {
-        presenceType: 'single',
-      } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
-
-      const { result } = hasEnemyUnit('black', space);
-      expect(result).toBe(false);
-    });
   });
 });

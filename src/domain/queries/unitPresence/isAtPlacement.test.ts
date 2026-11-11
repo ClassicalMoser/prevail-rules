@@ -28,13 +28,16 @@ describe('isAtPlacement function', () => {
   ): UnitInstance => createUnitInstance(playerSide, unitType, instanceNumber);
 
   describe('invalid inputs', () => {
-    it('returns false for a non-existent coordinate', () => {
+    it('throws, naming the coordinate, when the placement is not on the board', () => {
       const unit = createUnit('black');
       const invalidCoordinate = 'Z-99' as Coordinate;
       const unitWithPlacement = placed(unit, invalidCoordinate, 'north');
 
-      const { result } = isAtPlacement(standardBoard, unitWithPlacement);
-      expect(result).toBe(false);
+      // A placement names where the unit is said to stand, so a space that does
+      // not exist is a fault in the placement, not a unit that is elsewhere.
+      expect(() => isAtPlacement(standardBoard, unitWithPlacement)).toThrow(
+        'Coordinate Z-99 does not exist on standard board.',
+      );
     });
   });
 

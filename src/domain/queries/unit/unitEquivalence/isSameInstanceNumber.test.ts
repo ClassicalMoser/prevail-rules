@@ -1,4 +1,3 @@
-import type { UnitInstance } from '@entities';
 import { createTestUnit } from '@testing';
 
 import { isSameInstanceNumber } from './isSameInstanceNumber';
@@ -38,16 +37,6 @@ describe('isSameInstanceNumber function', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 3 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBe(false);
-  });
-
-  it('returns false when comparing a unit to undefined', () => {
-    const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
-    // Intentional type error to test the function
-    const { result } = isSameInstanceNumber(
-      unit,
-      undefined as unknown as UnitInstance,
-    );
     expect(result).toBe(false);
   });
 });

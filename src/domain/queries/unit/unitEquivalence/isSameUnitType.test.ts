@@ -1,4 +1,3 @@
-import type { UnitInstance } from '@entities';
 import { getUnitByStatValue } from '@testing';
 import { createUnitInstance } from '@factories';
 
@@ -43,15 +42,5 @@ describe('isSameUnitType function', () => {
     const unit2 = createUnitInstance('black', flexibility1UnitType, 3);
     const { result } = isSameUnitType(unit1, unit2);
     expect(result).toBe(true);
-  });
-
-  it('returns false when comparing a unit to undefined', () => {
-    const unit = createUnitInstance('black', flexibility1UnitType, 1);
-    // Intentional type error to test the function
-    const { result } = isSameUnitType(
-      unit,
-      undefined as unknown as UnitInstance,
-    );
-    expect(result).toBe(false);
   });
 });

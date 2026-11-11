@@ -12,21 +12,14 @@ export function isSameInstanceNumber(
   unit1: UnitInstance,
   unit2: UnitInstance,
 ): ValidationResult {
-  try {
-    const sameInstanceNumber = unit1.instanceNumber === unit2.instanceNumber;
-    if (!sameInstanceNumber) {
-      return {
-        errorReason: 'Units have different instance numbers',
-        result: false,
-      };
-    }
+  const sameInstanceNumber = unit1.instanceNumber === unit2.instanceNumber;
+  if (!sameInstanceNumber) {
     return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: 'Units have different instance numbers',
       result: false,
     };
   }
+  return {
+    result: true,
+  };
 }

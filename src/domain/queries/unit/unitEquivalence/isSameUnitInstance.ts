@@ -11,31 +11,22 @@ import { isFriendlyUnit } from '../isFriendlyUnit';
  * @param unit1 - The first unit instance
  * @param unit2 - The second unit instance
  * @returns True if both units have the same playerSide, unitType, and instanceNumber, false otherwise
- *
- * A throw from a helper becomes a failed result. It is not rethrown.
  */
 export function isSameUnitInstance(
   unit1: UnitInstance,
   unit2: UnitInstance,
 ): ValidationResult {
-  try {
-    // Same instance only if both fight for the same side.
-    const sameSide = isFriendlyUnit(unit1, unit2.playerSide);
-    const { result: sameUnitType } = isSameUnitType(unit1, unit2);
-    const { result: sameInstanceNumber } = isSameInstanceNumber(unit1, unit2);
-    if (!sameSide || !sameUnitType || !sameInstanceNumber) {
-      return {
-        errorReason: 'Units are not the same instance',
-        result: false,
-      };
-    }
+  // Same instance only if both fight for the same side.
+  const sameSide = isFriendlyUnit(unit1, unit2.playerSide);
+  const { result: sameUnitType } = isSameUnitType(unit1, unit2);
+  const { result: sameInstanceNumber } = isSameInstanceNumber(unit1, unit2);
+  if (!sameSide || !sameUnitType || !sameInstanceNumber) {
     return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: 'Units are not the same instance',
       result: false,
     };
   }
+  return {
+    result: true,
+  };
 }
