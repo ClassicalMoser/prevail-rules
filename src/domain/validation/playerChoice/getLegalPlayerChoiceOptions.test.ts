@@ -57,9 +57,7 @@ const allChoiceTypes = [
   'chooseWhetherToRetreat',
   'commitToRangedAttack',
   'commitToRangedDefense',
-  'issueCommand',
   'moveCommander',
-  'performRangedAttack',
   'setupUnits',
 ] as const satisfies readonly PlayerChoiceType[];
 
@@ -72,7 +70,9 @@ const choicesNeedingRoundUnderWay = [
   'chooseMeleeResolution',
   'chooseRally',
   'doneIssuingCommands',
+  'issueCommand',
   'moveUnit',
+  'performRangedAttack',
 ] as const satisfies readonly PlayerChoiceType[];
 
 /**
@@ -180,6 +180,26 @@ describe('getLegalPlayerChoiceOptions function', () => {
       'black',
       'white',
     ]);
+  });
+
+  it('packages the orders left to issue, and says the player may stop instead', () => {
+    // Black is issuing and has one order left to give.
+    const command = tempCommandCards[0].command;
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createIssueCommandsPhaseState(createEmptyGameState('standard'), {
+        remainingCommandsFirstPlayer: [command],
+        step: 'firstPlayerIssueCommands',
+      }),
+    );
+    stubExpected('issueCommand', 'black');
+
+    // Black may give that order, or stop and forfeit it (§4.3.3).
+    expect(getLegalPlayerChoiceOptions(state)).toMatchObject({
+      canDoneIssuing: true,
+      choiceType: 'issueCommand',
+      issueCommands: { commands: [command], player: 'black' },
+    });
   });
 
   it('packages moveCommander destinations from the commander space', () => {
@@ -307,13 +327,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
             });
             break;
           }
-          case 'issueCommand': {
-            expect(options).toMatchObject({
-              canDoneIssuing: true,
-              issueCommands: { commands: [], player: 'black' },
-            });
-            break;
-          }
           case 'moveCommander': {
             expect(options).toMatchObject({
               destinations: [],
@@ -331,12 +344,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
             expect(options).toMatchObject({
               rangedAttackers: { attackers: [], player: 'black' },
             });
-            break;
-          }
-          case 'performRangedAttack': {
-            // No shot is open in this state, so there is no shooter and
-            // nothing to aim at.
-            expect(options).toMatchObject({ shooter: null, targets: [] });
             break;
           }
           case 'setupUnits': {

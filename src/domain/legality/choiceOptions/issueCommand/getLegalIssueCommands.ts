@@ -1,6 +1,10 @@
 import type { Command, PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { getOtherPlayer, getRemainingCommandsForPlayer } from '@queries';
+import {
+  getIssueCommandsPhaseState,
+  getOtherPlayer,
+  getRemainingCommandsForPlayer,
+} from '@queries';
 
 /**
  * Atomic issue-command context: which player may issue, and which remaining
@@ -10,7 +14,6 @@ import { getOtherPlayer, getRemainingCommandsForPlayer } from '@queries';
  * {@link getLegalUnitsForIssueCommand} (units / line starts) and
  * {@link getLegalLineEndsForIssueCommand} (ends for a start).
  *
- * `null` when an issueCommand choice is not expected.
  */
 export interface LegalIssueCommands {
   player: PlayerSide;
@@ -23,19 +26,22 @@ export interface LegalIssueCommands {
  * Does not expand unit/line combinations — callers pick a command, then
  * eligible atoms under that command's restrictions; {@link isValidIssueCommandEvent}
  * checks integrity of the committed set.
+ *
+ * The expected engine asks for an order only on an issuing step with orders
+ * left, so being asked anywhere else is the caller's mistake and throws.
+ *
+ * @throws Error outside the issue commands phase, off an issuing step, or
+ * when the issuing player has no orders left
  */
 export function getLegalIssueCommands<S extends GameState>(
   gameState: S,
-): LegalIssueCommands | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'issueCommands') {
-    return null;
-  }
+): LegalIssueCommands {
+  const phaseState = getIssueCommandsPhaseState(gameState);
   if (
     phaseState.step !== 'firstPlayerIssueCommands' &&
     phaseState.step !== 'secondPlayerIssueCommands'
   ) {
-    return null;
+    throw new Error(`Not on an issuing step: ${phaseState.step}`);
   }
 
   const firstPlayer = gameState.currentInitiative;
@@ -44,9 +50,12 @@ export function getLegalIssueCommands<S extends GameState>(
     phaseState.step === 'firstPlayerIssueCommands' ? firstPlayer : secondPlayer;
   const commands = getRemainingCommandsForPlayer(gameState, player);
 
+  // With every order issued the step should already have moved on to
+  // resolving them.
   if (commands.length === 0) {
-    return null;
+    throw new Error(`${player} has no orders left to issue`);
   }
 
-  return { commands, player };
+  const legal: LegalIssueCommands = { commands, player };
+  return legal;
 }

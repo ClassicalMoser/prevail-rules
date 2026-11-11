@@ -2,8 +2,8 @@ import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   getPositionOfUnit,
+  getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
-  findRangedAttackResolutionState,
 } from '@queries';
 import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
 
@@ -25,9 +25,10 @@ export interface LegalShooterTargets {
 }
 
 /**
- * Returns the targets open to the shooter of the shot under way, or `null`
- * when no shot is waiting for its target: no ranged attack is open, its
- * shooter has not yet committed or refused, or the target is already named.
+ * Returns the targets open to the shooter of the shot under way. The
+ * expected engine asks only while a shot waits for its target, so being asked
+ * when no ranged attack is open, before the shooter has committed or refused,
+ * or after the target is named is the caller's mistake and throws.
  *
  * The shooter commits before it aims (§4.3.11 step 2), and its card counts
  * here: a Range card reaches one space further out, adding any enemy just
@@ -36,19 +37,16 @@ export interface LegalShooterTargets {
  */
 export function getLegalShooterTargets<S extends GameState>(
   gameState: S,
-): LegalShooterTargets | null {
+): LegalShooterTargets {
   // Shots are taken only while a Shoot order is being carried out.
-  const resolution = findRangedAttackResolutionState(gameState);
-  if (resolution === undefined) {
-    return null;
-  }
+  const resolution = getRangedAttackResolutionState(gameState);
 
   // The target is named after the shooter's commitment, and only once.
-  if (
-    resolution.attackingCommitment.commitmentType === 'pending' ||
-    resolution.defendingUnit !== 'pending'
-  ) {
-    return null;
+  if (resolution.attackingCommitment.commitmentType === 'pending') {
+    throw new Error('The shooter has not yet committed or refused a card');
+  }
+  if (resolution.defendingUnit !== 'pending') {
+    throw new Error("The shot's target is already named");
   }
 
   // The shooter does not move during its shot, so where the board has it is

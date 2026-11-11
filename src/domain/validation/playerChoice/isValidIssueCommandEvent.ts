@@ -58,12 +58,6 @@ export function isValidIssueCommandEvent(
   state: GameState,
 ): ValidationResult {
   const legal = getLegalIssueCommands(state);
-  if (legal === null) {
-    return {
-      errorReason: 'Issue command is not expected in the current state',
-      result: false,
-    };
-  }
 
   if (event.player !== legal.player) {
     return {

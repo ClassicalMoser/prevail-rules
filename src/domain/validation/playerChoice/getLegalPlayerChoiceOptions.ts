@@ -136,8 +136,8 @@ export type LegalPlayerChoiceOptions =
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'performRangedAttack';
-      /** The unit whose shot is being aimed; `null` if it cannot be read. */
-      shooter: UnitWithPlacement | null;
+      /** The unit whose shot is being aimed. */
+      shooter: UnitWithPlacement;
       /**
        * Every enemy it may target, with the card committed for the shot
        * counted (§4.3.11 steps 2–3). Supporters for a chosen target are
@@ -161,11 +161,6 @@ function concretePlayer(playerSource: PlayerSource): PlayerSide | null {
     return null;
   }
   return playerSource;
-}
-
-/** No orders are available to the player: the answer when no command can be given. */
-function emptyIssueCommands(player: PlayerSide): LegalIssueCommands {
-  return { commands: [], player };
 }
 
 /** No unit is able to move: the answer when none can be named to move. */
@@ -338,8 +333,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     case 'issueCommand': {
       // Issued commands are resolved one at a time, in any order the player
       // likes (§4.3.9); offer every order available now.
-      const issueCommands =
-        getLegalIssueCommands(state) ?? emptyIssueCommands(player);
+      const issueCommands = getLegalIssueCommands(state);
       return {
         ...base,
         canDoneIssuing:
@@ -415,8 +409,8 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       return {
         ...base,
         choiceType: 'performRangedAttack',
-        shooter: legal === null ? null : legal.shooter,
-        targets: legal === null ? [] : [...legal.targets],
+        shooter: legal.shooter,
+        targets: [...legal.targets],
       };
     }
     case 'setupUnits': {

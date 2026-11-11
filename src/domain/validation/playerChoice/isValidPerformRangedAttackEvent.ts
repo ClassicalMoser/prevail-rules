@@ -21,12 +21,6 @@ export function isValidPerformRangedAttackEvent(
 ): ValidationResult {
   // A target is named only once a shooter is named and has committed.
   const legal = getLegalShooterTargets(state);
-  if (legal === null) {
-    return {
-      errorReason: 'Perform ranged attack is not expected in the current state',
-      result: false,
-    };
-  }
 
   // Only the shooter's owner aims it.
   if (event.player !== legal.player) {

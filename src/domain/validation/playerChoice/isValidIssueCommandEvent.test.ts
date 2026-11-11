@@ -189,7 +189,7 @@ describe('isValidIssueCommandEvent function', () => {
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
   });
 
-  it('rejects when issue command is not expected', () => {
+  it('throws when asked outside the issue commands phase, which the expected check rules out first', () => {
     const command = tempCommandCards[0].command;
     const unit = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -206,6 +206,10 @@ describe('isValidIssueCommandEvent function', () => {
       units: [unit.unit],
     });
 
-    expect(isValidIssueCommandEvent(event, state).result).toBe(false);
+    // An order given while the cards are being chosen is refused by the
+    // expected check before membership is asked; reaching here is a fault.
+    expect(() => isValidIssueCommandEvent(event, state)).toThrow(
+      'Expected issueCommands phase, got playCards',
+    );
   });
 });
