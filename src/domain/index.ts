@@ -518,6 +518,7 @@ export {
   getRemainingUnitsForPlayer,
   getMeleeResolutionReadyForAttackCalculation,
   findMeleeResolutionState,
+  findPlayerOwingMeleeCommitment,
   getMeleeResolutionState,
   getMoveCommandersPhaseState,
   getMovementResolutionState,

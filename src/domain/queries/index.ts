@@ -108,6 +108,7 @@ export {
   getMeleeAppliesInResolutionOrder,
   getMeleeResolutionState,
   findMeleeResolutionState,
+  findPlayerOwingMeleeCommitment,
   getMeleeResolutionReadyForAttackCalculation,
   getRemainingMeleeEngagements,
   getRallyResolutionState,

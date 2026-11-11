@@ -10,5 +10,8 @@ export { findMeleeResolutionState } from './findMeleeResolutionState';
 // Both commitments are done, and attack-apply has not opened yet.
 export { getMeleeResolutionReadyForAttackCalculation } from './getMeleeResolutionReadyForAttackCalculation';
 
+// Whose commitment to the melee is next owed, first player first (§7.2.2).
+export { findPlayerOwingMeleeCommitment } from './findPlayerOwingMeleeCommitment';
+
 // Spaces still waiting for a melee this phase.
 export { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';

@@ -2,8 +2,8 @@ import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
 import {
   findNextMeleeAttackApplyToClose,
+  findPlayerOwingMeleeCommitment,
   getMeleeAppliesInResolutionOrder,
-  getOtherPlayer,
 } from '@queries';
 import {
   attackApplyStages,
@@ -29,28 +29,17 @@ export function getExpectedMeleeResolutionEvent(
     throw new Error('Melee resolution state is already complete');
   }
 
-  const firstPlayer = gameState.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-
-  const { firstPlayerCommitment, secondPlayerCommitment } = meleeState;
   const { firstPlayerAttackApplyState, secondPlayerAttackApplyState } =
     meleeState;
 
-  // Check first player's commitment
-  if (firstPlayerCommitment.commitmentType === 'pending') {
+  // Each player may commit a card before the blows are counted, the first
+  // player first and the second after (§7.2.2).
+  const owingCommitment = findPlayerOwingMeleeCommitment(gameState, meleeState);
+  if (owingCommitment !== undefined) {
     return {
       actionType: 'playerChoice',
       choiceType: 'commitToMelee',
-      playerSource: firstPlayer,
-    };
-  }
-
-  // Check second player's commitment
-  if (secondPlayerCommitment.commitmentType === 'pending') {
-    return {
-      actionType: 'playerChoice',
-      choiceType: 'commitToMelee',
-      playerSource: secondPlayer,
+      playerSource: owingCommitment,
     };
   }
 

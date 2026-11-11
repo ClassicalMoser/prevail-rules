@@ -3,7 +3,10 @@ import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { meleeModifierTypes } from '@events';
 import { createCommitToMeleeEvent } from '@factories';
-import { getOtherPlayer, findMeleeResolutionState } from '@queries';
+import {
+  findMeleeResolutionState,
+  findPlayerOwingMeleeCommitment,
+} from '@queries';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -21,16 +24,11 @@ function pendingCommitPlayer<S extends GameState>(
   if (meleeState === undefined) {
     return null;
   }
-  const firstPlayer = gameState.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
 
-  if (meleeState.firstPlayerCommitment.commitmentType === 'pending') {
-    return firstPlayer;
-  }
-  if (meleeState.secondPlayerCommitment.commitmentType === 'pending') {
-    return secondPlayer;
-  }
-  return null;
+  // The first player commits first, then the second (§7.2.2); once both
+  // have, nobody is asked.
+  const owing = findPlayerOwingMeleeCommitment(gameState, meleeState);
+  return owing ?? null;
 }
 
 /**
