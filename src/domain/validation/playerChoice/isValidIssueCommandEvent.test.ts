@@ -1,7 +1,10 @@
 import { tempCommandCards } from '@sampleValues';
 import { PLAY_CARDS_PHASE } from '@game';
+import type { Coordinate } from '@entities';
 import {
+  createBoardWithFacingRow,
   createIssueCommandsPhaseState,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -187,6 +190,56 @@ describe('isValidIssueCommandEvent function', () => {
     });
 
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
+  });
+
+  it('accepts a line whose only unit within inspiration range stands in its middle', () => {
+    // A line order reaching no further than the commander's own space.
+    const command = createTestCommand({
+      number: 1,
+      restrictions: {
+        inspirationRangeRestriction: 0,
+        restrictionType: 'none',
+      },
+      size: 'lines',
+    });
+    // Black's rank of eight, E-1 to E-8, faces north; the commander stands
+    // with the fourth unit, on E-4, so that unit alone is within range.
+    const coordinates: Coordinate[] = [
+      'E-1',
+      'E-2',
+      'E-3',
+      'E-4',
+      'E-5',
+      'E-6',
+      'E-7',
+      'E-8',
+    ];
+    const { board, unitAt } = createBoardWithFacingRow({ coordinates });
+    let state = createEmptyGameState('standard');
+    state = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
+    });
+    state = updateBoardState(state, addCommanderToBoard(board, 'black', 'E-4'));
+    state = updatePhaseState(
+      state,
+      createIssueCommandsPhaseState(state, {
+        remainingCommandsFirstPlayer: [command],
+        step: 'firstPlayerIssueCommands',
+      }),
+    );
+
+    // Black orders the whole rank. Range is traced from any unit in the
+    // line, not only from an end (§4.3.5).
+    const event = createIssueCommandEvent({
+      command,
+      player: 'black',
+      units: coordinates.map((coordinate) => unitAt(coordinate).unit),
+    });
+
+    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+      result: true,
+    });
   });
 
   it('throws when asked outside the issue commands phase, which the expected check rules out first', () => {
