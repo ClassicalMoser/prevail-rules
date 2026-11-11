@@ -107,8 +107,10 @@ const newState = applyEvent(event, state);
 Takes state alone and says what comes next. `ExpectedEventInfo` is
 `ExpectedPlayerInput | ExpectedGameEffect`.
 
-It checks the endgame first, and throws when the game has already been won,
-because a finished game expects nothing. From there it reads the current phase
+It checks the endgame first. A finished game expects nothing, so
+`findExpectedEvent` answers `undefined` for it and `getExpectedEvent`, which
+insists, throws. A caller that is asking whether anything is owed uses the
+find; one that already knows the game is going on uses the get. From there it reads the current phase
 and delegates to the phase and substep queries, which is why this layer reads
 sequencing and leaves rules to `@legality`.
 
@@ -134,8 +136,11 @@ bot from the same enumerators the validators check membership against. It lives
 in `@validation` because it composes `@expected` and `@legality`, and legality
 may not import expected.
 
-It returns `null` when the next action is a game effect, and also when
-`getExpectedEvent` throws. Otherwise it discriminates by `choiceType` and
+It returns `null` when nothing is owed a choice: the game is over
+(`findExpectedEvent` answers `undefined`) or the next action is a game effect.
+An enumerator that finds no options answers with an empty offer, but one that
+throws is a fault in the state and throws to the caller with its own message.
+Otherwise it discriminates by `choiceType` and
 carries `playerSource`, and either the full `events[]`
 for an atomic choice or named root atoms for a compound one. Follow-ups that
 depend on a selection stay on their own helpers — `getLegalUnitMoves` (every

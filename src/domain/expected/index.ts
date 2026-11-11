@@ -1,1 +1,1 @@
-export { getExpectedEvent } from './expectedEvent';
+export { findExpectedEvent, getExpectedEvent } from './expectedEvent';

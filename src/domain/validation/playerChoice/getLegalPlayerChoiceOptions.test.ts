@@ -26,28 +26,30 @@ import { getLegalPlayerChoiceOptions } from './getLegalPlayerChoiceOptions';
 import { createEmptyGameState } from '@factories';
 
 const mocks = vi.hoisted(() => ({
-  getExpectedEventMock: vi.fn(),
-  actualGetExpectedEvent: undefined as
-    | ((state: GameState) => ExpectedEventInfo)
+  findExpectedEventMock: vi.fn(),
+  actualFindExpectedEvent: undefined as
+    | ((state: GameState) => ExpectedEventInfo | undefined)
     | undefined,
 }));
 
 vi.mock(import('@expected'), async (importOriginal) => {
   const actual = await importOriginal();
-  mocks.actualGetExpectedEvent = actual.getExpectedEvent;
-  mocks.getExpectedEventMock.mockImplementation(actual.getExpectedEvent);
+  mocks.actualFindExpectedEvent = actual.findExpectedEvent;
+  mocks.findExpectedEventMock.mockImplementation(actual.findExpectedEvent);
   return {
     ...actual,
-    getExpectedEvent: mocks.getExpectedEventMock,
+    findExpectedEvent: mocks.findExpectedEventMock,
   };
 });
 
+/**
+ * Choices whose enumerators answer on a bare state: with no round under way
+ * there is simply nothing to offer, so they answer "nothing".
+ */
 const allChoiceTypes = [
   'chooseCard',
   'chooseShooter',
-  'chooseMeleeResolution',
   'chooseMovingUnit',
-  'chooseRally',
   'chooseRoutDiscard',
   'chooseRetreatOption',
   'commitToMelee',
@@ -58,9 +60,19 @@ const allChoiceTypes = [
   'doneIssuingCommands',
   'issueCommand',
   'moveCommander',
-  'moveUnit',
   'performRangedAttack',
   'setupUnits',
+] as const satisfies readonly PlayerChoiceType[];
+
+/**
+ * Choices whose enumerators read the round or the movement under way. A bare
+ * state has neither, so they cannot answer; that is a fault to throw, not an
+ * empty offer.
+ */
+const choicesNeedingRoundUnderWay = [
+  'chooseMeleeResolution',
+  'chooseRally',
+  'moveUnit',
 ] as const satisfies readonly PlayerChoiceType[];
 
 /**
@@ -69,10 +81,10 @@ const allChoiceTypes = [
  */
 describe('getLegalPlayerChoiceOptions function', () => {
   beforeEach(() => {
-    mocks.getExpectedEventMock.mockReset();
-    if (mocks.actualGetExpectedEvent !== undefined) {
-      mocks.getExpectedEventMock.mockImplementation(
-        mocks.actualGetExpectedEvent,
+    mocks.findExpectedEventMock.mockReset();
+    if (mocks.actualFindExpectedEvent !== undefined) {
+      mocks.findExpectedEventMock.mockImplementation(
+        mocks.actualFindExpectedEvent,
       );
     }
   });
@@ -86,7 +98,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       choiceType,
       playerSource,
     };
-    mocks.getExpectedEventMock.mockReturnValue(expected);
+    mocks.findExpectedEventMock.mockReturnValue(expected);
   }
 
   it('returns null when the next expected action is a game effect', () => {
@@ -107,14 +119,28 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(getLegalPlayerChoiceOptions(state)).toBeNull();
   });
 
-  it('returns null when getExpectedEvent throws', () => {
-    mocks.getExpectedEventMock.mockImplementation(() => {
-      throw new Error('Invalid phase');
-    });
-    expect(
-      getLegalPlayerChoiceOptions(createEmptyGameState('standard')),
-    ).toBeNull();
+  it('returns null once a winner is set, because a finished game is owed no choice', () => {
+    // The battle is over: no player is asked for anything.
+    const state = {
+      ...createEmptyGameState('standard'),
+      winner: 'black' as const,
+    };
+
+    expect(getLegalPlayerChoiceOptions(state)).toBeNull();
   });
+
+  it.each(choicesNeedingRoundUnderWay)(
+    'throws the enumerator’s own fault for %s when no round is under way, instead of offering no options',
+    (choiceType) => {
+      // The choice is expected, but the state has no round to read it from.
+      // That is a fault in the state, not a player with nothing to choose.
+      stubExpected(choiceType);
+
+      expect(() =>
+        getLegalPlayerChoiceOptions(createEmptyGameState('standard')),
+      ).toThrow('No current phase state found');
+    },
+  );
 
   it('packages chooseCard events from the live enumerator', () => {
     const base = createEmptyGameState('standard');
@@ -240,7 +266,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.rangedAttackers.attackers).toStrictEqual([attacker]);
   });
 
-  describe('discriminant per PlayerChoiceType (soft empty when atoms missing)', () => {
+  describe('discriminant per PlayerChoiceType (soft empty when nothing is available)', () => {
     it.each(allChoiceTypes)(
       'returns choiceType %s with the expected payload shape',
       (choiceType) => {
@@ -254,8 +280,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
 
         switch (choiceType) {
           case 'chooseCard':
-          case 'chooseMeleeResolution':
-          case 'chooseRally':
           case 'chooseRetreatOption':
           case 'chooseWhetherToRetreat':
           case 'commitToMelee':
@@ -297,12 +321,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
             expect(options).toMatchObject({
               moveUnits: { player: 'black', units: [] },
             });
-            break;
-          }
-          case 'moveUnit': {
-            // No movement is open in this state, so there is no unit and
-            // nothing to offer.
-            expect(options).toMatchObject({ movingUnit: null, moves: [] });
             break;
           }
           case 'chooseShooter': {
