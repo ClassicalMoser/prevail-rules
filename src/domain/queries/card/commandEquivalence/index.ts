@@ -6,3 +6,6 @@ export { areModifiersArraysEqual } from './areModifiersArraysEqual';
 
 // A restriction: the same range, traits, and unit types. Order does not matter.
 export { areRestrictionsEqual } from './areRestrictionsEqual';
+
+// A command: the same type, size, number, restrictions and modifiers.
+export { areCommandsEqual } from './areCommandsEqual';

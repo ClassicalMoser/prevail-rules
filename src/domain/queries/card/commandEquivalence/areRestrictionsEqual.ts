@@ -1,4 +1,5 @@
 import type { Restrictions } from '@entities';
+import { haveSameMembers } from '@utils';
 
 /**
  * Compares two Restrictions objects for equivalence (not reference equality) by comparing all properties.
@@ -12,26 +13,6 @@ export function areRestrictionsEqual(
   restrictions1: Restrictions,
   restrictions2: Restrictions,
 ): boolean {
-  // Helper function to compare two arrays of literals (strings, numbers, booleans, etc.).
-  function sameMembers<T>(left: readonly T[], right: readonly T[]): boolean {
-    // Different lengths cannot be the same members
-    if (left.length !== right.length) {
-      return false;
-    }
-    // Copy the second list so each match can be taken out of it
-    const remaining = [...right];
-    for (const item of left) {
-      const matchIndex = remaining.indexOf(item);
-      // No remaining copy of this member
-      if (matchIndex === -1) {
-        return false;
-      }
-      // Take that match, so a repeated member needs its own copy
-      remaining.splice(matchIndex, 1);
-    }
-    return true;
-  }
-
   // Compare inspirationRangeRestriction
   if (
     restrictions1.inspirationRangeRestriction !==
@@ -55,7 +36,7 @@ export function areRestrictionsEqual(
         return false;
       }
       // Compare traitRestrictions. Order does not matter.
-      const sameTraits = sameMembers(
+      const sameTraits = haveSameMembers(
         restrictions1.traitRestrictions,
         restrictions2.traitRestrictions,
       );
@@ -66,7 +47,7 @@ export function areRestrictionsEqual(
         return false;
       }
       // Compare unitRestrictions. Order does not matter.
-      const sameUnits = sameMembers(
+      const sameUnits = haveSameMembers(
         restrictions1.unitRestrictions,
         restrictions2.unitRestrictions,
       );

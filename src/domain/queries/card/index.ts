@@ -11,10 +11,18 @@ export { calculateInitiative } from './calculateInitiative';
 
 // One modifier, a list of modifiers, then a restriction. Order does not matter in the lists.
 export {
+  areCommandsEqual,
   areModifiersEqual,
   areModifiersArraysEqual,
   areRestrictionsEqual,
 } from './commandEquivalence';
+
+// The same card by id, and two copies of a card that agree in every part.
+export {
+  areUnitSupportsEqual,
+  isSameCard,
+  isSameCardValue,
+} from './cardEquivalence';
 
 // A command equal in type, size, number, modifiers, and restrictions.
 export { findMatchingCommand } from './findMatchingCommand';

@@ -14,6 +14,9 @@ export {
   throwIfNone,
 } from './stateSentinels';
 
+// Two lists with the same members, each as many times, in any order.
+export { haveSameMembers } from './haveSameMembers';
+
 // An injectable `[0, 1)` draw, so a caller can fix what a procedure rolls.
 export { defaultRandom } from './randomSource';
 export type { RandomSource } from './randomSource';
