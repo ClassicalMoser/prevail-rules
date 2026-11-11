@@ -115,12 +115,14 @@ describe('getLegalCommitToMovementEvents function', () => {
     ]);
   });
 
-  it('returns empty when not in issueCommands movement commitment', () => {
+  it('throws when no movement is being carried out, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalCommitToMovementEvents(state)).toStrictEqual([]);
+    expect(() => getLegalCommitToMovementEvents(state)).toThrow(
+      'No movement is being carried out',
+    );
   });
 
   it('returns only refuse when the pending player has no eligible cards in hand', () => {

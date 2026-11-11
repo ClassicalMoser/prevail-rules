@@ -105,20 +105,24 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
     ]);
   });
 
-  it('offers nothing before the target is named', () => {
+  it('throws before the target is named, since there is no one to defend', () => {
     // The shooter has committed but not yet aimed: there is no one to defend.
     const state = shot([defenceCard], 'pending');
 
-    expect(getLegalCommitToRangedDefenseEvents(state)).toStrictEqual([]);
+    expect(() => getLegalCommitToRangedDefenseEvents(state)).toThrow(
+      'The shot’s target is not yet named',
+    );
   });
 
-  it('offers nothing outside a Shoot order', () => {
+  it('throws outside a Shoot order, where nothing asks', () => {
     // Cards are being chosen, no shots taken.
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
 
-    expect(getLegalCommitToRangedDefenseEvents(state)).toStrictEqual([]);
+    expect(() => getLegalCommitToRangedDefenseEvents(state)).toThrow(
+      'No ranged attack is being carried out',
+    );
   });
 });

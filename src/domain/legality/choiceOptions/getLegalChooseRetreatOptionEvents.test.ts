@@ -87,17 +87,21 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     ]);
   });
 
-  it('returns empty when the retreat is already chosen', () => {
+  it('throws when the retreat is already chosen, since no choice is owed', () => {
     const state = stateWithRangedRetreatOptions(optionA);
-    expect(getLegalChooseRetreatOptionEvents(state)).toStrictEqual([]);
+    expect(() => getLegalChooseRetreatOptionEvents(state)).toThrow(
+      'No retreat is awaiting its owner’s choice of destination',
+    );
   });
 
-  it('returns empty when not in a retreat-choice context', () => {
+  it('throws when no retreat is under way, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalChooseRetreatOptionEvents(state)).toStrictEqual([]);
+    expect(() => getLegalChooseRetreatOptionEvents(state)).toThrow(
+      'No retreat is awaiting its owner’s choice of destination',
+    );
   });
 
   it('returns one event per option for a front-engagement nested retreat', () => {

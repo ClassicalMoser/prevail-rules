@@ -126,19 +126,23 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     ]);
   });
 
-  it('offers the target nothing: its commitment is a separate choice', () => {
+  it('throws once the shooter has committed: the target’s commitment is a separate choice', () => {
     // White holds an Attack card while its commitment is owed.
     const state = stateAwaitingTargetCommit([attackCard]);
 
-    expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([]);
+    expect(() => getLegalCommitToRangedAttackEvents(state)).toThrow(
+      'The shooter has already committed or refused a card',
+    );
   });
 
-  it('returns empty when not in issueCommands ranged commitment', () => {
+  it('throws when no ranged attack is being carried out, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([]);
+    expect(() => getLegalCommitToRangedAttackEvents(state)).toThrow(
+      'No ranged attack is being carried out',
+    );
   });
 
   it('returns only refuse when the pending player has no eligible cards in hand', () => {

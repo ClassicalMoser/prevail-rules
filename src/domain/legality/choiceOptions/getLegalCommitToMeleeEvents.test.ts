@@ -62,12 +62,14 @@ describe('getLegalCommitToMeleeEvents function', () => {
     ]);
   });
 
-  it('returns empty when not in resolveMelee commitment', () => {
+  it('throws when no melee is being fought, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalCommitToMeleeEvents(state)).toStrictEqual([]);
+    expect(() => getLegalCommitToMeleeEvents(state)).toThrow(
+      'No melee is being fought',
+    );
   });
 
   it('returns only refuse when the pending player has no cards in hand', () => {

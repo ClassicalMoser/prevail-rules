@@ -85,20 +85,24 @@ describe('getLegalChooseCardOptions function', () => {
     ]);
   });
 
-  it('returns empty when not in playCards phase', () => {
+  it('throws when asked outside the play cards phase, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: 'moveCommanders',
       step: 'moveFirstCommander',
     });
-    expect(getLegalChooseCardOptions(state)).toStrictEqual([]);
+    expect(() => getLegalChooseCardOptions(state)).toThrow(
+      'Expected playCards phase, got moveCommanders',
+    );
   });
 
-  it('returns empty when playCards is not on chooseCards step', () => {
+  it('throws when play cards is past the chooseCards step, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
-    expect(getLegalChooseCardOptions(state)).toStrictEqual([]);
+    expect(() => getLegalChooseCardOptions(state)).toThrow(
+      'Not on the chooseCards step: revealCards',
+    );
   });
 
   it('returns empty when both players already have awaitingPlay set', () => {

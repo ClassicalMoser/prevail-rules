@@ -54,15 +54,17 @@ describe('getLegalChooseWhetherToRetreatEvents function', () => {
     ]);
   });
 
-  it('returns empty when not awaiting the retreat decision', () => {
+  it('throws when no front engagement is being resolved, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    expect(getLegalChooseWhetherToRetreatEvents(state)).toStrictEqual([]);
+    expect(() => getLegalChooseWhetherToRetreatEvents(state)).toThrow(
+      'No front engagement is being resolved',
+    );
   });
 
-  it('returns empty when the defender cannot retreat', () => {
+  it('throws when the defender cannot retreat, since it is not asked', () => {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
@@ -81,6 +83,8 @@ describe('getLegalChooseWhetherToRetreatEvents function', () => {
       }),
     );
 
-    expect(getLegalChooseWhetherToRetreatEvents(inPhase)).toStrictEqual([]);
+    expect(() => getLegalChooseWhetherToRetreatEvents(inPhase)).toThrow(
+      'The defender has nowhere to retreat to',
+    );
   });
 });
