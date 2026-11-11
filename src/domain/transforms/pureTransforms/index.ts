@@ -44,6 +44,7 @@ export {
   updatePlayCardsStep,
   updateRallyResolutionState,
   updateReverseState,
+  settleRout,
   updateRoutState,
   updateFrontEngagementResolutionState,
   updateFlankEngagementResolutionState,

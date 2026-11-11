@@ -480,6 +480,12 @@ consume. Nothing in this section is changed yet; each says what would be.
 
 ### 7.1 A settled rout closes its parent four ways
 
+**Done (sixth pass):** `settleRout` writes the rout and closes the rear
+engagement; both settlers call it, and `applyResolveRoutEvent` lost its
+`routResolutionSource` branch (the field is now unread, left for the author).
+**Not done, needs clearance:** making `findRoutLocation` throw for a rout on a
+front engagement's retreat, and correcting that unreachable spec.
+
 **Verdict: design risk, low.** The four are layers of one chain every caller
 goes through, not four alternatives. The two apply events that settle a rout
 (`applyChooseRoutDiscardEvent`, `applyResolveRoutEvent`) both write through
@@ -535,6 +541,12 @@ wait for `completeRangedAttackCommand` after a shot must wait for the new one;
 old logs do not replay. Missing specs: a two-shooter order run end to end.
 
 ### 7.3 Commander defeat is held twice
+
+**Decided (author, 2026-11-11): keep `lostCommanders`.** It is cheaper than
+querying the board, meaningful, and true by construction: reserve, board,
+defeated applies to units and commanders alike. The proposal below is declined;
+what remains is only to put both readers behind one named query if they ever
+multiply.
 
 **Verdict: design risk, low; the redundancy is real.** `lostCommanders` has
 exactly one reader (`getMoveCommandersStepFrom`, which skips a fallen side's
@@ -670,6 +682,12 @@ handled on purpose (the log starts empty); the setup boundary is not. Options:
 `currentRoundNumber` and read the round's own number (state shape cost; no event
 shape cost; the application then files setup under round 1, a policy change for
 the round-0 stream), recommended; (3) remove `roundState.roundNumber`.
+
+**Decided (author, 2026-11-11):** round 0 has its own event structure (setup
+only, not built out), so setup is not forced into the round-1 log and stream
+rules. The event that ends a round may be better named `roundEnd` than
+`completeCleanupPhase` (rename, to confirm). The ranged skip divergence in 7.2
+is a definite error: fix it, with a failing spec first.
 
 **Other discrepancies noted.** `resolveMelee` carries `location` and both
 placements' coordinates, which the state also holds; `resolveReverse` carries a

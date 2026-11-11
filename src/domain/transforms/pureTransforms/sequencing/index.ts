@@ -38,4 +38,5 @@ export { updateMoveCommandersStep } from './updateMoveCommandersStep';
 // A player starts carrying out their orders, and finishes them.
 export { beginResolvingCommands } from './beginResolvingCommands';
 export { finishResolvingCommands } from './finishResolvingCommands';
+export { settleRout } from './settleRout';
 export { updateRoutState } from './updateRoutState';

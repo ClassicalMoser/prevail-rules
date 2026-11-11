@@ -2,11 +2,10 @@ import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
 import { getRoutState } from '@queries';
 import {
-  closeRearEngagementWhenRouted,
   discardCardsFromHand,
   discardShownCardFromHiddenHand,
   updatePlayerCards,
-  updateRoutState,
+  settleRout,
 } from '@transforms/pureTransforms';
 
 /**
@@ -47,10 +46,8 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
     cardsChosen: true,
     completed: true,
   };
-  next = updateRoutState(next, completedRout);
-
-  // A rear engagement is nothing but this rout; paying it ends the engagement.
-  next = closeRearEngagementWhenRouted(next);
+  // Paying settles the rout, and whatever it held open closes with it.
+  next = settleRout(next, completedRout);
 
   return next;
 }

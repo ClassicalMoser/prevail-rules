@@ -1,11 +1,7 @@
 import type { ResolveRoutEvent } from '@events';
 import type { GameState, RoutState } from '@game';
 import { getRoutState } from '@queries';
-import {
-  closeRearEngagementWhenRouted,
-  updateRetreatRoutState,
-  updateRoutState,
-} from '@transforms/pureTransforms';
+import { settleRout } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRoutEvent to the game state.
@@ -13,10 +9,8 @@ import {
  * The penalty is the sum of all routed units' rout penalties.
  * A zero penalty is not a choice — the rout closes in the same write.
  *
- * The routed units name their owner, and that owner names the rout, so reading
- * it needs no knowledge of where it sits. `routResolutionSource` is still
- * needed to write it back: a rout nested on a retreat is replaced through the
- * retreat holding it, and every other rout through its own parent.
+ * The routed units name their owner, and that owner names the rout, so neither
+ * reading nor writing it needs to know where it sits.
  *
  * @param event - The resolve rout event to apply
  * @param state - The current game state
@@ -41,14 +35,8 @@ export function applyResolveRoutEvent<S extends GameState>(
     numberToDiscard: event.penalty,
   };
 
-  // A retreat with nowhere to go holds its own rout, and outlives the attack
-  // that forced it, so the write goes through the retreat.
-  if (event.routResolutionSource === 'retreat') {
-    return updateRetreatRoutState(state, newRoutState);
-  }
-  const written = updateRoutState(state, newRoutState);
-  // A zero penalty settles a rear engagement's rout here, and so ends the
-  // engagement itself, as paying a discard would (§6.3.3).
-  const closed = closeRearEngagementWhenRouted(written);
-  return closed;
+  // A zero penalty settles the rout here, and whatever it held open closes
+  // as paying a discard would (§6.3.3).
+  const settled = settleRout(state, newRoutState);
+  return settled;
 }
