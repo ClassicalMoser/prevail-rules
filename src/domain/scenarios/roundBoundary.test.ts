@@ -1,7 +1,15 @@
-import { createChooseCardEvent } from '@factories';
+import {
+  createChooseCardEvent,
+  createEmptyGameState,
+  createSetupUnitsEvent,
+} from '@factories';
 import { generateEventFromProcedure } from '@procedures';
 import { getExpectedEvent } from '@expected';
-import { createCleanupPhaseState, createPlayableGame } from '@testing';
+import {
+  createCleanupPhaseState,
+  createPlayableGame,
+  createUnitWithPlacement,
+} from '@testing';
 import { applyEvent, updatePhaseState } from '@transforms';
 import { getOwnedPlayerCardState } from '@queries';
 
@@ -69,5 +77,41 @@ describe('the end of a round', () => {
 
     // The log now holds that choice and only that choice.
     expect(afterChoice.currentRoundState.events).toStrictEqual([choice]);
+  });
+});
+
+/**
+ * Where setup ends and the first round begins. Setup is round 0, with its own
+ * events; the setup that places the last reserved unit belongs to it, so the
+ * first round's log starts empty, as every round's does.
+ */
+describe('the end of setup', () => {
+  it('starts round 1 with an empty log, the last setup event having belonged to round 0', () => {
+    const placed = createUnitWithPlacement({
+      coordinate: 'E-5',
+      facing: 'north',
+      playerSide: 'black',
+    });
+    const setup = {
+      ...createEmptyGameState('standard'),
+      reservedUnits: [placed.unit],
+    };
+
+    const started = applyEvent(
+      createSetupUnitsEvent({
+        commanderCoordinate: 'E-5',
+        player: 'black',
+        unitPlacements: [placed],
+      }),
+      setup,
+    );
+
+    // Round 1 has begun: the first phase is waiting for cards.
+    expect(started.currentRoundState.currentPhaseState).toStrictEqual({
+      phase: 'playCards',
+      step: 'chooseCards',
+    });
+    // Its log holds no event, since the setup that started it was round 0's.
+    expect(started.currentRoundState.events).toStrictEqual([]);
   });
 });
