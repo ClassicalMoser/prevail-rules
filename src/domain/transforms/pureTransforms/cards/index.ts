@@ -17,5 +17,4 @@ export { revealBothAwaitingCards } from './revealBothAwaitingCards';
 export { revealCard } from './revealCard';
 export { revealHiddenCard } from './revealHiddenCard';
 export { toHiddenCardState } from './toHiddenCardState';
-export { updateHiddenPlayerCardState } from './updateHiddenPlayerCardState';
 export { updatePlayerCardState } from './updatePlayerCardState';

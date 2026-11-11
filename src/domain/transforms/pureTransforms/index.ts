@@ -18,7 +18,6 @@ export {
   revealCard,
   revealHiddenCard,
   toHiddenCardState,
-  updateHiddenPlayerCardState,
   updatePlayerCardState,
 } from './cards';
 export {

@@ -16,7 +16,7 @@ use `createTestCard` / `createTestUnit`, or a row reached only by the trait or
 stat the case needs (`getUnitByTrait` / `getUnitByStatValue`). Specs that need
 the catalog as a list import it from `@sampleValues`.
 
-`updateCardState` replaces the whole card state and is for fixtures only. A production write of one player's cards is `updatePlayerCardState` in `@transforms`.
+`updateCardState` replaces the whole card state and is for fixtures only. A production change of one player's cards is `updatePlayerCards` in `@transforms`, which reads the seat.
 
 Only tests may import this layer. Production code does not.
 

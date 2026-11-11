@@ -35,7 +35,6 @@ export {
   updateCurrentInitiative,
   updateCurrentRoundNumber,
   updateWinner,
-  updateHiddenPlayerCardState,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,
   updatePhaseState,

@@ -4,8 +4,9 @@ import type { GameState } from '@game';
  * Test-harness helper: returns a new game state with its card state replaced,
  * by one of the same visibility.
  *
- * Production code updates a single player's slice via `updatePlayerCardState`;
- * this whole-`cardState` setter exists only to set up fixtures.
+ * Production code changes a single player's cards via `updatePlayerCards`, and
+ * writes a card state back with `replaceCardState`; this setter exists only to
+ * set up fixtures.
  *
  * @param state - The current game state
  * @param cardState - The card state to set, of the state's own visibility
