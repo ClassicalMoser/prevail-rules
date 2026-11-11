@@ -5,7 +5,7 @@ Domain models for the Prevail rules engine. Import as `@entities`.
 ## Layout conventions
 
 - **Declarations first**: schemas, interfaces, and types. No business logic in entity modules.
-- **Shape only**: a schema says what a value looks like. Every rule about which values are allowed, from army uniqueness to a whole board, is a refine in `@legality`. Reads over a value, type guards included, are `@queries`.
+- **Shape only**: a schema says what a value looks like, and that includes the numeric limits it is declared to have: Zod checks a bound or a length where the value is parsed, and a limit the rules share is named in `@ruleValues` (`MAX_ARMY_UNIT_PER_TYPE_COUNT`, the initiative bounds). A rule that looks across values, from army uniqueness to a whole board, is a refine in `@legality`. Reads over a value, type guards included, are `@queries`.
 
 Sequencing and composed game state live in [`../game/`](../game/README.md) (`@game`).
 

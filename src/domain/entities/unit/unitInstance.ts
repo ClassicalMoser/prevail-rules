@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import type { UnitType } from './unitType';
 
 import { playerSideSchema } from '@entities/player';
+import { MAX_ARMY_UNIT_PER_TYPE_COUNT } from '@ruleValues';
 import { z } from 'zod';
 import { unitTypeSchema } from './unitType';
 
@@ -25,7 +26,7 @@ const _unitInstanceSchemaObject = z
     /** The type of unit this is an instance of. */
     unitType: unitTypeSchema,
     /** Which instance of the unit this is. */
-    instanceNumber: z.int().min(1).max(20),
+    instanceNumber: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
   })
   .strict();
 
