@@ -33,11 +33,9 @@ function shell(board: Board): AuthoritativeGameState {
     currentInitiative: 'black',
     // Round number is zero during setup.
     currentRoundNumber: 0,
-    // Subject to change, as this usually represents a completed round.
-    // TODO(misleading): this round is the first one to be played, not a
-    // completed one, and it waits for round 1 while `currentRoundNumber` above
-    // is 0 (setup). The spec says the same. Settled by stating which round
-    // this slot holds before the first round starts.
+    // Before the first round starts this slot already holds the round about to
+    // be played (round 1), still waiting; `currentRoundNumber` above stays 0
+    // while the armies are set up.
     currentRoundState: {
       commandedUnits: [],
       completedPhases: [],

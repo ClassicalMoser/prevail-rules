@@ -6,14 +6,27 @@ import {
 import { getBoardSpace } from './getBoardSpace';
 import { hasEnemyUnit } from '../unitPresence/hasEnemyUnit';
 
+/**
+ * Whether a diagonal is open to this side: it is blocked only when enemy units
+ * stand in both of the orthogonal spaces that flank it, and one enemy does not
+ * block it (§2.4.4). Commanders and melee support ask exactly this; a mover's
+ * own stricter question is `checkDiagonalMove`.
+ *
+ * @param playerSide - The side whose enemies are counted.
+ * @param board - The board to read.
+ * @param originCoordinate - The space the diagonal starts from.
+ * @param targetCoordinate - The diagonally adjacent space it reaches.
+ * @returns `false` when the enemy blocks the diagonal, otherwise `true`.
+ * @throws When the target is not diagonally adjacent to the origin.
+ */
 export function diagonalIsClear(
   playerSide: PlayerSide,
   board: Board,
   originCoordinate: Coordinate,
   targetCoordinate: Coordinate,
 ): boolean {
-  // Check if the origin space is a diagonally adjacent space
-  // TODO(misleading): the check is that the target is diagonal to the origin.
+  // The diagonal is only a diagonal if the target stands diagonally from the
+  // origin.
   const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
     board,
     originCoordinate,

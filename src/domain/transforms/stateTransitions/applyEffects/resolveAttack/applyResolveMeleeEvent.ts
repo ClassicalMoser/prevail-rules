@@ -10,9 +10,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveMeleeEvent to the game state.
- * Creates AttackApplyStates for both players. A hit opens the matching rout, retreat, or reverse substep. An attack that reaches no threshold writes a completed apply with those slots `'bypassed'`.
- * TODO(misleading): resolve no longer opens substeps — the factory records which
- * outcomes are due as `'pending'` / `'bypassed'`, and openers write the substeps later.
+ * Creates AttackApplyStates for both players. A threshold the blow reached marks
+ * its rout, retreat or reverse `'pending'`; one it did not reach is
+ * `'bypassed'`, so an attack that reaches none writes a completed apply. No
+ * substep is written here: each opener writes its own when its turn comes.
  *
  * @param event - The resolve melee event to apply
  * @param state - The current game state

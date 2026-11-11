@@ -25,14 +25,13 @@ export interface UnitSupportAssignment {
  * Assignment must be locally maximal (use every slot that can still cover
  * someone uncovered); global allocation optimality is not required.
  * Units left uncovered lose support and are routed.
- *
- * TODO(composition): of five fields only `assignments` is documented; every
- * other player choice event documents all of them. Settled by a comment on
- * each field.
  */
 export interface AssignUnitSupportEvent {
+  /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
+  /** The type of player choice. */
   choiceType: typeof ASSIGN_UNIT_SUPPORT_CHOICE_TYPE;
+  /** The player who rallied and is now placing their units under the hand's cards. */
   player: PlayerSide;
   /** Per-grant assignments (omit unused grants). */
   assignments: UnitSupportAssignment[];

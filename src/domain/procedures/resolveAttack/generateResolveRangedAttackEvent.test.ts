@@ -23,7 +23,7 @@ const cavalryType = getUnitByTrait('cavalry');
 /**
  * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
  * settled, and there must be no attack-apply substep yet. Outcome exposes rout/retreat/reverse
- * flags. TODO(misleading): legal retreat cells are no longer on this event.
+ * flags; where a retreat may go is worked out when that retreat opens.
  */
 describe('generateResolveRangedAttackEvent function', () => {
   /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */

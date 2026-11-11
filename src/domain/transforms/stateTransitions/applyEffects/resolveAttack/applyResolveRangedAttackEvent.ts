@@ -14,9 +14,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRangedAttackEvent to the game state.
- * Creates the AttackApplyState with nested substeps (rout/retreat/reverse) based on the attack results.
- * TODO(misleading): resolve no longer opens substeps — the factory records which
- * outcomes are due as `'pending'` / `'bypassed'`, and openers write the substeps later.
+ * Creates the AttackApplyState from the attack results. A threshold the shot
+ * reached marks its rout, retreat or reverse `'pending'`; one it did not reach
+ * is `'bypassed'`. No substep is written here: each opener writes its own when
+ * its turn comes.
  *
  * @param event - The resolve ranged attack event to apply
  * @param state - The current game state

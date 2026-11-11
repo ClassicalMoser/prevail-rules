@@ -3,14 +3,15 @@
 // parent rather than one getter with a parent argument. [`README.md`](./README.md)
 // has the map.
 //
-// Three kinds of query live here. A **parent reader** takes the parent substate
-// and says `From`. A **scoped getter** descends from the game state and leads
-// with the context it descends into. A **selection** picks among candidates by a
-// rule of the game and says `Next`. All three throw when what they name is
-// absent.
-// TODO(misleading): the `find` queries here answer `undefined` and the `From`
-// readers answer `'bypassed'`; the README names four kinds and the find/get
-// split. Settled by matching this to the README.
+// Four kinds of query live here; the README says how to tell them apart. A
+// **parent reader** takes the parent substate and says `From`; it alone answers
+// `'bypassed'`. A **scoped getter** descends from the game state and leads with
+// the context it descends into, and throws when that context does not hold what
+// it names. A **selection** picks among candidates by a rule of the game and
+// says `Next`, or `find` when there may be none. A **router** walks every
+// context, takes the player, and answers. Whether a query is total is a
+// separate axis: `find` answers `undefined` for an absence, `get` insists and
+// throws.
 
 // Whether a retreat, reverse, or rout substep has been written.
 export { isOpenSubstep } from './isOpenSubstep';

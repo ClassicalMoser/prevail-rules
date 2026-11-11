@@ -10,9 +10,10 @@ export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
 /**
  * Deterministic melee resolution after engagement, supports, and committed cards.
  * Initiative orders substeps; the procedure computes attack outcomes and snapshots anything
- * apply would otherwise have to re-query from the board.
- * TODO(misleading): legal retreat options are no longer snapshotted here — the
- * retreat opener computes them when that step opens.
+ * apply would otherwise have to re-query from the board. The retreats a result
+ * calls for are not recorded here: each is worked out when that retreat opens,
+ * from the board as it then stands, since an earlier stage may have moved units
+ * (§7.5.6).
  */
 export interface ResolveMeleeEvent {
   /** The type of the event. */

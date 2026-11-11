@@ -22,8 +22,8 @@ const cavalryType = getUnitByTrait('cavalry');
 /**
  * `resolveMelee` compares strike vs retreat at a shared cell and sets rout/retreat
  * booleans. Commitments must be resolved first; the board must hold both combatants
- * at the melee coordinate.
- * TODO(misleading): legal retreat hex sets are no longer precomputed on this event.
+ * at the melee coordinate. The event carries only those results; where a
+ * retreat may go is worked out when that retreat opens.
  */
 describe('generateResolveMeleeEvent function', () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
