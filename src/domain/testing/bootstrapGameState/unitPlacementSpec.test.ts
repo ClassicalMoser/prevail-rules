@@ -1,3 +1,5 @@
+import type { UnitPlacementSpec } from './unitPlacementSpec';
+import { getUnitByTrait } from '@testing/getUnitByTrait';
 import {
   assignInstanceNumbers,
   getExplicitInstanceNumber,
@@ -98,5 +100,47 @@ describe('assignInstanceNumbers function', () => {
     expect(result[0].instanceNumber).toBe(1);
     expect(result[1].instanceNumber).toBe(12);
     expect(result[2].instanceNumber).toBe(2);
+  });
+
+  it('numbers each player’s units from 1, as the game does', () => {
+    const result = assignInstanceNumbers([
+      ['E-5', 'black'],
+      ['E-6', 'white'],
+      ['E-7', 'black'],
+      ['E-8', 'white'],
+    ]);
+
+    // Each side numbers its own copies of a unit type (§3.1), so the second
+    // white unit is white's second, not the fourth overall.
+    expect(result.map((entry) => entry.instanceNumber)).toStrictEqual([
+      1, 1, 2, 2,
+    ]);
+  });
+
+  it('numbers a player’s units of each type separately', () => {
+    const cavalry = getUnitByTrait('cavalry');
+    const phalanx = getUnitByTrait('phalanx');
+    const result = assignInstanceNumbers([
+      { coord: 'E-5', player: 'black', unitType: cavalry },
+      { coord: 'E-6', player: 'black', unitType: phalanx },
+      { coord: 'E-7', player: 'black', unitType: cavalry },
+    ]);
+
+    // Black's second cavalry is its second, and its first phalanx is its first.
+    expect(result.map((entry) => entry.instanceNumber)).toStrictEqual([
+      1, 1, 2,
+    ]);
+  });
+
+  it('stays within the limit a type has for any layout of one side', () => {
+    const specs: UnitPlacementSpec[] = Array.from({ length: 12 }, () => [
+      'E-5',
+      'black',
+    ]);
+
+    const result = assignInstanceNumbers(specs);
+
+    // Twelve copies of one type is the most an army may hold.
+    expect(Math.max(...result.map((entry) => entry.instanceNumber))).toBe(12);
   });
 });
