@@ -79,6 +79,26 @@ describe('findRoutLocation function', () => {
     });
   });
 
+  it('finds no rally rout once cleanup is past the rallies', () => {
+    // White holds initiative, so black rallied second. Black's rally routed a
+    // unit and the step has moved on to the end of the round.
+    const empty = createEmptyGameState('standard');
+    const unit = createTestUnit('black', { attack: 2 });
+    const state = updatePhaseState(
+      empty,
+      createCleanupPhaseState({
+        secondPlayerRallyResolutionState: createRallyResolutionState({
+          routState: createRoutState('black', unit),
+        }),
+        step: 'complete',
+      }),
+    );
+
+    // No rally is being resolved on this step, so there is no rally rout to
+    // locate, whatever a finished rally still holds.
+    expect(findRoutLocation(state, 'black')).toBeUndefined();
+  });
+
   it('names the retreat when the defender had nowhere to go', () => {
     // The rout is nested on the retreat, so it is resolved against the retreat
     // and not against the attack that forced it.
