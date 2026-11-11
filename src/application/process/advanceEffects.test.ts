@@ -5,16 +5,19 @@ import { createEmptyGameState } from '@factories';
 import { advanceEffects } from './advanceEffects';
 
 const {
-  getExpectedEventMock,
+  findExpectedEventMock,
   generateEventFromProcedureMock,
+  getExpectedEventMock,
   processEventMock,
 } = vi.hoisted(() => ({
+  findExpectedEventMock: vi.fn(),
   generateEventFromProcedureMock: vi.fn(),
   getExpectedEventMock: vi.fn(),
   processEventMock: vi.fn(),
 }));
 
 vi.mock(import('@expected'), () => ({
+  findExpectedEvent: findExpectedEventMock,
   getExpectedEvent: getExpectedEventMock,
 }));
 
@@ -31,6 +34,27 @@ describe('advanceEffects function', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it('answers that the game is over, without throwing, when it has already finished', async () => {
+    const finished = {
+      ...createEmptyGameState('standard'),
+      winner: 'black' as const,
+    };
+    // A finished game owes nothing: the total reader answers `undefined`,
+    // and only the insisting one throws.
+    findExpectedEventMock.mockReturnValue(undefined);
+    getExpectedEventMock.mockImplementation(() => {
+      throw new Error('Game is already over');
+    });
+
+    const result = await advanceEffects('game-1', 'standard', finished, ports);
+
+    expect(result).toStrictEqual({
+      errorReason: 'The game is already over',
+      result: false,
+    });
+    expect(generateEventFromProcedureMock).not.toHaveBeenCalled();
   });
 
   it('stops after applying gameOver without re-querying expected event', async () => {
