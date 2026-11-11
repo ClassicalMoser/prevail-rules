@@ -46,7 +46,7 @@ describe('getCurrentRallyResolutionState function', () => {
     const state = withCleanup('firstPlayerResolveRally', { first: 'pending' });
 
     expect(() => getCurrentRallyResolutionState(state)).toThrow(
-      'No first player rally resolution state found',
+      'No white rally resolution state found',
     );
   });
 
@@ -63,7 +63,7 @@ describe('getCurrentRallyResolutionState function', () => {
     });
 
     expect(() => getCurrentRallyResolutionState(state)).toThrow(
-      'No second player rally resolution state found',
+      'No black rally resolution state found',
     );
   });
 

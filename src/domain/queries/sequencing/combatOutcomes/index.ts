@@ -52,7 +52,6 @@ export { getMeleeRoutState } from './rout';
 export { getRearEngagementRoutState } from './rout';
 export { getRoutStateFromRally } from './rout';
 export { getNextMeleeRoutState } from './rout';
-export { getRallyStepRoutState } from './rout';
 export { isAwaitingRoutDiscard } from './rout';
 export { findRoutOwingDiscard } from './rout';
 export { findRoutAwaitingPenalty } from './rout';

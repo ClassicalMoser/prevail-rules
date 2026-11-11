@@ -1,30 +1,22 @@
+import type { PlayerSide } from '@entities';
 import type { GameState, RallyResolutionState } from '@game';
-import { throwIfPending } from '@utils';
-import { getCleanupPhaseState } from '../phases/getCleanupPhaseState';
+import { findRallyResolutionState } from './findRallyResolutionState';
 
 /**
- * Gets the rally resolution state from cleanup phase for a specific player.
- * Assumes we're in cleanup phase with a rally resolution state (validation should happen elsewhere).
+ * One player's rally this cleanup, where the caller knows it has begun.
  *
- * @param state - The game state
- * @param player - The player ('white' or 'black')
+ * @param state - The game state, in cleanup
+ * @param player - The player whose rally to read
  * @returns The rally resolution state for the player
- * @throws Error if not in cleanup phase or rally resolution state is missing
+ * @throws Error if not in cleanup phase or that player's rally has not begun
  */
 export function getRallyResolutionState(
   state: GameState,
-  player: 'white' | 'black',
+  player: PlayerSide,
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state);
-  const firstPlayer = state.currentInitiative;
-  const isFirstPlayer = player === firstPlayer;
-
-  const rallyState = isFirstPlayer
-    ? phaseState.firstPlayerRallyResolutionState
-    : phaseState.secondPlayerRallyResolutionState;
-
-  return throwIfPending(
-    rallyState,
-    `No ${player} rally resolution state found`,
-  );
+  const rallyState = findRallyResolutionState(state, player);
+  if (rallyState === undefined) {
+    throw new Error(`No ${player} rally resolution state found`);
+  }
+  return rallyState;
 }

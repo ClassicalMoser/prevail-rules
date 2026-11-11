@@ -1,34 +1,26 @@
 import type { GameState, RallyResolutionState } from '@game';
-import { throwIfPending } from '@utils';
 import { getCleanupPhaseState } from '../phases/getCleanupPhaseState';
+import { getRallyingPlayer } from './cleanupPhase/getRallyingPlayer';
+import { getRallyResolutionState } from './getRallyResolutionState';
 
 /**
- * Gets the current rally resolution state based on the cleanup phase step.
- * Assumes we're in a resolveRally step (validation should happen elsewhere).
+ * The rally being resolved on the current cleanup step: the rallying
+ * player's rally, on one of the two resolve steps.
  *
  * @param state - The game state
  * @returns The rally resolution state for the current step
- * @throws Error if not in a resolveRally step or rally resolution state is missing
+ * @throws Error if not on a resolveRally step, or that rally has not begun
  */
 export function getCurrentRallyResolutionState(
   state: GameState,
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state);
-  const { step } = phaseState;
-
-  if (step === 'firstPlayerResolveRally') {
-    return throwIfPending(
-      phaseState.firstPlayerRallyResolutionState,
-      'No first player rally resolution state found',
-    );
+  const { step } = getCleanupPhaseState(state);
+  if (
+    step !== 'firstPlayerResolveRally' &&
+    step !== 'secondPlayerResolveRally'
+  ) {
+    throw new Error(`Not in a resolveRally step: ${step}`);
   }
-
-  if (step === 'secondPlayerResolveRally') {
-    return throwIfPending(
-      phaseState.secondPlayerRallyResolutionState,
-      'No second player rally resolution state found',
-    );
-  }
-
-  throw new Error(`Not in a resolveRally step: ${step}`);
+  const rallyState = getRallyResolutionState(state, getRallyingPlayer(state));
+  return rallyState;
 }

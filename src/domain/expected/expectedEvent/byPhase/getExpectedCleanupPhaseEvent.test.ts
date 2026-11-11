@@ -117,7 +117,7 @@ describe('getExpectedCleanupPhaseEvent function', () => {
     }
 
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
-      'First player rally resolution state not found',
+      'No black rally resolution state found',
     );
   });
 
@@ -140,7 +140,7 @@ describe('getExpectedCleanupPhaseEvent function', () => {
     }
 
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
-      'Second player rally resolution state not found',
+      'No white rally resolution state found',
     );
   });
 

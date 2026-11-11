@@ -1,6 +1,6 @@
 // TODO(composition): `getRangedAttackRoutState`, `getMeleeRoutState`,
-// `getRearEngagementRoutState`, `getRoutStateFromRally`, `getRallyStepRoutState`
-// and `getNextMeleeRoutState` have no production caller; `findRoutLocation`
+// `getRearEngagementRoutState`, `getRoutStateFromRally` and
+// `getNextMeleeRoutState` have no production caller; `findRoutLocation`
 // replaced them. Same for `getMeleeReverseState` in `reverse/`. Settled per
 // export: delete it or name the caller it waits for.
 // Routes. One per parent slot that can hold a rout. The route is the fact: which
@@ -28,9 +28,6 @@ export { getRoutStateFromRally } from './getRoutStateFromRally';
 
 // The rout still open in the current melee, initiative first.
 export { getNextMeleeRoutState } from './getNextMeleeRoutState';
-
-// The rout on the rally for the cleanup step now resolving.
-export { getRallyStepRoutState } from './getRallyStepRoutState';
 
 // Whether a rout still owes its owner's discard.
 export { isAwaitingRoutDiscard } from './isAwaitingRoutDiscard';

@@ -8,6 +8,8 @@ import type {
 } from '@game';
 import { isNone, isPending } from '@utils';
 import { hasInitiative } from '@queries/player';
+import { findRallyingPlayer } from '@queries/sequencing/rallyResolution/cleanupPhase/findRallyingPlayer';
+import { findRallyResolutionState } from '@queries/sequencing/rallyResolution/findRallyResolutionState';
 import { isOpenSubstep } from '../isOpenSubstep';
 
 /** A rout slot, as a parent holds it before and after the substep opens. */
@@ -155,14 +157,14 @@ function routInCurrentContext(
   }
 
   if (phaseState.phase === 'cleanup') {
-    // Choosing and resolving a rally share one slot per player.
-    const firstPlayerStep =
-      phaseState.step === 'firstPlayerChooseRally' ||
-      phaseState.step === 'firstPlayerResolveRally';
-    const rally = firstPlayerStep
-      ? phaseState.firstPlayerRallyResolutionState
-      : phaseState.secondPlayerRallyResolutionState;
-    if (isPending(rally)) {
+    // Only the rally the step is on can be routing; before the rallies and
+    // after them, none is.
+    const rallying = findRallyingPlayer(state);
+    if (rallying === undefined) {
+      return undefined;
+    }
+    const rally = findRallyResolutionState(state, rallying);
+    if (rally === undefined) {
       return undefined;
     }
     const rallyRout = {

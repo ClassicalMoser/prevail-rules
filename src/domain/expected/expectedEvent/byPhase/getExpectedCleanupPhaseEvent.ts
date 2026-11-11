@@ -1,6 +1,10 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import { getCleanupPhaseState, getOtherPlayer } from '@queries';
+import {
+  getCleanupPhaseState,
+  getCurrentRallyResolutionState,
+  getRallyingPlayer,
+} from '@queries';
 import { getExpectedRallyResolutionEvent } from '../composable';
 
 /**
@@ -13,8 +17,6 @@ export function getExpectedCleanupPhaseEvent(
   state: GameState,
 ): ExpectedEventInfo {
   const phaseState = getCleanupPhaseState(state);
-  const firstPlayer = state.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
 
   switch (phaseState.step) {
     case 'discardPlayedCards': {
@@ -24,40 +26,23 @@ export function getExpectedCleanupPhaseEvent(
       };
     }
 
-    case 'firstPlayerChooseRally': {
-      return {
-        actionType: 'playerChoice',
-        choiceType: 'chooseRally',
-        playerSource: firstPlayer,
-      };
-    }
-
+    case 'firstPlayerChooseRally':
     case 'secondPlayerChooseRally': {
+      // Each player decides whether to rally on their own step (§10.3).
       return {
         actionType: 'playerChoice',
         choiceType: 'chooseRally',
-        playerSource: secondPlayer,
+        playerSource: getRallyingPlayer(state),
       };
     }
 
-    case 'firstPlayerResolveRally': {
-      const rallyState = phaseState.firstPlayerRallyResolutionState;
-
-      if (rallyState === 'pending') {
-        throw new Error('First player rally resolution state not found');
-      }
-
-      return getExpectedRallyResolutionEvent(rallyState, firstPlayer);
-    }
-
+    case 'firstPlayerResolveRally':
     case 'secondPlayerResolveRally': {
-      const rallyState = phaseState.secondPlayerRallyResolutionState;
-
-      if (rallyState === 'pending') {
-        throw new Error('Second player rally resolution state not found');
-      }
-
-      return getExpectedRallyResolutionEvent(rallyState, secondPlayer);
+      // The rallying player's own rally, whichever of the two it is.
+      return getExpectedRallyResolutionEvent(
+        getCurrentRallyResolutionState(state),
+        getRallyingPlayer(state),
+      );
     }
 
     case 'complete': {

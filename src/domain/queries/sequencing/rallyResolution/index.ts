@@ -1,4 +1,5 @@
 // One player's rally during cleanup.
+export { findRallyResolutionState } from './findRallyResolutionState';
 export { getRallyResolutionState } from './getRallyResolutionState';
 
 // The rally for the cleanup step now in progress.
@@ -17,13 +18,10 @@ export { getRallyResolutionStateAwaitingBurn } from './cleanupPhase';
 export { getRallyResolutionStateAwaitingUnitSupport } from './cleanupPhase';
 
 // The player whose rally the cleanup step is on.
-export { getRallyingPlayer } from './cleanupPhase';
+export { findRallyingPlayer, getRallyingPlayer } from './cleanupPhase';
 
 // Whether a rally is at the point where its player assigns unit support.
 export { isAwaitingUnitSupport } from './cleanupPhase';
-
-// Whether this resolve-rally step belongs to the initiative player.
-export { getIsFirstPlayerForResolveRallyStep } from './cleanupPhase';
 
 // The cleanup step that follows the current resolve-rally step.
 export { getNextStepForResolveRally } from './cleanupPhase';

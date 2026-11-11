@@ -45,7 +45,10 @@ export { getMeleeResolutionReadyForAttackCalculation } from './meleeResolution';
 export { getRemainingMeleeEngagements } from './meleeResolution';
 
 // One player's rally during cleanup.
-export { getRallyResolutionState } from './rallyResolution';
+export {
+  findRallyResolutionState,
+  getRallyResolutionState,
+} from './rallyResolution';
 
 // The rally for the cleanup step now in progress.
 export { getCurrentRallyResolutionState } from './rallyResolution';
@@ -63,10 +66,7 @@ export { getRallyResolutionStateAwaitingUnitSupport } from './rallyResolution';
 export { isAwaitingUnitSupport } from './rallyResolution';
 
 // The player whose rally the cleanup step is on.
-export { getRallyingPlayer } from './rallyResolution';
-
-// Whether this resolve-rally step belongs to the initiative player.
-export { getIsFirstPlayerForResolveRallyStep } from './rallyResolution';
+export { getRallyingPlayer, findRallyingPlayer } from './rallyResolution';
 
 // The cleanup step that follows the current resolve-rally step.
 export { getNextStepForResolveRally } from './rallyResolution';
@@ -159,6 +159,3 @@ export { getRearEngagementRoutState } from './combatOutcomes';
 
 // The rout stored on a rally.
 export { getRoutStateFromRally } from './combatOutcomes';
-
-// The rout for the cleanup step that is resolving a rally, including choose-rally.
-export { getRallyStepRoutState } from './combatOutcomes';

@@ -550,7 +550,6 @@ export {
   getReverseStateFromAttackApply,
   getNextMeleeReverseState,
   getRoutStateFromAttackApply,
-  getRallyStepRoutState,
   getNextMeleeRoutState,
   getRoutStateFromRally,
   getRearEngagementRoutState,
