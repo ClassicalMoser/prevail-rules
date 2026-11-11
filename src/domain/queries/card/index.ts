@@ -3,6 +3,10 @@ export { getHiddenPlayerCardState } from './getHiddenPlayerCardState';
 export { findOwnedPlayerCardState } from './findOwnedPlayerCardState';
 export { getOwnedPlayerCardState } from './getOwnedPlayerCardState';
 
+// The card each player has in play, face up for every viewer.
+export { findCardInPlay } from './findCardInPlay';
+export { getCardInPlay } from './getCardInPlay';
+
 // Lower initiative number wins; a tie keeps the current holder.
 export { calculateInitiative } from './calculateInitiative';
 
