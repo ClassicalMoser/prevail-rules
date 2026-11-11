@@ -349,31 +349,42 @@ validators. Left:
 
 ### 3.5 Rules in the wrong layer
 
-- The §8.4 table of stats each moment accepts is declared in the four
-  `commitTo*` event files, and legality imports it from there.
-- The §3.1.3 mode table is split: board size in `entities/gameModes` (with a
-  function, in a layer that holds none), limits in `@ruleValues`, assembly in
-  `legality/army`. The mode-to-board lookup is written in
-  `refineGameModeBoardSize`, `createEmptyGameState` and `startNewGame`, and
-  `startNewGame` checks board size by hand before `parseLegalGameForMode`
-  checks it again.
-- "No inspiration range" (§4.2.7's "—") is any negative number. The entity
-  allows `-1..10` and says nothing; only `unitMatchesInspirationRange` knows.
-- Entity bounds that are rules, against the entities README: card commit stats
-  `1..2` (§8.2), unit limit and count `≤ 12` (§3.1.4), initiative `1..4`,
-  support count `≥ 1` (§10.4.2). Other bounds are arbitrary limits; `instanceNumber ≤ 20`
-  does not match the type limit of 12.
-- `createAttackApplyState` in `@factories` applies §7.5.3. `@testing` exports a
-  different `createAttackApplyState` with another meaning. _Plausible._
-- `getMeleeSupportValue` excludes the half-board "behind" (`getSpacesBehind`,
-  §2.3.3) where §7.3.1 says the fighter's back spaces. They match on the
-  facings traced; the helper names the wrong rule.
-- Predicates in `@queries` return `ValidationResult` (`isSameUnitInstance`,
-  `hasEnemyUnit`, `isEngagementFrom*` and others) where callers read only
-  `.result`. The three engagement predicates answer one §6.3.1 question, which
-  `generateStartEngagementEvent` chains.
-- `@testing`'s `boardWithEngagedUnits` says no transform engages a space;
-  `addUnitToBoard` does. It writes into the board directly.
+Closed in the fourth pass (the sweep):
+
+- The §8.4 table of what each moment's commitment accepts is in `@ruleValues`
+  (`MELEE_COMMITMENT_MODIFIERS` and its three siblings), checked against
+  `StatModifier`, and the four `commitTo*` events say only what they carry.
+- "No inspiration range" is `NO_INSPIRATION_RANGE`, the schema's minimum and
+  what `unitMatchesInspirationRange` reads as unrestricted.
+- `@testing`'s fixture for an attack that reached nothing is
+  `createAttackApplyStateWithNothingDue`, no longer sharing a name with the
+  factory.
+- `getMeleeSupportValue` excludes the fighter's back spaces (§7.3.1). It had
+  asked for the half-board behind (§2.3.3); the two agree on all eight facings
+  for adjacent spaces, so nothing changed.
+- Predicates in `@queries` whose callers read only the answer return booleans
+  (eight, then `matchesUnitRequirements` and the three engagement predicates).
+  `findEngagementType` is the one statement of how an engagement is met, in
+  place of three predicates chained by hand. `isSameCardValue` and
+  `isAtPlacement` keep their `ValidationResult`, since each caller shows or
+  throws the reason.
+- `@testing`'s engaged-board fixture engages through `addUnitToBoard`.
+
+Left, each a design choice:
+
+- **The §3.1.3 mode table is split.** Board size per mode is in
+  `entities/gameModes`, limits in `@ruleValues`, assembly in `legality/army`,
+  and the mode-to-board lookup is written twice, in `refineGameModeBoardSize`
+  and `createEmptyGameState` (`startNewGame` no longer exists). `@factories`
+  cannot import `@queries`, so a single lookup needs a function in `@entities`,
+  which holds none, or a second table kept in step with the catalog.
+- **Entity bounds that are rules.** The entities README says a schema is shape
+  only and every rule about allowed values is a refine in `@legality`. Still in
+  schemas: card commit stats `1..2` (§8.2), unit limit and count `≤ 12`
+  (§3.1.4), initiative `1..4`, support count `≥ 1` (§10.4.2). Other bounds are
+  arbitrary limits; `instanceNumber ≤ 20` does not match the type limit of 12.
+  Moving a bound from a schema to a refine changes where bad data is caught on
+  parse, so it is the author's.
 
 ---
 
