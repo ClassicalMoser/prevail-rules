@@ -167,6 +167,7 @@ export {
   matchesUnitRequirements,
   setWithoutUnit,
   unitMatchesSupport,
+  unitMatchesInspirationRange,
   unitTypeMatchesRestrictions,
 } from './unit';
 

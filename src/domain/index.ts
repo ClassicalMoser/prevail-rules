@@ -572,7 +572,6 @@ export {
   getLegalRetreats,
   getLegalMoveDeltas,
   getLegalUnitMoves,
-  unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
   SETUP_ZONE_BACK_ROWS,
@@ -689,5 +688,6 @@ export {
   isDefenseStat,
   isDiagonalFacing,
   matchesUnitRequirements,
+  unitMatchesInspirationRange,
   unitTypeMatchesRestrictions,
 } from '@queries';

@@ -1,9 +1,7 @@
 import type { Modifier, UnitInstance, UnitStatName } from '@entities';
 import type { GameState } from '@game';
-import { getCommanderSpace } from '../board/getCommanderSpace';
-import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance';
-import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 import { isDefenseStat } from './isDefenseStat';
+import { unitMatchesInspirationRange } from './unitMatchesInspirationRange';
 import { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 import { hasUnitInArray } from './hasUnitInArray';
 
@@ -67,55 +65,20 @@ export function getRawUnitStat(
     const matchingModifier = findMatchingModifier(activeRoundEffect.modifiers);
     // If there is a matching modifier, check if the unit satisfies the restrictions
     if (matchingModifier) {
-      let satisfiesAllRestrictions = true;
-      let satisfiesInspirationRangeRestriction = false;
-      let satisfiesUnitRestrictions = true;
-      const inspirationRange =
-        activeRoundEffect.restrictions.inspirationRangeRestriction;
-      // TODO(composition): this range check repeats `unitMatchesInspirationRange`
-      // in `getLegalUnitsForIssueCommand`, which reads the placement it is given
-      // instead of searching the board. Settled by one helper in queries.
-      // A negative range means there is no inspiration restriction.
-      // Zero or more is a range, and a missing commander fails it.
-      if (inspirationRange >= 0) {
-        const unitPlacement = getPositionOfUnit(gameState.boardState, unit);
-        const unitPosition = unitPlacement.coordinate;
-        const commanderSpace = getCommanderSpace(
-          unit.playerSide,
-          gameState.boardState,
-        );
-        // A missing commander is a defeated commander.
-        // The range then fails, and the round modifier is not applied.
-
-        if (commanderSpace) {
-          // If the commander is on board, find all spaces within the range.
-          const spacesWithinDistance = getSpacesWithinDistance(
-            gameState.boardState,
-            commanderSpace,
-            inspirationRange,
-          );
-
-          // Check if the unit is within range.
-          satisfiesInspirationRangeRestriction =
-            spacesWithinDistance.has(unitPosition);
-        }
-        // If the range is specified, it must be satisfied.
-        satisfiesAllRestrictions = satisfiesInspirationRangeRestriction;
-      }
-
-      // Check if the unit satisfies the trait or unit-type filter.
-      const unitType = unit.unitType;
-      const restrictions = activeRoundEffect.restrictions;
-      satisfiesUnitRestrictions = unitTypeMatchesRestrictions(
-        unitType,
-        restrictions,
+      // The card's range must reach the unit; one printed unrestricted always does.
+      const inRange = unitMatchesInspirationRange(
+        unit,
+        activeRoundEffect.restrictions,
+        gameState,
+      );
+      // The card may also name a trait or unit type the unit must be.
+      const ofNamedType = unitTypeMatchesRestrictions(
+        unit.unitType,
+        activeRoundEffect.restrictions,
       );
 
-      // Combine the existing restriction satisfaction with the new one.
-      satisfiesAllRestrictions &&= satisfiesUnitRestrictions;
-
-      // If the unit satisfies the restrictions, add the modifier to the total
-      if (satisfiesAllRestrictions) {
+      // Only a unit the card reaches and names takes the modifier.
+      if (inRange && ofNamedType) {
         totalModifier += matchingModifier.value;
       }
     }

@@ -7,9 +7,8 @@ import type {
 import type { GameState } from '@game';
 import {
   getBoardSpace,
-  getCommanderSpace,
   getPlayerUnitsWithPlacementOnBoard,
-  getSpacesWithinDistance,
+  unitMatchesInspirationRange,
   hasEngagedUnits,
   hasUnitInArray,
   unitTypeMatchesRestrictions,
@@ -28,34 +27,6 @@ export function unitMatchesTraitAndTypeRestrictions(
 }
 
 /**
- * Inspiration-range restriction only. `inspirationRangeRestriction < 0`
- * skips the check (always true).
- */
-export function unitMatchesInspirationRange(
-  unitWithPlacement: UnitWithPlacement,
-  restrictions: Restrictions,
-  gameState: GameState,
-): boolean {
-  const { inspirationRangeRestriction } = restrictions;
-  if (inspirationRangeRestriction < 0) {
-    return true;
-  }
-  const commanderSpace = getCommanderSpace(
-    unitWithPlacement.unit.playerSide,
-    gameState.boardState,
-  );
-  if (commanderSpace === undefined) {
-    return false;
-  }
-  const spacesWithinDistance = getSpacesWithinDistance(
-    gameState.boardState,
-    commanderSpace,
-    inspirationRangeRestriction,
-  );
-  return spacesWithinDistance.has(unitWithPlacement.placement.coordinate);
-}
-
-/**
  * Full command restrictions: inspiration range (if applicable) + traits/types.
  * Used for `size: 'units'` (every commanded unit) and for **line starts**.
  */
@@ -65,7 +36,11 @@ export function unitMatchesRestrictions(
   gameState: GameState,
 ): boolean {
   if (
-    !unitMatchesInspirationRange(unitWithPlacement, restrictions, gameState)
+    !unitMatchesInspirationRange(
+      unitWithPlacement.unit,
+      restrictions,
+      gameState,
+    )
   ) {
     return false;
   }

@@ -7,6 +7,9 @@ export { isFriendlyUnit } from './isFriendlyUnit';
 // Trait and unit-type id lists.
 export { matchesUnitRequirements } from './matchesUnitRequirements';
 
+// Whether a card's inspiration range reaches a unit.
+export { unitMatchesInspirationRange } from './unitMatchesInspirationRange';
+
 // A unit type against one restriction variant.
 export { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 

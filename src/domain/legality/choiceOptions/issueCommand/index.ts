@@ -7,7 +7,6 @@ export { getLegalLineEndsForIssueCommand } from './getLegalLineEndsForIssueComma
 export {
   getLegalLineStartsForIssueCommand,
   getLegalUnitsForIssueCommand,
-  unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
 } from './getLegalUnitsForIssueCommand';

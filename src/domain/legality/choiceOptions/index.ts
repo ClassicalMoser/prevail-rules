@@ -20,7 +20,6 @@ export {
   getLegalLineStartsForIssueCommand,
   getLegalUnitsForIssueCommand,
   isCommandIssuable,
-  unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
   type LegalIssueCommands,

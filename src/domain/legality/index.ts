@@ -42,7 +42,6 @@ export {
   getLegalUnitsForIssueCommand,
   getSetupZoneCoordinates,
   isCommandIssuable,
-  unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
   SETUP_ZONE_BACK_ROWS,
