@@ -114,7 +114,6 @@ describe('applyResolveReverseEvent function', () => {
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
-        attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
@@ -152,7 +151,6 @@ describe('applyResolveReverseEvent function', () => {
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
-        attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
@@ -201,7 +199,6 @@ describe('applyResolveReverseEvent function', () => {
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
-        attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
@@ -239,7 +236,6 @@ describe('applyResolveReverseEvent function', () => {
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
-        attackResolutionContext: 'melee',
         effectType: 'resolveReverse',
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
@@ -281,7 +277,6 @@ describe('applyResolveReverseEvent function', () => {
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'east');
 
       const event: ResolveReverseEvent = {
-        attackResolutionContext: 'melee',
         effectType: 'resolveReverse',
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
@@ -324,7 +319,6 @@ describe('applyResolveReverseEvent function', () => {
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
-        attackResolutionContext: 'rangedAttack',
         effectType: 'resolveReverse',
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,

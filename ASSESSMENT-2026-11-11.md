@@ -286,7 +286,7 @@ Left for the author:
   stays gone (`updatePlayerCards` and `replaceHiddenPlayerCardState` write a
   hidden hand). New effect `completeRangedAttack`: a shot ends with it, and
   `completeRangedAttackCommand` ends only the order. `triggerRoutFromRetreat` and
-  `completeAttackApply` carry nothing (their context, player and attack-type
+  `completeAttackApply` carry nothing, and `resolveReverse` lost its context (their context, player and attack-type
   fields, and the three `triggerRoutFromRetreat*Schema` exports, are gone). `resolveEngageRetreatOption` carries `retreatPaths` where it carried
   `defendingUnitCanRetreat`, `openRetreatFromEngagement` carries nothing, and
   the front engagement state's `defendingUnitCanRetreat` is `retreatPaths`.
@@ -782,10 +782,22 @@ gone. **Shape change:** the event lost `retreatResolutionContext` and
 melee's two in resolution order, through the existing
 `findNextMeleeAttackApplyToClose`), the procedure and the apply both ask it, and
 the if-chain on `attackType` is gone. **Shape change:** the event lost
-`attackType` and `defendingPlayer`. The rest of 7.7 (`resolveReverse`, the
-`open*FromAttackApply` events, the attack result spelling, the data the events
-repeat from the state, inconsistent flags in the attack-apply factory) is not
-done yet.
+`attackType` and `defendingPlayer`. `resolveReverse` lost
+`attackResolutionContext` the same way (its apply asks
+`getAttackApplyStateOfPlayer` with the unit's owner, as it already took the player
+from the unit). **Not done, and why:**
+
+- The `open*FromAttackApply` events (retreat, reverse, rout) still carry
+  `attackResolutionContext` and, in a melee, `defendingPlayer`. Dropping them
+  needs a query that says which melee apply is next to open, and that is the
+  sequencer's rule (the second player's unit suffers first, §7.5.6), so it has to
+  agree with what the expected engine asks for; the plan did not settle it.
+- The shared `AttackResult` and the colour-against-initiative spelling in
+  `resolveMelee` and `resolveRangedAttack`.
+- The data events repeat from the state (`resolveMelee.location` and placements,
+  `resolveReverse`'s unread `newUnitPlacement.unit`, `resolveRetreat`'s
+  `startingPosition.placement`, `resolveRout.unitInstances` beyond the first).
+- Making inconsistent flags in the attack-apply factory throw.
 
 **The attack result spelled three ways, and colour against initiative.**
 `resolveMelee` carries `whiteUnitRouted`/`blackUnitRetreated`…; `resolveRangedAttack`

@@ -42,7 +42,7 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 ## Events
 
 - Non-trivial derivation (board scans, phase switches to pick subtrees) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), so apply stays mechanical and replay stays cheap.
-- Examples: `StartEngagementEvent` / `ResolveFlankEngagementEvent.defenderWithPlacement`, legal-retreat `Set`s on resolve melee/ranged, `attackResolutionContext` on resolve reverse.
+- Examples: `StartEngagementEvent` / `ResolveFlankEngagementEvent.defenderWithPlacement`, legal-retreat `Set`s on resolve melee/ranged.
 
 ## Tests
 

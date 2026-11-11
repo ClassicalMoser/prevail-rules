@@ -1,14 +1,16 @@
 import type { UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import type { AttackResolutionContext } from './attackResolutionContext';
 import { unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
-import { attackResolutionContextSchema } from './attackResolutionContext';
 
 /** The type of the resolve reverse game effect. */
 export const RESOLVE_REVERSE_EFFECT_TYPE = 'resolveReverse' as const;
 
+/**
+ * Turns a reversed unit about (§9.2). The event names the unit, and its owner names the
+ * reverse: which attack's apply holds it is the state's to say.
+ */
 export interface ResolveReverseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -18,16 +20,10 @@ export interface ResolveReverseEvent {
   unitInstance: UnitWithPlacement;
   /** The new unit placement after the reverse. */
   newUnitPlacement: UnitWithPlacement;
-  /**
-   * Ranged vs melee attack-resolution path holding this reverse.
-   * Set by `generateResolveReverseEvent` in `src/domain/procedures/`.
-   */
-  attackResolutionContext: AttackResolutionContext;
 }
 
 const _resolveReverseEventSchemaObject = z
   .object({
-    attackResolutionContext: attackResolutionContextSchema,
     effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     newUnitPlacement: unitWithPlacementSchema,
@@ -46,7 +42,6 @@ const _assertExactResolveReverseEvent: AssertExact<
 
 /** The schema for a resolve reverse event. */
 export const resolveReverseEventSchema: z.ZodObject<{
-  attackResolutionContext: typeof attackResolutionContextSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   newUnitPlacement: typeof unitWithPlacementSchema;

@@ -46,7 +46,6 @@ describe('generateResolveReverseEvent function', () => {
 
     const event = generateResolveReverseEvent(full);
     expect(event.effectType).toBe('resolveReverse');
-    expect(event.attackResolutionContext).toBe('rangedAttack');
     expect(event.unitInstance).toStrictEqual(unitWithPlacement);
     expect(event.newUnitPlacement.placement.facing).toBe('south');
     expect(event.newUnitPlacement.placement.coordinate).toBe('E-5');
@@ -78,7 +77,6 @@ describe('generateResolveReverseEvent function', () => {
 
     const event = generateResolveReverseEvent(full);
     expect(event.effectType).toBe('resolveReverse');
-    expect(event.attackResolutionContext).toBe('melee');
     // White holds initiative and strikes first, so black's unit is the second
     // player's and is the one that suffers first (§7.5.6).
     expect(event.unitInstance.unit).toBe(blackUnit);

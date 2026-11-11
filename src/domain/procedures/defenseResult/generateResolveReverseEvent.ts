@@ -2,12 +2,7 @@ import type { UnitWithPlacement } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import { canReverseUnit } from '@legality';
-import {
-  GAME_EFFECT_EVENT_TYPE,
-  MELEE_ATTACK_RESOLUTION_CONTEXT,
-  RANGED_ATTACK_RESOLUTION_CONTEXT,
-  RESOLVE_REVERSE_EFFECT_TYPE,
-} from '@events';
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_REVERSE_EFFECT_TYPE } from '@events';
 import {
   getCurrentPhaseState,
   getNextMeleeReverseState,
@@ -60,13 +55,7 @@ export function generateResolveReverseEvent(
     unit: reverseState.reversingUnit,
   };
 
-  const attackResolutionContext =
-    phaseState.phase === 'issueCommands'
-      ? RANGED_ATTACK_RESOLUTION_CONTEXT
-      : MELEE_ATTACK_RESOLUTION_CONTEXT;
-
   return {
-    attackResolutionContext,
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     newUnitPlacement: {
