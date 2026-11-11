@@ -50,7 +50,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
   it('accepts a legal selection regardless of cardId order', () => {
     const state = stateAwaitingWhiteDiscard(2);
     const event = createChooseRoutDiscardEvent({
-      cardIds: [tempCommandCards[4].id, tempCommandCards[2].id],
+      cards: [tempCommandCards[4], tempCommandCards[2]],
       player: 'white',
     });
 
@@ -62,7 +62,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
   it('accepts an empty selection when numberToDiscard is 0', () => {
     const state = stateAwaitingWhiteDiscard(0);
     const event = createChooseRoutDiscardEvent({
-      cardIds: [],
+      cards: [],
       player: 'white',
     });
 
@@ -74,7 +74,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
   it('rejects a selection with the wrong count', () => {
     const state = stateAwaitingWhiteDiscard(2);
     const event = createChooseRoutDiscardEvent({
-      cardIds: [tempCommandCards[2].id],
+      cards: [tempCommandCards[2]],
       player: 'white',
     });
 
@@ -89,7 +89,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
   it('rejects duplicate card IDs', () => {
     const state = stateAwaitingWhiteDiscard(2);
     const event = createChooseRoutDiscardEvent({
-      cardIds: [tempCommandCards[2].id, tempCommandCards[2].id],
+      cards: [tempCommandCards[2], tempCommandCards[2]],
       player: 'white',
     });
 
@@ -104,7 +104,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
   it('rejects a card not in the legal atom set', () => {
     const state = stateAwaitingWhiteDiscard(1);
     const event = createChooseRoutDiscardEvent({
-      cardIds: [tempCommandCards[0].id],
+      cards: [tempCommandCards[0]],
       player: 'white',
     });
 
@@ -122,7 +122,7 @@ describe('isValidChooseRoutDiscardEvent function', () => {
       step: 'chooseCards',
     });
     const event = createChooseRoutDiscardEvent({
-      cardIds: [tempCommandCards[2].id],
+      cards: [tempCommandCards[2]],
       player: 'white',
     });
 

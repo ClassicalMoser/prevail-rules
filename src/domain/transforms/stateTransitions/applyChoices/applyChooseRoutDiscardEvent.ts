@@ -1,9 +1,15 @@
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
-import { getRoutState, getOwnedPlayerCardState } from '@queries';
+import {
+  findOwnedPlayerCardState,
+  getHiddenPlayerCardState,
+  getRoutState,
+} from '@queries';
 import {
   closeRearEngagementWhenRouted,
   discardCardsFromHand,
+  discardShownCardFromHiddenHand,
+  replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
   updateRoutState,
 } from '@transforms/pureTransforms';
@@ -18,8 +24,12 @@ import {
  * settles the discard debt and closes the substep.
  *
  * Event is assumed pre-validated via {@link isValidChooseRoutDiscardEvent}.
- * Requires `event.player` to be owned under the state's visibility
- * ({@link getOwnedPlayerCardState} / {@link replaceOwnedPlayerCardState}).
+ *
+ * The fold follows the shape of the hand it reads. Where the hand is in view
+ * the cards leave it by id. Where it is not — an opponent's seat, or a
+ * spectator's — the discard is still face up, so one hidden card leaves the
+ * hand for each card shown, and the shown cards lie on the discard pile.
+ * Neither shape is a fault.
  */
 export function applyChooseRoutDiscardEvent<S extends GameState>(
   event: ChooseRoutDiscardEvent,
@@ -28,16 +38,33 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
   // The event names the player, and in a melee each side can be routing.
   const routState = getRoutState(state, event.player);
 
-  const owned = getOwnedPlayerCardState(state.cardState, event.player);
-  const discardedCardState = discardCardsFromHand(owned, event.cardIds);
-  let next: S = {
-    ...state,
-    cardState: replaceOwnedPlayerCardState(
-      state.cardState,
-      event.player,
-      discardedCardState,
-    ),
-  };
+  const owned = findOwnedPlayerCardState(state.cardState, event.player);
+  let next: S;
+  if (owned === undefined) {
+    const hidden = getHiddenPlayerCardState(state.cardState, event.player);
+    let discardedHidden = hidden;
+    for (const shown of event.cards) {
+      discardedHidden = discardShownCardFromHiddenHand(discardedHidden, shown);
+    }
+    next = {
+      ...state,
+      cardState: replaceHiddenPlayerCardState(
+        state.cardState,
+        event.player,
+        discardedHidden,
+      ),
+    };
+  } else {
+    const cardIds = event.cards.map((card) => card.id);
+    next = {
+      ...state,
+      cardState: replaceOwnedPlayerCardState(
+        state.cardState,
+        event.player,
+        discardCardsFromHand(owned, cardIds),
+      ),
+    };
+  }
 
   const completedRout = {
     ...routState,

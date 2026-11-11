@@ -30,15 +30,16 @@ export function isValidChooseRoutDiscardEvent(
       };
     }
 
-    if (event.cardIds.length !== legal.numberToDiscard) {
+    const chosenIds = event.cards.map((card) => card.id);
+    if (chosenIds.length !== legal.numberToDiscard) {
       return {
-        errorReason: `Expected ${legal.numberToDiscard} cards, got ${event.cardIds.length}`,
+        errorReason: `Expected ${legal.numberToDiscard} cards, got ${chosenIds.length}`,
         result: false,
       };
     }
 
-    const uniqueIds = new Set(event.cardIds);
-    if (uniqueIds.size !== event.cardIds.length) {
+    const uniqueIds = new Set(chosenIds);
+    if (uniqueIds.size !== chosenIds.length) {
       return {
         errorReason: 'Duplicate card IDs in discard selection',
         result: false,
@@ -46,7 +47,7 @@ export function isValidChooseRoutDiscardEvent(
     }
 
     const legalIds = new Set(legal.cardIds);
-    for (const cardId of event.cardIds) {
+    for (const cardId of chosenIds) {
       if (!legalIds.has(cardId)) {
         return {
           errorReason: `Command card ${cardId} is not a legal discard for ${event.player}`,

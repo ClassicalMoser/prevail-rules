@@ -1,6 +1,6 @@
-import type { PlayerSide } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema } from '@entities';
+import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -18,8 +18,12 @@ export interface ChooseRoutDiscardEvent {
   choiceType: typeof CHOOSE_ROUT_DISCARD_CHOICE_TYPE;
   /** The player who is discarding cards. */
   player: PlayerSide;
-  /** The IDs of the cards being discarded (from hand). */
-  cardIds: string[];
+  /**
+   * The cards being discarded, from hand. A discard is face up, so the event
+   * shows the cards themselves: a seat that cannot see this player's hand
+   * still sees what was spent.
+   */
+  cards: CommandCard[];
 }
 
 const _chooseRoutDiscardEventSchemaObject = z
@@ -30,8 +34,8 @@ const _chooseRoutDiscardEventSchemaObject = z
     choiceType: z.literal(CHOOSE_ROUT_DISCARD_CHOICE_TYPE),
     /** The player who is discarding cards. */
     player: playerSideSchema,
-    /** The IDs of the cards being discarded (from hand). */
-    cardIds: z.array(z.string()),
+    /** The cards being discarded, from hand. */
+    cards: z.array(commandCardSchema),
   })
   .strict();
 
@@ -44,7 +48,7 @@ export const chooseRoutDiscardEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'chooseRoutDiscard'>;
   player: typeof playerSideSchema;
-  cardIds: z.ZodArray<z.ZodString>;
+  cards: z.ZodArray<typeof commandCardSchema>;
 }> = _chooseRoutDiscardEventSchemaObject;
 
 // Verify manual type matches schema inference

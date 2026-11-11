@@ -74,7 +74,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
       'white',
     );
     const event: ChooseRoutDiscardEvent = {
-      cardIds: [],
+      cards: [],
       choiceType: 'chooseRoutDiscard',
       eventType: 'playerChoice',
       player: 'white',
@@ -106,7 +106,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
       'black',
     );
     const event: ChooseRoutDiscardEvent = {
-      cardIds: [],
+      cards: [],
       choiceType: 'chooseRoutDiscard',
       eventType: 'playerChoice',
       player: 'black',
@@ -168,7 +168,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
 
     const next = applyChooseRoutDiscardEvent(
       {
-        cardIds: [tempCommandCards[2].id],
+        cards: [tempCommandCards[2]],
         choiceType: 'chooseRoutDiscard',
         eventType: 'playerChoice',
         player: 'white',
@@ -233,7 +233,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
 
   /** White pays the one card it owes with the first card in its hand. */
   const whitePaysFirstCard = {
-    cardIds: [tempCommandCards[2].id],
+    cards: [tempCommandCards[2]],
     choiceType: 'chooseRoutDiscard' as const,
     eventType: 'playerChoice' as const,
     player: 'white' as const,
@@ -370,7 +370,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
       },
     };
     const event: ChooseRoutDiscardEvent = {
-      cardIds: [blackHand[0].id],
+      cards: [blackHand[0]],
       choiceType: 'chooseRoutDiscard',
       eventType: 'playerChoice',
       player: 'black',
@@ -378,7 +378,10 @@ describe('applyChooseRoutDiscardEvent function', () => {
 
     const next = applyChooseRoutDiscardEvent(event, whiteSeen);
 
+    // One of the two hidden cards is gone, and the card shown lies in
+    // black's discard for everyone to see.
     expect(next.cardState.black.inHand).toStrictEqual(['hidden']);
+    expect(next.cardState.black.discarded).toStrictEqual([blackHand[0]]);
   });
 
   it('throws when nothing is routing', () => {
@@ -388,7 +391,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
       createPlayCardsPhaseState(),
     );
     const event: ChooseRoutDiscardEvent = {
-      cardIds: [],
+      cards: [],
       choiceType: 'chooseRoutDiscard',
       eventType: 'playerChoice',
       player: 'white',
@@ -406,7 +409,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
     });
     const stateInCleanup = updatePhaseState(state, phaseState);
     const event: ChooseRoutDiscardEvent = {
-      cardIds: [],
+      cards: [],
       choiceType: 'chooseRoutDiscard',
       eventType: 'playerChoice',
       player: 'white',

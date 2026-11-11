@@ -17,10 +17,14 @@ for a choice, `applyGameEffectEvent` for an effect — and each of those
 dispatches to one `apply*Event` function. It throws when an event type has no
 transition.
 
-It also accepts a seated client's projected opponent events, the `chooseCard`
-and `commit*` ones whose card fields read `'hidden'`, against a state of seen
-visibility. That is how a client folds the wire stream without the authoritative
-cards.
+It also accepts a seated client's projected opponent `chooseCard` event, whose
+card reads `'hidden'` (a card laid face down is secret, §4.1.1), against a state
+of seen visibility. That is how a client folds the wire stream without the
+authoritative cards. Commitments and rout discards are face up (§8), so they are
+never projected: the event carries the cards, and the fold follows the shape of
+the hand it reads. Where the hand is in view the cards leave it; where it is
+hidden, one hidden card leaves the hand for each card shown and the shown cards
+lie on the discard pile.
 
 ```typescript
 import { applyEvent } from '@transforms';

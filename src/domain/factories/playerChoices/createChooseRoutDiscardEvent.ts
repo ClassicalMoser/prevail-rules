@@ -1,4 +1,4 @@
-import type { PlayerSide } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
@@ -9,18 +9,18 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required: a
  * default would hide a choice the caller means.
  *
- * @param fields - `cardIds` the IDs of the cards being discarded (from hand);
+ * @param fields - `cards` the cards being discarded (from hand), shown face up;
  * `player` the player who is discarding cards
  * @returns The event
  */
 export function createChooseRoutDiscardEvent(fields: {
   player: PlayerSide;
-  cardIds: string[];
+  cards: CommandCard[];
 }): ChooseRoutDiscardEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,
     choiceType: 'chooseRoutDiscard',
     player: fields.player,
-    cardIds: fields.cardIds,
+    cards: fields.cards,
   };
 }

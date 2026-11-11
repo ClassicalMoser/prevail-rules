@@ -110,7 +110,7 @@ describe('a rear engagement', () => {
     ).inHand;
     const paid = applyEvent(
       createChooseRoutDiscardEvent({
-        cardIds: [first.id, second.id],
+        cards: [first, second],
         player: 'white',
       }),
       awaitingDiscard,
