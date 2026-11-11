@@ -1,33 +1,7 @@
 import type { ChooseRetreatOptionEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
-import { findRetreatState } from '@queries';
+import type { GameState } from '@game';
+import { findRetreatAwaitingChoice } from '@queries';
 import { createChooseRetreatOptionEvent } from '@factories';
-
-/**
- * Finds a retreat substep that is awaiting a player choice of retreat option
- * (no retreat chosen yet, at least one legal option). Soft: returns null
- * when none is active under the current phase context.
- */
-function findAwaitingRetreatOptionChoice<S extends GameState>(
-  gameState: S,
-): RetreatState | null {
-  for (const player of ['black', 'white'] as const) {
-    const retreatState = findRetreatState(gameState, player);
-    // Neither player is obliged to be retreating, so an absent retreat here
-    // is an answer.
-    if (retreatState === undefined) {
-      continue;
-    }
-    if (
-      !retreatState.completed &&
-      retreatState.chosenRetreatPath === 'pending' &&
-      retreatState.legalRetreatPaths.length > 0
-    ) {
-      return retreatState;
-    }
-  }
-  return null;
-}
 
 /**
  * Returns every legal choose-retreat-option event for an active retreat substep
@@ -44,10 +18,12 @@ function findAwaitingRetreatOptionChoice<S extends GameState>(
 export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   gameState: S,
 ): ChooseRetreatOptionEvent[] {
-  const retreatState = findAwaitingRetreatOptionChoice(gameState);
-  if (retreatState === null) {
+  // The retreat whose owner has a choice still to make (§9.1.3), if any.
+  const awaiting = findRetreatAwaitingChoice(gameState);
+  if (awaiting === undefined) {
     return [];
   }
+  const { retreatState } = awaiting;
 
   const player = retreatState.retreatingUnit.unit.playerSide;
 
