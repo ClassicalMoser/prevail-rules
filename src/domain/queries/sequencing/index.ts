@@ -69,7 +69,10 @@ export { isAwaitingUnitSupport } from './rallyResolution';
 export { getRallyingPlayer, findRallyingPlayer } from './rallyResolution';
 
 // The cleanup step that follows the current resolve-rally step.
-export { getNextStepForResolveRally } from './rallyResolution';
+export {
+  getNextStepForChooseRally,
+  getNextStepForResolveRally,
+} from './rallyResolution';
 
 // Whether a retreat, reverse, or rout substep has been written.
 export { isOpenSubstep } from './combatOutcomes';

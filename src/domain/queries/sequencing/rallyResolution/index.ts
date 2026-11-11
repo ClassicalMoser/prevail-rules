@@ -24,4 +24,7 @@ export { findRallyingPlayer, getRallyingPlayer } from './cleanupPhase';
 export { isAwaitingUnitSupport } from './cleanupPhase';
 
 // The cleanup step that follows the current resolve-rally step.
-export { getNextStepForResolveRally } from './cleanupPhase';
+export {
+  getNextStepForChooseRally,
+  getNextStepForResolveRally,
+} from './cleanupPhase';

@@ -1,7 +1,7 @@
 import type { GameState, RoutState } from '@game';
 import {
   findRoutLocation,
-  getCleanupPhaseState,
+  getRallyingPlayer,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   getIssueCommandsPhaseState,
@@ -14,7 +14,8 @@ import {
 } from '@queries';
 import { throwIfPending } from '@utils';
 import { updateRetreatRoutState } from './updateRetreatRoutState';
-import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
+import { updateCleanupStep } from './updateCleanupStep';
+import { updateRallyResolutionState } from './updateRallyResolutionState';
 import { updatePhaseState } from '../state';
 
 /**
@@ -130,8 +131,7 @@ export function updateRoutState<S extends GameState>(
   }
 
   if (phaseState.phase === 'cleanup') {
-    // Safe type broadening for more generic function signature
-    const cleanupPhaseState = getCleanupPhaseState(state);
+    const rallyingPlayer = getRallyingPlayer(state);
     const rallyState = getCurrentRallyResolutionState(state);
     if (rallyState.routState === 'pending') {
       throw new Error('No rout state found in rally resolution state');
@@ -141,15 +141,20 @@ export function updateRoutState<S extends GameState>(
       ...(routState.completed ? { completed: true } : {}),
       routState,
     };
-    const nextStep = routState.completed
-      ? getNextStepForResolveRally(state)
-      : cleanupPhaseState.step;
-    const newPhaseState = updateRallyResolutionStateForCurrentStep(
-      cleanupPhaseState,
+    // A settled rout ends the rally, and cleanup moves past it.
+    const withRally = updateRallyResolutionState(
+      state,
+      rallyingPlayer,
       newRallyState,
-      nextStep,
     );
-    return updatePhaseState(state, newPhaseState);
+    if (!routState.completed) {
+      return withRally;
+    }
+    const advanced = updateCleanupStep(
+      withRally,
+      getNextStepForResolveRally(state),
+    );
+    return advanced;
   }
 
   throw new Error(

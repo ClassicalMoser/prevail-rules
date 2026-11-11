@@ -2,12 +2,10 @@ import type { PlayerSide } from '@entities';
 import type { ResolveRallyEvent } from '@events';
 import type { CardState, GameState, RallyResolutionState } from '@game';
 import {
-  getCleanupPhaseState,
   getHiddenPlayerCardState,
   getOwnedPlayerCardState,
   getRallyResolutionStateAwaitingBurn,
 } from '@queries';
-import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
 import {
   burnCardFromPlayed,
   burnHiddenCardFromPlayed,
@@ -15,7 +13,7 @@ import {
   replaceOwnedPlayerCardState,
   returnCardsToHand,
   returnHiddenCardsToHand,
-  updatePhaseState,
+  updateRallyResolutionState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -89,8 +87,6 @@ export function applyResolveRallyEvent<S extends GameState>(
   state: S,
 ): S {
   const { player, card } = event;
-  const phaseState = getCleanupPhaseState(state);
-
   const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
   const cardState = cardStateAfterRallyBurn(state.cardState, player, card);
 
@@ -107,11 +103,10 @@ export function applyResolveRallyEvent<S extends GameState>(
     routState: 'pending',
   };
 
-  const newPhaseState = updateRallyResolutionStateForCurrentStep(
-    phaseState,
+  const resolved = updateRallyResolutionState(
+    stateWithCards,
+    player,
     updatedRallyResolutionState,
-    phaseState.step,
   );
-
-  return updatePhaseState(stateWithCards, newPhaseState);
+  return resolved;
 }

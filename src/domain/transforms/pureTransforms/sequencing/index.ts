@@ -13,5 +13,9 @@ export { updateMeleeResolutionState } from './updateMeleeResolutionState';
 export { updateRetreatRoutState } from './updateRetreatRoutState';
 export { updateRetreatState } from './updateRetreatState';
 export { updateReverseState } from './updateReverseState';
-export { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
+// One player's rally, written to the slot their initiative gives it.
+export { updateRallyResolutionState } from './updateRallyResolutionState';
+
+// The cleanup step.
+export { updateCleanupStep } from './updateCleanupStep';
 export { updateRoutState } from './updateRoutState';

@@ -39,7 +39,8 @@ export {
   updateMeleeResolutionState,
   updateRetreatRoutState,
   updateRetreatState,
-  updateRallyResolutionStateForCurrentStep,
+  updateCleanupStep,
+  updateRallyResolutionState,
   updateReverseState,
   updateRoutState,
 } from './sequencing';

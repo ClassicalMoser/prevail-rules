@@ -7,12 +7,12 @@ import {
   getRallyResolutionStateAwaitingUnitSupport,
   isSameUnitInstance,
 } from '@queries';
-import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
 import {
   addUnitToRouted,
   removeUnitFromBoard,
   updateBoardState,
-  updatePhaseState,
+  updateCleanupStep,
+  updateRallyResolutionState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -71,11 +71,11 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
   const finalNextStep: CleanupPhaseState['step'] =
     unitsToRout.length > 0 ? phaseState.step : defaultNextStep;
 
-  const newPhaseState = updateRallyResolutionStateForCurrentStep(
-    phaseState,
+  const withRally = updateRallyResolutionState(
+    newState,
+    player,
     updatedRallyState,
-    finalNextStep,
   );
-
-  return updatePhaseState(newState, newPhaseState);
+  const advanced = updateCleanupStep(withRally, finalNextStep);
+  return advanced;
 }

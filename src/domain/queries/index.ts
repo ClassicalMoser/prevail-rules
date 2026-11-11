@@ -127,6 +127,7 @@ export {
   findRallyingPlayer,
   getRallyingPlayer,
   isAwaitingUnitSupport,
+  getNextStepForChooseRally,
   getNextStepForResolveRally,
   isOpenSubstep,
   getRangedAttackApplyState,

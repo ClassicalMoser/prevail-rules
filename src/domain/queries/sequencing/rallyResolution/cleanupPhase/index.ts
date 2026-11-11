@@ -14,5 +14,8 @@ export { getRallyResolutionStateAwaitingUnitSupport } from './getRallyResolution
 export { findRallyingPlayer } from './findRallyingPlayer';
 export { getRallyingPlayer } from './getRallyingPlayer';
 
+// The cleanup step that follows a choice whether to rally.
+export { getNextStepForChooseRally } from './getNextStepForChooseRally';
+
 // The cleanup step that follows the current resolve-rally step.
 export { getNextStepForResolveRally } from './getNextStepForResolveRally';

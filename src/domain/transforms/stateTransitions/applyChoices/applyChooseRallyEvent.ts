@@ -1,7 +1,10 @@
 import type { ChooseRallyEvent } from '@events';
-import type { CleanupPhaseState, GameState, RallyResolutionState } from '@game';
-import { getCleanupPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { GameState, RallyResolutionState } from '@game';
+import { getNextStepForChooseRally, getRallyingPlayer } from '@queries';
+import {
+  updateCleanupStep,
+  updateRallyResolutionState,
+} from '@transforms/pureTransforms';
 
 function initialRallyResolutionState(
   playerRallied: boolean,
@@ -29,37 +32,16 @@ export function applyChooseRallyEvent<S extends GameState>(
   event: ChooseRallyEvent,
   state: S,
 ): S {
-  // Safe type broadening because we know the event is for the board type
-  const currentPhaseState = getCleanupPhaseState(state);
   const { performRally } = event;
-  let newPhaseState: CleanupPhaseState;
 
-  if (currentPhaseState.step === 'firstPlayerChooseRally') {
-    // Create rally resolution state and advance
-    newPhaseState = {
-      ...currentPhaseState,
-      firstPlayerRallyResolutionState:
-        initialRallyResolutionState(performRally),
-      step: performRally
-        ? 'firstPlayerResolveRally' // Ready to resolve rally
-        : 'secondPlayerChooseRally', // Resolution skipped, next player to choose rally
-    };
-  } else if (currentPhaseState.step === 'secondPlayerChooseRally') {
-    // Create rally resolution state and advance
-    newPhaseState = {
-      ...currentPhaseState,
-      secondPlayerRallyResolutionState:
-        initialRallyResolutionState(performRally),
-      step: performRally
-        ? 'secondPlayerResolveRally' // Ready to resolve rally
-        : 'complete', // Resolution skipped, next step is complete
-    };
-  } else {
-    throw new Error(
-      `Cleanup phase is not on a chooseRally step: ${currentPhaseState.step}`,
-    );
-  }
-
-  const newGameState = updatePhaseState(state, newPhaseState);
+  // The rallying player's rally begins with the choice, and the step moves
+  // on to resolving it, or past it when the player declines (§10.3).
+  const nextStep = getNextStepForChooseRally(state, performRally);
+  const withRally = updateRallyResolutionState(
+    state,
+    getRallyingPlayer(state),
+    initialRallyResolutionState(performRally),
+  );
+  const newGameState = updateCleanupStep(withRally, nextStep);
   return newGameState;
 }
