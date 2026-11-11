@@ -6,7 +6,7 @@ export {
   applyRevealCardsEvent,
 } from './cards';
 export {
-  applyCompleteCleanupPhaseEvent,
+  applyRoundEndEvent,
   applyCompleteIssueCommandsPhaseEvent,
   applyCompleteMoveCommandersPhaseEvent,
   applyCompletePlayCardsPhaseEvent,

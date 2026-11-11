@@ -7,7 +7,7 @@
  */
 export const gameEffects = [
   'completeAttackApply',
-  'completeCleanupPhase',
+  'roundEnd',
   'completeIssueCommandsPhase',
   'completeMoveCommandersPhase',
   'completeMovementCommand',

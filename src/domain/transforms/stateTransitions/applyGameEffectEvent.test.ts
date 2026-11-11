@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
 
 vi.mock(import('./applyEffects'), () => ({
   applyCompleteAttackApplyEvent: vi.fn(),
-  applyCompleteCleanupPhaseEvent: vi.fn(),
+  applyRoundEndEvent: vi.fn(),
   applyCompleteIssueCommandsPhaseEvent: vi.fn(),
   applyCompleteMeleeResolutionEvent: vi.fn(),
   applyCompleteMoveCommandersPhaseEvent: vi.fn(),

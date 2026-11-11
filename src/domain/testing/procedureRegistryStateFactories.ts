@@ -75,8 +75,7 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(stateWithUnit, phaseState);
   },
 
-  completeCleanupPhase: (): AuthoritativeGameState =>
-    createEmptyGameState('standard'),
+  roundEnd: (): AuthoritativeGameState => createEmptyGameState('standard'),
 
   completeIssueCommandsPhase: (): AuthoritativeGameState => {
     const initialPhaseState: IssueCommandsPhaseState = {

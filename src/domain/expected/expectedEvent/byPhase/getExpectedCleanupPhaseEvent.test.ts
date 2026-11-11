@@ -144,7 +144,7 @@ describe('getExpectedCleanupPhaseEvent function', () => {
     );
   });
 
-  it('given context, returns completeCleanupPhase game effect', () => {
+  it('given context, returns roundEnd game effect', () => {
     const state = createGameStateInCleanupStep('complete');
 
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
@@ -152,7 +152,7 @@ describe('getExpectedCleanupPhaseEvent function', () => {
     expect(expectedEvent.actionType).toBe('gameEffect');
     expect(
       expectedEvent.actionType === 'gameEffect' && expectedEvent.effectType,
-    ).toBe('completeCleanupPhase');
+    ).toBe('roundEnd');
   });
 
   it('given for invalid step, throws', () => {

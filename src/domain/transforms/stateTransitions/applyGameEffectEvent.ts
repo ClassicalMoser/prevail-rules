@@ -6,7 +6,7 @@ import type { GameEffectEvent } from '@events';
 import type { GameState } from '@game';
 import {
   applyCompleteAttackApplyEvent,
-  applyCompleteCleanupPhaseEvent,
+  applyRoundEndEvent,
   applyCompleteIssueCommandsPhaseEvent,
   applyCompleteMeleeResolutionEvent,
   applyCompleteMoveCommandersPhaseEvent,
@@ -49,8 +49,8 @@ export function applyGameEffectEvent<S extends GameState>(
     case 'completeAttackApply': {
       return applyCompleteAttackApplyEvent(event, state);
     }
-    case 'completeCleanupPhase': {
-      return applyCompleteCleanupPhaseEvent(event, state);
+    case 'roundEnd': {
+      return applyRoundEndEvent(event, state);
     }
     case 'completeIssueCommandsPhase': {
       return applyCompleteIssueCommandsPhaseEvent(event, state);

@@ -1,4 +1,4 @@
-export { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
+export { generateRoundEndEvent } from './generateRoundEndEvent';
 export { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
 export { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
 export { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCardsPhaseEvent';

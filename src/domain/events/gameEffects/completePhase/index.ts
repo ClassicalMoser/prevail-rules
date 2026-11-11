@@ -19,6 +19,6 @@ export type { CompleteResolveMeleePhaseEvent } from './completeResolveMeleePhase
 export { completeResolveMeleePhaseEventSchema } from './completeResolveMeleePhase';
 
 // Cleanup phase is finished.
-export { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE } from './completeCleanupPhase';
-export type { CompleteCleanupPhaseEvent } from './completeCleanupPhase';
-export { completeCleanupPhaseEventSchema } from './completeCleanupPhase';
+export { ROUND_END_EFFECT_TYPE } from './roundEnd';
+export type { RoundEndEvent } from './roundEnd';
+export { roundEndEventSchema } from './roundEnd';

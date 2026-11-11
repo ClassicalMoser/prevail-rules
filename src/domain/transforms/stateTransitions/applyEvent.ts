@@ -62,8 +62,7 @@ export function applyEvent<S extends GameState>(
   // empty: its own first event is the first thing the new round asks for. The
   // stream the application stores files this event under the old round too.
   const endsTheRound =
-    event.eventType === 'gameEffect' &&
-    event.effectType === 'completeCleanupPhase';
+    event.eventType === 'gameEffect' && event.effectType === 'roundEnd';
   if (endsTheRound) {
     return newState;
   }

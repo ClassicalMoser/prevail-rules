@@ -9,7 +9,7 @@ import {
   generateRevealCardsEvent,
 } from './cards';
 import {
-  generateCompleteCleanupPhaseEvent,
+  generateRoundEndEvent,
   generateCompleteIssueCommandsPhaseEvent,
   generateCompleteMoveCommandersPhaseEvent,
   generateCompletePlayCardsPhaseEvent,
@@ -65,8 +65,8 @@ export function generateEventFromProcedure(
     case 'completeAttackApply': {
       return generateCompleteAttackApplyEvent(state);
     }
-    case 'completeCleanupPhase': {
-      return generateCompleteCleanupPhaseEvent(state);
+    case 'roundEnd': {
+      return generateRoundEndEvent(state);
     }
     case 'completeIssueCommandsPhase': {
       return generateCompleteIssueCommandsPhaseEvent(state);

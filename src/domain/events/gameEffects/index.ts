@@ -28,19 +28,19 @@ export type {
   RevealCardsEvent,
 } from './cards';
 export {
-  COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
+  ROUND_END_EFFECT_TYPE,
   COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
   COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
   COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
-  completeCleanupPhaseEventSchema,
+  roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
   completeResolveMeleePhaseEventSchema,
 } from './completePhase';
 export type {
-  CompleteCleanupPhaseEvent,
+  RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,

@@ -1,4 +1,4 @@
-import type { CompleteCleanupPhaseEvent } from '@events';
+import type { RoundEndEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
@@ -11,7 +11,7 @@ import {
 import { updatePhaseState, updateRoundState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
-import { applyCompleteCleanupPhaseEvent } from './applyCompleteCleanupPhaseEvent';
+import { applyRoundEndEvent } from './applyRoundEndEvent';
 
 import { createEmptyGameState } from '@factories';
 /**
@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
  * (`completedPhases`, `commandedUnits`), and starts the next round in `playCards.chooseCards`.
  * Trusted path can fire without a cleanup phase slice (mechanical advance).
  */
-describe('applyCompleteCleanupPhaseEvent function', () => {
+describe('applyRoundEndEvent function', () => {
   /** Cleanup.complete with default empty game and black initiative. */
   function createGameStateInCleanupCompleteStep(): GameState {
     const state = createEmptyGameState('standard');
@@ -29,8 +29,8 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
     );
   }
 
-  const event: CompleteCleanupPhaseEvent = {
-    effectType: 'completeCleanupPhase',
+  const event: RoundEndEvent = {
+    effectType: 'roundEnd',
     eventType: 'gameEffect',
   };
 
@@ -38,7 +38,7 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
     it('given cleanup.complete, next phase playCards and step chooseCards', () => {
       const state = createGameStateInCleanupCompleteStep();
 
-      const newState = applyCompleteCleanupPhaseEvent(event, state);
+      const newState = applyRoundEndEvent(event, state);
 
       const phase = throwIfNone(
         newState.currentRoundState.currentPhaseState,
@@ -53,7 +53,7 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
       const priorRound = state.currentRoundState.roundNumber;
       const priorCurrent = state.currentRoundNumber;
 
-      const newState = applyCompleteCleanupPhaseEvent(event, state);
+      const newState = applyRoundEndEvent(event, state);
 
       expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
       expect(newState.currentRoundNumber).toBe(priorRound + 1);
@@ -70,7 +70,7 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
         completedPhases: [completedEntry],
       });
 
-      const newState = applyCompleteCleanupPhaseEvent(event, state);
+      const newState = applyRoundEndEvent(event, state);
 
       expect(newState.currentRoundState.completedPhases).toHaveLength(0);
       expect(newState.currentRoundState.commandedUnits).toHaveLength(0);
@@ -86,7 +86,7 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
       ).phase;
       const originalRound = state.currentRoundState.roundNumber;
 
-      applyCompleteCleanupPhaseEvent(event, state);
+      applyRoundEndEvent(event, state);
 
       expect(
         throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
@@ -106,7 +106,7 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
       );
       const priorRound = state.currentRoundState.roundNumber;
 
-      const newState = applyCompleteCleanupPhaseEvent(event, state);
+      const newState = applyRoundEndEvent(event, state);
 
       expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
       expect(
@@ -119,7 +119,7 @@ describe('applyCompleteCleanupPhaseEvent function', () => {
       const state = createEmptyGameState('standard');
       const priorRound = state.currentRoundState.roundNumber;
 
-      const newState = applyCompleteCleanupPhaseEvent(event, state);
+      const newState = applyRoundEndEvent(event, state);
 
       expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
       expect(

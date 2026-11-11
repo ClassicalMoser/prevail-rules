@@ -23,7 +23,7 @@ import type {
   RevealCardsEvent,
 } from './cards';
 import type {
-  CompleteCleanupPhaseEvent,
+  RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
@@ -64,7 +64,7 @@ import {
   revealCardsEventSchema,
 } from './cards';
 import {
-  completeCleanupPhaseEventSchema,
+  roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
@@ -106,7 +106,7 @@ export const gameEffectTypeSchema: z.ZodType<GameEffectType> =
 /** Base union of all game effect events (unfiltered). */
 type GameEffectEventUnion =
   | CompleteAttackApplyEvent
-  | CompleteCleanupPhaseEvent
+  | RoundEndEvent
   | CompleteIssueCommandsPhaseEvent
   | CompleteMoveCommandersPhaseEvent
   | CompleteMovementCommandEvent
@@ -147,7 +147,7 @@ export type GameEffectEvent = GameEffectEventOfType;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeAttackApplyEventSchema,
-  completeCleanupPhaseEventSchema,
+  roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completeMovementCommandEventSchema,

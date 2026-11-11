@@ -32,7 +32,7 @@ enough to run without the author present. Anything not listed is not decided.
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | E1   | A unit on an event is identity only. One pure transform lifts a unit and sets it down at its new placement, and all six sites call it. The three Phase 3 applies read the unit from the board.                                                                                                       |
 | E2   | `getLegalMoveUnits` and `getLegalRangedAttackers` read `inPlay` directly. The hand-visibility gate goes, because the in-play card is public (§4.1.2).                                                                                                                                                |
-| E3   | A round's log ends with its own last event. `completeCleanupPhase` is appended before the reset; the new round's log starts empty. The application's filing under the old round already agrees.                                                                                                      |
+| E3   | A round's log ends with its own last event. `roundEnd` (formerly `completeCleanupPhase`) is appended before the reset; the new round's log starts empty. The application's filing under the old round already agrees.                                                                                |
 | E4   | `modifierTypes` is dropped from the four `commitTo*` events, together with the four copies of `sameModifierTypes`. Legality and validation work from the card and the moment's accepted stats.                                                                                                       |
 | E5   | The melee order enumerator answers an empty offer and checks that a melee is under way (ENGINES, enumerator contract).                                                                                                                                                                               |
 | E6   | `processEvent` applies first, then stores the event. A failed save after a good apply is a refusal and leaves both unchanged.                                                                                                                                                                        |
@@ -288,6 +288,9 @@ Left for the author:
   `completeRangedAttackCommand` ends only the order. `resolveEngageRetreatOption` carries `retreatPaths` where it carried
   `defendingUnitCanRetreat`, `openRetreatFromEngagement` carries nothing, and
   the front engagement state's `defendingUnitCanRetreat` is `retreatPaths`.
+  The `completeCleanupPhase` effect is now `roundEnd` (with `RoundEndEvent`,
+  `roundEndEventSchema`, `ROUND_END_EFFECT_TYPE`, `generateRoundEndEvent` and
+  `applyRoundEndEvent`).
 
 ---
 

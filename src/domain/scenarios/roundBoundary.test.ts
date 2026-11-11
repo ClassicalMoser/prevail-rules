@@ -30,7 +30,7 @@ describe('the end of a round', () => {
     const start = atTheEndOfCleanup();
     const expected = getExpectedEvent(start);
     // The game owes the effect that ends the round, and nothing else.
-    expect(expected).toMatchObject({ effectType: 'completeCleanupPhase' });
+    expect(expected).toMatchObject({ effectType: 'roundEnd' });
     if (expected.actionType !== 'gameEffect') {
       throw new Error('the end of the round is an effect the game owes');
     }

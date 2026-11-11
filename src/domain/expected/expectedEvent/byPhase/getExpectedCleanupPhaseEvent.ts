@@ -48,7 +48,7 @@ export function getExpectedCleanupPhaseEvent(
     case 'complete': {
       return {
         actionType: 'gameEffect',
-        effectType: 'completeCleanupPhase',
+        effectType: 'roundEnd',
       };
     }
 

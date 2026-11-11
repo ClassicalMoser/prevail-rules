@@ -1,4 +1,4 @@
-import type { CompleteCleanupPhaseEvent } from '@events';
+import type { RoundEndEvent } from '@events';
 import type { GameState, PlayCardsPhaseState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
@@ -8,7 +8,7 @@ import {
 } from '@transforms/pureTransforms';
 
 /**
- * Applies a CompleteCleanupPhaseEvent to the game state.
+ * Applies a RoundEndEvent to the game state.
  * Increments round number and resets to playCards phase (new round).
  *
  * Cleanup phase step is not re-validated here; the event is trusted from the procedure /
@@ -18,8 +18,8 @@ import {
  * @param state - The current game state
  * @returns A new game state with the round advanced
  */
-export function applyCompleteCleanupPhaseEvent<S extends GameState>(
-  _event: CompleteCleanupPhaseEvent,
+export function applyRoundEndEvent<S extends GameState>(
+  _event: RoundEndEvent,
   state: S,
 ): S {
   // Increment round number
