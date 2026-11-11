@@ -5,6 +5,7 @@ import {
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRallyResolutionState,
@@ -130,5 +131,30 @@ describe('findRoutLocation function', () => {
       routState: nested,
       source: 'retreat',
     });
+  });
+
+  it('throws on a rout inside a front engagement’s retreat, which cannot happen', () => {
+    // A defender met head-on is offered a retreat only if it has somewhere to
+    // go (§6.3.2), so it never falls into a rout from that retreat. Finding
+    // one means the state was built wrong.
+    const empty = createEmptyGameState('standard');
+    const defender = createTestUnit('black', { attack: 2 });
+    const standing: UnitWithPlacement = {
+      placement: createUnitPlacement('E-5', 'north'),
+      unit: defender,
+    };
+    const resolution = createMovementResolutionState(empty, {
+      engagementState: createFrontEngagementState({
+        retreatState: createRetreatState(
+          standing,
+          legalRetreatsOf(standing, [enemyCuttingOffRetreat(standing)]),
+          { routState: createRoutState('black', defender) },
+        ),
+      }),
+    });
+
+    expect(() => findRoutLocation(issueCommands(resolution), 'black')).toThrow(
+      'A front engagement’s retreat holds a rout',
+    );
   });
 });

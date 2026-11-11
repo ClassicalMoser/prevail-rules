@@ -285,9 +285,11 @@ describe('applyChooseRoutDiscardEvent function', () => {
     ]);
   });
 
-  it('a front engagement whose defender had nowhere to retreat lets it pay its rout', () => {
+  it('refuses a rout inside a front engagement’s retreat, which cannot happen', () => {
     const { retreatState, state: base } = whiteOwingFromRetreat();
-    // The rout is held by the retreat of a front engagement during a move.
+    // A defender met head-on is offered a retreat only if it has somewhere to
+    // go (§6.3.2), so no front engagement's retreat can hold a rout. This
+    // state is built by hand to show that one is refused, not paid.
     const state = updatePhaseState(
       base,
       createIssueCommandsPhaseState(base, {
@@ -297,24 +299,9 @@ describe('applyChooseRoutDiscardEvent function', () => {
       }),
     );
 
-    const next = applyChooseRoutDiscardEvent(whitePaysFirstCard, state);
-
-    // The retreat is closed, so the engagement can go on to place the
-    // engaging unit (§6.3.2).
-    const crs = throwIfPending(
-      getIssueCommandsPhaseState(next).currentCommandResolutionState,
-      'crs',
-    );
-    if (crs.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(crs.engagementState, 'engagement');
-    if (engagement.engagementResolutionState.engagementType !== 'front') {
-      throw new Error('front');
-    }
-    const retreat = engagement.engagementResolutionState.retreatState;
-    expect(retreat !== 'pending' && retreat.completed).toBe(true);
-    expect(next.cardState.white.inHand).toHaveLength(1);
+    expect(() =>
+      applyChooseRoutDiscardEvent(whitePaysFirstCard, state),
+    ).toThrow('A front engagement’s retreat holds a rout');
   });
 
   it('a melee whose unit had nowhere to retreat lets its owner pay the rout', () => {
