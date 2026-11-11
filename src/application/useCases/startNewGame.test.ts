@@ -5,11 +5,13 @@ import {
   whiteMiniStarterArmy,
   whiteStandardStarterArmy,
 } from '@sampleValues';
-import { defaultRandom } from '@utils';
+import { defaultRandom, throwIfUndefined } from '@utils';
 
 import { parseLegalGameForMode } from '../utils/parseLegalGame';
 import { startNewGame } from './startNewGame';
 import { gameModes } from '@entities';
+import { getExpectedEvent } from '@expected';
+import type { Game } from '@game';
 
 const gameId = '11111111-1111-4111-8111-111111111111';
 
@@ -33,7 +35,9 @@ function createEnginePorts(overrides: {
       addEventToStream: vi.fn(),
       flushEventStream: vi.fn(),
       getEventStream: vi.fn(),
-      newEventStream: vi.fn(),
+      newEventStream: vi
+        .fn()
+        .mockResolvedValue({ data: undefined, result: true as const }),
       truncateEventStream: vi.fn(),
     },
     gameStateSubscribers: overrides.gameStateSubscribers ?? [],
@@ -244,5 +248,48 @@ describe('startNewGame function', () => {
       errorReason: expect.stringContaining('total morale value of 20'),
       result: false,
     });
+  });
+
+  it('starts round 0 with both armies in reserve and their hands dealt, White to set up first', async () => {
+    const ports = createEnginePorts({});
+
+    await startNewGame('mini', miniGame, ports);
+
+    const saved: Game = throwIfUndefined(
+      vi.mocked(ports.gameStorage.saveNewGame).mock.calls[0]?.[0],
+      'the game is saved',
+    );
+    const { gameState } = saved;
+    // Every unit of both armies waits to be placed (§3.5).
+    const armySize = (army: typeof whiteMiniStarterArmy) =>
+      army.units.reduce((sum, unit) => sum + unit.count, 0);
+    expect(gameState.reservedUnits).toHaveLength(
+      armySize(whiteMiniStarterArmy) + armySize(blackMiniStarterArmy),
+    );
+    // Each army's command cards are its hand.
+    if (gameState.cardState.visibility !== 'authoritative') {
+      throw new Error('a new game is the engine’s own view');
+    }
+    expect(gameState.cardState.white.inHand).toHaveLength(
+      whiteMiniStarterArmy.commandCards.length,
+    );
+    // Round 0: White, holding the initiative, sets up first.
+    expect(gameState.currentRoundState.roundNumber).toBe(0);
+    expect(getExpectedEvent(gameState)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'setupUnits',
+      playerSource: 'white',
+    });
+  });
+
+  it('opens the event stream for round 0, where setup is recorded', async () => {
+    const ports = createEnginePorts({});
+
+    await startNewGame('mini', miniGame, ports);
+
+    expect(ports.eventStreamStorage.newEventStream).toHaveBeenCalledWith(
+      gameId,
+      0,
+    );
   });
 });
