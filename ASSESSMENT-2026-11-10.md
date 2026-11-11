@@ -187,41 +187,17 @@ D1 and D5 are what that gap produces.
 ### 3.1 Type assertions
 
 **Status (`417a2cb`): closed in production.** `applyEvent`'s stored-event
-assertion became an exhaustiveness check (`4603972`) once a seat's log held
-`ProjectedEvent`s (`6f8af96`). The visibility branches no longer assert: a
-game state is a union of four named variants discriminated by `visibility`
-(`b22a7d4`, `1b26f9e`), and a `Game` is the authoritative record only
-(`2ee6d4e`). `startNewGame` takes players and armies and parses what it builds
-(`a58c37d`), and the round snapshot is read as a game state (`a58c37d`).
-Six casts the compiler never needed went in `31e3bb1`; the defense-stat list,
-the coordinate lists and the stat schema in `5a4c047` and `5b4e16f`; the
-commitment lists in `3faf0e1`. What remains in production are three reads of a
-`never` value to word an error (`applyEvent`, `applyPlayerChoiceEvent`,
-`getExpectedCommandResolutionEvent`), which are exhaustiveness checks and not
-findings. In specs: 38 assertions in 18 files, 35 without the comment STYLE.md
-requires on the line.
-
-**Definition or assertion (author, 2026-11-10).** `as const`, `as readonly`
-widenings and `never` checks define a type and cannot be wrong, so they are
-not findings. Only a narrowing claim the compiler cannot check counts. Of the
-rows below, the three "widening a literal tuple" rows are definitions and are
-withdrawn as findings (two were removed anyway in `3faf0e1`, whose message
-wrongly says four casts). What remains is ten narrowing assertions.
-
-Original list, grouped by how concerning they are:
-
-| Concern    | Site                                                                                                            | What it hides                                                                                                                                                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **High**   | `transforms/stateTransitions/applyEvent.ts:62` (`event as Event`)                                               | A seat's event stream stores projected events whose card reads `'hidden'`, typed as concrete cards. Anything that reads a client's stream trusts a field that may not be a card.                                                                              |
-| **High**   | `transforms/pureTransforms/visibility/projectGameForVisibility.ts:31,46,61`                                     | The switch on `visibility` does not narrow the generic `V`, so the cast asserts each branch built the right slice. A branch that built the wrong one would typecheck. The entities README justifies the visibility parameter as the thing that removes casts. |
-| **Medium** | `application/useCases/startNewGame.ts:68`                                                                       | The empty state is cast to authoritative. A symptom of 3.3: start-up should call `createInitialGameState`, which already returns the authoritative type.                                                                                                      |
-| **Medium** | `application/useCases/requestGameStateSnapshot.ts:66`                                                           | `isAuthoritativeGameState(game.gameState)` narrows the field, not the game, so the game is cast. A guard on the game would remove it.                                                                                                                         |
-| **Low**    | `queries/unit/isDefenseStat.ts:17`, `getLegalCommitToMeleeEvents.ts:21`, `getLegalCommitToMovementEvents.ts:22` | Widening a literal tuple for `.includes`. `.some((x) => x === stat)` needs no cast.                                                                                                                                                                           |
-| **Low**    | `entities/unit/unitStat.ts:31`                                                                                  | `{}` cast, then filled in a loop to build the schema shape. Also a mutation and a loop in a declarations module.                                                                                                                                              |
-| **Low**    | `entities/board/{small,standard,large}Board/*Coordinates.ts`                                                    | A computed coordinate list cast to its template union, each with a comment saying why it is safe.                                                                                                                                                             |
-
-In specs: 46 assertions in 25 files, 34 without the comment STYLE.md requires
-on the line.
+assertion became an exhaustiveness check once a seat's log held
+`ProjectedEvent`s. The visibility branches no longer assert: a game state is a
+union of four named variants discriminated by `visibility`, and a `Game` is the
+authoritative record only. `startNewGame` takes players and armies and parses
+what it builds, and the round snapshot is read as a game state. The unneeded
+casts, the defense-stat list, the coordinate lists, the stat schema and the
+commitment lists were rebuilt so the compiler can see their type. What remains
+in production are three reads of a `never` value to word an error
+(`applyEvent`, `applyPlayerChoiceEvent`, `getExpectedCommandResolutionEvent`),
+which are exhaustiveness checks and not findings. In specs: 38 assertions in
+18 files, 35 without the comment STYLE.md requires on the line.
 
 ### 3.2 Faults answered as game facts
 
@@ -230,41 +206,18 @@ every one a boundary:
 
 - `validatePlayerChoice`, `eachCardPresentOnce` and `eachUnitPresentOnce`,
   which build a `ValidationResult` through `failFromFault` and keep the
-  fault's own message (`b150072`);
+  fault's own message;
 - the two in `application`, which wrap callbacks that are not this code
   (`updateGameState`, `startNewGame`).
 
-Everything beneath throws at the site that found the fault. What went, in
-order: the per-choice validators (`b150072`), the movement predicates
-(`662d613`), the unit-position, target-scan and setup-zone catches, with a
-total `findPositionOfUnit` for the real absence (`4118077`), the unit
-comparators and `hasEnemyUnit` (`2e3cc13`), `getLegalAssignUnitSupport`'s, with
-`isAwaitingUnitSupport` asking the question (`6b6135e`), and
-`getLegalPlayerChoiceOptions`' eleven, with `findExpectedEvent` answering
-"nothing is owed" for a finished game so the check is written once
-(`c118a34`, `417a2cb`). The earlier hand-lookup catches went in `c2fe2b0`.
-A caller of `getLegalPlayerChoiceOptions` gets a raw throw from a faulty
-state; the response is composed by the server, except in the covered cases
-(author, 2026-11-11).
-
-- **`getLegalPlayerChoiceOptions`:** `softEvents` and the per-branch `catch`
-  fallbacks turn any fault beneath it into "no legal options". A UI or bot
-  sees a stall, not an error.
-- **Legality:** 19 catches in 14 files. The three in `unitMovement/` are
-  marked. Unmarked:
-  - `isUnengagedUnit`, a whole-body catch (`canUnitRangedAttackTarget.ts`);
-  - sixteen per-call catches, which come in two kinds:
-    - _Hand lookups_ returning `null` for a hidden seat: the four
-      `getLegalCommitTo*`, `getLegalRoutDiscardCards`, `getLegalMoveUnits`,
-      `getLegalRangedAttackers` and `getLegalAssignUnitSupport`. These are a
-      fair visibility negative, but they catch every fault in the call.
-    - _Unit and phase lookups_ that skip: `getLegalMoveUnits:93`,
-      `getLegalRangedAttackers:93`, `getLegalRangedAttackOptions:47,92`,
-      `getLegalSetupUnits:53`, `getLegalAssignUnitSupport:49,68`.
-  - A single "may this seat see that hand" query would replace the first
-    kind.
-- **Procedures:** `generateTriggerRoutFromRetreatEvent` (D5) and
-  `generateResolveRetreatEvent` choose a branch by catching.
+Everything beneath throws at the site that found the fault. Where a real
+absence was being caught, a total reader answers instead: `findPositionOfUnit`
+(with `getPositionOfUnit` insisting), `isAwaitingUnitSupport`, and
+`findExpectedEvent` (with `getExpectedEvent` insisting), which answers
+"nothing is owed" for a finished game so the check is written once. A caller
+of `getLegalPlayerChoiceOptions` gets a raw throw from a faulty state; the
+response is composed by the server, except in the covered cases (author,
+2026-11-11).
 
 ### 3.3 Missing callers
 
@@ -390,7 +343,7 @@ seven local helpers and every one of its cases now carry commentary.
 
 **Status (`417a2cb`):**
 
-- ENGINES: generator count and validation order corrected (`7968990`); the
+- ENGINES: generator count and validation order corrected; the
   `commit*` fold claim is now true (D4 fixed); the expected and router
   sections describe `findExpectedEvent` and the raw throw.
 - RULEBOOK appendix revisited: B7 states the reveal-time judgment, the
@@ -415,7 +368,8 @@ seven local helpers and every one of its cases now carry commentary.
     `getCurrentUnitStat`; both are in `getRawUnitStat`, and the terrain stub
     no longer carries a mark.
   - Entries cite SLICES.md slice numbers, which now point nowhere.
-- **§9.1.5 "facing it":** `isRetreatCutOff` reads it as "the retreating unit
+- **§9.1.5 "facing it":** _Settled (author, 2026-11-11): the wording stands.
+  "Looking at it" meant the same and read worse._ As found: `isRetreatCutOff` reads it as "the retreating unit
   is in the enemy's front spaces". So an enemy behind facing diagonally away
   still cuts off. The text and §13's "facing your unit" read narrower; settle
   one in the text.
@@ -507,20 +461,20 @@ full; see 3.2.
 
 ### Closed since `5698dc6`
 
-| Item                                                         | Commits                                           |
-| ------------------------------------------------------------ | ------------------------------------------------- |
-| D2 judged at the reveal                                      | `ec35d56`, `1d0ff68` (specs `a11f594`, `9348787`) |
-| D3 withdrawn: events carry no number                         | `816ec1f`                                         |
-| D4 a seat folds an opponent's commit and rout discard        | `9e5b563`, `8d76333`                              |
-| A forged commit card with a real id and inflated stats       | `35ebc9c`, `f575951`                              |
-| A seat's event log held the opponent's face-down choice      | `6f8af96`                                         |
-| `event as Event`, visibility branches asserted               | `4603972`, `b22a7d4`, `1b26f9e`                   |
-| `Game` is the authoritative record; viewers get a projection | `2ee6d4e`                                         |
-| `startNewGame` cast, `requestGameStateSnapshot` cast         | `a58c37d`                                         |
-| `unitStat` `{}`, coordinate lists, six unneeded casts        | `5b4e16f`, `31e3bb1`                              |
-| 13 legality catch sites, `getLegalPlayerChoiceOptions`       | `662d613`, `4118077`, `6b6135e`, `417a2cb`        |
-| 39 catches in validation, 6 in queries                       | `b150072`, `2e3cc13`                              |
-| Standard starter armies priced (about 12 a unit, 8 a card)   | `82515dc`                                         |
+| Item                                                         | Look for                                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| D2 judged at the reveal                                      | `isChoosingCardsInSecret`; the Phase 1 last-card scenario specs                |
+| D3 withdrawn: events carry no number                         | no number field on any event                                                   |
+| D4 a seat folds an opponent's commit and rout discard        | the shape-of-hand folds in `commitApplyHelpers`, `applyChooseRoutDiscardEvent` |
+| A forged commit card with a real id and inflated stats       | `isSameCardValue`, used by the commit validators                               |
+| A seat's event log held the opponent's face-down choice      | `ProjectedEvent`, `SeenRoundState`                                             |
+| `event as Event`, visibility branches asserted               | the `visibility` discriminant on `GameState`                                   |
+| `Game` is the authoritative record; viewers get a projection | `Game`, `projectGameStateForVisibility`                                        |
+| `startNewGame` cast, `requestGameStateSnapshot` cast         | `startNewGame`, `getRoundSnapshot`                                             |
+| `unitStat` `{}`, coordinate lists, unneeded casts            | no narrowing casts in production                                               |
+| 13 legality catch sites, `getLegalPlayerChoiceOptions`       | `findPositionOfUnit`, `isAwaitingUnitSupport`, `findExpectedEvent`             |
+| 39 catches in validation, 6 in queries                       | `failFromFault`; five `catch` blocks in all                                    |
+| Standard starter armies priced (about 12 a unit, 8 a card)   | `standardStarterArmy`                                                          |
 
 ### Still open
 
@@ -530,7 +484,6 @@ full; see 3.2.
 | Writer question                                          | `update{Retreat,Reverse,Rout,AttackApply}State`                                   | Author's design call; the melee slot ternary belongs here |
 | `createInitialGameState` has no production caller        | `startNewGame.ts`                                                                 | Start-up builds with `createEmptyGameState` and parses    |
 | Hand-written "next open apply"                           | `findNextMeleeDefendingPlayer`, closing loop of `getExpectedMeleeResolutionEvent` | Duplicates `getMeleeAppliesInResolutionOrder`             |
-| §9.1.5 "facing it"                                       | `isRetreatCutOff` against the text and §13                                        | Author to settle one reading                              |
 | 38 spec assertions in 18 files, 35 without STYLE comment | specs                                                                             |                                                           |
 | Headers on exported and local functions                  | see 3.5                                                                           | Not recounted                                             |
 | About 744 spec titles beginning "should" or "given"      | specs                                                                             | STYLE                                                     |

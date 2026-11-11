@@ -43,7 +43,7 @@ Audit in this order (dependencies flow downward):
 ### `game/` (`@game`)
 
 - [x] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped)
-  - Changed after the read, for the next one: a game state is four named visibility variants over a shared base, not a type argument (`gameState/`, `b22a7d4`, `1b26f9e`); round state is split into authoritative and seen (`roundState/`, `6f8af96`); a `Game` holds the authoritative state only (`2ee6d4e`).
+  - Changed after the read, for the next one: a game state is four named visibility variants over a shared base, not a type argument (`gameState/`); round state is split into authoritative and seen (`roundState/`); a `Game` holds the authoritative state only.
   - [x] `cardState/`
   - [x] `commitment/`
   - [x] `game/`
@@ -60,7 +60,7 @@ Audit in this order (dependencies flow downward):
 ### `events/` (`@events`)
 
 - [x] `events/`
-  - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts` (`6f8af96`); events carry no number, order is the place in the round (`816ec1f`); a rout discard carries its full cards (`8d76333`).
+  - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
   - [x] `expectedEvent/`
   - [x] `gameEffects/`
   - [x] `playerChoices/`
@@ -124,7 +124,7 @@ Walk folders in IDE order (alphabetical).
 
 ### `expected/` (`@expected`)
 
-- [ ] `expected/` — `findExpectedEvent` answers `undefined` for a finished game; `getExpectedEvent` insists (`417a2cb`)
+- [ ] `expected/` — `findExpectedEvent` answers `undefined` for a finished game; `getExpectedEvent` insists
   - [ ] `expectedEvent/`
 
 ### `procedures/` (`@procedures`)
@@ -146,7 +146,7 @@ Walk folders in IDE order (alphabetical).
 
 ### `validation/` (`@validation`)
 
-- [ ] `validation/` — one catch per entry point, through `failFromFault`; per-choice validators throw (`b150072`)
+- [ ] `validation/` — one catch per entry point, through `failFromFault`; per-choice validators throw
   - [ ] `game/`
   - [ ] `gameState/`
   - [ ] `playerChoice/`
