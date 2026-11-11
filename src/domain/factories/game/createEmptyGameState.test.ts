@@ -7,7 +7,7 @@ import { createEmptyGameState } from './createEmptyGameState';
  */
 
 describe('createEmptyGameState function', () => {
-  it('starts black on a standard board with empty piles and no phase', () => {
+  it('starts white on a standard board with empty piles and no phase', () => {
     const gameState = createEmptyGameState('standard');
 
     // Setup is round 0; the first round to be played is 1.
@@ -16,7 +16,8 @@ describe('createEmptyGameState function', () => {
     expect(gameState.currentRoundState.currentPhaseState).toBe('none');
     expect(gameState.currentRoundState.commandedUnits).toStrictEqual([]);
     // Black always begins the game with the initiative.
-    expect(gameState.currentInitiative).toBe('black');
+    // White holds the initiative going into round one (§3.3.2).
+    expect(gameState.currentInitiative).toBe('white');
     expect(gameState.boardState.boardType).toBe('standard');
     // The engine's own view, before any card has been dealt to either side.
     expect(gameState.cardState.visibility).toBe('authoritative');

@@ -1,15 +1,16 @@
+import type { AuthoritativeGameState } from '@game';
 import {
   createChooseCardEvent,
-  createEmptyGameState,
+  createInitialGameState,
   createSetupUnitsEvent,
 } from '@factories';
+import { getLegalSetupUnits } from '@legality';
+import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
+import { throwIfUndefined } from '@utils';
+import { validatePlayerChoice } from '@validation';
 import { generateEventFromProcedure } from '@procedures';
 import { getExpectedEvent } from '@expected';
-import {
-  createCleanupPhaseState,
-  createPlayableGame,
-  createUnitWithPlacement,
-} from '@testing';
+import { createCleanupPhaseState, createPlayableGame } from '@testing';
 import { applyEvent, updatePhaseState } from '@transforms';
 import { getOwnedPlayerCardState } from '@queries';
 
@@ -81,37 +82,90 @@ describe('the end of a round', () => {
 });
 
 /**
- * Where setup ends and the first round begins. Setup is round 0, with its own
- * events; the setup that places the last reserved unit belongs to it, so the
- * first round's log starts empty, as every round's does.
+ * Round 0 is setup (§3.5): White, holding the initiative, places its whole
+ * army, then Black does, each legally, and then the round ends and round 1
+ * begins. Played through the engines from a new game with the mini starter
+ * armies, each unit placed on the first empty space of its own zone.
  */
-describe('the end of setup', () => {
-  it('starts round 1 with an empty log, the last setup event having belonged to round 0', () => {
-    const placed = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
+describe('round 0', () => {
+  /** The side expected to set up places its whole reserve, in zone order. */
+  function setsUp(state: AuthoritativeGameState): AuthoritativeGameState {
+    const expected = getExpectedEvent(state);
+    if (
+      expected.actionType !== 'playerChoice' ||
+      expected.choiceType !== 'setupUnits'
+    ) {
+      throw new Error('a side should be asked to set up');
+    }
+    const player = expected.playerSource;
+    if (player !== 'white' && player !== 'black') {
+      throw new Error('setup is a side’s choice');
+    }
+    const legal = getLegalSetupUnits(state, player);
+    if (legal === null) {
+      throw new Error('the side should have units to place');
+    }
+    const facing = player === 'white' ? 'south' : 'north';
+    const unitPlacements = legal.units.map((unit, index) => ({
+      placement: {
+        coordinate: throwIfUndefined(legal.coordinates[index], 'a space'),
+        facing,
+      } as const,
+      unit,
+    }));
+    const event = createSetupUnitsEvent({
+      commanderCoordinate: throwIfUndefined(legal.coordinates[0], 'a space'),
+      player,
+      unitPlacements,
     });
-    const setup = {
-      ...createEmptyGameState('standard'),
-      reservedUnits: [placed.unit],
-    };
+    // Each setup is legal: every reserved unit once, in its own zone.
+    expect(validatePlayerChoice(event, state)).toStrictEqual({ result: true });
+    return applyEvent(event, state);
+  }
 
-    const started = applyEvent(
-      createSetupUnitsEvent({
-        commanderCoordinate: 'E-5',
-        player: 'black',
-        unitPlacements: [placed],
-      }),
-      setup,
-    );
+  it('sets up White, then Black, then ends the round into round 1 with an empty log', () => {
+    const game = createInitialGameState({
+      blackArmy: blackMiniStarterArmy,
+      gameMode: 'mini',
+      whiteArmy: whiteMiniStarterArmy,
+    });
 
-    // Round 1 has begun: the first phase is waiting for cards.
-    expect(started.currentRoundState.currentPhaseState).toStrictEqual({
+    // White holds the initiative, so White sets up first.
+    expect(getExpectedEvent(game)).toMatchObject({
+      choiceType: 'setupUnits',
+      playerSource: 'white',
+    });
+    const whitePlaced = setsUp(game);
+    // Then Black.
+    expect(getExpectedEvent(whitePlaced)).toMatchObject({
+      choiceType: 'setupUnits',
+      playerSource: 'black',
+    });
+    const bothPlaced = setsUp(whitePlaced);
+    // Setup is still round 0 until the round ends.
+    expect(bothPlaced.currentRoundState.roundNumber).toBe(0);
+    expect(bothPlaced.reservedUnits).toStrictEqual([]);
+
+    // With both armies placed, the game owes the end of round 0.
+    const expected = getExpectedEvent(bothPlaced);
+    expect(expected).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'roundEnd',
+    });
+    if (expected.actionType !== 'gameEffect') {
+      throw new Error('the end of the round is an effect the game owes');
+    }
+    const ending = generateEventFromProcedure(bothPlaced, expected.effectType, {
+      nextFloat: () => 0,
+    });
+    const roundOne = applyEvent(ending, bothPlaced);
+
+    // Round 1 begins with cards to choose, and its log is empty.
+    expect(roundOne.currentRoundState.roundNumber).toBe(1);
+    expect(roundOne.currentRoundState.currentPhaseState).toStrictEqual({
       phase: 'playCards',
       step: 'chooseCards',
     });
-    // Its log holds no event, since the setup that started it was round 0's.
-    expect(started.currentRoundState.events).toStrictEqual([]);
+    expect(roundOne.currentRoundState.events).toStrictEqual([]);
   });
 });
