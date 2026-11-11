@@ -123,6 +123,66 @@ describe('generateResolveMeleeEvent function', () => {
     });
   });
 
+  describe('a friend beside the fighter (§7.3.1)', () => {
+    /**
+     * Two cavalry units engaged on E-5 (Attack 4; Retreat 3, Reverse 5,
+     * Rout 7). Black, facing south, may have a cavalry friend on E-6, to its
+     * east, facing west and so looking straight at it.
+     */
+    function cavalryMeleeWithFriend(friend: boolean): GameState {
+      const state = createEmptyGameState('standard');
+      const whiteWp = placed(
+        createTestUnit('white', { unitType: cavalryType }),
+        'E-5',
+        'north',
+      );
+      const blackWp = placed(
+        createTestUnit('black', { unitType: cavalryType }),
+        'E-5',
+        'south',
+      );
+      let board = addUnitToBoard(
+        addUnitToBoard(state.boardState, whiteWp),
+        blackWp,
+      );
+      if (friend) {
+        board = addUnitToBoard(
+          board,
+          placed(
+            createTestUnit('black', {
+              instanceNumber: 2,
+              unitType: cavalryType,
+            }),
+            'E-6',
+            'west',
+          ),
+        );
+      }
+      const s = { ...state, boardState: board };
+      const melee = createMeleeResolutionState(s, {
+        firstPlayerCommitment: { commitmentType: 'declined' },
+        secondPlayerCommitment: { commitmentType: 'declined' },
+      });
+      return updatePhaseState(
+        s,
+        createResolveMeleePhaseState(s, { currentMeleeResolutionState: melee }),
+      );
+    }
+
+    it('without one, a blow of 4 does not turn the enemy', () => {
+      const event = generateResolveMeleeEvent(cavalryMeleeWithFriend(false));
+
+      expect(event.whiteUnitReversed).toBe(false);
+    });
+
+    it('a friend looking straight at the fighter adds 2, so the same blow turns the enemy', () => {
+      // 4 + 2 = 6 meets white's Reverse of 5.
+      const event = generateResolveMeleeEvent(cavalryMeleeWithFriend(true));
+
+      expect(event.whiteUnitReversed).toBe(true);
+    });
+  });
+
   it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat', () => {
     const full = meleeResolutionGameState();
     const event = generateResolveMeleeEvent(full);

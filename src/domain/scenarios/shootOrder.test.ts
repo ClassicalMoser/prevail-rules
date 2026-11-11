@@ -1,6 +1,7 @@
 import type { AuthoritativeGameState } from '@game';
 import {
   createChooseShooterEvent,
+  createCommitToRangedDefenseEvent,
   createPerformRangedAttackEvent,
 } from '@factories';
 import {
@@ -11,6 +12,7 @@ import {
   applyEffectsUntilChoice,
   createPlayableGame,
   createTestCard,
+  getUnitByTrait,
   readyToAimShot,
   resolvingShootOrder,
 } from '@testing';
@@ -149,5 +151,97 @@ describe('a Shoot order', () => {
     // White, the target's owner, commits next (§4.3.11 step 5).
     expect(aimed.next.choiceType).toBe('commitToRangedDefense');
     expect(aimed.next.playerSource).toBe('white');
+  });
+});
+
+/**
+ * What a card committed to a shot does to its outcome, played through the
+ * engines from the commitment to the result.
+ *
+ * Black's Range-2 unit (Attack 2) shoots a white cavalry unit two ranks out on
+ * C-5 (Retreat 3, Reverse 5, Rout 7), facing south. A shot of 2 falls short of
+ * its Retreat; a committed Attack card makes it 3, which reaches it, and the
+ * cavalry falls back one space, to B-5. Each side keeps a second unit far from
+ * the fight, so neither army is down to its last unit (§11.4).
+ */
+describe('a card committed to a shot', () => {
+  const attackCard = createTestCard({ modifiers: ['attack'] });
+
+  /** Black shoots the cavalry, committing this card (or none); white declines to defend. */
+  function shotAtCavalry(committed: typeof attackCard | null) {
+    const game = createPlayableGame(
+      [
+        { coord: 'E-5', facing: 'north', player: 'black', range: 2 },
+        { coord: 'I-1', facing: 'north', instanceNumber: 2, player: 'black' },
+        {
+          coord: 'C-5',
+          facing: 'south',
+          player: 'white',
+          unitType: getUnitByTrait('cavalry'),
+        },
+        { coord: 'A-9', facing: 'south', instanceNumber: 2, player: 'white' },
+      ],
+      {
+        hands: { black: [attackCard, createTestCard()] },
+        initiative: 'black',
+      },
+    );
+    const shooter = getSingleUnitWithPlacementAtCoordinate(
+      game.boardState,
+      'E-5',
+    );
+    const target = getSingleUnitWithPlacementAtCoordinate(
+      game.boardState,
+      'C-5',
+    );
+    const waiting = readyToAimShot(
+      resolvingShootOrder(game, [shooter.unit]),
+      shooter,
+      committed,
+    );
+
+    // Black aims at the cavalry, and white, its owner, declines to commit.
+    const aimed = applyEffectsUntilChoice(
+      applyEvent(
+        createPerformRangedAttackEvent({
+          player: 'black',
+          supportingUnits: [],
+          targetUnit: target,
+        }),
+        waiting,
+      ),
+    );
+    const defended = applyEffectsUntilChoice(
+      applyEvent(
+        createCommitToRangedDefenseEvent({
+          committedCard: null,
+          player: 'white',
+        }),
+        aimed.state,
+      ),
+    );
+    return defended.state;
+  }
+
+  it('without the card, the shot falls short of the cavalry’s Retreat and it stays put', () => {
+    const state = shotAtCavalry(null);
+
+    expect(state.boardState.board['C-5']?.unitPresence.presenceType).toBe(
+      'single',
+    );
+    expect(state.boardState.board['B-5']?.unitPresence.presenceType).toBe(
+      'none',
+    );
+  });
+
+  it('with an Attack card committed, the shot reaches its Retreat and the cavalry falls back a space', () => {
+    const state = shotAtCavalry(attackCard);
+
+    expect(state.boardState.board['C-5']?.unitPresence.presenceType).toBe(
+      'none',
+    );
+    expect(state.boardState.board['B-5']?.unitPresence.presenceType).toBe(
+      'single',
+    );
   });
 });
