@@ -4,7 +4,7 @@ import {
   getBoardSpace,
   getOtherPlayer,
   findOwnedPlayerCardState,
-  getPositionOfUnit,
+  findPositionOfUnit,
   hasSingleUnit,
   isFriendlyUnit,
 } from '@queries';
@@ -79,20 +79,20 @@ export function getLegalMoveUnits<S extends GameState>(
     if (!isFriendlyUnit(unit, player)) {
       continue;
     }
-    try {
-      const placement = getPositionOfUnit(gameState.boardState, unit);
-      const presence = getBoardSpace(
-        gameState.boardState,
-        placement.coordinate,
-      ).unitPresence;
-      // Engaged units cannot start a movement resolution.
-      if (!hasSingleUnit(presence)) {
-        continue;
-      }
-      units.push({ placement, unit });
-    } catch {
-      // Not on board (or otherwise unlocatable) — skip.
+    // A unit routed earlier is still listed but no longer on the board.
+    const placement = findPositionOfUnit(gameState.boardState, unit);
+    if (placement === undefined) {
+      continue;
     }
+    const presence = getBoardSpace(
+      gameState.boardState,
+      placement.coordinate,
+    ).unitPresence;
+    // Engaged units cannot start a movement resolution.
+    if (!hasSingleUnit(presence)) {
+      continue;
+    }
+    units.push({ placement, unit });
   }
 
   if (units.length === 0) {

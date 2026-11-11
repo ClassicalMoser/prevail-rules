@@ -1,17 +1,9 @@
 import type { Board, UnitInstance, UnitPlacement } from '@entities';
-import { getBoardCoordinates } from '../board/getBoardCoordinates';
-import { getBoardSpace } from '../board/getBoardSpace';
-import { getOppositeFacing } from '@queries/facings';
-import { isSameUnitInstance } from '../unit/unitEquivalence';
-import { hasNoUnit } from './hasNoUnit';
-import { hasSingleUnit } from './hasSingleUnit';
+import { findPositionOfUnit } from './findPositionOfUnit';
 
 /**
- * Finds the position of a unit on the board by searching all coordinates.
- * Optimized to check unitPresence directly instead of using helper functions.
- * TODO(misleading): the body does use helpers (`hasNoUnit`, `hasSingleUnit`,
- * `isSameUnitInstance`), and the "generic type alignment" comment below refers
- * to a board type parameter that no longer exists. Settled by rewording both.
+ * Where a unit stands on the board, for a caller that knows it must be there.
+ * Use `findPositionOfUnit` to ask whether it is on the board at all.
  *
  * @param board - The board to search
  * @param unit - The unit to find
@@ -29,48 +21,9 @@ export function getPositionOfUnit(
   board: Board,
   unit: UnitInstance,
 ): UnitPlacement {
-  // Get all coordinates for the board
-  const coordinates = getBoardCoordinates(board);
-
-  for (const coordinate of coordinates) {
-    // Use getBoardSpace for type-safe access - it handles the generic type alignment
-    const space = getBoardSpace(board, coordinate);
-    const { unitPresence } = space;
-
-    // Skip empty spaces
-    if (hasNoUnit(unitPresence)) {
-      continue;
-    }
-
-    // Check single unit presence
-    if (hasSingleUnit(unitPresence)) {
-      if (isSameUnitInstance(unitPresence.unit, unit).result) {
-        const placement: UnitPlacement = {
-          coordinate,
-          facing: unitPresence.facing,
-        };
-        return placement;
-      }
-      continue;
-    }
-
-    // Engaged. The primary keeps its stored facing.
-    if (isSameUnitInstance(unitPresence.primaryUnit, unit).result) {
-      const primaryPlacement: UnitPlacement = {
-        coordinate,
-        facing: unitPresence.primaryFacing,
-      };
-      return primaryPlacement;
-    }
-    // The secondary faces opposite the primary.
-    if (isSameUnitInstance(unitPresence.secondaryUnit, unit).result) {
-      const secondaryPlacement: UnitPlacement = {
-        coordinate,
-        facing: getOppositeFacing(unitPresence.primaryFacing),
-      };
-      return secondaryPlacement;
-    }
+  const placement = findPositionOfUnit(board, unit);
+  if (placement === undefined) {
+    throw new Error('Unit not found on board');
   }
-
-  throw new Error('Unit not found on board');
+  return placement;
 }

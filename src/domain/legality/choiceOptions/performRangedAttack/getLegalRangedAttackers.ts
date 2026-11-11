@@ -4,7 +4,7 @@ import {
   getCurrentUnitStat,
   getOtherPlayer,
   findOwnedPlayerCardState,
-  getPositionOfUnit,
+  findPositionOfUnit,
   isFriendlyUnit,
 } from '@queries';
 
@@ -86,13 +86,12 @@ export function getLegalRangedAttackers<S extends GameState>(
     if (!isFriendlyUnit(unit, player)) {
       continue;
     }
-    let unitWithPlacement: UnitWithPlacement;
-    try {
-      const placement = getPositionOfUnit(gameState.boardState, unit);
-      unitWithPlacement = { placement, unit };
-    } catch {
+    // A unit routed earlier is still listed but no longer on the board.
+    const placement = findPositionOfUnit(gameState.boardState, unit);
+    if (placement === undefined) {
       continue;
     }
+    const unitWithPlacement: UnitWithPlacement = { placement, unit };
     if (!isUnengagedUnit(gameState, unitWithPlacement)) {
       continue;
     }

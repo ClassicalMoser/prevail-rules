@@ -12,24 +12,22 @@ import {
 
 /**
  * True when the unit occupies its coordinate alone (not engaged).
+ *
+ * @throws Error when the placement names a coordinate that is not on the board
  */
 export function isUnengagedUnit(
   gameState: GameState,
   unitWithPlacement: UnitWithPlacement,
 ): boolean {
-  try {
-    const space = getBoardSpace(
-      gameState.boardState,
-      unitWithPlacement.placement.coordinate,
-    );
-    return (
-      hasSingleUnit(space.unitPresence) &&
-      !hasEngagedUnits(space.unitPresence) &&
-      isSameUnitInstance(space.unitPresence.unit, unitWithPlacement.unit).result
-    );
-  } catch {
-    return false;
-  }
+  const space = getBoardSpace(
+    gameState.boardState,
+    unitWithPlacement.placement.coordinate,
+  );
+  return (
+    hasSingleUnit(space.unitPresence) &&
+    !hasEngagedUnits(space.unitPresence) &&
+    isSameUnitInstance(space.unitPresence.unit, unitWithPlacement.unit).result
+  );
 }
 
 /**

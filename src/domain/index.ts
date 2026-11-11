@@ -596,7 +596,7 @@ export {
   isValidChooseMeleeResolutionEvent,
   validatePlayerChoice,
 } from '@validation';
-export { getPositionOfUnit } from '@queries';
+export { findPositionOfUnit, getPositionOfUnit } from '@queries';
 export type { Trait } from '@ruleValues';
 export {
   COMMANDER_MOVE_DISTANCE,

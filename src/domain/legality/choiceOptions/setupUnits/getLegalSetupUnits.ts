@@ -46,13 +46,10 @@ export function getLegalSetupUnits<S extends GameState>(
 
   const zone = getSetupZoneCoordinates(gameState.boardState, player);
   const coordinates = zone.filter((coordinate) => {
-    try {
-      return hasNoUnit(
-        getBoardSpace(gameState.boardState, coordinate).unitPresence,
-      );
-    } catch {
-      return false;
-    }
+    // Only an empty space of the zone may take a unit.
+    const { unitPresence } = getBoardSpace(gameState.boardState, coordinate);
+    const isEmpty = hasNoUnit(unitPresence);
+    return isEmpty;
   });
 
   return { coordinates, player, units };

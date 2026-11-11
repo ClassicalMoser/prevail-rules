@@ -4,7 +4,7 @@ import {
   getBoardCoordinates,
   getBoardSpace,
   getOtherPlayer,
-  getPositionOfUnit,
+  findPositionOfUnit,
   hasSingleUnit,
   isFriendlyUnit,
   isSameUnitInstance,
@@ -29,23 +29,19 @@ export function getLegalRangedAttackTargets(
   const targets: UnitWithPlacement[] = [];
 
   for (const coordinate of getBoardCoordinates(gameState.boardState)) {
-    try {
-      const space = getBoardSpace(gameState.boardState, coordinate);
-      if (!hasSingleUnit(space.unitPresence)) {
-        continue;
-      }
-      if (!isFriendlyUnit(space.unitPresence.unit, enemy)) {
-        continue;
-      }
-      const target: UnitWithPlacement = {
-        placement: { coordinate, facing: space.unitPresence.facing },
-        unit: space.unitPresence.unit,
-      };
-      if (canUnitRangedAttackTarget(attacker, target, gameState, modifiers)) {
-        targets.push(target);
-      }
-    } catch {
-      // skip
+    const space = getBoardSpace(gameState.boardState, coordinate);
+    if (!hasSingleUnit(space.unitPresence)) {
+      continue;
+    }
+    if (!isFriendlyUnit(space.unitPresence.unit, enemy)) {
+      continue;
+    }
+    const target: UnitWithPlacement = {
+      placement: { coordinate, facing: space.unitPresence.facing },
+      unit: space.unitPresence.unit,
+    };
+    if (canUnitRangedAttackTarget(attacker, target, gameState, modifiers)) {
+      targets.push(target);
     }
   }
 
@@ -85,13 +81,12 @@ export function getLegalRangedAttackSupporters(
     if (!isFriendlyUnit(unit, player)) {
       continue;
     }
-    let unitWithPlacement: UnitWithPlacement;
-    try {
-      const placement = getPositionOfUnit(gameState.boardState, unit);
-      unitWithPlacement = { placement, unit };
-    } catch {
+    // A unit routed earlier is still listed but no longer on the board.
+    const placement = findPositionOfUnit(gameState.boardState, unit);
+    if (placement === undefined) {
       continue;
     }
+    const unitWithPlacement: UnitWithPlacement = { placement, unit };
     if (canUnitRangedAttackTarget(unitWithPlacement, target, gameState)) {
       supporters.push(unitWithPlacement);
     }

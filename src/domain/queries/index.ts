@@ -182,6 +182,7 @@ export {
 // occupies the space.
 export {
   getPlayerUnitWithPosition,
+  findPositionOfUnit,
   getPositionOfUnit,
   hasEngagedUnits,
   hasEnemyUnit,
