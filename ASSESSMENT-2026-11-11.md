@@ -285,7 +285,9 @@ Left for the author:
   `settleRout`. `updateHiddenPlayerCardState`
   stays gone (`updatePlayerCards` and `replaceHiddenPlayerCardState` write a
   hidden hand). New effect `completeRangedAttack`: a shot ends with it, and
-  `completeRangedAttackCommand` ends only the order. `resolveEngageRetreatOption` carries `retreatPaths` where it carried
+  `completeRangedAttackCommand` ends only the order. `triggerRoutFromRetreat` and
+  `completeAttackApply` carry nothing (their context, player and attack-type
+  fields, and the three `triggerRoutFromRetreat*Schema` exports, are gone). `resolveEngageRetreatOption` carries `retreatPaths` where it carried
   `defendingUnitCanRetreat`, `openRetreatFromEngagement` carries nothing, and
   the front engagement state's `defendingUnitCanRetreat` is `retreatPaths`.
   The `completeCleanupPhase` effect is now `roundEnd` (with `RoundEndEvent`,
@@ -775,9 +777,15 @@ ternaries on `retreatResolutionContext` and the `retreatingPlayer` field are
 gone. **Shape change:** the event lost `retreatResolutionContext` and
 `retreatingPlayer`, and the three exported schemas that spelled its branches
 (`triggerRoutFromRetreatSharedFieldsSchema`, `…RangedAttackSchema`,
-`…MeleeSchema`). The rest of 7.7 (`completeAttackApply`, `resolveReverse`, the
+`…MeleeSchema`). `completeAttackApply` carries nothing either: the new
+`getAttackApplyToClose` names the apply (a shot's only one, or the next of a
+melee's two in resolution order, through the existing
+`findNextMeleeAttackApplyToClose`), the procedure and the apply both ask it, and
+the if-chain on `attackType` is gone. **Shape change:** the event lost
+`attackType` and `defendingPlayer`. The rest of 7.7 (`resolveReverse`, the
 `open*FromAttackApply` events, the attack result spelling, the data the events
-repeat from the state) is not done yet.
+repeat from the state, inconsistent flags in the attack-apply factory) is not
+done yet.
 
 **The attack result spelled three ways, and colour against initiative.**
 `resolveMelee` carries `whiteUnitRouted`/`blackUnitRetreated`…; `resolveRangedAttack`

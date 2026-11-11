@@ -1,58 +1,30 @@
 import type { CompleteAttackApplyEvent } from '@events';
+import type { GameState } from '@game';
 import {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
-import {
-  getRangedAttackApplyState,
-  getCurrentPhaseState,
-  findNextMeleeDefendingPlayer,
-  getMeleeResolutionState,
-} from '@queries';
-import type { GameState } from '@game';
+import { getAttackApplyToClose } from '@queries';
 
 /**
  * Generates a CompleteAttackApplyEvent to complete an attack apply substep.
  * This marks that all attack results (rout/retreat/reverse) have been resolved.
+ * The event carries nothing; asking for the apply to close here is the check
+ * that one is waiting.
  *
  * @param state - The current game state
  * @returns A complete CompleteAttackApplyEvent
+ * @throws Error outside a shot or a melee, or when no apply is left to close
  */
 export function generateCompleteAttackApplyEvent(
   state: GameState,
 ): CompleteAttackApplyEvent {
-  const phaseState = getCurrentPhaseState(state);
+  // An apply must be waiting to close, or the effect is not owed.
+  getAttackApplyToClose(state);
 
-  if (phaseState.phase === 'issueCommands') {
-    const attackApply = getRangedAttackApplyState(state);
-    return {
-      attackType: 'ranged',
-      defendingPlayer: attackApply.defendingUnit.playerSide,
-      effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
-  }
-
-  if (phaseState.phase === 'resolveMelee') {
-    const meleeState = getMeleeResolutionState(state);
-    // Safe type broadening for more generic function signature
-    const defendingPlayer = findNextMeleeDefendingPlayer(meleeState);
-
-    if (defendingPlayer === undefined) {
-      throw new Error(
-        'No incomplete attack apply state found in melee resolution',
-      );
-    }
-
-    return {
-      attackType: 'melee',
-      defendingPlayer,
-      effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
-      eventType: GAME_EFFECT_EVENT_TYPE,
-    };
-  }
-
-  throw new Error(
-    `completeAttackApply not expected in phase: ${phaseState.phase}`,
-  );
+  const event: CompleteAttackApplyEvent = {
+    effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
+    eventType: GAME_EFFECT_EVENT_TYPE,
+  };
+  return event;
 }

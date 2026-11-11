@@ -100,6 +100,7 @@ export { getMeleeAttackApplyState } from './combatOutcomes';
 export {
   findNextMeleeAttackApplyToClose,
   findNextMeleeDefendingPlayer,
+  getAttackApplyToClose,
 } from './combatOutcomes';
 
 // Reverse stored on an attack-apply.

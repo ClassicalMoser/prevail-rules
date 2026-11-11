@@ -507,6 +507,7 @@ export {
   getCurrentRallyResolutionState,
   findNextMeleeAttackApplyToClose,
   findNextMeleeDefendingPlayer,
+  getAttackApplyToClose,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
   findFrontEngagementStateFromMovement,

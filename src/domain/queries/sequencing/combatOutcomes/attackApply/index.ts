@@ -18,6 +18,7 @@ export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
 // The melee attack-apply still to close, in the order the blows take effect.
 export { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClose';
+export { getAttackApplyToClose } from './getAttackApplyToClose';
 
 // The defender whose melee attack-apply is still open, initiative first.
 export { findNextMeleeDefendingPlayer } from './findNextMeleeDefendingPlayer';

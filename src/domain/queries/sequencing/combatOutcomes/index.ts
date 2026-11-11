@@ -27,6 +27,7 @@ export type { AttackApplyLocation } from './attackApply';
 export {
   findNextMeleeAttackApplyToClose,
   findNextMeleeDefendingPlayer,
+  getAttackApplyToClose,
 } from './attackApply';
 
 // Retreat: on an attack-apply, or on a front engagement.

@@ -84,34 +84,28 @@ describe('generateCompleteAttackApplyEvent function', () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  it('given ranged stack with white defender apply, emits ranged completeAttackApply for white', () => {
+  it('names the effect for a shot whose apply is waiting to close, and carries nothing', () => {
     const state = createStateWithRangedAttackApply();
 
     expect(generateCompleteAttackApplyEvent(state)).toStrictEqual({
-      attackType: 'ranged',
-      defendingPlayer: 'white',
       effectType: 'completeAttackApply',
       eventType: 'gameEffect',
     });
   });
 
-  it('given black initiative and only black apply incomplete, emits melee for defending black', () => {
+  it('names the same effect for a melee with an apply left to close', () => {
     const state = createStateWithMeleeApply('black');
 
     expect(generateCompleteAttackApplyEvent(state)).toStrictEqual({
-      attackType: 'melee',
-      defendingPlayer: 'black',
       effectType: 'completeAttackApply',
       eventType: 'gameEffect',
     });
   });
 
-  it('given same stack with white still incomplete after black done, emits melee for white', () => {
+  it('names it again for the melee’s other apply once the first is closed', () => {
     const state = createStateWithMeleeApply('white');
 
     expect(generateCompleteAttackApplyEvent(state)).toStrictEqual({
-      attackType: 'melee',
-      defendingPlayer: 'white',
       effectType: 'completeAttackApply',
       eventType: 'gameEffect',
     });

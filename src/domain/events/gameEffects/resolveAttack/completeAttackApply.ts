@@ -1,6 +1,4 @@
-import type { AttackType, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { attackTypeSchema, playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -9,37 +7,22 @@ export const COMPLETE_ATTACK_APPLY_EFFECT_TYPE = 'completeAttackApply' as const;
 
 /**
  * Closes the attack-apply substep and advances sequencing (routed / reverse / retreat / etc.).
- *
- * **Why `attackType` + `defendingPlayer` on the event**: Melee has two parallel attack-apply
- * states (one per side). Apply must know which subtree to clear without inferring from board or
- * initiative; the procedure encodes that explicitly.
+ * It carries nothing: which apply closes is the state's to name. A shot has one, and a melee's
+ * two close in the order their blows take effect (§7.5.6).
  */
 export interface CompleteAttackApplyEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_ATTACK_APPLY_EFFECT_TYPE;
-  /** The type of attack. */
-  attackType: AttackType;
-  /** The defending player whose unit was attacked. */
-  defendingPlayer: PlayerSide;
 }
 
-const _completeAttackApplyEventSchemaObject: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof COMPLETE_ATTACK_APPLY_EFFECT_TYPE>;
-  attackType: typeof attackTypeSchema;
-  defendingPlayer: typeof playerSideSchema;
-}> = z
+const _completeAttackApplyEventSchemaObject = z
   .object({
     /** The type of the event. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** The type of game effect. */
     effectType: z.literal(COMPLETE_ATTACK_APPLY_EFFECT_TYPE),
-    /** Mirrors {@link CompleteAttackApplyEvent.attackType}. */
-    attackType: attackTypeSchema,
-    /** Mirrors {@link CompleteAttackApplyEvent.defendingPlayer}. */
-    defendingPlayer: playerSideSchema,
   })
   .strict();
 
@@ -49,10 +32,8 @@ type CompleteAttackApplyEventSchemaType = z.infer<
 
 /** The schema for a complete attack apply event. */
 export const completeAttackApplyEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof COMPLETE_ATTACK_APPLY_EFFECT_TYPE>;
-  attackType: typeof attackTypeSchema;
-  defendingPlayer: typeof playerSideSchema;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completeAttackApply'>;
 }> = _completeAttackApplyEventSchemaObject;
 
 const _assertExactCompleteAttackApplyEvent: AssertExact<
