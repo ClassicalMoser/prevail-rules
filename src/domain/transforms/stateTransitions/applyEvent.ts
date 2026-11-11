@@ -51,7 +51,9 @@ export function applyEvent<S extends GameState>(
   } else if (event.eventType === 'gameEffect') {
     newState = applyGameEffectEvent(event, state);
   } else {
-    throw new Error(`Unknown event type: ${(event as Event).eventType}`);
+    // Adding an event kind without routing it fails to compile here.
+    const _exhaustive: never = event;
+    throw new Error(`Unknown event type: ${(_exhaustive as Event).eventType}`);
   }
 
   return {
