@@ -122,12 +122,53 @@ run for the author. It is written down here and not guessed.
 - R6, applied to `@queries`: eleven readers renamed to `find*`, in three
   families, and the queries README states the contract.
 
+**Run log (2026-11-11, second pass).** The author's principle: no
+belt-and-suspenders. When one layer owns a gate, a function asked outside it
+throws with a clear message; a soft second guard (`[]`, `null`, `undefined`)
+hides a failure in the first. Validation still never throws to its caller:
+the legality function throws on-site and `validatePlayerChoice` catches at the
+entry point. ENGINES' "an enumerator that finds no options answers with an
+empty offer" means a fair question with nothing to offer, not a question that
+should not have been asked. Closed, each with a failing spec first:
+
+- E5, reversed in part: `getLegalChooseMeleeResolutionEvents` throws when
+  asked mid-melee, as it already did when no engagements remain. The expected
+  engine owns both gates.
+- `getLegalDoneIssuingCommandsEvents`, `getLegalIssueCommands` and
+  `getLegalShooterTargets` throw where they answered `null` for "not
+  expected". The validators' "not expected in the current state" refusals and
+  the options router's empty fallbacks for them are gone, and the router's
+  `performRangedAttack` shooter is no longer nullable.
+- `findMoveEnding`, `findLegalMoveDeltas` and
+  `findExpectedAttackApplyStageEvent` (formerly `get*`): their `undefined` is
+  a real answer, so they follow the find/get naming.
+
 Decision points left for the author, found on the way:
 
-- **E5, the throw on an empty list.** `getLegalChooseMeleeResolutionEvents`
-  still throws when no engagements remain. Its spec's header calls asking then
-  "a mistake by the caller", which reads against ENGINES' "an enumerator that
-  finds no options answers with an empty offer". Left as authored.
+- **Enumerators whose `null` carries two meanings.** `getLegalMoveUnits` and
+  `getLegalRangedAttackers` answer `null` both for "not expected" and for "no
+  unit can act", and the expected engine and the
+  `completeMovementCommand`/`completeRangedAttackCommand` transforms read the
+  second meaning as their gate. `getLegalRoutDiscardCards` and
+  `getLegalAssignUnitSupport` answer `null` both for "not expected" and for
+  "the hand is hidden from this seat". Separating the meanings is a design
+  choice; each still has a "not expected" refusal in its validator.
+- **The rest of the soft-empty list.** The options router's spec lists the
+  choices whose enumerators answer "nothing" on a state with no round under
+  way: `chooseCard`, `chooseShooter`, `chooseMovingUnit`, `chooseRoutDiscard`,
+  `chooseRetreatOption`, `chooseWhetherToRetreat`, the four `commitTo*`,
+  `moveCommander` and `setupUnits`. By the principle, each is either a fair
+  question with an empty answer or a fault that should throw; they have not
+  been gone through one by one. `setupUnits` is out of scope.
+- **Whose rally a cleanup step belongs to.** `getRallyingPlayer` maps the four
+  rally steps and throws on `discardPlayedCards` and `complete`.
+  `getRallyStepRoutState`, which nothing in the engine calls, and the cleanup
+  branch of `findRoutLocation` repeat the mapping loosely, reading the second
+  player's slot on every step that is not the first player's, and
+  `findRoutLocation` ignores its `player` there. A proposal is with the
+  author: one mapping in `getRallyingPlayer` with a total `findRallyingPlayer`
+  twin, `findRoutLocation` reading through it, and `getRallyStepRoutState`
+  removed.
 - **`applyCompleteUnitMovementEvent`.** A mover that is on neither its start
   space nor its destination is set down from nowhere. It looks unreachable and
   is marked `TODO(wrong)`.
@@ -144,20 +185,17 @@ Decision points left for the author, found on the way:
 
 ## 1. Defects
 
-E1 to E7 are closed; the run log above names how. One thing from E5 is left
-for the author: `getLegalChooseMeleeResolutionEvents` still throws on an
-empty list of engagements, where the sweep read ENGINES as asking for an
-empty offer and the spec's own header calls that a caller's mistake.
+E1 to E7 are closed; the run logs above name how.
 
 ---
 
 ## 2. Rule questions for the author
 
 R1, R2, R3, R5 and R6 were decided on 2026-11-11 and are in the table above.
-R6 was applied to `@queries` only. The `getLegal*` enumerators answer `null`
-or an empty offer by ENGINES, and `getExpectedAttackApplyStageEvent`,
-`getMoveEnding` and `getLegalMoveDeltas` answer `undefined`; whether those
-follow the find/get naming is for the author. R3's other three shapes
+R6 was applied to `@queries`, and in the second pass to the three readers
+outside it whose `undefined` is a real answer. The `getLegal*` enumerators
+that still answer `null` are listed with the second pass's decision points.
+R3's other three shapes
 (`commitToMovement`, `performRangedAttack`, `moveUnit`) stay as they are.
 
 **R4. Rules that live only in validation.** The support check's one place per
