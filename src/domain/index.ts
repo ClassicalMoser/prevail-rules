@@ -635,6 +635,7 @@ export {
   chooseHiddenCard,
   discardCardsFromHand,
   discardHiddenCardFromHand,
+  discardShownCardFromHiddenHand,
   markPhaseAsComplete,
   moveBothInPlayToPlayed,
   moveCardToPlayed,
