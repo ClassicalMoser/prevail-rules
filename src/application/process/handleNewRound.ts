@@ -2,8 +2,9 @@ import type { GameState } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 
 /**
- * Called at the START of a new round.
- * Saves the round snapshot and flushes the event stream from the previous round.
+ * Called at the START of a new round, round 1 or later.
+ * Saves the round snapshot and flushes the event stream from the previous round,
+ * which for round 1 is round 0, setup.
  * Creates a new event stream for the current round.
  *
  * @param gameId - The ID of the game.
@@ -32,18 +33,17 @@ export async function handleNewRound(
     };
   }
 
-  // If this is not the first round, flush the event stream from the previous round
-  if (roundNumber > 1) {
-    const eventStreamResult = await eventStreamStorage.flushEventStream(
-      gameId,
-      roundNumber - 1,
-    );
-    if (!eventStreamResult.result) {
-      return {
-        errorReason: eventStreamResult.errorReason,
-        result: false,
-      };
-    }
+  // The round before is over, round 0 (setup) included, so its stream is
+  // flushed. A round begins only after another ends, so there always is one.
+  const eventStreamResult = await eventStreamStorage.flushEventStream(
+    gameId,
+    roundNumber - 1,
+  );
+  if (!eventStreamResult.result) {
+    return {
+      errorReason: eventStreamResult.errorReason,
+      result: false,
+    };
   }
 
   // Create a new event stream for the current round

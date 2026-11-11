@@ -862,10 +862,15 @@ begun. An event that changes the round number ends the round it was applied in,
 so round 1's log starts empty whether `roundEnd` or the last setup event began
 it (failing spec first: `scenarios/roundBoundary.test.ts`). The expected engine
 already has its explicit round-zero case: `findExpectedEvent` answers
-`getExpectedSetupEvent` while the phase is `'none'`. **Left:** the
-application never creates a stream or snapshot for round 0 (`startNewGame`
-creates none, and nothing flushes round 0); round 0 has its own structure and
-is not built out, so this waits for it. Storing a round's length and dropping
+`getExpectedSetupEvent` while the phase is `'none'`. **Round 0 built (author, 2026-11-11: the simplest working
+version).** White holds the initiative at the start and sets up first, then
+Black, each placing its whole army legally in one `setupUnits`; the expected
+engine then asks for `roundEnd`, which begins round 1. `startNewGame` builds the
+game with `createInitialGameState`, so both armies are in reserve and the hands
+dealt (it had used the empty shell, and a new game could not get past setup),
+and opens round 0's stream; `handleNewRound` flushes it when round 1 begins.
+RULEBOOK A5 is updated. The full setup sequence (bid, scenario, Black deploying
+first) is not built. Storing a round's length and dropping
 the number altogether is the author's idea for the walk.
 **Shape change:** the game state loses `currentRoundNumber`; stored states do
 not parse.
