@@ -174,7 +174,7 @@ describe('generateResolveInitiativeEvent function', () => {
       });
 
       expect(() => generateResolveInitiativeEvent(stateWithPhase)).toThrow(
-        'White player has no card in play',
+        'white has no card in play',
       );
     });
 
@@ -203,7 +203,7 @@ describe('generateResolveInitiativeEvent function', () => {
       });
 
       expect(() => generateResolveInitiativeEvent(stateWithPhase)).toThrow(
-        'Black player has no card in play',
+        'black has no card in play',
       );
     });
   });

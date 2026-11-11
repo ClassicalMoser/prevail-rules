@@ -1,5 +1,6 @@
 import type { Modifier, UnitInstance, UnitStatName } from '@entities';
 import type { GameState } from '@game';
+import { findCardInPlay } from '@queries/card';
 import { isDefenseStat } from './isDefenseStat';
 import { unitMatchesInspirationRange } from './unitMatchesInspirationRange';
 import { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
@@ -36,7 +37,7 @@ export function getRawUnitStat(
   const unitSide = unit.playerSide;
 
   // Get the active card
-  const activeCard = gameState.cardState[unitSide].inPlay;
+  const activeCard = findCardInPlay(gameState.cardState, unitSide);
 
   // Four modifier sources, in this order:
   // 1. Terrain. Not implemented; this step adds nothing.

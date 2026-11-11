@@ -1,6 +1,7 @@
 import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
+  getCardInPlay,
   getCurrentUnitStat,
   getIssueCommandsPhaseState,
   getOtherPlayer,
@@ -73,8 +74,8 @@ export function getLegalRangedAttackers<S extends GameState>(
   // The order is the card the player has in play, which lies face up for
   // every viewer (§4.1.2): a seat reads it as plainly as the player does. Only
   // the hand is hidden, and the order does not come from the hand.
-  const inPlay = gameState.cardState[player].inPlay;
-  if (inPlay === null || inPlay.command.type !== 'rangedAttack') {
+  const inPlay = getCardInPlay(gameState.cardState, player);
+  if (inPlay.command.type !== 'rangedAttack') {
     throw new Error(
       `The card ${player} has in play is not a ranged attack order`,
     );

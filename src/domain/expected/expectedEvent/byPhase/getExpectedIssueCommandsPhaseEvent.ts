@@ -6,7 +6,11 @@ import {
   getLegalRangedAttackers,
   isCommandIssuable,
 } from '@legality';
-import { getIssueCommandsPhaseState, getOtherPlayer } from '@queries';
+import {
+  getCardInPlay,
+  getIssueCommandsPhaseState,
+  getOtherPlayer,
+} from '@queries';
 import { getExpectedStartCommandResolutionEvent } from '../composable';
 import { getExpectedCommandResolutionEvent } from '../iterated';
 
@@ -118,8 +122,8 @@ export function getExpectedIssueCommandsPhaseEvent(
 
       // No ongoing resolution - check if there are remaining units to resolve
       if (phaseState.remainingUnitsFirstPlayer.length > 0) {
-        const inPlay = state.cardState[firstPlayer].inPlay;
-        if (inPlay?.command.type === 'rangedAttack') {
+        const { command } = getCardInPlay(state.cardState, firstPlayer);
+        if (command.type === 'rangedAttack') {
           return getExpectedRangedResolveStart(state, firstPlayer);
         }
         return getExpectedMovementResolveStart(state, firstPlayer);
@@ -127,7 +131,8 @@ export function getExpectedIssueCommandsPhaseEvent(
 
       // Empty remaining after ranged resolve: advance via completeRangedAttackCommand
       if (
-        state.cardState[firstPlayer].inPlay?.command.type === 'rangedAttack'
+        getCardInPlay(state.cardState, firstPlayer).command.type ===
+        'rangedAttack'
       ) {
         return {
           actionType: 'gameEffect',
@@ -136,7 +141,9 @@ export function getExpectedIssueCommandsPhaseEvent(
       }
 
       // Empty remaining after movement resolve with no movers: complete command
-      if (state.cardState[firstPlayer].inPlay?.command.type === 'movement') {
+      if (
+        getCardInPlay(state.cardState, firstPlayer).command.type === 'movement'
+      ) {
         return {
           actionType: 'gameEffect',
           effectType: 'completeMovementCommand',
@@ -175,15 +182,16 @@ export function getExpectedIssueCommandsPhaseEvent(
 
       // No ongoing resolution - check if there are remaining units to resolve
       if (phaseState.remainingUnitsSecondPlayer.length > 0) {
-        const inPlay = state.cardState[secondPlayer].inPlay;
-        if (inPlay?.command.type === 'rangedAttack') {
+        const { command } = getCardInPlay(state.cardState, secondPlayer);
+        if (command.type === 'rangedAttack') {
           return getExpectedRangedResolveStart(state, secondPlayer);
         }
         return getExpectedMovementResolveStart(state, secondPlayer);
       }
 
       if (
-        state.cardState[secondPlayer].inPlay?.command.type === 'rangedAttack'
+        getCardInPlay(state.cardState, secondPlayer).command.type ===
+        'rangedAttack'
       ) {
         return {
           actionType: 'gameEffect',
@@ -191,7 +199,9 @@ export function getExpectedIssueCommandsPhaseEvent(
         };
       }
 
-      if (state.cardState[secondPlayer].inPlay?.command.type === 'movement') {
+      if (
+        getCardInPlay(state.cardState, secondPlayer).command.type === 'movement'
+      ) {
         return {
           actionType: 'gameEffect',
           effectType: 'completeMovementCommand',

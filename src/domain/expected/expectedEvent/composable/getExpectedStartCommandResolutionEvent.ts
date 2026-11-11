@@ -1,6 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
+import { getCardInPlay } from '@queries';
 
 /**
  * Gets the expected event to start resolving a command for a unit.
@@ -14,10 +15,7 @@ export function getExpectedStartCommandResolutionEvent(
   state: GameState,
   player: PlayerSide,
 ): ExpectedEventInfo {
-  const activeCard = state.cardState[player].inPlay;
-  if (!activeCard) {
-    throw new Error(`${player} player has no active card`);
-  }
+  const activeCard = getCardInPlay(state.cardState, player);
   // Command type determines what action is expected to start resolution
   if (activeCard.command.type === 'movement') {
     // A Move order is carried out one unit at a time, starting by naming

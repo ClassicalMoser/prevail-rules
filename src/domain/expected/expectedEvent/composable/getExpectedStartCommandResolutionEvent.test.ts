@@ -46,7 +46,7 @@ describe('getExpectedStartCommandResolutionEvent function', () => {
 
     expect(() =>
       getExpectedStartCommandResolutionEvent(state, 'black'),
-    ).toThrow('black player has no active card');
+    ).toThrow('black has no card in play');
   });
 
   it('given when the command type is invalid, throws', () => {

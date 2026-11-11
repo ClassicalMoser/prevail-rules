@@ -4,7 +4,7 @@ import {
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
-import { getOtherPlayer } from '@queries';
+import { getCardInPlay, getOtherPlayer } from '@queries';
 
 import { toRemainingCommands } from './toRemainingCommands';
 
@@ -24,17 +24,13 @@ export function generateCompleteMoveCommandersPhaseEvent(
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
-  const firstPlayerCard = state.cardState[firstPlayer].inPlay;
-  const secondPlayerCard = state.cardState[secondPlayer].inPlay;
-
-  const remainingCommandsFirstPlayer =
-    firstPlayerCard !== null
-      ? toRemainingCommands(firstPlayerCard.command)
-      : [];
-  const remainingCommandsSecondPlayer =
-    secondPlayerCard !== null
-      ? toRemainingCommands(secondPlayerCard.command)
-      : [];
+  // Each player's revealed card grants the round's orders (§4.1.6).
+  const remainingCommandsFirstPlayer = toRemainingCommands(
+    getCardInPlay(state.cardState, firstPlayer).command,
+  );
+  const remainingCommandsSecondPlayer = toRemainingCommands(
+    getCardInPlay(state.cardState, secondPlayer).command,
+  );
 
   return {
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
