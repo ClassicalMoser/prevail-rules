@@ -85,6 +85,7 @@ export {
 // Command lines present on the board from a unit.
 export {
   canJoinLine,
+  findRankSpanBetweenEnds,
   getLineBetweenEnds,
   getLineSegmentContainingUnit,
 } from './line';
@@ -178,6 +179,7 @@ export type {
 // Unit stats, identity, support, and who is on the board.
 export {
   arrayWithoutUnit,
+  findUnitIndex,
   getCurrentUnitStat,
   getRawUnitStat,
   getPlayerUnitsOnBoard,

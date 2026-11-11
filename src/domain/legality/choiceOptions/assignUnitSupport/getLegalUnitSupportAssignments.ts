@@ -4,6 +4,7 @@ import type { OpenChoice } from '@utils';
 import type { LegalAssignUnitSupport } from './getLegalAssignUnitSupport';
 import {
   areUnitSupportsEqual,
+  findUnitIndex,
   isSameUnitInstance,
   unitMatchesSupport,
 } from '@queries';
@@ -42,9 +43,7 @@ function hasPlace(
   unit: UnitInstance,
   assignedSoFar: readonly UnitSupportAssignment[],
 ): boolean {
-  const placed = assignedSoFar.some(
-    (assignment) => isSameUnitInstance(assignment.unit, unit).result,
-  );
+  const placed = findUnitIndex(assignedSoFar, unit) !== undefined;
   return placed;
 }
 

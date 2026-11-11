@@ -8,11 +8,14 @@ import type { GameState } from '@game';
 import {
   canJoinLine,
   findPositionOfUnit,
+  findRankSpanBetweenEnds,
+  findUnitIndex,
   getLineSegmentContainingUnit,
   getOppositeFacing,
   isSameUnitInstance,
 } from '@queries';
 import { MAX_LINE_LENGTH } from '@ruleValues';
+import { throwIfUndefined } from '@utils';
 
 import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 
@@ -81,8 +84,9 @@ export function getLegalLines(
       command.restrictions,
       commandedUnits,
     );
-    const at = rank.findIndex(
-      (member) => isSameUnitInstance(member.unit, anchor.unit).result,
+    const at = throwIfUndefined(
+      findUnitIndex(rank, anchor.unit),
+      'A rank holds the unit it was drawn from',
     );
 
     // Each stretch of up to eight that takes in the anchor.
@@ -142,8 +146,6 @@ export function getLineRefusalReason(
   ends: readonly [UnitInstance, UnitInstance],
 ): string {
   const { boardState: board, currentRoundState } = gameState;
-  const [one, other] = ends;
-
   // Each end must be one of the player's units able to stand in this line:
   // free of an engagement, not yet ordered, and matching the order's traits
   // and types.
@@ -167,28 +169,18 @@ export function getLineRefusalReason(
   }
 
   // The ends must stand on one unbroken rank.
-  const onePlacement = findPositionOfUnit(board, one);
-  if (onePlacement === undefined) {
-    return `A line end is not on the board for ${player}`;
-  }
-  const rank = getLineSegmentContainingUnit(
+  const span = findRankSpanBetweenEnds(
     board,
-    { placement: onePlacement, unit: one },
+    ends,
     command.restrictions,
     currentRoundState.commandedUnits,
   );
-  const oneIndex = rank.findIndex(
-    (member) => isSameUnitInstance(member.unit, one).result,
-  );
-  const otherIndex = rank.findIndex(
-    (member) => isSameUnitInstance(member.unit, other).result,
-  );
-  if (otherIndex === -1) {
+  if (span === undefined) {
     return 'The two ends do not stand on one unbroken rank';
   }
 
   // A line is one to eight units.
-  const length = Math.abs(otherIndex - oneIndex) + 1;
+  const length = span.to - span.from + 1;
   if (length > MAX_LINE_LENGTH) {
     return `A line is at most ${MAX_LINE_LENGTH} units; these ends span ${length}`;
   }

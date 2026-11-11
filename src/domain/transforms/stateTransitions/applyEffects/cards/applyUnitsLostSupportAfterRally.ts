@@ -6,7 +6,7 @@ import {
   getNextStepForResolveRally,
   getPlayerUnitsWithPlacementOnBoard,
   getRallyResolutionStateAwaitingUnitSupport,
-  isSameUnitInstance,
+  hasUnitInArray,
 } from '@queries';
 import {
   addUnitToRouted,
@@ -32,10 +32,7 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
 
   const playerUnits = getPlayerUnitsWithPlacementOnBoard(state, player);
   const unitsToRout = [...playerUnits].filter((unitWithPlacement) =>
-    uncoveredUnits.some(
-      (uncovered) =>
-        isSameUnitInstance(uncovered, unitWithPlacement.unit).result,
-    ),
+    hasUnitInArray(uncoveredUnits, unitWithPlacement.unit),
   );
 
   let newState = state;

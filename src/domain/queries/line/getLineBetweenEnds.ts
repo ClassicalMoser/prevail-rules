@@ -4,10 +4,8 @@ import type {
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
-import { isSameUnitInstance } from '@queries/unit';
-import { getPositionOfUnit } from '@queries/unitPresence';
 
-import { getLineSegmentContainingUnit } from './getLineSegmentContainingUnit';
+import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
 
 /**
  * The units of a line named by its two ends (§4.3.5): the stretch of the
@@ -28,31 +26,19 @@ export function getLineBetweenEnds(
   restrictions: Restrictions,
   commandedUnits: readonly UnitInstance[],
 ): UnitWithPlacement[] {
-  const [oneEnd, otherEnd] = ends;
-
-  // The unbroken rank through the one end.
-  const rank = getLineSegmentContainingUnit(
+  const span = findRankSpanBetweenEnds(
     board,
-    { placement: getPositionOfUnit(board, oneEnd), unit: oneEnd },
+    ends,
     restrictions,
     commandedUnits,
   );
-  const oneIndex = rank.findIndex(
-    (member) => isSameUnitInstance(member.unit, oneEnd).result,
-  );
-  const otherIndex = rank.findIndex(
-    (member) => isSameUnitInstance(member.unit, otherEnd).result,
-  );
-  if (otherIndex === -1) {
+  if (span === undefined) {
     throw new Error(
       'The two ends of the line do not stand on one unbroken rank',
     );
   }
 
   // Everything from one end to the other, whichever way they were named.
-  const line = rank.slice(
-    Math.min(oneIndex, otherIndex),
-    Math.max(oneIndex, otherIndex) + 1,
-  );
+  const line = span.rank.slice(span.from, span.to + 1);
   return line;
 }

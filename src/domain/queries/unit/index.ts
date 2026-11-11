@@ -2,6 +2,7 @@
 export { isDefenseStat } from './isDefenseStat';
 
 // Whether a unit fights for this side.
+export { findUnitIndex } from './findUnitIndex';
 export { isFriendlyUnit } from './isFriendlyUnit';
 
 // Trait and unit-type id lists.

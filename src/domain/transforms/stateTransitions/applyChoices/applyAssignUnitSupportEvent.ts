@@ -1,11 +1,7 @@
 import type { UnitInstance } from '@entities';
 import type { AssignUnitSupportEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  getPlayerUnitsOnBoard,
-  hasUnitInArray,
-  isSameUnitInstance,
-} from '@queries';
+import { getPlayerUnitsOnBoard, hasUnitInArray } from '@queries';
 import { applyUnitsLostSupportAfterRally } from '../applyEffects/cards/applyUnitsLostSupportAfterRally';
 
 /**
@@ -26,9 +22,7 @@ export function applyAssignUnitSupportEvent<S extends GameState>(
   }
 
   const boardUnits = [...getPlayerUnitsOnBoard(state, event.player)];
-  const uncovered = boardUnits.filter(
-    (unit) => !covered.some((c) => isSameUnitInstance(c, unit).result),
-  );
+  const uncovered = boardUnits.filter((unit) => !hasUnitInArray(covered, unit));
 
   return applyUnitsLostSupportAfterRally(state, event.player, uncovered);
 }
