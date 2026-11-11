@@ -15,6 +15,11 @@ export async function processEvent<S extends GameState>(
   gameState: S,
   ports: EnginePorts,
 ): Promise<PortResponse<S>> {
+  // The event is applied first: the stream is the game's history, so it
+  // records only events the game has actually taken. An event that cannot be
+  // applied throws here and leaves the stream as it was.
+  const newGameState = applyEvent(event, gameState);
+
   const addEventResult = await ports.eventStreamStorage.addEventToStream(
     gameId,
     gameState.currentRoundNumber,
@@ -26,8 +31,6 @@ export async function processEvent<S extends GameState>(
       result: false,
     };
   }
-
-  const newGameState = applyEvent(event, gameState);
 
   const updateResult = await updateGameState(
     gameId,
