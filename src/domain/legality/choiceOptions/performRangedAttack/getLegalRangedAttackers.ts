@@ -3,7 +3,6 @@ import type { GameState } from '@game';
 import {
   getCurrentUnitStat,
   getOtherPlayer,
-  findOwnedPlayerCardState,
   findPositionOfUnit,
   isFriendlyUnit,
 } from '@queries';
@@ -71,12 +70,10 @@ export function getLegalRangedAttackers<S extends GameState>(
     return null;
   }
 
-  // A seat that cannot see this player's cards cannot read the order.
-  const owned = findOwnedPlayerCardState(gameState.cardState, player);
-  if (owned === undefined) {
-    return null;
-  }
-  const inPlay = owned.inPlay;
+  // The order is the card the player has in play, which lies face up for
+  // every viewer (§4.1.2): a seat reads it as plainly as the player does. Only
+  // the hand is hidden, and the order does not come from the hand.
+  const inPlay = gameState.cardState[player].inPlay;
   if (inPlay === null || inPlay.command.type !== 'rangedAttack') {
     return null;
   }
