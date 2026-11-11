@@ -5,19 +5,19 @@ import {
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   getIssueCommandsPhaseState,
-  getNextStepForResolveRally,
   getRallyingPlayer,
   isOpenSubstep,
 } from '@queries';
 import { throwIfPending } from '@utils';
 import { updateAttackApplyState } from './updateAttackApplyState';
-import { updateCleanupStep } from './updateCleanupStep';
 import { updateRearEngagementResolutionState } from './updateRearEngagementResolutionState';
 import { updateRallyResolutionState } from './updateRallyResolutionState';
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
 /**
- * Creates a new game state with the rout state updated.
+ * Creates a new game state with the rout state updated. It writes the rout
+ * where it sits and nothing else; closing what a settled rout held open is
+ * {@link settleRout}'s.
  * Rout can occur in:
  * - Ranged attack resolution (issueCommands phase)
  * - Rear engagement rout during movement (issueCommands phase)
@@ -85,25 +85,11 @@ export function updateRoutState<S extends GameState>(
     if (rallyState.routState === 'pending') {
       throw new Error('No rout state found in rally resolution state');
     }
-    const newRallyState = {
+    const written = updateRallyResolutionState(state, rallyingPlayer, {
       ...rallyState,
-      ...(routState.completed ? { completed: true } : {}),
       routState,
-    };
-    // A settled rout ends the rally, and cleanup moves past it.
-    const withRally = updateRallyResolutionState(
-      state,
-      rallyingPlayer,
-      newRallyState,
-    );
-    if (!routState.completed) {
-      return withRally;
-    }
-    const advanced = updateCleanupStep(
-      withRally,
-      getNextStepForResolveRally(state),
-    );
-    return advanced;
+    });
+    return written;
   }
 
   throw new Error(

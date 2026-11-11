@@ -5,7 +5,7 @@ import { updateRetreatState } from './updateRetreatState';
 /**
  * Creates a new game state with the rout state updated within a retreat state.
  * Handles both ranged attack resolution (issueCommands phase) and melee resolution (resolveMelee phase).
- * A completed rout completes the retreat that holds it.
+ * It writes the rout only; the retreat holding it closes in {@link settleRout}.
  * Uses composed retreat-state query and updateRetreatState to avoid repetition.
  *
  * @param state - The current game state
@@ -29,11 +29,8 @@ export function updateRetreatRoutState<S extends GameState>(
   routState: RoutState,
 ): S {
   const currentRetreat: RetreatState = getRetreatState(state, routState.player);
-  // A retreat whose rout is settled has nothing left to do: the unit has
-  // left, so the retreat closes with its rout (§9.1.6).
   const newState = updateRetreatState(state, {
     ...currentRetreat,
-    completed: routState.completed ? true : currentRetreat.completed,
     routState,
   });
   return newState;

@@ -252,7 +252,7 @@ describe('updateRoutState function', () => {
     expect(rally.completed).toBe(false);
   });
 
-  it('given completed cleanup rout, marks rally complete and advances step', () => {
+  it('writes a settled rally rout and leaves the rally and the step for settleRout', () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -285,12 +285,14 @@ describe('updateRoutState function', () => {
     if (phase.phase !== 'cleanup') {
       throw new Error('phase');
     }
-    expect(phase.step).toBe('secondPlayerChooseRally');
+    // Cleanup stays on this rally: moving on is settleRout's.
+    expect(phase.step).toBe('firstPlayerResolveRally');
     const rally = throwIfPending(
       phase.firstPlayerRallyResolutionState,
       'rally',
     );
-    expect(rally.completed).toBe(true);
+    // The rout is recorded as settled, and the rally around it is still open.
+    expect(rally.completed).toBe(false);
     expect(throwIfPending(rally.routState, 'rout').completed).toBe(true);
   });
 

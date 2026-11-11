@@ -12,7 +12,8 @@ import {
  * Applies a ChooseRoutDiscardEvent:
  * - discards the chosen hand cards
  * - marks the active rout slice cardsChosen + completed
- * - for rear engagement, marks the engagement complete so movement can finish
+ * - settles the rout through settleRout, which closes what it held open: a
+ *   rear engagement (so movement can finish), a retreat, or a rally
  *
  * Routed units already left the board when the rout opened. This event only
  * settles the discard debt and closes the substep.

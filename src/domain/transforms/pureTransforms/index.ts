@@ -35,7 +35,6 @@ export {
   updateAttackApplyState,
   updateCommandResolutionState,
   updateEngagementStateInMovement,
-  closeRearEngagementWhenRouted,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,
   updateRetreatRoutState,

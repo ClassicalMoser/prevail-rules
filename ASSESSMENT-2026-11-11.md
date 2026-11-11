@@ -527,11 +527,13 @@ marked **Done** or **Fixed** in their own subsection.
 
 ### 7.1 A settled rout closes its parent four ways
 
-**Done (sixth pass):** `settleRout` writes the rout and closes the rear
-engagement; both settlers call it, and `applyResolveRoutEvent` lost its
-`routResolutionSource` branch (the field is now unread, left for the author).
-**Not done, needs clearance:** making `findRoutLocation` throw for a rout on a
-front engagement's retreat, and correcting that unreachable spec.
+**Done (sixth pass, on the author's answers).** `settleRout` writes the rout
+and, once it is settled, closes what it held open: a retreat, a rear
+engagement or a rally. An attack's result stays open for `completeAttackApply`.
+Both settlers call it. The writers only write: `updateRoutState` no longer
+closes a rally or moves cleanup on, `updateRetreatRoutState` no longer closes
+the retreat, and `closeRearEngagementWhenRouted` is gone. The author called the
+closes inside the writers "the wrong closure".
 
 **Verdict: design risk, low.** The four are layers of one chain every caller
 goes through, not four alternatives. The two apply events that settle a rout

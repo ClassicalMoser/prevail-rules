@@ -96,10 +96,9 @@ describe('updateRetreatRoutState function', () => {
     expect(rout.numberToDiscard).toBe(2);
   });
 
-  it('a rout that completes closes the retreat holding it', () => {
-    // §9.1.6: the unit has left, so the retreat has nothing left to do. A
-    // rout with nothing to pay completes in the same write as it is resolved
-    // (§9.3), which is the case that used to leave the retreat open.
+  it('writes a settled rout and leaves the retreat for settleRout to close', () => {
+    // The writer records the rout only. Closing the retreat it settled
+    // (§9.1.6) is settleRout's, so both ways of settling share it.
     const state = createStateWithRangedAttackRetreat();
     const unit = createTestUnit('white', { attack: 2 });
     // A rout settled outright: no cards owed, so none are chosen.
@@ -111,8 +110,8 @@ describe('updateRetreatRoutState function', () => {
 
     const newState = updateRetreatRoutState(state, settled);
 
-    // Read the retreat back out of the ranged attack's apply: it, and not
-    // only the rout inside it, is now complete.
+    // Read the retreat back out of the ranged attack's apply: the rout inside
+    // it is settled, and the retreat itself is still open.
     const phase = getIssueCommandsPhaseState(newState);
     const command = throwIfPending(
       phase.currentCommandResolutionState,
@@ -126,6 +125,11 @@ describe('updateRetreatRoutState function', () => {
       getRetreatStateFromAttackApply(apply),
       'the attack applies a retreat',
     );
-    expect(retreat.completed).toBe(true);
+    const rout = throwIfBypassed(
+      throwIfPending(retreat.routState, 'rout'),
+      'the rout was opened',
+    );
+    expect(rout.completed).toBe(true);
+    expect(retreat.completed).toBe(false);
   });
 });
