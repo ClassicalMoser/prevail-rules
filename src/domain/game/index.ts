@@ -1,12 +1,6 @@
 // Game record
-export {
-  authoritativeGameSchema,
-  blackSeenGameSchema,
-  gameSchema,
-  spectatorGameSchema,
-  whiteSeenGameSchema,
-} from './game';
-export type { Game, GameForVisibility } from './game';
+export { gameSchema } from './game';
+export type { Game } from './game';
 
 // Runtime state
 export { gameStateSchema } from './gameState';

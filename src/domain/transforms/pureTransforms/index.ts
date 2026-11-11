@@ -21,7 +21,7 @@ export {
 } from './cards';
 export {
   projectEventForVisibility,
-  projectGameForVisibility,
+  projectGameStateForVisibility,
 } from './visibility';
 export type { ProjectedEvent } from './visibility';
 export {

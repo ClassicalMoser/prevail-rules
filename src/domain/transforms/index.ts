@@ -14,7 +14,7 @@ export {
   moveBothInPlayToPlayed,
   moveCardToPlayed,
   projectEventForVisibility,
-  projectGameForVisibility,
+  projectGameStateForVisibility,
   removeCommanderFromBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,

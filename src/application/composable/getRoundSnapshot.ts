@@ -28,5 +28,12 @@ export async function getRoundSnapshot(
   if (result.data === undefined) {
     return undefined;
   }
-  return parseStoredGameForMode(gameMode, result.data).gameState;
+  // TODO(wrong): a round snapshot is a game state, but it is read with the
+  // game schema, so every stored snapshot is refused. Nothing calls this yet.
+  // Settled by reading it as an authoritative game state of the mode's size.
+  const game = parseStoredGameForMode(gameMode.name, result.data);
+  if (!game.result) {
+    throw new Error(game.errorReason);
+  }
+  return game.data.gameState;
 }

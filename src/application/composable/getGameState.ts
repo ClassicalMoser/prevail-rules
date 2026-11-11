@@ -1,24 +1,26 @@
-import type { Game, GameState } from '@game';
-import type { GameStorage } from '@application/ports';
-import { getGame } from './getGame';
+import type { GameStateForVisibility } from '@game';
+import type { GameStorage, PortResponse } from '@application/ports';
 import type { GameModeName } from '@entities';
+import { getGame } from './getGame';
 
 /**
- * Gets the game state for a given game.
- * @param gameId - The ID of the game to get the game state for.
- * @param gameMode - The mode of the game to get the game state for.
- * @param gameStorage - The game storage to use.
- * @returns The game state.
+ * Loads a game and returns its state, which is authoritative: the server's
+ * record of play, before any projection for a viewer.
+ *
+ * @param gameId - The ID of the game
+ * @param gameMode - The mode the game must be in
+ * @param gameStorage - The storage to load it from
+ * @returns The game state, or the reason the game could not be loaded
  */
 export async function getGameState(
   gameId: string,
   gameMode: GameModeName,
   gameStorage: GameStorage,
-): Promise<GameState | undefined> {
-  const game: Game | undefined = await getGame(gameId, gameMode, gameStorage);
-  if (!game) {
-    return undefined;
+): Promise<PortResponse<GameStateForVisibility<'authoritative'>>> {
+  const game = await getGame(gameId, gameMode, gameStorage);
+  if (!game.result) {
+    return game;
   }
-
-  return game.gameState;
+  const state = { data: game.data.gameState, result: true as const };
+  return state;
 }

@@ -1,6 +1,6 @@
 import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
-import type { Game } from '@game';
+import type { GameState } from '@game';
 import type { EnginePorts, PortResponse } from './ports';
 import type { GameRunner } from './ports/gameRunner';
 import { advanceUntilPlayerChoice as advanceUntilPlayerChoiceFunction } from './useCases/advanceUntilPlayerChoice';
@@ -34,7 +34,7 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
     gameId: string,
     gameMode: GameModeName,
     playerSide: PlayerSide,
-  ): Promise<PortResponse<Game>> =>
+  ): Promise<PortResponse<GameState>> =>
     requestGameStateSnapshotFunction(gameId, gameMode, playerSide, ports);
 
   return {

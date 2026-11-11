@@ -1,13 +1,7 @@
 import type { Army, Board, GameModeName } from '@entities';
-import type { Game, GameForVisibility } from '@game';
+import type { Game } from '@game';
 
-import {
-  authoritativeGameSchema,
-  blackSeenGameSchema,
-  gameSchema,
-  spectatorGameSchema,
-  whiteSeenGameSchema,
-} from '@game';
+import { gameSchema } from '@game';
 import type { z } from 'zod';
 import { refineBoardLayout } from '../board/refineBoardLayout';
 import { refineGameArmyComposition } from './refineGameArmyComposition';
@@ -41,26 +35,6 @@ export function refineGameRules(
   refineGameArmyComposition(game, ctx);
 }
 
-/** Authoritative {@link Game} schema including the game rules. */
-export const legalAuthoritativeGameSchema: z.ZodType<
-  GameForVisibility<'authoritative'>
-> = authoritativeGameSchema.superRefine(refineGameRules);
-
-/** White-seen {@link Game} schema including the game rules. */
-export const legalWhiteSeenGameSchema: z.ZodType<
-  GameForVisibility<'whiteSeen'>
-> = whiteSeenGameSchema.superRefine(refineGameRules);
-
-/** Black-seen {@link Game} schema including the game rules. */
-export const legalBlackSeenGameSchema: z.ZodType<
-  GameForVisibility<'blackSeen'>
-> = blackSeenGameSchema.superRefine(refineGameRules);
-
-/** Spectator {@link Game} schema including the game rules. */
-export const legalSpectatorGameSchema: z.ZodType<
-  GameForVisibility<'spectator'>
-> = spectatorGameSchema.superRefine(refineGameRules);
-
-/** Any-visibility {@link Game} schema including the game rules. */
+/** {@link Game} schema including the game rules. */
 export const legalGameSchema: z.ZodType<Game> =
   gameSchema.superRefine(refineGameRules);

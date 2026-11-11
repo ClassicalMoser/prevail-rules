@@ -5,7 +5,7 @@ import { createOwnedCardState } from './createOwnedCardState';
  * An authoritative card state from up to two players' piles, black first.
  *
  * Authoritative because that is the state an engine creates. A seat's view or a
- * spectator's is derived from it by `projectGameForVisibility`, never built:
+ * spectator's is derived from it by `projectGameStateForVisibility`, never built:
  * `HiddenCardState.inHand` holds the `'hidden'` sentinel, so an empty hidden
  * hand could not be told from an empty owned one anyway.
  *

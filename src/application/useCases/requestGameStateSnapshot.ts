@@ -1,9 +1,8 @@
 import type { GameModeName, PlayerSide } from '@entities';
-import type { Game, GameForVisibility, GameStateVisibility } from '@game';
-import { isAuthoritativeGameState } from '@queries';
+import type { GameState, GameStateVisibility } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { getGame } from '@application/composable';
-import { projectGameForVisibility } from '@transforms';
+import { projectGameStateForVisibility } from '@transforms';
 
 /**
  * Maps a reconcile viewer to the card visibility they are allowed to read.
@@ -36,8 +35,9 @@ function visibilityForViewer(
 }
 
 /**
- * Loads the current authoritative game and returns a projected snapshot
- * for client reconcile (refresh / missed updates / broken local view).
+ * Loads the current authoritative game and returns its state projected for
+ * one viewer, for client reconcile (refresh / missed updates / broken local
+ * view). A client gets the game state it may see, not the server's game record.
  *
  * Board units are never redacted. A seat hides the opponent card slice.
  * A spectator hides both hands and both awaiting-play cards.
@@ -47,25 +47,17 @@ export async function requestGameStateSnapshot(
   gameMode: GameModeName,
   viewer: PlayerSide | 'spectator',
   ports: EnginePorts,
-): Promise<PortResponse<Game>> {
+): Promise<PortResponse<GameState>> {
   const game = await getGame(gameId, gameMode, ports.gameStorage);
-  if (!game) {
-    return {
-      errorReason: 'Game not found',
-      result: false,
-    };
+  if (!game.result) {
+    return game;
   }
 
-  if (!isAuthoritativeGameState(game.gameState)) {
-    return {
-      errorReason: 'Engine requires authoritative game state',
-      result: false,
-    };
-  }
-
-  const authoritative = game as GameForVisibility<'authoritative'>;
   const visibility = visibilityForViewer(viewer);
-  const projected = projectGameForVisibility(authoritative, visibility);
+  const projected = projectGameStateForVisibility(
+    game.data.gameState,
+    visibility,
+  );
 
   return {
     data: projected,

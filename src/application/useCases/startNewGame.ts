@@ -1,6 +1,6 @@
 import { gameModes } from '@entities';
 import type { Army, GameModeName } from '@entities';
-import type { GameForVisibility, GameState } from '@game';
+import type { Game, GameState } from '@game';
 import type {
   EnginePorts,
   GameStateChange,
@@ -61,7 +61,7 @@ export const startNewGame = async (
     );
   }
 
-  const game: GameForVisibility<'authoritative'> = {
+  const game: Game = {
     blackArmy: placeholderArmy(),
     blackPlayer: placeholderId,
     gameMode,

@@ -1,8 +1,11 @@
-import { tempCommandCards } from '@sampleValues';
+import {
+  blackMiniStarterArmy,
+  tempCommandCards,
+  whiteMiniStarterArmy,
+} from '@sampleValues';
 import type { EnginePorts } from '@application/ports';
 import { defaultRandom } from '@utils';
-import type { Army } from '@entities';
-import type { GameForVisibility } from '@game';
+import type { Game, GameStateForVisibility } from '@game';
 import { createUnitWithPlacement } from '@testing';
 
 import { createEmptyGameState } from '@factories';
@@ -10,29 +13,26 @@ import { addUnitToBoard, updateBoardState } from '@transforms';
 
 import { requestGameStateSnapshot } from './requestGameStateSnapshot';
 
-const gameId = 'game-snapshot-1';
-const placeholderArmy: Army = {
-  commandCards: [],
-  id: '00000000-0000-0000-0000-000000000000',
-  name: 'Placeholder',
-  units: [],
-};
+// Stored games are read as legal games, so every id is a UUID.
+const gameId = '11111111-1111-4111-8111-111111111111';
 
-function authoritativeGame(): GameForVisibility<'authoritative'> {
+function authoritativeGame(): Game {
   const unit = createUnitWithPlacement({
     coordinate: 'E-5',
     facing: 'north',
     playerSide: 'white',
   });
-  let gameState = createEmptyGameState('standard');
+  // A legal mini game: its armies keep mini's army rules, as a stored game
+  // must to be loaded at all.
+  let gameState = createEmptyGameState('mini');
   gameState = updateBoardState(
     gameState,
     addUnitToBoard(gameState.boardState, unit),
   );
   return {
-    blackArmy: placeholderArmy,
-    blackPlayer: 'black-user',
-    gameMode: 'standard',
+    blackArmy: blackMiniStarterArmy,
+    blackPlayer: '22222222-2222-4222-8222-222222222222',
+    gameMode: 'mini',
     gameState: {
       ...gameState,
       cardState: {
@@ -56,8 +56,8 @@ function authoritativeGame(): GameForVisibility<'authoritative'> {
       },
     },
     id: gameId,
-    whiteArmy: placeholderArmy,
-    whitePlayer: 'white-user',
+    whiteArmy: whiteMiniStarterArmy,
+    whitePlayer: '33333333-3333-4333-8333-333333333333',
   };
 }
 
@@ -87,8 +87,8 @@ function createPorts(
 }
 
 function projectAsBlackSeen(
-  game: GameForVisibility<'authoritative'>,
-): GameForVisibility<'blackSeen'>['gameState']['cardState'] {
+  game: Game,
+): GameStateForVisibility<'blackSeen'>['cardState'] {
   return {
     black: game.gameState.cardState.black,
     visibility: 'blackSeen',
@@ -115,7 +115,7 @@ describe('requestGameStateSnapshot function', () => {
 
     const result = await requestGameStateSnapshot(
       gameId,
-      'standard',
+      'mini',
       'black',
       ports,
     );
@@ -124,16 +124,14 @@ describe('requestGameStateSnapshot function', () => {
     if (!result.result) {
       throw new Error('expected success');
     }
-    expect(result.data.gameState.cardState.visibility).toBe('blackSeen');
-    expect(result.data.gameState.cardState.black.inHand).toStrictEqual([
+    expect(result.data.cardState.visibility).toBe('blackSeen');
+    expect(result.data.cardState.black.inHand).toStrictEqual([
       tempCommandCards[0],
     ]);
-    expect(result.data.gameState.cardState.white.inHand).toStrictEqual([
-      'hidden',
-    ]);
-    expect(
-      result.data.gameState.boardState.board['E-5']?.unitPresence,
-    ).toStrictEqual(game.gameState.boardState.board['E-5']?.unitPresence);
+    expect(result.data.cardState.white.inHand).toStrictEqual(['hidden']);
+    expect(result.data.boardState.board['E-5']?.unitPresence).toStrictEqual(
+      game.gameState.boardState.board['E-5']?.unitPresence,
+    );
   });
 
   it('returns a spectator projection with both hands hidden and units on the board', async () => {
@@ -144,7 +142,7 @@ describe('requestGameStateSnapshot function', () => {
 
     const result = await requestGameStateSnapshot(
       gameId,
-      'standard',
+      'mini',
       'spectator',
       ports,
     );
@@ -153,30 +151,29 @@ describe('requestGameStateSnapshot function', () => {
     if (!result.result) {
       throw new Error('expected success');
     }
-    expect(result.data.gameState.cardState.visibility).toBe('spectator');
-    expect(result.data.gameState.cardState.black.inHand).toStrictEqual([
-      'hidden',
-    ]);
-    expect(result.data.gameState.cardState.white.inHand).toStrictEqual([
-      'hidden',
-    ]);
-    expect(
-      result.data.gameState.boardState.board['E-5']?.unitPresence,
-    ).toStrictEqual(game.gameState.boardState.board['E-5']?.unitPresence);
+    expect(result.data.cardState.visibility).toBe('spectator');
+    expect(result.data.cardState.black.inHand).toStrictEqual(['hidden']);
+    expect(result.data.cardState.white.inHand).toStrictEqual(['hidden']);
+    expect(result.data.boardState.board['E-5']?.unitPresence).toStrictEqual(
+      game.gameState.boardState.board['E-5']?.unitPresence,
+    );
   });
 
   it('returns failure when the game is missing', async () => {
-    const ports = createPorts(vi.fn().mockResolvedValue(null));
+    // Storage has no game under this id.
+    const ports = createPorts(vi.fn().mockResolvedValue(undefined));
 
     await expect(
-      requestGameStateSnapshot(gameId, 'standard', 'white', ports),
+      requestGameStateSnapshot(gameId, 'mini', 'white', ports),
     ).resolves.toStrictEqual({
-      errorReason: 'Game not found',
+      errorReason: `Game ${gameId} not found`,
       result: false,
     });
   });
 
-  it('returns failure when stored game is not authoritative', async () => {
+  it('refuses a stored game that holds a seat’s view, naming why', async () => {
+    // The server only ever stores its own record; a game whose cards are a
+    // seat's view is not a legal game, and is refused when it is loaded.
     const game = authoritativeGame();
     const nonAuthoritative = {
       ...game,
@@ -194,9 +191,9 @@ describe('requestGameStateSnapshot function', () => {
     );
 
     await expect(
-      requestGameStateSnapshot(gameId, 'standard', 'black', ports),
+      requestGameStateSnapshot(gameId, 'mini', 'black', ports),
     ).resolves.toStrictEqual({
-      errorReason: 'Engine requires authoritative game state',
+      errorReason: expect.stringContaining('gameState.cardState.visibility'),
       result: false,
     });
   });

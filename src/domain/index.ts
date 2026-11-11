@@ -18,15 +18,11 @@ export {
   legalArmySchema,
   refineArmyComposition,
   refineArmyRules,
-  legalAuthoritativeGameSchema,
-  legalBlackSeenGameSchema,
   legalGameSchema,
   refineBoardLayout,
   refineGameArmyComposition,
   refineGameModeBoardSize,
   refineGameRules,
-  legalSpectatorGameSchema,
-  legalWhiteSeenGameSchema,
 } from '@legality';
 export type { ArmyCompositionRules } from '@legality';
 export {
@@ -302,20 +298,13 @@ export type {
   ProjectedPlayerChoiceEvent,
   SetupUnitsEvent,
 } from '@events';
-export {
-  authoritativeGameSchema,
-  blackSeenGameSchema,
-  gameSchema,
-  spectatorGameSchema,
-  whiteSeenGameSchema,
-} from '@game';
+export { gameSchema } from '@game';
 export type {
   AuthoritativeCardState,
   BlackSeenCardState,
   CardState,
   CardStateForVisibility,
   Game,
-  GameForVisibility,
   GameState,
   GameStateForVisibility,
   GameStateVisibility,
@@ -643,7 +632,7 @@ export {
   moveBothInPlayToPlayed,
   moveCardToPlayed,
   projectEventForVisibility,
-  projectGameForVisibility,
+  projectGameStateForVisibility,
   removeCommanderFromBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,

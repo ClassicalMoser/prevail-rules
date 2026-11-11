@@ -8,14 +8,10 @@ export {
   refineArmyRules,
 } from './army';
 export {
-  legalAuthoritativeGameSchema,
-  legalBlackSeenGameSchema,
   legalGameSchema,
   refineGameArmyComposition,
   refineGameModeBoardSize,
   refineGameRules,
-  legalSpectatorGameSchema,
-  legalWhiteSeenGameSchema,
 } from './game';
 export { refineBoardLayout } from './board';
 export {

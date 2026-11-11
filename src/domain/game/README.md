@@ -4,12 +4,12 @@ Composed domain models for a running game. Import as `@game`.
 
 Same declaration-only role as `@entities` (schemas, interfaces, types), but these depend on entity primitives and assemble the sequencing tree. Follow the schema-first pattern in [`../entities/README.md`](../entities/README.md).
 
-Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) lives on `CardState` and is threaded on `Game` / `GameState`. `spectator` hides both hands. Board size stays on `boardState.boardType`. Mode army composition is validated in `@legality`, not here.
+Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) lives on `CardState` and is threaded on `GameState`. A `Game` is the server's authoritative record; what a seat or a spectator receives is its game state projected for them, not a game. `spectator` hides both hands. Board size stays on `boardState.boardType`. Mode army composition is validated in `@legality`, not here.
 
 ## Outline
 
 ```
-Game / GameForVisibility
+Game (authoritative)
   └─ GameState / GameStateForVisibility
        ├─ boardState, cardState, reserved/routed units, …
        └─ RoundState
@@ -20,15 +20,15 @@ Game / GameForVisibility
 
 ## Modules
 
-| Module        | Role                                                                                                                          |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `game/`       | Full game record by visibility. Shape only; the game rules, including mode ↔ board size, are `refineGameRules` in `@legality` |
-| `gameState/`  | Runtime state by visibility, plus ownership helper types                                                                      |
-| `cardState/`  | Owned/hidden piles and visibility `CardState` union                                                                           |
-| `roundState/` | Current round slice (phase + event stream)                                                                                    |
-| `phases/`     | Phase/step state in play order                                                                                                |
-| `substeps/`   | Nested resolution states (see [`substeps/README.md`](./substeps/README.md))                                                   |
-| `commitment/` | Pending / completed / declined commitments (discriminated on `commitmentType`)                                                |
+| Module        | Role                                                                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `game/`       | The server's game record, authoritative. Shape only; the game rules, including mode ↔ board size, are `refineGameRules` in `@legality` |
+| `gameState/`  | Runtime state by visibility, plus ownership helper types                                                                               |
+| `cardState/`  | Owned/hidden piles and visibility `CardState` union                                                                                    |
+| `roundState/` | Current round slice (phase + event stream)                                                                                             |
+| `phases/`     | Phase/step state in play order                                                                                                         |
+| `substeps/`   | Nested resolution states (see [`substeps/README.md`](./substeps/README.md))                                                            |
+| `commitment/` | Pending / completed / declined commitments (discriminated on `commitmentType`)                                                         |
 
 ### `phases/`
 

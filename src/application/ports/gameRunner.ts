@@ -1,6 +1,6 @@
 import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
-import type { Game } from '@game';
+import type { GameState } from '@game';
 import type { PortResponse } from './portResponse';
 
 export interface GameRunner {
@@ -28,5 +28,5 @@ export interface GameRunner {
     gameId: string,
     gameMode: GameModeName,
     playerSide: PlayerSide,
-  ) => Promise<PortResponse<Game>>;
+  ) => Promise<PortResponse<GameState>>;
 }
