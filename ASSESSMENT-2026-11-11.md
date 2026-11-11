@@ -282,7 +282,10 @@ Left for the author:
   `routResolutionSourceSchema`, `RoutResolutionSource`,
   `RoutResolutionSourceNonAttack` and the five `*_ROUT_RESOLUTION_SOURCE*`
   constants are gone; `closeRearEngagementWhenRouted` is replaced by
-  `settleRout`.
+  `settleRout`. `updateHiddenPlayerCardState`
+  stays gone (`updatePlayerCards` and `replaceHiddenPlayerCardState` write a
+  hidden hand). New effect `completeRangedAttack`: a shot ends with it, and
+  `completeRangedAttackCommand` ends only the order.
 
 ---
 
@@ -578,6 +581,23 @@ throw for a rout on a front engagement's retreat, and correct that spec.
 is a shape change, left for the author.)
 
 ### 7.2 `completeRangedAttackCommand` closes one shot and the whole order
+
+**Done (seventh pass, on the author's yes).** A new per-shot effect,
+`completeRangedAttack`, only clears the shot and keeps every unit still to act;
+the player's orders end when none is left. `completeRangedAttackCommand` is now
+the per-order effect: the expected engine asks for it only when a shooter is to
+be chosen and none of the units still to act has a target (or none was ordered),
+and its transform only finishes the player's orders. The legality filter and the
+permanent drop are gone, so a unit with no target at one shot is offered again
+once a later shot gives it one (§4.3.11 step 1). The failing scenario spec is
+the three-shooter order in `scenarios/shootOrder.test.ts`. The two branches in
+`getExpectedIssueCommandsPhaseEvent` that ask for `completeRangedAttackCommand`
+with the list empty stay: an order given to no unit still starts that way.
+Movement's `completeMovementCommand` still carries the same filter in its
+transform; it is unreachable there too, and left alone since the movement rule
+has no skip.
+**Event shape change:** a client that waited for `completeRangedAttackCommand`
+after a shot must wait for `completeRangedAttack`; old logs do not replay.
 
 **Verdict: design risk.** One effect, requested in four places (a finished
 shot; units remain but none has a target; an empty list at resolve start; and

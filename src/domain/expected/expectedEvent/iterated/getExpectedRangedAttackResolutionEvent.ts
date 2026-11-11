@@ -70,9 +70,10 @@ export function getExpectedRangedAttackResolutionEvent(
     return getExpectedAttackApplyEvent(resolutionState.attackApplyState);
   }
 
-  // Attack apply state is complete, ranged attack resolution should be complete
+  // The shot's result is settled: this shot is done, and the next shooter is
+  // chosen from those still to act (§4.3.11).
   return {
     actionType: 'gameEffect',
-    effectType: 'completeRangedAttackCommand',
+    effectType: 'completeRangedAttack',
   };
 }

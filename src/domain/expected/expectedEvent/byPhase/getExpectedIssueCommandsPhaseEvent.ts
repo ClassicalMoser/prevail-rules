@@ -15,9 +15,10 @@ import { getExpectedStartCommandResolutionEvent } from '../composable';
 import { getExpectedCommandResolutionEvent } from '../iterated';
 
 /**
- * When resolving a ranged command with remaining units but none that have a
- * legal target, expect `completeRangedAttackCommand` so apply can clear those
- * units and advance the step instead of stalling on `chooseShooter`.
+ * When a shooter is to be chosen and none of the units still to act has a
+ * legal target, expect `completeRangedAttackCommand`: those units are skipped
+ * (§4.3.11 step 1) and the order ends, instead of stalling on `chooseShooter`.
+ * A unit with no target now stays in the order while another may still shoot.
  */
 function getExpectedRangedResolveStart(
   state: GameState,

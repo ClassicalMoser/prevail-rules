@@ -50,6 +50,7 @@ import type {
   CompleteAttackApplyEvent,
   CompleteMeleeResolutionEvent,
   CompleteRangedAttackCommandEvent,
+  CompleteRangedAttackEvent,
   ResolveMeleeEvent,
   ResolveRangedAttackEvent,
 } from './resolveAttack';
@@ -81,6 +82,7 @@ import {
   completeAttackApplyEventSchema,
   completeMeleeResolutionEventSchema,
   completeRangedAttackCommandEventSchema,
+  completeRangedAttackEventSchema,
   resolveMeleeEventSchema,
   resolveRangedAttackEventSchema,
 } from './resolveAttack';
@@ -111,6 +113,7 @@ type GameEffectEventUnion =
   | CompletePlayCardsPhaseEvent
   | CompleteMeleeResolutionEvent
   | CompleteRangedAttackCommandEvent
+  | CompleteRangedAttackEvent
   | CompleteResolveMeleePhaseEvent
   | DiscardPlayedCardsEvent
   | GameOverEvent
@@ -151,6 +154,7 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completePlayCardsPhaseEventSchema,
   completeMeleeResolutionEventSchema,
   completeRangedAttackCommandEventSchema,
+  completeRangedAttackEventSchema,
   completeResolveMeleePhaseEventSchema,
   discardPlayedCardsEventSchema,
   gameOverEventSchema,

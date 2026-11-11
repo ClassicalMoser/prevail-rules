@@ -1,8 +1,6 @@
 import type { CompleteRangedAttackCommandEvent } from '@events';
-import type { GameState } from '@game';
 import {
   createIssueCommandsPhaseState,
-  createRangedAttackResolutionState,
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
@@ -30,34 +28,12 @@ const rangedCard = {
 };
 
 /**
- * Ranged command finished or no remaining unit can shoot: clear CRS; keep shooters or
- * advance the resolve step when nobody has a legal target.
+ * A Shoot order ends when no shooter can be chosen (§4.3.11 step 1): the units
+ * left are skipped, the player's remaining orders are finished, and the resolve
+ * step advances.
  */
 describe('applyCompleteRangedAttackCommandEvent function', () => {
-  it('given issueCommands holding ranged CRS, after effect currentCommandResolutionState is pending', () => {
-    const base = createEmptyGameState('standard');
-    const withCards = updateCardState(base, {
-      ...base.cardState,
-      black: { ...base.cardState.black, inPlay: rangedCard },
-      white: { ...base.cardState.white, inPlay: createTestCard() },
-    });
-    const ranged = createRangedAttackResolutionState(withCards);
-    const full: GameState = updatePhaseState(
-      withCards,
-      createIssueCommandsPhaseState(withCards, {
-        currentCommandResolutionState: ranged,
-      }),
-    );
-
-    const next = applyCompleteRangedAttackCommandEvent(event, full);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (phase === 'none' || phase.phase !== 'issueCommands') {
-      throw new Error('issue');
-    }
-    expect(phase.currentCommandResolutionState).toBe('pending');
-  });
-
-  it('given remaining ranged units with no legal target, clears them and advances to secondPlayerIssueCommands', () => {
+  it('ends the order of a player whose remaining units have no legal target, and advances to the second player', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -81,52 +57,13 @@ describe('applyCompleteRangedAttackCommandEvent function', () => {
     );
 
     const next = applyCompleteRangedAttackCommandEvent(event, state);
+
     const phase = next.currentRoundState.currentPhaseState;
     if (phase === 'none' || phase.phase !== 'issueCommands') {
       throw new Error('issue');
     }
+    // The unit had no target, so it is skipped, and its owner's orders are done.
     expect(phase.step).toBe('secondPlayerIssueCommands');
     expect(phase.remainingUnitsFirstPlayer).toStrictEqual([]);
-    expect(phase.currentCommandResolutionState).toBe('pending');
-  });
-
-  it('given a remaining shooter with a legal target, keeps that unit in remaining', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { range: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    let state = createEmptyGameState('standard');
-    state = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inPlay: rangedCard },
-      white: { ...state.cardState.white, inPlay: createTestCard() },
-    });
-    state = updateBoardState(
-      state,
-      addUnitToBoard(addUnitToBoard(state.boardState, attacker), defender),
-    );
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: 'pending',
-        remainingUnitsFirstPlayer: [attacker.unit],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
-
-    const next = applyCompleteRangedAttackCommandEvent(event, state);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (phase === 'none' || phase.phase !== 'issueCommands') {
-      throw new Error('issue');
-    }
-    expect(phase.step).toBe('firstPlayerResolveCommands');
-    expect(phase.remainingUnitsFirstPlayer).toStrictEqual([attacker.unit]);
   });
 });

@@ -21,6 +21,9 @@ export type { CompleteMeleeResolutionEvent } from './completeMeleeResolution';
 export { completeMeleeResolutionEventSchema } from './completeMeleeResolution';
 
 // Finish a ranged-attack command.
+export { COMPLETE_RANGED_ATTACK_EFFECT_TYPE } from './completeRangedAttack';
+export type { CompleteRangedAttackEvent } from './completeRangedAttack';
+export { completeRangedAttackEventSchema } from './completeRangedAttack';
 export { COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE } from './completeRangedAttackCommand';
 export type { CompleteRangedAttackCommandEvent } from './completeRangedAttackCommand';
 export { completeRangedAttackCommandEventSchema } from './completeRangedAttackCommand';

@@ -33,6 +33,7 @@ export {
   applyCompleteAttackApplyEvent,
   applyCompleteMeleeResolutionEvent,
   applyCompleteRangedAttackCommandEvent,
+  applyCompleteRangedAttackEvent,
   applyResolveMeleeEvent,
   applyResolveRangedAttackEvent,
 } from './resolveAttack';

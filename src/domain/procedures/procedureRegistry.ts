@@ -36,6 +36,7 @@ import {
   generateCompleteAttackApplyEvent,
   generateCompleteMeleeResolutionEvent,
   generateCompleteRangedAttackCommandEvent,
+  generateCompleteRangedAttackEvent,
   generateResolveMeleeEvent,
   generateResolveRangedAttackEvent,
 } from './resolveAttack';
@@ -81,6 +82,9 @@ export function generateEventFromProcedure(
     }
     case 'completePlayCardsPhase': {
       return generateCompletePlayCardsPhaseEvent(state);
+    }
+    case 'completeRangedAttack': {
+      return generateCompleteRangedAttackEvent();
     }
     case 'completeRangedAttackCommand': {
       return generateCompleteRangedAttackCommandEvent();

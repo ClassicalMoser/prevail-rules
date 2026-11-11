@@ -13,6 +13,7 @@ import {
   applyCompleteMovementCommandEvent,
   applyCompletePlayCardsPhaseEvent,
   applyCompleteRangedAttackCommandEvent,
+  applyCompleteRangedAttackEvent,
   applyCompleteResolveMeleePhaseEvent,
   applyCompleteUnitMovementEvent,
   applyDiscardPlayedCardsEvent,
@@ -65,6 +66,9 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'completePlayCardsPhase': {
       return applyCompletePlayCardsPhaseEvent(event, state);
+    }
+    case 'completeRangedAttack': {
+      return applyCompleteRangedAttackEvent(event, state);
     }
     case 'completeRangedAttackCommand': {
       return applyCompleteRangedAttackCommandEvent(event, state);

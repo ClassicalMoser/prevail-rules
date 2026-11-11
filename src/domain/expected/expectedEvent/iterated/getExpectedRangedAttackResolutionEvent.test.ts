@@ -165,7 +165,7 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     );
   });
 
-  it('given attack apply is complete, returns completeRangedAttackCommand', () => {
+  it('once the shot’s result is settled, expects the shot to be completed', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: {
@@ -191,7 +191,7 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
       ),
     ).toStrictEqual({
       actionType: 'gameEffect',
-      effectType: 'completeRangedAttackCommand',
+      effectType: 'completeRangedAttack',
     });
   });
 

@@ -364,4 +364,32 @@ describe('a Shoot order with several shooters', () => {
     );
     expect(offered).toStrictEqual([at('A-5').unit]);
   });
+
+  it('ends the player’s orders once every shooter with a target has shot', () => {
+    const { at, order } = threeShooters();
+    // The same order without B: only A and C are ordered.
+    const twoShooters = resolvingShootOrder(order, [
+      at('E-1').unit,
+      at('E-5').unit,
+    ]);
+
+    const afterA = shootsAndIsUndefended(twoShooters, at('E-1'), at('C-1'));
+    const afterC = shootsAndIsUndefended(
+      afterA.state,
+      at('E-5'),
+      at('C-5'),
+      attackCard,
+    );
+
+    // Nobody is left to shoot, so black's orders are done and white, the
+    // second player, is next to issue an order (§4.3).
+    if (afterC.next === 'gameOver') {
+      throw new Error('The game should not be over');
+    }
+    expect(afterC.next).toMatchObject({
+      actionType: 'playerChoice',
+      choiceType: 'issueCommand',
+      playerSource: 'white',
+    });
+  });
 });

@@ -147,6 +147,7 @@ export {
 export {
   COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
   COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
+  COMPLETE_RANGED_ATTACK_EFFECT_TYPE,
   COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
   COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
   completeAttackApplyEventSchema,
@@ -156,6 +157,7 @@ export {
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
   completeRangedAttackCommandEventSchema,
+  completeRangedAttackEventSchema,
   completeResolveMeleePhaseEventSchema,
 } from '@events';
 export {
@@ -243,6 +245,7 @@ export type {
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
   CompleteRangedAttackCommandEvent,
+  CompleteRangedAttackEvent,
   CompleteResolveMeleePhaseEvent,
   CompleteUnitMovementEvent,
   DiscardPlayedCardsEvent,

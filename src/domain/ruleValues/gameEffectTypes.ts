@@ -13,6 +13,7 @@ export const gameEffects = [
   'completeMovementCommand',
   'completePlayCardsPhase',
   'completeMeleeResolution',
+  'completeRangedAttack',
   'completeRangedAttackCommand',
   'completeResolveMeleePhase',
   'discardPlayedCards',

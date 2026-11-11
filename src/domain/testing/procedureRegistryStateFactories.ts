@@ -115,6 +115,9 @@ export const procedureRegistryStateFactories: Record<
   completeMovementCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
+  completeRangedAttack: (): AuthoritativeGameState =>
+    createEmptyGameState('standard'),
+
   completeRangedAttackCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
