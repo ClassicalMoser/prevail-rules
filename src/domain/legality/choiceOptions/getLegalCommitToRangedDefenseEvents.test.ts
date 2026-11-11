@@ -62,7 +62,6 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
     choiceType: 'commitToRangedDefense' as const,
     committedCard: null,
     eventType: 'playerChoice' as const,
-    modifierTypes: [] as const,
     player: 'white' as const,
   };
 
@@ -75,7 +74,6 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
         choiceType: 'commitToRangedDefense',
         committedCard: defenceCard,
         eventType: 'playerChoice',
-        modifierTypes: ['defense'],
         player: 'white',
       },
       refuseWhite,
@@ -92,7 +90,6 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
         choiceType: 'commitToRangedDefense',
         committedCard: flexibilityAttackCard,
         eventType: 'playerChoice',
-        modifierTypes: ['flexibility'],
         player: 'white',
       },
       refuseWhite,

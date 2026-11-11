@@ -54,13 +54,7 @@ function namedAndCommitted(committedCard: typeof rangeCard | null) {
     ready.boardState,
     'E-5',
   );
-  const waiting = readyToAimShot(
-    ready,
-    shooter,
-    committedCard === null
-      ? null
-      : { card: committedCard, modifierTypes: ['range'] },
-  );
+  const waiting = readyToAimShot(ready, shooter, committedCard);
   return waiting;
 }
 

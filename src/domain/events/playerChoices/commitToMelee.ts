@@ -31,15 +31,7 @@ export interface CommitToMeleeEvent {
    * without spending a card.
    */
   committedCard: CommandCard | null;
-  /** The modifier types the card applies (empty when refusing). */
-  modifierTypes: MeleeModifier[];
 }
-
-const meleeModifierTypesEnum: z.ZodEnum<{
-  attack: 'attack';
-  defense: 'defense';
-  flexibility: 'flexibility';
-}> = z.enum(meleeModifierTypes);
 
 const _commitToMeleeEventSchemaObject = z
   .object({
@@ -54,8 +46,6 @@ const _commitToMeleeEventSchemaObject = z
      * without spending a card.
      */
     committedCard: commandCardSchema.nullable(),
-    /** The modifier types the card applies (empty when refusing). */
-    modifierTypes: z.array(meleeModifierTypesEnum),
   })
   .strict();
 
@@ -74,5 +64,4 @@ export const commitToMeleeEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToMelee'>;
   player: typeof playerSideSchema;
   committedCard: z.ZodNullable<typeof commandCardSchema>;
-  modifierTypes: z.ZodArray<typeof meleeModifierTypesEnum>;
 }> = _commitToMeleeEventSchemaObject;

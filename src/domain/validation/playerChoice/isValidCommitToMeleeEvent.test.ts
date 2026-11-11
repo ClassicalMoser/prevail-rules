@@ -49,7 +49,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: attackCard,
-      modifierTypes: ['attack'],
       player: 'white',
     });
 
@@ -58,38 +57,25 @@ describe('isValidCommitToMeleeEvent function', () => {
     });
   });
 
-  it('accepts committing a card whichever way its stats are listed', () => {
-    // A card that gives +1 Attack and +1 Defence (§8.2) is the same card
-    // however the committing client happens to list the two stats.
+  it('accepts committing a card that names two melee stats', () => {
+    // A card giving +1 Attack and +1 Defence (§8.2) may be committed as the
+    // card it is; the event does not list its stats, so no order can matter.
     const bothStats = createTestCard({ modifiers: ['attack', 'defense'] });
     const state = stateWhitePendingCommit([bothStats]);
     const event = createCommitToMeleeEvent({
       committedCard: bothStats,
-      modifierTypes: ['defense', 'attack'],
       player: 'white',
     });
 
     expect(isValidCommitToMeleeEvent(event, state)).toStrictEqual({
       result: true,
     });
-  });
-
-  it('rejects committing with an empty modifier list', () => {
-    const state = stateWhitePendingCommit();
-    const event = createCommitToMeleeEvent({
-      committedCard: attackCard,
-      modifierTypes: [],
-      player: 'white',
-    });
-
-    expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
 
   it('rejects a card that is not in hand', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: otherCard,
-      modifierTypes: ['attack'],
       player: 'white',
     });
 
@@ -107,7 +93,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     };
     const event = createCommitToMeleeEvent({
       committedCard: { ...inflated, modifiers: [...inflated.modifiers] },
-      modifierTypes: ['attack'],
       player: 'white',
     });
 
@@ -121,7 +106,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     });
     const event = createCommitToMeleeEvent({
       committedCard: attackCard,
-      modifierTypes: ['attack'],
       player: 'white',
     });
 
@@ -132,7 +116,6 @@ describe('isValidCommitToMeleeEvent function', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
       committedCard: null,
-      modifierTypes: [],
       player: 'white',
     });
 

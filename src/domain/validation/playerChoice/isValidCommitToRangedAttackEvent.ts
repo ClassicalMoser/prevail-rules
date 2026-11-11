@@ -4,20 +4,9 @@ import type { GameState } from '@game';
 import { isSameCard, isSameCardValue } from '@queries';
 import { getLegalCommitToRangedAttackEvents } from '@legality';
 
-function sameModifierTypes(
-  a: readonly string[],
-  b: readonly string[],
-): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  return a.every((mod, index) => mod === b[index]);
-}
-
 /**
  * Validates a CommitToRangedAttackEvent by membership against
- * {@link getLegalCommitToRangedAttackEvents} (player, card id or refuse, ordered
- * modifierTypes).
+ * {@link getLegalCommitToRangedAttackEvents} (player, card id or refuse).
  */
 export function isValidCommitToRangedAttackEvent(
   event: CommitToRangedAttackEvent,
@@ -26,9 +15,6 @@ export function isValidCommitToRangedAttackEvent(
   const legalOptions = getLegalCommitToRangedAttackEvents(state);
   const legalOption = legalOptions.find((option) => {
     if (option.player !== event.player) {
-      return false;
-    }
-    if (!sameModifierTypes(option.modifierTypes, event.modifierTypes)) {
       return false;
     }
     if (option.committedCard === null || event.committedCard === null) {

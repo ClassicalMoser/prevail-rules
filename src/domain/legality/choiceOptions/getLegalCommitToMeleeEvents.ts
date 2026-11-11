@@ -43,7 +43,6 @@ function pendingCommitPlayer<S extends GameState>(
  * Returns every legal commit-to-melee event for the player whose melee
  * commitment is still pending: one event per in-hand card that has at least
  * one melee-applicable modifier, plus a refuse option (`committedCard: null`).
- * `modifierTypes` is exactly that card's melee-applicable modifiers.
  *
  * Returns `[]` when commit is not expected. When the hand is hidden, only the
  * refuse option is returned (card commits require an owned hand).
@@ -66,7 +65,6 @@ export function getLegalCommitToMeleeEvents<S extends GameState>(
   const events = offers.map((offer) =>
     createCommitToMeleeEvent({
       committedCard: offer.committedCard,
-      modifierTypes: offer.modifierTypes,
       player,
     }),
   );

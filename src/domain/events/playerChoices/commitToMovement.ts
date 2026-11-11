@@ -31,14 +31,7 @@ export interface CommitToMovementEvent {
    * without spending a card.
    */
   committedCard: CommandCard | null;
-  /** The modifier types the card applies (empty when refusing). */
-  modifierTypes: MovementModifier[];
 }
-
-const movementModifierTypesEnum: z.ZodEnum<{
-  speed: 'speed';
-  flexibility: 'flexibility';
-}> = z.enum(movementModifierTypes);
 
 const _commitToMovementEventSchemaObject = z
   .object({
@@ -53,8 +46,6 @@ const _commitToMovementEventSchemaObject = z
      * without spending a card.
      */
     committedCard: commandCardSchema.nullable(),
-    /** The modifier types the card applies (empty when refusing). */
-    modifierTypes: z.array(movementModifierTypesEnum),
   })
   .strict();
 
@@ -73,5 +64,4 @@ export const commitToMovementEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToMovement'>;
   player: typeof playerSideSchema;
   committedCard: z.ZodNullable<typeof commandCardSchema>;
-  modifierTypes: z.ZodArray<typeof movementModifierTypesEnum>;
 }> = _commitToMovementEventSchemaObject;

@@ -8,7 +8,6 @@ describe('createCommitToMeleeEvent function', () => {
 
     const event = createCommitToMeleeEvent({
       committedCard: card,
-      modifierTypes: ['attack', 'defense'],
       player: 'black',
     });
 
@@ -16,17 +15,15 @@ describe('createCommitToMeleeEvent function', () => {
       choiceType: 'commitToMelee',
       committedCard: card,
       eventType: 'playerChoice',
-      modifierTypes: ['attack', 'defense'],
       player: 'black',
     });
   });
 
-  it('carries a refusal as a null card with no modifiers', () => {
+  it('carries a refusal as a null card', () => {
     expect.hasAssertions();
 
     const event = createCommitToMeleeEvent({
       committedCard: null,
-      modifierTypes: [],
       player: 'white',
     });
 
@@ -34,7 +31,6 @@ describe('createCommitToMeleeEvent function', () => {
       choiceType: 'commitToMelee',
       committedCard: null,
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'white',
     });
   });

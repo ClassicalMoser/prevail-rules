@@ -42,13 +42,7 @@ function blackReadyToMove(): AuthoritativeGameState {
 function namedAndCommitted(committedCard: typeof speedCard | null) {
   const ready = blackReadyToMove();
   const mover = getSingleUnitWithPlacementAtCoordinate(ready.boardState, 'E-5');
-  const waiting = readyToWriteMove(
-    ready,
-    mover,
-    committedCard === null
-      ? null
-      : { card: committedCard, modifierTypes: ['speed'] },
-  );
+  const waiting = readyToWriteMove(ready, mover, committedCard);
   return waiting;
 }
 

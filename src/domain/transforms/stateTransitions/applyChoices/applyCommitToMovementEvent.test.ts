@@ -44,7 +44,6 @@ describe('applyCommitToMovementEvent function', () => {
       choiceType: 'commitToMovement',
       committedCard: tempCommandCards[0],
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'black',
     };
 
@@ -80,7 +79,6 @@ describe('applyCommitToMovementEvent function', () => {
       choiceType: 'commitToMovement',
       committedCard: tempCommandCards[0],
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'white',
     };
 
@@ -118,7 +116,6 @@ describe('applyCommitToMovementEvent function', () => {
       choiceType: 'commitToMovement',
       committedCard: null,
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'white',
     };
 
@@ -155,7 +152,6 @@ describe('applyCommitToMovementEvent function', () => {
       choiceType: 'commitToMovement',
       committedCard: card,
       eventType: 'playerChoice',
-      modifierTypes: ['speed'],
       player: 'white',
     };
 
@@ -195,7 +191,6 @@ describe('applyCommitToMovementEvent function', () => {
       choiceType: 'commitToMovement',
       committedCard: tempCommandCards[0],
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'black',
     };
 

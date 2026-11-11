@@ -47,7 +47,6 @@ describe('projectEventForVisibility function', () => {
       choiceType: 'commitToMovement' as const,
       committedCard: tempCommandCards[0],
       eventType: 'playerChoice' as const,
-      modifierTypes: ['speed' as const],
       player: 'white' as const,
     };
 

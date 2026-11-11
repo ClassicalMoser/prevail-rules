@@ -47,10 +47,7 @@ describe('getLegalShooterTargets function', () => {
       'E-5',
     );
     // Black names its unit and commits the card for Range.
-    const state = readyToAimShot(ready, shooter, {
-      card: rangeCard,
-      modifierTypes: ['range'],
-    });
+    const state = readyToAimShot(ready, shooter, rangeCard);
 
     const legal = getLegalShooterTargets(state);
 

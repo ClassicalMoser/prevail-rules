@@ -49,15 +49,7 @@ export interface CommitToRangedAttackEvent {
    * without spending a card.
    */
   committedCard: CommandCard | null;
-  /** The modifier types the card applies (empty when refusing). */
-  modifierTypes: RangedAttackModifier[];
 }
-
-const rangedAttackModifierTypesEnum: z.ZodEnum<{
-  range: 'range';
-  attack: 'attack';
-  flexibility: 'flexibility';
-}> = z.enum(rangedAttackModifierTypes);
 
 const _commitToRangedAttackEventSchemaObject = z
   .object({
@@ -72,8 +64,6 @@ const _commitToRangedAttackEventSchemaObject = z
      * without spending a card.
      */
     committedCard: commandCardSchema.nullable(),
-    /** The modifier types the card applies (empty when refusing). */
-    modifierTypes: z.array(rangedAttackModifierTypesEnum),
   })
   .strict();
 
@@ -92,5 +82,4 @@ export const commitToRangedAttackEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToRangedAttack'>;
   player: typeof playerSideSchema;
   committedCard: z.ZodNullable<typeof commandCardSchema>;
-  modifierTypes: z.ZodArray<typeof rangedAttackModifierTypesEnum>;
 }> = _commitToRangedAttackEventSchemaObject;

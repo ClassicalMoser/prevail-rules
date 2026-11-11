@@ -45,8 +45,7 @@ function pendingTargetOwner<S extends GameState>(
 /**
  * Returns every legal commit-to-ranged-defense event for the owner of a
  * shot's target (§4.3.11): one event per card in hand naming Defence or
- * Flexibility, with exactly those of its stats (§8.4), plus a refuse option
- * (`committedCard: null`).
+ * Flexibility (§8.4), plus a refuse option (`committedCard: null`).
  *
  * Returns `[]` when the target's commitment is not expected. When the hand
  * is hidden, only the refuse option is returned (card commits require an
@@ -71,7 +70,6 @@ export function getLegalCommitToRangedDefenseEvents<S extends GameState>(
   const events = offers.map((offer) =>
     createCommitToRangedDefenseEvent({
       committedCard: offer.committedCard,
-      modifierTypes: offer.modifierTypes,
       player,
     }),
   );

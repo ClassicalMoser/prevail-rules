@@ -162,7 +162,6 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     state = applyEvent(
       createCommitToMovementEvent({
         committedCard: null,
-        modifierTypes: [],
         player: 'black',
       }),
       state,

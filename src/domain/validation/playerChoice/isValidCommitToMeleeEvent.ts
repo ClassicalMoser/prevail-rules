@@ -4,20 +4,9 @@ import type { GameState } from '@game';
 import { isSameCard, isSameCardValue } from '@queries';
 import { getLegalCommitToMeleeEvents } from '@legality';
 
-function sameModifierTypes(
-  a: readonly string[],
-  b: readonly string[],
-): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  return a.every((mod, index) => mod === b[index]);
-}
-
 /**
  * Validates a CommitToMeleeEvent by membership against
- * {@link getLegalCommitToMeleeEvents} (player, card id or refuse, ordered
- * modifierTypes).
+ * {@link getLegalCommitToMeleeEvents} (player, card id or refuse).
  */
 export function isValidCommitToMeleeEvent(
   event: CommitToMeleeEvent,
@@ -26,9 +15,6 @@ export function isValidCommitToMeleeEvent(
   const legalOptions = getLegalCommitToMeleeEvents(state);
   const legalOption = legalOptions.find((option) => {
     if (option.player !== event.player) {
-      return false;
-    }
-    if (!sameModifierTypes(option.modifierTypes, event.modifierTypes)) {
       return false;
     }
     if (option.committedCard === null || event.committedCard === null) {

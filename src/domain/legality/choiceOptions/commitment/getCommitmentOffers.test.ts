@@ -23,8 +23,8 @@ describe('getCommitmentOffers function', () => {
     expect(
       getCommitmentOffers(state.cardState, 'white', meleeStats),
     ).toStrictEqual([
-      { committedCard: speedAndAttack, modifierTypes: ['attack'] },
-      { committedCard: null, modifierTypes: [] },
+      { committedCard: speedAndAttack },
+      { committedCard: null },
     ]);
   });
 
@@ -46,7 +46,7 @@ describe('getCommitmentOffers function', () => {
     };
 
     expect(getCommitmentOffers(whiteSeen, 'black', meleeStats)).toStrictEqual([
-      { committedCard: null, modifierTypes: [] },
+      { committedCard: null },
     ]);
   });
 });

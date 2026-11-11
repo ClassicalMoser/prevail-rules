@@ -54,7 +54,6 @@ describe('applyCommitToRangedDefenseEvent function', () => {
     const committed = applyCommitToRangedDefenseEvent(
       createCommitToRangedDefenseEvent({
         committedCard: defenceCard,
-        modifierTypes: ['defense'],
         player: 'white',
       }),
       state,
@@ -77,7 +76,6 @@ describe('applyCommitToRangedDefenseEvent function', () => {
     const refused = applyCommitToRangedDefenseEvent(
       createCommitToRangedDefenseEvent({
         committedCard: null,
-        modifierTypes: [],
         player: 'white',
       }),
       state,

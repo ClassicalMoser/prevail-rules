@@ -64,7 +64,6 @@ describe('a front engagement on a faster defender', () => {
     const declined = applyEvent(
       createCommitToMovementEvent({
         committedCard: null,
-        modifierTypes: [],
         player: 'white',
       }),
       engaging,

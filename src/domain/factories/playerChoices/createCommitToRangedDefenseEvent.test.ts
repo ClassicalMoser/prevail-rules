@@ -9,7 +9,6 @@ describe('createCommitToRangedDefenseEvent function', () => {
 
     const event = createCommitToRangedDefenseEvent({
       committedCard,
-      modifierTypes: ['defense'],
       player: 'white',
     });
 
@@ -17,7 +16,6 @@ describe('createCommitToRangedDefenseEvent function', () => {
       choiceType: 'commitToRangedDefense',
       committedCard,
       eventType: 'playerChoice',
-      modifierTypes: ['defense'],
       player: 'white',
     });
   });

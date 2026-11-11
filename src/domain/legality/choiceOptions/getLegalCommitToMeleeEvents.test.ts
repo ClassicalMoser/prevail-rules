@@ -12,8 +12,7 @@ import { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
 import { createEmptyGameState } from '@factories';
 /**
  * GetLegalCommitToMeleeEvents: one CommitToMeleeEvent per eligible in-hand card
- * (has ≥1 melee modifier), plus a refuse option; modifierTypes are all of that
- * card's melee modifiers.
+ * (has ≥1 melee modifier), plus a refuse option.
  */
 describe('getLegalCommitToMeleeEvents function', () => {
   /** Eligible: carries a melee-applicable attack modifier. */
@@ -52,14 +51,12 @@ describe('getLegalCommitToMeleeEvents function', () => {
         choiceType: 'commitToMelee',
         committedCard: attackCard,
         eventType: 'playerChoice',
-        modifierTypes: ['attack'],
         player: 'white',
       },
       {
         choiceType: 'commitToMelee',
         committedCard: null,
         eventType: 'playerChoice',
-        modifierTypes: [],
         player: 'white',
       },
     ]);
@@ -80,7 +77,6 @@ describe('getLegalCommitToMeleeEvents function', () => {
         choiceType: 'commitToMelee',
         committedCard: null,
         eventType: 'playerChoice',
-        modifierTypes: [],
         player: 'white',
       },
     ]);

@@ -36,7 +36,6 @@ describe('applyCommitToMeleeEvent function', () => {
       choiceType: 'commitToMelee',
       committedCard: tempCommandCards[0],
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'white',
     };
 
@@ -72,7 +71,6 @@ describe('applyCommitToMeleeEvent function', () => {
       choiceType: 'commitToMelee',
       committedCard: tempCommandCards[0],
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'black',
     };
 
@@ -105,7 +103,6 @@ describe('applyCommitToMeleeEvent function', () => {
       choiceType: 'commitToMelee',
       committedCard: null,
       eventType: 'playerChoice',
-      modifierTypes: [],
       player: 'white',
     };
 

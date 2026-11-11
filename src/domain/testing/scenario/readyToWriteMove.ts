@@ -1,5 +1,4 @@
 import type { CommandCard, UnitWithPlacement } from '@entities';
-import type { MovementModifier } from '@events';
 import type { AuthoritativeGameState } from '@game';
 import {
   createChooseMovingUnitEvent,
@@ -16,13 +15,13 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  *
  * @param state - A game waiting for the player to name the unit to move
  * @param unit - The unit to move, standing where the board has it
- * @param commitment - The card committed and what it adds, or `null` to decline
+ * @param commitment - The card committed, or `null` to decline
  * @returns The game waiting for the `moveUnit`
  */
 export function readyToWriteMove(
   state: AuthoritativeGameState,
   unit: UnitWithPlacement,
-  commitment: { card: CommandCard; modifierTypes: MovementModifier[] } | null,
+  commitment: CommandCard | null,
 ): AuthoritativeGameState {
   const player = unit.unit.playerSide;
 
@@ -48,8 +47,7 @@ export function readyToWriteMove(
   const committed = applyEffectsUntilChoice(
     applyEvent(
       createCommitToMovementEvent({
-        committedCard: commitment?.card ?? null,
-        modifierTypes: commitment?.modifierTypes ?? [],
+        committedCard: commitment,
         player,
       }),
       named.state,

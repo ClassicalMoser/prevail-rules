@@ -18,8 +18,7 @@ const attackCard = createTestCard({ modifiers: ['attack'] });
 
 /**
  * GetLegalCommitToMovementEvents: one CommitToMovementEvent per eligible
- * in-hand card (has ≥1 movement modifier); modifierTypes are all of that
- * card's movement modifiers.
+ * in-hand card (has ≥1 movement modifier).
  */
 describe('getLegalCommitToMovementEvents function', () => {
   function stateBlackPendingMovementCommit(hand = [speedCard]) {
@@ -48,7 +47,6 @@ describe('getLegalCommitToMovementEvents function', () => {
     choiceType: 'commitToMovement' as const,
     committedCard: null,
     eventType: 'playerChoice' as const,
-    modifierTypes: [] as const,
     player: 'black' as const,
   };
 
@@ -60,7 +58,6 @@ describe('getLegalCommitToMovementEvents function', () => {
         choiceType: 'commitToMovement',
         committedCard: speedCard,
         eventType: 'playerChoice',
-        modifierTypes: ['speed'],
         player: 'black',
       },
       refuseBlack,
@@ -75,7 +72,6 @@ describe('getLegalCommitToMovementEvents function', () => {
         choiceType: 'commitToMovement',
         committedCard: speedCard,
         eventType: 'playerChoice',
-        modifierTypes: ['speed'],
         player: 'black',
       },
       refuseBlack,
@@ -108,14 +104,12 @@ describe('getLegalCommitToMovementEvents function', () => {
         choiceType: 'commitToMovement',
         committedCard: speedCard,
         eventType: 'playerChoice',
-        modifierTypes: ['speed'],
         player: 'white',
       },
       {
         choiceType: 'commitToMovement',
         committedCard: null,
         eventType: 'playerChoice',
-        modifierTypes: [],
         player: 'white',
       },
     ]);

@@ -14,8 +14,7 @@ import { createCommitToMovementEvent, createEmptyGameState } from '@factories';
 /** Eligible: carries a movement-applicable speed modifier. */
 const speedCard = createTestCard({ modifiers: ['speed'] });
 /**
- * Not the hand card. A fresh id keeps membership from matching it even when
- * the event copies the hand card's legal modifierTypes.
+ * Not the hand card. A fresh id keeps membership from matching it.
  */
 const otherCard = createTestCard({ modifiers: ['attack'] });
 
@@ -49,7 +48,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: speedCard,
-      modifierTypes: ['speed'],
       player: 'black',
     });
 
@@ -64,7 +62,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: { ...speedCard, modifiers: ['speed', 'speed'] },
-      modifierTypes: ['speed'],
       player: 'black',
     });
 
@@ -78,7 +75,6 @@ describe('isValidCommitToMovementEvent function', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: null,
-      modifierTypes: [],
       player: 'black',
     });
 
@@ -87,22 +83,10 @@ describe('isValidCommitToMovementEvent function', () => {
     });
   });
 
-  it('rejects committing with an empty modifier list', () => {
-    const state = stateBlackPendingCommit();
-    const event = createCommitToMovementEvent({
-      committedCard: speedCard,
-      modifierTypes: [],
-      player: 'black',
-    });
-
-    expect(isValidCommitToMovementEvent(event, state).result).toBe(false);
-  });
-
   it('rejects a card that is not in hand', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
       committedCard: otherCard,
-      modifierTypes: ['speed'],
       player: 'black',
     });
 
@@ -116,7 +100,6 @@ describe('isValidCommitToMovementEvent function', () => {
     });
     const event = createCommitToMovementEvent({
       committedCard: speedCard,
-      modifierTypes: ['speed'],
       player: 'black',
     });
 

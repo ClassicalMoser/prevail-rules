@@ -51,7 +51,6 @@ function pendingCommitPlayer<S extends GameState>(
  * (or front-engagement defensive) commitment is still pending: one event per
  * in-hand card that has at least one movement-applicable modifier, plus a
  * refuse option (`committedCard: null`).
- * `modifierTypes` is exactly that card's movement-applicable modifiers.
  *
  * Returns `[]` when commit is not expected. When the hand is hidden, only the
  * refuse option is returned (card commits require an owned hand).
@@ -74,7 +73,6 @@ export function getLegalCommitToMovementEvents<S extends GameState>(
   const events = offers.map((offer) =>
     createCommitToMovementEvent({
       committedCard: offer.committedCard,
-      modifierTypes: offer.modifierTypes,
       player,
     }),
   );

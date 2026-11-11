@@ -50,7 +50,6 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
       committedCard: attackCard,
-      modifierTypes: ['attack'],
       player: 'black',
     });
 
@@ -65,7 +64,6 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
       committedCard: { ...attackCard, modifiers: ['attack', 'attack'] },
-      modifierTypes: ['attack'],
       player: 'black',
     });
 
@@ -75,22 +73,10 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     });
   });
 
-  it('rejects committing with an empty modifier list', () => {
-    const state = stateBlackPendingAttackerCommit();
-    const event = createCommitToRangedAttackEvent({
-      committedCard: attackCard,
-      modifierTypes: [],
-      player: 'black',
-    });
-
-    expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
-  });
-
   it('rejects a card that is not in hand', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
       committedCard: otherCard,
-      modifierTypes: ['attack'],
       player: 'black',
     });
 
@@ -104,7 +90,6 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     });
     const event = createCommitToRangedAttackEvent({
       committedCard: attackCard,
-      modifierTypes: ['attack'],
       player: 'black',
     });
 
@@ -115,7 +100,6 @@ describe('isValidCommitToRangedAttackEvent function', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
       committedCard: null,
-      modifierTypes: [],
       player: 'black',
     });
 

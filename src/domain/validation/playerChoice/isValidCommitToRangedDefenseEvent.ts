@@ -7,26 +7,16 @@ import { getLegalCommitToRangedDefenseEvents } from '@legality';
 /**
  * Validates a CommitToRangedDefenseEvent by membership against
  * {@link getLegalCommitToRangedDefenseEvents}: the target's owner commits a
- * card from hand that names Defence or Flexibility, with exactly those of
- * its stats as its modifiers, or refuses (§4.3.11 step 5).
+ * card from hand that names Defence or Flexibility, or refuses (§4.3.11 step 5).
  */
 export function isValidCommitToRangedDefenseEvent(
   event: CommitToRangedDefenseEvent,
   state: GameState,
 ): ValidationResult {
   const legalOptions = getLegalCommitToRangedDefenseEvents(state);
-  // The same player, the same card (or the same refusal), and the same
-  // stats taken from it.
+  // The same player, and the same card (or the same refusal).
   const legalOption = legalOptions.find((option) => {
     if (option.player !== event.player) {
-      return false;
-    }
-    const sameModifiers =
-      option.modifierTypes.length === event.modifierTypes.length &&
-      option.modifierTypes.every(
-        (modifier, index) => modifier === event.modifierTypes[index],
-      );
-    if (!sameModifiers) {
       return false;
     }
     if (option.committedCard === null || event.committedCard === null) {

@@ -2,39 +2,33 @@ import type { CommandCard, PlayerSide, StatModifier } from '@entities';
 import type { CardState } from '@game';
 import { findOwnedPlayerCardState } from '@queries';
 
-/** One commitment a player may make: a card and the stats it applies, or a refusal. */
-export interface CommitmentOffer<M extends StatModifier> {
+/** One commitment a player may make: a card from hand, or a refusal. */
+export interface CommitmentOffer {
   /** The card committed, or `null` to refuse without spending one. */
   committedCard: CommandCard | null;
-  /** The card's stats that count here; empty for a refusal. */
-  modifierTypes: M[];
 }
 
 /**
- * The stats on a card that count for this commitment, in the card's order.
+ * Whether a card names a stat this commitment applies (§8.4): a card naming
+ * none of them is no use here.
  *
  * @param card - A card in the committing player's hand
  * @param accepted - The stats this commitment may apply
- * @returns The card's stats among them
+ * @returns True when the card names at least one of them
  */
-function acceptedModifiersOnCard<M extends StatModifier>(
+function namesAnAcceptedStat<M extends StatModifier>(
   card: CommandCard,
   accepted: readonly M[],
-): M[] {
-  const kept: M[] = [];
-  for (const modifier of card.modifiers) {
-    const match = accepted.find((stat) => stat === modifier);
-    if (match !== undefined) {
-      kept.push(match);
-    }
-  }
-  return kept;
+): boolean {
+  const names = card.modifiers.some((modifier) =>
+    accepted.some((stat) => stat === modifier),
+  );
+  return names;
 }
 
 /**
  * Every commitment a player may make when asked to commit a card (§8): each
- * card in hand naming a stat this commitment applies, with exactly those of
- * its stats (§8.4), and the refusal, which is always open (§8.3). A card
+ * card in hand naming a stat this commitment applies (§8.4), and the refusal, which is always open (§8.3). A card
  * naming none of them is no use here and is not offered.
  *
  * A seat that cannot see this hand can still refuse; only the hand's owner
@@ -49,17 +43,16 @@ export function getCommitmentOffers<M extends StatModifier>(
   cardState: CardState,
   player: PlayerSide,
   accepted: readonly M[],
-): CommitmentOffer<M>[] {
+): CommitmentOffer[] {
   const hand = findOwnedPlayerCardState(cardState, player)?.inHand ?? [];
 
-  const offers: CommitmentOffer<M>[] = [];
+  const offers: CommitmentOffer[] = [];
   for (const committedCard of hand) {
-    const modifierTypes = acceptedModifiersOnCard(committedCard, accepted);
-    if (modifierTypes.length > 0) {
-      offers.push({ committedCard, modifierTypes });
+    if (namesAnAcceptedStat(committedCard, accepted)) {
+      offers.push({ committedCard });
     }
   }
 
-  offers.push({ committedCard: null, modifierTypes: [] });
+  offers.push({ committedCard: null });
   return offers;
 }

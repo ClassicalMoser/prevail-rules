@@ -19,9 +19,8 @@ const rangeCard = createTestCard({ modifiers: ['range'] });
 
 /**
  * GetLegalCommitToRangedAttackEvents: one CommitToRangedAttackEvent per
- * eligible in-hand card (has ≥1 ranged modifier), plus refuse; modifierTypes
- * are all of that card's ranged modifiers. Only the shooter is offered
- * these (§4.3.11 step 2); the target commits through
+ * eligible in-hand card (has ≥1 ranged modifier), plus refuse. Only the
+ * shooter is offered these (§4.3.11 step 2); the target commits through
  * `commitToRangedDefense`.
  */
 describe('getLegalCommitToRangedAttackEvents function', () => {
@@ -78,7 +77,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     choiceType: 'commitToRangedAttack' as const,
     committedCard: null,
     eventType: 'playerChoice' as const,
-    modifierTypes: [] as const,
     player: 'black' as const,
   };
 
@@ -90,7 +88,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
         choiceType: 'commitToRangedAttack',
         committedCard: attackCard,
         eventType: 'playerChoice',
-        modifierTypes: ['attack'],
         player: 'black',
       },
       refuseBlack,
@@ -105,7 +102,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
         choiceType: 'commitToRangedAttack',
         committedCard: rangeCard,
         eventType: 'playerChoice',
-        modifierTypes: ['range'],
         player: 'black',
       },
       refuseBlack,
@@ -124,7 +120,6 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
         choiceType: 'commitToRangedAttack',
         committedCard: rangeAndAttackCard,
         eventType: 'playerChoice',
-        modifierTypes: ['range', 'attack'],
         player: 'black',
       },
       refuseBlack,
