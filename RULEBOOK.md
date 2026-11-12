@@ -1344,21 +1344,21 @@ Things that come up, in the order players tend to hit them.
 
 **Threshold** — Retreat, Reverse, or Rout. Met when the attack value equals or exceeds it. Results are carried out retreat, then reverse, then rout. §7.5
 
-**Traits** — the groups cards use to name units: _formation, phalanx, warband, skirmish, cavalry, chariot, beast, shock, melee, missile_ and _javelin_. A unit usually has several. §10.4.2
+**Traits** — the groups cards use to name units: _formation, phalanx, warband, skirmisher, cavalry, chariot, beast, shock, melee, missile_ and _javelin_. A unit usually has several. §10.4.2
 
 ## 15. Units in this book
 
 The full roster — four boxes, 57 unit types — is printed on the unit cards. These are the units this book uses in its examples.
 
-| Unit                    | Limit | Morale | Atk | Rng | Spd | Flex | Ret | Rev | Rout | Traits                            |
-| ----------------------- | ----- | ------ | --- | --- | --- | ---- | --- | --- | ---- | --------------------------------- |
-| Manipular Legion        | 12    | 2      | 4   | —   | 2   | 3    | 5   | 6   | 8    | formation, melee, javelin         |
-| Velites                 | 8     | 0      | 2   | 1   | 3   | 5    | 2   | 4   | 5    | skirmish, melee, missile, javelin |
-| Equites                 | 4     | 2      | 4   | —   | 4   | 2    | 4   | 5   | 7    | cavalry, shock, melee             |
-| Punic Citizen Spearmen  | 6     | 2      | 3   | —   | 1   | 1    | 6   | 5   | 8    | formation, phalanx, melee         |
-| Hellenistic Hoplites    | 8     | 2      | 3   | —   | 1   | 2    | 7   | 6   | 8    | formation, phalanx, melee         |
-| Iberian Cavalry         | 5     | 2      | 3   | —   | 4   | 2    | 3   | 4   | 6    | cavalry, melee, javelin           |
-| North African Elephants | 4     | 3      | 5   | —   | 3   | 1    | 7   | 4   | 8    | beast, shock                      |
+| Unit                    | Limit | Morale | Atk | Rng | Spd | Flex | Ret | Rev | Rout | Traits                              |
+| ----------------------- | ----- | ------ | --- | --- | --- | ---- | --- | --- | ---- | ----------------------------------- |
+| Manipular Legion        | 12    | 2      | 4   | —   | 2   | 3    | 5   | 6   | 8    | formation, melee, javelin           |
+| Velites                 | 8     | 0      | 2   | 1   | 3   | 5    | 2   | 4   | 5    | skirmisher, melee, missile, javelin |
+| Equites                 | 4     | 2      | 4   | —   | 4   | 2    | 4   | 5   | 7    | cavalry, shock, melee               |
+| Punic Citizen Spearmen  | 6     | 2      | 3   | —   | 1   | 1    | 6   | 5   | 8    | formation, phalanx, melee           |
+| Hellenistic Hoplites    | 8     | 2      | 3   | —   | 1   | 2    | 7   | 6   | 8    | formation, phalanx, melee           |
+| Iberian Cavalry         | 5     | 2      | 3   | —   | 4   | 2    | 3   | 4   | 6    | cavalry, melee, javelin             |
+| North African Elephants | 4     | 3      | 5   | —   | 3   | 1    | 7   | 4   | 8    | beast, shock                        |
 
 **Reading the roster.** Heavy foot are slow and stiff but hard to break from the front; a phalanx is harder to push back than to shake. Skirmishers are fast and nimble and cost little or no Morale when they rout, but break to almost anything. Cavalry buys Speed and pays for it in Flexibility. Elephants hit hardest of all and are very hard to drive back, but are easily thrown into disorder and turn with difficulty. Morale runs from 0 to 3.
 
@@ -1435,7 +1435,7 @@ These were errors in the earlier books, not in the engine. The engine's values a
 
 These do not change how the game plays today, but they are worth the next read of the code.
 
-- **Stand-in units and cards.** The engine's sample catalog (`sampleValues/tempUnits.ts`, `tempCommandCards.ts`, `miniStarterArmy.ts`) is test-fixture data, not the game's units. The authoritative units and cards live in version control and change faster than fixtures should. The cycle 1 roster is a more representative source for placeholder values: it would remove the Reverse-0 units, the Flexibility-0 elephants and the deck where nearly every range is 1. The trait list in `ruleValues/traits.ts` says `skirmisher` where the roster says `skirmish`.
+- **Stand-in units and cards.** The engine's sample catalog (`sampleValues/tempUnits.ts`, `tempCommandCards.ts`, `miniStarterArmy.ts`) is test-fixture data, not the game's units. The authoritative units and cards live in version control and change faster than fixtures should. The cycle 1 roster is a more representative source for placeholder values: it would remove the Reverse-0 units, the Flexibility-0 elephants and the deck where nearly every range is 1.
 
 ## Deferred
 
