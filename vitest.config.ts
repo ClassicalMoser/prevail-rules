@@ -6,6 +6,9 @@ const __dirname = import.meta.dirname;
 export default defineConfig({
   resolve: {
     alias: {
+      // Bot
+      '@bot': path.resolve(__dirname, './src/bot'),
+      '@bot/*': path.resolve(__dirname, './src/bot/*'),
       // Entities
       '@entities': path.resolve(__dirname, './src/domain/entities'),
       '@entities/*': path.resolve(__dirname, './src/domain/entities/*'),
@@ -82,6 +85,7 @@ export default defineConfig({
     include: [
       'src/domain/**/*.test.{js,ts}',
       'src/application/**/*.test.{js,ts}',
+      'src/bot/**/*.test.{js,ts}',
     ],
     watch: false,
   },

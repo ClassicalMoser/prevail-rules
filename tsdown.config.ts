@@ -5,6 +5,8 @@ export default defineConfig({
   entry: [
     'src/domain/index.ts',
     'src/application/index.ts',
+    // A player that chooses for itself, and a harness to watch it play.
+    'src/bot/index.ts',
     // Fixtures and stand-in catalogs, for packages that test against these
     // rules. Separate entries keep them out of the production bundle.
     'src/domain/testing/index.ts',

@@ -39,6 +39,10 @@
     "./application": {
       "types": "./dist/application/index.d.ts",
       "import": "./dist/application/index.js"
+    },
+    "./bot": {
+      "types": "./dist/bot/index.d.ts",
+      "import": "./dist/bot/index.js"
     }
   },
   "publishConfig": {
@@ -58,7 +62,8 @@
     "prepublishOnly": "npm run build",
     "validate": "npm run lint && npm run format:check && npm run typecheck && npm run check:selfProof",
     "check:commentary": "tsx scripts/main.ts commentary",
-    "check:selfProof": "tsx scripts/main.ts selfProof"
+    "check:selfProof": "tsx scripts/main.ts selfProof",
+    "bot:games": "tsx scripts/main.ts botGames"
   },
   "dependencies": {
     "vite-plus": "^0.1.20",

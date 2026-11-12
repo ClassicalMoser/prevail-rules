@@ -176,6 +176,31 @@ export const boundaries: BoundaryConfig[] = [
     // Application orchestration; composes domain engines, no rule logic.
   },
   {
+    alias: '@bot',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@factories',
+      '@queries',
+      '@legality',
+      '@expected',
+      '@validation',
+      // The harness that plays bots against each other runs the engines
+      // itself: procedures for the game's effects, transforms to apply events
+      // and to project each seat's view. The choosing algorithm uses
+      // transforms only to imagine a board, never to change the game.
+      '@procedures',
+      '@transforms',
+    ],
+    dir: 'bot',
+    identifier: '@bot',
+    // A player that chooses from what the rules offer, and a harness to watch
+    // it play. Nothing imports it.
+  },
+  {
     alias: '@sampleValues',
     allowTypeImportsFrom: ['@entities'],
     dir: 'domain/sampleValues',

@@ -19,5 +19,6 @@ Each directory is one layer. Import edges are enforced from [`boundaries.ts`](./
 | [Transforms](./src/domain/transforms/README.md)      | `@transforms`   | Apply an event and return the next state. The only layer that writes it.           |
 | [Testing](./src/domain/testing/README.md)            | `@testing`      | Shared fixtures. Tests only.                                                       |
 | [Application](./src/application/README.md)           | `@application`  | Run a game. No rules of its own.                                                   |
+| [Bot](./src/bot/README.md)                           | `@bot`          | Choose for a seat from what the rules offer. Sees only that seat's view.           |
 
 The four engines are written up in [`src/domain/ENGINES.md`](./src/domain/ENGINES.md).

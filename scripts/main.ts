@@ -1,3 +1,4 @@
+import { runBotGames } from './botGames/runBotGames';
 import { checkCommentaryDensity } from './commentary/checkCommentaryDensity';
 import { checkSelfProvingSpecs } from './selfProof/checkSelfProvingSpecs';
 import type { CommandResult } from './commandResult';
@@ -16,6 +17,7 @@ import { summarizeMutationReports } from './mutation/summarizeMutationReports';
 
 /** Every command, by the name used on the command line. */
 const commands = new Map<string, () => Promise<CommandResult>>([
+  ['botGames', runBotGames],
   ['commentary', checkCommentaryDensity],
   ['mutationShards', listMutationShards],
   ['mutationSummary', summarizeMutationReports],
