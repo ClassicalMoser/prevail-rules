@@ -13,11 +13,16 @@ import { authoritativeGameStateSchema } from '@game/gameState';
  *
  * Board size lives on `gameState.boardState.boardType` and must agree with
  * the size required by {@link gameMode} (enforced by Zod).
+ * TODO(misleading): `gameSchema` itself does not check this; the check is
+ * `refineGameModeBoardSize` in `@legality`, a refine applied on top of it.
+ * Settled by saying where the check lives.
  *
  * Mode army composition limits live in `@legality` (`refineGameArmyComposition`).
  */
 export interface Game {
+  /** The mode being played, which sets the board and the army limits (§3.1.3). */
   gameMode: GameModeName;
+  /** The full state of play, both hands in view. */
   gameState: AuthoritativeGameState;
   /** The unique identifier of the game. */
   id: string;

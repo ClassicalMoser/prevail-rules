@@ -26,6 +26,12 @@ export interface MeleeResolutionState {
   /**
    * The state of the first player's attack apply.
    *
+   * TODO(misleading): "the first player's attack apply" reads as the first
+   * player's blow, but the slot holds the result applied to the first
+   * player's unit, as the substeps README says: `updateMeleeAttackApplyState`
+   * writes it for the player whose unit takes the result. Settled with the
+   * open question on `getMeleeAttackApplyState`'s `player`.
+   *
    * Both units strike at once, and the slots are named for the order the
    * players hold initiative in: first and second. The applies take effect
    * second player's unit first (§7.5.6). Which colour holds the initiative is
