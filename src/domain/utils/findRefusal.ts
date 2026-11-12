@@ -1,6 +1,9 @@
 import type { OpenChoice, ChoiceRefusal } from './openChoice';
 
 /** A value compared by `===`: two equal literals are the same part. */
+// TODO(composition): `haveSameMembers` declares the same `Literal` type for
+// the same purpose, comparing by `===` unless told otherwise. Settled by one
+// shared declaration, or by deciding the two may differ.
 type Literal = string | number | boolean;
 
 /**
