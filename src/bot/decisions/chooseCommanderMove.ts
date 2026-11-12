@@ -1,8 +1,8 @@
 import type { Coordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import type { BotContext } from './botContext';
-import { getCardInPlay } from '@queries';
-import { boardDistance, pickBest } from '@bot/appraisal';
+import { getCardInPlay, getSpacesApart } from '@queries';
+import { pickBest } from '@bot/appraisal';
 
 /** Points for each unit that would stand within the order's reach. */
 const POINTS_PER_UNIT_IN_REACH = 2;
@@ -44,14 +44,14 @@ export function chooseCommanderMove(
     let value = 0;
     for (const own of survey.ownUnits) {
       if (
-        boardDistance(board, destination, own.placement.coordinate) <= reach
+        getSpacesApart(board, destination, own.placement.coordinate) <= reach
       ) {
         value += POINTS_PER_UNIT_IN_REACH;
       }
     }
     let nearestEnemy = Number.POSITIVE_INFINITY;
     for (const enemy of survey.enemyUnits) {
-      const distance = boardDistance(
+      const distance = getSpacesApart(
         board,
         destination,
         enemy.placement.coordinate,

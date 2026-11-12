@@ -1,52 +1,5 @@
 import type { Board, Coordinate } from '@entities';
-import { getCoordinateLayout } from '@factories';
-
-/** A space's row and column as positions on its board, counted from 0. */
-interface GridPosition {
-  row: number;
-  column: number;
-}
-
-/**
- * Where a space sits on its board, as row and column positions. A coordinate
- * is named row letter then column number (`E-5`), and the board's layout
- * says where each falls.
- */
-function gridPosition(board: Board, coordinate: Coordinate): GridPosition {
-  const layout = getCoordinateLayout(board);
-  const [row = '', column = ''] = coordinate.split('-');
-  const position: GridPosition = {
-    column: layout.getColumnIndex(column),
-    row: layout.getRowIndex(row),
-  };
-  return position;
-}
-
-/**
- * How many spaces apart two spaces are, counting a diagonal step as one. A
- * unit steps into any of the eight spaces around it (§2.4), so this is the
- * fewest steps between the two on an open board: the bot's sense of how
- * near the enemy is, not a path a unit can take.
- *
- * @param board - The board both spaces are on
- * @param from - One space
- * @param to - The other
- * @returns The number of steps between them on open ground
- */
-export function boardDistance(
-  board: Board,
-  from: Coordinate,
-  to: Coordinate,
-): number {
-  const a = gridPosition(board, from);
-  const b = gridPosition(board, to);
-  // With diagonals allowed, the longer of the two gaps is the step count.
-  const distance = Math.max(
-    Math.abs(a.row - b.row),
-    Math.abs(a.column - b.column),
-  );
-  return distance;
-}
+import { getGridPosition } from '@queries';
 
 /**
  * How squarely a unit standing on `from` and looking at `ahead`, the space
@@ -66,9 +19,9 @@ export function facingAlignment(
   ahead: Coordinate,
   to: Coordinate,
 ): number {
-  const a = gridPosition(board, from);
-  const forward = gridPosition(board, ahead);
-  const b = gridPosition(board, to);
+  const a = getGridPosition(board, from);
+  const forward = getGridPosition(board, ahead);
+  const b = getGridPosition(board, to);
   const rowStep = forward.row - a.row;
   const columnStep = forward.column - a.column;
   const rowGap = b.row - a.row;

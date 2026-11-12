@@ -1,27 +1,7 @@
 import { createGameState } from '@testing';
-import { boardDistance, facingAlignment } from './boardDistance';
+import { facingAlignment } from './facingAlignment';
 
-/**
- * The bot's sense of how far apart two spaces are, and which way a unit is
- * looking.
- */
-describe('boardDistance function', () => {
-  const { boardState } = createGameState([]);
-
-  it('counts a diagonal step as one, like any other', () => {
-    // E-5 to C-7 is two rows and two columns: two diagonal steps.
-    expect(boardDistance(boardState, 'E-5', 'C-7')).toBe(2);
-  });
-
-  it('counts the longer of the two gaps', () => {
-    expect(boardDistance(boardState, 'E-5', 'B-6')).toBe(3);
-  });
-
-  it('is zero from a space to itself', () => {
-    expect(boardDistance(boardState, 'E-5', 'E-5')).toBe(0);
-  });
-});
-
+/** Which way a unit is looking, as the bot judges facing toward the enemy. */
 describe('facingAlignment function', () => {
   const { boardState } = createGameState([]);
 

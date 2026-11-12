@@ -13,6 +13,7 @@ import {
   getMeleeSupportValue,
   getFlankingSpaces,
   getOppositeFacing,
+  getSpacesApart,
   hasUnitInArray,
   isDiagonalFacing,
   isSameUnitInstance,
@@ -20,7 +21,7 @@ import {
 import { removeUnitFromBoard } from '@transforms';
 import { appraiseMelee, lossFromResult } from './appraiseCombat';
 import { recallStat } from './recallStat';
-import { boardDistance, facingAlignment } from './boardDistance';
+import { facingAlignment } from './facingAlignment';
 
 /** Points for each space a unit stands nearer the distance it wants. */
 const POINTS_PER_SPACE = 1.5;
@@ -159,7 +160,7 @@ function appraiseExposure(
   let threat = 0;
   for (const enemy of survey.enemyUnits) {
     const reach = recallStat(view, enemy.unit, 'speed') + 1;
-    const distance = boardDistance(
+    const distance = getSpacesApart(
       board,
       placement.coordinate,
       enemy.placement.coordinate,
@@ -250,7 +251,7 @@ function appraiseFormation(
       (facing === placement.facing || facing === opposite)
     ) {
       score += POINTS_PER_SHOULDER;
-    } else if (boardDistance(board, placement.coordinate, coordinate) === 1) {
+    } else if (getSpacesApart(board, placement.coordinate, coordinate) === 1) {
       score += POINTS_PER_NEIGHBOUR;
     }
   }
@@ -302,7 +303,7 @@ export function appraisePlacement(
   let nearest: UnitWithPlacement | undefined;
   let nearestDistance = Number.POSITIVE_INFINITY;
   for (const enemy of survey.enemyUnits) {
-    const distance = boardDistance(
+    const distance = getSpacesApart(
       board,
       coordinate,
       enemy.placement.coordinate,
@@ -340,7 +341,7 @@ export function appraisePlacement(
   // Near its general a unit can be ordered again next round.
   if (
     survey.ownCommander !== undefined &&
-    boardDistance(board, coordinate, survey.ownCommander) <= INSPIRATION_REACH
+    getSpacesApart(board, coordinate, survey.ownCommander) <= INSPIRATION_REACH
   ) {
     score += temperament.caution * POINTS_FOR_FACING;
   }

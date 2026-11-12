@@ -17,7 +17,7 @@ export type { SupportStack } from './placeUnderSupport';
 export { placeUnderSupport, stacksFor } from './placeUnderSupport';
 
 // The plain geometry it judges by.
-export { boardDistance, facingAlignment } from './boardDistance';
+export { facingAlignment } from './facingAlignment';
 
 // What it has already read from a view, so it reads each stat once.
 export { recallBlow, recallStat } from './recallStat';
