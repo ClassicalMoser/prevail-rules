@@ -69,6 +69,12 @@ export interface BotGameRecord {
   endedBy: 'emptyHand' | 'unpayableRout' | 'noUnits' | undefined;
   /** How many rounds each side played as first player (§4.1.5). */
   roundsFirst: Record<PlayerSide, number>;
+  /**
+   * The round of each rally each side made, in order (§10). How soon the
+   * first comes and how quickly the rest follow is the rhythm of a battle
+   * wearing down.
+   */
+  rallyRounds: Record<PlayerSide, number[]>;
 }
 
 /** Which of the ways a game ends (§11) ended this one. */
@@ -151,6 +157,7 @@ export function playBotGame(setup: BotGameSetup): BotGameRecord {
   const eventCounts: Record<string, number> = {};
   const decisionMs: Record<string, number> = {};
   const roundsFirst: Record<PlayerSide, number> = { black: 0, white: 0 };
+  const rallyRounds: Record<PlayerSide, number[]> = { black: [], white: [] };
   let ending: BotGameRecord['ending'] = 'cutOff';
   let fault: string | undefined;
   while (events < MOST_EVENTS) {
@@ -190,6 +197,13 @@ export function playBotGame(setup: BotGameSetup): BotGameRecord {
     const kind =
       event.eventType === 'playerChoice' ? event.choiceType : event.effectType;
     eventCounts[kind] = (eventCounts[kind] ?? 0) + 1;
+    // A rally is made when it resolves, in the round it resolves in.
+    if (
+      event.eventType === 'gameEffect' &&
+      event.effectType === 'resolveRally'
+    ) {
+      rallyRounds[event.player].push(state.currentRoundState.roundNumber);
+    }
     // Each round's first player is known once initiative is resolved.
     if (kind === 'resolveInitiative') {
       state = applyEvent(event, state);
@@ -208,6 +222,7 @@ export function playBotGame(setup: BotGameSetup): BotGameRecord {
     eventCounts,
     events,
     fault,
+    rallyRounds,
     rounds: state.currentRoundState.roundNumber,
     roundsFirst,
     seed: setup.seed,

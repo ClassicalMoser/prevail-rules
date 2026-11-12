@@ -25,6 +25,20 @@ describe('playBotGame function', () => {
     expect(record.endedBy).toBeDefined();
   });
 
+  it('records the round of every rally each side made, in order', () => {
+    const record = playBotGame(setup);
+    const { black, white } = record.rallyRounds;
+    // One round recorded for each rally the game resolved (§10).
+    expect(black.length + white.length).toBe(
+      record.eventCounts.resolveRally ?? 0,
+    );
+    for (const rounds of [black, white]) {
+      // Each side's rallies come in the order they were made, within the game.
+      expect(rounds).toStrictEqual(rounds.toSorted((a, b) => a - b));
+      expect(rounds.every((round) => round <= record.rounds)).toBe(true);
+    }
+  });
+
   it('plays the same game again from the same seed', () => {
     const {
       durationMs: _first,
