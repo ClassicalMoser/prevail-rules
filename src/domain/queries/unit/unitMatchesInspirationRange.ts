@@ -1,8 +1,8 @@
 import type { Restrictions, UnitInstance } from '@entities';
 import type { GameState } from '@game';
 import { NO_INSPIRATION_RANGE } from '@ruleValues';
-import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance';
 import { findCommanderSpace } from '../board/findCommanderSpace';
+import { getSpacesApart } from '../board/getSpacesApart';
 import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 
 /**
@@ -12,7 +12,9 @@ import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
  * stands, and a commander who has fallen reaches no one (§4.2.8).
  *
  * Asked when a command is issued and every time a round effect's stat is read,
- * so one rule serves both.
+ * so one rule serves both. Because it is asked so often, the distance is
+ * worked out from the two spaces directly rather than by listing every space
+ * in reach.
  *
  * @param unit - The unit on the board.
  * @param restrictions - The card's restrictions, of which only the range is read.
@@ -30,19 +32,16 @@ export function unitMatchesInspirationRange(
   if (inspirationRangeRestriction <= NO_INSPIRATION_RANGE) {
     return true;
   }
-  const commanderSpace = findCommanderSpace(
-    unit.playerSide,
-    gameState.boardState,
-  );
+  const board = gameState.boardState;
+  const commanderSpace = findCommanderSpace(unit.playerSide, board);
   // A fallen commander inspires no one, so the range fails.
   if (commanderSpace === undefined) {
     return false;
   }
-  const spacesWithinDistance = getSpacesWithinDistance(
-    gameState.boardState,
-    commanderSpace,
-    inspirationRangeRestriction,
-  );
-  const { coordinate } = getPositionOfUnit(gameState.boardState, unit);
-  return spacesWithinDistance.has(coordinate);
+  const { coordinate } = getPositionOfUnit(board, unit);
+  // Within range means no more spaces from the commander than the card prints.
+  const reached =
+    getSpacesApart(board, commanderSpace, coordinate) <=
+    inspirationRangeRestriction;
+  return reached;
 }

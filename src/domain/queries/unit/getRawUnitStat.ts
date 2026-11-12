@@ -66,20 +66,22 @@ export function getRawUnitStat(
     const matchingModifier = findMatchingModifier(activeRoundEffect.modifiers);
     // If there is a matching modifier, check if the unit satisfies the restrictions
     if (matchingModifier) {
-      // The card's range must reach the unit; one printed unrestricted always does.
-      const inRange = unitMatchesInspirationRange(
-        unit,
-        activeRoundEffect.restrictions,
-        gameState,
-      );
-      // The card may also name a trait or unit type the unit must be.
-      const ofNamedType = unitTypeMatchesRestrictions(
-        unit.unitType,
-        activeRoundEffect.restrictions,
-      );
-
-      // Only a unit the card reaches and names takes the modifier.
-      if (inRange && ofNamedType) {
+      // Only a unit the card names and reaches takes the modifier. The card
+      // may name a trait or unit type the unit must be, which is read off
+      // the unit alone, so it is asked first; the range needs the board,
+      // where the commander and the unit stand, so it is asked only of a
+      // unit the card names. One printed unrestricted reaches every unit.
+      const takesModifier =
+        unitTypeMatchesRestrictions(
+          unit.unitType,
+          activeRoundEffect.restrictions,
+        ) &&
+        unitMatchesInspirationRange(
+          unit,
+          activeRoundEffect.restrictions,
+          gameState,
+        );
+      if (takesModifier) {
         totalModifier += matchingModifier.value;
       }
     }
