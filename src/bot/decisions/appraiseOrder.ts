@@ -6,7 +6,7 @@ import type {
 } from '@entities';
 import type { BotContext } from './botContext';
 import { getLegalRangedAttackTargets, getLegalUnitMoves } from '@legality';
-import { appraiseBlow, appraisePlacement } from '@bot/appraisal';
+import { appraiseAttack, appraisePlacement } from '@bot/appraisal';
 
 /**
  * How much better off a unit would be after its best move than where it
@@ -63,7 +63,7 @@ export function appraiseBestShot(
   const { view } = context;
   let best = 0;
   for (const target of getLegalRangedAttackTargets(unit, view, modifiers)) {
-    best = Math.max(best, appraiseBlow(view, unit.unit, 0, target.unit));
+    best = Math.max(best, appraiseAttack(view, unit.unit, 0, target.unit));
   }
   return best;
 }

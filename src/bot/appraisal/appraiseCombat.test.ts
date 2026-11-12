@@ -2,7 +2,7 @@ import { createTestUnit } from '@testing';
 import { lossFromResult } from './appraiseCombat';
 
 /**
- * What a blow costs the unit it lands on: a rout most, then a reverse, then a
+ * What an attack costs the unit it lands on: a rout most, then a reverse, then a
  * retreat, and nothing if it meets no threshold.
  */
 describe('lossFromResult function', () => {

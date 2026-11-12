@@ -1,6 +1,6 @@
 import type { AttackResult, UnitInstance } from '@entities';
 import type { GameState } from '@game';
-import { recallBlow, recallStat } from './recallStat';
+import { recallAttackResult, recallStat } from './recallStat';
 
 /**
  * What a card is worth to a bot, in the same points as a unit's cost. A
@@ -11,12 +11,12 @@ import { recallBlow, recallStat } from './recallStat';
 export const CARD_WORTH = 8;
 
 /**
- * What a blow costs the unit it lands on, in points. A rout takes the unit
+ * What an attack costs the unit it lands on, in points. A rout takes the unit
  * off the board and charges its Morale in cards; a reverse leaves its back
  * to the enemy; a retreat gives ground but keeps it whole.
  *
  * @param unit - The unit struck
- * @param result - Which of its thresholds the blow met
+ * @param result - Which of its thresholds the attack met
  * @returns The points it loses
  */
 export function lossFromResult(
@@ -42,7 +42,7 @@ export function lossFromResult(
 }
 
 /**
- * What one blow does: the striker's Attack, with any support, measured
+ * What one attack does: the striker's Attack, with any support, measured
  * against the target's thresholds (§7.5.1).
  *
  * @param view - The game as the bot sees it, for the stats in force
@@ -51,22 +51,22 @@ export function lossFromResult(
  * @param target - The unit struck
  * @returns The points the target loses
  */
-export function appraiseBlow(
+export function appraiseAttack(
   view: GameState,
   striker: UnitInstance,
   support: number,
   target: UnitInstance,
 ): number {
   const attack = recallStat(view, striker, 'attack') + support;
-  const result = recallBlow(view, attack, target);
+  const result = recallAttackResult(view, attack, target);
   const loss = lossFromResult(target, result);
   return loss;
 }
 
 /**
  * What a melee between two units is worth to the first of them: the points
- * its blow takes from the enemy less those the enemy's blow takes from it.
- * Melee is mutual (§7.2.1), so both blows count.
+ * its attack takes from the enemy less those the enemy's attack takes from it.
+ * Melee is mutual (§7.2.1), so both attacks count.
  *
  * @param view - The game as the bot sees it
  * @param own - The bot's unit and its support
@@ -78,7 +78,7 @@ export function appraiseMelee(
   own: { unit: UnitInstance; support: number },
   enemy: { unit: UnitInstance; support: number },
 ): number {
-  const dealt = appraiseBlow(view, own.unit, own.support, enemy.unit);
-  const taken = appraiseBlow(view, enemy.unit, enemy.support, own.unit);
+  const dealt = appraiseAttack(view, own.unit, own.support, enemy.unit);
+  const taken = appraiseAttack(view, enemy.unit, enemy.support, own.unit);
   return dealt - taken;
 }

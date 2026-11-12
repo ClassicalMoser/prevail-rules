@@ -17,7 +17,7 @@ import { applyAttackValue, getRawUnitStat } from '@queries';
  */
 interface ViewMemory {
   stats: Map<string, number>;
-  blows: Map<string, AttackResult>;
+  attackResults: Map<string, AttackResult>;
 }
 
 const memories = new WeakMap<GameState, ViewMemory>();
@@ -25,7 +25,7 @@ const memories = new WeakMap<GameState, ViewMemory>();
 function memoryOf(view: GameState): ViewMemory {
   let memory = memories.get(view);
   if (memory === undefined) {
-    memory = { blows: new Map(), stats: new Map() };
+    memory = { attackResults: new Map(), stats: new Map() };
     memories.set(view, memory);
   }
   return memory;
@@ -82,18 +82,18 @@ export function recallStat(
  * @param modifiers - What the target's committed card would add, if weighed
  * @returns The thresholds met
  */
-export function recallBlow(
+export function recallAttackResult(
   view: GameState,
   attackValue: number,
   target: UnitInstance,
   modifiers?: Modifier[],
 ): AttackResult {
-  const { blows } = memoryOf(view);
+  const { attackResults } = memoryOf(view);
   const key = `${unitKey(target)}|${attackValue}|${modifiersKey(modifiers)}`;
-  let result = blows.get(key);
+  let result = attackResults.get(key);
   if (result === undefined) {
     result = applyAttackValue(view, attackValue, target, modifiers);
-    blows.set(key, result);
+    attackResults.set(key, result);
   }
   return result;
 }

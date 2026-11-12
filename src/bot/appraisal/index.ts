@@ -4,7 +4,7 @@ export { surveyBattlefield } from './battlefieldSurvey';
 
 // How it values a fight, a place to stand, and a card.
 export {
-  appraiseBlow,
+  appraiseAttack,
   appraiseMelee,
   CARD_WORTH,
   lossFromResult,
@@ -20,7 +20,7 @@ export { placeUnderSupport, stacksFor } from './placeUnderSupport';
 export { facingAlignment } from './facingAlignment';
 
 // What it has already read from a view, so it reads each stat once.
-export { recallBlow, recallStat } from './recallStat';
+export { recallAttackResult, recallStat } from './recallStat';
 
 // How it picks among scored options.
 export { pickBest } from './pickBest';

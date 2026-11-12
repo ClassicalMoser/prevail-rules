@@ -3,7 +3,7 @@ import type { ChooseShooterEvent, PerformRangedAttackEvent } from '@events';
 import type { LegalRangedAttackers } from '@legality';
 import type { BotContext } from './botContext';
 import { getLegalRangedAttackSupporters } from '@legality';
-import { appraiseBlow, pickBest } from '@bot/appraisal';
+import { appraiseAttack, pickBest } from '@bot/appraisal';
 import { appraiseBestShot } from './appraiseOrder';
 
 /**
@@ -47,10 +47,10 @@ function supportersNeeded(
   const available = getLegalRangedAttackSupporters(shooter, target, view);
   let best = {
     supporters: [] as UnitWithPlacement[],
-    worth: appraiseBlow(view, shooter.unit, 0, target.unit),
+    worth: appraiseAttack(view, shooter.unit, 0, target.unit),
   };
   for (let count = 1; count <= available.length; count += 1) {
-    const worth = appraiseBlow(view, shooter.unit, count, target.unit);
+    const worth = appraiseAttack(view, shooter.unit, count, target.unit);
     if (worth > best.worth) {
       best = { supporters: available.slice(0, count), worth };
     }

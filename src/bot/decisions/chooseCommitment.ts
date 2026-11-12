@@ -14,7 +14,7 @@ import {
   CARD_WORTH,
   lossFromResult,
   pickBest,
-  recallBlow,
+  recallAttackResult,
   recallStat,
 } from '@bot/appraisal';
 import { appraiseBestShot, appraiseMoveGain } from './appraiseOrder';
@@ -109,11 +109,11 @@ export function meleeCommitmentGain(
     const enemyAttack = recallStat(view, enemy.unit, 'attack') + enemySupport;
     const dealt = lossFromResult(
       enemy.unit,
-      recallBlow(view, ownAttack, enemy.unit),
+      recallAttackResult(view, ownAttack, enemy.unit),
     );
     const taken = lossFromResult(
       own.unit,
-      recallBlow(view, enemyAttack, own.unit, modifiers),
+      recallAttackResult(view, enemyAttack, own.unit, modifiers),
     );
     return dealt - taken;
   };
@@ -163,8 +163,9 @@ export function rangedAttackCommitmentGain(
 
 /**
  * What committing a card to defend against a shot would gain (§7.4.5,
- * §8.5): the blow as it will land against the blow with the target's
- * thresholds raised. The shooter's card and supporters are known by now.
+ * §8.5): the shot's attack value measured against the target's thresholds
+ * raised, compared with the same attack value against them as they stand.
+ * The shooter's card and supporters are known by now.
  *
  * @param context - What the bot decides from
  * @returns The gain from committing a card
@@ -190,7 +191,7 @@ export function rangedDefenseCommitmentGain(
   const taken = (modifiers?: Modifier[]): number =>
     lossFromResult(
       defendingUnit,
-      recallBlow(view, attack, defendingUnit, modifiers),
+      recallAttackResult(view, attack, defendingUnit, modifiers),
     );
   const without = taken();
   return (card) => without - taken(commitmentModifiers(card));

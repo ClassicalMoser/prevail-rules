@@ -15,10 +15,10 @@ A player that chooses for itself. It is two things: an algorithm, which is what 
 **It scores and picks.** Each decision lives in `decisions/`, one file to a kind of choice. Each scores the options it was offered and takes the best (`pickBest`). It does not search ahead: the outcomes depend on dice and on cards it cannot see. The scores come from `appraisal/`:
 
 - **A place to stand.** Near the distance a unit wants from the enemy (adjacent for a fighter, at Range for a shooter), turned toward it, near its general, and in line: shoulder to shoulder with friends facing the same way (§4.3.5), and not turned on the diagonal. Friends ordered to move this phase that have not moved yet are left out, so a line can step forward one unit at a time and close up behind its first mover. A flank or back within an enemy's reach is a danger, and so is a head-on charge the enemy would win with its support.
-- **An engagement.** A charge from behind is worth the whole unit and its Morale (§6.3.3). A front or flank engagement is worth the trade of blows, counting support on both sides (§7.3).
+- **An engagement.** A charge from behind is worth the whole unit and its Morale (§6.3.3). A front or flank engagement is worth the exchange of attacks, counting support on both sides (§7.3).
 - **A card.** What it would order this round, against what it is worth to keep: the units it steadies at a rally, and its initiative.
 
-**It reads each stat once per view.** A unit's stats depend on the general's reach, which walks the board, and a decision asks the same few questions thousands of times. `recallStat` and `recallBlow` remember answers for the view they were read from.
+**It reads each stat once per view.** A unit's stats depend on the general's reach, which walks the board, and a decision asks the same few questions thousands of times. `recallStat` and `recallAttackResult` remember answers for the view they were read from.
 
 ## Temperament
 
