@@ -26,8 +26,8 @@ export interface BotTemperament {
   riskTolerance: number;
   /**
    * How tightly it holds its hand, which is its army's will to fight. A
-   * thrifty bot commits cards only when the +1 decides a result, and rallies
-   * early to win its cards back.
+   * thrifty bot commits cards only when the +1 decides a result, and puts off
+   * rallying, since every rally burns a card for good.
    */
   thrift: number;
   /**

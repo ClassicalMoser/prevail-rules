@@ -1,24 +1,77 @@
-import type {
-  AssignUnitSupportEvent,
-  ChooseRallyEvent,
-  UnitSupportAssignment,
-} from '@events';
+import type { CommandCard, UnitInstance } from '@entities';
+import type { AssignUnitSupportEvent, ChooseRallyEvent } from '@events';
 import type { LegalAssignUnitSupport } from '@legality';
 import type { BotContext } from './botContext';
-import { getLegalUnitSupportAssignments } from '@legality';
-import { getOwnedPlayerCardState } from '@queries';
-import { CARD_WORTH, lossFromResult } from '@bot/appraisal';
+import { combineSupportCategoriesFromHand } from '@legality';
+import { getOwnedPlayerCardState, hasUnitInArray } from '@queries';
+import {
+  CARD_WORTH,
+  lossFromResult,
+  placeUnderSupport,
+  stacksFor,
+} from '@bot/appraisal';
 
-/** The hand size below which even a spendthrift bot rallies. */
-const FEWEST_CARDS_TO_HOLD = 2;
+/** A rally one card early is worth it if at least this many cards come back. */
+const GENEROUS_RETURN = 3;
+
+/**
+ * What losing a unit at the support check costs: the unit, and its Morale
+ * paid in cards (§10.4.6, §10.4.7).
+ */
+function routLoss(unit: UnitInstance): number {
+  return lossFromResult(unit, {
+    unitRetreated: false,
+    unitReversed: false,
+    unitRouted: true,
+  });
+}
+
+/** The bot's units, most valuable first: the order it would keep them in. */
+function byWorth(units: readonly UnitInstance[]): UnitInstance[] {
+  return units.toSorted((a, b) => routLoss(b) - routLoss(a));
+}
+
+/**
+ * What the support check after a rally would cost, on average. A rally takes
+ * back the played and discarded cards and burns one of them at random
+ * (§10.3.2); the hand that results must hold every unit on the board, and
+ * whatever it cannot hold routs (§10.4). Which card burns is not the bot's
+ * to choose, so each is weighed as equally likely.
+ */
+function expectedSupportCheck(
+  hand: readonly CommandCard[],
+  returning: readonly CommandCard[],
+  units: readonly UnitInstance[],
+): { loss: number; morale: number } {
+  let loss = 0;
+  let morale = 0;
+  returning.forEach((_, burnt) => {
+    const kept = [...hand, ...returning.filter((__, index) => index !== burnt)];
+    const stacks = stacksFor(combineSupportCategoriesFromHand(kept), units);
+    const placed = placeUnderSupport(stacks, units);
+    for (const unit of units) {
+      if (!placed.some((assignment) => assignment.unit === unit)) {
+        loss += routLoss(unit);
+        morale += unit.unitType.morale;
+      }
+    }
+  });
+  const draws = Math.max(1, returning.length);
+  return { loss: loss / draws, morale: morale / draws };
+}
 
 /**
  * Decides whether to rally at Cleanup (§10.3). Rallying is the only way to
- * win cards back, and a hand that runs out loses (§11.1), so a bot rallies
- * once its hand runs low; a thrifty one rallies sooner. Against that, a rally
- * burns one card for good and puts the army to the support check (§10.4):
- * every unit the cards cannot hold routs, and its Morale is paid in cards. A
- * bot that would lose more to the check than it wins back holds off.
+ * win cards back, and a hand that runs out loses (§11.1). But every rally
+ * burns one card for good (§10.3.2), while a card on the played pile is not
+ * lost, only waiting. So the bot waits, and rallies once its hand is down to
+ * what the next round could cost it: a card to play, and the Morale of its
+ * costliest unit, should that unit rout (§9.3, §11.2). If plenty would come
+ * back it rallies a card earlier, since the burn then buys more. A thrifty
+ * bot leans toward waiting.
+ *
+ * It does not rally into a support check (§10.4) that would cost more than
+ * the cards it wins back, nor one whose Morale could empty its hand.
  *
  * @param offers - Rally or not
  * @param context - What the bot decides from
@@ -30,35 +83,30 @@ export function chooseRally(
 ): ChooseRallyEvent {
   const { view, seat, survey, temperament } = context;
   const owned = getOwnedPlayerCardState(view.cardState, seat);
-  const returning = owned.played.length + owned.discarded.length;
-  // One returning card is burnt (§10.3.2), so a rally nets one less.
-  const regained = Math.max(0, returning - 1);
-  // The cards it would hold after the rally, and how many units they steady.
-  // Every card counts toward support wherever it was (§10.1.2); one is lost.
-  const kept = [...owned.inHand, ...owned.played, ...owned.discarded];
-  const capacity =
-    kept.reduce((total, card) => total + card.unitSupport.count, 0) -
-    Math.max(0, ...kept.map((card) => card.unitSupport.count));
-  // The units the check would leave without a place, cheapest guessed first:
-  // the bot cannot see which places match which units until it rallies.
-  const shortfall = Math.max(0, survey.ownUnits.length - capacity);
-  const exposed = survey.ownUnits
-    .map((own) =>
-      lossFromResult(own.unit, {
-        unitRetreated: false,
-        unitReversed: false,
-        unitRouted: true,
-      }),
-    )
-    .toSorted((a, b) => a - b)
-    .slice(0, shortfall)
-    .reduce((total, loss) => total + loss, 0);
-  const gain = regained * CARD_WORTH;
-  // A low hand is the danger: rally when it is low enough, and the check
-  // costs less than the cards coming back.
-  const lowWater = FEWEST_CARDS_TO_HOLD + Math.round(3 * temperament.thrift);
-  const wantsToRally =
-    regained > 0 && owned.inHand.length <= lowWater && exposed < gain;
+  const returning = [...owned.played, ...owned.discarded];
+  const regained = Math.max(0, returning.length - 1);
+  const units = byWorth(survey.ownUnits.map((own) => own.unit));
+  // What the next round could take from the hand: a card to play, and the
+  // Morale of the costliest unit if it routs.
+  const costliestMorale = Math.max(
+    0,
+    ...units.map((unit) => unit.unitType.morale),
+  );
+  const lowWater = 1 + costliestMorale;
+  // A spendthrift bot treats a hand one card fuller as already low.
+  const reach = temperament.thrift < 0.5 ? 1 : 0;
+  const hand = owned.inHand.length;
+  const running = hand <= lowWater + reach;
+  const generous = hand <= lowWater + reach + 1 && regained >= GENEROUS_RETURN;
+  let wantsToRally = regained > 0 && (running || generous);
+  if (wantsToRally) {
+    const check = expectedSupportCheck(owned.inHand, returning, units);
+    const handAfter = hand + returning.length - 1;
+    // The Morale of the routs must leave a card to play (§11.2).
+    const affordable = check.morale < handAfter;
+    const worthIt = check.loss < regained * CARD_WORTH;
+    wantsToRally = affordable && worthIt;
+  }
   const choice =
     offers.find((offer) => offer.performRally === wantsToRally) ?? offers[0];
   if (choice === undefined) {
@@ -69,10 +117,8 @@ export function chooseRally(
 
 /**
  * Gives each unit a place under the support its hand holds, after a rally
- * (§10.4.4). Every open place an unplaced unit could fill must be filled
- * (§10.4.5), so the bot fills them all; what it decides is who gets a place
- * when there are too few. It places its most valuable units first, so the
- * units that rout are the ones it can best afford to lose.
+ * (§10.4.4): as many units as the hand can hold, and the most valuable of
+ * them, so the units that rout are the ones it can best afford to lose.
  *
  * @param offer - The support its hand holds and the units each place may take
  * @param context - What the bot decides from
@@ -82,24 +128,17 @@ export function chooseUnitSupport(
   offer: LegalAssignUnitSupport,
   context: BotContext,
 ): AssignUnitSupportEvent {
-  const worth = (assignment: UnitSupportAssignment): number =>
-    lossFromResult(assignment.unit, {
-      unitRetreated: false,
-      unitReversed: false,
-      unitRouted: true,
-    });
-  const assignments: UnitSupportAssignment[] = [];
-  // Offered a place at a time; fill until nothing more may be placed.
-  for (;;) {
-    const next = getLegalUnitSupportAssignments(offer, assignments);
-    const best = next.next.toSorted((a, b) => worth(b) - worth(a))[0];
-    if (best === undefined) {
-      break;
+  // Every unit any stack could take, each once, most valuable first.
+  const units: UnitInstance[] = [];
+  for (const stack of offer.categories) {
+    for (const unit of stack.eligibleUnits) {
+      if (!hasUnitInArray(units, unit)) {
+        units.push(unit);
+      }
     }
-    assignments.push(best);
   }
   const event: AssignUnitSupportEvent = {
-    assignments,
+    assignments: placeUnderSupport(offer.categories, byWorth(units)),
     choiceType: 'assignUnitSupport',
     eventType: 'playerChoice',
     player: context.seat,
