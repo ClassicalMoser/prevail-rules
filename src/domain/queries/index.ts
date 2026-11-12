@@ -25,8 +25,11 @@ export {
   getSpacesBehind,
   getSpacesInArc,
   getHalfPlaneInDirection,
+  getGridPosition,
+  getSpacesApart,
   getSpacesWithinDistance,
 } from './board';
+export type { GridPosition } from './board';
 
 // Card piles, initiative, and command equality.
 export {
