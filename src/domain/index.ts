@@ -481,6 +481,14 @@ export {
   isSameUnitInstance,
   isSameUnitType,
 } from '@queries';
+// Where a unit stands: a placement walked along a path, step and turn, as
+// geometry only, and equality of placements and paths.
+export {
+  findPlacementAfterPath,
+  isSameMovePath,
+  isSamePlacement,
+  isSameUnitWithPlacement,
+} from '@queries';
 export { getExpectedEvent } from '@expected';
 export {
   findRetreatAwaitingChoice,
