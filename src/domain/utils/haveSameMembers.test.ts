@@ -1,7 +1,12 @@
 import { haveSameMembers } from './haveSameMembers';
 
+/**
+ * A list of traits or stats on a card is a set of facts, not a sequence, so
+ * two lists match when they hold the same members as many times each.
+ */
 describe('haveSameMembers function', () => {
   it('ignores the order the members were written in', () => {
+    // Attack and Speed are the same two stats in either order.
     expect(haveSameMembers(['attack', 'speed'], ['speed', 'attack'])).toBe(
       true,
     );
@@ -18,6 +23,7 @@ describe('haveSameMembers function', () => {
   });
 
   it('holds for two empty lists', () => {
+    // A card naming no stats matches another naming none.
     expect(haveSameMembers([], [])).toBe(true);
   });
 

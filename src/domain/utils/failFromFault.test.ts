@@ -1,7 +1,13 @@
 import { failFromFault } from './failFromFault';
 
+/**
+ * A validator returns a refusal rather than throwing, so a fault that
+ * surfaces while checking a choice becomes one, still naming its cause.
+ */
 describe('failFromFault function', () => {
   it('keeps the fault’s own message under what was being done', () => {
+    // The fault names its cause where it happened; the refusal keeps that
+    // and says what was being validated when it surfaced.
     const refusal = failFromFault(
       new Error('Game is already over'),
       'validating player choice',
