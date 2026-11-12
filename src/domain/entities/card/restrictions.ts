@@ -3,6 +3,12 @@ import type { AssertExact } from '@utils';
 import { NO_INSPIRATION_RANGE, traitSchema } from '@ruleValues';
 import { z } from 'zod';
 
+// TODO(composition): the upper bound of 10 on an inspiration range is
+// written into each of the three restriction schemas below, and the rulebook
+// states no such limit (§4.2.7). The README asks that a limit the rules share
+// be named in `@ruleValues`. Settled by naming it there with its reason, or
+// dropping it if no card needs one.
+
 /**
  * Restrictions with no trait or unit-type filter.
  * Inspiration range may still apply.

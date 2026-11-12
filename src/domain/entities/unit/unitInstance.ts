@@ -26,6 +26,8 @@ const _unitInstanceSchemaObject = z
     /** The type of unit this is an instance of. */
     unitType: unitTypeSchema,
     /** Which instance of the unit this is. */
+    // Copies are numbered from 1, and an army fields at most this many of
+    // one type (§3.1.4).
     instanceNumber: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
   })
   .strict();
