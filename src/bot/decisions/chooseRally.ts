@@ -70,8 +70,14 @@ function expectedSupportCheck(
  * back it rallies a card earlier, since the burn then buys more. A thrifty
  * bot leans toward waiting.
  *
- * It does not rally into a support check (§10.4) that would cost more than
- * the cards it wins back, nor one whose Morale could empty its hand.
+ * Rallying is weighed against declining, not against nothing. A rally may
+ * cost units at the support check (§10.4), but the cards it wins back are
+ * rounds of play, and they count for more the nearer the hand is to empty.
+ * So it declines only a check that would cost more than those cards are
+ * worth to a hand this low, or one whose Morale could empty its hand
+ * (§11.2). With a single card left there is nothing to weigh: that card is
+ * played next round and the empty hand loses the battle (§11.1), so any
+ * rally that wins a card back is taken, whatever the check costs.
  *
  * @param offers - Rally or not
  * @param context - What the bot decides from
@@ -98,13 +104,18 @@ export function chooseRally(
   const hand = owned.inHand.length;
   const running = hand <= lowWater + reach;
   const generous = hand <= lowWater + reach + 1 && regained >= GENEROUS_RETURN;
-  let wantsToRally = regained > 0 && (running || generous);
-  if (wantsToRally) {
+  // Declining with one card left loses the battle next round (§11.1).
+  const lastCard = hand <= 1;
+  let wantsToRally = regained > 0 && (running || generous || lastCard);
+  if (wantsToRally && !lastCard) {
     const check = expectedSupportCheck(owned.inHand, returning, units);
     const handAfter = hand + returning.length - 1;
     // The Morale of the routs must leave a card to play (§11.2).
     const affordable = check.morale < handAfter;
-    const worthIt = check.loss < regained * CARD_WORTH;
+    // A card is worth more the fewer are left: at the low-water mark each
+    // is worth its usual amount, and below it more.
+    const cardWorth = (CARD_WORTH * Math.max(lowWater, hand)) / hand;
+    const worthIt = check.loss < regained * cardWorth;
     wantsToRally = affordable && worthIt;
   }
   const choice =
