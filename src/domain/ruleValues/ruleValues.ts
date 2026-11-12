@@ -1,8 +1,11 @@
 /** The minimum combined flexibility value required for friendly
- * units to pass through each other while unengaged. */
+ * units to pass through each other while unengaged.
+ * Two stiff formations cannot interpenetrate; nimble troops can filter
+ * through (§5.4.2). */
 export const MIN_FLEXIBILITY_THRESHOLD = 6 as const;
 
-/** The maximum distance a commander can move in a single move. */
+/** The maximum distance a commander can move in a single move.
+ * Diagonal steps count as one (§4.2.2). */
 export const COMMANDER_MOVE_DISTANCE = 4 as const;
 
 /**
@@ -13,13 +16,22 @@ export const COMMANDER_MOVE_DISTANCE = 4 as const;
  */
 export const NO_INSPIRATION_RANGE = -1 as const;
 
-/** The maximum number of units that can be included in a line. */
+/** The maximum number of units that can be included in a line.
+ * One line order can move up to eight units dressed in a rank, so
+ * formation is how much an army gets done in a round (§4.3.5). */
 export const MAX_LINE_LENGTH = 8 as const;
 
-/** Legal initiative values for command cards. */
+/** Legal initiative values for command cards.
+ * TODO(misleading): this is the lowest initiative a card may carry, not the
+ * list of legal values, which is `LEGAL_INITIATIVES` below and carries the
+ * same description. Settled by giving each its own. */
 export const MIN_INITIATIVE_VALUE = 1 as const;
+/** The highest initiative a card may carry. Low goes first (§4.1.3), so
+ * this is the slowest card. */
 export const MAX_INITIATIVE_VALUE = 4 as const;
 
+/** Every initiative value from the lowest to the highest, each of which an
+ * army must hold the same number of cards at (§3.1.7). */
 function constructLegalInitiatives(): readonly number[] {
   // Every integer from the minimum initiative through the maximum is legal.
   const initiatives: number[] = [];
@@ -29,11 +41,18 @@ function constructLegalInitiatives(): readonly number[] {
   return initiatives;
 }
 
-/** The maximum number of a given unit type that can be included in an army. */
+/** The maximum number of a given unit type that can be included in an army.
+ * Each unit type prints its own limit, which is never more than this
+ * (§3.1.4). */
 export const MAX_ARMY_UNIT_PER_TYPE_COUNT = 12 as const;
 
 /** Legal initiative values for command cards. */
 export const LEGAL_INITIATIVES: readonly number[] = constructLegalInitiatives();
+
+// Each mode's army limits (§3.1.3). The cost cap counts units and cards
+// alike. The Morale floor keeps an army from being cheap troops that cost
+// nothing when they die (§3.1.6), and an equal count of cards at every
+// initiative keeps it from always going first (§3.1.7).
 
 // For Standard mode
 /** The number of cards of each initiative value that must be included in an army. */
