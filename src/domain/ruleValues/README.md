@@ -7,4 +7,4 @@ Constants the rules share. This layer imports nothing from the domain: `@entitie
 - `ruleValues` — the shared numeric and named constants
 - `traits` — unit traits
 - `gameEffectTypes` — effect type names
-- `commitmentModifiers` — which stats each moment a card may be committed at accepts
+- `commitmentModifiers` — which stats each moment a card may be committed at accepts, and so every stat a card may name
