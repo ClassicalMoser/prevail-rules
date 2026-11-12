@@ -75,6 +75,33 @@ export interface BotGameRecord {
    * wearing down.
    */
   rallyRounds: Record<PlayerSide, number[]>;
+  /**
+   * Where each side's cards were when the game ended: still in hand, played
+   * and waiting to be rallied back, discarded (paid for routs, §8), or
+   * burnt (one for each rally, §10.3.2). A hand is an army's will to fight,
+   * so this is where that will went.
+   */
+  finalCards: Record<PlayerSide, CardTally>;
+}
+
+/** How many of one side's cards are in each place. */
+export interface CardTally {
+  inHand: number;
+  played: number;
+  discarded: number;
+  burnt: number;
+}
+
+/** Counts where one side's cards are. */
+function tallyCards(state: GameState, side: PlayerSide): CardTally {
+  const cards = state.cardState[side];
+  const tally: CardTally = {
+    burnt: cards.burnt.length,
+    discarded: cards.discarded.length,
+    inHand: cards.inHand.length,
+    played: cards.played.length,
+  };
+  return tally;
 }
 
 /** Which of the ways a game ends (§11) ended this one. */
@@ -222,6 +249,10 @@ export function playBotGame(setup: BotGameSetup): BotGameRecord {
     eventCounts,
     events,
     fault,
+    finalCards: {
+      black: tallyCards(state, 'black'),
+      white: tallyCards(state, 'white'),
+    },
     rallyRounds,
     rounds: state.currentRoundState.roundNumber,
     roundsFirst,
