@@ -1,4 +1,4 @@
-import type { StatModifier } from '@entities';
+import type { StatModifier } from '@ruleValues';
 import type { Commitment, GameState } from '@game';
 import {
   createBoardWithCommander,

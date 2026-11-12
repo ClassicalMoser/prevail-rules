@@ -103,9 +103,8 @@ export {
   unitTypeRestrictionsSchema,
   restrictionsSchema,
   roundEffectSchema,
-  statModifierSchema,
-  statModifiers,
 } from './card';
+
 export type {
   Command,
   CommandCard,
@@ -118,7 +117,6 @@ export type {
   UnitTypeRestrictions,
   Restrictions,
   RoundEffect,
-  StatModifier,
   UnitSupport,
 } from './card';
 export { unitSupportSchema } from './card';

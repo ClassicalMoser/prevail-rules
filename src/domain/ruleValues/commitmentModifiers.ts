@@ -1,7 +1,6 @@
+import { z } from 'zod';
+
 /**
- * Each list names stat modifiers; where a list is used, `StatModifier` checks
- * the names, since this layer does not import the domain.
- *
  * The stats a card committed to a melee may apply (§8.4): Attack, which hits
  * harder; Defence, which raises its own unit's thresholds for this fight
  * (§8.5); and Flexibility.
@@ -46,3 +45,32 @@ export const RANGED_DEFENSE_COMMITMENT_MODIFIERS: readonly (
   | 'defense'
   | 'flexibility'
 )[] = ['defense', 'flexibility'];
+
+/**
+ * Every stat a card may name as a modifier: each one that some moment of
+ * commitment accepts, and no other (§8.4). These are the unit stats, except
+ * that the three thresholds (Retreat, Reverse and Rout) are named together as
+ * Defence, which raises all three at once (§8.5).
+ */
+export type StatModifier =
+  | (typeof MELEE_COMMITMENT_MODIFIERS)[number]
+  | (typeof MOVEMENT_COMMITMENT_MODIFIERS)[number]
+  | (typeof RANGED_ATTACK_COMMITMENT_MODIFIERS)[number]
+  | (typeof RANGED_DEFENSE_COMMITMENT_MODIFIERS)[number];
+
+/** Every stat a card may name, each once, gathered from the moments above. */
+export const statModifiers: readonly StatModifier[] = [
+  ...new Set<StatModifier>([
+    ...MELEE_COMMITMENT_MODIFIERS,
+    ...MOVEMENT_COMMITMENT_MODIFIERS,
+    ...RANGED_ATTACK_COMMITMENT_MODIFIERS,
+    ...RANGED_DEFENSE_COMMITMENT_MODIFIERS,
+  ]),
+];
+
+/**
+ * Schema for a stat a card may name. Both sides come from the commitment
+ * lists, so no separate AssertExact drift check is needed.
+ */
+export const statModifierSchema: z.ZodType<StatModifier> =
+  z.enum(statModifiers);

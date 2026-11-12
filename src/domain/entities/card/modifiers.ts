@@ -1,25 +1,7 @@
+import type { StatModifier } from '@ruleValues';
 import type { AssertExact } from '@utils';
+import { statModifierSchema } from '@ruleValues';
 import { z } from 'zod';
-
-/** All stat modifiers that can be used on a card.
- * This includes all unit stats except the defense stats (reverse, retreat, rout),
- * which are replaced with a single 'defense' type.
- */
-export const statModifiers = [
-  'attack',
-  'range',
-  'speed',
-  'flexibility',
-  'defense',
-] as const;
-
-export type StatModifier = (typeof statModifiers)[number];
-
-/**
- * The schema for a stat modifier.
- */
-export const statModifierSchema: z.ZodType<StatModifier> =
-  z.enum(statModifiers);
 
 /**
  * A modifier on a card.

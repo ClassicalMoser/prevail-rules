@@ -30,6 +30,10 @@ export {
   RANGED_DEFENSE_COMMITMENT_MODIFIERS,
 } from './commitmentModifiers';
 
+// Every stat a card may name: those the moments above accept.
+export { statModifiers, statModifierSchema } from './commitmentModifiers';
+export type { StatModifier } from './commitmentModifiers';
+
 // Unit traits.
 export { traits, traitSchema } from './traits';
 export type { Trait } from './traits';

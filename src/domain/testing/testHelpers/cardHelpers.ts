@@ -4,9 +4,8 @@ import type {
   Restrictions,
   UnitSupport,
   Modifier,
-  StatModifier,
 } from '@entities';
-import type { Trait } from '@ruleValues';
+import type { StatModifier, Trait } from '@ruleValues';
 import { tempCommandCards } from '@sampleValues';
 import { randomUUID } from 'node:crypto';
 

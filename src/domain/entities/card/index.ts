@@ -3,8 +3,8 @@ export { commandSchema, commandSizes, commandTypes } from './command';
 export type { Command, CommandSize, CommandType } from './command';
 
 // Modifiers
-export { modifierSchema, statModifierSchema, statModifiers } from './modifiers';
-export type { Modifier, StatModifier } from './modifiers';
+export { modifierSchema } from './modifiers';
+export type { Modifier } from './modifiers';
 
 // Restrictions: no filter, trait filter, unit-type filter, then the union.
 export {

@@ -38,8 +38,6 @@ export {
   unitTypeRestrictionsSchema,
   restrictionsSchema,
   roundEffectSchema,
-  statModifiers,
-  statModifierSchema,
 } from '@entities';
 export {
   engagementType,
@@ -98,7 +96,6 @@ export type {
   Restrictions,
   RoundEffect,
   Coordinate,
-  StatModifier,
   UnitSupport,
 } from '@entities';
 export { unitSupportSchema } from '@entities';
@@ -617,7 +614,7 @@ export {
   getPositionOfUnit,
   getUnitWithPlacementOnBoard,
 } from '@queries';
-export type { Trait } from '@ruleValues';
+export type { StatModifier, Trait } from '@ruleValues';
 export {
   COMMANDER_MOVE_DISTANCE,
   LEGAL_INITIATIVES,
@@ -640,6 +637,8 @@ export {
   MOVEMENT_COMMITMENT_MODIFIERS,
   RANGED_ATTACK_COMMITMENT_MODIFIERS,
   RANGED_DEFENSE_COMMITMENT_MODIFIERS,
+  statModifiers,
+  statModifierSchema,
   traits,
   traitSchema,
 } from '@ruleValues';

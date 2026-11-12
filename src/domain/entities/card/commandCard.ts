@@ -1,15 +1,18 @@
+import type { StatModifier } from '@ruleValues';
 import type { AssertExact } from '@utils';
 import type { Command } from './command';
-import type { StatModifier } from './modifiers';
 import type { RoundEffect } from './roundEffect';
 
 import { z } from 'zod';
 import { commandSchema } from './command';
-import { statModifierSchema } from './modifiers';
 import { roundEffectSchema } from './roundEffect';
 import type { UnitSupport } from './unitSupport';
 import { unitSupportSchema } from './unitSupport';
-import { MAX_INITIATIVE_VALUE, MIN_INITIATIVE_VALUE } from '@ruleValues';
+import {
+  MAX_INITIATIVE_VALUE,
+  MIN_INITIATIVE_VALUE,
+  statModifierSchema,
+} from '@ruleValues';
 
 /** A hidden card, which is not visible to the player. */
 export type HiddenCard = 'hidden';

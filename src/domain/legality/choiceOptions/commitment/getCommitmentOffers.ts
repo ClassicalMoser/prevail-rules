@@ -1,4 +1,5 @@
-import type { CommandCard, PlayerSide, StatModifier } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
+import type { StatModifier } from '@ruleValues';
 import type { CardState } from '@game';
 import { findOwnedPlayerCardState } from '@queries';
 
