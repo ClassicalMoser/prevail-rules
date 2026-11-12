@@ -22,59 +22,65 @@ Audit in this order (dependencies flow downward):
 
 ### `utils/` (`@utils`)
 
-- [x] `utils/` — closed 2026-11-07
-  - [x] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
+- [ ] `utils/` — closed 2026-11-07; reopened 2026-11-12, changed since the read
+  - [ ] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
+  - Arrived after the read: `failFromFault`, `findRefusal`, `haveSameMembers`, `openChoice`
 
 ### `entities/` (`@entities`)
 
-- [x] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`)
-  - [x] `army/`
-  - [x] `attackType/`
-  - [x] `board/`
-  - [x] `card/`
-  - [x] `engagementType/`
-  - [x] `gameModes/`
-  - [x] `line/`
-  - [x] `player/`
-  - [x] `unit/`
-  - [x] `unitLocation/`
-  - [x] `unitPresence/`
+- [ ] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`); reopened 2026-11-12, changed since the read
+  - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`
+  - [ ] `army/`
+  - [ ] `attackType/`
+  - [ ] `board/`
+  - [ ] `card/`
+  - [ ] `engagementType/`
+  - [ ] `gameModes/`
+  - [ ] `line/`
+  - [ ] `player/`
+  - [ ] `unit/`
+  - [ ] `unitLocation/`
+  - [ ] `unitPresence/`
 
 ### `game/` (`@game`)
 
-- [x] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped)
+- [ ] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
+  - Arrived after the read: `gameState/gameStateBase`
   - Changed after the read, for the next one: a game state is four named visibility variants over a shared base, not a type argument (`gameState/`); round state is split into authoritative and seen (`roundState/`); a `Game` holds the authoritative state only.
-  - [x] `cardState/`
-  - [x] `commitment/`
-  - [x] `game/`
-  - [x] `gameState/`
-  - [x] `phases/`
-  - [x] `roundState/`
-  - [x] `substeps/`
-    - [x] `commandResolution/`
-    - [x] `meleeResolution/`
-    - [x] `rallyResolution/`
-    - [x] `combatOutcomes/`
-    - [x] `engagement/`
+  - [ ] `cardState/`
+  - [ ] `commitment/`
+  - [ ] `game/`
+  - [ ] `gameState/`
+  - [ ] `phases/`
+  - [ ] `roundState/`
+  - [ ] `substeps/`
+    - [ ] `commandResolution/`
+    - [ ] `meleeResolution/`
+    - [ ] `rallyResolution/`
+    - [ ] `combatOutcomes/`
+    - [ ] `engagement/`
 
 ### `events/` (`@events`)
 
-- [x] `events/`
+- [ ] `events/` — reopened 2026-11-12, changed since the read
+  - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
-  - [x] `expectedEvent/`
-  - [x] `gameEffects/`
-  - [x] `playerChoices/`
-  - [x] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
+  - [ ] `expectedEvent/`
+  - [ ] `gameEffects/`
+  - [ ] `playerChoices/`
+  - [ ] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
 
 ### `ruleValues/` (`@ruleValues`)
 
-- [x] `ruleValues/` — closed 2026-11-07
-  - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
+- [ ] `ruleValues/` — closed 2026-11-07; reopened 2026-11-12, changed since the read
+  - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
+  - Arrived after the read: `commitmentModifiers`
 
 ### `sampleValues/` (`@sampleValues`)
 
-- [x] `sampleValues/` — closed 2026-11-08
-  - [x] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
+- [ ] `sampleValues/` — closed 2026-11-08; reopened 2026-11-12, changed since the read
+  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
+  - Arrived after the read: `cardsAtInitiative`, `standardStarterArmy`
 
 ### `factories/` (`@factories`)
 
@@ -95,7 +101,7 @@ Walk folders in IDE order (alphabetical).
 
 - [ ] `queries/` — scout (adversarial review) 2026-11-08; marks in place, awaiting human read
   - [ ] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
-  - [ ] `board/` — spaces, `diagonalIsClear`, `findCommanderSpace`
+  - [ ] `board/` — spaces, `diagonalIsClear`, `findCommanderSpace`; `getSpacesApart` and `getGridPosition` arrived after the scout, and `unit/unitMatchesInspirationRange` was rewritten on them
     - [ ] `adjacency/`
     - [ ] `areas/`
     - [ ] `steps/` — forward, forward to the edge, rearward
