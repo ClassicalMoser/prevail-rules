@@ -2,10 +2,10 @@ import type { AttackApplyState, MeleeResolutionState } from '@game';
 import { getMeleeAppliesInResolutionOrder } from '@queries/sequencing/meleeResolution/getMeleeAppliesInResolutionOrder';
 
 /**
- * The melee attack apply still to close, in the order the blows take effect.
+ * The melee attack apply still to close, in the order the attacks take effect.
  *
  * Once every stage of a melee's results has been carried out, each unit's
- * apply is closed in turn. The first player's blow lands first, so the second
+ * apply is closed in turn. The first player's attack takes effect first, so the second
  * player's unit is closed first (§7.5.6). Both the sequencer, asking what is
  * due, and the procedure that closes it ask this, so the order is written once.
  *

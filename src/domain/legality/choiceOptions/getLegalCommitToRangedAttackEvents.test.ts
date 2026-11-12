@@ -109,7 +109,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   });
 
   it('a card naming Range and Attack is offered with both, since it counts for the whole shot', () => {
-    // One card, two stats (§8.2): its Range for the aim, its Attack for the blow.
+    // One card, two stats (§8.2): its Range for the aim, its Attack for the attack value.
     const rangeAndAttackCard = createTestCard({
       modifiers: ['range', 'attack'],
     });

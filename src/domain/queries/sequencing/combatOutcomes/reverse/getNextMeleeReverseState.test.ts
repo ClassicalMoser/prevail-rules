@@ -16,7 +16,7 @@ describe('getNextMeleeReverseState function', () => {
   /**
    * A melee where both sides are reversing. `firstPlayer` says which colour
    * holds the initiative, so the tests can show that the answer follows the
-   * order the blows land in (the second player's unit first, §7.5.6) and not
+   * order the attacks take effect in (the second player's unit first, §7.5.6) and not
    * the colour.
    */
   function meleeWithReverses(
@@ -61,7 +61,7 @@ describe('getNextMeleeReverseState function', () => {
     return { first, second, state: updatePhaseState(empty, phase) };
   }
 
-  it("returns the second player's reverse first, since the first player's blow lands first", () => {
+  it("returns the second player's reverse first, since the first player's attack takes effect first", () => {
     // §7.5.6: both reverses are due and neither has its facing yet.
     const { second, state } = meleeWithReverses('white', {});
 

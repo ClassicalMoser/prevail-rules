@@ -27,7 +27,7 @@ export interface MeleeResolutionState {
    * The state of the first player's attack apply.
    *
    * TODO(misleading): "the first player's attack apply" reads as the first
-   * player's blow, but the slot holds the result applied to the first
+   * player's attack, but the slot holds the result applied to the first
    * player's unit, as the substeps README says: `updateMeleeAttackApplyState`
    * writes it for the player whose unit takes the result. Settled with the
    * open question on `getMeleeAttackApplyState`'s `player`.

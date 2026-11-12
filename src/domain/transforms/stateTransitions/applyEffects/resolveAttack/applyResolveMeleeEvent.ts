@@ -6,7 +6,7 @@ import { updateMeleeAttackApplyState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveMeleeEvent to the game state.
- * Creates AttackApplyStates for both players. A threshold the blow reached marks
+ * Creates AttackApplyStates for both players. A threshold the attack reached marks
  * its rout, retreat or reverse `'pending'`; one it did not reach is
  * `'bypassed'`, so an attack that reaches none writes a completed apply. No
  * substep is written here: each opener writes its own when its turn comes.

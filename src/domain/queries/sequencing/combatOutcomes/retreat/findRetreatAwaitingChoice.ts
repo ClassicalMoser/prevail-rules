@@ -22,7 +22,7 @@ import { findRetreatLocation } from './findRetreatLocation';
 export function findRetreatAwaitingChoice(
   state: GameState,
 ): RetreatLocation | undefined {
-  // In a melee the first player's blow lands first, so the second player's
+  // In a melee the first player's attack takes effect first, so the second player's
   // unit suffers first (§7.5.6); elsewhere only one unit is retreating, and
   // the order asks after it all the same.
   const firstPlayer = state.currentInitiative;

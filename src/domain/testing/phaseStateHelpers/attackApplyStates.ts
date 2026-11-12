@@ -145,7 +145,7 @@ export function createAttackApplyStateWithRout(
   defendingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
-  // A blow that reached only Rout, so the rout is the one result due. A blow
+  // An attack that reached only Rout, so the rout is the one result due. An attack
   // that also reached Retreat or Reverse carries those out first (§7.5.2).
   const measured: AttackResult = {
     unitRetreated: false,

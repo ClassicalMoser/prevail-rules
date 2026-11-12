@@ -39,7 +39,7 @@ export function applyAttackValue(
   );
 
   // The attack value is finished here, so this is where it floors at zero
-  // (§7.1.4): a blow that sums below zero still meets a threshold of 0.
+  // (§7.1.4): an attack value that sums below zero still meets a threshold of 0.
   const finishedAttackValue = Math.max(0, attackValue);
 
   // Check if the unit is routed, retreated, or reversed

@@ -32,7 +32,7 @@ export function getExpectedMeleeResolutionEvent(
   const { firstPlayerAttackApplyState, secondPlayerAttackApplyState } =
     meleeState;
 
-  // Each player may commit a card before the blows are counted, the first
+  // Each player may commit a card before the attack values are counted, the first
   // player first and the second after (§7.2.2).
   const owingCommitment = findPlayerOwingMeleeCommitment(gameState, meleeState);
   if (owingCommitment !== undefined) {
@@ -56,8 +56,8 @@ export function getExpectedMeleeResolutionEvent(
   }
 
   // Both units' results are carried out a stage at a time: both retreats,
-  // then both reverses, then both routs. The first player's blow lands
-  // first, so the second player's unit suffers first in each (§7.5.6). A unit
+  // then both reverses, then both routs. The first player's attack takes
+  // effect first, so the second player's unit suffers first in each (§7.5.6). A unit
   // that has already fallen back no longer keeps the other engaged, so the
   // other can reverse; a unit still to rout is on the board until its stage,
   // so the one engaged with it does not.

@@ -14,7 +14,7 @@ export interface MeleeCombatants {
 /**
  * The two units fighting the melee being resolved: the white and the black unit
  * engaged in its space (§7.1). Read from the board, which holds them, so the
- * procedure that measures the blows and the transform that records them read
+ * procedure that measures the attacks and the transform that records them read
  * the same two units.
  *
  * @param state - The game state, resolving a melee

@@ -70,7 +70,7 @@ describe('getNextMeleeRoutState function', () => {
   });
 
   it("returns the second player's rout first when both are owed (§7.5.6)", () => {
-    // The first player's blow lands first, so the second player's unit routs
+    // The first player's attack takes effect first, so the second player's unit routs
     // first.
     const firstRout = createRoutState(
       'black',

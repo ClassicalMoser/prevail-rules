@@ -17,7 +17,7 @@ import {
 /**
  * A melee carries its results out a stage at a time (§7.5.6), played through
  * the engines: every retreat, then every reverse, then every rout. In each
- * stage the first player's blow lands first, so the second player's unit
+ * stage the first player's attack takes effect first, so the second player's unit
  * suffers first. What the order changes is whether a unit that is only hit
  * to reverse is still engaged when its turn comes (§7.5.5), and whose Morale
  * is paid first when both rout (§9.3.3).
@@ -135,7 +135,7 @@ describe('a melee carried out a stage at a time', () => {
   });
 
   it('when both units rout, the second player pays its Morale first', () => {
-    // Each blow reached the other's Rout. Black's blow lands first, so white's
+    // Each attack reached the other's Rout. Black's attack takes effect first, so white's
     // unit routs first, and white is the first asked to discard (§9.3.3).
     const { next } = meleeResolvedWith({
       blackRouted: true,
@@ -165,7 +165,7 @@ describe('a melee carried out a stage at a time', () => {
   });
 
   it('a second-player unit that cannot fall back routs in the retreat stage, before the first player’s unit falls back', () => {
-    // Both blows reach the other's Retreat. A third black unit stands on D-5,
+    // Both attacks reach the other's Retreat. A third black unit stands on D-5,
     // behind white's unit and facing it, so white's line of withdrawal is cut
     // (§9.1.5); black's own unit has open ground behind it on F-5.
     const { state, next } = meleeResolvedWith(
@@ -187,7 +187,7 @@ describe('a melee carried out a stage at a time', () => {
   });
 
   it('a first-player unit that cannot fall back routs after the second player’s unit has fallen back', () => {
-    // Both blows reach the other's Retreat. A third white unit stands on F-5,
+    // Both attacks reach the other's Retreat. A third white unit stands on F-5,
     // behind black's unit and facing it, so black's line of withdrawal is cut
     // (§9.1.5); white's own unit has open ground behind it on D-5.
     const { state, next } = meleeResolvedWith(

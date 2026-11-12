@@ -4,7 +4,7 @@ import { getOtherPlayer } from '@queries/player';
 
 /**
  * The player whose commitment to a melee is next owed (§7.2.2). Each player
- * may commit a card for their unit before the blows are counted, the first
+ * may commit a card for their unit before the attack values are counted, the first
  * player first and the second after; once both have committed or refused,
  * nobody is asked.
  *

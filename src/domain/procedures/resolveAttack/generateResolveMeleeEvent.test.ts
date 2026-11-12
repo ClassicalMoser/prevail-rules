@@ -68,7 +68,7 @@ describe('generateResolveMeleeEvent function', () => {
     /**
      * Two cavalry units engaged on E-5 (Attack 4; Retreat 3, Reverse 5,
      * Rout 7). Black, the first player, commits a card for +1 Attack, so its
-     * blow on white is 5. White commits a card naming `whiteCommits`.
+     * attack value against white is 5. White commits a card naming `whiteCommits`.
      */
     function cavalryMelee(whiteCommits: ('attack' | 'defense')[]): GameState {
       const state = updateCurrentInitiative(
@@ -106,15 +106,15 @@ describe('generateResolveMeleeEvent function', () => {
       );
     }
 
-    it("without it, a blow that reaches the unit's Reverse turns it", () => {
-      // Black's blow of 5 meets white's Reverse of 5.
+    it("without it, an attack that reaches the unit's Reverse turns it", () => {
+      // Black's attack value of 5 meets white's Reverse of 5.
       const event = generateResolveMeleeEvent(cavalryMelee(['attack']));
 
       expect(event.whiteAttackResult.unitReversed).toBe(true);
     });
 
-    it("with it, the unit's thresholds rise by 1 and the same blow does not turn it", () => {
-      // White's Reverse is 6 for this fight, above black's blow of 5. Its
+    it("with it, the unit's thresholds rise by 1 and the same attack does not turn it", () => {
+      // White's Reverse is 6 for this fight, above black's attack value of 5. Its
       // Retreat of 4 is still reached.
       const event = generateResolveMeleeEvent(cavalryMelee(['defense']));
 
@@ -123,9 +123,9 @@ describe('generateResolveMeleeEvent function', () => {
     });
 
     it("does nothing to the enemy's thresholds", () => {
-      // White's card names Attack and Defence: its blow on black is 5, and
+      // White's card names Attack and Defence: its attack value against black is 5, and
       // black's Reverse stays 5, so black turns. Had the Defence reached
-      // black, its Reverse would be 6 and the blow would fall short.
+      // black, its Reverse would be 6 and the attack would fall short.
       const event = generateResolveMeleeEvent(
         cavalryMelee(['attack', 'defense']),
       );
@@ -185,13 +185,13 @@ describe('generateResolveMeleeEvent function', () => {
       );
     }
 
-    it('without one, a blow of 4 does not turn the enemy', () => {
+    it('without one, an attack value of 4 does not turn the enemy', () => {
       const event = generateResolveMeleeEvent(cavalryMeleeWithFriend(false));
 
       expect(event.whiteAttackResult.unitReversed).toBe(false);
     });
 
-    it('a friend looking straight at the fighter adds 2, so the same blow turns the enemy', () => {
+    it('a friend looking straight at the fighter adds 2, so the same attack turns the enemy', () => {
       // 4 + 2 = 6 meets white's Reverse of 5.
       const event = generateResolveMeleeEvent(cavalryMeleeWithFriend(true));
 

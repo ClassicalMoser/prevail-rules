@@ -4,7 +4,7 @@ import { createMeleeResolutionState, createTestUnit } from '@testing';
 import { getMeleeAppliesInResolutionOrder } from './getMeleeAppliesInResolutionOrder';
 
 /**
- * The two units' results take effect in the order the blows land (§7.5.6):
+ * The two units' results take effect one after the other (§7.5.6):
  * the first player strikes first, so the second player's unit suffers first.
  */
 describe('getMeleeAppliesInResolutionOrder function', () => {
@@ -28,7 +28,7 @@ describe('getMeleeAppliesInResolutionOrder function', () => {
 
     const inOrder = getMeleeAppliesInResolutionOrder(melee);
 
-    // White's unit, the second player's, is hit first by black's blow.
+    // White's unit, the second player's, is hit first by black's attack.
     expect(inOrder).toStrictEqual([white, black]);
   });
 

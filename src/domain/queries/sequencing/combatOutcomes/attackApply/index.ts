@@ -14,7 +14,7 @@ export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
 // Selection. A rule of the game decides which candidate is answered about.
 
-// The melee attack-apply still to close, in the order the blows take effect.
+// The melee attack-apply still to close, in the order the attacks take effect.
 export { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClose';
 export { getAttackApplyToClose } from './getAttackApplyToClose';
 

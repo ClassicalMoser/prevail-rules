@@ -8,7 +8,7 @@ export const COMPLETE_ATTACK_APPLY_EFFECT_TYPE = 'completeAttackApply' as const;
 /**
  * Closes the attack-apply substep and advances sequencing (routed / reverse / retreat / etc.).
  * It carries nothing: which apply closes is the state's to name. A shot has one, and a melee's
- * two close in the order their blows take effect (§7.5.6).
+ * two close in the order their attacks take effect (§7.5.6).
  */
 export interface CompleteAttackApplyEvent {
   /** The type of the event. */

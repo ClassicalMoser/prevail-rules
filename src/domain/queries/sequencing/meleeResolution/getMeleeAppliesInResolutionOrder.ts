@@ -3,7 +3,7 @@ import type { AttackApplyState, MeleeResolutionState } from '@game';
 /**
  * The two units' attack applies in the order their results take effect.
  *
- * Both sides strike at once, but the first player's blow lands first
+ * Both sides strike at once, but the first player's attack takes effect first
  * (§7.5.6), so it is the second player's unit that suffers each stage's result
  * first. The slots are named for whose unit holds the result — the first
  * player's apply holds the first player's unit — which makes the resolution

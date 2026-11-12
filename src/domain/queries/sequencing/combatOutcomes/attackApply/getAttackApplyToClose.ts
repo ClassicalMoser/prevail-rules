@@ -7,7 +7,7 @@ import { getRangedAttackApplyState } from './getRangedAttackApplyState';
 
 /**
  * The attack apply that `completeAttackApply` closes next: the ranged attack's
- * one apply, or, in a melee, the first not yet closed in the order the blows
+ * one apply, or, in a melee, the first not yet closed in the order the attacks
  * take effect (§7.5.6). The sequencer asks for the close when the apply's
  * results are carried out, and both the procedure that builds the effect and
  * the transform that applies it ask this, so which apply it is has one answer.

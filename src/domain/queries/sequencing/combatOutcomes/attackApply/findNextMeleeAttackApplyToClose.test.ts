@@ -8,7 +8,7 @@ import { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClo
 
 /**
  * FindNextMeleeAttackApplyToClose: once a melee's results are carried out, each
- * unit's apply is closed in the order the blows take effect, the second
+ * unit's apply is closed in the order the attacks take effect, the second
  * player's unit first (§7.5.6).
  */
 describe('findNextMeleeAttackApplyToClose function', () => {
@@ -81,7 +81,7 @@ describe('findNextMeleeAttackApplyToClose function', () => {
   });
 
   it('returns nothing before both applies are written, because the order is not yet known', () => {
-    // The first player's blow has not been measured yet.
+    // The first player's attack has not been measured yet.
     const melee = createMeleeResolutionState(state, {
       firstPlayerAttackApplyState: 'pending',
       secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(

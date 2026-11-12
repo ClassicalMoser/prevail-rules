@@ -74,14 +74,14 @@ describe('applyAttackValue function', () => {
 
   describe('an attack value that sums below zero (§7.1.4)', () => {
     it('counts as zero, so it still meets a Reverse of 0', () => {
-      // Velites print a Reverse of 0. A blow whose raw sum is −2 lands as 0,
+      // Velites print a Reverse of 0. An attack value whose raw sum is −2 counts as 0,
       // and 0 meets 0.
       const unit = createTestUnit('black', { reverse: 0, rout: 3 });
       expect(applyAttackValue(gameState, -2, unit).unitReversed).toBe(true);
     });
 
     it('counts as zero, and no more: it does not meet a Retreat of 1', () => {
-      // The same blow is floored to 0, not raised: a Retreat of 1 holds.
+      // The same attack value is floored to 0, not raised: a Retreat of 1 holds.
       const unit = createTestUnit('black', { retreat: 1, rout: 3 });
       expect(applyAttackValue(gameState, -2, unit).unitRetreated).toBe(false);
     });

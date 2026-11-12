@@ -3,12 +3,9 @@ import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
 /**
- * What an attack's blow reached against the defender's thresholds (§7.1.5):
+ * What an attack reached against the defender's thresholds (§7.5.1):
  * Retreat, Reverse and Rout, each reached or not. The game's results follow
  * from these in stages (§7.5.2).
- *
- * TODO(misleading): §7.1.5 is the deficit lowering thresholds; meeting a
- * threshold is §7.5.1. Settled by correcting the reference.
  */
 export interface AttackResult {
   /** Whether the unit is routed. */

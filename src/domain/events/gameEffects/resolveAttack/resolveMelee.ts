@@ -9,7 +9,7 @@ export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
 
 /**
  * Deterministic melee resolution after engagement, supports, and committed cards.
- * Both blows land at once (§7.1); the event records what each reached against
+ * Both units attack at once (§7.1); the event records what each reached against
  * the unit it struck, by that unit's colour. The two units are the ones engaged
  * in the melee's space, which the state holds, so the event carries only the
  * results. The retreats a result calls for are not recorded here: each is worked
@@ -24,21 +24,21 @@ export interface ResolveMeleeEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
-  /** What Black's blow reached against White's unit. */
+  /** What Black's attack reached against White's unit. */
   whiteAttackResult: AttackResult;
-  /** What White's blow reached against Black's unit. */
+  /** What White's attack reached against Black's unit. */
   blackAttackResult: AttackResult;
 }
 
 const _resolveMeleeEventSchemaObject = z
   .object({
-    /** What White's blow reached against Black's unit. */
+    /** What White's attack reached against Black's unit. */
     blackAttackResult: attackResultSchema,
     /** The type of game effect. */
     effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
     /** The type of the event. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** What Black's blow reached against White's unit. */
+    /** What Black's attack reached against White's unit. */
     whiteAttackResult: attackResultSchema,
   })
   .strict();

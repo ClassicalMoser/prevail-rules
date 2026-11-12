@@ -2,7 +2,7 @@ import { createOpenedMeleeResolutionState } from './createOpenedMeleeResolutionS
 
 /**
  * A melee is fought one space at a time: each player may commit a card, then
- * both blows land and their results are applied (§4.4.2, §7.5).
+ * both attacks take effect and their results are applied (§4.4.2, §7.5).
  */
 describe('createOpenedMeleeResolutionState function', () => {
   it('opens a melee at its space with nothing committed and nothing struck', () => {

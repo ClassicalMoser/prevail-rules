@@ -14,7 +14,7 @@ import {
 } from '@queries/unitPresence';
 
 /**
- * What a fighter's friends add to its blow in melee (§7.3.1). A friend lends a
+ * What a fighter's friends add to its attack in melee (§7.3.1). A friend lends a
  * hand when it stands beside the fighter, not in its back spaces, free of a
  * fight of its own, and — on a diagonal — with the way between them open.
  * How much it lends depends on where the fighter lies from the friend's point

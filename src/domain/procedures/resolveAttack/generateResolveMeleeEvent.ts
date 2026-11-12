@@ -70,9 +70,9 @@ export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
 
   const totalBlackAttackValue = blackAttackValue + blackSupportValue;
 
-  // Each side's blow is measured against the other unit's thresholds. A
+  // Each side's attack is measured against the other unit's thresholds. A
   // Defence card committed by a side raises its own unit's thresholds for
-  // this fight (§8.5); the rest of its card does nothing to the enemy's blow.
+  // this fight (§8.5); the rest of its card does nothing to the enemy's attack.
   // White unit attacks black unit
   const blackUnitResult = applyAttackValue(
     state,

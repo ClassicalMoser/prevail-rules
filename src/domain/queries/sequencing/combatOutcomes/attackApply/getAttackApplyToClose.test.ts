@@ -19,7 +19,7 @@ const nothingReached = {
 
 /**
  * `completeAttackApply` closes one apply: a shot's only one, or the next of a
- * melee's two in the order the blows take effect (§7.5.6).
+ * melee's two in the order the attacks take effect (§7.5.6).
  */
 describe('getAttackApplyToClose function', () => {
   it('reads the one apply of a shot', () => {
@@ -48,7 +48,7 @@ describe('getAttackApplyToClose function', () => {
     const black = createTestUnit('black', { attack: 2 });
     const blackApply = createAttackApplyState(black, nothingReached);
     const whiteApply = createAttackApplyState(white, nothingReached);
-    // Black holds the initiative here, so black's blow lands first and
+    // Black holds the initiative here, so black's attack takes effect first and
     // white's unit, the second player's, suffers it first (§7.5.6).
     const meleeWith = (secondApplyDone: boolean) =>
       updatePhaseState(

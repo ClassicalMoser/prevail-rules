@@ -125,7 +125,7 @@ describe('getCurrentUnitStat function', () => {
     ];
 
     it('gives both, where the moment reads both', () => {
-      // A shot reads Range for its reach and Attack for its blow: each
+      // A shot reads Range for its reach and Attack for its attack value: each
       // takes its own +1. Velites print Range 2 and Attack 2.
       const unit = createTestUnit('black', { attack: 2, range: 2 });
       const gameState = stateWithUnit(unit);

@@ -20,7 +20,7 @@ const routReached = {
 /**
  * A retreat, reverse or rout opens on the apply whose slot for that stage is
  * still waiting: a shot's only apply, or in a melee the first in the order the
- * blows take effect, the second player's unit first (§7.5.6).
+ * attacks take effect, the second player's unit first (§7.5.6).
  */
 describe('getAttackApplyAwaitingOpen function', () => {
   /** A melee with Black holding the initiative and both applies as given. */

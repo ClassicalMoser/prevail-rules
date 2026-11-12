@@ -96,7 +96,7 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('rout priority', () => {
     it('a routed unit with nothing below its rout resolves its rout', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      // The blow reached only Rout, and the rout is open, so it is the only
+      // The attack reached only Rout, and the rout is open, so it is the only
       // thing left to resolve.
       const attackApplyState = createAttackApplyStateWithNothingDue(unit, {
         attackResult: {

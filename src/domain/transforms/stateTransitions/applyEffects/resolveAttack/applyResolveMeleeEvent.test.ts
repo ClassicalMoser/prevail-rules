@@ -55,7 +55,7 @@ describe('applyResolveMeleeEvent function', () => {
     );
   }
 
-  /** What a blow reached when it reached nothing. */
+  /** What an attack reached when it reached nothing. */
   const nothingReached: AttackResult = {
     unitRetreated: false,
     unitReversed: false,

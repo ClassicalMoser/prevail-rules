@@ -34,7 +34,7 @@ function isAwaitingOpen(
  *
  * A shot has one apply. A melee carries each stage out for both units before
  * the next (§7.5.6), the second player's unit first, since the first player's
- * blow lands first; the sequencer asks for an open only once every unit before
+ * attack takes effect first; the sequencer asks for an open only once every unit before
  * it in that order has nothing left due in the stage. So the apply to open is
  * the first, in resolution order, whose slot for the stage is still waiting.
  *
