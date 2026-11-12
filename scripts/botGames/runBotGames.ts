@@ -66,5 +66,5 @@ export async function runBotGames(): Promise<CommandResult> {
     failure: faults > 0 ? `${faults} bot games ended in a fault` : null,
     output: describeSummary(mode, summary).join('\n'),
   };
-  return Promise.resolve(result);
+  return result;
 }

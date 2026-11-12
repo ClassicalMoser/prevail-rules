@@ -93,8 +93,8 @@ export function chooseSetup(
   const behind = (space: Coordinate): boolean =>
     deploymentRank(context, space).row > frontRow;
   const behindTheLine =
-    spaces.slice(units.length).find(behind) ??
-    spaces.find(behind) ??
+    spaces.slice(units.length).find((space) => behind(space)) ??
+    spaces.find((space) => behind(space)) ??
     firstSpace;
   const event: SetupUnitsEvent = {
     choiceType: 'setupUnits',
