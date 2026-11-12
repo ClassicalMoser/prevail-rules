@@ -7,6 +7,7 @@ import types from `@entities`. It does not import their values.
 
 - `tempCommandCards`
 - `tempUnits`
+- `cardsAtInitiative` — the first sample cards at an initiative, which the starter armies are built from, so each holds the same count at every value (§3.1.7)
 - `miniStarterArmy` — a starter army each side may bring to a mini game
 - `standardStarterArmy` — a starter army each side may bring to a standard game
 

@@ -17,6 +17,11 @@ function makeStandardStarterArmy(id: string, name: string): Army {
 
   // Standard asks for exactly three cards at each initiative, 1 through 4.
   // Pick by initiative value from the sample catalog — not by printed name.
+  // TODO(wrong): picking by initiative alone takes Fearless Velites, whose
+  // unit support names Velites, which this army does not field; that card
+  // can never hold a unit at a rally's support check (§10.4). Settled by
+  // choosing cards whose support this army can use, or by deciding a dead
+  // card in a sample hand does not matter.
   const commandCards: CommandCard[] = [
     ...cardsAtInitiative(1, 3),
     ...cardsAtInitiative(2, 3),
@@ -28,11 +33,13 @@ function makeStandardStarterArmy(id: string, name: string): Army {
   return army;
 }
 
+/** The standard starter army White brings in samples and tests. */
 export const whiteStandardStarterArmy: Army = makeStandardStarterArmy(
   '50000000-0000-4000-8000-000000000005',
   'White',
 );
 
+/** The standard starter army Black brings in samples and tests. */
 export const blackStandardStarterArmy: Army = makeStandardStarterArmy(
   '60000000-0000-4000-8000-000000000006',
   'Black',

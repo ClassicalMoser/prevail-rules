@@ -17,6 +17,11 @@ function makeMiniStarterArmy(id: string, name: string): Army {
 
   // Mini asks for exactly two cards at each initiative, 1 through 4.
   // Pick by initiative value from the sample catalog — not by printed name.
+  // TODO(wrong): picking by initiative alone takes Fearless Velites, whose
+  // unit support names Velites, which this army does not field; that card
+  // can never hold a unit at a rally's support check (§10.4). Settled by
+  // choosing cards whose support this army can use, or by deciding a dead
+  // card in a sample hand does not matter.
   const commandCards: CommandCard[] = [
     ...cardsAtInitiative(1, 2),
     ...cardsAtInitiative(2, 2),
@@ -28,11 +33,13 @@ function makeMiniStarterArmy(id: string, name: string): Army {
   return army;
 }
 
+/** The mini starter army White brings in samples and tests. */
 export const whiteMiniStarterArmy: Army = makeMiniStarterArmy(
   '30000000-0000-4000-8000-000000000003',
   'White',
 );
 
+/** The mini starter army Black brings in samples and tests. */
 export const blackMiniStarterArmy: Army = makeMiniStarterArmy(
   '40000000-0000-4000-8000-000000000004',
   'Black',
