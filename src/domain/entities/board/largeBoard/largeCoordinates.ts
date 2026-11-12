@@ -5,7 +5,6 @@
  * union. See {@link smallBoardCoordinates}.
  */
 
-import type { AssertExact } from '@utils';
 import type { LargeBoardColumnNumber } from './largeColumnNumbers';
 
 import type { LargeBoardRowLetter } from './largeRowLetters';
@@ -30,15 +29,6 @@ export const largeBoardCoordinates: readonly LargeBoardCoordinate[] =
 
 const _largeBoardCoordinatesSchemaObject = z.enum(largeBoardCoordinates);
 
-type LargeBoardCoordinatesSchemaType = z.infer<
-  typeof _largeBoardCoordinatesSchemaObject
->;
-
 /** Zod enum over {@link largeBoardCoordinates}. */
 export const largeBoardCoordinateSchema: z.ZodType<LargeBoardCoordinate> =
   _largeBoardCoordinatesSchemaObject;
-
-const _assertExactLargeBoardCoordinates: AssertExact<
-  LargeBoardCoordinate,
-  LargeBoardCoordinatesSchemaType
-> = true;

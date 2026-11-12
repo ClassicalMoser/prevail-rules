@@ -11,7 +11,6 @@
  * index lookups returning `-1` for out-of-range parts.
  */
 
-import type { AssertExact } from '@utils';
 import type { LargeBoardCoordinate } from './largeBoard/largeCoordinates';
 import { largeBoardCoordinates } from './largeBoard/largeCoordinates';
 import type { SmallBoardCoordinate } from './smallBoard/smallCoordinates';
@@ -24,9 +23,9 @@ import { z } from 'zod';
 /**
  * Any coordinate string that appears on some board size (`"A-1"` … `"X-36"`).
  *
- * Declared as a union of the three size products for documentation and
- * AssertExact against the Zod enum. Because the sets nest, this is the same
- * set of strings as {@link LargeBoardCoordinate}.
+ * Declared as a union of the three size products for documentation. Because
+ * the sets nest, this is the same set of strings as
+ * {@link LargeBoardCoordinate}.
  */
 export type Coordinate =
   | StandardBoardCoordinate
@@ -48,14 +47,9 @@ export const allCoordinates: readonly Coordinate[] = [
 
 const _coordinateSchemaObject = z.enum(allCoordinates);
 
-type CoordinateSchemaType = z.infer<typeof _coordinateSchemaObject>;
-
 /**
  * Zod enum over every known board coordinate.
  * Used at parse boundaries when a value must be some coordinate, independent
  * of which board size is in play.
  */
 export const coordinateSchema: z.ZodType<Coordinate> = _coordinateSchemaObject;
-
-const _assertExactCoordinate: AssertExact<Coordinate, CoordinateSchemaType> =
-  true;

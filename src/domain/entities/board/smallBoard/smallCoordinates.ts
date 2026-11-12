@@ -8,7 +8,6 @@
  * same letter and number lists the type is made from; no assertion is needed.
  */
 
-import type { AssertExact } from '@utils';
 import type { SmallBoardColumnNumber } from './smallColumnNumbers';
 
 import type { SmallBoardRowLetter } from './smallRowLetters';
@@ -33,15 +32,6 @@ export const smallBoardCoordinates: readonly SmallBoardCoordinate[] =
 
 const _smallBoardCoordinatesSchemaObject = z.enum(smallBoardCoordinates);
 
-type SmallBoardCoordinatesSchemaType = z.infer<
-  typeof _smallBoardCoordinatesSchemaObject
->;
-
 /** Zod enum over {@link smallBoardCoordinates}. */
 export const smallBoardCoordinateSchema: z.ZodType<SmallBoardCoordinate> =
   _smallBoardCoordinatesSchemaObject;
-
-const _assertExactSmallBoardCoordinates: AssertExact<
-  SmallBoardCoordinate,
-  SmallBoardCoordinatesSchemaType
-> = true;

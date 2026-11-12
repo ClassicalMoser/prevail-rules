@@ -5,7 +5,6 @@
  * the shared {@link Coordinate} union. See {@link smallBoardCoordinates}.
  */
 
-import type { AssertExact } from '@utils';
 import type { StandardBoardColumnNumber } from './standardColumnNumbers';
 import type { StandardBoardRowLetter } from './standardRowLetters';
 
@@ -27,15 +26,6 @@ export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
 
 const _standardBoardCoordinatesSchemaObject = z.enum(standardBoardCoordinates);
 
-type StandardBoardCoordinatesSchemaType = z.infer<
-  typeof _standardBoardCoordinatesSchemaObject
->;
-
 /** Zod enum over {@link standardBoardCoordinates}. */
 export const standardBoardCoordinateSchema: z.ZodType<StandardBoardCoordinate> =
   _standardBoardCoordinatesSchemaObject;
-
-const _assertExactStandardBoardCoordinates: AssertExact<
-  StandardBoardCoordinate,
-  StandardBoardCoordinatesSchemaType
-> = true;
