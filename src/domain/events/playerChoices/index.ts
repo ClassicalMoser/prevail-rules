@@ -66,6 +66,8 @@ export type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
 export { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
 
 // Choose which legal retreat square to take.
+// TODO(misleading): the board has spaces, not squares, and the choice is
+// among retreats of equal size (§9.1.3), named by their paths.
 export type { ChooseRetreatOptionEvent } from './chooseRetreatOption';
 export { chooseRetreatOptionEventSchema } from './chooseRetreatOption';
 

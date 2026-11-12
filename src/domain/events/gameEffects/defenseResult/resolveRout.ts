@@ -27,6 +27,8 @@ export interface ResolveRoutEvent {
   /** The player whose units routed, who pays the penalty (§9.3.2). */
   player: PlayerSide;
   /** The penalty for routing the units (sum of all units' rout penalties). */
+  // TODO(misleading): the rules call what a rout costs Morale (§9.3.2), not a
+  // rout penalty. Settled by naming it the Morale owed.
   penalty: number;
 }
 

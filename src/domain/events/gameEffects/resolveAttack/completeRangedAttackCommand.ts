@@ -5,6 +5,10 @@ import { z } from 'zod';
 export const COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE =
   'completeRangedAttackCommand' as const;
 
+/**
+ * Ends a Shoot order once none of the units it ordered is left to shoot
+ * (§4.3.11).
+ */
 export interface CompleteRangedAttackCommandEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

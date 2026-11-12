@@ -7,7 +7,10 @@ import { z } from 'zod';
 /** The type of the choose card event. */
 export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard' as const;
 
-/** An event to choose a card from the player's hand. */
+/**
+ * An event to choose a card from the player's hand.
+ * Both players choose at once and in secret, face down (§4.1.1).
+ */
 export interface ChooseCardEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

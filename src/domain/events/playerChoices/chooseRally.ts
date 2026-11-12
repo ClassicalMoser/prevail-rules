@@ -7,7 +7,13 @@ import { z } from 'zod';
 /** The type of the choose rally event. */
 export const CHOOSE_RALLY_CHOICE_TYPE = 'chooseRally' as const;
 
-/** An event to choose a rally from the player's hand. */
+/**
+ * An event to choose a rally from the player's hand.
+ *
+ * TODO(misleading): nothing is chosen from the hand; the event says whether
+ * the player rallies at Cleanup (§10.3.1), and the card burnt is drawn at
+ * random (§10.3.2). Settled by describing it as the decision to rally.
+ */
 export interface ChooseRallyEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

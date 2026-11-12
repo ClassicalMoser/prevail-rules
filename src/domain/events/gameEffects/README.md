@@ -12,4 +12,9 @@ Zod schemas and TypeScript types for each effect, discriminated in [`gameEffect.
 | [`movement/`](./movement/)           | Complete unit / command movement; start / flank / engage-retreat engagement                           |
 | [`resolveAttack/`](./resolveAttack/) | Resolve melee / ranged, complete attack-apply, melee resolution, complete ranged command              |
 
+TODO(misleading): the table predates later changes. `completePhase/` no longer
+has a cleanup completion (the round's end is `roundEnd`), `movement/` now also
+holds `openRetreatFromEngagement`, and `resolveAttack/` holds `completeRangedAttack`,
+one shot's end. Settled by bringing the table up to date.
+
 Use the root [`index.ts`](./index.ts) barrel from `@events`; avoid deep imports from outside this package.

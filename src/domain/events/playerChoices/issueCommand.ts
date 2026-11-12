@@ -32,6 +32,12 @@ export interface LineOrderSelection {
 /** What an order is given to: some units, or one line. */
 export type OrderSelection = UnitsOrderSelection | LineOrderSelection;
 
+/**
+ * One order from the card in play (§4.3): which of the card's commands is
+ * used, and the units or the line it is given to. A units order names up to
+ * the card's number of units (§4.3.2); a lines order is one line per order
+ * (§4.3.3).
+ */
 export interface IssueCommandEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -39,7 +45,11 @@ export interface IssueCommandEvent {
   choiceType: typeof ISSUE_COMMAND_CHOICE_TYPE;
   /** The player who is issuing the commands. */
   player: PlayerSide;
-  /** The commands to issue. */
+  /**
+   * The commands to issue.
+   * TODO(misleading): this is the one command the order uses, not several.
+   * Settled by naming it in the singular.
+   */
   command: Command;
   /** The units, or the line, the order is given to. */
   selection: OrderSelection;

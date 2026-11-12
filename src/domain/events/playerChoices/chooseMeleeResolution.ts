@@ -8,6 +8,12 @@ import { z } from 'zod';
 export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
   'chooseMeleeResolution' as const;
 
+/**
+ * In Phase 4 the first player names the engaged space to fight next, until
+ * none are left (§4.4.2, §7.2.4). The order is a real choice: support is
+ * counted afresh for each fight, so clearing one unit away can change every
+ * fight after it (§7.3.3).
+ */
 export interface ChooseMeleeResolutionEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

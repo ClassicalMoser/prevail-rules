@@ -12,7 +12,11 @@ export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
  * After performing a rally, they must check unit support.
  */
 
-/** A command to resolve a rally. */
+/**
+ * A command to resolve a rally.
+ * TODO(misleading): "command" is a game term for what a card orders (§4.3);
+ * this is a game effect. Settled by calling it an event, as its siblings do.
+ */
 export interface ResolveRallyEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

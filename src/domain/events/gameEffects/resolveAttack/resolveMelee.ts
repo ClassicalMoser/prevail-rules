@@ -15,6 +15,9 @@ export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
  * results. The retreats a result calls for are not recorded here: each is worked
  * out when that retreat opens, from the board as it then stands, since an
  * earlier stage may have moved units (§7.5.6).
+ *
+ * TODO(misleading): §7.1 is how an attack value is made; that both units
+ * strike at once is §7.2.1. Settled by correcting the reference.
  */
 export interface ResolveMeleeEvent {
   /** The type of the event. */

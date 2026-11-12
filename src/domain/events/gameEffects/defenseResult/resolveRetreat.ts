@@ -7,6 +7,10 @@ import { z } from 'zod';
 /** The type of the resolve retreat game effect. */
 export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
 
+/**
+ * Carries out a retreat: the unit falls back along the chosen path, and a
+ * commander in its space goes with it (§9.1, §9.1.8).
+ */
 export interface ResolveRetreatEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

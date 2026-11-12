@@ -11,6 +11,10 @@ import { z } from 'zod';
 /** The type of the setup units event. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
+/**
+ * A player deploys their whole army at once, before the first round: every
+ * unit in its own zone, and the general with them (§3.5.4).
+ */
 export interface SetupUnitsEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -23,6 +27,10 @@ export interface SetupUnitsEvent {
   /**
    * Where this player's commander starts. Must be an empty coordinate in the
    * player's setup zone (may be alone or stacked with a unit placed in this event).
+   *
+   * TODO(misleading): "an empty coordinate" and "stacked with a unit placed
+   * in this event" disagree. Settled by saying empty of what: of units
+   * already on the board before this event, presumably.
    */
   commanderCoordinate: Coordinate;
 }

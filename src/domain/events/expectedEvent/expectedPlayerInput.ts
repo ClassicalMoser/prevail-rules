@@ -9,6 +9,8 @@ export type PlayerSource = (typeof playerSources)[number];
 /**
  * Expected event is player input (wait for user).
  * Board-agnostic: spatial payloads live on {@link PlayerChoiceEvent}, not here (Layer 4).
+ * TODO(misleading): "Layer 4" names a layer by a number no document
+ * defines. Settled by naming the layer, or dropping the reference.
  */
 export interface ExpectedPlayerInput {
   /** Discriminator for the union. */

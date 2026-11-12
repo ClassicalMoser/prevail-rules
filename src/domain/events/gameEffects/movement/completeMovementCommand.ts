@@ -5,6 +5,10 @@ import { z } from 'zod';
 export const COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE =
   'completeMovementCommand' as const;
 
+/**
+ * Ends a Move order once none of the units it ordered is left to move, so
+ * the player's next order may begin (§4.3.9).
+ */
 export interface CompleteMovementCommandEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

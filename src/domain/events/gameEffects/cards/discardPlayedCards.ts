@@ -8,6 +8,9 @@ export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
 /**
  * Event to discard played cards.
  * Moves both players' cards from inPlay to discard pile.
+ * TODO(misleading): the card in play goes to the played pile, not the
+ * discard pile (§4.5.1), as `moveBothInPlayToPlayed` does. Settled by naming
+ * the played pile.
  * This is the first step of the cleanup phase.
  */
 export interface DiscardPlayedCardsEvent {

@@ -7,7 +7,11 @@ import { z } from 'zod';
 export const CHOOSE_WHETHER_TO_RETREAT_CHOICE_TYPE =
   'chooseWhetherToRetreat' as const;
 
-/** The event for a player choosing whether to retreat. */
+/**
+ * The event for a player choosing whether to retreat.
+ * A defender engaged from the front that is faster than its attacker, and
+ * has somewhere to go, may fall back instead of fighting (§6.3.2).
+ */
 export interface ChooseWhetherToRetreatEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

@@ -7,6 +7,12 @@ import { z } from 'zod';
 export const RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE =
   'resolveEngageRetreatOption' as const;
 
+/**
+ * Works out whether a defender engaged from the front may fall back, and
+ * where to (§6.3.2): it must be the faster, counting any card it commits,
+ * and have a retreat to make. The retreats are recorded here, so the
+ * defender's choice is made against what the log holds.
+ */
 export interface ResolveEngageRetreatOptionEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

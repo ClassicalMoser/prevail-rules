@@ -30,6 +30,7 @@ const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
 /** The schema for the type of an event. */
 export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
 
+/** Every event: a player's act, or a fact the game records. */
 export type EventUnion = PlayerChoiceEvent | GameEffectEvent;
 
 /**
@@ -41,6 +42,7 @@ export type EventOfType<TEventType extends EventType = EventType> = Extract<
   { eventType: TEventType }
 >;
 
+/** Any event, as the server records it in a round's log. */
 export type Event = EventOfType;
 
 /**

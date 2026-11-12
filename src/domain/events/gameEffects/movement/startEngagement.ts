@@ -7,6 +7,11 @@ import { z } from 'zod';
 /** The type of the start engagement game effect. */
 export const START_ENGAGEMENT_EFFECT_TYPE = 'startEngagement' as const;
 
+/**
+ * A move ends in an enemy's space, and an engagement begins (§6.1.1). Its
+ * kind, front, flank or rear, is read from the two facings (§6.3.1), and
+ * decides what happens next (§6.3.2–§6.3.4).
+ */
 export interface StartEngagementEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

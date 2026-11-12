@@ -5,6 +5,10 @@ import { z } from 'zod';
 export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE =
   'completeMeleeResolution' as const;
 
+/**
+ * One melee has been fought out and its results carried out (§7.5); the
+ * first player then names the next, until none remain (§4.4.2).
+ */
 export interface CompleteMeleeResolutionEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

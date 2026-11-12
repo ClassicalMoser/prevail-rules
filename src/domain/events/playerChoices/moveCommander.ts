@@ -7,6 +7,11 @@ import { z } from 'zod';
 /** The type of the move commander event. */
 export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander' as const;
 
+/**
+ * In Phase 2 a player moves their general, up to four spaces, a diagonal step
+ * counting as one (§4.2.2). Where the general stands decides which units its
+ * cards' inspiration ranges reach this round (§4.2.7).
+ */
 export interface MoveCommanderEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

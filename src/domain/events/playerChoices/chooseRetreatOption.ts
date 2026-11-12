@@ -6,6 +6,10 @@ import { z } from 'zod';
 
 export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = 'chooseRetreatOption' as const;
 
+/**
+ * A retreat must be the smallest backward move available; where several tie,
+ * the unit's owner chooses among them (§9.1.3).
+ */
 export interface ChooseRetreatOptionEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

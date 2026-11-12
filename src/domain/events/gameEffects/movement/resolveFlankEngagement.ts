@@ -7,6 +7,10 @@ import { z } from 'zod';
 export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE =
   'resolveFlankEngagement' as const;
 
+/**
+ * A defender engaged from the flank is turned to face its attacker, directly
+ * opposite it (§6.3.4). It may not retreat; the two fight in Phase 4.
+ */
 export interface ResolveFlankEngagementEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
