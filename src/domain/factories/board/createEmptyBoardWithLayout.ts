@@ -13,20 +13,12 @@ function createEmptyBoardSpace(): BoardSpace {
       southEast: 0,
       southWest: 0,
     },
-    terrainType: 'plain',
+    terrainDifficulty: 1,
+    groundCover: 'open',
     unitPresence: {
       presenceType: 'none',
     },
-    waterCover: {
-      east: false,
-      north: false,
-      northEast: false,
-      northWest: false,
-      south: false,
-      southEast: false,
-      southWest: false,
-      west: false,
-    },
+    blocking: false,
   };
 }
 

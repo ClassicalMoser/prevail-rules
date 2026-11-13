@@ -29,3 +29,5 @@ const _standardBoardCoordinatesSchemaObject = z.enum(standardBoardCoordinates);
 /** Zod enum over {@link standardBoardCoordinates}. */
 export const standardBoardCoordinateSchema: z.ZodType<StandardBoardCoordinate> =
   _standardBoardCoordinatesSchemaObject;
+
+// NOTE: No AssertExact in this case becuase it would be strictly tautological.

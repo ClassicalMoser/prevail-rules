@@ -53,3 +53,5 @@ const _coordinateSchemaObject = z.enum(allCoordinates);
  * of which board size is in play.
  */
 export const coordinateSchema: z.ZodType<Coordinate> = _coordinateSchemaObject;
+
+// NOTE: No AssertExact in this case becuase it would be strictly tautological.

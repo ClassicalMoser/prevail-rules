@@ -15,7 +15,7 @@ describe('getBoardSpace function', () => {
     it('the space at E-5 has terrain, elevation, and unit presence', () => {
       const space = getBoardSpace(standardBoard, 'E-5');
       expect(space).toBeDefined();
-      expect(space.terrainType).toBeDefined();
+      expect(space.groundCover).toBeDefined();
       expect(space.elevation).toBeDefined();
       expect(space.unitPresence).toBeDefined();
     });
@@ -44,7 +44,7 @@ describe('getBoardSpace function', () => {
     it('the space at E-5 has terrain, elevation, and unit presence', () => {
       const space = getBoardSpace(smallBoard, 'E-5');
       expect(space).toBeDefined();
-      expect(space.terrainType).toBeDefined();
+      expect(space.terrainDifficulty).toBeDefined();
       expect(space.elevation).toBeDefined();
       expect(space.unitPresence).toBeDefined();
     });

@@ -67,7 +67,9 @@ const _boardSchemaObject = z
 type BoardSchemaType = z.infer<typeof _boardSchemaObject>;
 
 /**
- * Parses a board's shape. Whether its spaces match its size is checked by
+ * Parses a board's shape without a defined size.
+ *
+ * Whether its spaces match its size is checked by
  * `refineBoardLayout` in `@legality`.
  */
 export const boardSchema: z.ZodType<Board> = _boardSchemaObject;

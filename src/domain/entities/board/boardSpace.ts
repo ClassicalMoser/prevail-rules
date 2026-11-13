@@ -13,40 +13,41 @@ import type { PlayerSide } from '@entities/player';
 import type { UnitPresence } from '@entities/unitPresence';
 import type { AssertExact } from '@utils';
 import type { Elevation } from './elevation';
-import type { TerrainType } from './terrainTypes';
-import type { WaterCover } from './waterCover';
+import type { GroundCover } from './groundCover';
 
 import { playerSideSchema } from '@entities/player';
 import { unitPresenceSchema } from '@entities/unitPresence';
 import { z } from 'zod';
 import { elevationSchema } from './elevation';
-import { terrainTypeSchema } from './terrainTypes';
-import { waterCoverSchema } from './waterCover';
+import { groundCoverSchema } from './groundCover';
 
 /**
  * A space of the game board.
  *
  * Field roles:
  * - `terrainType` — ground cover (plain, forest, …); not elevation or water
- * - `elevation` — height at each of the four corners (0–5)
- * - `waterCover` — which of the eight edges are water
+ * - `elevation` — height at each of the four corners (-1 to +1)
  * - `unitPresence` — empty, one unit, or two engaged units
  * - `commanders` — player sides whose commanders occupy this space (may be empty)
  */
 export interface BoardSpace {
   /**
    * Ground cover for this space.
-   * Elevation and water are separate fields.
+   * Elevation and difficulty are separate fields.
    */
-  terrainType: TerrainType;
+  groundCover: GroundCover;
   /**
    * Corner elevations for this space (NW / NE / SW / SE).
    */
   elevation: Elevation;
   /**
-   * Which edges of this space are covered by water.
+   * Terrain difficulty defines the flexibility threshold for the space.
    */
-  waterCover: WaterCover;
+  terrainDifficulty: number;
+  /**
+   * Blocking defines whether the space obstructs line of sight.
+   */
+  blocking: boolean;
   /**
    * Units in this space (none, single, or engaged pair).
    */
@@ -62,17 +63,21 @@ const _boardSpaceSchemaObject = z
   .object({
     /**
      * Ground cover for this space.
-     * Elevation and water are separate fields.
+     * Elevation and Difficulty are separate fields.
      */
-    terrainType: terrainTypeSchema,
+    groundCover: groundCoverSchema,
     /**
      * Corner elevations for this space (NW / NE / SW / SE).
      */
     elevation: elevationSchema,
     /**
-     * Which edges of this space are covered by water.
+     * The minimum flexibility to pass unimpeded.
      */
-    waterCover: waterCoverSchema,
+    terrainDifficulty: z.int().min(0),
+    /**
+     * Whether the space obstructs line of sight.
+     */
+    blocking: z.boolean(),
     /**
      * Units in this space (none, single, or engaged pair).
      */
