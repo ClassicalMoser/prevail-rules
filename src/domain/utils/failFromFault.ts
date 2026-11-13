@@ -1,7 +1,7 @@
 import type { FailValidationResult } from './validationResult';
 
 /**
- * The refusal for a fault found while validating: something threw where the
+ * The failure for a fault found while validating: something threw where the
  * rules had no answer to give. The fault's own message is kept, since it
  * names the cause where it happened, and is placed under what was being done
  * when it surfaced.
@@ -17,10 +17,14 @@ export function failFromFault(
   fault: unknown,
   whileDoing: string,
 ): FailValidationResult {
+  // Keep the fault's own message. Anything thrown that is not an Error has
+  // none, so only the activity is named.
   const errorReason =
     fault instanceof Error
       ? `Error ${whileDoing}: ${fault.message}`
       : `Unknown error ${whileDoing}`;
+
+  // The validator returns this to its caller in place of the throw.
   const failure: FailValidationResult = { errorReason, result: false };
   return failure;
 }

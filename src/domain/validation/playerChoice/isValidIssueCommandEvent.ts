@@ -11,10 +11,10 @@ import {
   getUnitsOrderRefusalReason,
 } from '@legality';
 import { findMatchingCommand, isSameUnitInstance } from '@queries';
-import { findRefusal } from '@utils';
+import { findIllegal } from '@utils';
 
 /**
- * A units order: each unit must have been offered after the units before
+ * A units order: each unit must have been enumerated after the units before
  * it, and the order must take at least one (§4.3.2).
  */
 function isValidUnitsOrder(
@@ -24,7 +24,7 @@ function isValidUnitsOrder(
   selection: UnitsOrderSelection,
 ): ValidationResult {
   const { units } = selection;
-  const refused = findRefusal(
+  const refused = findIllegal(
     units,
     (soFar) => getLegalUnitsToOrder(command, player, state, soFar),
     (a, b) => isSameUnitInstance(a, b),
@@ -34,12 +34,12 @@ function isValidUnitsOrder(
     return valid;
   }
 
-  if (refused.refusal === 'notOffered') {
-    const notOffered: ValidationResult = {
+  if (refused.refusal === 'notEnumerated') {
+    const notEnumerated: ValidationResult = {
       errorReason: getUnitsOrderRefusalReason(command, units, refused.index),
       result: false,
     };
-    return notOffered;
+    return notEnumerated;
   }
 
   const empty: ValidationResult = {
@@ -50,10 +50,10 @@ function isValidUnitsOrder(
 }
 
 /**
- * Validates an IssueCommandEvent by membership against what `@legality`
- * offers:
+ * Validates an IssueCommandEvent by membership against the legal options
+ * `@legality` enumerates:
  * - {@link getLegalIssueCommands}: the player, and the orders still to give
- * - a units order: each unit as offered by {@link getLegalUnitsToOrder}
+ * - a units order: each unit as enumerated by {@link getLegalUnitsToOrder}
  * - a line order: its two ends naming one of {@link getLegalLines}
  *
  * Remaining line grants are seeded as `number: 1` slots (lines ×N expanded

@@ -14,6 +14,9 @@ export {
   throwIfNone,
 } from './stateSentinels';
 
+// A value two copies of are compared by `===`, needing no rule for sameness.
+export type { Literal } from './literal';
+
 // Two lists with the same members, each as many times, in any order.
 export { haveSameMembers } from './haveSameMembers';
 
@@ -25,9 +28,9 @@ export type { RandomSource } from './randomSource';
 export { throwIfUndefined } from './throwIfMissing';
 
 // A choice made a part at a time: what may come next and whether it may stop,
-// and the first place a submitted choice left those offers.
+// and the first way a submitted choice is illegal.
 export type { OpenChoice, ChoiceRefusal } from './openChoice';
-export { findRefusal } from './findRefusal';
+export { findIllegal } from './findIllegal';
 
 // A thrown fault, as the refusal a validator's boundary returns.
 export { failFromFault } from './failFromFault';

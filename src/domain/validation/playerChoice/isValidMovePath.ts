@@ -3,14 +3,15 @@ import type { GameState } from '@game';
 import type { LegalMoveDeltas } from '@legality';
 import type { ValidationResult } from '@utils';
 import { findLegalMoveDeltas } from '@legality';
-import { findRefusal, throwIfUndefined } from '@utils';
+import { findIllegal, throwIfUndefined } from '@utils';
 
 /**
  * Whether a submitted path is a legal move, checked the way every
- * player choice is: by membership against what `@legality` offers. Each
- * step or turn must be among the moves offered at that point in the path,
- * and the move must be allowed to stop where the path ends — which also
- * means an oblique front approach has written its squaring turn (§6.2.3).
+ * player choice is: by membership against the legal options `@legality`
+ * enumerates. Each step or turn must be among the moves enumerated at that
+ * point in the path, and the move must be allowed to stop where the path
+ * ends — which also means an oblique front approach has written its squaring
+ * turn (§6.2.3).
  *
  * A fault in the state throws here, where it is found, and
  * `validatePlayerChoice` turns it into a refusal with its message.
@@ -30,8 +31,8 @@ export function isValidMovePath(
   commitmentModifiers?: Modifier[],
 ): ValidationResult {
   // What may follow a run of moves already accepted. Every run the walk
-  // asks about was offered move by move, so it is always a legal start.
-  const offerAfter = (soFar: readonly MoveDelta[]): LegalMoveDeltas =>
+  // asks about was enumerated move by move, so it is always a legal start.
+  const optionsAfter = (soFar: readonly MoveDelta[]): LegalMoveDeltas =>
     throwIfUndefined(
       findLegalMoveDeltas(
         gameState,
@@ -43,23 +44,23 @@ export function isValidMovePath(
       'A path accepted move by move is not a legal start to a move',
     );
 
-  // Every move must be one of those offered after the moves before it, and
+  // Every move must be one of those enumerated after the moves before it, and
   // the move must be allowed to stop where the path ends.
-  const refused = findRefusal(path, offerAfter);
+  const refused = findIllegal(path, optionsAfter);
   if (refused === undefined) {
     const valid: ValidationResult = { result: true };
     return valid;
   }
 
-  if (refused.refusal === 'notOffered') {
-    const notOffered: ValidationResult = {
+  if (refused.refusal === 'notEnumerated') {
+    const notEnumerated: ValidationResult = {
       errorReason: `Move ${refused.index + 1} (${path[refused.index]}) is not one the unit may make there`,
       result: false,
     };
-    return notOffered;
+    return notEnumerated;
   }
 
-  const stillOwed = refused.offered.next;
+  const stillOwed = refused.options.next;
   const cannotStop: ValidationResult = {
     errorReason:
       stillOwed.length === 0

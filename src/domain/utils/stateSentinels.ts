@@ -47,6 +47,8 @@ export function throwIfPending<T>(value: T | 'pending', message: string): T {
   if (isPending(value)) {
     throw new Error(message);
   }
+
+  // The slot is filled.
   return value;
 }
 
@@ -58,6 +60,8 @@ export function throwIfBypassed<T>(value: T | 'bypassed', message: string): T {
   if (isBypassed(value)) {
     throw new Error(message);
   }
+
+  // The result happened.
   return value;
 }
 
@@ -69,5 +73,7 @@ export function throwIfNone<T>(value: T | 'none', message: string): T {
   if (isNone(value)) {
     throw new Error(message);
   }
+
+  // The slot holds a value.
   return value;
 }

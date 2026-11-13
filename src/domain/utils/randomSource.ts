@@ -5,6 +5,9 @@
  * event stream never consults this. It exists so a caller can fix the draw:
  * a spec or a recorded flow supplies its own source and gets the same game
  * twice. Production passes {@link defaultRandom} and behaves as before.
+ *
+ * TODO(misleading): "behaves as before" compares with code that no longer
+ * exists. Settled by saying what production gets: `Math.random`.
  */
 export interface RandomSource {
   /** A number in `[0, 1)`. The same contract as `Math.random`. */

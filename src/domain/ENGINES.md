@@ -170,7 +170,7 @@ so far, and whether the choice may stop there. A rule that binds the whole
 choice is a stopping rule: a move owes its squaring turn (§6.2.3), and a
 player must fill any support place an uncovered unit could take (§10.4.5).
 The validator walks the submitted choice through the same offers with
-`findRefusal` and only words the refusal, so a client is never refused
+`findIllegal` and only words the refusal, so a client is never refused
 by a rule its offers did not show. Moves (`findLegalMoveDeltas`), the units
 of a units order (`getLegalUnitsToOrder`) and unit support
 (`getLegalUnitSupportAssignments`) are offered this way. A line is fixed by

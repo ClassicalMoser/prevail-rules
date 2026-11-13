@@ -8,7 +8,7 @@ import {
   getLegalUnitSupportAssignments,
   isSameUnitSupportAssignment,
 } from '@legality';
-import { findRefusal } from '@utils';
+import { findIllegal } from '@utils';
 
 /** Why the assignment at this position was refused, given those before it. */
 function refusalReasonAt(
@@ -30,12 +30,12 @@ function refusalReasonAt(
 
 /**
  * Validates an AssignUnitSupportEvent by walking its assignments through the
- * choices a client is shown (`getLegalUnitSupportAssignments`): each unit
- * must have been offered its place after the assignments before it, and the
- * player may stop only when no open place could take an uncovered unit
- * (§10.4.4–10.4.5). The rules live in the offer; this only reads the event
- * and words the refusal. The offer does not depend on the order of the
- * assignments, so neither does this.
+ * legal options (`getLegalUnitSupportAssignments`): each unit's place must
+ * have been enumerated after the assignments before it, and the player may
+ * stop only when no open place could take an uncovered unit
+ * (§10.4.4–10.4.5). The rules live in the legal options; this only reads the
+ * event and words the refusal. The legal options do not depend on the order
+ * of the assignments, so neither does this.
  */
 export function isValidAssignUnitSupportEvent(
   event: AssignUnitSupportEvent,
@@ -51,7 +51,7 @@ export function isValidAssignUnitSupportEvent(
   }
 
   const { assignments } = event;
-  const refused = findRefusal(
+  const refused = findIllegal(
     assignments,
     (soFar) => getLegalUnitSupportAssignments(legal, soFar),
     isSameUnitSupportAssignment,
@@ -61,12 +61,12 @@ export function isValidAssignUnitSupportEvent(
     return valid;
   }
 
-  if (refused.refusal === 'notOffered') {
-    const notOffered: ValidationResult = {
+  if (refused.refusal === 'notEnumerated') {
+    const notEnumerated: ValidationResult = {
       errorReason: refusalReasonAt(legal, assignments, refused.index),
       result: false,
     };
-    return notOffered;
+    return notEnumerated;
   }
 
   const notMaximal: ValidationResult = {

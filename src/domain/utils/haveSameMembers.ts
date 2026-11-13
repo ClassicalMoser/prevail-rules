@@ -1,5 +1,4 @@
-/** A value compared by `===`: two equal literals are the same member. */
-type Literal = string | number | boolean;
+import type { Literal } from './literal';
 
 /**
  * Whether two lists hold the same members, each as many times, in any order.
@@ -15,10 +14,12 @@ type Literal = string | number | boolean;
  * @param isSame - When two members are the same; required for non-literals
  * @returns True when every member of each appears in the other as many times
  */
+// Literal members are compared with `===`.
 export function haveSameMembers<T extends Literal>(
   left: readonly T[],
   right: readonly T[],
 ): boolean;
+// Object members need their own comparison, since equal objects are not `===`.
 export function haveSameMembers<T>(
   left: readonly T[],
   right: readonly T[],
@@ -33,18 +34,23 @@ export function haveSameMembers<T>(
   if (left.length !== right.length) {
     return false;
   }
+
   // Copy the second list so each match can be taken out of it.
   const remaining = [...right];
   for (const item of left) {
     const matchIndex = remaining.findIndex((candidate) =>
       isSame(item, candidate),
     );
+
     // No remaining copy of this member.
     if (matchIndex === -1) {
       return false;
     }
+
     // Take that match, so a repeated member needs its own copy.
     remaining.splice(matchIndex, 1);
   }
+
+  // Every member found its own copy.
   return true;
 }
