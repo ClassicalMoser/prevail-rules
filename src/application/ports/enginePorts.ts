@@ -12,8 +12,8 @@ export interface EnginePorts {
   gameStateSubscribers: GameStateSubscriber[];
   /**
    * The draw for procedures that roll (currently the rally burn).
-   * Production passes `defaultRandom`; a recorded flow passes a fixed source
-   * so the same transcript produces the same game.
+   * Live play passes `mathRandom` from `@application/infra`; a recorded flow
+   * passes a fixed source so the same transcript produces the same game.
    */
   random: RandomSource;
 }
