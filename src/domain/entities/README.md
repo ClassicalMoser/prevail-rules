@@ -105,6 +105,6 @@ Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) constrain
 | Cards           | `CommandCard`, `Command`, modifiers / restrictions / support                    |
 | Army            | `Army` / `UnitCount` (shape + uniqueness only; mode composition in `@legality`) |
 | Players / modes | `Player`, `PlayerSide`, `GameMode`                                              |
-| Shared values   | `AttackType`, `AttackResult`, `EngagementType`, `Line`, …                       |
+| Shared values   | `AttackType`, `AttackResult`, `EngagementType`, …                               |
 
 **Not here:** `Game` / `GameState` / `CardState` / phases (`@game`); `ValidationResult` (`@utils`); army mode limits (`@legality`).

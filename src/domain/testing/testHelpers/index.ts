@@ -9,10 +9,6 @@ export { enemyBlockingStraightBack } from './enemyBlockingStraightBack';
 export { enemyCuttingOffRetreat } from './enemyCuttingOffRetreat';
 export { hasMove } from './hasMove';
 export { legalRetreatsOf } from './legalRetreatsOf';
-export {
-  coordinatesOfLine,
-  coordinatesOfLines,
-  coordinatesOfSegment,
-} from './lineCoordinates';
+export { coordinatesOfSegment } from './lineCoordinates';
 export { updateCardState } from './updateCardState';
 export { createUnitWithPlacement, placed } from './unitWithPlacement';

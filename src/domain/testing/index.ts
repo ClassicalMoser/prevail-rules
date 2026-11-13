@@ -36,8 +36,6 @@ export {
 } from './phaseStateHelpers';
 export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
 export {
-  coordinatesOfLine,
-  coordinatesOfLines,
   coordinatesOfSegment,
   createTestCard,
   createTestCommand,

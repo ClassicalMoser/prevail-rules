@@ -46,7 +46,6 @@ export {
   gameModeNames,
   gameModeNameSchema,
   gameModeSchema,
-  lineSchema,
 } from '@entities';
 export type { GameMode, GameModeName } from '@entities';
 export { playerSchema, playerSides, playerSideSchema } from '@entities';
@@ -99,7 +98,6 @@ export type {
 } from '@entities';
 export { unitSupportSchema } from '@entities';
 export type {
-  Line,
   MoveDelta,
   MoveTurn,
   Player,

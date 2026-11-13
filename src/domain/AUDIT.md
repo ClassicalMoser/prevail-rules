@@ -36,7 +36,6 @@ Audit in this order (dependencies flow downward):
   - [ ] `card/`
   - [ ] `engagementType/`
   - [ ] `gameModes/`
-  - [ ] `line/`
   - [ ] `player/`
   - [ ] `unit/`
   - [ ] `unitLocation/`

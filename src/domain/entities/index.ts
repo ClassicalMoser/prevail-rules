@@ -134,7 +134,3 @@ export type { AttackType } from './attackType';
 // Engagement types
 export { engagementType, engagementTypeSchema } from './engagementType';
 export type { EngagementType } from './engagementType';
-
-// Lines
-export { lineSchema } from './line';
-export type { Line } from './line';
