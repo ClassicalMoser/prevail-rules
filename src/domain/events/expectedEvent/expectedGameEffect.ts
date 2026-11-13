@@ -1,14 +1,13 @@
 import type { GameEffectType } from '@ruleValues';
 
 /**
- * Expected event is a game effect (deterministic action).
- * Board-agnostic: spatial payloads live on {@link GameEffectEvent}, not here (Layer 4).
- * TODO(misleading): "Layer 4" names a layer by a number no document
- * defines. Settled by naming the layer, or dropping the reference.
+ * The next event is a game effect: the rules decide it, and no player is
+ * asked. It names only which effect; the procedure for that effect works out
+ * the rest from the state, board included ({@link GameEffectEvent}).
  */
 export interface ExpectedGameEffect {
-  /** Discriminator for the union. */
+  /** Marks a game effect, not a player choice. */
   actionType: 'gameEffect';
-  /** The specific effect type expected (e.g., 'resolveRally', 'revealCards'). */
+  /** Which effect comes next. */
   effectType: GameEffectType;
 }

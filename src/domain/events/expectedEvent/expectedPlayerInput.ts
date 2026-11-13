@@ -1,23 +1,26 @@
 import type { PlayerChoiceType } from '@events/playerChoices';
 
-/** Iterable list of valid player sources. */
+/**
+ * Who is asked for a choice: one side, or both at once, as when both choose
+ * their cards in secret (§4.1.1).
+ */
 export const playerSources = ['white', 'black', 'bothPlayers'] as const;
 
 /** Type for a player source. */
 export type PlayerSource = (typeof playerSources)[number];
 
 /**
- * Expected event is player input (wait for user).
- * Board-agnostic: spatial payloads live on {@link PlayerChoiceEvent}, not here (Layer 4).
- * TODO(misleading): "Layer 4" names a layer by a number no document
- * defines. Settled by naming the layer, or dropping the reference.
+ * The next event is a player's choice: who makes it, and which choice. It
+ * names only the kind of choice. The legal options are enumerated from the
+ * state, board included, by `getLegalPlayerChoiceOptions`, and the choice
+ * made is a {@link PlayerChoiceEvent}.
  */
 export interface ExpectedPlayerInput {
-  /** Discriminator for the union. */
+  /** Marks a player choice, not a game effect. */
   actionType: 'playerChoice';
-  /** Which player(s) can provide this input. */
+  /** Who is asked: one side, or both at once. */
   playerSource: PlayerSource;
-  /** The specific choice type expected. */
+  /** Which choice is asked for. */
   choiceType: PlayerChoiceType;
   /**
    * Other choice types the same players may make instead. A player asked to

@@ -34,15 +34,14 @@ export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
 export type EventUnion = PlayerChoiceEvent | GameEffectEvent;
 
 /**
- * Event type filtered by event type.
- * Extracts only the event type that matches the specified eventType.
+ * The events of one kind: player choices, or game effects.
  */
 export type EventOfType<TEventType extends EventType = EventType> = Extract<
   EventUnion,
   { eventType: TEventType }
 >;
 
-/** Any event, as the server records it in a round's log. */
+/** Any event, as a round's log records it. */
 export type Event = EventOfType;
 
 /**
