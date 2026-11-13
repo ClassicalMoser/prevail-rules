@@ -66,7 +66,6 @@ export {
   unitWithPlacementSchema,
 } from '@entities';
 export {
-  defaultRandom,
   failFromFault,
   failValidationResultSchema,
   passValidationResultSchema,

@@ -1,7 +1,6 @@
 import type { CommandCard } from '@entities';
 import type { GameState } from '@game';
 import type { RandomSource } from '@utils';
-import { defaultRandom } from '@utils';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -20,6 +19,10 @@ import { createEmptyGameState } from '@factories';
  * acting player’s `played` pile (non-deterministic); player comes from resolve-rally step + initiative.
  */
 describe('generateResolveRallyEvent function', () => {
+  // Where it matters, these cases hold one played card, so any draw burns
+  // it; the rest throw before drawing. Draw the first.
+  const anyDraw: RandomSource = { nextFloat: () => 0 };
+
   /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
   function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
     const base = updateCurrentInitiative(
@@ -42,7 +45,7 @@ describe('generateResolveRallyEvent function', () => {
 
   it('uses initiative player on firstPlayerResolveRally and burns from their played pile', () => {
     const full = cleanupResolveRallyState('black');
-    const event = generateResolveRallyEvent(full, defaultRandom);
+    const event = generateResolveRallyEvent(full, anyDraw);
     expect(event.effectType).toBe('resolveRally');
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
@@ -65,7 +68,7 @@ describe('generateResolveRallyEvent function', () => {
       withPlayed,
       createCleanupPhaseState({ step: 'secondPlayerResolveRally' }),
     );
-    const event = generateResolveRallyEvent(full, defaultRandom);
+    const event = generateResolveRallyEvent(full, anyDraw);
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
   });
@@ -87,7 +90,7 @@ describe('generateResolveRallyEvent function', () => {
       withPlayed,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
-    const event = generateResolveRallyEvent(full, defaultRandom);
+    const event = generateResolveRallyEvent(full, anyDraw);
     expect(event.player).toBe('white');
     expect(full.cardState.white.played).toContain(event.card);
   });
@@ -152,7 +155,7 @@ describe('generateResolveRallyEvent function', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
-    expect(() => generateResolveRallyEvent(full, defaultRandom)).toThrow(
+    expect(() => generateResolveRallyEvent(full, anyDraw)).toThrow(
       'Player black has no played cards to burn for rally',
     );
   });
@@ -166,7 +169,7 @@ describe('generateResolveRallyEvent function', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    expect(() => generateResolveRallyEvent(full, defaultRandom)).toThrow(
+    expect(() => generateResolveRallyEvent(full, anyDraw)).toThrow(
       'Cleanup phase is not on a resolveRally step: firstPlayerChooseRally',
     );
   });
@@ -180,7 +183,7 @@ describe('generateResolveRallyEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRallyEvent(full, defaultRandom)).toThrow(
+    expect(() => generateResolveRallyEvent(full, anyDraw)).toThrow(
       'Expected cleanup phase, got playCards',
     );
   });

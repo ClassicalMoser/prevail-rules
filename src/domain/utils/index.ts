@@ -21,7 +21,6 @@ export type { Literal } from './literal';
 export { haveSameMembers } from './haveSameMembers';
 
 // An injectable `[0, 1)` draw, so a caller can fix what a procedure rolls.
-export { defaultRandom } from './randomSource';
 export type { RandomSource } from './randomSource';
 
 // Narrow away `undefined`, or throw.

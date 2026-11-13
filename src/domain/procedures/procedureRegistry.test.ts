@@ -1,7 +1,7 @@
 import type { GameState } from '@game';
 import type { GameEffectType } from '@events';
 import { gameEffects } from '@events';
-import { defaultRandom } from '@utils';
+import type { RandomSource } from '@utils';
 import { procedureRegistryStateFactories } from '@testing';
 
 import { generateEventFromProcedure } from './procedureRegistry';
@@ -12,16 +12,15 @@ import { createEmptyGameState } from '@factories';
  * matching `gameEffect` with the same `effectType`.
  */
 describe('generateEventFromProcedure function', () => {
+  // Only the rally burn draws, and these cases check only the effect type.
+  const anyDraw: RandomSource = { nextFloat: () => 0 };
+
   it.each([...gameEffects])(
     'given factory state for %s, returns gameEffect with matching effectType',
     (effectType) => {
       expect.hasAssertions();
       const state = procedureRegistryStateFactories[effectType]();
-      const event = generateEventFromProcedure(
-        state,
-        effectType,
-        defaultRandom,
-      );
+      const event = generateEventFromProcedure(state, effectType, anyDraw);
       expect(event.eventType).toBe('gameEffect');
       expect(event.effectType).toBe(effectType);
     },
@@ -35,7 +34,7 @@ describe('generateEventFromProcedure function', () => {
       generateEventFromProcedure(
         state,
         'notARealEffect' as GameEffectType,
-        defaultRandom,
+        anyDraw,
       ),
     ).toThrow('No procedure exists for effect type: notARealEffect');
   });
