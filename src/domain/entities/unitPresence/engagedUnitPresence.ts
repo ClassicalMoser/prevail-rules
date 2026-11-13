@@ -1,6 +1,8 @@
-import type { UnitFacing, UnitInstance } from '@entities/unit';
+import type { UnitInstance } from '@entities/unit';
+import type { UnitFacing } from '../unitLocation/unitFacing';
 import type { AssertExact } from '@utils';
-import { unitFacingSchema, unitInstanceSchema } from '@entities/unit';
+import { unitInstanceSchema } from '@entities/unit';
+import { unitFacingSchema } from '../unitLocation/unitFacing';
 import { z } from 'zod';
 import { ENGAGED_UNIT_PRESENCE_TYPE } from './unitPresenceType';
 

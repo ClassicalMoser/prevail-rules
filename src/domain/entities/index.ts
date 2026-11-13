@@ -43,22 +43,12 @@ export type {
 
 // Units
 export {
-  diagonalFacings,
-  orthogonalFacings,
-  unitFacings,
-  unitFacingSchema,
   unitInstanceSchema,
   unitStatNames,
   unitStatsSchema,
   unitTypeSchema,
 } from './unit';
-export type {
-  UnitFacing,
-  UnitInstance,
-  UnitStatName,
-  UnitStats,
-  UnitType,
-} from './unit';
+export type { UnitInstance, UnitStatName, UnitStats, UnitType } from './unit';
 
 // Unit presence
 export {
@@ -78,6 +68,10 @@ export type {
 
 // Unit location
 export {
+  diagonalFacings,
+  orthogonalFacings,
+  unitFacings,
+  unitFacingSchema,
   sideTurns,
   moveTurns,
   moveDeltas,
@@ -86,6 +80,7 @@ export {
   unitWithPlacementSchema,
 } from './unitLocation';
 export type {
+  UnitFacing,
   SideTurn,
   MoveTurn,
   MoveDelta,

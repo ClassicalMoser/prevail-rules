@@ -1,17 +1,13 @@
 import type { Coordinate } from '@entities/board';
-import type { UnitFacing } from '@entities/unit';
+import type { UnitFacing } from './unitFacing';
 import type { AssertExact } from '@utils';
 
 import { coordinateSchema } from '@entities/board';
-import { unitFacingSchema } from '@entities/unit';
+import { unitFacingSchema } from './unitFacing';
 import { z } from 'zod';
 
 /**
  * The position and facing of a unit on the board.
- *
- * TODO(misleading): nothing in this value is specific to a unit; it is a
- * coordinate and a facing. Renaming reaches every layer, so it is recorded
- * rather than done.
  */
 export interface UnitPlacement {
   coordinate: Coordinate;

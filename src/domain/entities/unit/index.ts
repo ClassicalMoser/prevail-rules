@@ -1,12 +1,3 @@
-// Facing
-export {
-  diagonalFacings,
-  orthogonalFacings,
-  unitFacings,
-  unitFacingSchema,
-} from './unitFacing';
-export type { UnitFacing } from './unitFacing';
-
 // Stats
 export { unitStatNames, unitStatsSchema } from './unitStat';
 export type { UnitStatName, UnitStats } from './unitStat';

@@ -1,3 +1,12 @@
+// Facing: the eight directions, orthogonal and diagonal.
+export {
+  diagonalFacings,
+  orthogonalFacings,
+  unitFacings,
+  unitFacingSchema,
+} from './unitFacing';
+export type { UnitFacing } from './unitFacing';
+
 // Placement on the board
 export { unitPlacementSchema } from './unitPlacement';
 export type { UnitPlacement } from './unitPlacement';
