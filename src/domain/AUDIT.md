@@ -29,17 +29,19 @@ Audit in this order (dependencies flow downward):
 ### `entities/` (`@entities`)
 
 - [ ] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`); reopened 2026-11-12, changed since the read
-  - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`
+  - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`; `board/groundCover` (scaffold, replacing `terrainTypes` and `waterCover`)
+  - Removed after the read: `line/` (nothing used it; lines are `LegalLine` in `@legality`)
   - [x] `army/`
+  - [x] `attackResult/`
   - [x] `attackType/`
   - [x] `board/`
-  - [ ] `card/`
-  - [ ] `engagementType/`
-  - [ ] `gameModes/`
-  - [ ] `player/`
+  - [x] `card/`
+  - [x] `engagementType/`
+  - [x] `gameModes/`
+  - [x] `player/`
   - [ ] `unit/`
   - [ ] `unitLocation/`
-  - [ ] `unitPresence/`
+  - [x] `unitPresence/`
 
 ### `game/` (`@game`)
 
