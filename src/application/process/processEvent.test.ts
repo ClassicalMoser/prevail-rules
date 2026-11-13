@@ -1,25 +1,37 @@
 import type { EnginePorts } from '@application/ports';
 import type { GameEffectEvent } from '@events';
+import type { AuthoritativeGameState, Game } from '@game';
+import { createInMemoryEnginePorts } from '@application/infra';
 import { createEmptyGameState } from '@factories';
-
+import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
 import { processEvent } from './processEvent';
 
-const { addEventToStreamMock, applyEventMock, updateGameStateMock } =
-  vi.hoisted(() => ({
-    addEventToStreamMock: vi.fn(),
-    applyEventMock: vi.fn(),
-    updateGameStateMock: vi.fn(),
-  }));
+const gameId = 'game-1';
 
-vi.mock(import('@transforms'), () => ({
-  applyEvent: applyEventMock,
-}));
+/** A stored game holding the given state; its players and armies don't matter here. */
+function gameWith(gameState: AuthoritativeGameState): Game {
+  const game: Game = {
+    blackArmy: blackMiniStarterArmy,
+    blackPlayer: '22222222-2222-4222-8222-222222222222',
+    gameMode: 'standard',
+    gameState,
+    id: gameId,
+    whiteArmy: whiteMiniStarterArmy,
+    whitePlayer: '33333333-3333-4333-8333-333333333333',
+  };
+  return game;
+}
 
-vi.mock(import('@application/composable'), () => ({
-  updateGameState: updateGameStateMock,
-}));
+/** In-memory ports already holding a game in the given state. */
+async function portsHolding(
+  state: AuthoritativeGameState,
+): Promise<EnginePorts> {
+  const ports = createInMemoryEnginePorts();
+  await ports.gameStorage.saveNewGame(gameWith(state));
 
-vi.mock(import('./handleNewRound'));
+  // The game is stored, and nothing else has happened.
+  return ports;
+}
 
 /**
  * A game's record is its event stream, and the stream is the game's history:
@@ -28,63 +40,61 @@ vi.mock(import('./handleNewRound'));
  * been.
  */
 describe('processEvent function', () => {
-  // Only the stream port is reached by these cases; the others are never
-  // called, so an empty stand-in is enough for them.
-  const ports = {
-    eventStreamStorage: { addEventToStream: addEventToStreamMock },
-    gameStateSubscribers: [],
-    gameStorage: {},
-  } as unknown as EnginePorts;
-
-  const event: GameEffectEvent = {
-    effectType: 'gameOver',
-    eventType: 'gameEffect',
-    winner: 'black',
-  };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('records nothing when the event cannot be applied', async () => {
+    // A game at setup, its round's stream open and empty.
     const state = createEmptyGameState('standard');
-    // The stream would take the event, were it offered.
-    addEventToStreamMock.mockResolvedValue({ data: undefined, result: true });
-    // The game cannot take this event, so applying it throws.
-    applyEventMock.mockImplementation(() => {
-      throw new Error('The event does not fit the game');
-    });
+    const ports = await portsHolding(state);
+    await ports.eventStreamStorage.newEventStream(gameId, 0);
 
+    // Played cards are put aside at cleanup, and setup has no phase yet, so
+    // the game cannot take this.
+    const putAside: GameEffectEvent = {
+      effectType: 'discardPlayedCards',
+      eventType: 'gameEffect',
+    };
     await expect(
-      processEvent('game-1', 'standard', event, state, ports),
-    ).rejects.toThrow('The event does not fit the game');
+      processEvent(gameId, 'standard', putAside, state, ports),
+    ).rejects.toThrow('No current phase state found');
 
     // The stream never learns of an event the game never took.
-    expect(addEventToStreamMock).not.toHaveBeenCalled();
-    expect(updateGameStateMock).not.toHaveBeenCalled();
+    await expect(
+      ports.eventStreamStorage.getEventStream(gameId, 0),
+    ).resolves.toStrictEqual({ data: [], result: true });
+
+    // And the stored game is as it was.
+    await expect(
+      ports.gameStorage.getGame(gameId, 'standard'),
+    ).resolves.toStrictEqual({ data: gameWith(state), result: true });
   });
 
   it('refuses, and keeps the stored game as it was, when the event cannot be recorded', async () => {
+    // A game whose round has no open stream, so nothing can be recorded.
     const state = createEmptyGameState('standard');
-    applyEventMock.mockReturnValue(state);
-    addEventToStreamMock.mockResolvedValue({
-      errorReason: 'The stream is not available',
-      result: false,
-    });
+    const ports = await portsHolding(state);
 
+    // White's hand is empty, so the game can take its ending.
+    const gameOver: GameEffectEvent = {
+      effectType: 'gameOver',
+      eventType: 'gameEffect',
+      winner: 'black',
+    };
     const result = await processEvent(
-      'game-1',
+      gameId,
       'standard',
-      event,
+      gameOver,
       state,
       ports,
     );
 
-    // The game is not stored ahead of its own history.
+    // The stream's refusal comes back as the answer.
     expect(result).toStrictEqual({
-      errorReason: 'The stream is not available',
+      errorReason: 'No event stream for game game-1, round 0',
       result: false,
     });
-    expect(updateGameStateMock).not.toHaveBeenCalled();
+
+    // The game is not stored ahead of its own history.
+    await expect(
+      ports.gameStorage.getGame(gameId, 'standard'),
+    ).resolves.toStrictEqual({ data: gameWith(state), result: true });
   });
 });

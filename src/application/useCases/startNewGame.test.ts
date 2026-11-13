@@ -5,7 +5,8 @@ import {
   whiteMiniStarterArmy,
   whiteStandardStarterArmy,
 } from '@sampleValues';
-import { defaultRandom, throwIfUndefined } from '@utils';
+import { throwIfUndefined } from '@utils';
+import { mathRandom } from '@application/infra';
 
 import { parseLegalGameForMode } from '../utils/parseLegalGame';
 import { startNewGame } from './startNewGame';
@@ -41,7 +42,7 @@ function createEnginePorts(overrides: {
       truncateEventStream: vi.fn(),
     },
     gameStateSubscribers: overrides.gameStateSubscribers ?? [],
-    random: defaultRandom,
+    random: mathRandom,
     gameStorage: {
       getGame: vi.fn(),
       saveNewGame: vi

@@ -4,7 +4,7 @@ import {
   whiteMiniStarterArmy,
 } from '@sampleValues';
 import type { EnginePorts } from '@application/ports';
-import { defaultRandom } from '@utils';
+import { mathRandom } from '@application/infra';
 import type { BlackSeenGameState, Game } from '@game';
 import { createUnitWithPlacement } from '@testing';
 
@@ -73,7 +73,7 @@ function createPorts(
       truncateEventStream: vi.fn(),
     },
     gameStateSubscribers: [],
-    random: defaultRandom,
+    random: mathRandom,
     gameStorage: {
       getGame: getGameImpl,
       saveNewGame: vi.fn(),
