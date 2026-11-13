@@ -17,6 +17,8 @@ describe('haveSameMembers function', () => {
     expect(haveSameMembers(['attack', 'attack', 'attack'], ['attack'])).toBe(
       false,
     );
+
+    // Two members each, but the second list's second is Speed, not Attack.
     expect(haveSameMembers(['attack', 'attack'], ['attack', 'speed'])).toBe(
       false,
     );
