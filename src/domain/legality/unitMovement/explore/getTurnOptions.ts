@@ -1,12 +1,7 @@
 import type { MoveTurn } from '@entities';
 import type { MoveContext } from './moveContext';
 import type { MoveState } from './moveState';
-
-/** Every turn the rules know: 45° either way, or about (§5.2.1). */
-const everyTurn: readonly MoveTurn[] = ['turnLeft', 'turnRight', 'turnAbout'];
-
-/** A retreat's turns: 45° either way, never about (§9.1.4). */
-const retreatTurns: readonly MoveTurn[] = ['turnLeft', 'turnRight'];
+import { moveTurns, sideTurns } from '@entities';
 
 /**
  * The turns a unit may make from this point in its move, each for
@@ -34,14 +29,14 @@ export function getTurnOptions(
 
   // An advance turns by the ordinary rule.
   if (context.direction !== 'retreat') {
-    const ordinary = new Set(everyTurn);
+    const ordinary = new Set<MoveTurn>(moveTurns);
     return ordinary;
   }
 
   // A retreat that has stepped back turns 45° either way, never about.
   const hasSteppedBack = state.coordinate !== context.start.coordinate;
   if (hasSteppedBack) {
-    const retreating = new Set(retreatTurns);
+    const retreating = new Set<MoveTurn>(sideTurns);
     return retreating;
   }
 
@@ -52,6 +47,6 @@ export function getTurnOptions(
     const spent = new Set<MoveTurn>();
     return spent;
   }
-  const opening = new Set(retreatTurns);
+  const opening = new Set<MoveTurn>(sideTurns);
   return opening;
 }
