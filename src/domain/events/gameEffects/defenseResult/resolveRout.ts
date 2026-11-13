@@ -17,30 +17,37 @@ import { z } from 'zod';
 export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
 
 /**
- * Applies rout resolution: units leave the game and the owning player pays discard penalty.
+ * Records the Morale a player owes for units that routed (§9.3.2–9.3.3). The
+ * units left the board when the rout opened. When nothing is owed the rout
+ * closes at once; otherwise the player chooses the cards (`chooseRoutDiscard`).
+ *
+ * `generateResolveRoutEvent` writes it, and `applyResolveRoutEvent` applies it.
  */
 export interface ResolveRoutEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_ROUT_EFFECT_TYPE;
-  /** The player whose units routed, who pays the penalty (§9.3.2). */
+  /** The player whose units routed, who pays (§9.3.2). */
   player: PlayerSide;
-  /** The penalty for routing the units (sum of all units' rout penalties). */
-  // TODO(misleading): the rules call what a rout costs Morale (§9.3.2), not a
-  // rout penalty. Settled by naming it the Morale owed.
+  /**
+   * The Morale owed: the routed units' Morale, summed (§9.3.3).
+   *
+   * TODO(misleading): the field is named `penalty`, but the rules call what
+   * a rout costs Morale (§9.3.2). Renaming it changes the event's shape.
+   */
   penalty: number;
 }
 
 const _resolveRoutEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
-    /** The player whose units routed, who pays the penalty. */
+    /** The player whose units routed, who pays (§9.3.2). */
     player: playerSideSchema,
-    /** The penalty for routing the units (sum of all units' rout penalties). */
+    /** The Morale owed: the routed units' Morale, summed (§9.3.3). */
     penalty: z.number(),
   })
   .strict();

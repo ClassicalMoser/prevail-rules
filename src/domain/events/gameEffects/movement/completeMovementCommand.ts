@@ -2,25 +2,28 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
+/** The type of the complete movement command game effect. */
 export const COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE =
   'completeMovementCommand' as const;
 
 /**
  * Ends a Move order once none of the units it ordered is left to move, so
  * the player's next order may begin (§4.3.9).
+ *
+ * `generateCompleteMovementCommandEvent` writes it, and `applyCompleteMovementCommandEvent` applies it.
  */
 export interface CompleteMovementCommandEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE;
 }
 
 const _completeMovementCommandEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE),
   })
   .strict();

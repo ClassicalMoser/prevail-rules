@@ -7,36 +7,34 @@ import { z } from 'zod';
 /** The type of the resolve rally game effect. */
 export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
 
-/** To perform a rally, a player must burn a random card from their played commands.
- * Afterwards, they return all discarded and played cards to their hand.
- * After performing a rally, they must check unit support.
- */
-
 /**
- * A command to resolve a rally.
- * TODO(misleading): "command" is a game term for what a card orders (§4.3);
- * this is a game effect. Settled by calling it an event, as its siblings do.
+ * Carries out a rally the player chose (§10.3.2). One played card, drawn at
+ * random, is burnt; it is recorded here, so a replay burns the same card.
+ * Every other played card and the whole discard pile return to hand, and the
+ * unit support check comes next (§10.4).
+ *
+ * `generateResolveRallyEvent` writes it, and `applyResolveRallyEvent` applies it.
  */
 export interface ResolveRallyEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_RALLY_EFFECT_TYPE;
-  /** The player who is resolving the rally. */
+  /** The player who rallies. */
   player: PlayerSide;
-  /** The card to burn */
+  /** The played card burnt, out of the game for good. */
   card: CommandCard;
 }
 
 const _resolveRallyEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_RALLY_EFFECT_TYPE),
-    /** The player who is resolving the rally. */
+    /** The player who rallies. */
     player: playerSideSchema,
-    /** The card to burn */
+    /** The played card burnt, out of the game for good. */
     card: commandCardSchema,
   })
   .strict();

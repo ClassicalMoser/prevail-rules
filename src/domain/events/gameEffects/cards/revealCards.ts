@@ -7,16 +7,17 @@ import { z } from 'zod';
 /** The type of the reveal cards game effect. */
 export const REVEAL_CARDS_EFFECT_TYPE = 'revealCards' as const;
 
-/** Event to reveal cards that are awaiting play.
- * Moves both players' awaitingPlay cards to inPlay simultaneously.
- * This makes hidden information public.
- * Card identities are baked into the event so seen-visibility applies can
- * promote opponent `'hidden'` awaitingPlay slots without prior knowledge.
+/**
+ * Both players' face-down cards are revealed together and go into play
+ * (§4.1.2). The cards are written into the event, so a player who could not
+ * see the opponent's card learns it from here.
+ *
+ * `generateRevealCardsEvent` writes it, and `applyRevealCardsEvent` applies it.
  */
 export interface RevealCardsEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof REVEAL_CARDS_EFFECT_TYPE;
   /** Black's revealed card (was awaiting play). */
   black: CommandCard;
@@ -26,9 +27,9 @@ export interface RevealCardsEvent {
 
 const _revealCardsEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(REVEAL_CARDS_EFFECT_TYPE),
     /** Black's revealed card (was awaiting play). */
     black: commandCardSchema,

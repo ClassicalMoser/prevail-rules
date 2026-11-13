@@ -4,17 +4,12 @@ Zod schemas and TypeScript types for each effect, discriminated in [`gameEffect.
 
 **Layout** matches apply/procedure packages:
 
-| Folder                               | Event modules                                                                                         |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| [`cards/`](./cards/)                 | Discard / reveal played cards, initiative, rally, game over                                           |
-| [`completePhase/`](./completePhase/) | Phase-completion payloads (cleanup, issue commands, move commanders, play cards, resolve melee phase) |
-| [`defenseResult/`](./defenseResult/) | Retreat, reverse, rout, trigger rout from retreat, and opening each on an attack's apply              |
-| [`movement/`](./movement/)           | Complete unit / command movement; start / flank / engage-retreat engagement                           |
-| [`resolveAttack/`](./resolveAttack/) | Resolve melee / ranged, complete attack-apply, melee resolution, complete ranged command              |
-
-TODO(misleading): the table predates later changes. `completePhase/` no longer
-has a cleanup completion (the round's end is `roundEnd`), `movement/` now also
-holds `openRetreatFromEngagement`, and `resolveAttack/` holds `completeRangedAttack`,
-one shot's end. Settled by bringing the table up to date.
+| Folder                               | Event modules                                                                                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`cards/`](./cards/)                 | Discard played cards, reveal cards, initiative, rally, game over                                                                                |
+| [`completePhase/`](./completePhase/) | The end of each phase from Play Cards to Resolve Melee, and the round's end                                                                     |
+| [`defenseResult/`](./defenseResult/) | Retreat, reverse, rout, trigger rout from retreat, and opening each on an attack's apply                                                        |
+| [`movement/`](./movement/)           | The end of a unit's move and of a Move order; starting an engagement, the flank turn, and a front-engaged defender's retreat option and retreat |
+| [`resolveAttack/`](./resolveAttack/) | A melee and a shot measured; the end of an attack's results, of a melee, of a shot, and of a Shoot order                                        |
 
 Use the root [`index.ts`](./index.ts) barrel from `@events`; avoid deep imports from outside this package.

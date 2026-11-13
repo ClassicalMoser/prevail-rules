@@ -8,26 +8,29 @@ import { z } from 'zod';
 export const GAME_OVER_EFFECT_TYPE = 'gameOver' as const;
 
 /**
- * Event that ends the game and records the winner.
- * Every ending names a winner — there is no draw in this game: both hands
- * emptying at once goes to the holder of initiative (§11.3).
+ * The game ends, and the winner is recorded. A player loses when their hand
+ * is empty (§11.1), or when they owe more Morale than they can survive
+ * (§11.2). Every ending names a winner — there is no draw in this game: both
+ * hands emptying at once goes to the holder of initiative (§11.3).
+ *
+ * `generateGameOverEvent` writes it, and `applyGameOverEvent` applies it.
  */
 export interface GameOverEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof GAME_OVER_EFFECT_TYPE;
-  /** The winning player. */
+  /** The player who won. */
   winner: PlayerSide;
 }
 
 const _gameOverEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(GAME_OVER_EFFECT_TYPE),
-    /** The winning player. */
+    /** The player who won. */
     winner: playerSideSchema,
   })
   .strict();

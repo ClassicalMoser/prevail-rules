@@ -8,21 +8,22 @@ import { z } from 'zod';
 export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
 
 /**
- * Deterministic melee resolution after engagement, supports, and committed cards.
- * Both units attack at once (§7.1); the event records what each reached against
+ * A melee is fought: each unit's attack value is measured against the other
+ * unit's thresholds (§7.2.2).
+ *
+ * Both units attack at once (§7.2.1); the event records what each reached against
  * the unit it struck, by that unit's colour. The two units are the ones engaged
  * in the melee's space, which the state holds, so the event carries only the
  * results. The retreats a result calls for are not recorded here: each is worked
  * out when that retreat opens, from the board as it then stands, since an
  * earlier stage may have moved units (§7.5.6).
  *
- * TODO(misleading): §7.1 is how an attack value is made; that both units
- * strike at once is §7.2.1. Settled by correcting the reference.
+ * `generateResolveMeleeEvent` writes it, and `applyResolveMeleeEvent` applies it.
  */
 export interface ResolveMeleeEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
   /** What Black's attack reached against White's unit. */
   whiteAttackResult: AttackResult;
@@ -34,9 +35,9 @@ const _resolveMeleeEventSchemaObject = z
   .object({
     /** What White's attack reached against Black's unit. */
     blackAttackResult: attackResultSchema,
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** What Black's attack reached against White's unit. */
     whiteAttackResult: attackResultSchema,

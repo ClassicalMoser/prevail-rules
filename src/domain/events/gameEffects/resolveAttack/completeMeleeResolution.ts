@@ -2,25 +2,28 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
+/** The type of the complete melee resolution game effect. */
 export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE =
   'completeMeleeResolution' as const;
 
 /**
  * One melee has been fought out and its results carried out (§7.5); the
  * first player then names the next, until none remain (§4.4.2).
+ *
+ * `generateCompleteMeleeResolutionEvent` writes it, and `applyCompleteMeleeResolutionEvent` applies it.
  */
 export interface CompleteMeleeResolutionEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE;
 }
 
 const _completeMeleeResolutionEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE),
   })
   .strict();

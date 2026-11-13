@@ -14,11 +14,17 @@ import { z } from 'zod';
 export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE =
   'completeMoveCommandersPhase' as const;
 
-/** Event to complete the move commanders phase and advance to issue commands phase. */
+/**
+ * Ends Phase 2, Move Commanders, and begins Phase 3, Issue Commands (§4.3).
+ * Each player's orders for the phase come from the command on their card in
+ * play (§4.3.1). The event records them, so applying it reads no cards.
+ *
+ * `generateCompleteMoveCommandersPhaseEvent` writes it, and `applyCompleteMoveCommandersPhaseEvent` applies it.
+ */
 export interface CompleteMoveCommandersPhaseEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE;
   /**
    * Remaining commands for the initiative player for the new issue-commands phase.
@@ -38,9 +44,9 @@ const _completeMoveCommandersPhaseEventSchemaObject: z.ZodObject<{
   remainingCommandsSecondPlayer: z.ZodArray<typeof commandSchema>;
 }> = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE),
     /** Mirrors `remainingCommandsFirstPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
     remainingCommandsFirstPlayer: z.array(commandSchema),

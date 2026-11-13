@@ -6,19 +6,25 @@ import { z } from 'zod';
 export const COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE =
   'completeUnitMovement' as const;
 
-/** The event for the game resolution of a unit movement. */
+/**
+ * One unit's move under a Move order is finished, before the next unit
+ * begins (§4.3.9). A unit that moved into an enemy waited on its own space
+ * while the engagement was set up, and steps onto the enemy's space now.
+ *
+ * `generateCompleteUnitMovementEvent` writes it, and `applyCompleteUnitMovementEvent` applies it.
+ */
 export interface CompleteUnitMovementEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE;
 }
 
 const _completeUnitMovementEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal('gameEffect'),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal('completeUnitMovement'),
   })
   .strict();

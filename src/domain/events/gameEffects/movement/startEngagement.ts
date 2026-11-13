@@ -11,23 +11,29 @@ export const START_ENGAGEMENT_EFFECT_TYPE = 'startEngagement' as const;
  * A move ends in an enemy's space, and an engagement begins (§6.1.1). Its
  * kind, front, flank or rear, is read from the two facings (§6.3.1), and
  * decides what happens next (§6.3.2–§6.3.4).
+ *
+ * `generateStartEngagementEvent` writes it, and `applyStartEngagementEvent` applies it.
  */
 export interface StartEngagementEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof START_ENGAGEMENT_EFFECT_TYPE;
-  /** The type of engagement. */
+  /** Front, flank or rear, read from the two facings (§6.3.1). */
   engagementType: EngagementType;
-  /** The defender with placement. */
+  /** The defender, and where it stands. */
   defenderWithPlacement: UnitWithPlacement;
 }
 
 const _startEngagementEventSchemaObject = z
   .object({
+    /** The defender, and where it stands. */
     defenderWithPlacement: unitWithPlacementSchema,
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
+    /** Front, flank or rear, read from the two facings (§6.3.1). */
     engagementType: engagementTypeSchema,
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   })
   .strict();

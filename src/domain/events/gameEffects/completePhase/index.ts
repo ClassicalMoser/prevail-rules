@@ -18,7 +18,7 @@ export { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE } from './completeResolveMelee
 export type { CompleteResolveMeleePhaseEvent } from './completeResolveMeleePhase';
 export { completeResolveMeleePhaseEventSchema } from './completeResolveMeleePhase';
 
-// Cleanup phase is finished.
+// The round is over, and the next begins.
 export { ROUND_END_EFFECT_TYPE } from './roundEnd';
 export type { RoundEndEvent } from './roundEnd';
 export { roundEndEventSchema } from './roundEnd';

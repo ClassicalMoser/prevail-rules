@@ -1,4 +1,4 @@
-// After cards are played, move them into the played area.
+// In Cleanup, both cards in play go to the played piles.
 export { DISCARD_PLAYED_CARDS_EFFECT_TYPE } from './discardPlayedCards';
 export type { DiscardPlayedCardsEvent } from './discardPlayedCards';
 export { discardPlayedCardsEventSchema } from './discardPlayedCards';

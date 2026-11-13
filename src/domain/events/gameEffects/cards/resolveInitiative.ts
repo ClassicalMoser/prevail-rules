@@ -7,27 +7,29 @@ import { z } from 'zod';
 /** The type of the resolve initiative game effect. */
 export const RESOLVE_INITIATIVE_EFFECT_TYPE = 'resolveInitiative' as const;
 
-/** The event to resolve the initiative.
- * Which player has initiative for the round.
- * The player with the lower initiative value receives initiative.
- * In a tie, the player with initiative keeps it.
+/**
+ * Once the cards are revealed, the lower initiative value takes the
+ * initiative; on a tie it stays where it was (§4.1.3–4.1.4). The player who
+ * holds it is the first player for the rest of the round (§4.1.5).
+ *
+ * `generateResolveInitiativeEvent` writes it, and `applyResolveInitiativeEvent` applies it.
  */
 export interface ResolveInitiativeEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_INITIATIVE_EFFECT_TYPE;
-  /** The player with initiative. */
+  /** The player who holds the initiative this round. */
   player: PlayerSide;
 }
 
 const _resolveInitiativeEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_INITIATIVE_EFFECT_TYPE),
-    /** The player with initiative. */
+    /** The player who holds the initiative this round. */
     player: playerSideSchema,
   })
   .strict();

@@ -10,11 +10,13 @@ export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
 /**
  * Carries out a retreat: the unit falls back along the chosen path, and a
  * commander in its space goes with it (§9.1, §9.1.8).
+ *
+ * `generateResolveRetreatEvent` writes it, and `applyResolveRetreatEvent` applies it.
  */
 export interface ResolveRetreatEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_RETREAT_EFFECT_TYPE;
   /** The unit falling back, by identity; where it stands is the board's. */
   unit: UnitInstance;
@@ -27,9 +29,13 @@ export interface ResolveRetreatEvent {
 
 const _resolveRetreatEventSchemaObject = z
   .object({
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The steps and turns of the fall-back (§9.1). */
     path: z.array(moveDeltaSchema),
+    /** The unit falling back, by identity; where it stands is the board's. */
     unit: unitInstanceSchema,
   })
   .strict();

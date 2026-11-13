@@ -10,19 +10,21 @@ export const TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE =
  * When a retreat has **no** legal positions, the rules replace retreat with rout (§9.1.6). This
  * effect seeds `routState` on the retreat substep that is already open. It carries nothing: the
  * retreat waiting for its rout is the state's to name, as the rout awaiting its penalty is.
+ *
+ * `generateTriggerRoutFromRetreatEvent` writes it, and `applyTriggerRoutFromRetreatEvent` applies it.
  */
 export interface TriggerRoutFromRetreatEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE;
 }
 
 const _triggerRoutFromRetreatEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE),
   })
   .strict();

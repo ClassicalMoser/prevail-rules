@@ -143,6 +143,10 @@ export type GameEffectEventOfType<
   TGameEffectType extends GameEffectType = GameEffectType,
 > = Extract<GameEffectEventUnion, { effectType: TGameEffectType }>;
 
+/**
+ * Any game effect: something the game records as the rules require, not a
+ * decision a player makes.
+ */
 export type GameEffectEvent = GameEffectEventOfType;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
@@ -183,5 +187,6 @@ const _assertExactGameEffect: AssertExact<
   GameEffectEventSchemaType
 > = true;
 
+/** The schema for any game effect. */
 export const gameEffectEventSchema: z.ZodType<GameEffectEvent> =
   _gameEffectEventSchemaObject;

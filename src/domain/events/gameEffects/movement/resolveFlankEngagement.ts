@@ -4,29 +4,36 @@ import { unitFacingSchema, unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
+/** The type of the resolve flank engagement game effect. */
 export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE =
   'resolveFlankEngagement' as const;
 
 /**
  * A defender engaged from the flank is turned to face its attacker, directly
  * opposite it (§6.3.4). It may not retreat; the two fight in Phase 4.
+ *
+ * `generateResolveFlankEngagementEvent` writes it, and `applyResolveFlankEngagementEvent` applies it.
  */
 export interface ResolveFlankEngagementEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE;
-  /** The defender with placement. */
+  /** The defender, and where it stands before it turns. */
   defenderWithPlacement: UnitWithPlacement;
-  /** The new facing of the defending unit. */
+  /** The facing it turns to: directly opposite its attacker's (§6.3.4). */
   newFacing: UnitFacing;
 }
 
 const _resolveFlankEngagementEventSchemaObject = z
   .object({
+    /** The defender, and where it stands before it turns. */
     defenderWithPlacement: unitWithPlacementSchema,
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The facing it turns to: directly opposite its attacker's (§6.3.4). */
     newFacing: unitFacingSchema,
   })
   .strict();

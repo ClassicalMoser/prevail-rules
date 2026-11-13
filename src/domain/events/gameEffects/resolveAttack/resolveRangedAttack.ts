@@ -11,11 +11,13 @@ export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
  * A shot is measured against its target (§4.3.11): which of the target's
  * thresholds it reached. The target is the one the shot was aimed at, which the
  * state holds, so the event carries only the result.
+ *
+ * `generateResolveRangedAttackEvent` writes it, and `applyResolveRangedAttackEvent` applies it.
  */
 export interface ResolveRangedAttackEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE;
   /** What the shot reached against the target's thresholds. */
   attackResult: AttackResult;
@@ -25,9 +27,9 @@ const _resolveRangedAttackEventSchemaObject = z
   .object({
     /** What the shot reached against the target's thresholds. */
     attackResult: attackResultSchema,
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   })
   .strict();

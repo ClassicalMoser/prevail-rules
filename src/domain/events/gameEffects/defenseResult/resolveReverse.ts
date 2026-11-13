@@ -10,11 +10,13 @@ export const RESOLVE_REVERSE_EFFECT_TYPE = 'resolveReverse' as const;
 /**
  * Turns a reversed unit about (§9.2). The event names the unit, and its owner names the
  * reverse: which attack's apply holds it is the state's to say.
+ *
+ * `generateResolveReverseEvent` writes it, and `applyResolveReverseEvent` applies it.
  */
 export interface ResolveReverseEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_REVERSE_EFFECT_TYPE;
   /** The unit being reversed, by identity; where it stands is the board's. */
   unit: UnitInstance;
@@ -27,9 +29,13 @@ export interface ResolveReverseEvent {
 
 const _resolveReverseEventSchemaObject = z
   .object({
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The way it faces once the reverse is resolved (§7.5.5). */
     facing: unitFacingSchema,
+    /** The unit being reversed, by identity; where it stands is the board's. */
     unit: unitInstanceSchema,
   })
   .strict();

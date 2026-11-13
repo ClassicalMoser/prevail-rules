@@ -6,25 +6,23 @@ import { z } from 'zod';
 export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
 
 /**
- * Event to discard played cards.
- * Moves both players' cards from inPlay to discard pile.
- * TODO(misleading): the card in play goes to the played pile, not the
- * discard pile (§4.5.1), as `moveBothInPlayToPlayed` does. Settled by naming
- * the played pile.
- * This is the first step of the cleanup phase.
+ * The first step of Cleanup: both players' cards in play go to their played
+ * piles (§4.5.1). A card stays there until its owner rallies.
+ *
+ * `generateDiscardPlayedCardsEvent` writes it, and `applyDiscardPlayedCardsEvent` applies it.
  */
 export interface DiscardPlayedCardsEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof DISCARD_PLAYED_CARDS_EFFECT_TYPE;
 }
 
 const _discardPlayedCardsEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(DISCARD_PLAYED_CARDS_EFFECT_TYPE),
   })
   .strict();

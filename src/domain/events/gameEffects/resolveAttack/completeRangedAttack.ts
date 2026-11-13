@@ -11,19 +11,21 @@ export const COMPLETE_RANGED_ATTACK_EFFECT_TYPE =
  * next shooter may be chosen. Which units may still shoot is decided when the
  * next shooter is chosen, not here, so a unit with no target now keeps its
  * place in the order. When no shooter is left, the player's orders end.
+ *
+ * `generateCompleteRangedAttackEvent` writes it, and `applyCompleteRangedAttackEvent` applies it.
  */
 export interface CompleteRangedAttackEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_RANGED_ATTACK_EFFECT_TYPE;
 }
 
 const _completeRangedAttackEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(COMPLETE_RANGED_ATTACK_EFFECT_TYPE),
   })
   .strict();

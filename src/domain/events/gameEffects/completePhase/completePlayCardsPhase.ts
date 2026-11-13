@@ -6,19 +6,23 @@ import { z } from 'zod';
 export const COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE =
   'completePlayCardsPhase' as const;
 
-/** Event to complete the play cards phase and advance to move commanders phase. */
+/**
+ * Ends Phase 1, Play Cards, and begins Phase 2, Move Commanders (§4.2).
+ *
+ * `generateCompletePlayCardsPhaseEvent` writes it, and `applyCompletePlayCardsPhaseEvent` applies it.
+ */
 export interface CompletePlayCardsPhaseEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE;
 }
 
 const _completePlayCardsPhaseEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE),
   })
   .strict();

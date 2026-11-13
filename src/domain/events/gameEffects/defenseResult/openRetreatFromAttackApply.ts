@@ -9,6 +9,9 @@ export const OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE =
   'openRetreatFromAttackApply' as const;
 
 /**
+ * An attack's results are carried out a stage at a time: retreat, then
+ * reverse, then rout (§7.5.2). This opens the retreat when its turn comes.
+ *
  * Opens the retreat substep on an attack apply whose retreat slot is still
  * `'pending'`. The attack already measured a retreat; this event writes the
  * substep (and its legal options) when that step's turn comes.
@@ -16,11 +19,13 @@ export const OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE =
  * The procedure works out the retreats the unit may make, so the log records
  * what was legal; apply only writes them. Which apply opens is the state's to
  * name (`getAttackApplyAwaitingOpen`), not the event's.
+ *
+ * `generateOpenRetreatFromAttackApplyEvent` writes it, and `applyOpenRetreatFromAttackApplyEvent` applies it.
  */
 export interface OpenRetreatFromAttackApplyEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE;
   /** The retreats the unit may make, each as its path (§9.1.3); empty when it routs instead (§9.1.6). */
   retreatPaths: MoveDelta[][];
@@ -28,9 +33,9 @@ export interface OpenRetreatFromAttackApplyEvent {
 
 const _openRetreatFromAttackApplyEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE),
     /** The retreats the unit may make, each as its path. */
     retreatPaths: z.array(z.array(moveDeltaSchema)),

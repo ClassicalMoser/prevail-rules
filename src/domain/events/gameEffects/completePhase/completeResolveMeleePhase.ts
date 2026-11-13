@@ -6,19 +6,24 @@ import { z } from 'zod';
 export const COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE =
   'completeResolveMeleePhase' as const;
 
-/** Event to complete the resolve melee phase and advance to cleanup phase. */
+/**
+ * Ends Phase 4, Resolve Melee, once no engagement is left to fight (§4.4.2),
+ * and begins Phase 5, Cleanup (§4.5).
+ *
+ * `generateCompleteResolveMeleePhaseEvent` writes it, and `applyCompleteResolveMeleePhaseEvent` applies it.
+ */
 export interface CompleteResolveMeleePhaseEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE;
 }
 
 const _completeResolveMeleePhaseEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE),
   })
   .strict();

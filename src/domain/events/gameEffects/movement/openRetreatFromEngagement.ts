@@ -11,19 +11,21 @@ export const OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE =
  * fall back (§6.3.2). The retreats it may make were recorded when the
  * engagement worked out whether the defender could retreat, so this carries
  * nothing: applying it opens the retreat with the paths the engagement holds.
+ *
+ * `generateOpenRetreatFromEngagementEvent` writes it, and `applyOpenRetreatFromEngagementEvent` applies it.
  */
 export interface OpenRetreatFromEngagementEvent {
-  /** The type of the event. */
+  /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
+  /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE;
 }
 
 const _openRetreatFromEngagementEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The type of game effect. */
+    /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE),
   })
   .strict();
