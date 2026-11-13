@@ -37,19 +37,18 @@ export type OrderSelection = UnitsOrderSelection | LineOrderSelection;
  * used, and the units or the line it is given to. A units order names up to
  * the card's number of units (§4.3.2); a lines order is one line per order
  * (§4.3.3).
+ *
+ * `getLegalIssueCommands` enumerates the legal options, and
+ * `applyIssueCommandEvent` applies the choice.
  */
 export interface IssueCommandEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof ISSUE_COMMAND_CHOICE_TYPE;
-  /** The player who is issuing the commands. */
+  /** The player giving the order. */
   player: PlayerSide;
-  /**
-   * The commands to issue.
-   * TODO(misleading): this is the one command the order uses, not several.
-   * Settled by naming it in the singular.
-   */
+  /** The command on the card in play that this order uses (§4.3.1). */
   command: Command;
   /** The units, or the line, the order is given to. */
   selection: OrderSelection;
@@ -95,13 +94,13 @@ const _orderSelectionSchemaObject: z.ZodDiscriminatedUnion<
 
 const _issueCommandEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(ISSUE_COMMAND_CHOICE_TYPE),
-    /** The player who is issuing the commands. */
+    /** The player giving the order. */
     player: playerSideSchema,
-    /** The commands to issue. */
+    /** The command on the card in play that this order uses (§4.3.1). */
     command: commandSchema,
     /** The units, or the line, the order is given to. */
     selection: _orderSelectionSchemaObject,
@@ -117,7 +116,7 @@ const _assertExactIssueCommandEvent: AssertExact<
   IssueCommandEventSchemaType
 > = true;
 
-/** The schema for the issue commands event. */
+/** The schema for an issue command event. */
 export const issueCommandEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'issueCommand'>;

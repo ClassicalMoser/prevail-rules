@@ -23,17 +23,21 @@ export interface UnitSupportAssignment {
 }
 
 /**
- * Player assigns hand support to board units after rally.
- * Assignment must be locally maximal (use every slot that can still cover
- * someone uncovered); global allocation optimality is not required.
- * Units left uncovered lose support and are routed.
+ * After a rally, the player who rallied gives each of their units on the
+ * board a place under the unit support their hand holds (§10.4.4). An open
+ * place that an uncovered unit could fill must be filled, but the best
+ * arrangement is not required (§10.4.5). Units left without a place rout
+ * together (§10.4.6).
  *
  * The assignments are a set: the order they are listed in does not matter.
+ *
+ * `getLegalAssignUnitSupport` enumerates the legal options, and
+ * `applyAssignUnitSupportEvent` applies the choice.
  */
 export interface AssignUnitSupportEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof ASSIGN_UNIT_SUPPORT_CHOICE_TYPE;
   /** The player who rallied and is now placing their units under the hand's cards. */
   player: PlayerSide;
@@ -46,16 +50,22 @@ const unitSupportAssignmentSchemaObject: z.ZodObject<{
   unit: typeof unitInstanceSchema;
 }> = z
   .object({
+    /** The unit support, as the hand sums it; echoed from the legal options. */
     unitSupport: unitSupportSchema,
+    /** The unit taking a place under it. */
     unit: unitInstanceSchema,
   })
   .strict();
 
 const _assignUnitSupportEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(ASSIGN_UNIT_SUPPORT_CHOICE_TYPE),
+    /** The player who rallied and is now placing their units under the hand's cards. */
     player: playerSideSchema,
+    /** One entry per unit given a place, in any order. */
     assignments: z.array(unitSupportAssignmentSchemaObject),
   })
   .strict();
@@ -69,6 +79,7 @@ const _assertExactAssignUnitSupportEvent: AssertExact<
   AssignUnitSupportEventSchemaType
 > = true;
 
+/** The schema for an assign unit support event. */
 export const assignUnitSupportEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'assignUnitSupport'>;

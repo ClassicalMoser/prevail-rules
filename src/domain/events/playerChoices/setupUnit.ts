@@ -14,33 +14,38 @@ export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 /**
  * A player deploys their whole army at once, before the first round: every
  * unit in its own zone, and the general with them (§3.5.4).
+ *
+ * `getLegalSetupUnits` enumerates the legal options, and
+ * `applySetupUnitsEvent` applies the choice.
  */
 export interface SetupUnitsEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof SETUP_UNITS_CHOICE_TYPE;
-  /** The player who is setting up the units. */
+  /** The player deploying. */
   player: PlayerSide;
-  /** The units to setup, each with its placement. */
+  /** The units deployed, each with its space and facing (§3.5.1). */
   unitPlacements: UnitWithPlacement[];
   /**
-   * Where this player's commander starts. Must be an empty coordinate in the
-   * player's setup zone (may be alone or stacked with a unit placed in this event).
-   *
-   * TODO(misleading): "an empty coordinate" and "stacked with a unit placed
-   * in this event" disagree. Settled by saying empty of what: of units
-   * already on the board before this event, presumably.
+   * Where this player's commander starts: a space in the player's zone with
+   * no unit on it before this event. It may share that space with a unit
+   * placed in this same event (§3.5.3).
    */
   commanderCoordinate: Coordinate;
 }
 
 const _setupUnitsEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
+    /** The player deploying. */
     player: playerSideSchema,
+    /** Where this player's commander starts (§3.5.3). */
     commanderCoordinate: coordinateSchema,
+    /** The units deployed, each with its space and facing (§3.5.1). */
     unitPlacements: z.array(unitWithPlacementSchema),
   })
   .strict();

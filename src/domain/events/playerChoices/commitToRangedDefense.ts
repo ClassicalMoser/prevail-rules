@@ -14,32 +14,35 @@ export const COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE =
  * commit a card for Defence or Flexibility, or refuse (`committedCard` null). A separate
  * event from the shooter's, so a shooter can never commit Defence and a
  * target can never commit Range.
+ *
+ * `getLegalCommitToRangedDefenseEvents` enumerates the legal options, and
+ * `applyCommitToRangedDefenseEvent` applies the choice.
  */
 export interface CommitToRangedDefenseEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE;
-  /** The target's owner, committing (or refusing). */
+  /** The target's owner, committing or declining. */
   player: PlayerSide;
   /**
-   * Card from hand to commit, or `null` to refuse / decline the commitment
-   * without spending a card.
+   * The card from hand to commit, or `null` to decline. Declining is always
+   * allowed and spends no card (§8.3).
    */
   committedCard: CommandCard | null;
 }
 
 const _commitToRangedDefenseEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(COMMIT_TO_RANGED_DEFENSE_CHOICE_TYPE),
-    /** The target's owner, committing (or refusing). */
+    /** The target's owner, committing or declining. */
     player: playerSideSchema,
     /**
-     * Card from hand to commit, or `null` to refuse / decline the commitment
-     * without spending a card.
+     * The card from hand to commit, or `null` to decline. Declining is always
+     * allowed and spends no card (§8.3).
      */
     committedCard: commandCardSchema.nullable(),
   })

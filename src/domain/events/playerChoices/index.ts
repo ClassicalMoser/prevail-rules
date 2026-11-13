@@ -65,9 +65,7 @@ export { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
 export type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
 export { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
 
-// Choose which legal retreat square to take.
-// TODO(misleading): the board has spaces, not squares, and the choice is
-// among retreats of equal size (§9.1.3), named by their paths.
+// Choose among retreats of equal size, each named by its path (§9.1.3).
 export type { ChooseRetreatOptionEvent } from './chooseRetreatOption';
 export { chooseRetreatOptionEventSchema } from './chooseRetreatOption';
 
@@ -106,5 +104,3 @@ export {
   projectedChooseCardEventSchema,
   projectedPlayerChoiceEventSchema,
 } from './projectedPlayerChoice';
-
-// The modifier kinds each commitment may apply.

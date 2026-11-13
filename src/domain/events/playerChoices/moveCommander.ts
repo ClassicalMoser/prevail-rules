@@ -11,26 +11,34 @@ export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander' as const;
  * In Phase 2 a player moves their general, up to four spaces, a diagonal step
  * counting as one (§4.2.2). Where the general stands decides which units its
  * cards' inspiration ranges reach this round (§4.2.7).
+ *
+ * `getLegalCommanderMoves` enumerates the legal destinations, and
+ * `applyMoveCommanderEvent` applies the choice.
  */
 export interface MoveCommanderEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof MOVE_COMMANDER_CHOICE_TYPE;
   /** The player who is moving the commander. */
   player: PlayerSide;
-  /** The coordinate the commander is moving from. */
+  /** The space the commander stands in before the move. */
   from: Coordinate;
-  /** The coordinate the commander is moving to. */
+  /** The space the commander moves to. It may be the space it is in (§4.2.6). */
   to: Coordinate;
 }
 
 const _moveCommanderEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(MOVE_COMMANDER_CHOICE_TYPE),
+    /** The player who is moving the commander. */
     player: playerSideSchema,
+    /** The space the commander stands in before the move. */
     from: coordinateSchema,
+    /** The space the commander moves to. It may be the space it is in (§4.2.6). */
     to: coordinateSchema,
   })
   .strict();

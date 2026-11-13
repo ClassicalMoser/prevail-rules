@@ -13,32 +13,35 @@ export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
  * the shooter is named and before its target is, its owner may commit a
  * card, or refuse (`committedCard` null). The card counts for the whole shot:
  * its Range when the target is chosen, its Attack when the shot lands.
+ *
+ * `getLegalCommitToRangedAttackEvents` enumerates the legal options, and
+ * `applyCommitToRangedAttackEvent` applies the choice.
  */
 export interface CommitToRangedAttackEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE;
-  /** The shooting player, committing (or refusing). */
+  /** The shooting player, committing or declining. */
   player: PlayerSide;
   /**
-   * Card from hand to commit, or `null` to refuse / decline the commitment
-   * without spending a card.
+   * The card from hand to commit, or `null` to decline. Declining is always
+   * allowed and spends no card (§8.3).
    */
   committedCard: CommandCard | null;
 }
 
 const _commitToRangedAttackEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE),
-    /** The player who is committing (or refusing). */
+    /** The shooting player, committing or declining. */
     player: playerSideSchema,
     /**
-     * Card from hand to commit, or `null` to refuse / decline the commitment
-     * without spending a card.
+     * The card from hand to commit, or `null` to decline. Declining is always
+     * allowed and spends no card (§8.3).
      */
     committedCard: commandCardSchema.nullable(),
   })

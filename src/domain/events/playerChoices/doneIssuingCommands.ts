@@ -8,25 +8,29 @@ import { z } from 'zod';
 export const DONE_ISSUING_COMMANDS_CHOICE_TYPE = 'doneIssuingCommands' as const;
 
 /**
- * Player ends their issue-commands step, forfeiting any remaining command slots
- * (“issue all commands you want to give”).
+ * In Phase 3 a player stops giving orders before the card runs out. Whatever
+ * is not issued is forfeited (§4.3.3). A units order may be declined
+ * altogether (§4.3.2), which is this same event with nothing issued.
+ *
+ * `getLegalDoneIssuingCommandsEvents` enumerates the legal options, and
+ * `applyDoneIssuingCommandsEvent` applies the choice.
  */
 export interface DoneIssuingCommandsEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof DONE_ISSUING_COMMANDS_CHOICE_TYPE;
-  /** The player who is done issuing. */
+  /** The player who stops giving orders. */
   player: PlayerSide;
 }
 
 const _doneIssuingCommandsEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(DONE_ISSUING_COMMANDS_CHOICE_TYPE),
-    /** The player who is done issuing. */
+    /** The player who stops giving orders. */
     player: playerSideSchema,
   })
   .strict();

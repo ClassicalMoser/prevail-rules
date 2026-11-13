@@ -4,18 +4,22 @@ import { moveDeltaSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
+/** The type of the choose retreat option event. */
 export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = 'chooseRetreatOption' as const;
 
 /**
  * A retreat must be the smallest backward move available; where several tie,
  * the unit's owner chooses among them (§9.1.3).
+ *
+ * `getLegalChooseRetreatOptionEvents` enumerates the legal options, and
+ * `applyChooseRetreatOptionEvent` applies the choice.
  */
 export interface ChooseRetreatOptionEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE;
-  /** The player who is choosing the retreat option. */
+  /** The retreating unit's owner. */
   player: PlayerSide;
   /**
    * The retreat chosen, named by its path (§9.1.3). Where it ends is read
@@ -27,9 +31,13 @@ export interface ChooseRetreatOptionEvent {
 
 const _chooseRetreatOptionEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
+    /** The retreating unit's owner. */
     player: playerSideSchema,
+    /** The retreat chosen, named by its path (§9.1.3). */
     path: z.array(moveDeltaSchema),
   })
   .strict();
@@ -43,7 +51,7 @@ const _assertExactChooseRetreatOptionEvent: AssertExact<
   ChooseRetreatOptionEventSchemaType
 > = true;
 
-/** The schema for a player choice to retreat. */
+/** The schema for a choose retreat option event. */
 export const chooseRetreatOptionEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;

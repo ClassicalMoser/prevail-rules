@@ -12,11 +12,14 @@ export const CHOOSE_SHOOTER_CHOICE_TYPE = 'chooseShooter' as const;
  * player names which of the ordered units shoots next. Its owner may then
  * commit a card for the shot (`commitToRangedAttack`), and only after that
  * names the target and any supporters (`performRangedAttack`).
+ *
+ * `getLegalRangedAttackers` enumerates the legal options, and
+ * `applyChooseShooterEvent` applies the choice.
  */
 export interface ChooseShooterEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_SHOOTER_CHOICE_TYPE;
   /** The player carrying out the order. */
   player: PlayerSide;
@@ -26,9 +29,13 @@ export interface ChooseShooterEvent {
 
 const _chooseShooterEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_SHOOTER_CHOICE_TYPE),
+    /** The player carrying out the order. */
     player: playerSideSchema,
+    /** The unit that shoots next, and where it stands. */
     unit: unitWithPlacementSchema,
   })
   .strict();

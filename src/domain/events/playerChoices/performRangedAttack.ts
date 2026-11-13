@@ -12,11 +12,14 @@ export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack' as const;
  * any supporters who spend their own shots to add +1 each. The shooter
  * was named by `chooseShooter` and its card committed by
  * `commitToRangedAttack`, so this event carries only what is aimed at.
+ *
+ * `getLegalShooterTargets` enumerates the legal targets, and
+ * `applyPerformRangedAttackEvent` applies the choice.
  */
 export interface PerformRangedAttackEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE;
   /** The shooting player. */
   player: PlayerSide;
@@ -28,10 +31,15 @@ export interface PerformRangedAttackEvent {
 
 const _performRangedAttackEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(PERFORM_RANGED_ATTACK_CHOICE_TYPE),
+    /** The shooting player. */
     player: playerSideSchema,
+    /** Other units of the same order spending their shots on this one (§7.3.4). */
     supportingUnits: z.array(unitWithPlacementSchema),
+    /** The enemy unit being shot at, and where it stands. */
     targetUnit: unitWithPlacementSchema,
   })
   .strict();

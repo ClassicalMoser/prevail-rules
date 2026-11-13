@@ -12,11 +12,14 @@ export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit' as const;
  * itself. The unit was named by `chooseMovingUnit` and any card committed
  * by `commitToMovement`, so this event carries only the path, and whether
  * the commander rides along.
+ *
+ * `getLegalUnitMoves` enumerates the legal options, and `applyMoveUnitEvent`
+ * applies the choice.
  */
 export interface MoveUnitEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof MOVE_UNIT_CHOICE_TYPE;
   /** The player who is moving the unit. */
   player: PlayerSide;
@@ -27,16 +30,27 @@ export interface MoveUnitEvent {
    * unit in place.
    */
   path: MoveDelta[];
-  /** Whether to move the commander with the unit. */
+  /**
+   * Whether a commander standing in the unit's space rides along to its
+   * final space, or stays behind (§4.3.10).
+   */
   moveCommander: boolean;
 }
 
 const _moveUnitEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
+    /** The player who is moving the unit. */
     player: playerSideSchema,
+    /**
+     * Whether a commander standing in the unit's space rides along to its
+     * final space, or stays behind (§4.3.10).
+     */
     moveCommander: z.boolean(),
+    /** The whole move, step by step and turn by turn. */
     path: z.array(moveDeltaSchema),
   })
   .strict();

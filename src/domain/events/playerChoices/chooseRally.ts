@@ -8,32 +8,34 @@ import { z } from 'zod';
 export const CHOOSE_RALLY_CHOICE_TYPE = 'chooseRally' as const;
 
 /**
- * An event to choose a rally from the player's hand.
+ * In Cleanup each player in turn decides whether to rally, the first player
+ * first (§4.5.2, §10.3.1). A rally burns one played card, drawn at random,
+ * and brings every other card back to hand; the unit support check follows
+ * (§10.3.2). Declining changes nothing (§10.3.4).
  *
- * TODO(misleading): nothing is chosen from the hand; the event says whether
- * the player rallies at Cleanup (§10.3.1), and the card burnt is drawn at
- * random (§10.3.2). Settled by describing it as the decision to rally.
+ * `getLegalChooseRallyEvent` enumerates the legal options, and
+ * `applyChooseRallyEvent` applies the choice.
  */
 export interface ChooseRallyEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_RALLY_CHOICE_TYPE;
-  /** The player who is choosing whether to perform a rally. */
+  /** The player deciding whether to rally. */
   player: PlayerSide;
-  /** Whether the player is performing a rally. */
+  /** Whether the player rallies. */
   performRally: boolean;
 }
 
 const _chooseRallyEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_RALLY_CHOICE_TYPE),
-    /** The player who is choosing whether to perform a rally. */
+    /** The player deciding whether to rally. */
     player: playerSideSchema,
-    /** Whether the player is performing a rally. */
+    /** Whether the player rallies. */
     performRally: z.boolean(),
   })
   .strict();

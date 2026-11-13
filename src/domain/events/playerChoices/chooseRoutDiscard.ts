@@ -8,15 +8,19 @@ import { z } from 'zod';
 export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = 'chooseRoutDiscard' as const;
 
 /**
- * An event to choose which cards to discard as a penalty for routed units.
- * The player must select a number of cards equal to the total rout penalty.
+ * When a unit routs, its owner discards cards from hand equal to its Morale,
+ * chosen freely (§9.3.2). Units of one player that rout at the same moment
+ * are paid for together, their Morale summed (§9.3.3).
+ *
+ * `getLegalRoutDiscardCards` enumerates the legal options, and
+ * `applyChooseRoutDiscardEvent` applies the choice.
  */
 export interface ChooseRoutDiscardEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_ROUT_DISCARD_CHOICE_TYPE;
-  /** The player who is discarding cards. */
+  /** The player paying for the rout. */
   player: PlayerSide;
   /**
    * The cards being discarded, from hand. A discard is face up, so the event
@@ -28,11 +32,11 @@ export interface ChooseRoutDiscardEvent {
 
 const _chooseRoutDiscardEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_ROUT_DISCARD_CHOICE_TYPE),
-    /** The player who is discarding cards. */
+    /** The player paying for the rout. */
     player: playerSideSchema,
     /** The cards being discarded, from hand. */
     cards: z.array(commandCardSchema),

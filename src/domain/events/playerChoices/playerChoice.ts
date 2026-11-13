@@ -44,7 +44,10 @@ import { setupUnitsEventSchema } from './setupUnit';
 export type { PlayerChoiceType } from './playerChoiceTypes';
 export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
 
-/** An event that represents a player choice. */
+/**
+ * Any decision the rules leave to a player. What the game does in response
+ * is recorded separately, as game effects.
+ */
 export type PlayerChoiceEvent =
   | AssignUnitSupportEvent
   | ChooseCardEvent
@@ -112,5 +115,6 @@ const _assertChoiceTypesMatchEvents: AssertExact<
   PlayerChoiceType
 > = true;
 
+/** The schema for any player choice. */
 export const playerChoiceEventSchema: z.ZodType<PlayerChoiceEvent> =
   _playerChoiceEventSchemaObject;

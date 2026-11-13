@@ -12,11 +12,14 @@ export const CHOOSE_MOVING_UNIT_CHOICE_TYPE = 'chooseMovingUnit' as const;
  * player names which of the ordered units moves next. Its owner may then
  * commit a card for the move (`commitToMovement`), and only after that
  * writes the move itself (`moveUnit`).
+ *
+ * `getLegalMoveUnits` enumerates the legal options, and
+ * `applyChooseMovingUnitEvent` applies the choice.
  */
 export interface ChooseMovingUnitEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_MOVING_UNIT_CHOICE_TYPE;
   /** The player carrying out the order. */
   player: PlayerSide;
@@ -26,9 +29,13 @@ export interface ChooseMovingUnitEvent {
 
 const _chooseMovingUnitEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_MOVING_UNIT_CHOICE_TYPE),
+    /** The player carrying out the order. */
     player: playerSideSchema,
+    /** The unit that moves next, and where it stands. */
     unit: unitWithPlacementSchema,
   })
   .strict();

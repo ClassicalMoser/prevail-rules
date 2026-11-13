@@ -8,29 +8,32 @@ import { z } from 'zod';
 export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard' as const;
 
 /**
- * An event to choose a card from the player's hand.
- * Both players choose at once and in secret, face down (§4.1.1).
+ * In Phase 1 each player chooses the card they will play this round, from
+ * their hand. Both choose at once and in secret, face down (§4.1.1).
+ *
+ * `getLegalChooseCardOptions` enumerates the legal options, and
+ * `applyChooseCardEvent` applies the choice.
  */
 export interface ChooseCardEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_CARD_CHOICE_TYPE;
-  /** The player who is choosing the card. */
+  /** The player choosing. */
   player: PlayerSide;
-  /** The card to choose from the player's hand. */
+  /** The card chosen, from the player's hand. */
   card: CommandCard;
 }
 
 const _chooseCardEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_CARD_CHOICE_TYPE),
-    /** The player who is choosing the card. */
+    /** The player choosing. */
     player: playerSideSchema,
-    /** The card to choose from the player's hand. */
+    /** The card chosen, from the player's hand. */
     card: commandCardSchema,
   })
   .strict();

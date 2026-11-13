@@ -29,19 +29,31 @@ import { performRangedAttackEventSchema } from './performRangedAttack';
 import type { PlayerChoiceEvent } from './playerChoice';
 import { setupUnitsEventSchema } from './setupUnit';
 
-/** Choose-card event as seen on the wire for a seat (may redact card identity). */
+/**
+ * A choose card event as one player sees it. Cards are chosen face down
+ * (§4.1.1), so the opponent's card shows as `'hidden'`.
+ * `projectEventForVisibility` writes it.
+ */
 export interface ProjectedChooseCardEvent {
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_CARD_CHOICE_TYPE;
+  /** The player choosing. */
   player: PlayerSide;
+  /** The card chosen, or `'hidden'` when it is the opponent's. */
   card: CommandCard | HiddenCard;
 }
 
 const _projectedChooseCardEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_CARD_CHOICE_TYPE),
+    /** The player choosing. */
     player: playerSideSchema,
+    /** The card chosen, or `'hidden'` when it is the opponent's. */
     card: z.union([commandCardSchema, hiddenCardSchema]),
   })
   .strict();
@@ -55,13 +67,14 @@ const _assertExactProjectedChooseCardEvent: AssertExact<
   ProjectedChooseCardEventSchemaType
 > = true;
 
+/** The schema for a choose card event as one player sees it. */
 export const projectedChooseCardEventSchema: z.ZodType<ProjectedChooseCardEvent> =
   _projectedChooseCardEventSchemaObject;
 
 /**
- * Player choice as delivered to a seated client after visibility projection.
- * Same as {@link PlayerChoiceEvent} except an opponent's chooseCard may be `'hidden'`.
- * Commits are public and keep the real card.
+ * A player choice as one player sees it. It is the same as
+ * {@link PlayerChoiceEvent}, except that the opponent's chosen card is
+ * `'hidden'`. Commitments are public, so they keep the real card.
  */
 export type ProjectedPlayerChoiceEvent =
   | Exclude<PlayerChoiceEvent, ChooseCardEvent>
@@ -103,5 +116,6 @@ const _assertExactProjectedPlayerChoiceEvent: AssertExact<
   ProjectedPlayerChoiceEventSchemaType
 > = true;
 
+/** The schema for any player choice as one player sees it. */
 export const projectedPlayerChoiceEventSchema: z.ZodType<ProjectedPlayerChoiceEvent> =
   _projectedPlayerChoiceEventSchemaObject;

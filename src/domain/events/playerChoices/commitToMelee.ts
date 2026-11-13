@@ -7,32 +7,39 @@ import { z } from 'zod';
 /** The type of the commit to melee event. */
 export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee' as const;
 
-/** An event to commit a card to melee — or refuse (`committedCard` null). */
+/**
+ * A commitment for one side of a melee (§7.2.2). The first player may commit
+ * for their unit, then the second player may do the same. Either may decline
+ * (§8.3).
+ *
+ * `getLegalCommitToMeleeEvents` enumerates the legal options, and
+ * `applyCommitToMeleeEvent` applies the choice.
+ */
 export interface CommitToMeleeEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof COMMIT_TO_MELEE_CHOICE_TYPE;
-  /** The player who is committing (or refusing). */
+  /** The player committing or declining. */
   player: PlayerSide;
   /**
-   * Card from hand to commit, or `null` to refuse / decline the commitment
-   * without spending a card.
+   * The card from hand to commit, or `null` to decline. Declining is always
+   * allowed and spends no card (§8.3).
    */
   committedCard: CommandCard | null;
 }
 
 const _commitToMeleeEventSchemaObject = z
   .object({
-    /** The type of the event. */
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
-    /** The player who is committing (or refusing). */
+    /** The player committing or declining. */
     player: playerSideSchema,
     /**
-     * Card from hand to commit, or `null` to refuse / decline the commitment
-     * without spending a card.
+     * The card from hand to commit, or `null` to decline. Declining is always
+     * allowed and spends no card (§8.3).
      */
     committedCard: commandCardSchema.nullable(),
   })

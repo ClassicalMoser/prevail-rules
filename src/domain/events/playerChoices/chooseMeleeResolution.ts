@@ -13,23 +13,30 @@ export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
  * none are left (§4.4.2, §7.2.4). The order is a real choice: support is
  * counted afresh for each fight, so clearing one unit away can change every
  * fight after it (§7.3.3).
+ *
+ * `getLegalChooseMeleeResolutionEvents` enumerates the legal options, and
+ * `applyChooseMeleeEvent` applies the choice.
  */
 export interface ChooseMeleeResolutionEvent {
-  /** The type of the event. */
+  /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
+  /** Which choice this is. Player choices are told apart by it. */
   choiceType: typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE;
-  /** The player who is choosing the melee resolution. */
+  /** The first player, who chooses the order (§4.4.2). */
   player: PlayerSide;
-  /** The space the melee is occurring in. */
+  /** The engaged space to fight next. */
   space: Coordinate;
 }
 
 const _chooseMeleeResolutionEventSchemaObject = z
   .object({
+    /** A player choice, not a game effect. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** Which choice this is. Player choices are told apart by it. */
     choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
+    /** The first player, who chooses the order (§4.4.2). */
     player: playerSideSchema,
+    /** The engaged space to fight next. */
     space: coordinateSchema,
   })
   .strict();
