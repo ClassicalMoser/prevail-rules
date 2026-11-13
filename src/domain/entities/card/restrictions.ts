@@ -3,12 +3,6 @@ import type { AssertExact } from '@utils';
 import { NO_INSPIRATION_RANGE, traitSchema } from '@ruleValues';
 import { z } from 'zod';
 
-// TODO(composition): the upper bound of 10 on an inspiration range is
-// written into each of the three restriction schemas below, and the rulebook
-// states no such limit (§4.2.7). The README asks that a limit the rules share
-// be named in `@ruleValues`. Settled by naming it there with its reason, or
-// dropping it if no card needs one.
-
 /**
  * Restrictions with no trait or unit-type filter.
  * Inspiration range may still apply.
@@ -25,7 +19,7 @@ const _noTypeRestrictionsSchemaObject = z
     /** No trait or unit-type filter applies. */
     restrictionType: z.literal('none'),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
-    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE).max(10),
+    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE),
   })
   .strict();
 
@@ -63,7 +57,7 @@ const _traitRestrictionsSchemaObject = z
     /** The unit must have every listed trait. */
     restrictionType: z.literal('trait'),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
-    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE).max(10),
+    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE),
     /** The traits that must be present on the unit for the command or round effect to be applied. */
     traitRestrictions: z.array(traitSchema).min(1),
   })
@@ -104,7 +98,7 @@ const _unitTypeRestrictionsSchemaObject = z
     /** The unit must be one of the listed unit types. */
     restrictionType: z.literal('unitType'),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
-    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE).max(10),
+    inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE),
     /** The unique identifiers of the unit types that can be included in the command or round effect. */
     unitRestrictions: z.array(z.uuid()).min(1),
   })

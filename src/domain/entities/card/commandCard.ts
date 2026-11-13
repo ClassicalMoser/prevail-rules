@@ -17,15 +17,10 @@ import {
 /** A hidden card, which is not visible to the player. */
 export type HiddenCard = 'hidden';
 
-const _hiddenCardSchemaObject = z.literal('hidden');
-
-type HiddenCardSchemaType = z.infer<typeof _hiddenCardSchemaObject>;
-
 /** The schema for a hidden card. */
-export const hiddenCardSchema: z.ZodType<HiddenCard> = _hiddenCardSchemaObject;
+export const hiddenCardSchema: z.ZodType<HiddenCard> = z.literal('hidden');
 
-const _assertExactHiddenCard: AssertExact<HiddenCard, HiddenCardSchemaType> =
-  true;
+// No AssertExact for this case since that would be strictly tautological.
 
 /**
  * A command card in the game.
