@@ -1,55 +1,59 @@
-import { tempCommandCards } from '@sampleValues';
 import type { PlayerChoiceEvent } from '@events';
-
-import { applyChooseCardEvent } from './applyChoices';
+import type { GameState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
+import { tempCommandCards } from '@sampleValues';
+import { updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
-import { createChooseCardEvent, createEmptyGameState } from '@factories';
+/** Both players choosing their cards, Black holding two and White one. */
+function choosingCards(): GameState {
+  const base = createEmptyGameState('standard');
 
-vi.mock(import('./applyChoices'), () => ({
-  applyAssignUnitSupportEvent: vi.fn(),
-  applyChooseCardEvent: vi.fn(),
-  applyChooseMeleeEvent: vi.fn(),
-  applyChooseRallyEvent: vi.fn(),
-  applyChooseRetreatOptionEvent: vi.fn(),
-  applyChooseRoutDiscardEvent: vi.fn(),
-  applyChooseWhetherToRetreatEvent: vi.fn(),
-  applyCommitToMeleeEvent: vi.fn(),
-  applyCommitToMovementEvent: vi.fn(),
-  applyCommitToRangedAttackEvent: vi.fn(),
-  applyDoneIssuingCommandsEvent: vi.fn(),
-  applyIssueCommandEvent: vi.fn(),
-  applyMoveCommanderEvent: vi.fn(),
-  applyMoveUnitEvent: vi.fn(),
-  applyPerformRangedAttackEvent: vi.fn(),
-  applySetupUnitsEvent: vi.fn(),
-}));
-
-/**
- * Smoke tests only: real routing coverage lives on each `applyChoices/*` module.
- */
-describe('applyPlayerChoiceEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  // Nothing laid down yet; each hand holds the cards it may choose from.
+  const withHands = updateCardState(base, {
+    ...base.cardState,
+    black: {
+      ...base.cardState.black,
+      awaitingPlay: null,
+      inHand: [tempCommandCards[0], tempCommandCards[1]],
+    },
+    white: {
+      ...base.cardState.white,
+      awaitingPlay: null,
+      inHand: [tempCommandCards[2]],
+    },
   });
 
-  it('delegates to the handler for the matching choiceType and returns its result', () => {
-    const state = createEmptyGameState('standard');
+  // The play-cards phase, at the step where cards are chosen (§4.1.1).
+  const choosing = updatePhaseState(withHands, {
+    phase: PLAY_CARDS_PHASE,
+    step: 'chooseCards',
+  });
+  return choosing;
+}
+
+/**
+ * A player's choice is applied by the rule for that kind of choice. Each
+ * rule has its own spec; this one checks that a choice reaches its rule.
+ */
+describe('applyPlayerChoiceEvent function', () => {
+  it('applies a card choice: the card leaves the hand and waits to be revealed', () => {
+    // Black lays down the first of its two cards.
     const event = createChooseCardEvent({
       card: tempCommandCards[0],
       player: 'black',
     });
 
-    vi.mocked(applyChooseCardEvent).mockReturnValue(state);
+    const result = applyPlayerChoiceEvent(event, choosingCards());
 
-    const result = applyPlayerChoiceEvent(event, state);
-
-    expect(applyChooseCardEvent).toHaveBeenCalledWith(event, state);
-    expect(result).toBe(state);
+    // The card is face down, waiting for the reveal; the other stays in hand.
+    expect(result.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
+    expect(result.cardState.black.inHand).toStrictEqual([tempCommandCards[1]]);
   });
 
-  it('throws when choiceType is not handled by the switch', () => {
-    const state = createEmptyGameState('standard');
+  it('throws for a kind of choice it has no rule for', () => {
     const event = {
       choiceType: 'unknown',
       eventType: 'playerChoice',
@@ -57,7 +61,8 @@ describe('applyPlayerChoiceEvent function', () => {
       // The default branch needs a choiceType the union forbids.
     } as unknown as PlayerChoiceEvent;
 
-    expect(() => applyPlayerChoiceEvent(event, state)).toThrow(
+    // No rule applies, so the choice is refused outright.
+    expect(() => applyPlayerChoiceEvent(event, choosingCards())).toThrow(
       'Unknown player choice event type: unknown',
     );
   });

@@ -1,72 +1,59 @@
-import type { GameEffectEvent } from '@events';
-
-import { applyDiscardPlayedCardsEvent } from './applyEffects';
-import { applyGameEffectEvent } from './applyGameEffectEvent';
-import type { PlayerSide } from '@entities';
-
+import type { DiscardPlayedCardsEvent, GameEffectEvent } from '@events';
+import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
+import { tempCommandCards } from '@sampleValues';
+import { createCleanupPhaseState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { applyGameEffectEvent } from './applyGameEffectEvent';
 
-vi.mock(import('./applyEffects'), () => ({
-  applyCompleteAttackApplyEvent: vi.fn(),
-  applyRoundEndEvent: vi.fn(),
-  applyCompleteIssueCommandsPhaseEvent: vi.fn(),
-  applyCompleteMeleeResolutionEvent: vi.fn(),
-  applyCompleteMoveCommandersPhaseEvent: vi.fn(),
-  applyCompletePlayCardsPhaseEvent: vi.fn(),
-  applyCompleteRangedAttackCommandEvent: vi.fn(),
-  applyCompleteResolveMeleePhaseEvent: vi.fn(),
-  applyCompleteUnitMovementEvent: vi.fn(),
-  applyDiscardPlayedCardsEvent: vi.fn(),
-  applyGameOverEvent: vi.fn(),
-  applyOpenRetreatFromAttackApplyEvent: vi.fn(),
-  applyOpenReverseFromAttackApplyEvent: vi.fn(),
-  applyOpenRoutFromAttackApplyEvent: vi.fn(),
-  applyResolveEngageRetreatOptionEvent: vi.fn(),
-  applyResolveFlankEngagementEvent: vi.fn(),
-  applyResolveInitiativeEvent: vi.fn(),
-  applyResolveMeleeEvent: vi.fn(),
-  applyResolveRallyEvent: vi.fn(),
-  applyResolveRangedAttackEvent: vi.fn(),
-  applyResolveRetreatEvent: vi.fn(),
-  applyResolveReverseEvent: vi.fn(),
-  applyResolveRoutEvent: vi.fn(),
-  applyRevealCardsEvent: vi.fn(),
-  applyStartEngagementEvent: vi.fn(),
-  applyTriggerRoutFromRetreatEvent: vi.fn(),
-}));
+/** Cleanup is opening, with each side's card of the round still in play. */
+function cleanupWithCardsInPlay(): GameState {
+  const base = createEmptyGameState('standard');
+
+  // The cards played this round are still in play.
+  const withCards = updateCardState(base, {
+    ...base.cardState,
+    black: { ...base.cardState.black, inPlay: tempCommandCards[0], played: [] },
+    white: { ...base.cardState.white, inPlay: tempCommandCards[1], played: [] },
+  });
+
+  // Cleanup, at the step that puts them aside.
+  const cleanup = updatePhaseState(
+    withCards,
+    createCleanupPhaseState({ step: 'discardPlayedCards' }),
+  );
+  return cleanup;
+}
 
 /**
- * Smoke tests only: real routing coverage lives on each `applyEffects/*` module.
+ * A game effect is applied by the rule for that kind of effect. Each rule has
+ * its own spec; this one checks that an effect reaches its rule.
  */
 describe('applyGameEffectEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  it('applies the end of a round: each card in play goes to its played pile', () => {
+    const event: DiscardPlayedCardsEvent = {
+      effectType: 'discardPlayedCards',
+      eventType: 'gameEffect',
+    };
+
+    const result = applyGameEffectEvent(event, cleanupWithCardsInPlay());
+
+    // Nothing is left in play; each card waits on its played pile for a rally.
+    expect(result.cardState.black.inPlay).toBeNull();
+    expect(result.cardState.white.inPlay).toBeNull();
+    expect(result.cardState.black.played).toStrictEqual([tempCommandCards[0]]);
+    expect(result.cardState.white.played).toStrictEqual([tempCommandCards[1]]);
   });
 
-  it('delegates to the handler for the matching effectType and returns its result', () => {
-    const state = createEmptyGameState('standard');
-    const event = {
-      effectType: 'discardPlayedCards' as const,
-      eventType: 'gameEffect' as const,
-    } as GameEffectEvent & { player: PlayerSide };
-
-    vi.mocked(applyDiscardPlayedCardsEvent).mockReturnValue(state);
-
-    const result = applyGameEffectEvent(event, state);
-
-    expect(applyDiscardPlayedCardsEvent).toHaveBeenCalledWith(event, state);
-    expect(result).toBe(state);
-  });
-
-  it('throws when effectType is not handled by the switch', () => {
-    const state = createEmptyGameState('standard');
+  it('throws for a kind of effect it has no rule for', () => {
     const event = {
       effectType: 'unknown',
       eventType: 'gameEffect',
-      // Intentional type error to test the function
-    } as unknown as GameEffectEvent & { player: PlayerSide };
+      // The default branch needs an effectType the union forbids.
+    } as unknown as GameEffectEvent;
 
-    expect(() => applyGameEffectEvent(event, state)).toThrow(
+    // No rule applies, so the effect is refused outright.
+    expect(() => applyGameEffectEvent(event, cleanupWithCardsInPlay())).toThrow(
       'Unreachable: unhandled game effect event (effectType not in switch)',
     );
   });
