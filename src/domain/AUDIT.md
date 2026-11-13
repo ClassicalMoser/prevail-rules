@@ -10,7 +10,7 @@ This audit requires the human read on every directory. The read is by file, not 
 
 Audit in this order (dependencies flow downward):
 
-1. Declarations: `utils` → `entities` → `game` → `events` → `ruleValues` / `sampleValues` / `factories`
+1. Declarations: `utils` → `ruleValues` → `entities` → `events` → `game` → `sampleValues` / `factories`
 2. Read / write engines: `queries` → `legality` → `expected` → `procedures` → `transforms` → `validation`
 3. Support: `testing`
 4. Above domain: `application/`
@@ -25,6 +25,12 @@ Audit in this order (dependencies flow downward):
 - [x] `utils/` — closed 2026-11-07; reopened 2026-11-12, changed since the read; closed again 2026-11-13
   - [x] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
   - [x] Arrived after the first read: `failFromFault`, `findIllegal` (was `findRefusal`), `haveSameMembers`, `literal`, `openChoice`
+
+### `ruleValues/` (`@ruleValues`)
+
+- [x] `ruleValues/` — closed 2026-11-07; reopened 2026-11-12, changed since the read; closed again 2026-11-13
+  - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
+  - [x] Arrived after the read: `commitmentModifiers`
 
 ### `entities/` (`@entities`)
 
@@ -43,6 +49,16 @@ Audit in this order (dependencies flow downward):
   - [x] `unitLocation/`
   - [x] `unitPresence/`
 
+### `events/` (`@events`)
+
+- [ ] `events/` — reopened 2026-11-12, changed since the read
+  - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
+  - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
+  - [ ] `expectedEvent/`
+  - [ ] `gameEffects/`
+  - [ ] `playerChoices/`
+  - [ ] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
+
 ### `game/` (`@game`)
 
 - [ ] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
@@ -60,22 +76,6 @@ Audit in this order (dependencies flow downward):
     - [ ] `rallyResolution/`
     - [ ] `combatOutcomes/`
     - [ ] `engagement/`
-
-### `events/` (`@events`)
-
-- [ ] `events/` — reopened 2026-11-12, changed since the read
-  - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
-  - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
-  - [ ] `expectedEvent/`
-  - [ ] `gameEffects/`
-  - [ ] `playerChoices/`
-  - [ ] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
-
-### `ruleValues/` (`@ruleValues`)
-
-- [ ] `ruleValues/` — closed 2026-11-07; reopened 2026-11-12, changed since the read
-  - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
-  - Arrived after the read: `commitmentModifiers`
 
 ### `sampleValues/` (`@sampleValues`)
 
