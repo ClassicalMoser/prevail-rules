@@ -6,6 +6,6 @@ export type { UnitPlacement } from './unitPlacement';
 export { unitWithPlacementSchema } from './unitWithPlacement';
 export type { UnitWithPlacement } from './unitWithPlacement';
 
-// One step or turn of a move, and the turns alone
-export { moveDeltas, moveDeltaSchema } from './moveDelta';
-export type { MoveDelta, MoveTurn } from './moveDelta';
+// The side turns, every turn, then every step or turn of a move.
+export { sideTurns, moveTurns, moveDeltas, moveDeltaSchema } from './moveDelta';
+export type { SideTurn, MoveTurn, MoveDelta } from './moveDelta';

@@ -78,14 +78,17 @@ export type {
 
 // Unit location
 export {
+  sideTurns,
+  moveTurns,
   moveDeltas,
   moveDeltaSchema,
   unitPlacementSchema,
   unitWithPlacementSchema,
 } from './unitLocation';
 export type {
-  MoveDelta,
+  SideTurn,
   MoveTurn,
+  MoveDelta,
   UnitPlacement,
   UnitWithPlacement,
 } from './unitLocation';
@@ -104,7 +107,6 @@ export {
   restrictionsSchema,
   roundEffectSchema,
 } from './card';
-
 export type {
   Command,
   CommandCard,

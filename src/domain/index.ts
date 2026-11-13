@@ -98,13 +98,14 @@ export type {
 } from '@entities';
 export { unitSupportSchema } from '@entities';
 export type {
-  MoveDelta,
+  SideTurn,
   MoveTurn,
+  MoveDelta,
   Player,
   PlayerSide,
   UnitFacing,
 } from '@entities';
-export { moveDeltas } from '@entities';
+export { sideTurns, moveTurns, moveDeltas } from '@entities';
 export type {
   EngagedUnitPresence,
   NoneUnitPresence,
