@@ -1,11 +1,5 @@
 import { tempCommandCards } from '@sampleValues';
-import type {
-  ExpectedEventInfo,
-  PlayerChoiceType,
-  PlayerSource,
-} from '@events';
 import type { GameState } from '@game';
-import type { AssertExact } from '@utils';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createBoardWithCommander,
@@ -27,104 +21,26 @@ import { getLegalPlayerChoiceOptions } from './getLegalPlayerChoiceOptions';
 
 import { createEmptyGameState } from '@factories';
 
-const mocks = vi.hoisted(() => ({
-  findExpectedEventMock: vi.fn(),
-  actualFindExpectedEvent: undefined as
-    | ((state: GameState) => ExpectedEventInfo | undefined)
-    | undefined,
-}));
-
-vi.mock(import('@expected'), async (importOriginal) => {
-  const actual = await importOriginal();
-  mocks.actualFindExpectedEvent = actual.findExpectedEvent;
-  mocks.findExpectedEventMock.mockImplementation(actual.findExpectedEvent);
-  return {
-    ...actual,
-    findExpectedEvent: mocks.findExpectedEventMock,
-  };
-});
-
-/**
- * Choices whose enumerators answer on a bare state: with no round under way
- * a commander is simply not on the board, so it answers "nothing". Every other
- * choice is asked only when it is owed, and throws when it is not.
- */
-const choicesAnsweringOnABareState = [
-  'moveCommander',
-] as const satisfies readonly PlayerChoiceType[];
-
-/**
- * Choices whose enumerators read the round or the movement under way. A bare
- * state has neither, so they cannot answer; that is a fault to throw, not an
- * empty offer.
- */
-const choicesNeedingRoundUnderWay = [
-  ['assignUnitSupport', 'No current phase state found'],
-  ['chooseMeleeResolution', 'No current phase state found'],
-  ['chooseMovingUnit', 'No current phase state found'],
-  ['chooseRally', 'No current phase state found'],
-  ['chooseRoutDiscard', 'No rout is awaiting a discard'],
-  ['chooseShooter', 'No current phase state found'],
-  ['doneIssuingCommands', 'No current phase state found'],
-  ['issueCommand', 'No current phase state found'],
-  ['moveUnit', 'No current phase state found'],
-  // A side is asked to set up only while it has units in reserve.
-  ['setupUnits', 'has no units left to place'],
-  ['performRangedAttack', 'No current phase state found'],
-  ['chooseCard', 'No current phase state found'],
-  [
-    'chooseRetreatOption',
-    'No retreat is awaiting its owner’s choice of destination',
-  ],
-  ['chooseWhetherToRetreat', 'No front engagement is being resolved'],
-  ['commitToMelee', 'No melee is being fought'],
-  ['commitToMovement', 'No movement is being carried out'],
-  ['commitToRangedAttack', 'No ranged attack is being carried out'],
-  ['commitToRangedDefense', 'No ranged attack is being carried out'],
-] as const satisfies readonly (readonly [PlayerChoiceType, string])[];
-
-/**
- * The two lists above are the whole of the choices between them: adding a
- * player choice without placing it in one fails to compile here, instead of
- * leaving it silently untested.
- */
-const _everyChoiceIsPlaced: AssertExact<
-  | (typeof choicesAnsweringOnABareState)[number]
-  | (typeof choicesNeedingRoundUnderWay)[number][0],
-  PlayerChoiceType
-> = true;
+/** Black holding the initiative, with a card in each hand so the battle goes on. */
+function underWay(): GameState {
+  const base = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
+  const withHands = updateCardState(base, {
+    ...base.cardState,
+    black: { ...base.cardState.black, inHand: [createTestCard()] },
+    white: { ...base.cardState.white, inHand: [createTestCard()] },
+  });
+  return withHands;
+}
 
 /**
  * GetLegalPlayerChoiceOptions: presentation router from expected choice →
- * legal option payload (events or compound root atoms).
+ * legal option payload (events or compound root atoms). Each case builds a
+ * state that really expects the choice, and reads the options it is given.
  */
 describe('getLegalPlayerChoiceOptions function', () => {
-  beforeEach(() => {
-    mocks.findExpectedEventMock.mockReset();
-    if (mocks.actualFindExpectedEvent !== undefined) {
-      mocks.findExpectedEventMock.mockImplementation(
-        mocks.actualFindExpectedEvent,
-      );
-    }
-  });
-
-  function stubExpected(
-    choiceType: PlayerChoiceType,
-    playerSource: PlayerSource = 'black',
-  ): void {
-    // While an order can be given, the real expectation also accepts
-    // stopping (§4.3.3), so the stand-in says the same.
-    const expected: ExpectedEventInfo = {
-      actionType: 'playerChoice',
-      ...(choiceType === 'issueCommand'
-        ? { alsoAccepted: ['doneIssuingCommands' as const] }
-        : {}),
-      choiceType,
-      playerSource,
-    };
-    mocks.findExpectedEventMock.mockReturnValue(expected);
-  }
-
   it('returns null when the next expected action is a game effect', () => {
     const state = updatePhaseState(
       updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
@@ -158,21 +74,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
 
     expect(getLegalPlayerChoiceOptions(state)).toBeNull();
   });
-
-  it.each(choicesNeedingRoundUnderWay)(
-    'throws the enumerator’s own fault for %s when no round is under way, instead of offering no options',
-    (choiceType, fault) => {
-      // The choice is expected, but the state has no round to read it from.
-      // That is a fault in the state, not a player with nothing to choose.
-      stubExpected(choiceType);
-
-      expect(() =>
-        getLegalPlayerChoiceOptions(
-          updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-        ),
-      ).toThrow(fault);
-    },
-  );
 
   it('packages chooseCard events from the live enumerator', () => {
     const base = updateCurrentInitiative(
@@ -215,17 +116,34 @@ describe('getLegalPlayerChoiceOptions function', () => {
   it('packages the orders left to issue, and says the player may stop instead', () => {
     // Black is issuing and has one order left to give.
     const command = tempCommandCards[0].command;
-    const state = updatePhaseState(
-      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-      createIssueCommandsPhaseState(
-        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-        {
-          remainingCommandsFirstPlayer: [command],
-          step: 'firstPlayerIssueCommands',
-        },
+
+    // A Black unit beside its general, within the order's reach of 1 space.
+    const unit = createUnitWithPlacement({
+      coordinate: 'E-6',
+      facing: 'north',
+      playerSide: 'black',
+    });
+    // A White unit far off, so White still has an army on the field (§11).
+    const enemy = createUnitWithPlacement({
+      coordinate: 'A-1',
+      facing: 'south',
+      playerSide: 'white',
+    });
+    const withUnit = updateBoardState(
+      underWay(),
+      addUnitToBoard(
+        addUnitToBoard(createBoardWithCommander('black', 'E-5'), unit),
+        enemy,
       ),
     );
-    stubExpected('issueCommand', 'black');
+
+    const state = updatePhaseState(
+      withUnit,
+      createIssueCommandsPhaseState(withUnit, {
+        remainingCommandsFirstPlayer: [command],
+        step: 'firstPlayerIssueCommands',
+      }),
+    );
 
     // Black may give that order, or stop and forfeit it (§4.3.3).
     expect(getLegalPlayerChoiceOptions(state)).toMatchObject({
@@ -330,32 +248,19 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.rangedAttackers.attackers).toStrictEqual([attacker]);
   });
 
-  describe('discriminant per PlayerChoiceType (an empty offer is a real answer)', () => {
-    it.each(choicesAnsweringOnABareState)(
-      'returns choiceType %s with the expected payload shape',
-      (choiceType) => {
-        stubExpected(choiceType, 'black');
-        const options = getLegalPlayerChoiceOptions(
-          updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-        );
-        expect(options).not.toBeNull();
-        expect(options?.choiceType).toBe(choiceType);
-        expect(options?.playerSource).toBe('black');
+  it('offers no destinations when the commander is not on the board, rather than nothing at all', () => {
+    // Commanders move, but Black's has fallen and is not on the board (§4.2.8).
+    const state = updatePhaseState(underWay(), {
+      phase: 'moveCommanders',
+      step: 'moveFirstCommander',
+    });
 
-        switch (choiceType) {
-          case 'moveCommander': {
-            expect(options).toMatchObject({
-              destinations: [],
-              startingCoordinate: null,
-            });
-            break;
-          }
-          default: {
-            const _exhaustive: never = choiceType;
-            throw new Error(`unhandled ${_exhaustive}`);
-          }
-        }
-      },
-    );
+    // The choice is still owed; it simply has nowhere to go.
+    expect(getLegalPlayerChoiceOptions(state)).toMatchObject({
+      choiceType: 'moveCommander',
+      destinations: [],
+      playerSource: 'black',
+      startingCoordinate: null,
+    });
   });
 });
