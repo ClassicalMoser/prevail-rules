@@ -26,8 +26,7 @@ events and rounds) and [`src/domain/ENGINES.md`](./src/domain/ENGINES.md).
 
 These are the author's, and are left for the read.
 
-1. **The six `TODO(…)` marks in the code.**
-   - `UnitPlacement` is not specific to a unit (`entities/unitLocation/unitPlacement.ts`).
+1. **The five `TODO(…)` marks in the code.**
    - The empty-board lookup by size in `createEmptyGameState` could belong to
      `@factories/board`.
    - `getMeleeAttackApplyState`'s `player` is the defender; the defender-to-slot
