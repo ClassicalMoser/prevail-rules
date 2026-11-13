@@ -22,17 +22,17 @@ Audit in this order (dependencies flow downward):
 
 ### `utils/` (`@utils`)
 
-- [ ] `utils/` — closed 2026-11-07; reopened 2026-11-12, changed since the read
-  - [ ] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
-  - Arrived after the read: `failFromFault`, `findRefusal`, `haveSameMembers`, `openChoice`
+- [x] `utils/` — closed 2026-11-07; reopened 2026-11-12, changed since the read; closed again 2026-11-13
+  - [x] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
+  - [x] Arrived after the first read: `failFromFault`, `findIllegal` (was `findRefusal`), `haveSameMembers`, `literal`, `openChoice`
 
 ### `entities/` (`@entities`)
 
 - [ ] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`); reopened 2026-11-12, changed since the read
   - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`
-  - [ ] `army/`
-  - [ ] `attackType/`
-  - [ ] `board/`
+  - [x] `army/`
+  - [x] `attackType/`
+  - [x] `board/`
   - [ ] `card/`
   - [ ] `engagementType/`
   - [ ] `gameModes/`
