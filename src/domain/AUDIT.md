@@ -52,6 +52,7 @@ Audit in this order (dependencies flow downward):
 ### `events/` (`@events`)
 
 - [ ] `events/` — reopened 2026-11-12, changed since the read
+  - Scouted again 2026-11-13: every choice and effect says when it comes, its rule, and who writes and reads it. One mark left: `resolveRout`'s `penalty` field name.
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
   - [ ] `expectedEvent/`
