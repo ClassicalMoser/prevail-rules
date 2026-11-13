@@ -1,75 +1,45 @@
+import { createEmptyGameState } from '@factories';
 import {
   createMovementResolutionState,
   createRangedAttackResolutionState,
 } from '@testing';
-
 import { getExpectedCommandResolutionEvent } from './getExpectedCommandResolutionEvent';
 
-import { createEmptyGameState } from '@factories';
-
-const {
-  getExpectedMovementResolutionEventMock,
-  getExpectedRangedAttackResolutionEventMock,
-} = vi.hoisted(() => ({
-  getExpectedMovementResolutionEventMock: vi.fn(),
-  getExpectedRangedAttackResolutionEventMock: vi.fn(),
-}));
-
-vi.mock(import('./getExpectedMovementResolutionEvent'), () => ({
-  getExpectedMovementResolutionEvent: getExpectedMovementResolutionEventMock,
-}));
-vi.mock(import('./getExpectedRangedAttackResolutionEvent'), () => ({
-  getExpectedRangedAttackResolutionEvent:
-    getExpectedRangedAttackResolutionEventMock,
-}));
-
 /**
- * GetExpectedCommandResolutionEvent: next event while resolving the active command (nested by sub-step).
+ * While an order is carried out, the next event depends on which kind of
+ * order it is: a unit's move or a shot. Each kind decides its own next step.
  */
 describe('getExpectedCommandResolutionEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('given delegate movement command resolution to the movement resolver', () => {
+  it('while a unit is moving, asks what the move expects', () => {
+    // A unit has committed and written its move onto open ground.
     const gameState = createEmptyGameState('standard');
     const resolutionState = createMovementResolutionState(gameState);
-    const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'move',
-    } as const;
-    getExpectedMovementResolutionEventMock.mockReturnValue(expectedEvent);
 
+    // No enemy stands where it ends, so the move finishes.
     expect(
       getExpectedCommandResolutionEvent(gameState, resolutionState, 'black'),
-    ).toBe(expectedEvent);
-    expect(getExpectedMovementResolutionEventMock).toHaveBeenCalledWith(
-      gameState,
-      resolutionState,
-      'black',
-    );
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeUnitMovement',
+    });
   });
 
-  it('given delegate ranged attack command resolution to the ranged attack resolver', () => {
+  it('while a unit is shooting, asks what the shot expects', () => {
+    // A shot has been aimed, and both sides have made their commitments.
     const gameState = createEmptyGameState('standard');
     const resolutionState = createRangedAttackResolutionState(gameState);
-    const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'attack',
-    } as const;
-    getExpectedRangedAttackResolutionEventMock.mockReturnValue(expectedEvent);
 
+    // The shot is measured next (§4.3.11).
     expect(
       getExpectedCommandResolutionEvent(gameState, resolutionState, 'white'),
-    ).toBe(expectedEvent);
-    expect(getExpectedRangedAttackResolutionEventMock).toHaveBeenCalledWith(
-      gameState,
-      resolutionState,
-      'white',
-    );
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRangedAttack',
+    });
   });
 
-  it('given when no command resolution state exists, throws', () => {
+  it('throws when no order is being carried out', () => {
+    // Nothing is resolving; asking is the caller's mistake.
     const gameState = createEmptyGameState('standard');
 
     expect(() =>
@@ -77,7 +47,9 @@ describe('getExpectedCommandResolutionEvent function', () => {
     ).toThrow('No command resolution state found');
   });
 
-  it('given for an invalid command resolution type, throws', () => {
+  it('throws for a kind of order the game does not have', () => {
+    // An order kind no card gives; the type forbids it, so it is forced past
+    // to stand for a corrupt state.
     const gameState = createEmptyGameState('standard');
     const resolutionState = {
       ...createMovementResolutionState(gameState),

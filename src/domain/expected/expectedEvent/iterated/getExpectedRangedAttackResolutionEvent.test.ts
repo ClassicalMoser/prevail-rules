@@ -1,38 +1,40 @@
-import { createRangedAttackResolutionState, createTestCard } from '@testing';
-
+import type { AuthoritativeGameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import {
+  createAttackApplyStateWithRout,
+  createRangedAttackResolutionState,
+  createTestCard,
+  createTestUnit,
+  updateCardState,
+} from '@testing';
 import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
 
-import { createEmptyGameState } from '@factories';
-
-const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
-  getExpectedAttackApplyEventMock: vi.fn(),
-}));
-
-vi.mock(import('../composable'), () => ({
-  getExpectedAttackApplyEvent: getExpectedAttackApplyEventMock,
-}));
+/** An empty board with a card in play on each side. */
+function createGameState(): AuthoritativeGameState {
+  const state = createEmptyGameState('standard');
+  const withCards = updateCardState(state, {
+    ...state.cardState,
+    black: { ...state.cardState.black, inPlay: createTestCard() },
+    white: { ...state.cardState.white, inPlay: createTestCard() },
+  });
+  return withCards;
+}
 
 /**
- * GetExpectedRangedAttackResolutionEvent: next event while resolving a ranged attack command.
+ * While a shot is carried out, the next event follows the order of a ranged
+ * attack (§4.3.11): the shooter's commitment, its target, the target's
+ * commitment, the shot itself, its results, and the shot's end. In these
+ * cases black shoots at a white unit.
  */
 describe('getExpectedRangedAttackResolutionEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  function createGameState() {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    state.cardState.white.inPlay = createTestCard();
-    return state;
-  }
-
-  it('given their commitment is pending, asks the attacking player to commit', () => {
+  it('asks the shooter to commit while its commitment is pending', () => {
+    // The shooter is named and its card not yet committed or declined.
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackingCommitment: { commitmentType: 'pending' },
     });
 
+    // Black commits before anything else.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
@@ -47,8 +49,8 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
   });
 
   it('once the shooter has committed, asks it to name its target', () => {
-    const gameState = createGameState();
     // Black refused to commit; nothing is aimed yet (§4.3.11 step 3).
+    const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackingCommitment: { commitmentType: 'declined' },
       defendingCommitment: { commitmentType: 'pending' },
@@ -56,6 +58,7 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
       supportingUnits: 'pending',
     });
 
+    // Black names its target and any supporters.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
@@ -70,8 +73,8 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
   });
 
   it('asks the shooter for its commitment before its target, even with nothing aimed', () => {
-    const gameState = createGameState();
     // The shooter is named and nothing else: the card comes first (§4.3.11 step 2).
+    const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackingCommitment: { commitmentType: 'pending' },
       defendingCommitment: { commitmentType: 'pending' },
@@ -79,6 +82,7 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
       supportingUnits: 'pending',
     });
 
+    // A Range card reaches further, so it must be committed before aiming.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
@@ -93,12 +97,13 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
   });
 
   it('once the target is named, asks its owner to commit for Defence or Flexibility', () => {
-    const gameState = createGameState();
     // Black's shot is aimed at the white unit the fixture names.
+    const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       defendingCommitment: { commitmentType: 'pending' },
     });
 
+    // White, knowing what it faces, decides next.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
@@ -112,12 +117,14 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     });
   });
 
-  it('given resolve ranged attack when both commitments are complete and no attack apply state exists', () => {
+  it('measures the shot once both commitments are made', () => {
+    // Both sides have committed, and the shot has not been measured.
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
-      attackApplyState: 'pending' as const,
+      attackApplyState: 'pending',
     });
 
+    // The attack value is set against the target's thresholds.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
@@ -130,59 +137,37 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     });
   });
 
-  it('given delegate to attack apply when attack apply is in progress', () => {
+  it("carries out the shot's results while they are under way", () => {
+    // The shot reached the target's Rout, and the rout is open but not paid.
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
-      attackApplyState: {
-        attackResult: {
-          unitRetreated: false,
-          unitReversed: false,
-          unitRouted: true,
-        },
-        completed: false,
-        defendingUnit: createTestCard(),
-        retreatState: 'pending' as const,
-        reverseState: 'pending' as const,
-        routState: 'pending' as const,
-        substepType: 'attackApply',
-      } as never,
+      attackApplyState: createAttackApplyStateWithRout(createTestUnit('white')),
     });
-    const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'attackApply',
-    } as const;
-    getExpectedAttackApplyEventMock.mockReturnValue(expectedEvent);
 
+    // The rout is carried out next.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
         resolutionState,
         'black',
       ),
-    ).toBe(expectedEvent);
-    expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
-      resolutionState.attackApplyState,
-    );
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRout',
+    });
   });
 
   it('once the shot’s result is settled, expects the shot to be completed', () => {
+    // The shot's results have all been carried out.
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
-      attackApplyState: {
-        attackResult: {
-          unitRetreated: false,
-          unitReversed: false,
-          unitRouted: true,
-        },
-        completed: true,
-        defendingUnit: createTestCard(),
-        retreatState: 'pending' as const,
-        reverseState: 'pending' as const,
-        routState: 'pending' as const,
-        substepType: 'attackApply',
-      } as never,
+      attackApplyState: createAttackApplyStateWithRout(
+        createTestUnit('white'),
+        { completed: true },
+      ),
     });
 
+    // This shot ends, and the next shooter can be chosen.
     expect(
       getExpectedRangedAttackResolutionEvent(
         gameState,
@@ -195,7 +180,8 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     });
   });
 
-  it('given when the ranged attack resolution is already complete, throws', () => {
+  it('throws when the shot is already complete', () => {
+    // A finished shot expects nothing more; asking is the caller's mistake.
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       completed: true,

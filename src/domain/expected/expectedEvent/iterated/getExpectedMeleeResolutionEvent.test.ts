@@ -1,3 +1,4 @@
+import type { AuthoritativeGameState } from '@game';
 import { updateCurrentInitiative } from '@transforms';
 import {
   createAttackApplyStateWithNothingDue,
@@ -7,6 +8,7 @@ import {
   createTestCard,
   createTestUnit,
   legalRetreatsOf,
+  updateCardState,
 } from '@testing';
 
 import { getExpectedMeleeResolutionEvent } from './getExpectedMeleeResolutionEvent';
@@ -16,40 +18,35 @@ import {
   createEmptyGameState,
 } from '@factories';
 
-const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
-  getExpectedAttackApplyEventMock: vi.fn(),
-}));
-
-// Only the closing of an apply is stubbed; the stage walk is the subject.
-vi.mock(import('../composable'), async (importOriginal) => ({
-  ...(await importOriginal()),
-  getExpectedAttackApplyEvent: getExpectedAttackApplyEventMock,
-}));
-
 /**
- * GetExpectedMeleeResolutionEvent: next event while resolving a melee attack.
+ * While a melee is fought, the next event follows the order of a melee
+ * (§7.2.2): each side's commitment, first player first, then the melee itself,
+ * then both units' results a stage at a time, then the melee's end. In these
+ * cases black holds the initiative, so black is the first player.
  */
 describe('getExpectedMeleeResolutionEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  function createGameState() {
+  /** Black holds the initiative, and each side has a card in play. */
+  function createGameState(): AuthoritativeGameState {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'black',
     );
-    state.cardState.black.inPlay = createTestCard();
-    state.cardState.white.inPlay = createTestCard();
-    return state;
+    const withCards = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inPlay: createTestCard() },
+      white: { ...state.cardState.white, inPlay: createTestCard() },
+    });
+    return withCards;
   }
 
-  it('given their commitment is pending, asks the first player to commit', () => {
+  it('asks the first player to commit while its commitment is pending', () => {
+    // Black has yet to commit or decline.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       firstPlayerCommitment: { commitmentType: 'pending' },
     });
 
+    // The first player commits first.
     expect(
       getExpectedMeleeResolutionEvent(gameState, meleeState),
     ).toStrictEqual({
@@ -59,12 +56,14 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     });
   });
 
-  it('given their commitment is pending, asks the second player to commit', () => {
+  it('asks the second player to commit once the first has', () => {
+    // Black has committed; white has not.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       secondPlayerCommitment: { commitmentType: 'pending' },
     });
 
+    // White commits next.
     expect(
       getExpectedMeleeResolutionEvent(gameState, meleeState),
     ).toStrictEqual({
@@ -74,13 +73,15 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     });
   });
 
-  it('given resolve melee when both commitments are complete and no attack apply state exists', () => {
+  it('fights the melee once both sides have committed', () => {
+    // Both have committed, and neither unit's results are measured yet.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       firstPlayerAttackApplyState: 'pending' as const,
       secondPlayerAttackApplyState: 'pending' as const,
     });
 
+    // Both units attack at once, and their results are measured.
     expect(
       getExpectedMeleeResolutionEvent(gameState, meleeState),
     ).toStrictEqual({
@@ -89,77 +90,75 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     });
   });
 
-  it('given delegate to the first player attack apply state when it is incomplete', () => {
+  it("closes the first player's apply when it is the one still open", () => {
+    // Every stage is done; the second player's apply is closed and the
+    // first player's is not.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('white'),
+        createTestUnit('black'),
       ),
       secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('black'),
+        createTestUnit('white'),
         {
           completed: true,
         },
       ),
     });
-    const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'attackApply',
-    } as const;
-    getExpectedAttackApplyEventMock.mockReturnValue(expectedEvent);
 
-    expect(getExpectedMeleeResolutionEvent(gameState, meleeState)).toBe(
-      expectedEvent,
-    );
-    expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
-      meleeState.firstPlayerAttackApplyState,
-    );
+    // The open apply is closed next.
+    expect(
+      getExpectedMeleeResolutionEvent(gameState, meleeState),
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeAttackApply',
+    });
   });
 
-  it('given delegate to the second player attack apply state when the first one is complete', () => {
+  it("closes the second player's apply when it is the one still open", () => {
+    // Every stage is done; the first player's apply is closed and the
+    // second player's is not.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('white'),
+        createTestUnit('black'),
         {
           completed: true,
         },
       ),
       secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('black'),
+        createTestUnit('white'),
       ),
     });
-    const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'attackApply',
-    } as const;
-    getExpectedAttackApplyEventMock.mockReturnValue(expectedEvent);
 
-    expect(getExpectedMeleeResolutionEvent(gameState, meleeState)).toBe(
-      expectedEvent,
-    );
-    expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
-      meleeState.secondPlayerAttackApplyState,
-    );
+    // The open apply is closed next.
+    expect(
+      getExpectedMeleeResolutionEvent(gameState, meleeState),
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeAttackApply',
+    });
   });
 
-  it('given both attack apply states are complete, returns completeMeleeResolution', () => {
+  it("ends the melee once both units' results are closed", () => {
+    // Every stage is done and both applies are closed.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('white'),
+        createTestUnit('black'),
         {
           completed: true,
         },
       ),
       secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('black'),
+        createTestUnit('white'),
         {
           completed: true,
         },
       ),
     });
 
+    // The melee is over.
     expect(
       getExpectedMeleeResolutionEvent(gameState, meleeState),
     ).toStrictEqual({
@@ -267,7 +266,8 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     });
   });
 
-  it('given when the melee resolution is already complete, throws', () => {
+  it('throws when the melee is already complete', () => {
+    // A finished melee expects nothing more; asking is the caller's mistake.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       completed: true,

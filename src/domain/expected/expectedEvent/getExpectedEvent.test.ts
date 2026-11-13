@@ -1,5 +1,10 @@
-import { tempCommandCards } from '@sampleValues';
-import type { GameState, Phase, PhaseState } from '@game';
+import type { GameState, PhaseState } from '@game';
+import { createEmptyGameState, createInitialGameState } from '@factories';
+import {
+  blackMiniStarterArmy,
+  tempCommandCards,
+  whiteMiniStarterArmy,
+} from '@sampleValues';
 import {
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
@@ -12,209 +17,166 @@ import {
   createTestUnit,
   updateCardState,
 } from '@testing';
-
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
-
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 import { getExpectedEvent } from './getExpectedEvent';
 
-import { createEmptyGameState } from '@factories';
+/** An empty board where both hands still hold a card, so nobody has lost. */
+function gameStillGoing(): GameState {
+  const state = createEmptyGameState('standard');
+  const withCards = updateCardState(state, {
+    ...state.cardState,
+    black: { ...state.cardState.black, inHand: [createTestCard()] },
+    white: { ...state.cardState.white, inHand: [createTestCard()] },
+  });
+  return withCards;
+}
 
-const {
-  getCurrentPhaseStateMock,
-  getExpectedCleanupPhaseEventMock,
-  getExpectedIssueCommandsPhaseEventMock,
-  getExpectedMoveCommandersPhaseEventMock,
-  getExpectedPlayCardsPhaseEventMock,
-  getExpectedResolveMeleePhaseEventMock,
-  getExpectedSetupEventMock,
-} = vi.hoisted(() => ({
-  getCurrentPhaseStateMock: vi.fn(),
-  getExpectedCleanupPhaseEventMock: vi.fn(),
-  getExpectedIssueCommandsPhaseEventMock: vi.fn(),
-  getExpectedMoveCommandersPhaseEventMock: vi.fn(),
-  getExpectedPlayCardsPhaseEventMock: vi.fn(),
-  getExpectedResolveMeleePhaseEventMock: vi.fn(),
-  getExpectedSetupEventMock: vi.fn(),
-}));
-
-vi.mock(import('@queries'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    getCurrentPhaseState: getCurrentPhaseStateMock,
-  };
-});
-
-vi.mock(import('./byPhase'), () => ({
-  getExpectedCleanupPhaseEvent: getExpectedCleanupPhaseEventMock,
-  getExpectedIssueCommandsPhaseEvent: getExpectedIssueCommandsPhaseEventMock,
-  getExpectedMoveCommandersPhaseEvent: getExpectedMoveCommandersPhaseEventMock,
-  getExpectedPlayCardsPhaseEvent: getExpectedPlayCardsPhaseEventMock,
-  getExpectedResolveMeleePhaseEvent: getExpectedResolveMeleePhaseEventMock,
-  getExpectedSetupEvent: getExpectedSetupEventMock,
-}));
+/** The game still going, in the given phase. */
+function inPhase(phaseState: PhaseState): GameState {
+  const going = gameStillGoing();
+  const state = updatePhaseState(going, phaseState);
+  return state;
+}
 
 /**
- * GetExpectedEvent: top-level router to the next expected event from full game state.
+ * The event the game expects next, read from the whole state. A finished
+ * battle comes first: an empty hand or an unpayable rout ends it before any
+ * phase is asked (§11). Otherwise the current phase decides, and before the
+ * first round it is setup.
  */
 describe('getExpectedEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  it('in the play-cards phase, asks what that phase expects', () => {
+    // Both cards are down and waiting to be turned over (§4.1.2).
+    const state = inPhase(createPlayCardsPhaseState({ step: 'revealCards' }));
+
+    // The cards are revealed together.
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'revealCards',
+    });
   });
 
-  /** Both hands hold a card so empty-hand game over does not short-circuit. */
-  function gameStillGoing() {
-    const state = createEmptyGameState('standard');
-    return updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        inHand: [createTestCard()],
-      },
-      white: {
-        ...state.cardState.white,
-        inHand: [createTestCard()],
-      },
+  it('in the move-commanders phase, asks what that phase expects', () => {
+    // The first general has yet to move; white holds the initiative.
+    const state = inPhase(createMoveCommandersPhaseState());
+
+    // White moves its general first (§4.2.1).
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveCommander',
+      playerSource: 'white',
     });
-  }
+  });
 
-  /** A real phase whose rout slice is not open, so the win check continues. */
-  function phaseWithNoOpenRout(phase: Phase, state: GameState): PhaseState {
-    if (phase === 'playCards') {
-      return createPlayCardsPhaseState();
-    }
-    if (phase === 'moveCommanders') {
-      return createMoveCommandersPhaseState();
-    }
-    if (phase === 'issueCommands') {
-      return createIssueCommandsPhaseState(state);
-    }
-    if (phase === 'resolveMelee') {
-      return createResolveMeleePhaseState(state);
-    }
-    return createCleanupPhaseState();
-  }
-
-  function expectDelegation(
-    phase: Phase,
-    delegatedMock: ReturnType<typeof vi.fn>,
-    delegateReturn: { actionType: 'gameEffect'; effectType: string },
-  ) {
+  it('in the issue-commands phase, asks what that phase expects', () => {
+    // Every order has been given and carried out.
     const going = gameStillGoing();
-    // The win check reads this phase. No rout slice is open, so it continues
-    // and the mock still selects the handler.
-    const state = updatePhaseState(going, phaseWithNoOpenRout(phase, going));
-    getCurrentPhaseStateMock.mockReturnValue({ phase });
-    delegatedMock.mockReturnValue(delegateReturn);
-
-    const result = getExpectedEvent(state);
-
-    expect(result).toStrictEqual(delegateReturn);
-    expect(getCurrentPhaseStateMock).toHaveBeenCalledWith(state);
-    expect(delegatedMock).toHaveBeenCalledWith(state);
-  }
-
-  it('given delegate playCards to the play cards phase handler', () => {
-    expectDelegation('playCards', getExpectedPlayCardsPhaseEventMock, {
-      actionType: 'gameEffect',
-      effectType: 'playCardsEvent',
-    });
-  });
-
-  it('given delegate moveCommanders to the move commanders phase handler', () => {
-    expectDelegation(
-      'moveCommanders',
-      getExpectedMoveCommandersPhaseEventMock,
-      {
-        actionType: 'gameEffect',
-        effectType: 'moveCommandersEvent',
-      },
+    const state = updatePhaseState(
+      going,
+      createIssueCommandsPhaseState(going, { step: 'complete' }),
     );
-  });
 
-  it('given delegate issueCommands to the issue commands phase handler', () => {
-    expectDelegation('issueCommands', getExpectedIssueCommandsPhaseEventMock, {
+    // The phase closes.
+    expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
-      effectType: 'issueCommandsEvent',
+      effectType: 'completeIssueCommandsPhase',
     });
   });
 
-  it('given delegate resolveMelee to the resolve melee phase handler', () => {
-    expectDelegation('resolveMelee', getExpectedResolveMeleePhaseEventMock, {
+  it('in the resolve-melee phase, asks what that phase expects', () => {
+    // No melee is open and none is left to fight.
+    const going = gameStillGoing();
+    const state = updatePhaseState(
+      going,
+      createResolveMeleePhaseState(going, {
+        currentMeleeResolutionState: 'pending',
+        remainingEngagements: [],
+      }),
+    );
+
+    // The phase closes.
+    expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
-      effectType: 'resolveMeleeEvent',
+      effectType: 'completeResolveMeleePhase',
     });
   });
 
-  it('given delegate cleanup to the cleanup phase handler', () => {
-    expectDelegation('cleanup', getExpectedCleanupPhaseEventMock, {
+  it('in the cleanup phase, asks what that phase expects', () => {
+    // Cleanup opens with the round's cards still in play.
+    const state = inPhase(createCleanupPhaseState());
+
+    // They go to the played pile first (§4.5.1).
+    expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
-      effectType: 'cleanupEvent',
+      effectType: 'discardPlayedCards',
     });
   });
 
-  it('given for an invalid phase, throws', () => {
-    const state = gameStillGoing();
-    state.currentRoundState.currentPhaseState = {
-      phase: 'playCards',
-      step: 'complete',
-    };
-    getCurrentPhaseStateMock.mockReturnValue({ phase: 'invalidPhase' });
+  it('throws for a phase the game does not have', () => {
+    // A phase name no round contains; the type forbids it, so it is forced
+    // past to stand for a corrupt state.
+    const going = gameStillGoing();
+    const state = updatePhaseState(going, {
+      phase: 'invalidPhase',
+    } as never);
 
     expect(() => getExpectedEvent(state)).toThrow('Invalid phase');
   });
 
-  it('given phase none, delegates to setup units handler', () => {
-    const state = gameStillGoing();
-    getExpectedSetupEventMock.mockReturnValue({
-      actionType: 'playerChoice',
-      choiceType: 'setupUnits',
-      playerSource: 'white',
+  it('before the first round, asks the side with the initiative to set up', () => {
+    // A new mini game: both armies are in reserve and White holds the
+    // initiative (§3.5).
+    const state = createInitialGameState({
+      blackArmy: blackMiniStarterArmy,
+      gameMode: 'mini',
+      whiteArmy: whiteMiniStarterArmy,
     });
 
+    // White places its whole army first.
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
       playerSource: 'white',
     });
-    expect(getExpectedSetupEventMock).toHaveBeenCalledWith(state);
-    expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
   });
 
-  it('given white hand empty, returns gameOver game effect before phase routing', () => {
+  it('ends the game when white has no cards left, before any phase is asked', () => {
+    // White's hand is empty; setup would otherwise be next.
     const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
       white: { ...base.cardState.white, inHand: [] },
     });
 
+    // An empty hand loses the battle (§11.1).
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
     });
-    expect(getExpectedSetupEventMock).not.toHaveBeenCalled();
-    expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
   });
 
-  it('given black hand empty, returns gameOver game effect before phase routing', () => {
+  it('ends the game when black has no cards left, before any phase is asked', () => {
+    // Black's hand is empty with play-cards closing; that phase would
+    // otherwise be asked.
     const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
+    const emptied = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inHand: [] },
     });
-    state.currentRoundState.currentPhaseState = {
-      phase: 'playCards',
-      step: 'complete',
-    };
+    const state = updatePhaseState(
+      emptied,
+      createPlayCardsPhaseState({ step: 'complete' }),
+    );
 
+    // An empty hand loses the battle (§11.1).
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
     });
-    expect(getExpectedPlayCardsPhaseEventMock).not.toHaveBeenCalled();
   });
 
-  it('given both hands empty, still returns gameOver game effect', () => {
+  it('ends the game when both hands are empty', () => {
+    // Neither side has a card.
     const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
@@ -222,13 +184,15 @@ describe('getExpectedEvent function', () => {
       white: { ...base.cardState.white, inHand: [] },
     });
 
+    // The battle is over all the same.
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
     });
   });
 
-  it('given unpayable rout discard, returns gameOver game effect before phase routing', () => {
+  it('ends the game on a rout its owner cannot pay, before cleanup is asked', () => {
+    // White holds one card but owes two for a rout at its rally (§11.2).
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -257,18 +221,20 @@ describe('getExpectedEvent function', () => {
       }),
     );
 
+    // The unpayable rout loses the battle.
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'gameOver',
     });
-    expect(getExpectedCleanupPhaseEventMock).not.toHaveBeenCalled();
   });
 
-  it('throws when winner is already set', () => {
+  it('throws when the game already has a winner', () => {
+    // A finished game expects nothing; asking this twin insists on an answer.
     const state = {
       ...createEmptyGameState('standard'),
       winner: 'black' as const,
     };
+
     expect(() => getExpectedEvent(state)).toThrow('Game is already over');
   });
 });

@@ -1,51 +1,51 @@
-import type { GameState, MovementResolutionState } from '@game';
+import type { AuthoritativeGameState } from '@game';
+import { createEmptyGameState } from '@factories';
 import {
+  createFrontEngagementState,
   createGameStateWithUnits,
   createMovementResolutionState,
   createRearEngagementState,
   createTestCard,
   createTestUnit,
-  createUnitWithPlacement,
   placed,
+  updateCardState,
 } from '@testing';
-
 import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
 
-import { createEmptyGameState } from '@factories';
+/** The game as given, with a card in play for black, the side moving. */
+function withBlackCardInPlay(
+  state: AuthoritativeGameState,
+): AuthoritativeGameState {
+  const withCard = updateCardState(state, {
+    ...state.cardState,
+    black: { ...state.cardState.black, inPlay: createTestCard() },
+  });
+  return withCard;
+}
 
-const { getExpectedEngagementEventMock } = vi.hoisted(() => ({
-  getExpectedEngagementEventMock: vi.fn(),
-}));
-
-vi.mock(import('../composable'), () => ({
-  getExpectedEngagementEvent: getExpectedEngagementEventMock,
-}));
-
-function createGameStateWithTargetEnemy(): GameState {
+/** A white unit on E-6, the space the fixture's black mover ends in. */
+function enemyOnTarget(): AuthoritativeGameState {
   const state = createGameStateWithUnits([
     placed(createTestUnit('white'), 'E-6', 'north'),
   ]);
-  state.cardState.black.inPlay = createTestCard();
-  return state;
+  const withCard = withBlackCardInPlay(state);
+  return withCard;
 }
 
 /**
- * GetExpectedMovementResolutionEvent: next event while resolving a movement command.
+ * While a unit carries out its move, the next event follows the order of a
+ * move (§4.3.10): its commitment, then the move itself, then any engagement
+ * the move starts, then the move's end.
  */
 describe('getExpectedMovementResolutionEvent function', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('given commitment is pending, asks the player to commit to movement', () => {
-    const gameState = createGameStateWithUnits([]);
-    gameState.cardState.black.inPlay = createTestCard();
+  it('asks the moving player to commit while the commitment is pending', () => {
+    // Black's unit is chosen and its card not yet committed or declined.
+    const gameState = withBlackCardInPlay(createGameStateWithUnits([]));
     const resolutionState = createMovementResolutionState(gameState, {
-      commitment: {
-        commitmentType: 'pending' as const,
-      },
+      commitment: { commitmentType: 'pending' },
     });
 
+    // The commitment comes before the move.
     expect(
       getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
     ).toStrictEqual({
@@ -55,10 +55,12 @@ describe('getExpectedMovementResolutionEvent function', () => {
     });
   });
 
-  it('given start an engagement when the target space contains an enemy unit', () => {
-    const gameState = createGameStateWithTargetEnemy();
+  it('starts an engagement when the move ends on an enemy', () => {
+    // The move is written to end on E-6, where a white unit stands.
+    const gameState = enemyOnTarget();
     const resolutionState = createMovementResolutionState(gameState);
 
+    // Ending on an enemy engages it (§6.1.1).
     expect(
       getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
     ).toStrictEqual({
@@ -67,11 +69,12 @@ describe('getExpectedMovementResolutionEvent function', () => {
     });
   });
 
-  it('given complete unit movement when the target space has no enemy unit', () => {
-    const gameState = createEmptyGameState('standard');
-    gameState.cardState.black.inPlay = createTestCard();
+  it('finishes the move when it ends on open ground', () => {
+    // The move is written to end on E-6, which is empty.
+    const gameState = withBlackCardInPlay(createEmptyGameState('standard'));
     const resolutionState = createMovementResolutionState(gameState);
 
+    // Nothing to engage, so the move is done.
     expect(
       getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
     ).toStrictEqual({
@@ -80,99 +83,66 @@ describe('getExpectedMovementResolutionEvent function', () => {
     });
   });
 
-  it('given complete unit movement when engagement is already complete', () => {
-    const gameState = createGameStateWithTargetEnemy();
-    const resolutionState: MovementResolutionState =
-      createMovementResolutionState(gameState, {
-        engagementState: {
-          completed: true,
-          engagementResolutionState: {
-            retreatPaths: [['step']],
-            defendingUnitRetreats: false,
-            defensiveCommitment: {
-              card: createTestCard(),
-              commitmentType: 'completed',
-            },
-            engagementType: 'front',
-            retreatState: 'pending' as const,
-          },
-          engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-          substepType: 'engagementResolution',
-          targetPlacement: {
-            coordinate: 'E-6',
-            facing: 'north',
-          },
-        },
-      });
-
-    expect(
-      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
-    ).toStrictEqual({
-      actionType: 'gameEffect',
-      effectType: 'completeUnitMovement',
-    });
-  });
-
-  it('given delegate to engagement resolution when engagement is in progress', () => {
-    const gameState = createGameStateWithTargetEnemy();
+  it('finishes the move once its engagement is settled', () => {
+    // The move engaged the white unit, and that engagement is over.
+    const gameState = enemyOnTarget();
     const resolutionState = createMovementResolutionState(gameState, {
-      engagementState: {
-        completed: false,
-        engagementResolutionState: {
-          retreatPaths: 'pending' as const,
-          defendingUnitRetreats: 'pending' as const,
-          defensiveCommitment: {
-            card: createTestCard(),
-            commitmentType: 'completed',
-          },
-          engagementType: 'front',
-          retreatState: 'pending' as const,
-        },
-        engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-        substepType: 'engagementResolution',
-        targetPlacement: {
-          coordinate: 'E-6',
-          facing: 'north',
-        },
-      },
+      engagementState: { ...createFrontEngagementState(), completed: true },
     });
-    const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'engagement',
-    } as const;
-    getExpectedEngagementEventMock.mockReturnValue(expectedEvent);
 
+    // The move is done.
     expect(
       getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
-    ).toBe(expectedEvent);
-    expect(getExpectedEngagementEventMock).toHaveBeenCalledWith(
-      resolutionState.engagementState,
-    );
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeUnitMovement',
+    });
+  });
+
+  it('asks the engagement what comes next while it is under way', () => {
+    // A front engagement: the defender has committed, and its retreats are
+    // not yet worked out (§6.3.2).
+    const gameState = enemyOnTarget();
+    const resolutionState = createMovementResolutionState(gameState, {
+      engagementState: createFrontEngagementState({
+        defensiveCommitment: {
+          card: createTestCard(),
+          commitmentType: 'completed',
+        },
+        retreatPaths: 'pending',
+      }),
+    });
+
+    // The engagement works out where the defender could fall back to.
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveEngageRetreatOption',
+    });
   });
 
   it('a rear engagement under way decides what comes next, though its defender has left the board', () => {
     // §6.3.3: a rear engagement routs the defender off the board at once,
     // but its owner still owes the Morale. The empty target space must not
     // end the move before that rout is paid.
-    const gameState = createEmptyGameState('standard');
-    gameState.cardState.black.inPlay = createTestCard();
+    const gameState = withBlackCardInPlay(createEmptyGameState('standard'));
     const resolutionState = createMovementResolutionState(gameState, {
       engagementState: createRearEngagementState(),
     });
-    // What the rout asks for next is the engagement's own question.
-    const routEvent = {
-      actionType: 'gameEffect',
-      effectType: 'resolveRout',
-    } as const;
-    getExpectedEngagementEventMock.mockReturnValue(routEvent);
 
+    // The rout is carried out next, not the end of the move.
     expect(
       getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
-    ).toBe(routEvent);
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRout',
+    });
   });
 
-  it('given when the movement resolution is already complete, throws', () => {
-    const gameState = createGameStateWithTargetEnemy();
+  it('throws when the move is already complete', () => {
+    // A finished move expects nothing more; asking is the caller's mistake.
+    const gameState = enemyOnTarget();
     const resolutionState = createMovementResolutionState(gameState, {
       completed: true,
     });
