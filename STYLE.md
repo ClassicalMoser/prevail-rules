@@ -12,13 +12,13 @@ No classes. Shared behavior is a function, or a closure that returns functions.
 
 An exported function has an explicit return type. `isolatedDeclarations` requires it, and the linter checks it too.
 
-No overloads, unless a single signature cannot say the return. An overload is a second assertion of the type.
+No overloads, unless a single signature cannot say the return, or a parameter is required only for some argument types. An overload is a second assertion of the type.
 
 A router or switch that only dispatches, one branch per case, may be long; its branches must not hand-roll operations. When splitting modules grows a folder past about a dozen, group them into sub-folders by what each part answers in the game, with one barrel per folder.
 
 ## Names
 
-Names use the game's own vocabulary. Do not drop a word that carries meaning (`attack` in `firstPlayerAttackApplyState`), coin a term the rules do not use, or borrow a connotation the game lacks ("fire" for a ranged attack). Prefer the existing term even when it is a little long. A reader that answers `undefined` for an absence is a `find*`; one that throws is a `get*` ([`DESIGN.md`](./DESIGN.md)).
+Names use the game's own vocabulary. Do not drop a word that carries meaning (`attack` in `firstPlayerAttackApplyState`), coin a term the rules do not use, or borrow a connotation the game lacks ("fire" for a ranged attack). Prefer the existing term even when it is a little long. The same holds for the code's own terms (legal options, enumerated): reuse them rather than paraphrasing a variable name into prose, and where the author has reworded a line, follow that wording. A reader that answers `undefined` for an absence is a `find*`; one that throws is a `get*` ([`DESIGN.md`](./DESIGN.md)).
 
 ```typescript
 const white = updatePlayerCardState(base, 'white', whiteCardState);
@@ -46,6 +46,8 @@ A comment must match the code beneath it. One describing a parameter, a branch o
 This is a rule for what you add. It is not a licence to audit what is already here. Existing commentary is authored, and the never-overwrite rule above governs it: a comment that reads thin to you may be carrying a distinction you have not met yet, so leave it and mark it if you must. The remedy for a weak comment is a better comment, never a deleted one. Density is a symptom of explanation rather than the goal, and a comment is never written to move a number. Nearly every step here serves a rule. If you are struggling to place the rule, check the call sites: the meaning of a low-level helper is often only visible where it is used. If you cannot answer it at all, leave a `TODO(misleading)` or `TODO(composition)` mark saying what you could not state rather than guessing. That is a finding, and it is worth more than either a bare step or a comment that fills the line.
 
 Comments are meant to convey gameplay meaning: what happens in the game, and why the rules want it. A reader who knows the game but not the rest of the codebase should still be able to follow it. A module's meaning includes its integration story — who asks it, and what they do with the answer. Local behaviour read on its own is not comprehension: a function whose body is obvious and whose callers are unknown has not been understood, so read the call sites as part of reading the module. Technical detail, such as the chain of states a lookup passes through, is where human meaning gets lost. Names and test titles follow the same rule. This is not a standard for the commentary alone — a readable codebase that holds the meaning of the game is what this project is for, so it governs every change rather than a pass of cleanup.
+
+Write plainly: short sentences, one idea each, and at most one example. Name only callers visible in this repository, never guessed ones outside it; for a shape passed between modules, say who writes it and who reads it. Put one commented step per paragraph, with a blank line between steps, and comment every `return`.
 
 Two practices get it written, and both apply to every change:
 
