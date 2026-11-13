@@ -9,7 +9,7 @@ export const MIN_FLEXIBILITY_THRESHOLD = 6 as const;
 export const COMMANDER_MOVE_DISTANCE = 4 as const;
 
 /**
- * The inspiration range of a card whose range is printed as "—": it reaches
+ * The inspiration range of a card whose range is not applicable: it reaches
  * every unit, wherever the commander stands (§4.2.7). A printed range of 0 is
  * the commander's own space, so "no restriction" cannot be a number a range
  * could be; it is the one value below zero.
@@ -21,11 +21,12 @@ export const NO_INSPIRATION_RANGE = -1 as const;
  * formation is how much an army gets done in a round (§4.3.5). */
 export const MAX_LINE_LENGTH = 8 as const;
 
-/** Legal initiative values for command cards.
- * TODO(misleading): this is the lowest initiative a card may carry, not the
- * list of legal values, which is `LEGAL_INITIATIVES` below and carries the
- * same description. Settled by giving each its own. */
+// Legal initiative values for command cards.
+
+/** The lowest initiative a card may carry. Low goes first (§4.1.3), so
+ * this is the fastest card. */
 export const MIN_INITIATIVE_VALUE = 1 as const;
+
 /** The highest initiative a card may carry. Low goes first (§4.1.3), so
  * this is the slowest card. */
 export const MAX_INITIATIVE_VALUE = 4 as const;
@@ -41,13 +42,13 @@ function constructLegalInitiatives(): readonly number[] {
   return initiatives;
 }
 
+/** Legal initiative values for command cards. */
+export const LEGAL_INITIATIVES: readonly number[] = constructLegalInitiatives();
+
 /** The maximum number of a given unit type that can be included in an army.
  * Each unit type prints its own limit, which is never more than this
  * (§3.1.4). */
 export const MAX_ARMY_UNIT_PER_TYPE_COUNT = 12 as const;
-
-/** Legal initiative values for command cards. */
-export const LEGAL_INITIATIVES: readonly number[] = constructLegalInitiatives();
 
 // Each mode's army limits (§3.1.3). The cost cap counts units and cards
 // alike. The Morale floor keeps an army from being cheap troops that cost
