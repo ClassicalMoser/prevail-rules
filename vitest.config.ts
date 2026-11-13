@@ -82,6 +82,11 @@ export default defineConfig({
     },
     exclude: ['dist/**', 'node_modules/**'],
     globals: true,
+    // Spec files share one loaded copy of the code instead of each loading
+    // its own, which was most of the suite's time. That is safe because no
+    // spec replaces a module: doubles are in-memory adapters passed in, not
+    // mocks.
+    isolate: false,
     include: [
       'src/domain/**/*.test.{js,ts}',
       'src/application/**/*.test.{js,ts}',
