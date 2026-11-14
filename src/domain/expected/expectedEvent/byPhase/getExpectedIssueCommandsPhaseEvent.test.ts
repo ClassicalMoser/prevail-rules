@@ -49,7 +49,8 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     );
   }
 
-  it('given remaining commands with no issuable selection, returns doneIssuingCommands', () => {
+  it('given remaining commands that no unit can take, still asks for an order', () => {
+    // Black has an order left, but no unit on the board it could be given to.
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerIssueCommands',
       'black',
@@ -58,9 +59,12 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
       }),
     );
 
+    // Stopping is an issueCommand with no order, so the expectation is the
+    // same as when an order can be given; the only legal option is to stop
+    // (§4.3.3).
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'doneIssuingCommands',
+      choiceType: 'issueCommand',
       playerSource: 'black',
     });
   });
@@ -94,11 +98,10 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
       ),
     );
 
-    // The player is asked for an order, and may instead stop and forfeit the
-    // orders left (§4.3.3): the expectation names both choices it accepts.
+    // The player is asked for an order. Stopping and forfeiting the orders
+    // left (§4.3.3) is the same choice with no order, so nothing else is named.
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      alsoAccepted: ['doneIssuingCommands'],
       choiceType: 'issueCommand',
       playerSource: 'black',
     });
