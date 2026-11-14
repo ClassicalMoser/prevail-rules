@@ -8,7 +8,8 @@ import {
 
 /**
  * Atomic issue-command context: which player may issue, and which remaining
- * commands they may still spend.
+ * commands they may still spend. The player may also stop, with no order,
+ * at any time while commands remain (§4.3.3); that needs no listing.
  *
  * Eligible units/lines for a chosen command are enumerated separately via
  * {@link getLegalUnitsToOrder} (the units of a units order) and

@@ -122,12 +122,11 @@ export { moveCommanderEventSchema } from './playerChoices';
 export type {
   IssueCommandEvent,
   LineOrderSelection,
+  Order,
   OrderSelection,
   UnitsOrderSelection,
 } from './playerChoices';
 export { issueCommandEventSchema } from './playerChoices';
-export type { DoneIssuingCommandsEvent } from './playerChoices';
-export { doneIssuingCommandsEventSchema } from './playerChoices';
 export type { ChooseMovingUnitEvent } from './playerChoices';
 export {
   CHOOSE_MOVING_UNIT_CHOICE_TYPE,

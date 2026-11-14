@@ -1,4 +1,3 @@
-export { getLegalDoneIssuingCommandsEvents } from './getLegalDoneIssuingCommandsEvents';
 export {
   getLegalIssueCommands,
   type LegalIssueCommands,

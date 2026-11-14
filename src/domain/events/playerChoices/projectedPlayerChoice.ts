@@ -19,7 +19,6 @@ import { commitToMovementEventSchema } from './commitToMovement';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
 import { commitToRangedDefenseEventSchema } from './commitToRangedDefense';
 import { assignUnitSupportEventSchema } from './assignUnitSupport';
-import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
@@ -94,7 +93,6 @@ const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
     commitToMovementEventSchema,
     commitToRangedAttackEventSchema,
     commitToRangedDefenseEventSchema,
-    doneIssuingCommandsEventSchema,
     issueCommandEventSchema,
     moveCommanderEventSchema,
     chooseMovingUnitEventSchema,

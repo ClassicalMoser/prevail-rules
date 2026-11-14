@@ -2,6 +2,7 @@ import type { IssueCommandEvent } from '@events';
 import type { GameState } from '@game';
 import {
   findMatchingCommand,
+  getCommandingPlayer,
   getLineBetweenEnds,
   getRemainingCommandsForPlayer,
 } from '@queries';
@@ -17,6 +18,8 @@ import {
  * or the line between its two ends, to commandedUnits.
  * When that player's remaining commands are exhausted on their issue step, they
  * move on to carrying their orders out.
+ * With no order, the player stops: the orders left are forfeited and they
+ * move on to carrying out the ones given (§4.3.3).
  * Event is assumed pre-validated (issueCommands phase, command in that player's remaining commands).
  *
  * @param event - The issue command event to apply
@@ -27,8 +30,19 @@ export function applyIssueCommandEvent<S extends GameState>(
   event: IssueCommandEvent,
   state: S,
 ): S {
-  const { player } = event;
-  const { command, selection } = event;
+  const { player, order } = event;
+
+  // With no order the player stops, and whatever is not issued is forfeited
+  // (§4.3.3). Only the player whose issuing step it is can stop.
+  if (order === null) {
+    const commanding = getCommandingPlayer(state);
+    if (player !== commanding) {
+      throw new Error(`Only ${commanding} is issuing orders, not ${player}`);
+    }
+    const stopped = beginResolvingCommands(state);
+    return stopped;
+  }
+  const { command, selection } = order;
 
   // A units order names its units. A line order names only its ends, and
   // the board says who stands between them (§4.3.5).

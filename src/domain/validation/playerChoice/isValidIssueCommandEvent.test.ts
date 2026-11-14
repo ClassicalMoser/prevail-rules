@@ -63,9 +63,11 @@ describe('isValidIssueCommandEvent function', () => {
     };
     const { state, unit } = stateReadyToIssue(command);
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: { selectionType: 'units', units: [unit.unit] },
+      order: {
+        command,
+        selection: { selectionType: 'units', units: [unit.unit] },
+      },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
@@ -95,9 +97,11 @@ describe('isValidIssueCommandEvent function', () => {
       addUnitToBoard(state.boardState, other),
     );
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: { selectionType: 'units', units: [unit.unit] },
+      order: {
+        command,
+        selection: { selectionType: 'units', units: [unit.unit] },
+      },
     });
 
     expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
@@ -127,9 +131,11 @@ describe('isValidIssueCommandEvent function', () => {
       addUnitToBoard(state.boardState, other),
     );
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: { selectionType: 'units', units: [unit.unit, other.unit] },
+      order: {
+        command,
+        selection: { selectionType: 'units', units: [unit.unit, other.unit] },
+      },
     });
 
     expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
@@ -150,9 +156,11 @@ describe('isValidIssueCommandEvent function', () => {
     };
     const { state } = stateReadyToIssue(command);
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: { selectionType: 'units', units: [] },
+      order: {
+        command,
+        selection: { selectionType: 'units', units: [] },
+      },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
@@ -191,9 +199,11 @@ describe('isValidIssueCommandEvent function', () => {
       }),
     );
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: { selectionType: 'units', units: [far.unit] },
+      order: {
+        command,
+        selection: { selectionType: 'units', units: [far.unit] },
+      },
     });
 
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
@@ -242,16 +252,47 @@ describe('isValidIssueCommandEvent function', () => {
     // Black orders the whole rank, naming its two ends. Range is traced from
     // any unit in the line, not only from an end (§4.3.5).
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: {
-        ends: [unitAt('E-1').unit, unitAt('E-8').unit],
-        selectionType: 'line',
+      order: {
+        command,
+        selection: {
+          ends: [unitAt('E-1').unit, unitAt('E-8').unit],
+          selectionType: 'line',
+        },
       },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
       result: true,
+    });
+  });
+
+  it('accepts stopping, with no order, from the player who is issuing', () => {
+    // Black is issuing with an order left.
+    const { state } = stateReadyToIssue();
+
+    // Stopping is always legal while orders are left (§4.3.3).
+    expect(
+      isValidIssueCommandEvent(
+        createIssueCommandEvent({ order: null, player: 'black' }),
+        state,
+      ),
+    ).toStrictEqual({ result: true });
+  });
+
+  it('rejects stopping from the player who is not issuing', () => {
+    // Black is issuing, so White has no orders to stop giving.
+    const { state } = stateReadyToIssue();
+
+    // The refusal names who is issuing.
+    expect(
+      isValidIssueCommandEvent(
+        createIssueCommandEvent({ order: null, player: 'white' }),
+        state,
+      ),
+    ).toStrictEqual({
+      errorReason: 'Expected issue command from black, got white',
+      result: false,
     });
   });
 
@@ -270,9 +311,11 @@ describe('isValidIssueCommandEvent function', () => {
       },
     );
     const event = createIssueCommandEvent({
-      command,
       player: 'black',
-      selection: { selectionType: 'units', units: [unit.unit] },
+      order: {
+        command,
+        selection: { selectionType: 'units', units: [unit.unit] },
+      },
     });
 
     // An order given while the cards are being chosen is refused by the

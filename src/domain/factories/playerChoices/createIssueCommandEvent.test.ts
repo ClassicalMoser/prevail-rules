@@ -12,17 +12,28 @@ describe('createIssueCommandEvent function', () => {
     };
 
     const event = createIssueCommandEvent({
-      command,
       player: 'white',
-      selection,
+      order: { command, selection },
     });
 
     expect(event).toStrictEqual({
       choiceType: 'issueCommand',
-      command,
       eventType: 'playerChoice',
       player: 'white',
-      selection,
+      order: { command, selection },
+    });
+  });
+
+  it('keeps a null order, which stops giving orders', () => {
+    // A player who stops issues no order.
+    const event = createIssueCommandEvent({ player: 'black', order: null });
+
+    // The null is kept as it was given, not filled in.
+    expect(event).toStrictEqual({
+      choiceType: 'issueCommand',
+      eventType: 'playerChoice',
+      order: null,
+      player: 'black',
     });
   });
 });

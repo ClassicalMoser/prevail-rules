@@ -31,9 +31,6 @@ export { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEve
 // A commitToRangedDefense event: the target of a shot commits for Defence or Flexibility.
 export { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseEvent';
 
-// A doneIssuingCommands event with its fixed types filled in.
-export { createDoneIssuingCommandsEvent } from './createDoneIssuingCommandsEvent';
-
 // A issueCommand event with its fixed types filled in.
 export { createIssueCommandEvent } from './createIssueCommandEvent';
 

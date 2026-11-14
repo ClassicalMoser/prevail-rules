@@ -11,12 +11,16 @@ import {
   updateCardState,
 } from '@testing';
 
-import { updateBoardState, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitsToCommandedUnits,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createIssueCommandEvent } from '@factories';
 import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 /**
  * Issue-commands: spending a command type removes it from the side’s remaining set and adds
@@ -67,10 +71,12 @@ describe('applyIssueCommandEvent function', () => {
 
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
-        command,
         eventType: 'playerChoice',
         player: 'black',
-        selection: { selectionType: 'units', units: [unit] },
+        order: {
+          command,
+          selection: { selectionType: 'units', units: [unit] },
+        },
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -99,10 +105,12 @@ describe('applyIssueCommandEvent function', () => {
       const newState = applyIssueCommandEvent(
         {
           choiceType: 'issueCommand',
-          command,
           eventType: 'playerChoice',
           player: 'black',
-          selection: { selectionType: 'units', units: [unit] },
+          order: {
+            command,
+            selection: { selectionType: 'units', units: [unit] },
+          },
         },
         state,
       );
@@ -128,10 +136,12 @@ describe('applyIssueCommandEvent function', () => {
       const newState = applyIssueCommandEvent(
         {
           choiceType: 'issueCommand',
-          command,
           eventType: 'playerChoice',
           player: 'white',
-          selection: { selectionType: 'units', units: [unit] },
+          order: {
+            command,
+            selection: { selectionType: 'units', units: [unit] },
+          },
         },
         state,
       );
@@ -157,10 +167,12 @@ describe('applyIssueCommandEvent function', () => {
       const newState = applyIssueCommandEvent(
         {
           choiceType: 'issueCommand',
-          command: first,
           eventType: 'playerChoice',
           player: 'black',
-          selection: { selectionType: 'units', units: [unit] },
+          order: {
+            command: first,
+            selection: { selectionType: 'units', units: [unit] },
+          },
         },
         state,
       );
@@ -180,10 +192,12 @@ describe('applyIssueCommandEvent function', () => {
 
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
-        command,
         eventType: 'playerChoice',
         player: 'white',
-        selection: { selectionType: 'units', units: [unit] },
+        order: {
+          command,
+          selection: { selectionType: 'units', units: [unit] },
+        },
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -212,10 +226,12 @@ describe('applyIssueCommandEvent function', () => {
 
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
-        command,
         eventType: 'playerChoice',
         player: 'black',
-        selection: { selectionType: 'units', units: [unit1, unit2] },
+        order: {
+          command,
+          selection: { selectionType: 'units', units: [unit1, unit2] },
+        },
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -246,10 +262,12 @@ describe('applyIssueCommandEvent function', () => {
 
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
-        command,
         eventType: 'playerChoice',
         player: 'black',
-        selection: { selectionType: 'units', units: [unit] },
+        order: {
+          command,
+          selection: { selectionType: 'units', units: [unit] },
+        },
       };
 
       applyIssueCommandEvent(event, state);
@@ -287,12 +305,14 @@ describe('applyIssueCommandEvent function', () => {
     // Black names the line by its ends, E-3 then E-1.
     const event: IssueCommandEvent = {
       choiceType: 'issueCommand',
-      command: lineCommand,
       eventType: 'playerChoice',
       player: 'black',
-      selection: {
-        ends: [unitAt('E-3').unit, unitAt('E-1').unit],
-        selectionType: 'line',
+      order: {
+        command: lineCommand,
+        selection: {
+          ends: [unitAt('E-3').unit, unitAt('E-1').unit],
+          selectionType: 'line',
+        },
       },
     };
     const issued = applyIssueCommandEvent(event, state);
@@ -303,5 +323,65 @@ describe('applyIssueCommandEvent function', () => {
       unitAt('E-2').unit,
       unitAt('E-3').unit,
     ]);
+  });
+
+  describe('stopping, with no order', () => {
+    it('forfeits the orders left and carries out the ones given', () => {
+      // Black has one order left and has already ordered one unit.
+      const unit = createTestUnit('black', { attack: 3 });
+      const state = addUnitsToCommandedUnits(createGameStateWithCommands(), [
+        unit,
+      ]);
+
+      // Black stops instead of giving the last order (§4.3.3).
+      const stopped = applyIssueCommandEvent(
+        createIssueCommandEvent({ order: null, player: 'black' }),
+        state,
+      );
+
+      // The order left is forfeited, and Black moves on to carrying out the
+      // order given, with its unit waiting to act.
+      expect(getIssueCommandsPhaseState(stopped)).toMatchObject({
+        remainingCommandsFirstPlayer: [],
+        remainingUnitsFirstPlayer: [unit],
+        step: 'firstPlayerResolveCommands',
+      });
+    });
+
+    it('lets the second player stop on their own issuing step', () => {
+      // Black has given all their orders; White is issuing, with one left.
+      const base = createGameStateWithCommands();
+      const state = updatePhaseState(base, {
+        ...getIssueCommandsPhaseState(base),
+        remainingCommandsFirstPlayer: [],
+        step: 'secondPlayerIssueCommands',
+      });
+
+      // White stops without giving any order.
+      const stopped = applyIssueCommandEvent(
+        createIssueCommandEvent({ order: null, player: 'white' }),
+        state,
+      );
+
+      // White's order is forfeited, and White has no units to carry out.
+      expect(getIssueCommandsPhaseState(stopped)).toMatchObject({
+        remainingCommandsSecondPlayer: [],
+        remainingUnitsSecondPlayer: [],
+        step: 'secondPlayerResolveCommands',
+      });
+    });
+
+    it('throws when the player stopping is not the one issuing', () => {
+      // Black is issuing, so White has nothing to stop.
+      const state = createGameStateWithCommands();
+
+      // Only the issuing player may stop.
+      expect(() =>
+        applyIssueCommandEvent(
+          createIssueCommandEvent({ order: null, player: 'white' }),
+          state,
+        ),
+      ).toThrow(new Error('Only black is issuing orders, not white'));
+    });
   });
 });

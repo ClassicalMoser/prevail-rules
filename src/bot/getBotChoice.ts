@@ -141,22 +141,8 @@ export function getBotChoice(
         context,
       );
     }
-    case 'doneIssuingCommands': {
-      // No order is left that anyone could be given; stopping is all there is.
-      const [done] = options.events;
-      if (done === undefined) {
-        throw new Error(
-          `${seat} was asked to stop giving orders and offered nothing`,
-        );
-      }
-      return done;
-    }
     case 'issueCommand': {
-      return chooseOrder(
-        options.issueCommands,
-        options.canDoneIssuing,
-        context,
-      );
+      return chooseOrder(options.issueCommands, context);
     }
     case 'moveCommander': {
       if (options.startingCoordinate === null) {

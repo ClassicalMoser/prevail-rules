@@ -56,16 +56,10 @@ export function validateExpectedChoice(
     };
   }
 
-  // Ensure that the choice type is one the expectation accepts: the choice
-  // it asks for, or one it names as standing in for it (a player asked to
-  // give another order may stop instead, §4.3.3).
-  const acceptedChoiceTypes = [
-    expected.choiceType,
-    ...(expected.alsoAccepted ?? []),
-  ];
-  if (!acceptedChoiceTypes.includes(event.choiceType)) {
+  // Ensure that the choice is the one the expectation asks for.
+  if (event.choiceType !== expected.choiceType) {
     return {
-      errorReason: `Expected ${acceptedChoiceTypes.join(' or ')}, got ${event.choiceType}`,
+      errorReason: `Expected ${expected.choiceType}, got ${event.choiceType}`,
       result: false,
     };
   }

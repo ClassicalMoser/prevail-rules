@@ -22,10 +22,4 @@ export interface ExpectedPlayerInput {
   playerSource: PlayerSource;
   /** Which choice is asked for. */
   choiceType: PlayerChoiceType;
-  /**
-   * Other choice types the same players may make instead. A player asked to
-   * give another order may stop and forfeit the orders left (§4.3.3), so
-   * `issueCommand` also accepts `doneIssuingCommands`.
-   */
-  alsoAccepted?: PlayerChoiceType[];
 }

@@ -10,18 +10,15 @@ export { chooseCardEventSchema } from './chooseCard';
 export type { MoveCommanderEvent } from './moveCommander';
 export { moveCommanderEventSchema } from './moveCommander';
 
-// Issue one command from the active card.
+// Issue one order from the card in play, or stop.
 export type {
   IssueCommandEvent,
+  Order,
   LineOrderSelection,
   OrderSelection,
   UnitsOrderSelection,
 } from './issueCommand';
 export { issueCommandEventSchema } from './issueCommand';
-
-// Stop issuing commands with slots left unused.
-export type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
-export { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 
 // Move a unit.
 export type { ChooseMovingUnitEvent } from './chooseMovingUnit';

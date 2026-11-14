@@ -69,4 +69,23 @@ describe('getLegalIssueCommands function', () => {
       'black has no orders left to issue',
     );
   });
+
+  it('throws while the orders are being carried out rather than issued', () => {
+    // Black has stopped issuing and is carrying its orders out.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createIssueCommandsPhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        {
+          remainingCommandsFirstPlayer: [tempCommandCards[0].command],
+          step: 'firstPlayerResolveCommands',
+        },
+      ),
+    );
+
+    // Orders are given, or stopped, only while issuing (§4.3.3).
+    expect(() => getLegalIssueCommands(state)).toThrow(
+      'Not on an issuing step: firstPlayerResolveCommands',
+    );
+  });
 });

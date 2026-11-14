@@ -1,9 +1,5 @@
 import type { Command, UnitInstance, UnitWithPlacement } from '@entities';
-import type {
-  DoneIssuingCommandsEvent,
-  IssueCommandEvent,
-  OrderSelection,
-} from '@events';
+import type { IssueCommandEvent, OrderSelection } from '@events';
 import type { LegalIssueCommands } from '@legality';
 import type { BotContext } from './botContext';
 import {
@@ -100,19 +96,17 @@ function lineOrders(command: Command, context: BotContext): CandidateOrder[] {
  * Gives the next order from the card in play (§4.3), or stops giving orders.
  * Every order the card still allows is weighed: for a move order, how much
  * better placed its units would be; for a shoot order, how hard they could
- * hit. The bot gives the best, and stops when no order is worth giving and
- * the rules let it stop (§4.3.3).
+ * hit. The bot gives the best, and stops when no order is worth giving
+ * (§4.3.3).
  *
  * @param offer - The commands it may still give
- * @param canStop - Whether it may stop giving orders now
  * @param context - What the bot decides from
- * @returns The order it gives, or its word that it is done
+ * @returns The order it gives, or no order to stop
  */
 export function chooseOrder(
   offer: LegalIssueCommands,
-  canStop: boolean,
   context: BotContext,
-): IssueCommandEvent | DoneIssuingCommandsEvent {
+): IssueCommandEvent {
   const candidates: CandidateOrder[] = [];
   for (const command of offer.commands) {
     if (command.size === 'lines') {
@@ -124,40 +118,31 @@ export function chooseOrder(
       }
     }
   }
-  const done: DoneIssuingCommandsEvent = {
-    choiceType: 'doneIssuingCommands',
-    eventType: 'playerChoice',
-    player: offer.player,
-  };
   const worthGiving = candidates.filter(
     (candidate) => candidate.worth >= WORTHWHILE_ORDER,
   );
-  // Nothing worth ordering: stop, if the rules allow it; if they do not, the
-  // least bad order will have to do.
-  let pool: CandidateOrder[] = worthGiving;
-  if (pool.length === 0 && !canStop) {
-    pool = candidates;
-  }
-  if (pool.length === 0) {
-    if (!canStop) {
-      throw new Error(
-        `${offer.player} must give an order and has none to give`,
-      );
-    }
-    return done;
+  // Nothing worth ordering: stop. Stopping is always open while orders are
+  // left (§4.3.3).
+  if (worthGiving.length === 0) {
+    const stop: IssueCommandEvent = {
+      choiceType: 'issueCommand',
+      eventType: 'playerChoice',
+      order: null,
+      player: offer.player,
+    };
+    return stop;
   }
   const best = pickBest(
-    pool,
+    worthGiving,
     (candidate) => candidate.worth,
     context.temperament,
     context.random,
   );
   const event: IssueCommandEvent = {
     choiceType: 'issueCommand',
-    command: best.command,
     eventType: 'playerChoice',
     player: offer.player,
-    selection: best.selection,
+    order: { command: best.command, selection: best.selection },
   };
   return event;
 }

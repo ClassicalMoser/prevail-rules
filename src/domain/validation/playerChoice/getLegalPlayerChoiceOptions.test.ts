@@ -147,7 +147,6 @@ describe('getLegalPlayerChoiceOptions function', () => {
 
     // Black may give that order, or stop and forfeit it (§4.3.3).
     expect(getLegalPlayerChoiceOptions(state)).toMatchObject({
-      canDoneIssuing: true,
       choiceType: 'issueCommand',
       issueCommands: { commands: [command], player: 'black' },
     });

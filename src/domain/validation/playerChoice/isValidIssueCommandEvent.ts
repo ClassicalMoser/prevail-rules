@@ -52,7 +52,8 @@ function isValidUnitsOrder(
 /**
  * Validates an IssueCommandEvent by membership against the legal options
  * `@legality` enumerates:
- * - {@link getLegalIssueCommands}: the player, and the orders still to give
+ * - {@link getLegalIssueCommands}: the player, and the orders still to give;
+ *   with no order the player stops, which is always legal for them (§4.3.3)
  * - a units order: each unit as enumerated by {@link getLegalUnitsToOrder}
  * - a line order: its two ends naming one of {@link getLegalLines}
  *
@@ -72,9 +73,17 @@ export function isValidIssueCommandEvent(
     };
   }
 
+  // With no order the player stops, which is always legal while orders are
+  // left (§4.3.3).
+  const { order } = event;
+  if (order === null) {
+    const stopping: ValidationResult = { result: true };
+    return stopping;
+  }
+
   const matchingCommand = findMatchingCommand(
     [...legal.commands],
-    event.command,
+    order.command,
   );
   if (matchingCommand === undefined) {
     return {
@@ -84,7 +93,7 @@ export function isValidIssueCommandEvent(
   }
 
   // A units order names units, and a lines order names a line.
-  const { selection } = event;
+  const { selection } = order;
   if (matchingCommand.size === 'units') {
     if (selection.selectionType !== 'units') {
       return {

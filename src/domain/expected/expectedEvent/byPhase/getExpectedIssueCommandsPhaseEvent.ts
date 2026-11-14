@@ -1,11 +1,7 @@
-import type { Command, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import {
-  getLegalMoveUnits,
-  getLegalRangedAttackers,
-  isCommandIssuable,
-} from '@legality';
+import { getLegalMoveUnits, getLegalRangedAttackers } from '@legality';
 import {
   getCardInPlay,
   getIssueCommandsPhaseState,
@@ -54,32 +50,18 @@ function getExpectedMovementResolveStart(
 }
 
 /**
- * While remaining slots exist: prefer `issueCommand` if any slot is still
- * issuable; otherwise `doneIssuingCommands` so the phase cannot stall.
- * While an order can still be given, the player may stop instead and forfeit
- * the orders left (§4.3.3), so the expectation names both choices.
+ * While orders are left, the player is asked for the next one. Stopping is
+ * the same choice with no order (§4.3.3), so the expectation is the same
+ * whether or not any order can still be given; when none can, stopping is
+ * the only legal option, and the phase cannot stall.
  */
-function getExpectedIssueStepEvent(
-  state: GameState,
-  player: PlayerSide,
-  remainingCommands: readonly Command[],
-): ExpectedEventInfo {
-  const anyIssuable = remainingCommands.some((command) =>
-    isCommandIssuable(command, player, state),
-  );
-  if (anyIssuable) {
-    return {
-      actionType: 'playerChoice',
-      alsoAccepted: ['doneIssuingCommands'],
-      choiceType: 'issueCommand',
-      playerSource: player,
-    };
-  }
-  return {
+function getExpectedIssueStepEvent(player: PlayerSide): ExpectedEventInfo {
+  const expected: ExpectedEventInfo = {
     actionType: 'playerChoice',
-    choiceType: 'doneIssuingCommands',
+    choiceType: 'issueCommand',
     playerSource: player,
   };
+  return expected;
 }
 
 /**
@@ -98,11 +80,7 @@ export function getExpectedIssueCommandsPhaseEvent(
   switch (phaseState.step) {
     case 'firstPlayerIssueCommands': {
       if (phaseState.remainingCommandsFirstPlayer.length > 0) {
-        return getExpectedIssueStepEvent(
-          state,
-          firstPlayer,
-          phaseState.remainingCommandsFirstPlayer,
-        );
+        return getExpectedIssueStepEvent(firstPlayer);
       }
       // All commands issued - should have advanced to firstPlayerResolveCommands
       // This state should not occur if applyIssueCommandEvent properly advances steps
@@ -159,11 +137,7 @@ export function getExpectedIssueCommandsPhaseEvent(
 
     case 'secondPlayerIssueCommands': {
       if (phaseState.remainingCommandsSecondPlayer.length > 0) {
-        return getExpectedIssueStepEvent(
-          state,
-          secondPlayer,
-          phaseState.remainingCommandsSecondPlayer,
-        );
+        return getExpectedIssueStepEvent(secondPlayer);
       }
       // All commands issued - should have advanced to secondPlayerResolveCommands
       throw new Error(

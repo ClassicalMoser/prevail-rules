@@ -13,8 +13,7 @@ Declarations follow the schema-first pattern in [`entities`](../entities/README.
 A player's act:
 
 - `ChooseCardEvent` selects a command card
-- `IssueCommandEvent` issues a command to units, or to a line named by its two ends
-- `DoneIssuingCommandsEvent` stops issuing, forfeiting the orders left
+- `IssueCommandEvent` issues a command to units, or to a line named by its two ends, or stops issuing and forfeits the orders left
 - `ChooseMovingUnitEvent` names the next unit a Move order moves
 - `CommitToMovementEvent` commits a card to that unit's movement, before it moves
 - `ChooseWhetherToRetreatEvent` decides whether a front-engaged defender falls back

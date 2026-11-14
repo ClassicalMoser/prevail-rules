@@ -18,7 +18,6 @@ export { getLegalCommitToMovementEvents } from './getLegalCommitToMovementEvents
 export { getLegalCommitToRangedAttackEvents } from './getLegalCommitToRangedAttackEvents';
 export { getLegalCommitToRangedDefenseEvents } from './getLegalCommitToRangedDefenseEvents';
 export {
-  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalLines,
   findLegalLine,

@@ -26,7 +26,6 @@ export {
   getLegalCommitToRangedAttackEvents,
   getLegalCommitToRangedDefenseEvents,
   canUnitRangedAttackTarget,
-  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalLines,
   findLegalLine,

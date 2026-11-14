@@ -9,7 +9,6 @@ import type {
   CommitToMovementEvent,
   CommitToRangedAttackEvent,
   CommitToRangedDefenseEvent,
-  DoneIssuingCommandsEvent,
   PlayerSource,
 } from '@events';
 import { findExpectedEvent } from '@expected';
@@ -25,7 +24,6 @@ import {
   getLegalCommitToRangedAttackEvents,
   getLegalCommitToRangedDefenseEvents,
   getLegalCommanderMoves,
-  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalMoveUnits,
   getLegalUnitMoves,
@@ -101,13 +99,7 @@ export type LegalPlayerChoiceOptions =
       events: CommitToRangedDefenseEvent[];
     })
   | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'doneIssuingCommands';
-      events: DoneIssuingCommandsEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'issueCommand';
-      /** True when the expectation also accepts stopping (forfeit leftover slots, §4.3.3). */
-      canDoneIssuing: boolean;
       issueCommands: LegalIssueCommands;
     })
   | (LegalPlayerChoiceOptionsBase & {
@@ -295,23 +287,12 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         events: getLegalCommitToRangedDefenseEvents(state),
       };
     }
-    case 'doneIssuingCommands': {
-      // A player may stop issuing commands and forfeit the slots left; offer
-      // that event.
-      return {
-        ...base,
-        choiceType: 'doneIssuingCommands',
-        events: getLegalDoneIssuingCommandsEvents(state),
-      };
-    }
     case 'issueCommand': {
-      // Issued commands are resolved one at a time, in any order the player
-      // likes (§4.3.9); offer every order available now.
+      // Offer the orders still to give. Stopping, with no order, is always
+      // open while any are left (§4.3.3), so it needs no listing.
       const issueCommands = getLegalIssueCommands(state);
       return {
         ...base,
-        canDoneIssuing:
-          expected.alsoAccepted?.includes('doneIssuingCommands') === true,
         choiceType: 'issueCommand',
         issueCommands,
       };

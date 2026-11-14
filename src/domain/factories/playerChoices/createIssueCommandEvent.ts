@@ -1,5 +1,5 @@
-import type { Command, PlayerSide } from '@entities';
-import type { IssueCommandEvent, OrderSelection } from '@events';
+import type { PlayerSide } from '@entities';
+import type { IssueCommandEvent, Order } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**
@@ -9,21 +9,19 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required: a
  * default would hide a choice the caller means.
  *
- * @param fields - `command` the commands to issue; `player` the player who is
- * issuing the commands; `selection` the units, or the line's two ends, the
- * order is given to
+ * @param fields - `player` the player giving the order, or stopping; `order`
+ * the command used and the units or line's two ends it is given to, or
+ * `null` to stop giving orders
  * @returns The event
  */
 export function createIssueCommandEvent(fields: {
   player: PlayerSide;
-  command: Command;
-  selection: OrderSelection;
+  order: Order | null;
 }): IssueCommandEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,
     choiceType: 'issueCommand',
     player: fields.player,
-    command: fields.command,
-    selection: fields.selection,
+    order: fields.order,
   };
 }

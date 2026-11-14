@@ -10,7 +10,6 @@ import type { CommitToMeleeEvent } from './commitToMelee';
 import type { CommitToMovementEvent } from './commitToMovement';
 import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 import type { CommitToRangedDefenseEvent } from './commitToRangedDefense';
-import type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
 import type { IssueCommandEvent } from './issueCommand';
 import type { MoveCommanderEvent } from './moveCommander';
 import type { ChooseMovingUnitEvent } from './chooseMovingUnit';
@@ -32,7 +31,6 @@ import { commitToMeleeEventSchema } from './commitToMelee';
 import { commitToMovementEventSchema } from './commitToMovement';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
 import { commitToRangedDefenseEventSchema } from './commitToRangedDefense';
-import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
@@ -60,7 +58,6 @@ export type PlayerChoiceEvent =
   | CommitToMovementEvent
   | CommitToRangedAttackEvent
   | CommitToRangedDefenseEvent
-  | DoneIssuingCommandsEvent
   | IssueCommandEvent
   | MoveCommanderEvent
   | ChooseMovingUnitEvent
@@ -89,7 +86,6 @@ const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   commitToMovementEventSchema,
   commitToRangedAttackEventSchema,
   commitToRangedDefenseEventSchema,
-  doneIssuingCommandsEventSchema,
   issueCommandEventSchema,
   moveCommanderEventSchema,
   chooseMovingUnitEventSchema,
