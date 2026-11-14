@@ -17,9 +17,11 @@ import { z } from 'zod';
 export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
 
 /**
- * Records the Morale a player owes for units that routed (§9.3.2–9.3.3). The
- * units left the board when the rout opened. When nothing is owed the rout
- * closes at once; otherwise the player chooses the cards (`chooseRoutDiscard`).
+ * Records the penalty a player pays for units that routed: one card from
+ * hand for each point of their Morale, which is what each unit was worth to
+ * the army (§9.3.2–9.3.3). The units left the board when the rout opened.
+ * When nothing is owed the rout closes at once; otherwise the player chooses
+ * the cards (`chooseRoutDiscard`).
  *
  * `generateResolveRoutEvent` writes it, and `applyResolveRoutEvent` applies it.
  */
@@ -30,12 +32,7 @@ export interface ResolveRoutEvent {
   effectType: typeof RESOLVE_ROUT_EFFECT_TYPE;
   /** The player whose units routed, who pays (§9.3.2). */
   player: PlayerSide;
-  /**
-   * The Morale owed: the routed units' Morale, summed (§9.3.3).
-   *
-   * TODO(misleading): the field is named `penalty`, but the rules call what
-   * a rout costs Morale (§9.3.2). Renaming it changes the event's shape.
-   */
+  /** The cards to discard: the routed units' Morale, summed (§9.3.3). */
   penalty: number;
 }
 
@@ -47,7 +44,7 @@ const _resolveRoutEventSchemaObject = z
     effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
     /** The player whose units routed, who pays (§9.3.2). */
     player: playerSideSchema,
-    /** The Morale owed: the routed units' Morale, summed (§9.3.3). */
+    /** The cards to discard: the routed units' Morale, summed (§9.3.3). */
     penalty: z.number(),
   })
   .strict();
