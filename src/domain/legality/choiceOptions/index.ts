@@ -21,6 +21,7 @@ export {
   getLegalIssueCommands,
   getLegalLines,
   findLegalLine,
+  listsWholeLine,
   getLineRefusalReason,
   getLegalUnitsToOrder,
   getUnitsOrderRefusalReason,

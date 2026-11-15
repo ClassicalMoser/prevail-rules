@@ -82,8 +82,8 @@ function lineOrders(command: Command, context: BotContext): CandidateOrder[] {
     const candidate: CandidateOrder = {
       command,
       selection: {
-        ends: [line.ends[0].unit, line.ends[1].unit],
         selectionType: 'line',
+        units: line.units.map((member) => member.unit),
       },
       worth,
     };

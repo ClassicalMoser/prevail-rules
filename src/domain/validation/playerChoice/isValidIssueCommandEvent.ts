@@ -1,6 +1,6 @@
 import type { ValidationResult } from '@utils';
 import type { IssueCommandEvent, UnitsOrderSelection } from '@events';
-import type { Command, PlayerSide } from '@entities';
+import type { Command, PlayerSide, UnitInstance } from '@entities';
 import type { GameState } from '@game';
 import {
   findLegalLine,
@@ -9,6 +9,7 @@ import {
   getLegalUnitsToOrder,
   getLineRefusalReason,
   getUnitsOrderRefusalReason,
+  listsWholeLine,
 } from '@legality';
 import { findMatchingCommand, isSameUnitInstance } from '@queries';
 import { findIllegal } from '@utils';
@@ -106,7 +107,7 @@ export function isValidIssueCommandEvent(
 
   if (selection.selectionType !== 'line') {
     return {
-      errorReason: 'A lines order is given to a line, named by its two ends',
+      errorReason: 'A lines order is given to a line, listed unit by unit',
       result: false,
     };
   }
@@ -119,18 +120,45 @@ export function isValidIssueCommandEvent(
     };
   }
 
-  // The two ends must name one of the lines that may be ordered (§4.3.5).
+  // A line holds at least one unit (§4.3.5).
+  const { units } = selection;
+  const first = units[0];
+  const last = units.at(-1);
+  if (first === undefined || last === undefined) {
+    const empty: ValidationResult = {
+      errorReason: 'A line order lists at least one unit',
+      result: false,
+    };
+    return empty;
+  }
+
+  // The list's two ends must name one of the lines that may be ordered
+  // (§4.3.5).
+  const ends: [UnitInstance, UnitInstance] = [first, last];
   const lines = getLegalLines(matchingCommand, event.player, state);
-  if (findLegalLine(lines, selection.ends) === undefined) {
-    return {
+  const line = findLegalLine(lines, ends);
+  if (line === undefined) {
+    const notALine: ValidationResult = {
       errorReason: getLineRefusalReason(
         matchingCommand,
         event.player,
         state,
-        selection.ends,
+        ends,
       ),
       result: false,
     };
+    return notALine;
+  }
+
+  // Every unit of that line is ordered, so the list must hold them all, in
+  // rank order from either end.
+  if (!listsWholeLine(line, units)) {
+    const notWhole: ValidationResult = {
+      errorReason:
+        'The units listed are not every unit of the line between its ends, in rank order',
+      result: false,
+    };
+    return notWhole;
   }
 
   const valid: ValidationResult = { result: true };

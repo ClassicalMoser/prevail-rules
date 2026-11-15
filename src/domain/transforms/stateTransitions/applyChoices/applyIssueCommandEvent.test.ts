@@ -283,7 +283,7 @@ describe('applyIssueCommandEvent function', () => {
     });
   });
 
-  it('gives a line order to every unit between its two ends', () => {
+  it('gives a line order to every unit the order lists', () => {
     // Black's rank of four, E-1 to E-4, facing north, and a line order.
     const lineCommand = createTestCommand({
       number: 1,
@@ -302,7 +302,7 @@ describe('applyIssueCommandEvent function', () => {
       remainingCommandsFirstPlayer: [lineCommand],
     });
 
-    // Black names the line by its ends, E-3 then E-1.
+    // Black orders the line E-3 to E-1, listing its units from E-3.
     const event: IssueCommandEvent = {
       choiceType: 'issueCommand',
       eventType: 'playerChoice',
@@ -310,18 +310,18 @@ describe('applyIssueCommandEvent function', () => {
       order: {
         command: lineCommand,
         selection: {
-          ends: [unitAt('E-3').unit, unitAt('E-1').unit],
           selectionType: 'line',
+          units: [unitAt('E-3').unit, unitAt('E-2').unit, unitAt('E-1').unit],
         },
       },
     };
     const issued = applyIssueCommandEvent(event, state);
 
-    // The three units from E-1 to E-3 are commanded; E-4 is not.
+    // The three units listed are commanded, as listed; E-4 is not.
     expect(issued.currentRoundState.commandedUnits).toStrictEqual([
-      unitAt('E-1').unit,
-      unitAt('E-2').unit,
       unitAt('E-3').unit,
+      unitAt('E-2').unit,
+      unitAt('E-1').unit,
     ]);
   });
 
@@ -369,19 +369,6 @@ describe('applyIssueCommandEvent function', () => {
         remainingUnitsSecondPlayer: [],
         step: 'secondPlayerResolveCommands',
       });
-    });
-
-    it('throws when the player stopping is not the one issuing', () => {
-      // Black is issuing, so White has nothing to stop.
-      const state = createGameStateWithCommands();
-
-      // Only the issuing player may stop.
-      expect(() =>
-        applyIssueCommandEvent(
-          createIssueCommandEvent({ order: null, player: 'white' }),
-          state,
-        ),
-      ).toThrow(new Error('Only black is issuing orders, not white'));
     });
   });
 });

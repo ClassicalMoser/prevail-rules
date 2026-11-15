@@ -22,6 +22,11 @@ import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
  * @returns The line's units, in rank order
  * @throws Error when the first end is not on the board
  * @throws Error when the second end is not on the unbroken rank through the first
+ *
+ * TODO(composition): nothing in production calls this any more. Applying a
+ * line order used it to work out the line's units; the order now lists them,
+ * and validation checks the list against `getLegalLines`. Settled by
+ * removing it, or by finding the caller that should use it.
  */
 export function getLineBetweenEnds(
   board: Board,

@@ -128,6 +128,37 @@ export function findLegalLine(
 }
 
 /**
+ * Whether a list of units is the whole of a legal line, in rank order from
+ * either end. A line order lists every unit it orders (§4.3.5), so a list
+ * that skips a unit between the ends, or adds one beyond them, is not the
+ * line.
+ *
+ * @param line - The legal line the list's two ends name
+ * @param units - The units the order lists
+ * @returns Whether the list is that line's units, read one way or the other
+ */
+export function listsWholeLine(
+  line: LegalLine,
+  units: readonly UnitInstance[],
+): boolean {
+  // A list of another length cannot be the line.
+  const lineUnits = line.units.map((member) => member.unit);
+  if (lineUnits.length !== units.length) {
+    return false;
+  }
+
+  // Read in rank order, or from the other end.
+  const matchesInOrder = (ordered: readonly UnitInstance[]): boolean =>
+    ordered.every((unit, index) => {
+      const listed = units[index];
+      return listed !== undefined && isSameUnitInstance(unit, listed);
+    });
+  const whole =
+    matchesInOrder(lineUnits) || matchesInOrder(lineUnits.toReversed());
+  return whole;
+}
+
+/**
  * Why a pair of ends names no legal line: the rule of §4.3.5 it breaks, in
  * the order a player would check them.
  *

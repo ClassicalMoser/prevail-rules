@@ -19,14 +19,15 @@ export interface UnitsOrderSelection {
 }
 
 /**
- * A line, named by its two ends in either order; a line of one names the
- * same unit twice (§4.3.5). The units between them are the board's to say.
+ * A line, listed unit by unit in rank order from either end; a line of one
+ * lists one unit (§4.3.5). Every unit listed is ordered, and validation
+ * checks that the list is a whole legal line.
  */
 export interface LineOrderSelection {
   /** A line order. */
   selectionType: 'line';
-  /** The two ends of the line. */
-  ends: [UnitInstance, UnitInstance];
+  /** Every unit of the line, in rank order from either end. */
+  units: UnitInstance[];
 }
 
 /** What an order is given to: some units, or one line. */
@@ -81,16 +82,13 @@ const _unitsOrderSelectionSchemaObject: z.ZodObject<{
 
 const _lineOrderSelectionSchemaObject: z.ZodObject<{
   selectionType: z.ZodLiteral<'line'>;
-  ends: z.ZodTuple<
-    [typeof unitInstanceSchema, typeof unitInstanceSchema],
-    null
-  >;
+  units: z.ZodArray<typeof unitInstanceSchema>;
 }> = z
   .object({
     /** A line order. */
     selectionType: z.literal('line'),
-    /** The two ends of the line. */
-    ends: z.tuple([unitInstanceSchema, unitInstanceSchema]),
+    /** Every unit of the line, in rank order from either end. */
+    units: z.array(unitInstanceSchema),
   })
   .strict();
 

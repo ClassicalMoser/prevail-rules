@@ -4,6 +4,7 @@ export {
 } from './getLegalIssueCommands';
 export {
   findLegalLine,
+  listsWholeLine,
   getLegalLines,
   getLineRefusalReason,
   type LegalLine,

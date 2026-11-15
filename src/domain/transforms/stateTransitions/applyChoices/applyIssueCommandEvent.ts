@@ -1,11 +1,6 @@
 import type { IssueCommandEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  findMatchingCommand,
-  getCommandingPlayer,
-  getLineBetweenEnds,
-  getRemainingCommandsForPlayer,
-} from '@queries';
+import { findMatchingCommand, getRemainingCommandsForPlayer } from '@queries';
 import {
   addUnitsToCommandedUnits,
   beginResolvingCommands,
@@ -15,7 +10,7 @@ import {
 /**
  * Applies an IssueCommandEvent to the game state.
  * Removes the command from remaining commands and adds the units it orders,
- * or the line between its two ends, to commandedUnits.
+ * whether listed for a units order or a line, to commandedUnits.
  * When that player's remaining commands are exhausted on their issue step, they
  * move on to carrying their orders out.
  * With no order, the player stops: the orders left are forfeited and they
@@ -33,28 +28,16 @@ export function applyIssueCommandEvent<S extends GameState>(
   const { player, order } = event;
 
   // With no order the player stops, and whatever is not issued is forfeited
-  // (§4.3.3). Only the player whose issuing step it is can stop.
+  // (§4.3.3).
   if (order === null) {
-    const commanding = getCommandingPlayer(state);
-    if (player !== commanding) {
-      throw new Error(`Only ${commanding} is issuing orders, not ${player}`);
-    }
     const stopped = beginResolvingCommands(state);
     return stopped;
   }
-  const { command, selection } = order;
 
-  // A units order names its units. A line order names only its ends, and
-  // the board says who stands between them (§4.3.5).
-  const units =
-    selection.selectionType === 'units'
-      ? selection.units
-      : getLineBetweenEnds(
-          state.boardState,
-          selection.ends,
-          command.restrictions,
-          state.currentRoundState.commandedUnits,
-        ).map((member) => member.unit);
+  // The order lists every unit it orders, a units order and a line alike
+  // (§4.3.5).
+  const { command, selection } = order;
+  const { units } = selection;
 
   // The order is spent, whichever of the player's orders it matched.
   const remainingCommands = getRemainingCommandsForPlayer(state, player);

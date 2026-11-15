@@ -209,8 +209,13 @@ describe('isValidIssueCommandEvent function', () => {
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
   });
 
-  it('accepts a line whose only unit within inspiration range stands in its middle', () => {
-    // A line order reaching no further than the commander's own space.
+  /**
+   * Black's rank of eight, E-1 to E-8, facing north, with one lines order
+   * left that reaches no further than the commander's own space. The
+   * commander stands with the fourth unit, on E-4, so that unit alone is
+   * within range.
+   */
+  function stateWithRankOfEight() {
     const command = createTestCommand({
       number: 1,
       restrictions: {
@@ -219,8 +224,6 @@ describe('isValidIssueCommandEvent function', () => {
       },
       size: 'lines',
     });
-    // Black's rank of eight, E-1 to E-8, faces north; the commander stands
-    // with the fourth unit, on E-4, so that unit alone is within range.
     const coordinates: Coordinate[] = [
       'E-1',
       'E-2',
@@ -248,22 +251,102 @@ describe('isValidIssueCommandEvent function', () => {
         step: 'firstPlayerIssueCommands',
       }),
     );
+    // The units standing on the given spaces, in that order.
+    const unitsAt = (spaces: Coordinate[]) =>
+      spaces.map((space) => unitAt(space).unit);
+    return { command, state, unitsAt };
+  }
 
-    // Black orders the whole rank, naming its two ends. Range is traced from
-    // any unit in the line, not only from an end (§4.3.5).
+  it('accepts a line whose only unit within inspiration range stands in its middle', () => {
+    const { command, state, unitsAt } = stateWithRankOfEight();
+
+    // Black orders the whole rank, listing every unit in rank order. Range
+    // is traced from any unit in the line, not only from an end (§4.3.5).
     const event = createIssueCommandEvent({
       player: 'black',
       order: {
         command,
         selection: {
-          ends: [unitAt('E-1').unit, unitAt('E-8').unit],
           selectionType: 'line',
+          units: unitsAt([
+            'E-1',
+            'E-2',
+            'E-3',
+            'E-4',
+            'E-5',
+            'E-6',
+            'E-7',
+            'E-8',
+          ]),
         },
       },
     });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
       result: true,
+    });
+  });
+
+  it('accepts a line listed from either end', () => {
+    const { command, state, unitsAt } = stateWithRankOfEight();
+
+    // Black lists the stretch E-4 to E-2 from its far end; a line is the
+    // same line read either way (§4.3.5).
+    const event = createIssueCommandEvent({
+      player: 'black',
+      order: {
+        command,
+        selection: {
+          selectionType: 'line',
+          units: unitsAt(['E-4', 'E-3', 'E-2']),
+        },
+      },
+    });
+
+    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('rejects a line that leaves out a unit between its ends', () => {
+    const { command, state, unitsAt } = stateWithRankOfEight();
+
+    // Black names E-2 and E-4 as the line but leaves out E-3, between them.
+    // Every unit of the line is ordered, so the list must hold them all.
+    const event = createIssueCommandEvent({
+      player: 'black',
+      order: {
+        command,
+        selection: {
+          selectionType: 'line',
+          units: unitsAt(['E-2', 'E-4']),
+        },
+      },
+    });
+
+    // The ends name a legal line, but the list is not that line's units.
+    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+      errorReason:
+        'The units listed are not every unit of the line between its ends, in rank order',
+      result: false,
+    });
+  });
+
+  it('rejects a line that lists no units', () => {
+    const { command, state } = stateWithRankOfEight();
+
+    // A line holds one to eight units (§4.3.5); an empty list is no line.
+    const event = createIssueCommandEvent({
+      player: 'black',
+      order: {
+        command,
+        selection: { selectionType: 'line', units: [] },
+      },
+    });
+
+    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+      errorReason: 'A line order lists at least one unit',
+      result: false,
     });
   });
 
