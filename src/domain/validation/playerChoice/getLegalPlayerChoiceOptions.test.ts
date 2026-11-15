@@ -46,10 +46,10 @@ describe('getLegalPlayerChoiceOptions function', () => {
       updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
       {
         phase: PLAY_CARDS_PHASE,
-        step: 'revealCards',
+        step: 'assignInitiative',
       },
     );
-    // Both awaitingPlay set by createEmptyGameState → revealCards expects game effect
+    // Assigning the initiative is a game effect, so no player is asked.
     expect(getLegalPlayerChoiceOptions(state)).toBeNull();
   });
 

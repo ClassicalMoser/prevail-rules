@@ -98,10 +98,10 @@ describe('getLegalChooseCardOptions function', () => {
   it('throws when play cards is past the chooseCards step, where nothing asks', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
-      step: 'revealCards',
+      step: 'assignInitiative',
     });
     expect(() => getLegalChooseCardOptions(state)).toThrow(
-      'Not on the chooseCards step: revealCards',
+      'Not on the chooseCards step: assignInitiative',
     );
   });
 

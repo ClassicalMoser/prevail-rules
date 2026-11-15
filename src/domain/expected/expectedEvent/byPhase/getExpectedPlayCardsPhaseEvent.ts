@@ -1,6 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import { getPlayCardsPhaseState } from '@queries';
+import { getPlayCardsPhaseState, haveBothPlayersChosenCards } from '@queries';
 
 /**
  * Gets information about the expected event for the PlayCards phase.
@@ -15,6 +15,13 @@ export function getExpectedPlayCardsPhaseEvent(
 
   switch (phaseState.step) {
     case 'chooseCards': {
+      // With both cards face down, they are revealed together (§4.1.2).
+      if (haveBothPlayersChosenCards(state.cardState)) {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'revealCards',
+        };
+      }
       const blackCardChosen = state.cardState.black.awaitingPlay !== null;
       const whiteCardChosen = state.cardState.white.awaitingPlay !== null;
       const oneCardChosen = blackCardChosen || whiteCardChosen;
@@ -29,12 +36,6 @@ export function getExpectedPlayCardsPhaseEvent(
         actionType: 'playerChoice',
         choiceType: 'chooseCard',
         playerSource: 'bothPlayers',
-      };
-    }
-    case 'revealCards': {
-      return {
-        actionType: 'gameEffect',
-        effectType: 'revealCards',
       };
     }
 

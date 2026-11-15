@@ -1,4 +1,5 @@
 import type { GameState } from '@game';
+import { haveBothPlayersChosenCards } from '../card/haveBothPlayersChosenCards';
 
 /**
  * Whether the round is still in the secret, simultaneous choice of cards
@@ -8,14 +9,18 @@ import type { GameState } from '@game';
  * accident of the network and may not decide who loses.
  *
  * @param state - The game state
- * @returns True from the start of Phase 1 until the cards are revealed
+ * @returns True from the start of Phase 1 until both cards are chosen
  */
 export function isChoosingCardsInSecret(state: GameState): boolean {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (phaseState === 'none') {
     return false;
   }
+  // The choice is still secret on the chooseCards step until the second card
+  // is laid; once both are in, the hands are judged before the reveal.
   const choosing =
-    phaseState.phase === 'playCards' && phaseState.step === 'chooseCards';
+    phaseState.phase === 'playCards' &&
+    phaseState.step === 'chooseCards' &&
+    !haveBothPlayersChosenCards(state.cardState);
   return choosing;
 }

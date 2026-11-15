@@ -18,7 +18,7 @@ describe('getExpectedPlayCardsPhaseEvent function', () => {
    * Helper to create a game state in the playCards phase with a specific step
    */
   function createGameStateInPlayCardsStep(
-    step: 'chooseCards' | 'revealCards' | 'assignInitiative' | 'complete',
+    step: 'chooseCards' | 'assignInitiative' | 'complete',
   ): AuthoritativeGameState {
     const state = createEmptyGameState('standard');
 
@@ -101,10 +101,17 @@ describe('getExpectedPlayCardsPhaseEvent function', () => {
       });
     });
 
-    it('given step is revealCards, returns revealCards gameEffect', () => {
-      const state = createGameStateInPlayCardsStep('revealCards');
+    it('given both players have chosen, returns revealCards gameEffect', () => {
+      // Both cards are face down, still on the chooseCards step.
+      const state = createGameStateInPlayCardsStep('chooseCards');
+      const bothChosen = updateCardState(state, {
+        ...state.cardState,
+        black: { ...state.cardState.black, awaitingPlay: tempCommandCards[0] },
+        white: { ...state.cardState.white, awaitingPlay: tempCommandCards[1] },
+      });
 
-      const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
+      // With both in, the cards are revealed together (§4.1.2).
+      const expectedEvent = getExpectedPlayCardsPhaseEvent(bothChosen);
 
       expect(expectedEvent.actionType).toBe('gameEffect');
       expect((expectedEvent as ExpectedGameEffect).effectType).toBe(

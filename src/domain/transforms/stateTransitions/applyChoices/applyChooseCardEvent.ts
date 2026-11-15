@@ -1,17 +1,12 @@
 import type { ChooseCardEvent, ProjectedChooseCardEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  getHiddenPlayerCardState,
-  getOwnedPlayerCardState,
-  haveBothPlayersChosenCards,
-} from '@queries';
+import { getHiddenPlayerCardState, getOwnedPlayerCardState } from '@queries';
 import {
   chooseCard,
   chooseHiddenCard,
   replaceCardState,
   replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
-  updatePlayCardsStep,
 } from '@transforms/pureTransforms';
 
 type ChooseCardApplyEvent = ChooseCardEvent | ProjectedChooseCardEvent;
@@ -50,11 +45,7 @@ export function applyChooseCardEvent<S extends GameState>(
           ),
         );
 
-  // Both players choose at once; the cards are revealed once both are in
-  // (§4.1.1).
-  if (!haveBothPlayersChosenCards(chosen.cardState)) {
-    return chosen;
-  }
-  const revealing = updatePlayCardsStep(chosen, 'revealCards');
-  return revealing;
+  // Both players choose at once (§4.1.1). Once both cards are in, the
+  // expected engine asks for the reveal.
+  return chosen;
 }

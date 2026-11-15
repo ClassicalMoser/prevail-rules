@@ -7,7 +7,7 @@ import { getCurrentPhaseState } from './getCurrentPhaseState';
 describe('getCurrentPhaseState function', () => {
   it('returns the phase slice on the round', () => {
     // The slice this test installed. The getter returns that same object.
-    const phase = createPlayCardsPhaseState({ step: 'revealCards' });
+    const phase = createPlayCardsPhaseState({ step: 'assignInitiative' });
     const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
     expect(getCurrentPhaseState(state)).toBe(phase);

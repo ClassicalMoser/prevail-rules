@@ -10,10 +10,10 @@ import { getCurrentStep } from './getCurrentStep';
 describe('getCurrentStep function', () => {
   it('returns the step on the current phase', () => {
     // The step is the value under test. The phase factory only carries it.
-    const phase = createPlayCardsPhaseState({ step: 'revealCards' });
+    const phase = createPlayCardsPhaseState({ step: 'assignInitiative' });
     const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
-    expect(getCurrentStep(state)).toBe('revealCards');
+    expect(getCurrentStep(state)).toBe('assignInitiative');
   });
 
   it('throws when the round has no phase', () => {

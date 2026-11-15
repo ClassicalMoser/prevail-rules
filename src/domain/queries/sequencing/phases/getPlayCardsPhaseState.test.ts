@@ -10,7 +10,7 @@ import { getPlayCardsPhaseState } from './getPlayCardsPhaseState';
 describe('getPlayCardsPhaseState function', () => {
   it('returns the play-cards slice', () => {
     // Tag and step are both play-cards, so the narrow getter can return the slice.
-    const phase = createPlayCardsPhaseState({ step: 'revealCards' });
+    const phase = createPlayCardsPhaseState({ step: 'assignInitiative' });
     const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
     expect(getPlayCardsPhaseState(state)).toBe(phase);

@@ -4,8 +4,7 @@ import { z } from 'zod';
 
 /** Iterable list of valid steps in the play cards phase. */
 export const playCardsPhaseSteps = [
-  'chooseCards', // Expect two player choices: one choose-card per player
-  'revealCards', // Expect one gameEffect: reveal cards
+  'chooseCards', // Expect two player choices, one choose-card per player, then the reveal
   'assignInitiative', // Expect one gameEffect: assign initiative
   'complete', // Expect one gameEffect: advance to move commanders phase
 ] as const;

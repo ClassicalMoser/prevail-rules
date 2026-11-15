@@ -53,7 +53,7 @@ describe('applyRevealCardsEvent function', () => {
 
     return updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
-      step: 'revealCards',
+      step: 'chooseCards',
     });
   }
 
@@ -217,7 +217,7 @@ describe('applyRevealCardsEvent function', () => {
       });
       const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
-        step: 'revealCards',
+        step: 'chooseCards',
       });
 
       expect(() =>
@@ -240,7 +240,7 @@ describe('applyRevealCardsEvent function', () => {
       });
       const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
-        step: 'revealCards',
+        step: 'chooseCards',
       });
 
       expect(() =>

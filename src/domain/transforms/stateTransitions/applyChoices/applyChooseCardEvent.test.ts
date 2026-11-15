@@ -106,7 +106,7 @@ describe('applyChooseCardEvent function', () => {
   });
 
   describe('when both sides have chosen', () => {
-    it('given black then white each choose their only card, step becomes revealCards', () => {
+    it('given black then white each choose their only card, the step stays chooseCards for the reveal to be asked for', () => {
       const state = createGameStateInChooseCardsStep(
         [tempCommandCards[0]],
         [tempCommandCards[1]],
@@ -136,11 +136,12 @@ describe('applyChooseCardEvent function', () => {
       };
       const afterSecond = applyChooseCardEvent(secondEvent, afterFirst);
 
-      // Should now be on revealCards step
+      // The step does not move: the expected engine sees both cards in and
+      // asks for the reveal (§4.1.2).
       expect(
         throwIfNone(afterSecond.currentRoundState.currentPhaseState, 'phase')
           .step,
-      ).toBe('revealCards');
+      ).toBe('chooseCards');
     });
 
     it('given only black chooses while white still has a card, step stays chooseCards', () => {
@@ -166,7 +167,7 @@ describe('applyChooseCardEvent function', () => {
   });
 
   describe('whiteSeen opponent chooseCard', () => {
-    it('applies projected black chooseCard onto hidden slice and advances when both ready', () => {
+    it('applies projected black chooseCard onto the hidden slice, and stays on chooseCards once both are in', () => {
       const authoritative = createGameStateInChooseCardsStep(
         [tempCommandCards[0]],
         [tempCommandCards[1]],
@@ -215,10 +216,11 @@ describe('applyChooseCardEvent function', () => {
         afterBlack,
       );
 
+      // The step does not move; the reveal is asked for next.
       expect(
         throwIfNone(afterWhite.currentRoundState.currentPhaseState, 'phase')
           .step,
-      ).toBe('revealCards');
+      ).toBe('chooseCards');
     });
   });
 

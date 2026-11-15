@@ -160,9 +160,10 @@ describe('advanceEffects function', () => {
         inHand: [tempCommandCards[3]],
       },
     });
+    // Both cards are face down, still on the chooseCards step.
     const revealing = updatePhaseState(withCards, {
       phase: PLAY_CARDS_PHASE,
-      step: 'revealCards',
+      step: 'chooseCards',
     });
     const changes: GameStateChange[] = [];
     const ports = await portsHolding(revealing, changes);

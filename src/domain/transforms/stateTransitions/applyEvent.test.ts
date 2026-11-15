@@ -53,10 +53,10 @@ function revealingCards(): GameState {
     },
   });
 
-  // The play-cards phase, at the reveal (§4.1.2).
+  // The play-cards phase, with both cards face down for the reveal (§4.1.2).
   const revealing = updatePhaseState(withCards, {
     phase: PLAY_CARDS_PHASE,
-    step: 'revealCards',
+    step: 'chooseCards',
   });
   return revealing;
 }

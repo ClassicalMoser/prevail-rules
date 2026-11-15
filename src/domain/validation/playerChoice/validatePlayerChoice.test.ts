@@ -52,7 +52,7 @@ describe('validatePlayerChoice function', () => {
   it('fails when a game effect is expected instead of player input', () => {
     const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
-      step: 'revealCards',
+      step: 'assignInitiative',
     });
     const event = createChooseCardEvent({
       card: tempCommandCards[0],

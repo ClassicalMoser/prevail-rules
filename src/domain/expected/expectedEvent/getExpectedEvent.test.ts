@@ -47,7 +47,24 @@ function inPhase(phaseState: PhaseState): GameState {
 describe('getExpectedEvent function', () => {
   it('in the play-cards phase, asks what that phase expects', () => {
     // Both cards are down and waiting to be turned over (§4.1.2).
-    const state = inPhase(createPlayCardsPhaseState({ step: 'revealCards' }));
+    const base = createEmptyGameState('standard');
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        awaitingPlay: createTestCard(),
+        inHand: [createTestCard()],
+      },
+      white: {
+        ...base.cardState.white,
+        awaitingPlay: createTestCard(),
+        inHand: [createTestCard()],
+      },
+    });
+    const state = updatePhaseState(
+      withCards,
+      createPlayCardsPhaseState({ step: 'chooseCards' }),
+    );
 
     // The cards are revealed together.
     expect(getExpectedEvent(state)).toStrictEqual({

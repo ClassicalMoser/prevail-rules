@@ -27,7 +27,7 @@ describe('generateRevealCardsEvent function', () => {
     );
     return updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
-      step: 'revealCards',
+      step: 'chooseCards',
     });
   }
 
