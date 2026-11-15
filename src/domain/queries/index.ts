@@ -45,6 +45,7 @@ export {
   findCardInPlay,
   getCardInPlay,
   findMatchingCommand,
+  getMatchingCommand,
   getHiddenPlayerCardState,
   findOwnedPlayerCardState,
   getOwnedPlayerCardState,
@@ -213,6 +214,7 @@ export {
 // and where a path of steps and turns leaves a unit.
 export {
   findPlacementAfterPath,
+  getPlacementAfterPath,
   isSameMovePath,
   isSamePlacement,
   isSameUnitWithPlacement,

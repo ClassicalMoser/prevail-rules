@@ -443,6 +443,7 @@ export {
 } from '@queries';
 export {
   findMatchingCommand,
+  getMatchingCommand,
   getAdjacentFacings,
   getCurrentUnitStat,
   getLeftFacing,
@@ -480,6 +481,7 @@ export {
 // geometry only, and equality of placements and paths.
 export {
   findPlacementAfterPath,
+  getPlacementAfterPath,
   isSameMovePath,
   isSamePlacement,
   isSameUnitWithPlacement,
