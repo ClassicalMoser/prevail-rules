@@ -1,10 +1,6 @@
 import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  findPositionOfUnit,
-  getMovementResolutionState,
-  isSamePlacement,
-} from '@queries';
+import { getMovementResolutionState, isSamePlacement } from '@queries';
 import {
   carryRidingCommander,
   clearCommandResolution,
@@ -15,9 +11,10 @@ import { throwIfPending } from '@utils';
 
 /**
  * Finishes a movement command-resolution slice:
- * ensures the mover is on the target space. An engage move leaves the mover on
- * its starting space until now, so it is moved onto the defender here. A mover
- * that is on neither space is a fault. Clears CRS back to `pending`. Whether
+ * ensures the mover is on the target space. A front or flank engagement
+ * leaves the mover on its starting space until now, so it is moved onto the
+ * defender here; the movement's record of where the mover stands says which.
+ * Clears CRS back to `pending`. Whether
  * the order goes on to another unit, or ends with completeMovementCommand, is
  * the expected engine's to ask for.
  *
@@ -33,28 +30,19 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
     movementState.targetPlacement,
     'The move has not been written yet',
   );
-  const mover = movementState.movingUnit.unit;
+  const { movingUnit } = movementState;
 
-  // Where the mover stands now. An engage move leaves it on its start space
-  // until now; open ground and a rear engagement have already set it down.
-  const standing = findPositionOfUnit(state.boardState, mover);
-  if (standing === undefined) {
-    throw new Error('The moving unit is not on the board');
-  }
-  const arrived = standing.coordinate === targetPlacement.coordinate;
-  const onStart = isSamePlacement(standing, movementState.movingUnit.placement);
-  if (!arrived && !onStart) {
-    throw new Error(
-      'The moving unit is neither where it started nor where it was going',
-    );
-  }
+  // The movement records where the mover stands. Open ground and a rear
+  // engagement have already set it down; a front or flank engagement left
+  // it on its start space until now.
+  const arrived = isSamePlacement(movingUnit.placement, targetPlacement);
 
   // A front or flank engagement places the mover only now; a commander
   // riding with it comes off the start space with it (§4.3.10).
   const boardWithMover = arrived
     ? state.boardState
     : carryRidingCommander(
-        moveUnitOnBoard(state.boardState, mover, targetPlacement),
+        moveUnitOnBoard(state.boardState, movingUnit.unit, targetPlacement),
         movementState,
         targetPlacement.coordinate,
       );

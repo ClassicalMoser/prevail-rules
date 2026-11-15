@@ -94,7 +94,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
     // A move finishes the unit that made it; setting one down from nowhere
     // would hide whatever took it off the board.
     expect(() => applyCompleteUnitMovementEvent(event, full)).toThrow(
-      'The moving unit is not on the board',
+      'Unit not found on board',
     );
   });
 
