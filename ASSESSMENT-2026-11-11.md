@@ -60,6 +60,29 @@ These are the author's, and are left for the read.
    idea of storing each round's length and dropping the round number is not
    built either.
 
+## Open: applies that find facts (study 2026-11-14)
+
+Decided 2026-11-14: an apply reads only where the game is, which slot it writes, and what the state holds by identity. Rule derivations move out, next-step decisions move to the expected engine (new effects where needed), and behaviour does not change. A line order carries its full unit list, checked by validation.
+
+1. **Rule derivations inside applies.**
+   - `applyCompleteMovementCommandEvent` calls `getLegalMoveUnits` (`@legality`) to decide whether the Move order ends.
+   - `applyIssueCommandEvent` works out a line's members with `getLineBetweenEnds`. Settled by the line order carrying its units.
+   - `applyMoveUnitEvent` decides whether the move enters an enemy (`hasEnemyUnit`), which starts an engagement.
+   - `applyCompletePlayCardsPhaseEvent` and `applyMoveCommanderEvent` skip a fallen commander's move (`getMoveCommandersStepFrom`, §4.2.8).
+   - `applyAssignUnitSupportEvent` works out which units lose support (units on the board minus those assigned).
+2. **Next-step decisions inside applies.**
+   - Units left to act: `getRemainingUnitsForPlayer(...).length > 0` in `applyCompleteUnitMovementEvent` and `applyCompleteRangedAttackEvent`.
+   - Orders left: `commandsLeft.length > 0` in `applyIssueCommandEvent`.
+   - Both cards chosen: `haveBothPlayersChosenCards` in `applyChooseCardEvent`.
+   - The cleanup step after a rally: `getNextStepForResolveRally`.
+   - A zero penalty closes the rout: `penalty === 0` in `applyResolveRoutEvent`.
+   - No retreat paths means the defender stands: `applyResolveEngageRetreatOptionEvent`.
+   - A retreat from a front engagement also ends it: `applyResolveRetreatEvent`.
+   - What a closed rout closes: `settleRout`, through `findRoutLocation`.
+   - A unit already placed by a rear engagement: the `arrived` branch in `applyCompleteUnitMovementEvent`.
+3. **Validation inside applies.** The chosen retreat must be in `legalRetreatPaths` (`applyChooseRetreatOptionEvent`); `findMatchingCommand` must find the order; `findPlacementAfterPath` throws off the board; only the issuing player may stop (`applyIssueCommandEvent`).
+4. **Uncertain.** `getAttackApplyAwaitingOpen` and `getAttackApplyToClose` pick a melee slot by resolution order, which follows the initiative. `findRetreatAwaitingRout` finds its slot by "no legal retreat path".
+
 ## Deferred: style, until just ahead of the walk
 
 The author runs these during the walk, once implementation holds still.

@@ -41,9 +41,10 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 
 ## Events
 
-- Non-trivial derivation (board scans, legality, dice) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), so apply stays mechanical and replay stays cheap.
+- An apply reads only where the game is, which slot it writes, and what the state holds by identity (where a named unit stands). Anything a rule decides (legality, line membership, whether a move enters an enemy, stats, thresholds, dice) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), or, for a player choice, on the choice where validation checks it.
+- An apply does not decide what comes next. Whether units or orders are left, which step follows, and what a closed rout closes are the expected engine's to ask for.
 - Which slot an effect writes to is the state's to say when the state already names it: an apply asks a `@queries` reader (`getRetreatAwaitingRout`, `getAttackApplyToClose`, `findRoutLocation`) rather than reading a context field off the event, so the event and the state cannot disagree.
-- Examples: `StartEngagementEvent` / `ResolveFlankEngagementEvent.defenderWithPlacement`, legal-retreat `Set`s on resolve melee/ranged.
+- Examples: `OpenRetreatFromAttackApplyEvent.retreatPaths` (what is legal), `ResolveMeleeEvent`'s attack results (a measurement), `ResolveRallyEvent`'s burnt card (a random draw).
 
 ## Tests
 
