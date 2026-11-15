@@ -1,6 +1,6 @@
 import type { ChooseRetreatOptionEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
-import { getRetreatState, isSameMovePath } from '@queries';
+import { getRetreatState } from '@queries';
 import { updateRetreatState } from '@transforms/pureTransforms';
 
 /**
@@ -18,17 +18,12 @@ export function applyChooseRetreatOptionEvent<S extends GameState>(
   event: ChooseRetreatOptionEvent,
   state: S,
 ): S {
+  // The path chosen is the retreat to carry out; validation has already
+  // checked that it was one of those offered.
   const retreatState = getRetreatState(state, event.player);
-  // The path names one of the offered retreats; that one is carried out.
-  const chosen = retreatState.legalRetreatPaths.find((path) =>
-    isSameMovePath(path, event.path),
-  );
-  if (chosen === undefined) {
-    throw new Error('The chosen retreat is not one of those offered');
-  }
   const newRetreatState: RetreatState = {
     ...retreatState,
-    chosenRetreatPath: chosen,
+    chosenRetreatPath: event.path,
   };
   const updated = updateRetreatState(state, newRetreatState);
   return updated;

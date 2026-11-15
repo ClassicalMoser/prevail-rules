@@ -3,7 +3,7 @@ import type { GameState, MovementResolutionState } from '@game';
 import {
   getBoardSpace,
   getMovementResolutionState,
-  findPlacementAfterPath,
+  getPlacementAfterPath,
   hasEnemyUnit,
 } from '@queries';
 import {
@@ -32,15 +32,12 @@ export function applyMoveUnitEvent<S extends GameState>(
 
   // The destination is wherever the validated path leads, read by
   // geometry rather than judged again.
-  const destination = findPlacementAfterPath(
+  const destination = getPlacementAfterPath(
     state.boardState,
     mover.placement,
     event.path,
     'advance',
   );
-  if (destination === undefined) {
-    throw new Error('The move path leaves the board');
-  }
 
   const written: MovementResolutionState = {
     ...movement,

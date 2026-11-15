@@ -196,17 +196,4 @@ describe('applyChooseRetreatOptionEvent function', () => {
       getFrontEngagementRetreatState(newState).chosenRetreatPath,
     ).toStrictEqual(chosenPath);
   });
-
-  it('refuses a path the retreat did not offer', () => {
-    const state = createStateWithRangedAttackRetreat();
-    // A turn about and a step is not one of the two ways back on offer.
-    const event = createChooseRetreatOptionEvent({
-      player: 'white',
-      path: ['turnAbout', 'step'],
-    });
-
-    expect(() => applyChooseRetreatOptionEvent(event, state)).toThrow(
-      'The chosen retreat is not one of those offered',
-    );
-  });
 });

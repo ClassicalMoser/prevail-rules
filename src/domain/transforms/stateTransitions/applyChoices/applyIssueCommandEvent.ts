@@ -1,6 +1,6 @@
 import type { IssueCommandEvent } from '@events';
 import type { GameState } from '@game';
-import { findMatchingCommand, getRemainingCommandsForPlayer } from '@queries';
+import { getMatchingCommand, getRemainingCommandsForPlayer } from '@queries';
 import {
   addUnitsToCommandedUnits,
   beginResolvingCommands,
@@ -41,12 +41,7 @@ export function applyIssueCommandEvent<S extends GameState>(
 
   // The order is spent, whichever of the player's orders it matched.
   const remainingCommands = getRemainingCommandsForPlayer(state, player);
-  const matchingCommand = findMatchingCommand(remainingCommands, command);
-  if (matchingCommand === undefined) {
-    throw new Error(
-      'applyIssueCommandEvent: command not found in remaining commands',
-    );
-  }
+  const matchingCommand = getMatchingCommand(remainingCommands, command);
   const commandsLeft = remainingCommands.filter((c) => c !== matchingCommand);
 
   // The units it orders are ordered for the round (§4.3.6).

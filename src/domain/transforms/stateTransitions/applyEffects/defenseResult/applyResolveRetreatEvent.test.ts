@@ -298,7 +298,7 @@ describe('applyResolveRetreatEvent function', () => {
   });
 
   describe('a path that runs off the board', () => {
-    it('is refused: the retreat path leaves the board', () => {
+    it('throws: the retreat path leaves the board, which no procedure writes', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRangedAttackRetreatState(state);
 
@@ -311,6 +311,7 @@ describe('applyResolveRetreatEvent function', () => {
         unit: retreatState.retreatingUnit.unit,
       };
 
+      // The procedure offers only retreats on the board, so this is a fault.
       expect(() => applyResolveRetreatEvent(event, state)).toThrow(
         'The retreat path leaves the board',
       );
