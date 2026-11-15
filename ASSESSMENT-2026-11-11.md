@@ -64,23 +64,15 @@ These are the author's, and are left for the read.
 
 Decided 2026-11-14: an apply reads only where the game is, which slot it writes, and what the state holds by identity. Rule derivations move out, next-step decisions move to the expected engine (new effects where needed), and behaviour does not change. A line order carries its full unit list, checked by validation.
 
-1. **Rule derivations inside applies.**
-   - `applyCompleteMovementCommandEvent` calls `getLegalMoveUnits` (`@legality`) to decide whether the Move order ends.
-   - `applyIssueCommandEvent` works out a line's members with `getLineBetweenEnds`. Settled by the line order carrying its units.
-   - `applyMoveUnitEvent` decides whether the move enters an enemy (`hasEnemyUnit`), which starts an engagement.
-   - `applyCompletePlayCardsPhaseEvent` and `applyMoveCommanderEvent` skip a fallen commander's move (`getMoveCommandersStepFrom`, §4.2.8).
-   - `applyAssignUnitSupportEvent` works out which units lose support (units on the board minus those assigned).
-2. **Next-step decisions inside applies.**
+1. **Rule derivations inside applies.** Done 2026-11-14: a line order lists its units (`getLineBetweenEnds` left the apply), and completing a Move order no longer asks `getLegalMoveUnits`. Reread and found not to be rule questions: `hasEnemyUnit` in `applyMoveUnitEvent` reads who stands at the destination, and the units losing support in `applyAssignUnitSupportEvent` are the fixed consequence of §10.4.6.
+2. **Next-step decisions inside applies** (branching on a condition of the state):
    - Units left to act: `getRemainingUnitsForPlayer(...).length > 0` in `applyCompleteUnitMovementEvent` and `applyCompleteRangedAttackEvent`.
    - Orders left: `commandsLeft.length > 0` in `applyIssueCommandEvent`.
    - Both cards chosen: `haveBothPlayersChosenCards` in `applyChooseCardEvent`.
-   - The cleanup step after a rally: `getNextStepForResolveRally`.
-   - A zero penalty closes the rout: `penalty === 0` in `applyResolveRoutEvent`.
-   - No retreat paths means the defender stands: `applyResolveEngageRetreatOptionEvent`.
-   - A retreat from a front engagement also ends it: `applyResolveRetreatEvent`.
-   - What a closed rout closes: `settleRout`, through `findRoutLocation`.
+   - A fallen commander's move skipped: `getMoveCommandersStepFrom` in `applyCompletePlayCardsPhaseEvent` and `applyMoveCommanderEvent` (§4.2.8).
    - A unit already placed by a rear engagement: the `arrived` branch in `applyCompleteUnitMovementEvent`.
-3. **Validation inside applies.** The chosen retreat must be in `legalRetreatPaths` (`applyChooseRetreatOptionEvent`); `findMatchingCommand` must find the order; `findPlacementAfterPath` throws off the board; only the issuing player may stop (`applyIssueCommandEvent`).
+   - Allowed, since they branch on the event or the slot: a zero penalty closes the rout; no retreat paths means the defender stands; a retreat from a front engagement also ends it; what `settleRout` closes; the cleanup step after a rally (`getNextStepForResolveRally` maps one step to the next).
+3. **Validation inside applies.** The chosen retreat must be in `legalRetreatPaths` (`applyChooseRetreatOptionEvent`); `findMatchingCommand` must find the order; `findPlacementAfterPath` throws off the board. Done: only the issuing player may stop.
 4. **Uncertain.** `getAttackApplyAwaitingOpen` and `getAttackApplyToClose` pick a melee slot by resolution order, which follows the initiative. `findRetreatAwaitingRout` finds its slot by "no legal retreat path".
 
 ## Deferred: style, until just ahead of the walk
