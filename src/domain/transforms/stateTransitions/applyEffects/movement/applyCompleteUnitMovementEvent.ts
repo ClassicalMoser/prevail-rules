@@ -2,15 +2,12 @@ import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState } from '@game';
 import {
   findPositionOfUnit,
-  getCommandingPlayer,
   getMovementResolutionState,
-  getRemainingUnitsForPlayer,
   isSamePlacement,
 } from '@queries';
 import {
   carryRidingCommander,
   clearCommandResolution,
-  finishResolvingCommands,
   moveUnitOnBoard,
   updateBoardState,
 } from '@transforms/pureTransforms';
@@ -20,11 +17,11 @@ import { throwIfPending } from '@utils';
  * Finishes a movement command-resolution slice:
  * ensures the mover is on the target space. An engage move leaves the mover on
  * its starting space until now, so it is moved onto the defender here. A mover
- * that is on neither space is a fault. Clears CRS back to `pending`, then either waits for the
- * next `moveUnit` or advances the issue-commands step when this player's
- * resolve queue is empty.
+ * that is on neither space is a fault. Clears CRS back to `pending`. Whether
+ * the order goes on to another unit, or ends with completeMovementCommand, is
+ * the expected engine's to ask for.
  *
- * Mirrors {@link applyCompleteRangedAttackCommandEvent} bookkeeping for movement.
+ * Mirrors {@link applyCompleteRangedAttackEvent} for a shot.
  */
 export function applyCompleteUnitMovementEvent<S extends GameState>(
   _event: CompleteUnitMovementEvent,
@@ -66,13 +63,8 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
       ? state
       : updateBoardState(state, boardWithMover);
 
-  // The unit's move is done; the player's orders are finished once no
-  // ordered unit is left to move.
+  // The unit's move is done. Whether the order goes on to another unit or
+  // ends is the expected engine's to ask for.
   const cleared = clearCommandResolution(stateWithMover);
-  const player = getCommandingPlayer(cleared);
-  if (getRemainingUnitsForPlayer(cleared, player).length > 0) {
-    return cleared;
-  }
-  const finished = finishResolvingCommands(cleared);
-  return finished;
+  return cleared;
 }

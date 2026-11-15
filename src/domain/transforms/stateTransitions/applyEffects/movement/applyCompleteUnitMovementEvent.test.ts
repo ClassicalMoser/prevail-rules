@@ -51,7 +51,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
     expect(phase.remainingUnitsFirstPlayer).toStrictEqual([leftover]);
   });
 
-  it('advances to secondPlayerIssueCommands when first player has no remaining units', () => {
+  it('leaves the step where it is when the last unit has moved, for the order to be completed next', () => {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state);
     // The mover stands where it started, E-5, and goes to E-6.
@@ -70,8 +70,12 @@ describe('applyCompleteUnitMovementEvent function', () => {
 
     const next = applyCompleteUnitMovementEvent(event, full);
     const phase = getIssueCommandsPhaseState(next);
+
+    // The unit's move is cleared. Ending the order is not this effect's to
+    // decide: the expected engine sees no unit left and asks for
+    // completeMovementCommand.
     expect(phase.currentCommandResolutionState).toBe('pending');
-    expect(phase.step).toBe('secondPlayerIssueCommands');
+    expect(phase.step).toBe('firstPlayerResolveCommands');
   });
 
   it('throws when the mover is nowhere on the board, since there is no unit to finish the move', () => {

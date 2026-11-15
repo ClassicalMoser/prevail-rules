@@ -161,14 +161,36 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     });
   });
 
-  it('given when first player units are exhausted but step did not advance, expects completeMovementCommand', () => {
+  it("given the first player's last ordered unit has moved, expects completeMovementCommand", () => {
+    // Black is carrying out a Move order with no unit left to move.
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerResolveCommands',
     );
 
+    // Ending the order is asked for as its own effect.
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'completeMovementCommand',
+    });
+  });
+
+  it("given the first player's last ordered unit has shot, expects completeRangedAttackCommand", () => {
+    // Black is carrying out a Shoot order with no unit left to shoot.
+    const state = createGameStateInIssueCommandsStep(
+      'firstPlayerResolveCommands',
+    );
+    state.cardState.black.inPlay = {
+      ...createTestCard(),
+      command: {
+        ...createTestCard().command,
+        type: 'rangedAttack',
+      },
+    };
+
+    // Ending the order is asked for as its own effect.
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeRangedAttackCommand',
     });
   });
 
@@ -284,7 +306,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     });
   });
 
-  it('given when second player units are exhausted but step did not advance, expects completeMovementCommand', () => {
+  it("given the second player's last ordered unit has moved, expects completeMovementCommand", () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerResolveCommands',
     );

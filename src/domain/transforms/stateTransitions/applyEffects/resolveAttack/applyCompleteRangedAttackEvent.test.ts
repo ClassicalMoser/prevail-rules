@@ -79,7 +79,7 @@ describe('applyCompleteRangedAttackEvent function', () => {
     expect(phase.remainingUnitsFirstPlayer).toStrictEqual([waiting.unit]);
   });
 
-  it('ends the player’s orders when no ordered unit is left to act', () => {
+  it('leaves the step where it is when no ordered unit is left to act, for the order to be completed next', () => {
     const state = resolvingWithShotUnderWay([]);
 
     const next = applyCompleteRangedAttackEvent(event, state);
@@ -88,8 +88,10 @@ describe('applyCompleteRangedAttackEvent function', () => {
     if (phase === 'none' || phase.phase !== 'issueCommands') {
       throw new Error('issue');
     }
-    // The first player is done, and the second player's orders come next.
-    expect(phase.step).toBe('secondPlayerIssueCommands');
+    // The shot is cleared. Ending the order is not this effect's to decide:
+    // the expected engine sees no unit left and asks for
+    // completeRangedAttackCommand.
+    expect(phase.step).toBe('firstPlayerResolveCommands');
     expect(phase.currentCommandResolutionState).toBe('pending');
   });
 });
