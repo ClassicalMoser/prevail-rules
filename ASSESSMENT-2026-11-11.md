@@ -70,9 +70,9 @@ Decided 2026-11-14: an apply reads only where the game is, which slot it writes,
    - Both cards chosen: the expected engine asks for `revealCards` on the `chooseCards` step; the `revealCards` step is gone.
    - A unit already placed by a rear engagement: `applyCompleteUnitMovementEvent` reads the movement's record of where the mover stands.
 
-   Waiting, because each needs a new effect type in `ruleValues/gameEffectTypes.ts`, which is closed:
-   - Orders left: `commandsLeft.length > 0` in `applyIssueCommandEvent`. The expected engine would ask for an effect that begins carrying out the orders once none are left to issue.
-   - A fallen commander's move skipped: `getMoveCommandersStepFrom` in `applyCompletePlayCardsPhaseEvent` and `applyMoveCommanderEvent` (§4.2.8). The expected engine would ask for an effect that passes over the move of a player whose commander is lost.
+   In the working tree for the author's review (2026-11-15), with two new effect types named in `ruleValues/gameEffectTypes.ts` by leave:
+   - Orders left: `completeIssuingCommands`. Issuing an order, or stopping, only spends or forfeits orders; once none is left, the expected engine asks for the effect, which begins carrying them out.
+   - A fallen commander's move: `skipLostCommanderMove`. The Move Commanders turns always run first then second (`getMoveCommandersStepAfter`); on the turn of a player whose commander is lost, the expected engine asks for the effect, which passes the turn on. `getMoveCommandersStepFrom` has no caller left and carries a mark.
 
    Allowed, since they branch on the event or the slot: a zero penalty closes the rout; no retreat paths means the defender stands; a retreat from a front engagement also ends it; what `settleRout` closes; the cleanup step after a rally (`getNextStepForResolveRally` maps one step to the next).
 
