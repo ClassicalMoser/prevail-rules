@@ -106,6 +106,7 @@ export {
   getPlayCardsPhaseState,
   getMoveCommandersPhaseState,
   getMoveCommandersStepFrom,
+  getMoveCommandersStepAfter,
   getIssueCommandsPhaseState,
   getRemainingCommandsForPlayer,
   getRemainingUnitsForPlayer,

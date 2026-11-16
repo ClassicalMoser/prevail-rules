@@ -3,6 +3,7 @@ export { getCurrentPhaseState } from './phases';
 export { getPlayCardsPhaseState } from './phases';
 export { getMoveCommandersPhaseState } from './phases';
 export { getMoveCommandersStepFrom } from './phases';
+export { getMoveCommandersStepAfter } from './phases';
 export { getIssueCommandsPhaseState } from './phases';
 export { getRemainingCommandsForPlayer } from './phases';
 export { getRemainingUnitsForPlayer } from './phases';
