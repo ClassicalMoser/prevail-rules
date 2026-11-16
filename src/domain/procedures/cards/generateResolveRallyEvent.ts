@@ -57,7 +57,7 @@ export function generateResolveRallyEvent(
   const cardToBurn = playedCards[index];
 
   return {
-    card: cardToBurn,
+    burntCard: cardToBurn,
     effectType: RESOLVE_RALLY_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     player: rallyingPlayer,

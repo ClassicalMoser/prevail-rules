@@ -48,7 +48,7 @@ describe('generateResolveRallyEvent function', () => {
     const event = generateResolveRallyEvent(full, anyDraw);
     expect(event.effectType).toBe('resolveRally');
     expect(event.player).toBe('black');
-    expect(full.cardState.black.played).toContain(event.card);
+    expect(full.cardState.black.played).toContain(event.burntCard);
   });
 
   it('uses non-initiative player on secondPlayerResolveRally', () => {
@@ -70,7 +70,7 @@ describe('generateResolveRallyEvent function', () => {
     );
     const event = generateResolveRallyEvent(full, anyDraw);
     expect(event.player).toBe('black');
-    expect(full.cardState.black.played).toContain(event.card);
+    expect(full.cardState.black.played).toContain(event.burntCard);
   });
 
   it('uses white as first player when initiative is white on firstPlayerResolveRally', () => {
@@ -92,7 +92,7 @@ describe('generateResolveRallyEvent function', () => {
     );
     const event = generateResolveRallyEvent(full, anyDraw);
     expect(event.player).toBe('white');
-    expect(full.cardState.white.played).toContain(event.card);
+    expect(full.cardState.white.played).toContain(event.burntCard);
   });
 
   /** A source that always draws `value`, so the burn index is fixed. */
@@ -130,20 +130,20 @@ describe('generateResolveRallyEvent function', () => {
   it('burns the first played card when the source draws zero', () => {
     const { first, full } = cleanupWithThreePlayed();
     const event = generateResolveRallyEvent(full, fixedRandom(0));
-    expect(event.card.id).toBe(first.id);
+    expect(event.burntCard.id).toBe(first.id);
   });
 
   it('burns the last played card when the source draws near one', () => {
     const { full, third } = cleanupWithThreePlayed();
     const event = generateResolveRallyEvent(full, fixedRandom(0.99));
-    expect(event.card.id).toBe(third.id);
+    expect(event.burntCard.id).toBe(third.id);
   });
 
   it('burns the same card twice from one fixed source', () => {
     const { full } = cleanupWithThreePlayed();
     const first = generateResolveRallyEvent(full, fixedRandom(0.5));
     const second = generateResolveRallyEvent(full, fixedRandom(0.5));
-    expect(second.card.id).toBe(first.card.id);
+    expect(second.burntCard.id).toBe(first.burntCard.id);
   });
 
   it('throws when the acting player has an empty played pile', () => {

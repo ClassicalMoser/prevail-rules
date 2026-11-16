@@ -23,7 +23,7 @@ export interface ResolveRallyEvent {
   /** The player who rallies. */
   player: PlayerSide;
   /** The played card burnt, out of the game for good. */
-  card: CommandCard;
+  burntCard: CommandCard;
 }
 
 const _resolveRallyEventSchemaObject = z
@@ -35,7 +35,7 @@ const _resolveRallyEventSchemaObject = z
     /** The player who rallies. */
     player: playerSideSchema,
     /** The played card burnt, out of the game for good. */
-    card: commandCardSchema,
+    burntCard: commandCardSchema,
   })
   .strict();
 
@@ -53,5 +53,5 @@ export const resolveRallyEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRally'>;
   player: typeof playerSideSchema;
-  card: typeof commandCardSchema;
+  burntCard: typeof commandCardSchema;
 }> = _resolveRallyEventSchemaObject;

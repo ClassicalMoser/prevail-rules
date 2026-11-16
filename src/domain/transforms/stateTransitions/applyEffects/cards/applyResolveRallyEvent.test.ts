@@ -21,8 +21,8 @@ describe('applyResolveRallyEvent function', () => {
   it('burns the played card, marks rally resolved, and leaves unitsLostSupport pending on the same step', () => {
     const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
-    const card = createTestCard();
-    state.cardState.white.played = [card];
+    const burntCard = createTestCard();
+    state.cardState.white.played = [burntCard];
 
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: {
@@ -39,7 +39,7 @@ describe('applyResolveRallyEvent function', () => {
 
     const full = state;
     const event: ResolveRallyEvent = {
-      card,
+      burntCard,
       effectType: 'resolveRally' as const,
       eventType: 'gameEffect' as const,
       player: 'white' as const,
@@ -66,7 +66,7 @@ describe('applyResolveRallyEvent function', () => {
   it('on whiteSeen, resolves the white owned slice and leaves black hidden intact', () => {
     const base = createEmptyGameState('standard');
     base.currentInitiative = 'white';
-    const card = createTestCard();
+    const burntCard = createTestCard();
     const whiteSeen: WhiteSeenGameState = {
       ...base,
       visibility: 'whiteSeen',
@@ -75,7 +75,7 @@ describe('applyResolveRallyEvent function', () => {
         white: {
           ...base.cardState.white,
           discarded: [],
-          played: [card],
+          played: [burntCard],
         },
         black: {
           awaitingPlay: 'hidden',
@@ -104,7 +104,7 @@ describe('applyResolveRallyEvent function', () => {
     };
 
     const event: ResolveRallyEvent = {
-      card,
+      burntCard,
       effectType: 'resolveRally',
       eventType: 'gameEffect',
       player: 'white',
@@ -159,7 +159,7 @@ describe('applyResolveRallyEvent function', () => {
     };
 
     const event: ResolveRallyEvent = {
-      card: burned,
+      burntCard: burned,
       effectType: 'resolveRally',
       eventType: 'gameEffect',
       player: 'black',
@@ -232,7 +232,7 @@ describe('applyResolveRallyEvent function', () => {
     };
 
     const event: ResolveRallyEvent = {
-      card: burned,
+      burntCard: burned,
       effectType: 'resolveRally',
       eventType: 'gameEffect',
       player: 'white',
@@ -292,7 +292,7 @@ describe('applyResolveRallyEvent function', () => {
     };
 
     const event: ResolveRallyEvent = {
-      card: burned,
+      burntCard: burned,
       effectType: 'resolveRally',
       eventType: 'gameEffect',
       player: 'white',

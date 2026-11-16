@@ -26,7 +26,7 @@ export function applyResolveRallyEvent<S extends GameState>(
   event: ResolveRallyEvent,
   state: S,
 ): S {
-  const { player, card } = event;
+  const { player, burntCard } = event;
   const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
 
   // The burnt card is gone for good and the rest of the played and discarded
@@ -34,8 +34,8 @@ export function applyResolveRallyEvent<S extends GameState>(
   // hand, counted where it cannot (§10.3).
   const stateWithCards = updatePlayerCards(state, player, {
     hidden: (hidden) =>
-      returnHiddenCardsToHand(burnHiddenCardFromPlayed(hidden, card)),
-    owned: (owned) => returnCardsToHand(burnCardFromPlayed(owned, card)),
+      returnHiddenCardsToHand(burnHiddenCardFromPlayed(hidden, burntCard)),
+    owned: (owned) => returnCardsToHand(burnCardFromPlayed(owned, burntCard)),
   });
 
   const updatedRallyResolutionState: RallyResolutionState = {
