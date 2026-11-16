@@ -9,6 +9,7 @@ import { z } from 'zod';
  *
  * Phase transition: issue commands → resolve melee. `remainingEngagements` is a board-derived
  * snapshot so apply does not scan for engaged coordinates at transition time.
+ * This is the responsibility of the procedure, not the transform.
  */
 export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE =
   'completeIssueCommandsPhase' as const;

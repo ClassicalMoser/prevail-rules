@@ -5,7 +5,8 @@ import { z } from 'zod';
 /**
  * Literal for {@link RoundEndEvent.effectType}. The round ends: the cleanup phase
  * completes, the round advances, and the play-cards phase of the next begins. Payload is only
- * discriminators—transition details come from pure transforms + current state.
+ * discriminators; transition details come from pure transforms and a simple
+ * lookup against current state.
  */
 export const ROUND_END_EFFECT_TYPE = 'roundEnd' as const;
 
