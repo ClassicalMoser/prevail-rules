@@ -82,11 +82,12 @@ export function getExpectedIssueCommandsPhaseEvent(
       if (phaseState.remainingCommandsFirstPlayer.length > 0) {
         return getExpectedIssueStepEvent(firstPlayer);
       }
-      // All commands issued - should have advanced to firstPlayerResolveCommands
-      // This state should not occur if applyIssueCommandEvent properly advances steps
-      throw new Error(
-        'All first player commands issued but step not advanced to firstPlayerResolveCommands',
-      );
+      // With no order left to issue, given or forfeited, the player moves on
+      // to carrying out the orders given.
+      return {
+        actionType: 'gameEffect',
+        effectType: 'completeIssuingCommands',
+      };
     }
 
     case 'firstPlayerResolveCommands': {
@@ -139,10 +140,12 @@ export function getExpectedIssueCommandsPhaseEvent(
       if (phaseState.remainingCommandsSecondPlayer.length > 0) {
         return getExpectedIssueStepEvent(secondPlayer);
       }
-      // All commands issued - should have advanced to secondPlayerResolveCommands
-      throw new Error(
-        'All second player commands issued but step not advanced to secondPlayerResolveCommands',
-      );
+      // With no order left to issue, given or forfeited, the player moves on
+      // to carrying out the orders given.
+      return {
+        actionType: 'gameEffect',
+        effectType: 'completeIssuingCommands',
+      };
     }
 
     case 'secondPlayerResolveCommands': {

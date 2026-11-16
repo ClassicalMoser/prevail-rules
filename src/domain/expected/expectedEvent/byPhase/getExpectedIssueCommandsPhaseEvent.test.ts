@@ -107,14 +107,17 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     });
   });
 
-  it('given when first player commands are exhausted but step did not advance, throws', () => {
+  it('given the first player has no orders left to issue, expects completeIssuingCommands', () => {
+    // Every order is given, or the rest forfeited by stopping.
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerIssueCommands',
     );
 
-    expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
-      'All first player commands issued but step not advanced to firstPlayerResolveCommands',
-    );
+    // Moving on to carrying the orders out is asked for as its own effect.
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeIssuingCommands',
+    });
   });
 
   it('given the first player, returns the current command resolution event', () => {
@@ -252,14 +255,17 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     expect(expectedEvent.actionType).toBe('playerChoice');
   });
 
-  it('given when second player commands are exhausted but step did not advance, throws', () => {
+  it('given the second player has no orders left to issue, expects completeIssuingCommands', () => {
+    // Every order is given, or the rest forfeited by stopping.
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerIssueCommands',
     );
 
-    expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
-      'All second player commands issued but step not advanced to secondPlayerResolveCommands',
-    );
+    // Moving on to carrying the orders out is asked for as its own effect.
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeIssuingCommands',
+    });
   });
 
   it('given the second player, returns the current command resolution event', () => {

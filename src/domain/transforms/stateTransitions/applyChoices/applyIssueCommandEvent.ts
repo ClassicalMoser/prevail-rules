@@ -3,7 +3,6 @@ import type { GameState } from '@game';
 import { getMatchingCommand, getRemainingCommandsForPlayer } from '@queries';
 import {
   addUnitsToCommandedUnits,
-  beginResolvingCommands,
   updateRemainingCommandsForPlayer,
 } from '@transforms/pureTransforms';
 
@@ -11,10 +10,9 @@ import {
  * Applies an IssueCommandEvent to the game state.
  * Removes the command from remaining commands and adds the units it orders,
  * whether listed for a units order or a line, to commandedUnits.
- * When that player's remaining commands are exhausted on their issue step, they
- * move on to carrying their orders out.
- * With no order, the player stops: the orders left are forfeited and they
- * move on to carrying out the ones given (§4.3.3).
+ * With no order, the player stops, and the orders left are forfeited
+ * (§4.3.3). Once no order is left, the expected engine asks for
+ * completeIssuingCommands, which moves the player on to carrying them out.
  * Event is assumed pre-validated (issueCommands phase, command in that player's remaining commands).
  *
  * @param event - The issue command event to apply
@@ -30,7 +28,7 @@ export function applyIssueCommandEvent<S extends GameState>(
   // With no order the player stops, and whatever is not issued is forfeited
   // (§4.3.3).
   if (order === null) {
-    const stopped = beginResolvingCommands(state);
+    const stopped = updateRemainingCommandsForPlayer(state, player, []);
     return stopped;
   }
 
@@ -47,11 +45,5 @@ export function applyIssueCommandEvent<S extends GameState>(
   // The units it orders are ordered for the round (§4.3.6).
   const ordered = addUnitsToCommandedUnits(state, units);
   const spent = updateRemainingCommandsForPlayer(ordered, player, commandsLeft);
-
-  // With every order given, the player carries them out.
-  if (commandsLeft.length > 0) {
-    return spent;
-  }
-  const resolving = beginResolvingCommands(spent);
-  return resolving;
+  return spent;
 }

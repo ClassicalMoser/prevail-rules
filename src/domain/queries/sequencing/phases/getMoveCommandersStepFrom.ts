@@ -10,6 +10,12 @@ import { getOtherPlayer } from '@queries/player/getOtherPlayer';
  * @param state - The game state, which records whose commanders are lost
  * @param step - The step play would come to next if both commanders stood
  * @returns That step, or the first one after it whose commander still stands
+ *
+ * TODO(composition): nothing in production calls this any more. The two
+ * applies that opened or passed on a turn used it to skip a fallen
+ * commander's move; the expected engine now asks for skipLostCommanderMove
+ * instead, and the applies use getMoveCommandersStepAfter. Settled by
+ * removing it, or by finding the caller that should use it.
  */
 export function getMoveCommandersStepFrom(
   state: GameState,

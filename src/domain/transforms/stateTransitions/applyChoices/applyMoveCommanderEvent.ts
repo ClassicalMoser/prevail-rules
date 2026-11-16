@@ -1,8 +1,8 @@
 import type { MoveCommanderEvent } from '@events';
-import type { GameState, MoveCommandersPhaseStep } from '@game';
+import type { GameState } from '@game';
 import {
   getMoveCommandersPhaseState,
-  getMoveCommandersStepFrom,
+  getMoveCommandersStepAfter,
 } from '@queries';
 import {
   moveCommanderOnBoard,
@@ -36,12 +36,9 @@ export function applyMoveCommanderEvent<S extends GameState>(
     newCoordinate,
   );
 
-  // The second player moves next, unless their commander has fallen; after
-  // the second, the phase is done (§4.2.1, §4.2.8).
-  const newStep: MoveCommandersPhaseStep =
-    currentPhaseState.step === 'moveFirstCommander'
-      ? getMoveCommandersStepFrom(state, 'moveSecondCommander')
-      : 'complete';
+  // The second player moves next; after the second, the phase is done
+  // (§4.2.1). A fallen commander's turn is passed over by its own effect.
+  const newStep = getMoveCommandersStepAfter(currentPhaseState.step);
   const stateWithBoard = updateBoardState(state, addedCommanderBoard);
   const newGameState = updateMoveCommandersStep(stateWithBoard, newStep);
   return newGameState;

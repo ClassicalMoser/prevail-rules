@@ -97,7 +97,7 @@ describe('applyIssueCommandEvent function', () => {
       expect(unitInCommandedUnits).toBe(true);
     });
 
-    it('exhausting first-player commands advances to firstPlayerResolveCommands and seeds remaining units', () => {
+    it("issuing the first player's last order leaves the step for issuing to be completed next", () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('black', { attack: 3 });
       const { command } = tempCommandCards[0];
@@ -116,14 +116,17 @@ describe('applyIssueCommandEvent function', () => {
       );
       const phaseState = getIssueCommandsPhaseState(newState);
 
+      // The order is spent and the unit ordered. Moving on to carrying the
+      // orders out is completeIssuingCommands', which the expected engine
+      // asks for once no order is left.
       expect(phaseState).toMatchObject({
         remainingCommandsFirstPlayer: [],
-        step: 'firstPlayerResolveCommands',
+        step: 'firstPlayerIssueCommands',
       });
-      expect(phaseState.remainingUnitsFirstPlayer).toStrictEqual([unit]);
+      expect(newState.currentRoundState.commandedUnits).toStrictEqual([unit]);
     });
 
-    it('exhausting second-player commands advances to secondPlayerResolveCommands and seeds remaining units', () => {
+    it("issuing the second player's last order leaves the step for issuing to be completed next", () => {
       const base = createGameStateWithCommands();
       const state = updatePhaseState(base, {
         ...getIssueCommandsPhaseState(base),
@@ -147,11 +150,12 @@ describe('applyIssueCommandEvent function', () => {
       );
       const phaseState = getIssueCommandsPhaseState(newState);
 
+      // The order is spent and the unit ordered; issuing is completed next.
       expect(phaseState).toMatchObject({
         remainingCommandsSecondPlayer: [],
-        step: 'secondPlayerResolveCommands',
+        step: 'secondPlayerIssueCommands',
       });
-      expect(phaseState.remainingUnitsSecondPlayer).toStrictEqual([unit]);
+      expect(newState.currentRoundState.commandedUnits).toStrictEqual([unit]);
     });
 
     it('keeps firstPlayerIssueCommands when more commands remain', () => {
@@ -326,7 +330,7 @@ describe('applyIssueCommandEvent function', () => {
   });
 
   describe('stopping, with no order', () => {
-    it('forfeits the orders left and carries out the ones given', () => {
+    it('forfeits the orders left', () => {
       // Black has one order left and has already ordered one unit.
       const unit = createTestUnit('black', { attack: 3 });
       const state = addUnitsToCommandedUnits(createGameStateWithCommands(), [
@@ -339,12 +343,11 @@ describe('applyIssueCommandEvent function', () => {
         state,
       );
 
-      // The order left is forfeited, and Black moves on to carrying out the
-      // order given, with its unit waiting to act.
+      // The order left is forfeited. With none left, the expected engine asks
+      // for completeIssuingCommands, which carries out the order given.
       expect(getIssueCommandsPhaseState(stopped)).toMatchObject({
         remainingCommandsFirstPlayer: [],
-        remainingUnitsFirstPlayer: [unit],
-        step: 'firstPlayerResolveCommands',
+        step: 'firstPlayerIssueCommands',
       });
     });
 
@@ -363,11 +366,10 @@ describe('applyIssueCommandEvent function', () => {
         state,
       );
 
-      // White's order is forfeited, and White has no units to carry out.
+      // White's order is forfeited; issuing is completed next.
       expect(getIssueCommandsPhaseState(stopped)).toMatchObject({
         remainingCommandsSecondPlayer: [],
-        remainingUnitsSecondPlayer: [],
-        step: 'secondPlayerResolveCommands',
+        step: 'secondPlayerIssueCommands',
       });
     });
   });

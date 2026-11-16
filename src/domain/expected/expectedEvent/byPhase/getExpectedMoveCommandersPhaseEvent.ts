@@ -17,6 +17,13 @@ export function getExpectedMoveCommandersPhaseEvent(
 
   switch (phaseState.step) {
     case 'moveFirstCommander': {
+      // A player whose commander has fallen has nothing to move (§4.2.8).
+      if (state.lostCommanders.includes(firstPlayer)) {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'skipLostCommanderMove',
+        };
+      }
       return {
         actionType: 'playerChoice',
         choiceType: 'moveCommander',
@@ -25,6 +32,13 @@ export function getExpectedMoveCommandersPhaseEvent(
     }
 
     case 'moveSecondCommander': {
+      // A player whose commander has fallen has nothing to move (§4.2.8).
+      if (state.lostCommanders.includes(secondPlayer)) {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'skipLostCommanderMove',
+        };
+      }
       return {
         actionType: 'playerChoice',
         choiceType: 'moveCommander',

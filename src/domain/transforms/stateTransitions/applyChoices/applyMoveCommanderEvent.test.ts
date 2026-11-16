@@ -138,7 +138,7 @@ describe('applyMoveCommanderEvent function', () => {
       ).toBe('complete');
     });
 
-    it('when the second player’s commander has fallen, the first player’s move ends the phase', () => {
+    it('when the second player’s commander has fallen, the first player’s move still passes to the second player’s turn', () => {
       // White's commander was defeated earlier (§4.2.8): white has no turn.
       const base = createGameStateInMoveCommandersStep('moveFirstCommander');
       const state = addCommanderToLostCommanders(base, 'white');
@@ -153,9 +153,11 @@ describe('applyMoveCommanderEvent function', () => {
         state,
       );
 
+      // White's turn comes next as always; passing it over is
+      // skipLostCommanderMove's, which the expected engine asks for.
       expect(
         throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
-      ).toBe('complete');
+      ).toBe('moveSecondCommander');
     });
   });
 

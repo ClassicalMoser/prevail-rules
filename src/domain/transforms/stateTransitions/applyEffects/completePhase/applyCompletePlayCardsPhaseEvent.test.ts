@@ -45,7 +45,7 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
     expect(completed[0]?.phase).toBe(PLAY_CARDS_PHASE);
   });
 
-  it('when the first player’s commander has fallen, Move Commanders opens on the second player’s turn', () => {
+  it('when the first player’s commander has fallen, Move Commanders still opens on the first player’s turn', () => {
     // Black holds initiative, but its commander was defeated (§4.2.8).
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -64,11 +64,12 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
       full,
     );
 
-    // White moves first, and alone.
+    // The phase opens on Black's turn as always. Passing it over is
+    // skipLostCommanderMove's, which the expected engine asks for.
     const phase = throwIfNone(
       next.currentRoundState.currentPhaseState,
       'phase',
     );
-    expect(phase.step).toBe('moveSecondCommander');
+    expect(phase.step).toBe('moveFirstCommander');
   });
 });

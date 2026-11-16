@@ -2,7 +2,11 @@ import type { GameState } from '@game';
 
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+import {
+  addCommanderToLostCommanders,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
@@ -53,6 +57,34 @@ describe('getExpectedMoveCommandersPhaseEvent function', () => {
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
       expect(expectedEvent.actionType).toBe('playerChoice');
+    });
+
+    it("given the first player's commander has fallen, passes over their move", () => {
+      // Black holds the initiative, but its commander was defeated (§4.2.8).
+      const state = addCommanderToLostCommanders(
+        createGameStateInMoveCommandersStep('moveFirstCommander', 'black'),
+        'black',
+      );
+
+      // Black has nothing to move, so its turn is passed over.
+      expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+        actionType: 'gameEffect',
+        effectType: 'skipLostCommanderMove',
+      });
+    });
+
+    it("given the second player's commander has fallen, passes over their move", () => {
+      // White moves second, and its commander was defeated (§4.2.8).
+      const state = addCommanderToLostCommanders(
+        createGameStateInMoveCommandersStep('moveSecondCommander', 'black'),
+        'white',
+      );
+
+      // White has nothing to move, so its turn is passed over.
+      expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+        actionType: 'gameEffect',
+        effectType: 'skipLostCommanderMove',
+      });
     });
 
     it('given step is complete, returns completeMoveCommandersPhase gameEffect', () => {
