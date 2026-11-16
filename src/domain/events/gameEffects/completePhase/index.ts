@@ -8,6 +8,16 @@ export { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE } from './completeMoveComman
 export type { CompleteMoveCommandersPhaseEvent } from './completeMoveCommandersPhase';
 export { completeMoveCommandersPhaseEventSchema } from './completeMoveCommandersPhase';
 
+// A player has no order left to issue, and carries out the orders given.
+export { COMPLETE_ISSUING_COMMANDS_EFFECT_TYPE } from './completeIssuingCommands';
+export type { CompleteIssuingCommandsEvent } from './completeIssuingCommands';
+export { completeIssuingCommandsEventSchema } from './completeIssuingCommands';
+
+// A player whose commander has fallen has their Move Commanders turn passed over.
+export { SKIP_LOST_COMMANDER_MOVE_EFFECT_TYPE } from './skipLostCommanderMove';
+export type { SkipLostCommanderMoveEvent } from './skipLostCommanderMove';
+export { skipLostCommanderMoveEventSchema } from './skipLostCommanderMove';
+
 // Issue commands phase is finished.
 export { COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE } from './completeIssueCommandsPhase';
 export type { CompleteIssueCommandsPhaseEvent } from './completeIssueCommandsPhase';

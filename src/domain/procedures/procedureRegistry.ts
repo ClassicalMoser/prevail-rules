@@ -11,6 +11,8 @@ import {
 import {
   generateRoundEndEvent,
   generateCompleteIssueCommandsPhaseEvent,
+  generateCompleteIssuingCommandsEvent,
+  generateSkipLostCommanderMoveEvent,
   generateCompleteMoveCommandersPhaseEvent,
   generateCompletePlayCardsPhaseEvent,
   generateCompleteResolveMeleePhaseEvent,
@@ -70,6 +72,12 @@ export function generateEventFromProcedure(
     }
     case 'completeIssueCommandsPhase': {
       return generateCompleteIssueCommandsPhaseEvent(state);
+    }
+    case 'completeIssuingCommands': {
+      return generateCompleteIssuingCommandsEvent(state);
+    }
+    case 'skipLostCommanderMove': {
+      return generateSkipLostCommanderMoveEvent(state);
     }
     case 'completeMeleeResolution': {
       return generateCompleteMeleeResolutionEvent();
