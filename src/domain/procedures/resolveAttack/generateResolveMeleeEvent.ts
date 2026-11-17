@@ -6,8 +6,8 @@ import {
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeSupportValue,
   getMeleeCombatants,
+  getMeleeCommitmentForPlayer,
   getRawUnitStat,
-  hasInitiative,
   modifiersFromCompletedCommitment,
 } from '@queries';
 /**
@@ -31,14 +31,15 @@ export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   // The two units engaged in the melee's space.
   const { black: blackUnit, white: whiteUnit } = getMeleeCombatants(state);
-  // Commitments are named for the order they were made in, first player
-  // first, so each side's own commitment is found by asking who is first.
-  const whiteIsFirst = hasInitiative(state, 'white');
-  const whiteCommitmentModifiers = modifiersFromCompletedCommitment(
-    whiteIsFirst
-      ? meleeState.firstPlayerCommitment
-      : meleeState.secondPlayerCommitment,
+  // Each side's card committed for its own unit (§8.4.1) adds to that unit's
+  // blow; the melee holds the two in the order they were asked for.
+  const whiteCommitment = getMeleeCommitmentForPlayer(
+    state,
+    meleeState,
+    'white',
   );
+  const whiteCommitmentModifiers =
+    modifiersFromCompletedCommitment(whiteCommitment);
 
   // The unit's Attack is summed raw: the attack value adds support to it
   // and is floored once, as a whole, when it lands (§7.1.4).
@@ -53,11 +54,13 @@ export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
 
   const totalWhiteAttackValue = whiteAttackValue + whiteSupportValue;
 
-  const blackCommitmentModifiers = modifiersFromCompletedCommitment(
-    whiteIsFirst
-      ? meleeState.secondPlayerCommitment
-      : meleeState.firstPlayerCommitment,
+  const blackCommitment = getMeleeCommitmentForPlayer(
+    state,
+    meleeState,
+    'black',
   );
+  const blackCommitmentModifiers =
+    modifiersFromCompletedCommitment(blackCommitment);
 
   const blackAttackValue = getRawUnitStat(
     blackUnit.unit,
