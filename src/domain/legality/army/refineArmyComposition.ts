@@ -2,10 +2,7 @@ import type { Army, GameModeName } from '@entities';
 import { armySchema } from '@entities';
 import type { z } from 'zod';
 
-import {
-  armyCompositionByMode,
-  armyCompositionInitiatives,
-} from './armyComposition';
+import { getArmyCompositionStatus } from './getArmyCompositionStatus';
 import { refineArmyRules } from './refineArmyRules';
 
 /**
@@ -18,66 +15,45 @@ export function refineArmyComposition(
   ctx: z.RefinementCtx,
   pathPrefix: (string | number)[] = [],
 ): void {
-  const rules = armyCompositionByMode[mode];
+  // The army measured once against each of its mode's limits; this refine
+  // only words the ones it does not meet.
+  const status = getArmyCompositionStatus(army, mode);
   const modeLabel = `${mode.charAt(0).toUpperCase()}${mode.slice(1)}`;
 
-  if (army.units.length > rules.maxUnitTypeCount) {
+  // Too many different unit types for the mode (§3.1.3).
+  if (!status.unitTypeCount.met) {
     ctx.addIssue({
       code: 'custom',
-      message: `${modeLabel} armies may include at most ${rules.maxUnitTypeCount} different unit types.`,
+      message: `${modeLabel} armies may include at most ${status.unitTypeCount.limit} different unit types.`,
       path: [...pathPrefix, 'units'],
     });
   }
 
-  if (rules.maxArmyCost !== null) {
-    const unitCost = army.units.reduce(
-      (acc, unit) => acc + unit.count * unit.unitType.cost,
-      0,
-    );
-    const cardCost = army.commandCards.reduce(
-      (acc, card) => acc + card.cost,
-      0,
-    );
-    const armyCost = unitCost + cardCost;
-    if (armyCost > rules.maxArmyCost) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `${modeLabel} armies cannot cost more than ${rules.maxArmyCost}.`,
-        path: pathPrefix,
-      });
-    }
+  // Units and cards together cost more than the mode's cap (§3.1.3).
+  if (!status.cost.met) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `${modeLabel} armies cannot cost more than ${status.cost.limit}.`,
+      path: pathPrefix,
+    });
   }
 
-  if (rules.minMoraleValue !== null) {
-    const moraleValue = army.units.reduce(
-      (acc, unit) => acc + unit.count * unit.unitType.morale,
-      0,
-    );
-    if (moraleValue < rules.minMoraleValue) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `${modeLabel} armies must have a total morale value of ${rules.minMoraleValue} or greater.`,
-        path: [...pathPrefix, 'units'],
-      });
-    }
+  // Total Morale falls short of the mode's floor (§3.1.6).
+  if (!status.morale.met) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `${modeLabel} armies must have a total morale value of ${status.morale.limit} or greater.`,
+      path: [...pathPrefix, 'units'],
+    });
   }
 
-  if (rules.cardsPerInitiative !== null) {
-    const byInitiative = Object.groupBy(
-      army.commandCards,
-      (card) => card.initiative,
-    );
-    const balanced = armyCompositionInitiatives.every(
-      (initiative) =>
-        (byInitiative[initiative]?.length ?? 0) === rules.cardsPerInitiative,
-    );
-    if (!balanced) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `${modeLabel} armies must have exactly ${rules.cardsPerInitiative} command cards for each initiative.`,
-        path: [...pathPrefix, 'commandCards'],
-      });
-    }
+  // Cards are not spread evenly across every initiative value (§3.1.7).
+  if (!status.cardsPerInitiative.met) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `${modeLabel} armies must have exactly ${status.cardsPerInitiative.limit} command cards for each initiative.`,
+      path: [...pathPrefix, 'commandCards'],
+    });
   }
 }
 

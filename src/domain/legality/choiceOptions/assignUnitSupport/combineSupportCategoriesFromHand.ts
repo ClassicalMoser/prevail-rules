@@ -1,23 +1,5 @@
 import type { CommandCard, UnitSupport } from '@entities';
-
-/** Groups identical support kinds while summing counts (ignores `count`). */
-function unitSupportKindLabel(unitSupport: UnitSupport): string {
-  switch (unitSupport.supportType) {
-    case 'generic': {
-      return 'generic';
-    }
-    case 'trait': {
-      return `trait:${unitSupport.trait}`;
-    }
-    case 'unitType': {
-      return `unitType:${unitSupport.unitTypeId}`;
-    }
-    default: {
-      const _exhaustive: never = unitSupport;
-      return _exhaustive;
-    }
-  }
-}
+import { isSameUnitSupportKind } from '@queries';
 
 /**
  * Sums hand cards into support grants (unit type, trait, or generic).
@@ -28,24 +10,34 @@ function unitSupportKindLabel(unitSupport: UnitSupport): string {
 export function combineSupportCategoriesFromHand(
   hand: readonly Pick<CommandCard, 'unitSupport'>[],
 ): UnitSupport[] {
-  const byKind = new Map<string, UnitSupport>();
+  const stacks: UnitSupport[] = [];
 
   for (const card of hand) {
     const { unitSupport } = card;
+
+    // Every card holds at least one place (§10.4.2); a card holding none
+    // has nothing to add to any stack.
     if (unitSupport.count < 1) {
       continue;
     }
-    const kind = unitSupportKindLabel(unitSupport);
-    const existing = byKind.get(kind);
-    if (existing === undefined) {
-      byKind.set(kind, { ...unitSupport });
+
+    // Cards naming the same kind of unit stack into one (§10.4.3), so look
+    // for a stack this card's kind already began.
+    const stackIndex = stacks.findIndex((stack) =>
+      isSameUnitSupportKind(stack, unitSupport),
+    );
+
+    // The first card of its kind begins a new stack, in hand order.
+    if (stackIndex === -1) {
+      stacks.push({ ...unitSupport });
       continue;
     }
-    byKind.set(kind, {
-      ...existing,
-      count: existing.count + unitSupport.count,
-    });
+
+    // A later card of the same kind adds its places to that stack.
+    const stack = stacks[stackIndex];
+    stacks[stackIndex] = { ...stack, count: stack.count + unitSupport.count };
   }
 
-  return [...byKind.values()];
+  // One stack per kind of unit named, each holding every place its cards hold.
+  return stacks;
 }
