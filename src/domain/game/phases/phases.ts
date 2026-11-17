@@ -1,3 +1,4 @@
+import type { AssertExact } from '@utils';
 import type { CleanupPhaseState } from './cleanupPhase';
 import type { IssueCommandsPhaseState } from './issueCommandsPhase';
 import type { MoveCommandersPhaseState } from './moveCommandersPhase';
@@ -62,3 +63,6 @@ export const phaseStateSchema: z.ZodType<PhaseState> = z.union([
   resolveMeleePhaseStateSchema,
   cleanupPhaseStateSchema,
 ]);
+
+/** Every phase the list names has a phase state, and no other. */
+const _assertPhasesMatchStates: AssertExact<Phase, PhaseState['phase']> = true;

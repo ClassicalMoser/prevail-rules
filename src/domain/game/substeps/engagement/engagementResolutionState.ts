@@ -1,3 +1,4 @@
+import type { EngagementType } from '@entities';
 import type { AssertExact } from '@utils';
 import type { FlankEngagementResolutionState } from './flankEngagementResolutionSubstep';
 import type { FrontEngagementResolutionState } from './frontEngagementResolutionSubstep';
@@ -34,4 +35,10 @@ export const engagementResolutionStateSchema: z.ZodType<EngagementResolutionStat
 const _assertExactEngagementResolutionState: AssertExact<
   EngagementResolutionState,
   EngagementResolutionStateSchemaType
+> = true;
+
+/** Every kind of engagement (§6.3.1) has its own resolution, and no other. */
+const _assertEngagementTypesMatchResolutions: AssertExact<
+  EngagementType,
+  EngagementResolutionState['engagementType']
 > = true;
