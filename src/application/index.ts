@@ -15,6 +15,7 @@ export type {
   GameStateChange,
   GameStateSubscriber,
   GameStorage,
+  NewGame,
   PortResponse,
   RoundSnapshotStorage,
 } from './ports';

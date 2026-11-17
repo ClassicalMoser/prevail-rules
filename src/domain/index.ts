@@ -15,6 +15,7 @@ export {
 export {
   armyCompositionByMode,
   armyCompositionInitiatives,
+  getArmyCompositionStatus,
   armySchemaForMode,
   legalArmySchema,
   refineArmyComposition,
@@ -26,7 +27,17 @@ export {
   refineGameModeBoardSize,
   refineGameRules,
 } from '@legality';
-export type { ArmyCompositionRules } from '@legality';
+export type {
+  ArmyCompositionRules,
+  ArmyCompositionStatus,
+  ArmyLimitStatus,
+} from '@legality';
+// What an army list costs, the Morale it fields, and its cards at each initiative.
+export {
+  getArmyCost,
+  getArmyMorale,
+  countCommandCardsByInitiative,
+} from '@queries';
 export {
   commandCardSchema,
   commandSchema,
@@ -219,6 +230,9 @@ export {
   commitToMeleeEventSchema,
   commitToMovementEventSchema,
   commitToRangedAttackEventSchema,
+  commitToRangedDefenseEventSchema,
+  chooseMovingUnitEventSchema,
+  chooseShooterEventSchema,
   issueCommandEventSchema,
   moveCommanderEventSchema,
   moveUnitEventSchema,
@@ -274,6 +288,9 @@ export type {
   CommitToMeleeEvent,
   CommitToMovementEvent,
   CommitToRangedAttackEvent,
+  CommitToRangedDefenseEvent,
+  ChooseMovingUnitEvent,
+  ChooseShooterEvent,
   IssueCommandEvent,
   LineOrderSelection,
   Order,
@@ -394,6 +411,9 @@ export type {
   PlayCardsPhaseStep,
   ResolveMeleePhaseState,
   ResolveMeleePhaseStep,
+  PhaseStepsByPhase,
+  PhaseStep,
+  PhaseStepRecord,
   AuthoritativeRoundState,
   RoundState,
   RoundStateBase,
@@ -457,6 +477,7 @@ export {
   getOppositeFacing,
   getOrthogonalFacings,
   getOtherPlayer,
+  isSideAsked,
   findOwnedPlayerCardState,
   getOwnedPlayerCardState,
   getHiddenPlayerCardState,
@@ -476,6 +497,7 @@ export {
   areModifiersArraysEqual,
   areRestrictionsEqual,
   areCommandsEqual,
+  isSameUnitSupportKind,
   areUnitSupportsEqual,
   isSameCard,
   isSameCardValue,
@@ -492,7 +514,15 @@ export {
   isSamePlacement,
   isSameUnitWithPlacement,
 } from '@queries';
-export { getExpectedEvent } from '@expected';
+// What comes next: the find answers undefined once the game is over, the get
+// insists; and the shapes both answer with.
+export { findExpectedEvent, getExpectedEvent } from '@expected';
+export type {
+  ExpectedEventInfo,
+  ExpectedGameEffect,
+  ExpectedPlayerInput,
+  PlayerSource,
+} from '@events';
 export {
   findRetreatAwaitingChoice,
   findRetreatAwaitingMove,
@@ -524,6 +554,7 @@ export {
   getMeleeResolutionReadyForAttackCalculation,
   findMeleeResolutionState,
   findPlayerOwingMeleeCommitment,
+  getMeleeCommitmentForPlayer,
   getMeleeResolutionState,
   getMeleeCombatants,
   getMoveCommandersPhaseState,
@@ -612,6 +643,8 @@ export {
   eachUnitPresentOnce,
   getLegalPlayerChoiceOptions,
   type LegalPlayerChoiceOptions,
+  type LegalPlayerChoiceOptionsByChoice,
+  type LegalPlayerChoiceOptionsFor,
   validatePlayerChoice,
 } from '@validation';
 export {
