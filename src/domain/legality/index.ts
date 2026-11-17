@@ -1,7 +1,12 @@
-export type { ArmyCompositionRules } from './army';
+export type {
+  ArmyCompositionRules,
+  ArmyCompositionStatus,
+  ArmyLimitStatus,
+} from './army';
 export {
   armyCompositionByMode,
   armyCompositionInitiatives,
+  getArmyCompositionStatus,
   armySchemaForMode,
   legalArmySchema,
   refineArmyComposition,
