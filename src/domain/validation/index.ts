@@ -4,4 +4,8 @@ export {
   getLegalPlayerChoiceOptions,
   validatePlayerChoice,
 } from './playerChoice';
-export type { LegalPlayerChoiceOptions } from './playerChoice';
+export type {
+  LegalPlayerChoiceOptions,
+  LegalPlayerChoiceOptionsByChoice,
+  LegalPlayerChoiceOptionsFor,
+} from './playerChoice';

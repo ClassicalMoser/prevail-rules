@@ -1,4 +1,5 @@
 import type { Coordinate, PlayerSide, UnitWithPlacement } from '@entities';
+import type { AssertExact } from '@utils';
 import type {
   ChooseCardEvent,
   ChooseMeleeResolutionEvent,
@@ -9,6 +10,7 @@ import type {
   CommitToMovementEvent,
   CommitToRangedAttackEvent,
   CommitToRangedDefenseEvent,
+  PlayerChoiceType,
   PlayerSource,
 } from '@events';
 import { findExpectedEvent } from '@expected';
@@ -48,104 +50,139 @@ import {
   modifiersFromCompletedCommitment,
 } from '@queries';
 
-/** Shared fields echoed from {@link getExpectedEvent} for actor presentation. */
-interface LegalPlayerChoiceOptionsBase {
-  playerSource: PlayerSource;
+/**
+ * What is offered for each choice a player can be asked for: who is asked,
+ * and the legal options, keyed by the choice. Every choice but one is asked
+ * of a single side; choosing a card is asked of both at once (§4.1.1), so
+ * only `chooseCard` names a {@link PlayerSource}.
+ */
+export interface LegalPlayerChoiceOptionsByChoice {
+  /** The unit support a rallied hand holds, and the units it may hold (§10.4.4). */
+  assignUnitSupport: {
+    playerSource: PlayerSide;
+    assignUnitSupport: LegalAssignUnitSupport;
+  };
+  /** The cards each player may lay face down, both at once (§4.1.1). */
+  chooseCard: { playerSource: PlayerSource; events: ChooseCardEvent[] };
+  /** The engagements the first player may fight next (§4.4.2). */
+  chooseMeleeResolution: {
+    playerSource: PlayerSide;
+    events: ChooseMeleeResolutionEvent[];
+  };
+  /** Whether to rally at cleanup (§4.5.2). */
+  chooseRally: { playerSource: PlayerSide; events: ChooseRallyEvent[] };
+  /** The cards that may pay a rout's Morale (§9.3.2). */
+  chooseRoutDiscard: {
+    playerSource: PlayerSide;
+    routDiscard: LegalRoutDiscardCards;
+  };
+  /** The equally small retreats the owner chooses among (§9.1.3). */
+  chooseRetreatOption: {
+    playerSource: PlayerSide;
+    events: ChooseRetreatOptionEvent[];
+  };
+  /** A card to commit to a melee, or none (§7.2.2). */
+  commitToMelee: { playerSource: PlayerSide; events: CommitToMeleeEvent[] };
+  /** A card to commit before a move, or none (§4.3.10). */
+  commitToMovement: {
+    playerSource: PlayerSide;
+    events: CommitToMovementEvent[];
+  };
+  /** Whether a faster defender falls back from a front engagement (§6.3.2). */
+  chooseWhetherToRetreat: {
+    playerSource: PlayerSide;
+    events: ChooseWhetherToRetreatEvent[];
+  };
+  /** A card the shooter commits to its shot, or none (§4.3.11). */
+  commitToRangedAttack: {
+    playerSource: PlayerSide;
+    events: CommitToRangedAttackEvent[];
+  };
+  /** A card the target commits against the shot, or none (§4.3.11). */
+  commitToRangedDefense: {
+    playerSource: PlayerSide;
+    events: CommitToRangedDefenseEvent[];
+  };
+  /** The orders still to give (§4.3.2–4.3.3). */
+  issueCommand: {
+    playerSource: PlayerSide;
+    issueCommands: LegalIssueCommands;
+  };
+  /** Where the commander may go, from where it stands (§4.2). */
+  moveCommander: {
+    playerSource: PlayerSide;
+    startingCoordinate: Coordinate | null;
+    destinations: Coordinate[];
+  };
+  /** The commanded units still able to move (§4.3.9). */
+  chooseMovingUnit: { playerSource: PlayerSide; moveUnits: LegalMoveUnits };
+  /** Every ending the named unit's move may reach. */
+  moveUnit: {
+    playerSource: PlayerSide;
+    /** The unit whose move is being written. */
+    movingUnit: UnitWithPlacement;
+    /**
+     * Every legal ending of the move, each with a path to submit, priced
+     * with the card committed for it (§4.3.10). Step-by-step offering is
+     * `findLegalMoveDeltas`.
+     */
+    moves: MoveResult[];
+  };
+  /** The units able to shoot (§4.3.11). */
+  chooseShooter: {
+    playerSource: PlayerSide;
+    rangedAttackers: LegalRangedAttackers;
+  };
+  /** Every enemy the named shooter may target. */
+  performRangedAttack: {
+    playerSource: PlayerSide;
+    /** The unit whose shot is being aimed. */
+    shooter: UnitWithPlacement;
+    /**
+     * Every enemy it may target, with the card committed for the shot
+     * counted (§4.3.11 steps 2–3). Supporters for a chosen target are
+     * `getLegalRangedAttackSupporters`.
+     */
+    targets: UnitWithPlacement[];
+  };
+  /** The units and spaces still open for deployment (§3.5). */
+  setupUnits: { playerSource: PlayerSide; setupUnits: LegalSetupUnits };
 }
 
-export type LegalPlayerChoiceOptions =
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'assignUnitSupport';
-      assignUnitSupport: LegalAssignUnitSupport;
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseCard';
-      events: ChooseCardEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseMeleeResolution';
-      events: ChooseMeleeResolutionEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseRally';
-      events: ChooseRallyEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseRoutDiscard';
-      routDiscard: LegalRoutDiscardCards;
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseRetreatOption';
-      events: ChooseRetreatOptionEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'commitToMelee';
-      events: CommitToMeleeEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'commitToMovement';
-      events: CommitToMovementEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseWhetherToRetreat';
-      events: ChooseWhetherToRetreatEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'commitToRangedAttack';
-      events: CommitToRangedAttackEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'commitToRangedDefense';
-      events: CommitToRangedDefenseEvent[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'issueCommand';
-      issueCommands: LegalIssueCommands;
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'moveCommander';
-      startingCoordinate: Coordinate | null;
-      destinations: Coordinate[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseMovingUnit';
-      moveUnits: LegalMoveUnits;
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'moveUnit';
-      /** The unit whose move is being written. */
-      movingUnit: UnitWithPlacement;
-      /**
-       * Every legal ending of the move, each with a path to submit, priced
-       * with the card committed for it (§4.3.10). Step-by-step offering is
-       * `findLegalMoveDeltas`.
-       */
-      moves: MoveResult[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'chooseShooter';
-      rangedAttackers: LegalRangedAttackers;
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'performRangedAttack';
-      /** The unit whose shot is being aimed. */
-      shooter: UnitWithPlacement;
-      /**
-       * Every enemy it may target, with the card committed for the shot
-       * counted (§4.3.11 steps 2–3). Supporters for a chosen target are
-       * `getLegalRangedAttackSupporters`.
-       */
-      targets: UnitWithPlacement[];
-    })
-  | (LegalPlayerChoiceOptionsBase & {
-      choiceType: 'setupUnits';
-      setupUnits: LegalSetupUnits;
-    });
+/**
+ * Every choice a player can be asked for has its options in the map, and the
+ * map offers no choice that does not exist.
+ */
+const _everyChoiceOffered: AssertExact<
+  keyof LegalPlayerChoiceOptionsByChoice,
+  PlayerChoiceType
+> = true;
 
-/** The one player who chooses, or `null` when both choose at once and no single player is meant. */
-function concretePlayer(playerSource: PlayerSource): PlayerSide | null {
+/**
+ * The options offered for one choice, or for any of several: the choice's
+ * name alongside what the map holds for it. A union of choices gives the
+ * union of their options, so the four commitments are one argument.
+ */
+export type LegalPlayerChoiceOptionsFor<C extends PlayerChoiceType> = {
+  [K in C]: { choiceType: K } & LegalPlayerChoiceOptionsByChoice[K];
+}[C];
+
+/** The options offered for whichever choice is expected. */
+export type LegalPlayerChoiceOptions =
+  LegalPlayerChoiceOptionsFor<PlayerChoiceType>;
+
+/**
+ * The one side asked for a choice that is not made by both at once. Only
+ * choosing cards is asked of both players (§4.1.1), and the router answers
+ * that choice before asking this.
+ *
+ * @throws When both players are asked, so no single side is named
+ */
+function getSingleSideAsked(playerSource: PlayerSource): PlayerSide {
   if (playerSource === 'bothPlayers') {
-    return null;
+    throw new Error(
+      'Only choosing cards is asked of both players, so no single side is asked',
+    );
   }
   return playerSource;
 }
@@ -177,11 +214,20 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     return null;
   }
 
-  const base: LegalPlayerChoiceOptionsBase = {
-    playerSource: expected.playerSource,
-  };
-  const player =
-    concretePlayer(expected.playerSource) ?? state.currentInitiative;
+  // Both players choose their cards at once, in secret (§4.1.1), until one
+  // has laid its card face down; offer the cards each may still play.
+  if (expected.choiceType === 'chooseCard') {
+    const chooseCard: LegalPlayerChoiceOptionsFor<'chooseCard'> = {
+      choiceType: 'chooseCard',
+      events: getLegalChooseCardOptions(state),
+      playerSource: expected.playerSource,
+    };
+    return chooseCard;
+  }
+
+  // Every other choice is asked of one side, named on every offer.
+  const player = getSingleSideAsked(expected.playerSource);
+  const base = { playerSource: player };
 
   switch (expected.choiceType) {
     case 'assignUnitSupport': {
@@ -194,15 +240,6 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         ...base,
         assignUnitSupport,
         choiceType: 'assignUnitSupport',
-      };
-    }
-    case 'chooseCard': {
-      // Both players choose a card from hand simultaneously and secretly
-      // (§4.1.1); offer the cards each may still play.
-      return {
-        ...base,
-        choiceType: 'chooseCard',
-        events: getLegalChooseCardOptions(state),
       };
     }
     case 'chooseMeleeResolution': {
