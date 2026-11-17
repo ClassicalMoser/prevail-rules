@@ -1,6 +1,6 @@
 import type { MoveDelta } from '@entities';
-import { isSamePlacement } from '@queries';
 import type { MoveResult } from '../explore';
+import { compareMoveSize, getSmallestMovePerEnding } from '../size';
 
 /**
  * The smallest of a retreat's legal endings (§9.1.3): the fewest facing
@@ -18,32 +18,25 @@ import type { MoveResult } from '../explore';
 export function getSmallestRetreats(endings: Set<MoveResult>): MoveDelta[][] {
   const all = [...endings];
 
-  // Fewest turns first: a retreat should not wheel when it can fall straight
-  // back.
-  const fewestTurns = Math.min(...all.map((ending) => ending.flexibilityUsed));
-  const leastTurned = all.filter(
-    (ending) => ending.flexibilityUsed === fewestTurns,
-  );
+  // With no legal ending there is no retreat to offer.
+  const [first, ...rest] = all;
+  if (first === undefined) {
+    return [];
+  }
 
-  // Then, among those, the fewest steps: no further back than it must go.
-  const fewestSteps = Math.min(
-    ...leastTurned.map((ending) => ending.speedUsed),
+  // Fewest turns first: a retreat should not wheel when it can fall straight
+  // back. Then, among those, the fewest steps: no further back than it must go.
+  const smallestSize = rest.reduce(
+    (smallestSoFar, ending) =>
+      compareMoveSize(ending, smallestSoFar) < 0 ? ending : smallestSoFar,
+    first,
   );
-  const smallest = leastTurned.filter(
-    (ending) => ending.speedUsed === fewestSteps,
+  const smallest = all.filter(
+    (ending) => compareMoveSize(ending, smallestSize) === 0,
   );
 
   // One path per ending: a second path to the same place is no choice.
-  const kept: MoveResult[] = [];
-  const paths: MoveDelta[][] = [];
-  for (const ending of smallest) {
-    const alreadyOffered = kept.some((other) =>
-      isSamePlacement(other.placement, ending.placement),
-    );
-    if (!alreadyOffered) {
-      kept.push(ending);
-      paths.push([...ending.path]);
-    }
-  }
+  const onePerEnding = getSmallestMovePerEnding(smallest);
+  const paths = onePerEnding.map((ending) => [...ending.path]);
   return paths;
 }
