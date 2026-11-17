@@ -17,5 +17,8 @@ export { getMeleeResolutionReadyForAttackCalculation } from './getMeleeResolutio
 // Whose commitment to the melee is next owed, first player first (§7.2.2).
 export { findPlayerOwingMeleeCommitment } from './findPlayerOwingMeleeCommitment';
 
+// One side's own commitment to the melee, whichever order it was asked in.
+export { getMeleeCommitmentForPlayer } from './getMeleeCommitmentForPlayer';
+
 // Spaces still waiting for a melee this phase.
 export { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';

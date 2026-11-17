@@ -48,6 +48,7 @@ export { getMeleeCombatants } from './meleeResolution';
 export type { MeleeCombatants } from './meleeResolution';
 export { findMeleeResolutionState } from './meleeResolution';
 export { findPlayerOwingMeleeCommitment } from './meleeResolution';
+export { getMeleeCommitmentForPlayer } from './meleeResolution';
 
 // Both commitments are done, and attack-apply has not opened yet.
 export { getMeleeResolutionReadyForAttackCalculation } from './meleeResolution';

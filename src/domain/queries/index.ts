@@ -1,3 +1,10 @@
+// An army list's cost, Morale, and spread of cards across initiative.
+export {
+  getArmyCost,
+  getArmyMorale,
+  countCommandCardsByInitiative,
+} from './army';
+
 // Attack totals and melee support.
 export { applyAttackValue, getMeleeSupportValue } from './attack';
 
@@ -37,6 +44,7 @@ export {
   areModifiersArraysEqual,
   areRestrictionsEqual,
   areCommandsEqual,
+  isSameUnitSupportKind,
   areUnitSupportsEqual,
   isSameCard,
   isSameCardValue,
@@ -99,6 +107,8 @@ export {
 // The other seat.
 export { getOtherPlayer } from './player';
 export { hasInitiative } from './player';
+// Whether a side is among those the next choice is asked of.
+export { isSideAsked } from './player';
 
 // Where the turn is, and the substep currently in progress.
 export {
@@ -130,6 +140,7 @@ export {
   getMeleeCombatants,
   findMeleeResolutionState,
   findPlayerOwingMeleeCommitment,
+  getMeleeCommitmentForPlayer,
   getMeleeResolutionReadyForAttackCalculation,
   getRemainingMeleeEngagements,
   findRallyResolutionState,

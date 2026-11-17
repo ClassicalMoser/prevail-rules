@@ -21,8 +21,10 @@ export {
   areRestrictionsEqual,
 } from './commandEquivalence';
 
-// The same card by id, and two copies of a card that agree in every part.
+// The same card by id, and two copies of a card that agree in every part;
+// unit support of the same kind, and the same unit support exactly.
 export {
+  isSameUnitSupportKind,
   areUnitSupportsEqual,
   isSameCard,
   isSameCardValue,
