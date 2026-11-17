@@ -1,4 +1,5 @@
 import type { UnitSupport } from '@entities';
+import { isSameUnitSupportKind } from './isSameUnitSupportKind';
 
 /**
  * Whether two cards grant the same unit support after a rally (§10.4): the
@@ -13,27 +14,10 @@ export function areUnitSupportsEqual(
   support1: UnitSupport,
   support2: UnitSupport,
 ): boolean {
-  if (support1.count !== support2.count) {
-    return false;
-  }
-  switch (support1.supportType) {
-    case 'generic': {
-      return support2.supportType === 'generic';
-    }
-    case 'trait': {
-      return (
-        support2.supportType === 'trait' && support1.trait === support2.trait
-      );
-    }
-    case 'unitType': {
-      return (
-        support2.supportType === 'unitType' &&
-        support1.unitTypeId === support2.unitTypeId
-      );
-    }
-    default: {
-      const unreachable: never = support1;
-      return unreachable;
-    }
-  }
+  // The same support holds the same number of places …
+  const sameCount = support1.count === support2.count;
+
+  // … for the same kind of unit: any unit, one trait, or one unit type.
+  const same = sameCount && isSameUnitSupportKind(support1, support2);
+  return same;
 }
