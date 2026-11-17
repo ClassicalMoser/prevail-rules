@@ -1,29 +1,8 @@
-import type { PlayerSide } from '@entities';
 import type { ValidationResult } from '@utils';
-import type {
-  ExpectedEventInfo,
-  PlayerChoiceEvent,
-  PlayerSource,
-} from '@events';
+import type { ExpectedEventInfo, PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
 import { findExpectedEvent } from '@expected';
-/**
- * Small helper function to compare a narrow PlayerSide to the broader PlayerSource.
- *
- * @param player - The player to check
- * @param source - The expected source
- * @returns True if the player matches the expected source, false otherwise
- */
-function playerMatchesExpectedSource(
-  player: PlayerSide,
-  source: PlayerSource,
-): boolean {
-  if (source === 'bothPlayers') {
-    return true;
-  }
-  return player === source;
-}
-
+import { isSideAsked } from '@queries';
 /**
  * Validates that the player choice event is expected.
  * Assumes that the player choice event is a strictly valid PlayerChoiceEvent.
@@ -65,7 +44,7 @@ export function validateExpectedChoice(
   }
 
   // Ensure that the player source matches the expected player source
-  if (!playerMatchesExpectedSource(event.player, expected.playerSource)) {
+  if (!isSideAsked(expected.playerSource, event.player)) {
     return {
       errorReason: `Expected input from ${expected.playerSource}, not ${event.player}`,
       result: false,
