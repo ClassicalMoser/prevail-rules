@@ -90,6 +90,8 @@ export type {
   ResolveMeleePhaseState,
   ResolveMeleePhaseStep,
 } from './phases';
+// Steps across phases: each phase's steps by phase, any step, and one value per step
+export type { PhaseStepsByPhase, PhaseStep, PhaseStepRecord } from './phases';
 
 // Substeps (command → melee → rally → shared outcomes → engagement)
 export {

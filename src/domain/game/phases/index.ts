@@ -51,3 +51,10 @@ export {
   phaseStateSchema,
 } from './phases';
 export type { Phase, PhaseState } from './phases';
+
+// Steps across phases: each phase's steps by phase, any step, and one value per step
+export type {
+  PhaseStepsByPhase,
+  PhaseStep,
+  PhaseStepRecord,
+} from './phaseSteps';
