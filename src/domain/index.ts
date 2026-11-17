@@ -623,6 +623,8 @@ export {
   getLegalRetreats,
   findLegalMoveDeltas,
   getLegalUnitMoves,
+  compareMoveSize,
+  getSmallestMovePerEnding,
   SETUP_ZONE_BACK_ROWS,
   SETUP_ZONE_EXCLUDED_SIDE_RANKS,
 } from '@legality';

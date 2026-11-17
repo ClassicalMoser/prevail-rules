@@ -79,4 +79,6 @@ export {
   getLegalRetreats,
   findLegalMoveDeltas,
   getLegalUnitMoves,
+  compareMoveSize,
+  getSmallestMovePerEnding,
 } from './unitMovement';

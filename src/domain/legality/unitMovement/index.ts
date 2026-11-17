@@ -11,6 +11,10 @@ export type { MoveResult } from './explore';
 // Every ending a unit may reach with an ordered move.
 export { getLegalUnitMoves } from './getLegalUnitMoves';
 
+// Which of two moves is smaller, and the smallest way to each ending a move
+// may reach: the plain way for a player who chose only where to end.
+export { compareMoveSize, getSmallestMovePerEnding } from './size';
+
 // The smallest legal fall-backs when combat forces a retreat.
 export { getLegalRetreats } from './retreat';
 
