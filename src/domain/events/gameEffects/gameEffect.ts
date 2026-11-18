@@ -109,8 +109,11 @@ export { gameEffects, type GameEffectType };
 export const gameEffectTypeSchema: z.ZodType<GameEffectType> =
   z.enum(gameEffects);
 
-/** Base union of all game effect events (unfiltered). */
-type GameEffectEventUnion =
+/**
+ * Any game effect: something the game records as the rules require, not a
+ * decision a player makes.
+ */
+export type GameEffectEvent =
   | CompleteAttackApplyEvent
   | RoundEndEvent
   | CompleteIssueCommandsPhaseEvent
@@ -142,20 +145,6 @@ type GameEffectEventUnion =
   | CompleteUnitMovementEvent
   | StartEngagementEvent
   | TriggerRoutFromRetreatEvent;
-
-/**
- * Game effect event type filtered by effect type.
- * Extracts only the event type that matches the specified effectType.
- */
-export type GameEffectEventOfType<
-  TGameEffectType extends GameEffectType = GameEffectType,
-> = Extract<GameEffectEventUnion, { effectType: TGameEffectType }>;
-
-/**
- * Any game effect: something the game records as the rules require, not a
- * decision a player makes.
- */
-export type GameEffectEvent = GameEffectEventOfType;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeAttackApplyEventSchema,

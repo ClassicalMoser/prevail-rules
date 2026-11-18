@@ -85,7 +85,7 @@ export type {
 } from './defenseResult';
 // Any game effect: the union, its schema, and the list of effect types.
 export { gameEffectEventSchema, gameEffectTypeSchema } from './gameEffect';
-export type { GameEffectEvent, GameEffectEventOfType } from './gameEffect';
+export type { GameEffectEvent } from './gameEffect';
 export { gameEffects, type GameEffectType } from './gameEffect';
 // The end of a unit's move and of a Move order; an engagement started, the flank turn, and a front-engaged defender's retreat.
 export {

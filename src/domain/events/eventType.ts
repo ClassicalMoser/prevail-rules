@@ -22,28 +22,11 @@ export {
 /** The type of an event. */
 export type EventType = (typeof eventTypes)[number];
 
-const _eventTypeSchemaObject = z.enum(eventTypes);
-type EventTypeSchemaType = z.infer<typeof _eventTypeSchemaObject>;
-
-// TODO(composition): tautological: EventType and the schema both come from eventTypes, so this cannot catch drift; _assertEventTypesMatchEvents below is the check that can.
-const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
-
 /** The schema for the type of an event. */
-export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
-
-/** Every event: a player's act, or a fact the game records. */
-export type EventUnion = PlayerChoiceEvent | GameEffectEvent;
-
-/**
- * The events of one kind: player choices, or game effects.
- */
-export type EventOfType<TEventType extends EventType = EventType> = Extract<
-  EventUnion,
-  { eventType: TEventType }
->;
+export const eventTypeSchema: z.ZodType<EventType> = z.enum(eventTypes);
 
 /** Any event, as a round's log records it. */
-export type Event = EventOfType;
+export type Event = PlayerChoiceEvent | GameEffectEvent;
 
 /**
  * Unconstrained union schema object for all events.

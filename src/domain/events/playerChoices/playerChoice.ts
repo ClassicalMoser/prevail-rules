@@ -66,15 +66,6 @@ export type PlayerChoiceEvent =
   | PerformRangedAttackEvent
   | SetupUnitsEvent;
 
-/**
- * Player choice event type filtered by choice type.
- * Extracts only the event type that matches the specified choiceType.
- */
-// TODO(composition): nothing uses this, and the playerChoices barrel does not export it (its twin GameEffectEventOfType builds GameEffectEvent). Settled by finding the caller that should narrow a choice by its type, or by removing it.
-export type PlayerChoiceEventOfType<
-  TPlayerChoiceType extends PlayerChoiceType = PlayerChoiceType,
-> = Extract<PlayerChoiceEvent, { choiceType: TPlayerChoiceType }>;
-
 const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   assignUnitSupportEventSchema,
   chooseCardEventSchema,
