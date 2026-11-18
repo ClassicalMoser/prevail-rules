@@ -37,6 +37,9 @@ export function getSmallestRetreats(endings: Set<MoveResult>): MoveDelta[][] {
 
   // One path per ending: a second path to the same place is no choice.
   const onePerEnding = getSmallestMovePerEnding(smallest);
-  const paths = onePerEnding.map((ending) => [...ending.path]);
+  const paths: MoveDelta[][] = [];
+  for (const ending of onePerEnding) {
+    paths.push([...ending.path]);
+  }
   return paths;
 }
