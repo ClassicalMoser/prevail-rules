@@ -15,6 +15,7 @@ export const GAME_OVER_EFFECT_TYPE = 'gameOver' as const;
  *
  * `generateGameOverEvent` writes it, and `applyGameOverEvent` applies it.
  */
+// TODO(misleading): a player with no units on the board also loses at once (§11.4); findGameOverWinner checks it through findWinnerFromNoUnits, but this lists only §11.1 and §11.2.
 export interface GameOverEvent {
   /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

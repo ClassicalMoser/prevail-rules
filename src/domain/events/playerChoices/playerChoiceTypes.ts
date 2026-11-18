@@ -6,6 +6,7 @@ import { z } from 'zod';
  * Kept separate from `playerChoice.ts` so `@entities` (via `expectedPlayerInput`) can import
  * `playerChoiceTypeSchema` without circular init while `playerChoice.ts` builds `z.union(...)`.
  */
+// TODO(misleading): expectedPlayerInput now lives in @events (expectedEvent/), not @entities. Settled by confirming whether the circular-init reason still holds.
 
 /**
  * Iterable list of valid player choices, written out by hand. `playerChoice.ts`

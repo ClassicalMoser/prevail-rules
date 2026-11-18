@@ -15,6 +15,7 @@ export type { ExpectedPlayerInput, PlayerSource } from './expectedEvent';
 export type { ExpectedGameEffect } from './expectedEvent';
 
 // Game-effect payloads, grouped by the folder they live in.
+// TODO(misleading): the groups below mix folders (completeAttackApply from resolveAttack/ sits with roundEnd from completePhase/). Settled by regrouping the exports, or by rewording this line.
 export {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   ROUND_END_EFFECT_TYPE,
@@ -119,6 +120,7 @@ export type {
 } from './gameEffects';
 
 // Player choices, in round order, then the choice union and projections.
+// TODO(misleading): not quite round order: a Move order asks commitToMovement before moveUnit, but moveUnit is listed first, ahead of the Shoot choices too. Settled by reordering the exports, or by rewording this line.
 export type { SetupUnitsEvent } from './playerChoices';
 export { setupUnitsEventSchema } from './playerChoices';
 export type { ChooseCardEvent } from './playerChoices';

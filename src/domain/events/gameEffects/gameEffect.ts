@@ -3,6 +3,7 @@
  *
  * ## Trust model (with apply handlers)
  * See `src/domain/transforms/stateTransitions/applyEffects/README.md`:
+ * TODO(misleading): a "see <document>" pointer, which STYLE.md rules out; the trust model it points to should be said here or named by code.
  * procedures build events from full state; **apply** trusts the log and maps payload + state to
  * the next state. Extra fields here usually mean “don’t re-scan the board / don’t guess which
  * subtree” when applying.
@@ -101,6 +102,7 @@ import {
 } from './defenseResult';
 import type { AssertExact } from '@utils';
 
+// The list of effect types lives in ruleValues; @events offers it beside the effects it names.
 export { gameEffects, type GameEffectType };
 
 /** The schema for a game effect type. */
@@ -190,6 +192,7 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
 ]);
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;
 
+/** The schema accepts exactly the effects the union names. */
 const _assertExactGameEffect: AssertExact<
   GameEffectEvent,
   GameEffectEventSchemaType

@@ -9,7 +9,12 @@ import type { CommitToRangedDefenseEvent } from './commitToRangedDefense';
  * before a move, by the shooter and then by its target in a shot, and by
  * each side in a melee. Each is its own choice, but all four are the same
  * decision: a card from hand, or none.
+ *
+ * commitToMovement serves two of those moments: the mover's, before it moves
+ * (§4.3.10), and the defender's, when a front engagement offers it the chance
+ * to fall back (§6.3.2).
  */
+// TODO(composition): the four commit events repeat one shape (the player, and committedCard: a card or null, §8.3) in interface and schema. Settled by a shared set of commitment fields, or by keeping them separate on purpose.
 export const commitmentChoiceTypes = [
   'commitToMovement',
   'commitToRangedAttack',

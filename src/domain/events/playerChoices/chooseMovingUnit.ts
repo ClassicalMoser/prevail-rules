@@ -16,6 +16,7 @@ export const CHOOSE_MOVING_UNIT_CHOICE_TYPE = 'chooseMovingUnit' as const;
  * `getLegalMoveUnits` enumerates the legal options, and
  * `applyChooseMovingUnitEvent` applies the choice.
  */
+// TODO(composition): the same fields as ChooseShooterEvent (the player, and the unit with where it stands); both name the next unit of an order (§4.3.10, §4.3.11). Settled by a shared shape, or by keeping them apart on purpose.
 export interface ChooseMovingUnitEvent {
   /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

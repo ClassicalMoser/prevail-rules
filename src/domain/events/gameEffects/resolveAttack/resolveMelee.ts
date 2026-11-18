@@ -25,6 +25,7 @@ export interface ResolveMeleeEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
+  // TODO(misleading): each result is named for the side whose unit suffers it, not the side striking, so whiteAttackResult is Black's attack. The JSDoc is right; the names read the other way. Settled by a name for the unit that takes it, or by keeping the JSDoc as the key.
   /** What Black's attack reached against White's unit. */
   whiteAttackResult: AttackResult;
   /** What White's attack reached against Black's unit. */

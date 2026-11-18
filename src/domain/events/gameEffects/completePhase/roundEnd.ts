@@ -8,6 +8,7 @@ import { z } from 'zod';
  * discriminators; transition details come from pure transforms and a simple
  * lookup against current state.
  */
+// TODO(misleading): round 0 (setup) also ends with this effect, with no cleanup phase before it; the interface below says so, this does not.
 export const ROUND_END_EFFECT_TYPE = 'roundEnd' as const;
 
 /**

@@ -15,6 +15,7 @@ export type PlayerSource = (typeof playerSources)[number];
  * state, board included, by `getLegalPlayerChoiceOptions`, and the choice
  * made is a {@link PlayerChoiceEvent}.
  */
+// TODO(misleading): PlayerChoiceEvent is not imported here, so the link does not resolve.
 export interface ExpectedPlayerInput {
   /** Marks a player choice, not a game effect. */
   actionType: 'playerChoice';

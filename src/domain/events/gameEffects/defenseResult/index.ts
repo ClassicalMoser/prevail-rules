@@ -9,6 +9,7 @@ export type { ResolveReverseEvent } from './resolveReverse';
 export { resolveReverseEventSchema } from './resolveReverse';
 
 // Defender routs, and where that rout came from.
+// TODO(misleading): resolveRout carries only the paying player and the penalty; where the rout came from (an attack's apply, a failed retreat, a rear engagement, a rally) is the state's to name, as resolveRout.ts says. Settled by dropping the clause, or by deciding the event should name it.
 export { RESOLVE_ROUT_EFFECT_TYPE } from './resolveRout';
 export type { ResolveRoutEvent } from './resolveRout';
 export { resolveRoutEventSchema } from './resolveRout';

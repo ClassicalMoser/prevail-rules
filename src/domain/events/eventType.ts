@@ -25,6 +25,7 @@ export type EventType = (typeof eventTypes)[number];
 const _eventTypeSchemaObject = z.enum(eventTypes);
 type EventTypeSchemaType = z.infer<typeof _eventTypeSchemaObject>;
 
+// TODO(composition): tautological: EventType and the schema both come from eventTypes, so this cannot catch drift; _assertEventTypesMatchEvents below is the check that can.
 const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
 
 /** The schema for the type of an event. */
@@ -77,6 +78,7 @@ export const eventSchema: z.ZodType<Event> = _eventSchemaObject;
  */
 export type ProjectedEvent = ProjectedPlayerChoiceEvent | GameEffectEvent;
 
+// The same two kinds as eventSchema, the choices in their projected form.
 const _projectedEventSchemaObject = z.union([
   projectedPlayerChoiceEventSchema,
   gameEffectEventSchema,

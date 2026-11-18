@@ -6,6 +6,7 @@
 export const eventTypes = ['playerChoice', 'gameEffect'] as const;
 
 /** The two kinds of event: a player's act, or a fact the game records. */
+// TODO(composition): the same type as EventType in eventType.ts under a second name, and nothing outside this package uses it. Settled by keeping one.
 export type EventTypeLiteral = (typeof eventTypes)[number];
 
 /** The kind of event a player's act is. */
