@@ -72,7 +72,7 @@ Decided 2026-11-14: an apply reads only where the game is, which slot it writes,
 
    In the working tree for the author's review (2026-11-15), with two new effect types named in `ruleValues/gameEffectTypes.ts` by leave:
    - Orders left: `completeIssuingCommands`. Issuing an order, or stopping, only spends or forfeits orders; once none is left, the expected engine asks for the effect, which begins carrying them out.
-   - A fallen commander's move: `skipLostCommanderMove`. The Move Commanders turns always run first then second (`getMoveCommandersStepAfter`); on the turn of a player whose commander is lost, the expected engine asks for the effect, which passes the turn on. `getMoveCommandersStepFrom` has no caller left and carries a mark.
+   - A fallen commander's move: `skipLostCommanderMove`. The Move Commanders turns always run first then second (`getMoveCommandersStepAfter`); on the turn of a player whose commander is lost, the expected engine asks for the effect, which passes the turn on. `getMoveCommandersStepFrom`, which jumped the step past such a turn, was removed (2026-11-17): its work moved to the effect.
 
    Allowed, since they branch on the event or the slot: a zero penalty closes the rout; no retreat paths means the defender stands; a retreat from a front engagement also ends it; what `settleRout` closes; the cleanup step after a rally (`getNextStepForResolveRally` maps one step to the next).
 
