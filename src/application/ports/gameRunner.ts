@@ -1,6 +1,11 @@
 import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
-import type { Game, GameState } from '@game';
+import type {
+  Game,
+  GameState,
+  GameStateVisibility,
+  ProjectedGame,
+} from '@game';
 import type { PortResponse } from './portResponse';
 
 /** What a game is between: its id, the two players, and the army each brings. */
@@ -38,4 +43,14 @@ export interface GameRunner {
     gameMode: GameModeName,
     playerSide: PlayerSide,
   ) => Promise<PortResponse<GameState>>;
+  /**
+   * Returns the whole game as one viewer may see it: the opening state, every
+   * event and the current state, in that view, and no armies. For a client
+   * joining or reloading a game in play.
+   */
+  requestGameRecord: (
+    gameId: string,
+    gameMode: GameModeName,
+    visibility: GameStateVisibility,
+  ) => Promise<PortResponse<ProjectedGame>>;
 }

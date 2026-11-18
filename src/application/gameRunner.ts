@@ -1,10 +1,11 @@
 import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameState, GameStateVisibility, ProjectedGame } from '@game';
 import type { EnginePorts, PortResponse } from './ports';
 import type { GameRunner, NewGame } from './ports/gameRunner';
 import { advanceUntilPlayerChoice as advanceUntilPlayerChoiceFunction } from './useCases/advanceUntilPlayerChoice';
 import { handlePlayerChoiceSubmission as handlePlayerChoiceSubmissionFunction } from './useCases/handlePlayerChoiceSubmission';
+import { requestGameRecord as requestGameRecordFunction } from './useCases/requestGameRecord';
 import { requestGameStateSnapshot as requestGameStateSnapshotFunction } from './useCases/requestGameStateSnapshot';
 import { startNewGame as startNewGameFunction } from './useCases/startNewGame';
 
@@ -40,9 +41,17 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
   ): Promise<PortResponse<GameState>> =>
     requestGameStateSnapshotFunction(gameId, gameMode, playerSide, ports);
 
+  const requestGameRecord = (
+    gameId: string,
+    gameMode: GameModeName,
+    visibility: GameStateVisibility,
+  ): Promise<PortResponse<ProjectedGame>> =>
+    requestGameRecordFunction(gameId, gameMode, visibility, ports);
+
   return {
     advanceUntilPlayerChoice,
     handlePlayerChoiceSubmission,
+    requestGameRecord,
     requestGameStateSnapshot,
     startNewGame,
   };
