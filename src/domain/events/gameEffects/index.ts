@@ -2,7 +2,7 @@
  * Re-exports every game-effect module for `@events` consumers.
  *
  * **Layout** matches [`applyEffects/`](../../transforms/stateTransitions/applyEffects/README.md)
- * and [`procedures/`](../../procedures/README.md): `cards/`, `completePhase/`, `defenseResult/`,
+ * and [`procedures/`](../../procedures/README.md): `cards/`, `sequencing/`, `defenseResult/`,
  * `movement/`, `resolveAttack/`, plus root [`gameEffect.ts`](./gameEffect.ts) (discriminated union).
  *
  * **Design notes** (trust model, procedure-filled fields, `AssertExact` + Zod): see applyEffects
@@ -47,7 +47,7 @@ export {
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
   completeResolveMeleePhaseEventSchema,
-} from './completePhase';
+} from './sequencing';
 export type {
   RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
@@ -56,7 +56,7 @@ export type {
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
   CompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from './sequencing';
 // Retreat, reverse and rout, triggering a rout from a retreat, and opening each on an attack's apply.
 export {
   OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,

@@ -16,7 +16,7 @@ import {
   generateCompleteMoveCommandersPhaseEvent,
   generateCompletePlayCardsPhaseEvent,
   generateCompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from './sequencing';
 import {
   generateOpenRetreatFromAttackApplyEvent,
   generateOpenReverseFromAttackApplyEvent,

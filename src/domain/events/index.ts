@@ -15,7 +15,7 @@ export type { ExpectedPlayerInput, PlayerSource } from './expectedEvent';
 export type { ExpectedGameEffect } from './expectedEvent';
 
 // Game-effect payloads, grouped by the folder they live in.
-// TODO(misleading): the groups below mix folders (completeAttackApply from resolveAttack/ sits with roundEnd from completePhase/). Settled by regrouping the exports, or by rewording this line.
+// TODO(misleading): the groups below mix folders (completeAttackApply from resolveAttack/ sits with roundEnd from sequencing/). Settled by regrouping the exports, or by rewording this line.
 export {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   ROUND_END_EFFECT_TYPE,

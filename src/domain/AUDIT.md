@@ -139,7 +139,7 @@ Walk folders in IDE order (alphabetical).
 
 - [ ] `procedures/`
   - [ ] `cards/`
-  - [ ] `completePhase/`
+  - [ ] `sequencing/`
   - [ ] `defenseResult/`
   - [ ] `movement/` — path on the mover (2026-10-12 notes)
   - [ ] `resolveAttack/`

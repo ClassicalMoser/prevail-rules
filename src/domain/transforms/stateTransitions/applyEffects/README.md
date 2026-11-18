@@ -2,7 +2,7 @@
 
 Handlers in this folder apply **game effect events** to `GameState`. They are routed by [`applyGameEffectEvent`](../applyGameEffectEvent.ts).
 
-**Event shapes** live under [`events/gameEffects/`](../../../events/gameEffects/) with the **same subfolder names** as this package (`cards/`, `completePhase/`, `defenseResult/`, `movement/`, `resolveAttack/`). Each per-effect module documents _why_ fields exist (procedure-derived snapshots, subtree tags, etc.). Start from [`gameEffect.ts`](../../../events/gameEffects/gameEffect.ts) for the full discriminated union.
+**Event shapes** live under [`events/gameEffects/`](../../../events/gameEffects/) with the **same subfolder names** as this package (`cards/`, `sequencing/`, `defenseResult/`, `movement/`, `resolveAttack/`). Each per-effect module documents _why_ fields exist (procedure-derived snapshots, subtree tags, etc.). Start from [`gameEffect.ts`](../../../events/gameEffects/gameEffect.ts) for the full discriminated union.
 
 ## Folder layout
 
@@ -11,7 +11,7 @@ Each subfolder has a small `index.ts` barrel; the **only** supported entry for t
 | Folder                               | Responsibility                                                                                       |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
 | [`cards/`](./cards/)                 | Discard / reveal played cards, resolve initiative, rally, unit-support consequences                  |
-| [`completePhase/`](./completePhase/) | Phase-completion effects (cleanup, issue commands, move commanders, play cards, resolve melee phase) |
+| [`sequencing/`](./sequencing/)       | Phase-completion effects (cleanup, issue commands, move commanders, play cards, resolve melee phase) |
 | [`defenseResult/`](./defenseResult/) | Retreat, reverse, rout, trigger rout from retreat                                                    |
 | [`movement/`](./movement/)           | Complete unit movement, start engagement, flank engagement, engage-retreat option                    |
 | [`resolveAttack/`](./resolveAttack/) | Resolve melee / ranged attack, complete attack-apply and related command-resolution completes        |

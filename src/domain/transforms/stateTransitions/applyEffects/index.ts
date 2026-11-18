@@ -13,7 +13,7 @@ export {
   applyCompleteMoveCommandersPhaseEvent,
   applyCompletePlayCardsPhaseEvent,
   applyCompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from './sequencing';
 export {
   applyOpenRetreatFromAttackApplyEvent,
   applyOpenReverseFromAttackApplyEvent,

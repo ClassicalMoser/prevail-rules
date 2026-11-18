@@ -31,7 +31,7 @@ import type {
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
   CompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from './sequencing';
 import type {
   OpenRetreatFromAttackApplyEvent,
   OpenReverseFromAttackApplyEvent,
@@ -74,7 +74,7 @@ import {
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
   completeResolveMeleePhaseEventSchema,
-} from './completePhase';
+} from './sequencing';
 import {
   completeMovementCommandEventSchema,
   completeUnitMovementEventSchema,

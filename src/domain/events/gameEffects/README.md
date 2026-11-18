@@ -7,7 +7,7 @@ Zod schemas and TypeScript types for each effect, discriminated in [`gameEffect.
 | Folder                               | Event modules                                                                                                                                     |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`cards/`](./cards/)                 | Discard played cards, reveal cards, initiative, rally, game over                                                                                  |
-| [`completePhase/`](./completePhase/) | The end of each phase from Play Cards to Resolve Melee, the end of a player's issuing, a fallen commander's turn passed over, and the round's end |
+| [`sequencing/`](./sequencing/)       | The end of each phase from Play Cards to Resolve Melee, the end of a player's issuing, a fallen commander's turn passed over, and the round's end |
 | [`defenseResult/`](./defenseResult/) | Retreat, reverse, rout, trigger rout from retreat, and opening each on an attack's apply                                                          |
 | [`movement/`](./movement/)           | The end of a unit's move and of a Move order; starting an engagement, the flank turn, and a front-engaged defender's retreat option and retreat   |
 | [`resolveAttack/`](./resolveAttack/) | A melee and a shot measured; the end of an attack's results, of a melee, of a shot, and of a Shoot order                                          |
