@@ -20,6 +20,9 @@ export { getCleanupPhaseState } from './phases';
 // The step of that phase.
 export { getCurrentStep } from './getCurrentStep';
 
+// Where play stands inside the step, outermost substep first.
+export { getSubstepsInProgress } from './getSubstepsInProgress';
+
 // Which side holds initiative.
 export { getCurrentInitiative } from './getCurrentInitiative';
 

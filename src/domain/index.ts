@@ -555,6 +555,7 @@ export {
   getRangedAttackApplyState,
   getCleanupPhaseState,
   getCurrentCommandResolutionState,
+  getSubstepsInProgress,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   findNextMeleeAttackApplyToClose,

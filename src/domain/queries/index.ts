@@ -128,6 +128,7 @@ export {
   getResolveMeleePhaseState,
   getCleanupPhaseState,
   getCurrentStep,
+  getSubstepsInProgress,
   getCurrentInitiative,
   getCurrentEventStream,
   getCurrentCommandResolutionState,
