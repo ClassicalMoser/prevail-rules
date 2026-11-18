@@ -36,3 +36,6 @@ export { getMatchingCommand } from './getMatchingCommand';
 
 // Modifiers from a commitment only after it is completed.
 export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
+
+// Whether a choice is one of the four moments a card may be committed.
+export { isCommitmentChoiceType } from './isCommitmentChoiceType';

@@ -493,6 +493,7 @@ export {
   getHiddenPlayerCardState,
   getRightFacing,
   modifiersFromCompletedCommitment,
+  isCommitmentChoiceType,
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   unitMatchesSupport,

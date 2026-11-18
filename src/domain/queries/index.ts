@@ -59,6 +59,7 @@ export {
   findOwnedPlayerCardState,
   getOwnedPlayerCardState,
   modifiersFromCompletedCommitment,
+  isCommitmentChoiceType,
 } from './card';
 
 // Front, flank, and rear, including movement engagements.
