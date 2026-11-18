@@ -18,6 +18,7 @@ export {
   getBoardCoordinatesWithEngagedUnits,
   getBoardSpace,
   findCommanderSpace,
+  getCommanderSpace,
   getDiagonallyAdjacentSpaces,
   getFlankingSpaces,
   findForwardSpace,

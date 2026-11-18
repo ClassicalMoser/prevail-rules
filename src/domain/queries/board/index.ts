@@ -50,6 +50,8 @@ export { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlace
 
 // Space occupied by a side's commander.
 export { findCommanderSpace } from './findCommanderSpace';
+// The same, insisting the commander is on the board.
+export { getCommanderSpace } from './getCommanderSpace';
 
 // Whether the diagonal between two spaces is free of enemy units.
 export { diagonalIsClear } from './diagonalIsClear';
