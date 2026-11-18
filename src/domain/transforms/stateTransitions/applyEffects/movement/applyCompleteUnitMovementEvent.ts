@@ -11,7 +11,7 @@ import { throwIfPending } from '@utils';
 
 /**
  * Finishes a movement command-resolution slice:
- * ensures the mover is on the target space. A front or flank engagement
+ * ensures the mover is on the target space. A front engagement
  * leaves the mover on its starting space until now, so it is moved onto the
  * defender here; the movement's record of where the mover stands says which.
  * Clears CRS back to `pending`. Whether
@@ -32,12 +32,12 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
   );
   const { movingUnit } = movementState;
 
-  // The movement records where the mover stands. Open ground and a rear
-  // engagement have already set it down; a front or flank engagement left
-  // it on its start space until now.
+  // The movement records where the mover stands. Open ground and a rear or
+  // flank engagement have already set it down; a front engagement left it
+  // on its start space until now.
   const arrived = isSamePlacement(movingUnit.placement, targetPlacement);
 
-  // A front or flank engagement places the mover only now; a commander
+  // A front engagement places the mover only now; a commander
   // riding with it comes off the start space with it (§4.3.10).
   const boardWithMover = arrived
     ? state.boardState
