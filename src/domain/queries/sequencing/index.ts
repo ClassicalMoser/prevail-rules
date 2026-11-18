@@ -26,9 +26,6 @@ export { getSubstepsInProgress } from './getSubstepsInProgress';
 // Which side holds initiative.
 export { getCurrentInitiative } from './getCurrentInitiative';
 
-// Events applied so far this round.
-export { getCurrentEventStream } from './getCurrentEventStream';
-
 // The command resolution in progress.
 export { getCurrentCommandResolutionState } from './commandResolution';
 

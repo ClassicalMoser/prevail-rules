@@ -130,7 +130,6 @@ export {
   getCurrentStep,
   getSubstepsInProgress,
   getCurrentInitiative,
-  getCurrentEventStream,
   getCurrentCommandResolutionState,
   getMovementResolutionState,
   getRangedAttackResolutionState,

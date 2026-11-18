@@ -1,15 +1,10 @@
 import { tempCommandCards } from '@sampleValues';
-import type { Event } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createCleanupPhaseState, updateCardState } from '@testing';
 
-import {
-  updatePhaseState,
-  updateRoundEventStream,
-  updateCurrentInitiative,
-} from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
 
@@ -28,7 +23,6 @@ describe('getLegalChooseRallyEvent function', () => {
   function stateChooseRally(options: {
     step: 'firstPlayerChooseRally' | 'secondPlayerChooseRally';
     initiative?: 'black' | 'white';
-    eventStream?: readonly Event[];
     emptyPlayedPile?: boolean;
   }): GameState {
     const initiated = updateCurrentInitiative(
@@ -44,10 +38,7 @@ describe('getLegalChooseRallyEvent function', () => {
       white: { ...initiated.cardState.white, played },
     });
     const phase = createCleanupPhaseState({ step: options.step });
-    let state = updatePhaseState(base, phase);
-    if (options.eventStream) {
-      state = updateRoundEventStream(state, options.eventStream);
-    }
+    const state = updatePhaseState(base, phase);
     return state;
   }
 

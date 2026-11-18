@@ -65,7 +65,6 @@ export {
   markPhaseAsComplete,
   updateCurrentInitiative,
   updatePhaseState,
-  updateRoundEventStream,
   updateRoundState,
   updateWinner,
 } from './state';

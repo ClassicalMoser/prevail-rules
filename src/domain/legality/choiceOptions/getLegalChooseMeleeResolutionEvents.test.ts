@@ -1,6 +1,5 @@
 import type { Coordinate } from '@entities';
 import type { GameState } from '@game';
-import type { Event } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
@@ -8,11 +7,7 @@ import {
   createResolveMeleePhaseState,
 } from '@testing';
 
-import {
-  updatePhaseState,
-  updateRoundEventStream,
-  updateCurrentInitiative,
-} from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 import { createEmptyGameState } from '@factories';
 
 import { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
@@ -28,7 +23,6 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
   function stateChoosingMeleeEngagement(options?: {
     initiative?: 'black' | 'white';
     remaining?: Iterable<Coordinate>;
-    eventStream?: readonly Event[];
   }): GameState {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -41,10 +35,7 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
       currentMeleeResolutionState: 'pending',
       remainingEngagements: [...remaining],
     });
-    let state = updatePhaseState(base, phase);
-    if (options?.eventStream) {
-      state = updateRoundEventStream(state, options.eventStream);
-    }
+    const state = updatePhaseState(base, phase);
     return state;
   }
 

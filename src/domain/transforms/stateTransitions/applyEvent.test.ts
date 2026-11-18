@@ -66,7 +66,7 @@ function revealingCards(): GameState {
  * changes the state, and the event joins the round's log.
  */
 describe('applyEvent function', () => {
-  it("applies a player's choice and adds it to the round's log", () => {
+  it("applies a player's choice", () => {
     // Black lays down its card.
     const event = createChooseCardEvent({
       card: tempCommandCards[0],
@@ -77,10 +77,9 @@ describe('applyEvent function', () => {
 
     // The card waits face down, and the choice is on record.
     expect(result.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
-    expect(result.currentRoundState.events).toStrictEqual([event]);
   });
 
-  it("applies a game effect and adds it to the round's log", () => {
+  it('applies a game effect', () => {
     // Both cards are turned over.
     const event: RevealCardsEvent = {
       black: tempCommandCards[0],
@@ -94,28 +93,6 @@ describe('applyEvent function', () => {
     // Both cards are now in play, and the reveal is on record.
     expect(result.cardState.black.inPlay).toBe(tempCommandCards[0]);
     expect(result.cardState.white.inPlay).toBe(tempCommandCards[1]);
-    expect(result.currentRoundState.events).toStrictEqual([event]);
-  });
-
-  it("keeps the round's log in the order events were applied", () => {
-    // Black chooses, then White.
-    const blackChooses = createChooseCardEvent({
-      card: tempCommandCards[0],
-      player: 'black',
-    });
-    const whiteChooses = createChooseCardEvent({
-      card: tempCommandCards[1],
-      player: 'white',
-    });
-
-    const afterBlack = applyEvent(blackChooses, choosingCards());
-    const afterWhite = applyEvent(whiteChooses, afterBlack);
-
-    // Both choices are on record, Black's first.
-    expect(afterWhite.currentRoundState.events).toStrictEqual([
-      blackChooses,
-      whiteChooses,
-    ]);
   });
 
   it('throws for an event that is neither a choice nor an effect', () => {

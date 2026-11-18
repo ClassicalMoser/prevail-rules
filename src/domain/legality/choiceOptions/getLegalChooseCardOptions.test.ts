@@ -1,5 +1,4 @@
 import { tempCommandCards } from '@sampleValues';
-import type { Event } from '@events';
 import type {
   BlackSeenGameState,
   GameState,
@@ -9,7 +8,7 @@ import type {
 import { PLAY_CARDS_PHASE } from '@game';
 import { updateCardState } from '@testing';
 
-import { updatePhaseState, updateRoundEventStream } from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 
@@ -242,22 +241,13 @@ describe('getLegalChooseCardOptions function', () => {
 
     it("offers only white's cards on white's seat once black has chosen", () => {
       const base = stateChooseCardsBothPending();
-      const prior: readonly Event[] = [
-        {
-          card: tempCommandCards[2],
-          choiceType: 'chooseCard',
-          eventType: 'playerChoice',
-          player: 'black',
-        },
-      ];
-      const withEvents = updateRoundEventStream(base, prior);
       const state: WhiteSeenGameState = {
-        ...withEvents,
+        ...base,
         visibility: 'whiteSeen',
         cardState: {
           visibility: 'whiteSeen',
           white: {
-            ...withEvents.cardState.white,
+            ...base.cardState.white,
             awaitingPlay: null,
             inHand: [tempCommandCards[3]],
           },
