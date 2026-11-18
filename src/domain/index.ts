@@ -496,6 +496,7 @@ export {
   isCommitmentChoiceType,
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
+  getCommanderSpace,
   unitMatchesSupport,
   findPlayerUnitWithPosition,
   hasEngagedUnits,
