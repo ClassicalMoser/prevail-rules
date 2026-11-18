@@ -7,6 +7,7 @@ import type {
   PortResponse,
 } from '@application/ports';
 import { createInitialGameState } from '@factories';
+import { notifySubscribers } from '@application/composable';
 import { parseLegalGameForMode } from '../utils/parseLegalGame';
 
 /**
@@ -21,7 +22,7 @@ import { parseLegalGameForMode } from '../utils/parseLegalGame';
  * @param gameMode - The mode to play
  * @param newGame - The game's id, its two players and their armies
  * @param ports - The process-level dependency context
- * @returns Success once the game is saved and its subscribers told, or the reason it was not
+ * @returns Success once the game is saved, or the reason it was not; a subscriber that fails is told through its `onError`
  */
 
 export const startNewGame = async (
@@ -61,24 +62,11 @@ export const startNewGame = async (
     gameMode,
     gameState: game.gameState,
   };
-  for (const subscriber of ports.gameStateSubscribers) {
-    if (
-      subscriber.gameId !== change.gameId ||
-      subscriber.gameMode !== change.gameMode
-    ) {
-      continue;
-    }
-    try {
-      subscriber.onGameStateChange(change);
-    } catch (error: unknown) {
-      const err = error instanceof Error ? error : new Error(String(error));
-      subscriber.onError(err);
-      return {
-        errorReason: err.message,
-        result: false,
-      };
-    }
-  }
+  // The game is saved, so it has started. Its subscribers are told now, and
+  // none of them can undo that.
+  notifySubscribers(change, ports.gameStateSubscribers);
+
+  // The game has started.
   return {
     data: undefined,
     result: true,

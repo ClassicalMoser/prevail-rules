@@ -7,11 +7,13 @@ import type {
   PortResponse,
 } from '@application/ports';
 import type { GameModeName } from '@entities';
+import { notifySubscribers } from './notifySubscribers';
 
 /**
  * Records an event the game has taken: it joins the end of the stored game's
  * stream, the state it led to becomes the game's state, and the game's
- * subscribers are told of the new state.
+ * subscribers are told of the new state. A subscriber that fails is told
+ * through its `onError`; the event stays recorded and the answer is success.
  *
  * @param gameId - The ID of the game
  * @param gameMode - The mode of the game, which subscribers are matched on
@@ -19,7 +21,7 @@ import type { GameModeName } from '@entities';
  * @param gameState - The state that event led to
  * @param gameStorage - The game storage to record it in
  * @param gameStateSubscribers - The game state subscribers to notify
- * @returns The result of the operation
+ * @returns Success once the event is stored, or the storage's reason it was not
  */
 export async function recordEvent(
   gameId: string,
@@ -36,26 +38,17 @@ export async function recordEvent(
       result: false,
     };
   }
+
+  // The event is in the game's stream, so the game has taken it. Its
+  // subscribers are told now, and none of them can undo that.
   const change: GameStateChange = {
     gameId,
     gameMode,
     gameState,
   };
-  for (const subscriber of gameStateSubscribers) {
-    if (subscriber.gameId !== gameId) {
-      continue;
-    }
-    try {
-      subscriber.onGameStateChange(change);
-    } catch (error: unknown) {
-      const err = error instanceof Error ? error : new Error(String(error));
-      subscriber.onError(err);
-      return {
-        errorReason: err.message,
-        result: false,
-      };
-    }
-  }
+  notifySubscribers(change, gameStateSubscribers);
+
+  // The event is recorded.
   return {
     data: undefined,
     result: true,
