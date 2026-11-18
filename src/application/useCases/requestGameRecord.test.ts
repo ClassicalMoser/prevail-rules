@@ -83,6 +83,7 @@ describe('requestGameRecord function', () => {
       requestGameRecord(gameId, 'mini', 'spectator', ports),
     ).resolves.toStrictEqual({
       errorReason: `Game ${gameId} not found`,
+      failure: 'gameNotFound',
       result: false,
     });
   });

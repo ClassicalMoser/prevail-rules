@@ -94,6 +94,7 @@ describe('advanceEffects function', () => {
     // A finished game owes nothing, which is an answer, not a fault.
     expect(result).toStrictEqual({
       errorReason: 'The game is already over',
+      failure: 'gameOver',
       result: false,
     });
 

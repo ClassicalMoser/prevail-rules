@@ -1,5 +1,5 @@
 import type { AuthoritativeGameState } from '@game';
-import type { GameStorage, PortResponse } from '@application/ports';
+import type { GameStorage, RunnerResponse } from '@application/ports';
 import type { GameModeName } from '@entities';
 import { getGame } from './getGame';
 
@@ -16,7 +16,7 @@ export async function getGameState(
   gameId: string,
   gameMode: GameModeName,
   gameStorage: GameStorage,
-): Promise<PortResponse<AuthoritativeGameState>> {
+): Promise<RunnerResponse<AuthoritativeGameState>> {
   const game = await getGame(gameId, gameMode, gameStorage);
   if (!game.result) {
     return game;

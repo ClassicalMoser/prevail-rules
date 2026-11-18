@@ -5,10 +5,11 @@ import type {
   GameStateChange,
   NewGame,
   PortResponse,
+  RunnerResponse,
 } from '@application/ports';
 import { createInitialGameState } from '@factories';
 import { notifySubscribers } from '@application/composable';
-import { parseLegalGameForMode } from '../utils/parseLegalGame';
+import { parseLegalGameForMode, storageFailure } from '@application/utils';
 
 /**
  * Starts a game in `gameMode` for the players and armies given: the mode's
@@ -29,7 +30,7 @@ export const startNewGame = async (
   gameMode: GameModeName,
   newGame: NewGame,
   ports: EnginePorts,
-): Promise<PortResponse<void>> => {
+): Promise<RunnerResponse<void>> => {
   // The mode catalog says which board it is played on; the game is then
   // checked against the same catalog by `parseLegalGameForMode`. Both armies
   // start in reserve, to be placed in round 0.
@@ -50,11 +51,10 @@ export const startNewGame = async (
   const saveResult: PortResponse<void> =
     await ports.gameStorage.saveNewGame(game);
 
+  // The storage would not keep the game, so it has not started.
   if (!saveResult.result) {
-    return {
-      errorReason: saveResult.errorReason,
-      result: false,
-    };
+    const refused = storageFailure(saveResult);
+    return refused;
   }
 
   const change: GameStateChange = {

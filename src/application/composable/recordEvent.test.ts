@@ -108,6 +108,7 @@ describe('recordEvent function', () => {
     // The storage's refusal is the answer, and nothing changed to announce.
     expect(result).toStrictEqual({
       errorReason: 'Game game-1 not found',
+      failure: 'storage',
       result: false,
     });
     expect(changes).toStrictEqual([]);

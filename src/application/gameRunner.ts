@@ -1,7 +1,7 @@
 import type { GameModeName } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState, GameStateVisibility, ProjectedGame } from '@game';
-import type { EnginePorts, PortResponse } from './ports';
+import type { EnginePorts, RunnerResponse } from './ports';
 import type { GameRunner, NewGame } from './ports/gameRunner';
 import { advanceUntilPlayerChoice as advanceUntilPlayerChoiceFunction } from './useCases/advanceUntilPlayerChoice';
 import { handlePlayerChoiceSubmission as handlePlayerChoiceSubmissionFunction } from './useCases/handlePlayerChoiceSubmission';
@@ -18,34 +18,34 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
   const startNewGame = (
     gameMode: GameModeName,
     newGame: NewGame,
-  ): Promise<PortResponse<void>> =>
+  ): Promise<RunnerResponse<void>> =>
     startNewGameFunction(gameMode, newGame, ports);
 
   const handlePlayerChoiceSubmission = (
     gameId: string,
     gameMode: GameModeName,
     playerChoice: PlayerChoiceEvent,
-  ): Promise<PortResponse<void>> =>
+  ): Promise<RunnerResponse<void>> =>
     handlePlayerChoiceSubmissionFunction(gameId, gameMode, playerChoice, ports);
 
   const advanceUntilPlayerChoice = (
     gameId: string,
     gameMode: GameModeName,
-  ): Promise<PortResponse<void>> =>
+  ): Promise<RunnerResponse<void>> =>
     advanceUntilPlayerChoiceFunction(gameId, gameMode, ports);
 
   const requestGameStateSnapshot = (
     gameId: string,
     gameMode: GameModeName,
     visibility: GameStateVisibility,
-  ): Promise<PortResponse<GameState>> =>
+  ): Promise<RunnerResponse<GameState>> =>
     requestGameStateSnapshotFunction(gameId, gameMode, visibility, ports);
 
   const requestGameRecord = (
     gameId: string,
     gameMode: GameModeName,
     visibility: GameStateVisibility,
-  ): Promise<PortResponse<ProjectedGame>> =>
+  ): Promise<RunnerResponse<ProjectedGame>> =>
     requestGameRecordFunction(gameId, gameMode, visibility, ports);
 
   return {

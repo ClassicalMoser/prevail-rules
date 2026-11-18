@@ -1,6 +1,6 @@
 import type { GameEffectEvent } from '@events';
 import type { AuthoritativeGameState } from '@game';
-import type { EnginePorts, PortResponse } from '@application/ports';
+import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { generateEventFromProcedure } from '@procedures';
 import { findExpectedEvent } from '@expected';
 import { processEvent } from './processEvent';
@@ -25,12 +25,13 @@ export async function advanceEffects(
   gameMode: GameModeName,
   gameState: AuthoritativeGameState,
   ports: EnginePorts,
-): Promise<PortResponse<void>> {
+): Promise<RunnerResponse<void>> {
   let currentGameState = gameState;
   let expectedEvent = findExpectedEvent(gameState);
   if (expectedEvent === undefined) {
-    const alreadyOver: PortResponse<void> = {
+    const alreadyOver: RunnerResponse<void> = {
       errorReason: 'The game is already over',
+      failure: 'gameOver',
       result: false,
     };
     return alreadyOver;

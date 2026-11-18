@@ -11,4 +11,14 @@ export type { GameRunner, NewGame } from './gameRunner';
 export type { GameStateChange } from './gameStateChange';
 export type { GameStateSubscriber } from './gameStateSubscriber';
 export type { GameStorage } from './gameStorage';
-export type { PortResponse } from './portResponse';
+export type {
+  PortFailureResponse,
+  PortResponse,
+  PortSuccessResponse,
+} from './portResponse';
+export type {
+  RunnerFailure,
+  RunnerFailureResponse,
+  RunnerResponse,
+} from './runnerResponse';
+export { runnerFailures, runnerFailureSchema } from './runnerResponse';

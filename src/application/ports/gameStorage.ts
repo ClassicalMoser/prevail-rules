@@ -10,6 +10,12 @@ import type { GameModeName } from '@entities';
  * {@link Game} before anything drives rules with it.
  */
 export interface GameStorage {
+  /**
+   * Answers the game stored under an id. An id with no game is answered as a
+   * success with no data (or with nothing), which the runner names
+   * `gameNotFound`; a failure is for the storage itself failing, and the
+   * runner names it `storage`, keeping the reason given here.
+   */
   getGame: (
     gameId: string,
     gameMode: GameModeName,

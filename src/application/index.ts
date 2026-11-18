@@ -13,5 +13,12 @@ export type {
   GameStateSubscriber,
   GameStorage,
   NewGame,
+  PortFailureResponse,
   PortResponse,
+  PortSuccessResponse,
+  RunnerFailure,
+  RunnerFailureResponse,
+  RunnerResponse,
 } from './ports';
+// The causes a runner failure may name, and their schema for the wire.
+export { runnerFailures, runnerFailureSchema } from './ports';

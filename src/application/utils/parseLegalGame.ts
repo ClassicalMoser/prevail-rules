@@ -1,6 +1,6 @@
 import type { GameModeName } from '@entities';
 import type { Game } from '@game';
-import type { PortResponse } from '@application/ports';
+import type { RunnerResponse } from '@application/ports';
 import { legalGameSchema } from '@validation';
 import { z } from 'zod';
 
@@ -17,17 +17,19 @@ import { z } from 'zod';
 export function parseLegalGameForMode(
   gameMode: GameModeName,
   data: unknown,
-): PortResponse<Game> {
+): RunnerResponse<Game> {
   const parsed = legalGameSchema.safeParse(data);
   if (!parsed.success) {
     return {
       errorReason: `Not a legal game: ${z.prettifyError(parsed.error)}`,
+      failure: 'illegalGame',
       result: false,
     };
   }
   if (parsed.data.gameMode !== gameMode) {
     return {
       errorReason: `Game mode mismatch: expected ${gameMode}, got ${parsed.data.gameMode}`,
+      failure: 'gameModeMismatch',
       result: false,
     };
   }

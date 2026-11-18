@@ -1,6 +1,6 @@
 import type { GameModeName } from '@entities';
 import type { GameStateVisibility, ProjectedGame } from '@game';
-import type { EnginePorts, PortResponse } from '@application/ports';
+import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { getGame } from '@application/composable';
 import { projectGameForVisibility } from '@transforms';
 
@@ -19,14 +19,14 @@ import { projectGameForVisibility } from '@transforms';
  * @param gameMode - The mode it is played in
  * @param visibility - What the viewer may see
  * @param ports - The process-level dependency context
- * @returns The game in that viewer's view, or the reason it could not be loaded
+ * @returns The game in that viewer's view, or the cause and reason it could not be loaded
  */
 export async function requestGameRecord(
   gameId: string,
   gameMode: GameModeName,
   visibility: GameStateVisibility,
   ports: EnginePorts,
-): Promise<PortResponse<ProjectedGame>> {
+): Promise<RunnerResponse<ProjectedGame>> {
   // The stored game is read as a legal one, and a missing or illegal game is
   // refused with its reason before anything is projected.
   const game = await getGame(gameId, gameMode, ports.gameStorage);

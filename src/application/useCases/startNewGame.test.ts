@@ -121,6 +121,7 @@ describe('startNewGame function', () => {
 
     expect(outcome).toStrictEqual({
       errorReason: 'Game already exists',
+      failure: 'storage',
       result: false,
     });
   });
@@ -196,6 +197,7 @@ describe('startNewGame function', () => {
 
     expect(outcome).toStrictEqual({
       errorReason: expect.stringContaining('total morale value of 10'),
+      failure: 'illegalGame',
       result: false,
     });
     expect(ports.gameStorage.saveNewGame).not.toHaveBeenCalled();
@@ -245,6 +247,7 @@ describe('startNewGame function', () => {
 
     expect(outcome).toStrictEqual({
       errorReason: expect.stringContaining('total morale value of 20'),
+      failure: 'illegalGame',
       result: false,
     });
   });

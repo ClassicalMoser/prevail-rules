@@ -85,6 +85,7 @@ describe('processEvent function', () => {
     // The storage's refusal comes back as the answer.
     expect(result).toStrictEqual({
       errorReason: 'Game game-1 not found',
+      failure: 'storage',
       result: false,
     });
   });

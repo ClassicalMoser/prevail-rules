@@ -4,8 +4,9 @@ import type {
   GameStateChange,
   GameStateSubscriber,
   GameStorage,
-  PortResponse,
+  RunnerResponse,
 } from '@application/ports';
+import { storageFailure } from '@application/utils';
 import type { GameModeName } from '@entities';
 import { notifySubscribers } from './notifySubscribers';
 
@@ -30,13 +31,12 @@ export async function recordEvent(
   gameState: GameState,
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
-): Promise<PortResponse<void>> {
+): Promise<RunnerResponse<void>> {
   const updateResult = await gameStorage.recordEvent(gameId, event, gameState);
+  // The storage would not take the event, so the game has not taken it.
   if (!updateResult.result) {
-    return {
-      errorReason: updateResult.errorReason,
-      result: false,
-    };
+    const refused = storageFailure(updateResult);
+    return refused;
   }
 
   // The event is in the game's stream, so the game has taken it. Its

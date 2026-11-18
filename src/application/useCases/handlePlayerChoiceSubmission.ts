@@ -1,5 +1,5 @@
 import type { PlayerChoiceEvent } from '@events';
-import type { EnginePorts, PortResponse } from '@application/ports';
+import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { advanceEffects, processPlayerChoice } from '@application/process';
 import type { GameModeName } from '@entities';
 
@@ -8,7 +8,7 @@ export async function handlePlayerChoiceSubmission(
   gameMode: GameModeName,
   playerChoice: PlayerChoiceEvent,
   ports: EnginePorts,
-): Promise<PortResponse<void>> {
+): Promise<RunnerResponse<void>> {
   const processResult = await processPlayerChoice(
     gameId,
     gameMode,
@@ -16,10 +16,7 @@ export async function handlePlayerChoiceSubmission(
     ports,
   );
   if (!processResult.result) {
-    return {
-      errorReason: processResult.errorReason,
-      result: false,
-    };
+    return processResult;
   }
   const advanceResult = await advanceEffects(
     gameId,

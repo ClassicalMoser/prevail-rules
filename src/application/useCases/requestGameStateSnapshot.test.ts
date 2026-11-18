@@ -175,6 +175,23 @@ describe('requestGameStateSnapshot function', () => {
     );
   });
 
+  it('refuses a game asked for in another mode than it is played in', async () => {
+    // The stored game is a mini game.
+    const game = authoritativeGame();
+    const ports = createPorts(
+      vi.fn().mockResolvedValue({ data: game, result: true as const }),
+    );
+
+    // The caller names the wrong mode, which is its mistake, not the game's.
+    await expect(
+      requestGameStateSnapshot(gameId, 'standard', 'whiteSeen', ports),
+    ).resolves.toStrictEqual({
+      errorReason: 'Game mode mismatch: expected standard, got mini',
+      failure: 'gameModeMismatch',
+      result: false,
+    });
+  });
+
   it('returns failure when storage answers with no game', async () => {
     // Storage answers, and holds no game under this id.
     const ports = createPorts(
@@ -185,6 +202,7 @@ describe('requestGameStateSnapshot function', () => {
       requestGameStateSnapshot(gameId, 'mini', 'whiteSeen', ports),
     ).resolves.toStrictEqual({
       errorReason: `Game ${gameId} not found`,
+      failure: 'gameNotFound',
       result: false,
     });
   });
@@ -197,6 +215,7 @@ describe('requestGameStateSnapshot function', () => {
       requestGameStateSnapshot(gameId, 'mini', 'whiteSeen', ports),
     ).resolves.toStrictEqual({
       errorReason: `Game ${gameId} not found`,
+      failure: 'gameNotFound',
       result: false,
     });
   });
@@ -224,6 +243,7 @@ describe('requestGameStateSnapshot function', () => {
       requestGameStateSnapshot(gameId, 'mini', 'blackSeen', ports),
     ).resolves.toStrictEqual({
       errorReason: expect.stringContaining('gameState.cardState.visibility'),
+      failure: 'illegalGame',
       result: false,
     });
   });
