@@ -125,13 +125,15 @@ describe('startNewGame function', () => {
     });
   });
 
-  it('calls onError and returns failure when a subscriber throws', async () => {
+  it('reports a saved game as started when a subscriber throws, and still tells the others', async () => {
     expect.hasAssertions();
+    // Two subscribers to the game: the first fails on every change.
     const boom = new Error('subscriber failed');
     const onGameStateChange = vi.fn(() => {
       throw boom;
     });
     const onError = vi.fn();
+    const told = vi.fn();
     const ports = createEnginePorts({
       gameStateSubscribers: [
         {
@@ -140,16 +142,25 @@ describe('startNewGame function', () => {
           onError,
           onGameStateChange,
         },
+        {
+          gameId,
+          gameMode: gameModes.mini.name,
+          onError: vi.fn(),
+          onGameStateChange: told,
+        },
       ],
     });
 
     const outcome = await startNewGame('mini', miniGame, ports);
 
-    expect(outcome).toStrictEqual({
-      errorReason: 'subscriber failed',
-      result: false,
-    });
+    // The game is saved, so it has started: a caller told otherwise would
+    // start it again under the same id.
+    expect(outcome).toStrictEqual({ data: undefined, result: true });
+
+    // The failing subscriber hears of its own failure, and the one after it
+    // is still told of the new game.
     expect(onError).toHaveBeenCalledWith(boom);
+    expect(told).toHaveBeenCalledTimes(1);
   });
 
   it('saves the game with the players and armies it was given', async () => {
