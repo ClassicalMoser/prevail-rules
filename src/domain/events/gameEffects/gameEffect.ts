@@ -198,3 +198,9 @@ const _assertExactGameEffect: AssertExact<
 /** The schema for any game effect. */
 export const gameEffectEventSchema: z.ZodType<GameEffectEvent> =
   _gameEffectEventSchemaObject;
+
+/** Every effect type the list names has an event, and no other. */
+const _assertEffectTypesMatchEvents: AssertExact<
+  GameEffectType,
+  GameEffectEvent['effectType']
+> = true;

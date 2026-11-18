@@ -92,3 +92,7 @@ const _assertExactProjectedEvent: AssertExact<
 /** The schema for an event as a seat or a spectator receives it. */
 export const projectedEventSchema: z.ZodType<ProjectedEvent> =
   _projectedEventSchemaObject;
+
+/** Every event type the list names has events, and no other. */
+const _assertEventTypesMatchEvents: AssertExact<EventType, Event['eventType']> =
+  true;

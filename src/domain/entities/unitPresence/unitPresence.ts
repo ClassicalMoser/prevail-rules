@@ -1,3 +1,4 @@
+import type { UnitPresenceType } from './unitPresenceType';
 import type { AssertExact } from '@utils';
 import type { EngagedUnitPresence } from './engagedUnitPresence';
 import type { NoneUnitPresence } from './noneUnitPresence';
@@ -63,4 +64,10 @@ export const unitPresenceSchema: z.ZodType<UnitPresence> =
 const _assertExactUnitPresence: AssertExact<
   UnitPresence,
   UnitPresenceTypeSchemaType
+> = true;
+
+/** Every presence type the list names has a variant, and no other. */
+const _assertPresenceTypesMatchVariants: AssertExact<
+  UnitPresenceType,
+  UnitPresence['presenceType']
 > = true;
