@@ -1,5 +1,5 @@
 import type { EnginePorts, GameStateChange } from '@application/ports';
-import type { Event } from '@events';
+import { eventSchema } from '@events';
 import type { AuthoritativeGameState, Game } from '@game';
 import { createInMemoryEnginePorts } from '@application/infra';
 import { findExpectedEvent } from '@expected';
@@ -13,6 +13,7 @@ import {
 import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { throwIfUndefined } from '@utils';
+import { z } from 'zod';
 import { advanceEffects } from './advanceEffects';
 
 const gameId = 'game-1';
@@ -55,29 +56,19 @@ async function portsHolding(
     ],
   });
 
-  // The game is stored and its current round's stream is open, as a game in
-  // play would be.
+  // The game is stored, as a game in play would be.
   await ports.gameStorage.saveNewGame(gameWith(state));
-  await ports.eventStreamStorage.newEventStream(
-    gameId,
-    state.currentRoundState.roundNumber,
-  );
   return ports;
 }
 
-/** The kinds of effect a round's stream holds, in order. */
-async function effectsRecorded(
-  ports: EnginePorts,
-  roundNumber: number,
-): Promise<string[]> {
-  const stream = await ports.eventStreamStorage.getEventStream(
-    gameId,
-    roundNumber,
-  );
+/** The kinds of event the stored game's stream holds, in order. */
+async function effectsRecorded(ports: EnginePorts): Promise<string[]> {
+  const stored = await ports.gameStorage.getGame(gameId, 'standard');
 
-  // Only the effects matter here; a stream that will not read is a failure.
-  const events: readonly Event[] =
-    stream.result && stream.data !== undefined ? stream.data : [];
+  // Only the stream matters here; a game that will not read is a failure.
+  const { events } = z
+    .object({ events: z.array(eventSchema) })
+    .parse(stored?.result === true ? stored.data : undefined);
   const kinds = events.map((event) =>
     event.eventType === 'gameEffect' ? event.effectType : event.choiceType,
   );
@@ -107,7 +98,7 @@ describe('advanceEffects function', () => {
     });
 
     // Nothing was carried out, recorded or announced.
-    await expect(effectsRecorded(ports, 0)).resolves.toStrictEqual([]);
+    await expect(effectsRecorded(ports)).resolves.toStrictEqual([]);
     expect(changes).toStrictEqual([]);
   });
 
@@ -134,9 +125,7 @@ describe('advanceEffects function', () => {
     expect(result).toStrictEqual({ data: undefined, result: true });
 
     // One effect was recorded: the ending.
-    await expect(effectsRecorded(ports, 0)).resolves.toStrictEqual([
-      'gameOver',
-    ]);
+    await expect(effectsRecorded(ports)).resolves.toStrictEqual(['gameOver']);
 
     // The subscriber was told once, of a game Black has won.
     expect(changes.map((change) => change.gameState.winner)).toStrictEqual([
@@ -174,7 +163,7 @@ describe('advanceEffects function', () => {
 
     // The reveal, then initiative, then the end of the play-cards phase, each
     // recorded in turn.
-    await expect(effectsRecorded(ports, 0)).resolves.toStrictEqual([
+    await expect(effectsRecorded(ports)).resolves.toStrictEqual([
       'revealCards',
       'resolveInitiative',
       'completePlayCardsPhase',

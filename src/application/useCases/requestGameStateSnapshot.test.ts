@@ -66,23 +66,12 @@ function createPorts(
   getGameImpl: EnginePorts['gameStorage']['getGame'],
 ): EnginePorts {
   return {
-    eventStreamStorage: {
-      addEventToStream: vi.fn(),
-      flushEventStream: vi.fn(),
-      getEventStream: vi.fn(),
-      newEventStream: vi.fn(),
-      truncateEventStream: vi.fn(),
-    },
     gameStateSubscribers: [],
     random: mathRandom,
     gameStorage: {
       getGame: getGameImpl,
       saveNewGame: vi.fn(),
-      updateGameState: vi.fn(),
-    },
-    roundSnapshotStorage: {
-      getRoundSnapshot: vi.fn(),
-      saveRoundSnapshot: vi.fn(),
+      recordEvent: vi.fn(),
     },
   };
 }

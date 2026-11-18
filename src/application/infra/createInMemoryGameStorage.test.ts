@@ -1,3 +1,4 @@
+import type { GameEffectEvent } from '@events';
 import type { Game } from '@game';
 import { createInitialGameState } from '@factories';
 import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
@@ -24,6 +25,13 @@ const game: Game = {
  * Games are kept by id. A saved game can be read back, and its state moved on;
  * an unknown game answers none.
  */
+/** The ending of a game, Black prevailing: an event to record. */
+const ending: GameEffectEvent = {
+  effectType: 'gameOver',
+  eventType: 'gameEffect',
+  winner: 'black',
+};
+
 describe('createInMemoryGameStorage function', () => {
   it('answers no game for an id it has never stored', async () => {
     const storage = createInMemoryGameStorage();
@@ -46,32 +54,33 @@ describe('createInMemoryGameStorage function', () => {
     });
   });
 
-  it("replaces a stored game's state and keeps the rest of the game", async () => {
+  it("records an event: it joins the game's stream, and the state moves on", async () => {
     const storage = createInMemoryGameStorage();
     await storage.saveNewGame(game);
 
-    // White has the initiative going into the first round.
-    const moved = { ...game.gameState, currentInitiative: 'black' as const };
+    // The game ends with Black prevailing; the state is the one that led to.
+    const ended = { ...game.gameState, winner: 'black' as const };
     await expect(
-      storage.updateGameState(game.id, moved),
+      storage.recordEvent(game.id, ending, ended),
     ).resolves.toStrictEqual({
       data: undefined,
       result: true,
     });
 
-    // The new state is stored under the same game.
+    // The same game, its players and armies kept, now ends its stream with
+    // the ending and holds the state it led to.
     await expect(storage.getGame(game.id, 'mini')).resolves.toStrictEqual({
-      data: { ...game, gameState: moved },
+      data: { ...game, events: [ending], gameState: ended },
       result: true,
     });
   });
 
-  it('refuses to update a game it does not hold', async () => {
+  it('refuses to record on a game it does not hold', async () => {
     const storage = createInMemoryGameStorage();
 
     // Nothing was saved, so there is no game to move on.
     await expect(
-      storage.updateGameState(game.id, game.gameState),
+      storage.recordEvent(game.id, ending, game.gameState),
     ).resolves.toStrictEqual({
       errorReason: `Game ${game.id} not found`,
       result: false,
@@ -88,7 +97,7 @@ describe('createInMemoryGameStorage function', () => {
       'whiteSeen',
     );
     await expect(
-      storage.updateGameState(game.id, whiteView),
+      storage.recordEvent(game.id, ending, whiteView),
     ).resolves.toStrictEqual({
       errorReason: `Game ${game.id} stores only its full state, not a whiteSeen view`,
       result: false,

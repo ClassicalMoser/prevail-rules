@@ -42,7 +42,8 @@ export const legalGameSchema: z.ZodType<Game> =
 /**
  * The schema for an authoritative game state of a game played in `gameMode`,
  * including the rules that need the mode: a board laid out for its size, and
- * the size the mode is played on. It is what a round snapshot must satisfy.
+ * the size the mode is played on. It is what a full game state read on its
+ * own, apart from its game, must satisfy.
  *
  * @param gameMode - The mode the state's game is played in
  * @returns A schema that accepts only a legal state for that mode

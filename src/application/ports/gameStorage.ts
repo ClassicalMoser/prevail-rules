@@ -1,3 +1,4 @@
+import type { Event } from '@events';
 import type { Game, GameState } from '@game';
 import type { PortResponse } from './portResponse';
 import type { GameModeName } from '@entities';
@@ -15,11 +16,15 @@ export interface GameStorage {
   ) => Promise<PortResponse<unknown> | undefined>;
   saveNewGame: (game: Game) => Promise<PortResponse<void>>;
   /**
-   * `gameState` is intentionally wide. Merge into an existing {@link Game} via
-   * `{ ...game, gameState }`; it is read again as a legal game when next loaded.
+   * Records one event on a stored game: the event joins the end of the game's
+   * stream, and the state it led to replaces the game's state, together, so
+   * the record and its latest state never disagree.
+   * `gameState` is intentionally wide; it is read again as a legal game when
+   * next loaded.
    */
-  updateGameState: (
+  recordEvent: (
     gameId: string,
+    event: Event,
     gameState: GameState,
   ) => Promise<PortResponse<void>>;
 }

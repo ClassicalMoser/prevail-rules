@@ -1,7 +1,7 @@
 import type { GameModeName } from '@entities';
-import type { AuthoritativeGameState, Game } from '@game';
+import type { Game } from '@game';
 import type { PortResponse } from '@application/ports';
-import { legalGameSchema, legalGameStateSchema } from '@validation';
+import { legalGameSchema } from '@validation';
 import { z } from 'zod';
 
 /**
@@ -28,29 +28,6 @@ export function parseLegalGameForMode(
   if (parsed.data.gameMode !== gameMode) {
     return {
       errorReason: `Game mode mismatch: expected ${gameMode}, got ${parsed.data.gameMode}`,
-      result: false,
-    };
-  }
-  return { data: parsed.data, result: true };
-}
-
-/**
- * **Boundary:** reads stored data as the authoritative game state of a game
- * in `gameMode`: the shape, a board laid out for its size, and the size the
- * mode is played on. A round snapshot is a game state, not a whole game.
- *
- * @param gameMode - The mode the snapshot's game is played in
- * @param data - The stored game state, untrusted
- * @returns The game state, or the reason it is not a legal one for that mode
- */
-export function parseLegalGameStateForMode(
-  gameMode: GameModeName,
-  data: unknown,
-): PortResponse<AuthoritativeGameState> {
-  const parsed = legalGameStateSchema(gameMode).safeParse(data);
-  if (!parsed.success) {
-    return {
-      errorReason: `Not a legal game state: ${z.prettifyError(parsed.error)}`,
       result: false,
     };
   }

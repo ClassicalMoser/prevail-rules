@@ -7,10 +7,8 @@ export type { EnginePorts } from './enginePorts';
  * are established **after** load (`parseLegalGameForMode`, `getGame`, `getGameState`), then passed into
  * `process/*` where stricter typing pays off.
  */
-export type { EventStreamStorage } from './eventStreamStorage';
 export type { GameRunner, NewGame } from './gameRunner';
 export type { GameStateChange } from './gameStateChange';
 export type { GameStateSubscriber } from './gameStateSubscriber';
 export type { GameStorage } from './gameStorage';
 export type { PortResponse } from './portResponse';
-export type { RoundSnapshotStorage } from './roundSnapshotStorage';

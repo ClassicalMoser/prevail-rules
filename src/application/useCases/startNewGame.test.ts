@@ -32,15 +32,6 @@ function createEnginePorts(overrides: {
   gameStateSubscribers?: EnginePorts['gameStateSubscribers'];
 }): EnginePorts {
   return {
-    eventStreamStorage: {
-      addEventToStream: vi.fn(),
-      flushEventStream: vi.fn(),
-      getEventStream: vi.fn(),
-      newEventStream: vi
-        .fn()
-        .mockResolvedValue({ data: undefined, result: true as const }),
-      truncateEventStream: vi.fn(),
-    },
     gameStateSubscribers: overrides.gameStateSubscribers ?? [],
     random: mathRandom,
     gameStorage: {
@@ -48,11 +39,7 @@ function createEnginePorts(overrides: {
       saveNewGame: vi
         .fn()
         .mockResolvedValue({ data: undefined, result: true as const }),
-      updateGameState: vi.fn(),
-    },
-    roundSnapshotStorage: {
-      getRoundSnapshot: vi.fn(),
-      saveRoundSnapshot: vi.fn(),
+      recordEvent: vi.fn(),
     },
   };
 }
@@ -283,14 +270,14 @@ describe('startNewGame function', () => {
     });
   });
 
-  it('opens the event stream for round 0, where setup is recorded', async () => {
+  it('saves the game with an empty stream, setup still to be recorded', async () => {
     const ports = createEnginePorts({});
 
     await startNewGame('mini', miniGame, ports);
 
-    expect(ports.eventStreamStorage.newEventStream).toHaveBeenCalledWith(
-      gameId,
-      0,
+    // Nothing has happened yet; setup's events join the stream as they come.
+    expect(ports.gameStorage.saveNewGame).toHaveBeenCalledWith(
+      expect.objectContaining({ events: [] }),
     );
   });
 });

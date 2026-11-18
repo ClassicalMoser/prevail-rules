@@ -1,3 +1,4 @@
+import type { Event } from '@events';
 import type { GameState } from '@game';
 import type {
   GameStateChange,
@@ -8,22 +9,27 @@ import type {
 import type { GameModeName } from '@entities';
 
 /**
- * Updates the game state for a given game and game type.
- * @param gameId - The ID of the game to update the state for.
- * @param gameMode - The mode of the game to update the state for.
- * @param gameState - The new game state to set.
- * @param gameStorage - The game storage to use.
- * @param gameStateSubscribers - The game state subscribers to notify.
- * @returns The result of the operation.
+ * Records an event the game has taken: it joins the end of the stored game's
+ * stream, the state it led to becomes the game's state, and the game's
+ * subscribers are told of the new state.
+ *
+ * @param gameId - The ID of the game
+ * @param gameMode - The mode of the game, which subscribers are matched on
+ * @param event - The event the game has taken
+ * @param gameState - The state that event led to
+ * @param gameStorage - The game storage to record it in
+ * @param gameStateSubscribers - The game state subscribers to notify
+ * @returns The result of the operation
  */
-export async function updateGameState(
+export async function recordEvent(
   gameId: string,
   gameMode: GameModeName,
+  event: Event,
   gameState: GameState,
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
-  const updateResult = await gameStorage.updateGameState(gameId, gameState);
+  const updateResult = await gameStorage.recordEvent(gameId, event, gameState);
   if (!updateResult.result) {
     return {
       errorReason: updateResult.errorReason,

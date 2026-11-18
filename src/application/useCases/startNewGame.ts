@@ -15,8 +15,8 @@ import { parseLegalGameForMode } from '../utils/parseLegalGame';
  * round 0, setup, waiting for the side with the initiative to deploy (§3.5).
  * The game must be a legal one — armies that keep the army rules and the
  * mode's limits — and is refused with the reason if it is not, before anything
- * is saved. Once saved, round 0's event stream is opened, so setup is recorded
- * as every round is.
+ * is saved. It starts with an empty stream, to which setup's events are
+ * recorded as every round's are.
  *
  * @param gameMode - The mode to play
  * @param newGame - The game's id, its two players and their armies
@@ -52,18 +52,6 @@ export const startNewGame = async (
   if (!saveResult.result) {
     return {
       errorReason: saveResult.errorReason,
-      result: false,
-    };
-  }
-
-  // Setup is round 0, and its events are recorded in its own stream.
-  const streamResult = await ports.eventStreamStorage.newEventStream(
-    game.id,
-    game.gameState.currentRoundState.roundNumber,
-  );
-  if (!streamResult.result) {
-    return {
-      errorReason: streamResult.errorReason,
       result: false,
     };
   }

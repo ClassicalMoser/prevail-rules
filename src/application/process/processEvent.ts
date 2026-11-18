@@ -1,8 +1,7 @@
 import type { GameState, OwnedPlayerForGameState } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { applyEvent } from '@transforms';
-import { updateGameState } from '@application/composable';
-import { handleNewRound } from './handleNewRound';
+import { recordEvent } from '@application/composable';
 import type { GameEffectEvent, PlayerChoiceEvent } from '@events';
 import type { GameModeName } from '@entities';
 
@@ -20,45 +19,21 @@ export async function processEvent<S extends GameState>(
   // applied throws here and leaves the stream as it was.
   const newGameState = applyEvent(event, gameState);
 
-  // An event is filed under the round it was applied in: setup's are round 0's.
-  const roundNumber = gameState.currentRoundState.roundNumber;
-
-  const addEventResult = await ports.eventStreamStorage.addEventToStream(
-    gameId,
-    roundNumber,
-    event,
-  );
-  if (!addEventResult.result) {
-    return {
-      errorReason: addEventResult.errorReason,
-      result: false,
-    };
-  }
-
-  const updateResult = await updateGameState(
+  // The event joins the game's stream with the state it led to, together, and
+  // the game's subscribers are told.
+  const recorded = await recordEvent(
     gameId,
     gameMode,
+    event,
     newGameState,
     ports.gameStorage,
     ports.gameStateSubscribers,
   );
-  if (!updateResult.result) {
+  if (!recorded.result) {
     return {
-      errorReason: updateResult.errorReason,
+      errorReason: recorded.errorReason,
       result: false,
     };
-  }
-
-  // Round advance (cleanup → next round, or setup → round 1)
-  if (newGameState.currentRoundState.roundNumber !== roundNumber) {
-    const handleNewRoundResult = await handleNewRound(
-      gameId,
-      newGameState,
-      ports,
-    );
-    if (!handleNewRoundResult.result) {
-      return handleNewRoundResult;
-    }
   }
 
   // If everything succeeded, return the new game state

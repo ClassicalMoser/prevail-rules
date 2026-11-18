@@ -28,10 +28,10 @@ export function createInMemoryGameStorage(): GameStorage {
       return saved;
     },
 
-    updateGameState: async (gameId, gameState) => {
+    recordEvent: async (gameId, event, gameState) => {
       const game = games.get(gameId);
 
-      // A state can only replace the state of a game already stored.
+      // An event can only be recorded on a game already stored.
       if (game === undefined) {
         const missing: PortResponse<void> = {
           errorReason: `Game ${gameId} not found`,
@@ -50,8 +50,13 @@ export function createInMemoryGameStorage(): GameStorage {
         return partial;
       }
 
-      // The game keeps its players and armies; only its state moves on.
-      games.set(gameId, { ...game, gameState });
+      // The game keeps its players and armies; the event joins its stream,
+      // and its state moves on to the one the event led to.
+      games.set(gameId, {
+        ...game,
+        events: [...game.events, event],
+        gameState,
+      });
       const updated: PortResponse<void> = { data: undefined, result: true };
       return updated;
     },

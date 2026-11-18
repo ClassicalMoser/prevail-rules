@@ -42,10 +42,9 @@ async function portsHolding(
  */
 describe('processEvent function', () => {
   it('records nothing when the event cannot be applied', async () => {
-    // A game at setup, its round's stream open and empty.
+    // A game at setup, its stream empty.
     const state = createEmptyGameState('standard');
     const ports = await portsHolding(state);
-    await ports.eventStreamStorage.newEventStream(gameId, 0);
 
     // Played cards are put aside at cleanup, and setup has no phase yet, so
     // the game cannot take this.
@@ -57,21 +56,17 @@ describe('processEvent function', () => {
       processEvent(gameId, 'standard', putAside, state, ports),
     ).rejects.toThrow('No current phase state found');
 
-    // The stream never learns of an event the game never took.
-    await expect(
-      ports.eventStreamStorage.getEventStream(gameId, 0),
-    ).resolves.toStrictEqual({ data: [], result: true });
-
-    // And the stored game is as it was.
+    // The stored game, its stream included, is as it was: the stream never
+    // learns of an event the game never took.
     await expect(
       ports.gameStorage.getGame(gameId, 'standard'),
     ).resolves.toStrictEqual({ data: gameWith(state), result: true });
   });
 
-  it('refuses, and keeps the stored game as it was, when the event cannot be recorded', async () => {
-    // A game whose round has no open stream, so nothing can be recorded.
+  it('refuses when the game it would record on is not stored', async () => {
+    // Nothing was saved, so there is no game to record on.
     const state = createEmptyGameState('standard');
-    const ports = await portsHolding(state);
+    const ports = createInMemoryEnginePorts();
 
     // White's hand is empty, so the game can take its ending.
     const gameOver: GameEffectEvent = {
@@ -87,23 +82,17 @@ describe('processEvent function', () => {
       ports,
     );
 
-    // The stream's refusal comes back as the answer.
+    // The storage's refusal comes back as the answer.
     expect(result).toStrictEqual({
-      errorReason: 'No event stream for game game-1, round 0',
+      errorReason: 'Game game-1 not found',
       result: false,
     });
-
-    // The game is not stored ahead of its own history.
-    await expect(
-      ports.gameStorage.getGame(gameId, 'standard'),
-    ).resolves.toStrictEqual({ data: gameWith(state), result: true });
   });
 
   it("records the event in the game's stream, with the state it led to", async () => {
     // White's hand is empty, so the game can take its ending.
     const state = createEmptyGameState('standard');
     const ports = await portsHolding(state);
-    await ports.eventStreamStorage.newEventStream(gameId, 0);
     const gameOver: GameEffectEvent = {
       effectType: 'gameOver',
       eventType: 'gameEffect',
