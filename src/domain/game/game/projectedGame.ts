@@ -23,13 +23,17 @@ import {
  * without being sent anything it may not read.
  *
  * The armies are left out: each army lists its command cards, and those are
- * the hand it brings to battle, which only its own seat may see (§4.1.1).
+ * the hand it brings to battle, and hands are secret (§1.4).
  * Instead the game carries the state it opened on, in this view. Replaying
  * `events` from `openingState` gives every state this viewer has seen, and
  * `gameState` is the latest of them, kept so the client need not replay.
  *
  * `visibility` names the view, and fixes the view of both states, so the
  * three cannot disagree. `projectGameForVisibility` in `@transforms` builds one.
+ *
+ * The board is sent whole: every view reads it in full, since all information
+ * on the board is open (§1.4). Hidden stands (§3.6) are not built yet; when
+ * they are, the opening state and the board will need hiding per view too.
  */
 export type ProjectedGame =
   | AuthoritativeProjectedGame
@@ -37,7 +41,10 @@ export type ProjectedGame =
   | BlackSeenProjectedGame
   | SpectatorProjectedGame;
 
-/** The game with every card in view: both bots' tables, or the server's. */
+/**
+ * The full record with nothing hidden, for a viewer allowed to see every card:
+ * a watcher of a game between two bots, where no seat is a person to hide from.
+ */
 export interface AuthoritativeProjectedGame {
   /** The view this game is. */
   visibility: 'authoritative';

@@ -40,27 +40,32 @@ describe('the projected game schema', () => {
       'blackSeen',
       'spectator',
     ] as const) {
+      // Each viewer is sent the game in its own view.
       const projected = projectGameForVisibility(newGame(), view);
 
+      // Whatever the view, what it is sent is a game a client can read.
       expect(projectedGameSchema.safeParse(projected).success).toBe(true);
     }
   });
 
   it("refuses black's game where white's is expected", () => {
+    // The game as black's seat sees it, black's own hand in view.
     const blackSeen = projectGameForVisibility(newGame(), 'blackSeen');
 
+    // White's seat must not accept it, or it would read black's hand (§1.4).
     expect(whiteSeenProjectedGameSchema.safeParse(blackSeen).success).toBe(
       false,
     );
   });
 
   it('refuses a game that still carries an army', () => {
-    // A seat must never be sent an army: it lists the other side's hand.
+    // White's game with black's army put back in.
     const withArmy = {
       ...projectGameForVisibility(newGame(), 'whiteSeen'),
       blackArmy: blackMiniStarterArmy,
     };
 
+    // Refused: an army lists its side's hand, and hands are secret (§1.4).
     expect(projectedGameSchema.safeParse(withArmy).success).toBe(false);
   });
 });

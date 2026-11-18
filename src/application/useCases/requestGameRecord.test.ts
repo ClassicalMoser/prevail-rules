@@ -47,20 +47,26 @@ function createPorts(
 
 describe('requestGameRecord function', () => {
   it('sends a seat the game in its own view, the other hand face down', async () => {
+    // Storage holds a game that has just been dealt.
     const ports = createPorts(
       vi.fn().mockResolvedValue({ data: storedGame(), result: true as const }),
     );
 
+    // White's seat asks for the game, as on joining or reloading.
     const result = await requestGameRecord(gameId, 'mini', 'whiteSeen', ports);
 
+    // The game is found and sent.
     expect(result.result).toBe(true);
     if (!result.result) {
       throw new Error('expected success');
     }
+    // It is white's view of the game.
     expect(result.data.visibility).toBe('whiteSeen');
+    // Black's hand was face down from the start (§1.4)…
     expect(result.data.openingState.cardState.black.inHand).toStrictEqual(
       blackMiniStarterArmy.commandCards.map(() => 'hidden'),
     );
+    // …and still is now.
     expect(result.data.gameState.cardState.black.inHand).toStrictEqual(
       blackMiniStarterArmy.commandCards.map(() => 'hidden'),
     );
@@ -72,6 +78,7 @@ describe('requestGameRecord function', () => {
       vi.fn().mockResolvedValue({ data: undefined, result: true }),
     );
 
+    // The request is refused with the reason, and nothing is projected.
     await expect(
       requestGameRecord(gameId, 'mini', 'spectator', ports),
     ).resolves.toStrictEqual({

@@ -11,8 +11,9 @@ import { projectGameForVisibility } from '@transforms';
  * armies stay on the server, since each lists a hand only its own seat may
  * read.
  *
- * `requestGameStateSnapshot` is the cheaper answer when the client already
- * holds the record and only needs to catch up on the current state.
+ * A client that already holds the record catches up by applying the events
+ * it missed. `requestGameStateSnapshot` is for a client that only needs to
+ * draw the current state, without its history.
  *
  * @param gameId - The game to load
  * @param gameMode - The mode it is played in

@@ -10,7 +10,7 @@ import { projectWhiteSeenGameState } from './projectWhiteSeenGameState';
  * The game as one viewer may see it, for a client joining or resyncing.
  *
  * The armies are not sent, since each lists its side's command cards, and
- * those are a hand only its own seat may read (§4.1.1). The viewer gets the
+ * those are a hand only its own seat may read (hands are secret, §1.4). The viewer gets the
  * state the game opened on instead, and the game's events, both in its view:
  * replaying the one from the other gives every state that viewer has seen.
  * The current state comes along so the client need not replay to draw it.
