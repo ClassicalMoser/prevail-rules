@@ -1,6 +1,7 @@
 import type { UnitWithPlacement } from '@entities';
 import type { ChooseMovingUnitEvent, MoveUnitEvent } from '@events';
 import type { LegalMoveUnits, MoveResult } from '@legality';
+import { getSmallestMovePerEnding } from '@legality';
 import type { BotContext } from './botContext';
 import { appraisePlacement, pickBest } from '@bot/appraisal';
 import { appraiseMoveGain } from './appraiseOrder';
@@ -51,8 +52,16 @@ export function chooseUnitMove(
   context: BotContext,
 ): MoveUnitEvent {
   const { view, survey, temperament, random, seat } = context;
+
+  // The bot chooses where its unit should end, not how it gets there. Two
+  // ways to one ending score alike, so its whim would otherwise pick among
+  // them and send a unit wheeling and wandering on the way; it goes the
+  // plain way instead, with no turn or step it could have saved.
+  const endings = getSmallestMovePerEnding(moves);
+
+  // Of those endings, the one it likes best.
   const move = pickBest(
-    moves,
+    endings,
     (candidate) =>
       appraisePlacement(view, survey, unit, candidate.placement, temperament),
     temperament,
