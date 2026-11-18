@@ -2,6 +2,22 @@
 export { gameSchema } from './game';
 export type { Game } from './game';
 
+// The game as one viewer may see it
+export {
+  authoritativeProjectedGameSchema,
+  blackSeenProjectedGameSchema,
+  projectedGameSchema,
+  spectatorProjectedGameSchema,
+  whiteSeenProjectedGameSchema,
+} from './game';
+export type {
+  AuthoritativeProjectedGame,
+  BlackSeenProjectedGame,
+  ProjectedGame,
+  SpectatorProjectedGame,
+  WhiteSeenProjectedGame,
+} from './game';
+
 // Runtime state
 export {
   authoritativeGameStateSchema,

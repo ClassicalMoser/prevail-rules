@@ -10,8 +10,10 @@ import { authoritativeGameStateSchema } from '@game/gameState';
 
 /**
  * A game as the server keeps it: who plays, with which armies, in which mode,
- * and the full state of play. It is the authoritative record; a player's or
- * a spectator's view is a projection of its game state, not of the game.
+ * and the full state of play. It is the authoritative record. A player or a
+ * spectator is sent a `ProjectedGame` instead, built by
+ * `projectGameForVisibility`: no armies, since each lists a hand only its own
+ * seat may read, and the opening state, events and current state in that view.
  *
  * Board size lives on `gameState.boardState.boardType` and must agree with
  * the size required by `gameMode` (enforced by Zod).

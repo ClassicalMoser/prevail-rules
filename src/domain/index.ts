@@ -328,7 +328,21 @@ export type {
   ProjectedPlayerChoiceEvent,
   SetupUnitsEvent,
 } from '@events';
-export { gameSchema } from '@game';
+export {
+  authoritativeProjectedGameSchema,
+  blackSeenProjectedGameSchema,
+  gameSchema,
+  projectedGameSchema,
+  spectatorProjectedGameSchema,
+  whiteSeenProjectedGameSchema,
+} from '@game';
+export type {
+  AuthoritativeProjectedGame,
+  BlackSeenProjectedGame,
+  ProjectedGame,
+  SpectatorProjectedGame,
+  WhiteSeenProjectedGame,
+} from '@game';
 export type {
   AuthoritativeCardState,
   BlackSeenCardState,
@@ -728,6 +742,7 @@ export {
   moveCardToPlayed,
   moveUnitOnBoard,
   projectEventForVisibility,
+  projectGameForVisibility,
   projectGameStateForVisibility,
   removeCommanderFromBoard,
   removeUnitFromBoard,
