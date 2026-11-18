@@ -98,4 +98,27 @@ describe('processEvent function', () => {
       ports.gameStorage.getGame(gameId, 'standard'),
     ).resolves.toStrictEqual({ data: gameWith(state), result: true });
   });
+
+  it("records the event in the game's stream, with the state it led to", async () => {
+    // White's hand is empty, so the game can take its ending.
+    const state = createEmptyGameState('standard');
+    const ports = await portsHolding(state);
+    await ports.eventStreamStorage.newEventStream(gameId, 0);
+    const gameOver: GameEffectEvent = {
+      effectType: 'gameOver',
+      eventType: 'gameEffect',
+      winner: 'black',
+    };
+
+    await processEvent(gameId, 'standard', gameOver, state, ports);
+
+    // The stored game's stream ends with the ending, and its state is the
+    // one that ending led to: Black has prevailed.
+    await expect(
+      ports.gameStorage.getGame(gameId, 'standard'),
+    ).resolves.toMatchObject({
+      data: { events: [gameOver], gameState: { winner: 'black' } },
+      result: true,
+    });
+  });
 });
