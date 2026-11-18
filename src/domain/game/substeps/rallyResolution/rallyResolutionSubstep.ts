@@ -4,6 +4,7 @@ import type { RoutState } from '../combatOutcomes';
 
 import { unitInstanceSchema } from '@entities';
 import { z } from 'zod';
+import { RALLY_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { routStateSchema } from '../combatOutcomes';
 
 /**
@@ -19,7 +20,7 @@ import { routStateSchema } from '../combatOutcomes';
  */
 export interface RallyResolutionState {
   /** The type of the substep. */
-  substepType: 'rallyResolution';
+  substepType: typeof RALLY_RESOLUTION_SUBSTEP_TYPE;
   /** Whether the player chose to rally. */
   playerRallied: boolean;
   /** Whether the rally has been resolved. */
@@ -35,7 +36,7 @@ export interface RallyResolutionState {
 const _rallyResolutionStateSchemaObject = z
   .object({
     /** The type of the substep. */
-    substepType: z.literal('rallyResolution'),
+    substepType: z.literal(RALLY_RESOLUTION_SUBSTEP_TYPE),
     /** Whether the player chose to rally. */
     playerRallied: z.boolean(),
     /** Whether the rally has been resolved. */

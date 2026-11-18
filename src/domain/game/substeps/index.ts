@@ -47,3 +47,19 @@ export type {
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
 } from './engagement';
+
+// Any substep play can be inside, and the list of their kinds
+export {
+  substepTypes,
+  substepTypeSchema,
+  COMMAND_RESOLUTION_SUBSTEP_TYPE,
+  MELEE_RESOLUTION_SUBSTEP_TYPE,
+  RALLY_RESOLUTION_SUBSTEP_TYPE,
+  ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE,
+  ATTACK_APPLY_SUBSTEP_TYPE,
+  REVERSE_SUBSTEP_TYPE,
+  RETREAT_SUBSTEP_TYPE,
+  ROUT_SUBSTEP_TYPE,
+} from './substepType';
+export type { SubstepType } from './substepType';
+export type { SubstepState } from './substepState';

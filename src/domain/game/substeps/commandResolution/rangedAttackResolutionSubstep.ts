@@ -5,6 +5,7 @@ import type { AttackApplyState } from '../combatOutcomes';
 import { unitInstanceSchema } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
+import { COMMAND_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { attackApplyStateSchema } from '../combatOutcomes';
 
 /**
@@ -18,7 +19,7 @@ import { attackApplyStateSchema } from '../combatOutcomes';
  */
 export interface RangedAttackResolutionState {
   /** The type of the substep. */
-  substepType: 'commandResolution';
+  substepType: typeof COMMAND_RESOLUTION_SUBSTEP_TYPE;
   /** The type of command resolution. */
   commandResolutionType: 'rangedAttack';
   /** The shooter, named first (§4.3.11 step 1). */
@@ -51,7 +52,7 @@ const _rangedAttackResolutionStateSchemaObject = z
     completed: z.boolean(),
     defendingCommitment: commitmentSchema,
     defendingUnit: unitInstanceSchema.or(z.literal('pending')),
-    substepType: z.literal('commandResolution'),
+    substepType: z.literal(COMMAND_RESOLUTION_SUBSTEP_TYPE),
     supportingUnits: z.array(unitInstanceSchema).or(z.literal('pending')),
   })
   .strict();

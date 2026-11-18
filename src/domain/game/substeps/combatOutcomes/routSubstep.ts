@@ -2,6 +2,7 @@ import type { PlayerSide, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
+import { ROUT_SUBSTEP_TYPE } from '../substepType';
 
 /**
  * Composable substep that handles card discarding when units rout.
@@ -16,7 +17,7 @@ import { z } from 'zod';
  */
 export interface RoutState {
   /** The type of the substep. */
-  substepType: 'rout';
+  substepType: typeof ROUT_SUBSTEP_TYPE;
   /** The player that is discarding cards. */
   player: PlayerSide;
   /** The units that are being routed. */
@@ -33,7 +34,7 @@ export interface RoutState {
 const _routStateSchemaObject = z
   .object({
     /** The type of the substep. */
-    substepType: z.literal('rout'),
+    substepType: z.literal(ROUT_SUBSTEP_TYPE),
     /** The player that is discarding cards. */
     player: playerSideSchema,
     /** The units that are being routed. */

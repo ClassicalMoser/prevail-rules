@@ -4,6 +4,7 @@ import type { AssertExact } from '@utils';
 import type { EngagementState } from '../engagement';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
+import { COMMAND_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { engagementStateSchema } from '../engagement';
 import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
 
@@ -18,7 +19,7 @@ import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
  */
 export interface MovementResolutionState {
   /** The type of the substep. */
-  substepType: 'commandResolution';
+  substepType: typeof COMMAND_RESOLUTION_SUBSTEP_TYPE;
   /** The type of command resolution. */
   commandResolutionType: 'movement';
   /** The unit that is moving, and where it now stands. */
@@ -47,7 +48,7 @@ const _movementResolutionStateSchemaObject = z
     engagementState: engagementStateSchema.or(z.literal('pending')),
     moveCommander: z.boolean().or(z.literal('pending')),
     movingUnit: unitWithPlacementSchema,
-    substepType: z.literal('commandResolution'),
+    substepType: z.literal(COMMAND_RESOLUTION_SUBSTEP_TYPE),
     targetPlacement: unitPlacementSchema.or(z.literal('pending')),
   })
   .strict();

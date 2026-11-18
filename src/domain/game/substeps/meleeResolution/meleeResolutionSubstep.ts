@@ -5,6 +5,7 @@ import type { AttackApplyState } from '../combatOutcomes';
 import { coordinateSchema } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
+import { MELEE_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { attackApplyStateSchema } from '../combatOutcomes';
 
 /**
@@ -20,7 +21,7 @@ import { attackApplyStateSchema } from '../combatOutcomes';
  */
 export interface MeleeResolutionState {
   /** The type of the substep. */
-  substepType: 'meleeResolution';
+  substepType: typeof MELEE_RESOLUTION_SUBSTEP_TYPE;
   /** The location of the melee. */
   location: Coordinate;
   /**
@@ -57,7 +58,7 @@ const _meleeResolutionStateSchemaObject = z
     firstPlayerCommitment: commitmentSchema,
     completed: z.boolean(),
     location: coordinateSchema,
-    substepType: z.literal('meleeResolution'),
+    substepType: z.literal(MELEE_RESOLUTION_SUBSTEP_TYPE),
     secondPlayerAttackApplyState: attackApplyStateSchema.or(
       z.literal('pending'),
     ),

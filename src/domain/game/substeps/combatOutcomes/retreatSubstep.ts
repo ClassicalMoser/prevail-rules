@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
 import { moveDeltaSchema, unitWithPlacementSchema } from '@entities';
 import { z } from 'zod';
+import { RETREAT_SUBSTEP_TYPE } from '../substepType';
 import { routStateSchema } from './routSubstep';
 
 /**
@@ -18,7 +19,7 @@ import { routStateSchema } from './routSubstep';
  */
 export interface RetreatState {
   /** The type of the substep. */
-  substepType: 'retreat';
+  substepType: typeof RETREAT_SUBSTEP_TYPE;
   /** The unit that is retreating. */
   retreatingUnit: UnitWithPlacement;
   /**
@@ -52,7 +53,7 @@ const _retreatStateSchemaObject = z
     routState: routStateSchema
       .or(z.literal('pending'))
       .or(z.literal('bypassed')),
-    substepType: z.literal('retreat'),
+    substepType: z.literal(RETREAT_SUBSTEP_TYPE),
   })
   .strict();
 

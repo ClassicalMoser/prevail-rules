@@ -5,6 +5,7 @@ import type { ReverseState } from './reverseSubstep';
 import type { RoutState } from './routSubstep';
 import { attackResultSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
+import { ATTACK_APPLY_SUBSTEP_TYPE } from '../substepType';
 import { retreatStateSchema } from './retreatSubstep';
 import { reverseStateSchema } from './reverseSubstep';
 import { routStateSchema } from './routSubstep';
@@ -26,7 +27,7 @@ import { routStateSchema } from './routSubstep';
  */
 export interface AttackApplyState {
   /** The type of the substep. */
-  substepType: 'attackApply';
+  substepType: typeof ATTACK_APPLY_SUBSTEP_TYPE;
   /** The unit that is being attacked. */
   defendingUnit: UnitInstance;
   /** The result of the attack. */
@@ -55,7 +56,7 @@ const _attackApplyStateSchemaObject = z
     routState: routStateSchema
       .or(z.literal('pending'))
       .or(z.literal('bypassed')),
-    substepType: z.literal('attackApply'),
+    substepType: z.literal(ATTACK_APPLY_SUBSTEP_TYPE),
   })
   .strict();
 

@@ -2,6 +2,7 @@ import type { UnitInstance, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 import { z } from 'zod';
+import { REVERSE_SUBSTEP_TYPE } from '../substepType';
 
 /**
  * Composable substep that handles unit reversal after an attack.
@@ -14,7 +15,7 @@ import { z } from 'zod';
  */
 export interface ReverseState {
   /** The type of the substep. */
-  substepType: 'reverse';
+  substepType: typeof REVERSE_SUBSTEP_TYPE;
   /**
    * The unit that is reversing, by identity. A reverse can come due after a
    * retreat has already moved the unit, so where it stands is read from the
@@ -29,7 +30,7 @@ export interface ReverseState {
 
 const _reverseStateSchemaObject = z
   .object({
-    substepType: z.literal('reverse'),
+    substepType: z.literal(REVERSE_SUBSTEP_TYPE),
     reversingUnit: unitInstanceSchema,
     finalPosition: unitPlacementSchema.or(z.literal('pending')),
     completed: z.boolean(),

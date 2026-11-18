@@ -444,6 +444,9 @@ export type {
   ReverseState,
   RoutState,
 } from '@game';
+// Any substep play can be inside, and the list of their kinds
+export type { SubstepState, SubstepType } from '@game';
+export { substepTypes } from '@game';
 export {
   applyAttackValue,
   getAdjacentSpaces,

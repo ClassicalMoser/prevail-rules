@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import type { EngagementResolutionState } from './engagementResolutionState';
 import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 import { z } from 'zod';
+import { ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { engagementResolutionStateSchema } from './engagementResolutionState';
 
 /**
@@ -20,7 +21,7 @@ import { engagementResolutionStateSchema } from './engagementResolutionState';
  */
 export interface EngagementState {
   /** The type of the substep. */
-  substepType: 'engagementResolution';
+  substepType: typeof ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE;
   /** The unit that is engaging. */
   engagingUnit: UnitInstance;
   /** The target placement of the engagement. */
@@ -36,7 +37,7 @@ const _engagementStateSchemaObject = z
     completed: z.boolean(),
     engagementResolutionState: engagementResolutionStateSchema,
     engagingUnit: unitInstanceSchema,
-    substepType: z.literal('engagementResolution'),
+    substepType: z.literal(ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE),
     targetPlacement: unitPlacementSchema,
   })
   .strict();
