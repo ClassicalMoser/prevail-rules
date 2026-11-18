@@ -103,11 +103,18 @@ export type {
   TraitRestrictions,
   UnitTypeRestrictions,
   Restrictions,
+  RestrictionType,
   RoundEffect,
   Coordinate,
+  GenericUnitSupport,
+  TraitUnitSupport,
+  UnitTypeUnitSupport,
   UnitSupport,
+  UnitSupportType,
 } from '@entities';
 export { unitSupportSchema } from '@entities';
+// The kinds a restriction filters by, and the kinds of unit a card's support holds.
+export { restrictionTypes, unitSupportTypes } from '@entities';
 export type {
   SideTurn,
   MoveTurn,

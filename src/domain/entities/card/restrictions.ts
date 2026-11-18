@@ -2,6 +2,12 @@ import type { Trait } from '@ruleValues';
 import type { AssertExact } from '@utils';
 import { NO_INSPIRATION_RANGE, traitSchema } from '@ruleValues';
 import { z } from 'zod';
+import {
+  NO_TYPE_RESTRICTION_TYPE,
+  TRAIT_RESTRICTION_TYPE,
+  UNIT_TYPE_RESTRICTION_TYPE,
+} from './restrictionType';
+import type { RestrictionType } from './restrictionType';
 
 /**
  * Restrictions with no trait or unit-type filter.
@@ -9,7 +15,7 @@ import { z } from 'zod';
  */
 export interface NoTypeRestrictions {
   /** No trait or unit-type filter applies. */
-  restrictionType: 'none';
+  restrictionType: typeof NO_TYPE_RESTRICTION_TYPE;
   /** The maximum range from the commander allowed for the command or round effect to be applied. */
   inspirationRangeRestriction: number;
 }
@@ -17,7 +23,7 @@ export interface NoTypeRestrictions {
 const _noTypeRestrictionsSchemaObject = z
   .object({
     /** No trait or unit-type filter applies. */
-    restrictionType: z.literal('none'),
+    restrictionType: z.literal(NO_TYPE_RESTRICTION_TYPE),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
     inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE),
   })
@@ -45,7 +51,7 @@ const _assertExactNoTypeRestrictions: AssertExact<
  */
 export interface TraitRestrictions {
   /** The unit must have every listed trait. */
-  restrictionType: 'trait';
+  restrictionType: typeof TRAIT_RESTRICTION_TYPE;
   /** The maximum range from the commander allowed for the command or round effect to be applied. */
   inspirationRangeRestriction: number;
   /** The traits that must be present on the unit for the command or round effect to be applied. */
@@ -55,7 +61,7 @@ export interface TraitRestrictions {
 const _traitRestrictionsSchemaObject = z
   .object({
     /** The unit must have every listed trait. */
-    restrictionType: z.literal('trait'),
+    restrictionType: z.literal(TRAIT_RESTRICTION_TYPE),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
     inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE),
     /** The traits that must be present on the unit for the command or round effect to be applied. */
@@ -86,7 +92,7 @@ const _assertExactTraitRestrictions: AssertExact<
  */
 export interface UnitTypeRestrictions {
   /** The unit must be one of the listed unit types. */
-  restrictionType: 'unitType';
+  restrictionType: typeof UNIT_TYPE_RESTRICTION_TYPE;
   /** The maximum range from the commander allowed for the command or round effect to be applied. */
   inspirationRangeRestriction: number;
   /** The unique identifiers of the unit types that can be included in the command or round effect. */
@@ -96,7 +102,7 @@ export interface UnitTypeRestrictions {
 const _unitTypeRestrictionsSchemaObject = z
   .object({
     /** The unit must be one of the listed unit types. */
-    restrictionType: z.literal('unitType'),
+    restrictionType: z.literal(UNIT_TYPE_RESTRICTION_TYPE),
     /** The maximum range from the commander allowed for the command or round effect to be applied. */
     inspirationRangeRestriction: z.int().min(NO_INSPIRATION_RANGE),
     /** The unique identifiers of the unit types that can be included in the command or round effect. */
@@ -150,4 +156,10 @@ export const restrictionsSchema: z.ZodType<Restrictions> =
 const _assertExactRestrictions: AssertExact<
   Restrictions,
   RestrictionsSchemaType
+> = true;
+
+/** Every filter the list names has a variant, and no other. */
+const _assertRestrictionTypesMatchVariants: AssertExact<
+  RestrictionType,
+  Restrictions['restrictionType']
 > = true;

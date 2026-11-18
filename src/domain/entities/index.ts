@@ -113,10 +113,17 @@ export type {
   TraitRestrictions,
   UnitTypeRestrictions,
   Restrictions,
+  RestrictionType,
   RoundEffect,
+  GenericUnitSupport,
+  TraitUnitSupport,
+  UnitTypeUnitSupport,
   UnitSupport,
+  UnitSupportType,
 } from './card';
 export { unitSupportSchema } from './card';
+// The kinds a restriction filters by, and the kinds of unit a card's support holds.
+export { restrictionTypes, unitSupportTypes } from './card';
 
 // Army
 export { armySchema, unitCountSchema } from './army';

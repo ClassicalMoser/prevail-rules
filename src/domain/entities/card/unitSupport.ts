@@ -2,13 +2,19 @@ import type { AssertExact } from '@utils';
 import type { Trait } from '@ruleValues';
 import { traitSchema } from '@ruleValues';
 import { z } from 'zod';
+import {
+  GENERIC_UNIT_SUPPORT_TYPE,
+  TRAIT_UNIT_SUPPORT_TYPE,
+  UNIT_TYPE_UNIT_SUPPORT_TYPE,
+} from './unitSupportType';
+import type { UnitSupportType } from './unitSupportType';
 
 /**
  * Unit support for any units up to a count.
  */
 export interface GenericUnitSupport {
   /** Support applies to any units. */
-  supportType: 'generic';
+  supportType: typeof GENERIC_UNIT_SUPPORT_TYPE;
   /** The number of units that this card supports. */
   count: number;
 }
@@ -16,7 +22,7 @@ export interface GenericUnitSupport {
 const _genericUnitSupportSchemaObject = z
   .object({
     /** Support applies to any units. */
-    supportType: z.literal('generic'),
+    supportType: z.literal(GENERIC_UNIT_SUPPORT_TYPE),
     /** The number of units that this card supports. */
     count: z.int().min(1),
   })
@@ -44,7 +50,7 @@ const _assertExactGenericUnitSupport: AssertExact<
  */
 export interface TraitUnitSupport {
   /** Support applies to units with a specific trait. */
-  supportType: 'trait';
+  supportType: typeof TRAIT_UNIT_SUPPORT_TYPE;
   /** The trait that this card supports. */
   trait: Trait;
   /** The number of units that this card supports. */
@@ -54,7 +60,7 @@ export interface TraitUnitSupport {
 const _traitUnitSupportSchemaObject = z
   .object({
     /** Support applies to units with a specific trait. */
-    supportType: z.literal('trait'),
+    supportType: z.literal(TRAIT_UNIT_SUPPORT_TYPE),
     /** The trait that this card supports. */
     trait: traitSchema,
     /** The number of units that this card supports. */
@@ -83,7 +89,7 @@ const _assertExactTraitUnitSupport: AssertExact<
  */
 export interface UnitTypeUnitSupport {
   /** Support applies to a specific unit type. */
-  supportType: 'unitType';
+  supportType: typeof UNIT_TYPE_UNIT_SUPPORT_TYPE;
   /** The unit type ID that this card supports. */
   unitTypeId: string;
   /** The number of units that this card supports. */
@@ -93,7 +99,7 @@ export interface UnitTypeUnitSupport {
 const _unitTypeUnitSupportSchemaObject = z
   .object({
     /** Support applies to a specific unit type. */
-    supportType: z.literal('unitType'),
+    supportType: z.literal(UNIT_TYPE_UNIT_SUPPORT_TYPE),
     /** The unit type ID that this card supports. */
     unitTypeId: z.uuid(),
     /** The number of units that this card supports. */
@@ -143,3 +149,9 @@ export const unitSupportSchema: z.ZodType<UnitSupport> =
 
 const _assertExactUnitSupport: AssertExact<UnitSupport, UnitSupportSchemaType> =
   true;
+
+/** Every kind of unit support the list names has a variant, and no other. */
+const _assertSupportTypesMatchVariants: AssertExact<
+  UnitSupportType,
+  UnitSupport['supportType']
+> = true;

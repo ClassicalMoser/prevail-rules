@@ -6,7 +6,9 @@ export { commandSchema, commandSizes, commandTypes } from './command';
 export type { Modifier } from './modifiers';
 export { modifierSchema } from './modifiers';
 
-// Restrictions: no filter, trait filter, unit-type filter, then the union.
+// Restrictions: which filter, then no filter, trait filter, unit-type filter, then the union.
+export { restrictionTypes } from './restrictionType';
+export type { RestrictionType } from './restrictionType';
 export type {
   NoTypeRestrictions,
   TraitRestrictions,
@@ -24,8 +26,15 @@ export {
 export type { RoundEffect } from './roundEffect';
 export { roundEffectSchema } from './roundEffect';
 
-// Unit support
-export type { UnitSupport } from './unitSupport';
+// Unit support: which kind, then any unit, a trait, or a unit type, then the union.
+export { unitSupportTypes } from './unitSupportType';
+export type { UnitSupportType } from './unitSupportType';
+export type {
+  GenericUnitSupport,
+  TraitUnitSupport,
+  UnitTypeUnitSupport,
+  UnitSupport,
+} from './unitSupport';
 export { unitSupportSchema } from './unitSupport';
 
 // Command cards
