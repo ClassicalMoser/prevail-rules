@@ -337,7 +337,6 @@ export type {
   GameState,
   AuthoritativeGameState,
   BlackSeenGameState,
-  GameStateBase,
   SpectatorGameState,
   WhiteSeenGameState,
   GameStateVisibility,

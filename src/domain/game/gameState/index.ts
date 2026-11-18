@@ -1,9 +1,6 @@
 // Visibility
 export type { GameStateVisibility } from './gameStateVisibility';
 
-// What every view shares
-export type { GameStateBase } from './gameStateBase';
-
 // Authoritative
 export { authoritativeGameStateSchema } from './authoritativeGameState';
 export type { AuthoritativeGameState } from './authoritativeGameState';

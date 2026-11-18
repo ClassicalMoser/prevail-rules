@@ -14,6 +14,11 @@ import { whiteSeenGameStateSchema } from './whiteSeenGameState';
 /**
  * Game state at any visibility: the union of the four views, told apart by
  * `visibility`, so a `switch` on it narrows the state and its cards together.
+ *
+ * Every view holds the board, who has initiative, and what has been lost.
+ * A view adds its `visibility`, the cards that visibility may read, and the
+ * round with the event log it may read. Board size lives only on
+ * `Board.boardType` (`boardState.boardType`).
  */
 export type GameState =
   | AuthoritativeGameState

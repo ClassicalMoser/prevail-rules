@@ -1,27 +1,37 @@
 import type { AssertExact } from '@utils';
 import type { AuthoritativeCardState } from '@game/cardState';
-import type { GameStateBase } from './gameStateBase';
 
-import type {
-  boardSchema,
-  playerSideSchema,
-  unitInstanceSchema,
-} from '@entities';
+import type { Board, PlayerSide, UnitInstance } from '@entities';
+import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import type { AuthoritativeRoundState } from '@game/roundState';
 
 import { z } from 'zod';
 import { authoritativeRoundStateSchema } from '@game/roundState';
 import { authoritativeCardStateSchema } from '@game/cardState';
-import { gameStateBaseSchema } from './gameStateBase';
 
 /**
  * The game state as the full record: both hands in view.
  * The `visibility` tag names the view, and the card state is the one that
  * view may read, so the two cannot disagree.
  */
-export interface AuthoritativeGameState extends GameStateBase {
+export interface AuthoritativeGameState {
   /** The view this state is. */
   visibility: 'authoritative';
+  /** Which player currently has initiative. */
+  currentInitiative: PlayerSide;
+  /** Units not yet placed on the board. */
+  reservedUnits: UnitInstance[];
+  /** The units that have been routed during the game. */
+  routedUnits: UnitInstance[];
+  /** The commanders that have been lost during the game. */
+  lostCommanders: PlayerSide[];
+  /** Board and piece layout. */
+  boardState: Board;
+  /**
+   * Set by `gameOver` apply. Absent while the game is ongoing. Every
+   * ending names a winner — there is no draw in this game (§11.3).
+   */
+  winner?: PlayerSide;
   /** The round, with the event log this view may read. */
   currentRoundState: AuthoritativeRoundState;
   /** The cards this view may read. */
@@ -38,15 +48,19 @@ const _authoritativeGameStateSchemaObject: z.ZodObject<{
   winner: z.ZodOptional<typeof playerSideSchema>;
   cardState: typeof authoritativeCardStateSchema;
   visibility: z.ZodLiteral<'authoritative'>;
-}> = gameStateBaseSchema.merge(
-  z
-    .object({
-      currentRoundState: authoritativeRoundStateSchema,
-      cardState: authoritativeCardStateSchema,
-      visibility: z.literal('authoritative'),
-    })
-    .strict(),
-);
+}> = z
+  .object({
+    boardState: boardSchema,
+    cardState: authoritativeCardStateSchema,
+    currentInitiative: playerSideSchema,
+    currentRoundState: authoritativeRoundStateSchema,
+    lostCommanders: z.array(playerSideSchema),
+    reservedUnits: z.array(unitInstanceSchema),
+    routedUnits: z.array(unitInstanceSchema),
+    visibility: z.literal('authoritative'),
+    winner: playerSideSchema.optional(),
+  })
+  .strict();
 
 type AuthoritativeGameStateSchemaType = z.infer<
   typeof _authoritativeGameStateSchemaObject

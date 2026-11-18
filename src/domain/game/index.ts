@@ -14,7 +14,6 @@ export type {
   AuthoritativeGameState,
   BlackSeenGameState,
   GameState,
-  GameStateBase,
   GameStateVisibility,
   OwnedPlayerForGameState,
   SpectatorGameState,
