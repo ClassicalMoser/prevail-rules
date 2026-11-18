@@ -1,6 +1,7 @@
 import type { Army } from '@entities';
 import { armySchema } from '@entities';
 import type { z } from 'zod';
+import { isWithinUnitTypeLimit } from './limits';
 
 /**
  * Adds Zod issues for the army rules that hold in every game mode: no unit
@@ -19,7 +20,7 @@ export function refineArmyRules(
 ): void {
   // Each unit type carries its own limit on how many may be fielded.
   for (const [index, unit] of army.units.entries()) {
-    if (unit.count > unit.unitType.limit) {
+    if (!isWithinUnitTypeLimit(unit.count, unit.unitType.limit)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Count must be less than or equal to unit type limit.',

@@ -9,6 +9,12 @@ import {
   armyCompositionByMode,
   armyCompositionInitiatives,
 } from './armyComposition';
+import {
+  isWithinMaxArmyCost,
+  isWithinMaxUnitTypeCount,
+  meetsCardsPerInitiative,
+  meetsMinMoraleValue,
+} from './limits';
 
 /**
  * Where an army stands against one limit of its game mode: what it holds,
@@ -59,7 +65,7 @@ export function getArmyCompositionStatus(
   const unitTypeCountValue = army.units.length;
   const unitTypeCount: ArmyLimitStatus = {
     limit: rules.maxUnitTypeCount,
-    met: unitTypeCountValue <= rules.maxUnitTypeCount,
+    met: isWithinMaxUnitTypeCount(unitTypeCountValue, rules.maxUnitTypeCount),
     value: unitTypeCountValue,
   };
 
@@ -68,7 +74,7 @@ export function getArmyCompositionStatus(
   const costValue = getArmyCost(army);
   const cost: ArmyLimitStatus = {
     limit: rules.maxArmyCost,
-    met: rules.maxArmyCost === null || costValue <= rules.maxArmyCost,
+    met: isWithinMaxArmyCost(costValue, rules.maxArmyCost),
     value: costValue,
   };
 
@@ -77,7 +83,7 @@ export function getArmyCompositionStatus(
   const moraleValue = getArmyMorale(army);
   const morale: ArmyLimitStatus = {
     limit: rules.minMoraleValue,
-    met: rules.minMoraleValue === null || moraleValue >= rules.minMoraleValue,
+    met: meetsMinMoraleValue(moraleValue, rules.minMoraleValue),
     value: moraleValue,
   };
 
@@ -86,11 +92,9 @@ export function getArmyCompositionStatus(
   // by any hand.
   const counts = countCommandCardsByInitiative(army);
   const { cardsPerInitiative: required } = rules;
-  const balanced =
-    required === null ||
-    armyCompositionInitiatives.every(
-      (initiative) => counts[initiative] === required,
-    );
+  const balanced = armyCompositionInitiatives.every((initiative) =>
+    meetsCardsPerInitiative(counts[initiative], required),
+  );
   const cardsPerInitiative: ArmyLimitStatus<Record<number, number>> = {
     limit: required,
     met: balanced,
