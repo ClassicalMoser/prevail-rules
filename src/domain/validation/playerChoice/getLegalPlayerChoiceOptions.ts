@@ -45,7 +45,7 @@ import type {
   MoveResult,
 } from '@legality';
 import {
-  findCommanderSpace,
+  getCommanderSpace,
   getMovementResolutionState,
   modifiersFromCompletedCommitment,
 } from '@queries';
@@ -111,7 +111,7 @@ export interface LegalPlayerChoiceOptionsByChoice {
   /** Where the commander may go, from where it stands (§4.2). */
   moveCommander: {
     playerSource: PlayerSide;
-    startingCoordinate: Coordinate | null;
+    startingCoordinate: Coordinate;
     destinations: Coordinate[];
   };
   /** The commanded units still able to move (§4.3.9). */
@@ -335,18 +335,11 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       };
     }
     case 'moveCommander': {
-      // The first player moves their commander, then the second (§4.2.1); offer
-      // where this commander may go, or nothing if it is not on the board.
-      const startingCoordinate =
-        findCommanderSpace(player, state.boardState) ?? null;
-      if (startingCoordinate === null) {
-        return {
-          ...base,
-          choiceType: 'moveCommander',
-          destinations: [],
-          startingCoordinate: null,
-        };
-      }
+      // The first player moves their commander, then the second (§4.2.1);
+      // offer where this commander may go. A fallen commander's turn is
+      // passed over before this is asked (§4.2.8), so the commander must be
+      // on the board, and its absence throws.
+      const startingCoordinate = getCommanderSpace(player, state.boardState);
       return {
         ...base,
         choiceType: 'moveCommander',
