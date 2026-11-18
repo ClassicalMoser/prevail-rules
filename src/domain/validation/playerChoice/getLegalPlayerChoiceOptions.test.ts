@@ -247,19 +247,17 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.rangedAttackers.attackers).toStrictEqual([attacker]);
   });
 
-  it('offers no destinations when the commander is not on the board, rather than nothing at all', () => {
-    // Commanders move, but Black's has fallen and is not on the board (§4.2.8).
+  it('throws when the commander asked to move is not on the board', () => {
+    // Commanders move, but Black's is not on the board. A fallen commander's
+    // turn is passed over before this choice is asked (§4.2.8), so being
+    // asked here is a fault, and it fails loudly.
     const state = updatePhaseState(underWay(), {
       phase: 'moveCommanders',
       step: 'moveFirstCommander',
     });
 
-    // The choice is still owed; it simply has nowhere to go.
-    expect(getLegalPlayerChoiceOptions(state)).toMatchObject({
-      choiceType: 'moveCommander',
-      destinations: [],
-      playerSource: 'black',
-      startingCoordinate: null,
-    });
+    expect(() => getLegalPlayerChoiceOptions(state)).toThrow(
+      'The black commander is not on the board',
+    );
   });
 });
