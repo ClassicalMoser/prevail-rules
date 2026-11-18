@@ -13,7 +13,7 @@ Game (authoritative)
   └─ GameState (told apart by `visibility`)
        ├─ AuthoritativeGameState | WhiteSeenGameState | BlackSeenGameState | SpectatorGameState
        ├─ boardState, cardState, reserved/routed units, …
-       └─ RoundState (AuthoritativeRoundState: the log as made; SeenRoundState: the log as a viewer received it)
+       └─ RoundState (the same in every view)
             └─ PhaseState (discriminated on phase)
                  └─ step + nested resolution state
                       └─ Substeps (movement, melee, attack apply, engagement, rally, …)

@@ -1,12 +1,3 @@
-// One round: phase progress, commanded units, and the event log.
-export {
-  authoritativeRoundStateSchema,
-  roundStateSchema,
-  seenRoundStateSchema,
-} from './roundState';
-export type {
-  AuthoritativeRoundState,
-  RoundState,
-  RoundStateBase,
-  SeenRoundState,
-} from './roundState';
+// One round: its number, its phases, and the units commanded so far.
+export { roundStateSchema } from './roundState';
+export type { RoundState } from './roundState';

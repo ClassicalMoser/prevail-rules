@@ -42,17 +42,8 @@ export type {
 } from './cardState';
 
 // Round
-export {
-  authoritativeRoundStateSchema,
-  roundStateSchema,
-  seenRoundStateSchema,
-} from './roundState';
-export type {
-  AuthoritativeRoundState,
-  RoundState,
-  RoundStateBase,
-  SeenRoundState,
-} from './roundState';
+export { roundStateSchema } from './roundState';
+export type { RoundState } from './roundState';
 
 // Phases (play order)
 export {

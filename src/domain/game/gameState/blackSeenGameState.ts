@@ -3,10 +3,10 @@ import type { BlackSeenCardState } from '@game/cardState';
 
 import type { Board, PlayerSide, UnitInstance } from '@entities';
 import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
-import type { SeenRoundState } from '@game/roundState';
+import type { RoundState } from '@game/roundState';
 
 import { z } from 'zod';
-import { seenRoundStateSchema } from '@game/roundState';
+import { roundStateSchema } from '@game/roundState';
 import { blackSeenCardStateSchema } from '@game/cardState';
 
 /**
@@ -32,8 +32,8 @@ export interface BlackSeenGameState {
    * ending names a winner — there is no draw in this game (§11.3).
    */
   winner?: PlayerSide;
-  /** The round, with the event log this view may read. */
-  currentRoundState: SeenRoundState;
+  /** The round in progress. */
+  currentRoundState: RoundState;
   /** The cards this view may read. */
   cardState: BlackSeenCardState;
 }
@@ -41,7 +41,7 @@ export interface BlackSeenGameState {
 const _blackSeenGameStateSchemaObject: z.ZodObject<{
   boardState: typeof boardSchema;
   currentInitiative: typeof playerSideSchema;
-  currentRoundState: typeof seenRoundStateSchema;
+  currentRoundState: typeof roundStateSchema;
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
@@ -53,7 +53,7 @@ const _blackSeenGameStateSchemaObject: z.ZodObject<{
     boardState: boardSchema,
     cardState: blackSeenCardStateSchema,
     currentInitiative: playerSideSchema,
-    currentRoundState: seenRoundStateSchema,
+    currentRoundState: roundStateSchema,
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),

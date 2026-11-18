@@ -34,7 +34,6 @@ export function applyRoundEndEvent<S extends GameState>(
     commandedUnits: [],
     completedPhases: [],
     currentPhaseState: newPhaseState,
-    events: [],
     roundNumber: newRoundNumber,
   });
 

@@ -394,9 +394,7 @@ export {
   rallyResolutionStateSchema,
   resolveMeleePhaseStateSchema,
   resolveMeleePhaseSteps,
-  authoritativeRoundStateSchema,
   roundStateSchema,
-  seenRoundStateSchema,
 } from '@game';
 export {
   rangedAttackResolutionStateSchema,
@@ -428,10 +426,7 @@ export type {
   PhaseStepsByPhase,
   PhaseStep,
   PhaseStepRecord,
-  AuthoritativeRoundState,
   RoundState,
-  RoundStateBase,
-  SeenRoundState,
 } from '@game';
 export type {
   CommandResolutionState,

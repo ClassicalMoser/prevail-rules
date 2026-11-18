@@ -25,7 +25,7 @@ export type EventType = (typeof eventTypes)[number];
 /** The schema for the type of an event. */
 export const eventTypeSchema: z.ZodType<EventType> = z.enum(eventTypes);
 
-/** Any event, as a round's log records it. */
+/** Any event, as the game's stream records it. */
 export type Event = PlayerChoiceEvent | GameEffectEvent;
 
 /**

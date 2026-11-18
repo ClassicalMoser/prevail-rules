@@ -38,7 +38,6 @@ function shell(board: Board): AuthoritativeGameState {
       commandedUnits: [],
       completedPhases: [],
       currentPhaseState: 'none',
-      events: [],
       roundNumber: 0,
     },
     // No units or commanders initialized yet.
