@@ -18,6 +18,8 @@ import { routStateSchema } from '../combatOutcomes';
  * If units were routed, the player must pay a discard penalty.
  */
 export interface RallyResolutionState {
+  /** The type of the substep. */
+  substepType: 'rallyResolution';
   /** Whether the player chose to rally. */
   playerRallied: boolean;
   /** Whether the rally has been resolved. */
@@ -32,6 +34,8 @@ export interface RallyResolutionState {
 
 const _rallyResolutionStateSchemaObject = z
   .object({
+    /** The type of the substep. */
+    substepType: z.literal('rallyResolution'),
     /** Whether the player chose to rally. */
     playerRallied: z.boolean(),
     /** Whether the rally has been resolved. */
@@ -51,6 +55,7 @@ type RallyResolutionStateSchemaType = z.infer<
 
 /** The schema for the rally resolution state. */
 export const rallyResolutionStateSchema: z.ZodObject<{
+  substepType: z.ZodLiteral<'rallyResolution'>;
   playerRallied: z.ZodBoolean;
   rallyResolved: z.ZodBoolean;
   unitsLostSupport: z.ZodType<UnitInstance[] | 'pending'>;

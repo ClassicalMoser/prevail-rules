@@ -45,6 +45,7 @@ describe('markPhaseAsComplete function', () => {
         playerRallied: true,
         rallyResolved: false,
         routState: 'pending',
+        substepType: 'rallyResolution',
         unitsLostSupport: 'pending',
       },
       phase: CLEANUP_PHASE,

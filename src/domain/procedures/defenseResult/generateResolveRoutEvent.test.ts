@@ -143,6 +143,7 @@ describe('generateResolveRoutEvent function', () => {
             substepType: 'rout',
             unitsToRout: [unit],
           },
+          substepType: 'rallyResolution',
           unitsLostSupport: [],
         },
         step: 'firstPlayerResolveRally',

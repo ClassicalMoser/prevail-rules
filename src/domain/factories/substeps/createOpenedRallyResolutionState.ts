@@ -15,6 +15,7 @@ export function createOpenedRallyResolutionState(
     playerRallied,
     rallyResolved: false,
     routState: 'pending',
+    substepType: 'rallyResolution',
     unitsLostSupport: 'pending',
   };
   return rallyState;

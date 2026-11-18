@@ -8,6 +8,7 @@ describe('createOpenedRallyResolutionState function', () => {
       playerRallied: true,
       rallyResolved: false,
       routState: 'pending',
+      substepType: 'rallyResolution',
       unitsLostSupport: 'pending',
     });
   });
