@@ -1,6 +1,6 @@
 import type { PlayerSide } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import type { Game } from '@game';
+import type { Game, WhiteSeenProjectedGame } from '@game';
 import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
 
 import { createInitialGameState } from '@factories';
@@ -141,5 +141,17 @@ describe('projectGameForVisibility function', () => {
     expect(projected.openingState.cardState.black.inHand).toStrictEqual(
       blackMiniStarterArmy.commandCards,
     );
+  });
+
+  it("gives back the named view's game, so a seat's caller need not narrow it", () => {
+    // White's seat names its view, and the result is typed as white's game
+    // without a check: this line does not compile if it is any wider.
+    const white: WhiteSeenProjectedGame = projectGameForVisibility(
+      gameWithBothCardsChosen(),
+      'whiteSeen',
+    );
+
+    // And it is white's game at run time too.
+    expect(white.visibility).toBe('whiteSeen');
   });
 });

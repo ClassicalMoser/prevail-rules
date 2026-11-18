@@ -1,4 +1,12 @@
-import type { Game, GameStateVisibility, ProjectedGame } from '@game';
+import type {
+  AuthoritativeProjectedGame,
+  BlackSeenProjectedGame,
+  Game,
+  GameStateVisibility,
+  ProjectedGame,
+  SpectatorProjectedGame,
+  WhiteSeenProjectedGame,
+} from '@game';
 
 import { createInitialGameState } from '@factories';
 import { projectBlackSeenGameState } from './projectBlackSeenGameState';
@@ -15,10 +23,33 @@ import { projectWhiteSeenGameState } from './projectWhiteSeenGameState';
  * replaying the one from the other gives every state that viewer has seen.
  * The current state comes along so the client need not replay to draw it.
  *
+ * One signature per view, so a caller that names the view gets that view's
+ * game back and need not narrow it: a seat's socket sends only its own view.
+ *
  * @param game - The game as the server keeps it
  * @param visibility - What the viewer may see
  * @returns The game in that viewer's view
  */
+export function projectGameForVisibility(
+  game: Game,
+  visibility: 'authoritative',
+): AuthoritativeProjectedGame;
+export function projectGameForVisibility(
+  game: Game,
+  visibility: 'whiteSeen',
+): WhiteSeenProjectedGame;
+export function projectGameForVisibility(
+  game: Game,
+  visibility: 'blackSeen',
+): BlackSeenProjectedGame;
+export function projectGameForVisibility(
+  game: Game,
+  visibility: 'spectator',
+): SpectatorProjectedGame;
+export function projectGameForVisibility(
+  game: Game,
+  visibility: GameStateVisibility,
+): ProjectedGame;
 export function projectGameForVisibility(
   game: Game,
   visibility: GameStateVisibility,
@@ -37,7 +68,7 @@ export function projectGameForVisibility(
   switch (visibility) {
     case 'authoritative': {
       // Every card is in view, so nothing is turned face down.
-      const authoritative: ProjectedGame = {
+      const authoritative: AuthoritativeProjectedGame = {
         blackPlayer,
         events: game.events,
         gameMode,
@@ -51,7 +82,7 @@ export function projectGameForVisibility(
     }
     case 'whiteSeen': {
       // White's seat reads its own cards, and the card black chose is face down.
-      const whiteSeen: ProjectedGame = {
+      const whiteSeen: WhiteSeenProjectedGame = {
         blackPlayer,
         events: game.events.map((event) =>
           projectEventForVisibility(event, 'white'),
@@ -67,7 +98,7 @@ export function projectGameForVisibility(
     }
     case 'blackSeen': {
       // Black's seat reads its own cards, and the card white chose is face down.
-      const blackSeen: ProjectedGame = {
+      const blackSeen: BlackSeenProjectedGame = {
         blackPlayer,
         events: game.events.map((event) =>
           projectEventForVisibility(event, 'black'),
@@ -83,7 +114,7 @@ export function projectGameForVisibility(
     }
     case 'spectator': {
       // A spectator holds neither hand, so both chosen cards are face down.
-      const spectator: ProjectedGame = {
+      const spectator: SpectatorProjectedGame = {
         blackPlayer,
         events: game.events.map((event) =>
           projectEventForVisibility(event, 'spectator'),
