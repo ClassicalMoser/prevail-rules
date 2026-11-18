@@ -63,7 +63,6 @@ Audit in this order (dependencies flow downward):
 ### `game/` (`@game`)
 
 - [ ] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
-  - Arrived after the read: `gameState/gameStateBase`
   - Changed after the read, for the next one: a game state is four named visibility variants over a shared base, not a type argument (`gameState/`); round state is split into authoritative and seen (`roundState/`); a `Game` holds the authoritative state only.
   - [ ] `cardState/`
   - [ ] `commitment/`
