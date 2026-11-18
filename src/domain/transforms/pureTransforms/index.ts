@@ -72,6 +72,7 @@ export {
 export {
   addUnitsToCommandedUnits,
   addUnitToBoard,
+  addEngagingUnitToBoard,
   addUnitToRouted,
   moveUnitOnBoard,
   removeUnitFromBoard,
