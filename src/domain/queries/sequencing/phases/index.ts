@@ -3,7 +3,6 @@ export { getCurrentPhaseState } from './getCurrentPhaseState';
 export { getPlayCardsPhaseState } from './getPlayCardsPhaseState';
 export { getMoveCommandersPhaseState } from './getMoveCommandersPhaseState';
 // Whose commander moves next, passing over a side whose commander has fallen.
-export { getMoveCommandersStepFrom } from './getMoveCommandersStepFrom';
 export { getMoveCommandersStepAfter } from './getMoveCommandersStepAfter';
 export { getIssueCommandsPhaseState } from './getIssueCommandsPhaseState';
 // Who still has something to give or to do in Phase 3, by player.
