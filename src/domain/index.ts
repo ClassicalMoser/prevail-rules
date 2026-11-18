@@ -710,6 +710,7 @@ export {
   createEmptyStandardBoard,
   createInitialGameState,
   createUnitInstance,
+  getCoordinateLayout,
   largeCoordinateLayout,
   smallCoordinateLayout,
   standardCoordinateLayout,
