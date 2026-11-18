@@ -4,41 +4,30 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
 } from '@events';
-import {
-  getFlankEngagementStateFromMovement,
-  getOppositeFacing,
-  getSingleUnitWithPlacementAtCoordinate,
-} from '@queries';
+import { getFlankEngagementStateFromMovement } from '@queries';
+
 /**
- * Generates a ResolveFlankEngagementEvent by calculating the new facing
- * for the defending unit in a flank engagement.
- * The defending unit is forced to rotate to face the engaging unit
- * (opposite of the engaging unit's facing).
+ * Generates a ResolveFlankEngagementEvent once a move has engaged its
+ * defender from the flank (§6.3.4). The event carries nothing: where the
+ * attacker's move ends is the movement's record, the defender is the one unit
+ * in that space, and setting the attacker down turns the defender to face it.
+ *
+ * The expected engine asks for it only during a flank engagement, so being
+ * asked anywhere else is the caller's mistake and throws.
  *
  * @param state - The current game state
- * @returns Event with `defenderWithPlacement` snapshot and computed `newFacing`
- * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
+ * @returns A complete ResolveFlankEngagementEvent
+ * @throws Error when no flank engagement is under way
  */
 export function generateResolveFlankEngagementEvent(
   state: GameState,
 ): ResolveFlankEngagementEvent {
-  const engagementState = getFlankEngagementStateFromMovement(state);
+  // Only a flank engagement turns its defender.
+  getFlankEngagementStateFromMovement(state);
 
-  const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
-    state.boardState,
-    engagementState.targetPlacement.coordinate,
-  );
-
-  // Get the engaging unit's facing
-  const engagingFacing = engagementState.targetPlacement.facing;
-
-  // Defending unit rotates to face the engaging unit (opposite of engaging unit's facing)
-  const newFacing = getOppositeFacing(engagingFacing);
-
-  return {
-    defenderWithPlacement,
+  const event: ResolveFlankEngagementEvent = {
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    newFacing,
   };
+  return event;
 }

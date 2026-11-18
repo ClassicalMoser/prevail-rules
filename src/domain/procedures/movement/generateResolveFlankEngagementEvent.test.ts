@@ -1,66 +1,57 @@
-import type { GameState } from '@game';
+import type { CommandResolutionState, GameState } from '@game';
+import { createEmptyGameState } from '@factories';
 import {
   createFlankEngagementState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
-  createTestUnit,
-  placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
 
-import { createEmptyGameState } from '@factories';
-/**
- * When a unit moves into a single enemy's space, it must engage.
- * From the flank, the defender is rotated to face the engager — in state that means
- * issueCommands + movement resolution with flank engagement on the defender's cell.
- * This procedure reads that state, snapshots the defender at the engagement target,
- * and sets newFacing to the opposite of the engaging facing on targetPlacement (not the defender's on-board facing).
- */
+/** Phase 3, carrying out the Move order this test built. */
+function issueCommands(state: GameState, movement: CommandResolutionState) {
+  const issuing = updatePhaseState(
+    state,
+    createIssueCommandsPhaseState(state, {
+      currentCommandResolutionState: movement,
+    }),
+  );
+  return issuing;
+}
+
+/** A defender engaged from the flank is turned to face its attacker (§6.3.4). */
 describe('generateResolveFlankEngagementEvent function', () => {
-  it('snapshots the defender and sets newFacing opposite the engager on a flank engagement', () => {
-    // Baseline game state (testing helper supplies placeholder cards on inPlay).
+  it('carries nothing, since the movement and the board hold the attacker and the defender', () => {
     const state = createEmptyGameState('standard');
-    // CreateMovementResolutionState reads black.inPlay for commitment.card — required factory input, not part of this procedure's contract.
     state.cardState.black.inPlay = createTestCard();
-
-    const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
-    // Factory default: targetPlacement E-5 facing north (engaging facing). If that default changes, expected newFacing below must change with it.
-    const defenderPlacement = placed(
-      defender,
-      flank.targetPlacement.coordinate,
-      'east',
-    );
-
-    // Defender must occupy the engagement target cell so getSingleUnitWithPlacementAtCoordinate can resolve them.
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defenderPlacement),
-    };
-
-    // Movement target and engagement target must agree — the procedure reads flank state from movement resolution.
-    const movement = createMovementResolutionState(withBoard, {
+    const movement = createMovementResolutionState(state, {
       engagementState: flank,
       targetPlacement: flank.targetPlacement,
     });
 
-    const full: GameState = updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    expect(
+      generateResolveFlankEngagementEvent(issueCommands(state, movement)),
+    ).toStrictEqual({
+      effectType: 'resolveFlankEngagement',
+      eventType: 'gameEffect',
+    });
+  });
 
-    const event = generateResolveFlankEngagementEvent(full);
+  it('refuses a front engagement, whose defender is not turned', () => {
+    const state = createEmptyGameState('standard');
+    state.cardState.black.inPlay = createTestCard();
+    const front = createFrontEngagementState();
+    const movement = createMovementResolutionState(state, {
+      engagementState: front,
+      targetPlacement: front.targetPlacement,
+    });
 
-    expect(event.defenderWithPlacement.unit).toBe(defender);
-    expect(event.defenderWithPlacement.placement).toStrictEqual(
-      defenderPlacement.placement,
-    );
-    // Engaging facing north → defender rotates toward engager → opposite is south (independent of defender facing 'east' on the board).
-    expect(event.newFacing).toBe('south');
+    expect(() =>
+      generateResolveFlankEngagementEvent(issueCommands(state, movement)),
+    ).toThrow('Engagement type is not flank');
   });
 });

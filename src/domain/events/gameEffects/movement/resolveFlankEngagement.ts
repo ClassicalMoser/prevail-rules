@@ -1,6 +1,4 @@
-import type { UnitFacing, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitFacingSchema, unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -12,6 +10,10 @@ export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE =
  * A defender engaged from the flank is turned to face its attacker, directly
  * opposite it (§6.3.4). It may not retreat; the two fight in Phase 4.
  *
+ * Where the attacker's move ends is the movement's record, and the defender
+ * is the one unit in that space, so this carries nothing: applying it sets
+ * the attacker down beside the defender, and the pair faces each other.
+ *
  * `generateResolveFlankEngagementEvent` writes it, and `applyResolveFlankEngagementEvent` applies it.
  */
 export interface ResolveFlankEngagementEvent {
@@ -19,22 +21,14 @@ export interface ResolveFlankEngagementEvent {
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** Which effect this is. Game effects are told apart by it. */
   effectType: typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE;
-  /** The defender, and where it stands before it turns. */
-  defenderWithPlacement: UnitWithPlacement;
-  /** The facing it turns to: directly opposite its attacker's (§6.3.4). */
-  newFacing: UnitFacing;
 }
 
 const _resolveFlankEngagementEventSchemaObject = z
   .object({
-    /** The defender, and where it stands before it turns. */
-    defenderWithPlacement: unitWithPlacementSchema,
     /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
     /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    /** The facing it turns to: directly opposite its attacker's (§6.3.4). */
-    newFacing: unitFacingSchema,
   })
   .strict();
 
@@ -49,8 +43,6 @@ const _assertExactResolveFlankEngagementEvent: AssertExact<
 
 /** The schema for a resolve flank engagement event. */
 export const resolveFlankEngagementEventSchema: z.ZodObject<{
-  defenderWithPlacement: typeof unitWithPlacementSchema;
   effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  newFacing: typeof unitFacingSchema;
 }> = _resolveFlankEngagementEventSchemaObject;
