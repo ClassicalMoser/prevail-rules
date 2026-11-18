@@ -145,11 +145,6 @@ export function getBotChoice(
       return chooseOrder(options.issueCommands, context);
     }
     case 'moveCommander': {
-      if (options.startingCoordinate === null) {
-        throw new Error(
-          `${seat} was asked to move a general that is not on the board`,
-        );
-      }
       return chooseCommanderMove(
         options.startingCoordinate,
         options.destinations,
