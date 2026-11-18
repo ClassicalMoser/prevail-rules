@@ -13,6 +13,7 @@ function gameWith(gameState: AuthoritativeGameState): Game {
   const game: Game = {
     blackArmy: blackMiniStarterArmy,
     blackPlayer: '22222222-2222-4222-8222-222222222222',
+    events: [],
     gameMode: 'standard',
     gameState,
     id: gameId,

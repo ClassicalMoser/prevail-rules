@@ -38,7 +38,8 @@ export const startNewGame = async (
     whiteArmy: newGame.whiteArmy,
   });
 
-  const candidate: Game = { ...newGame, gameMode, gameState };
+  // Nothing has happened yet, so the game's stream is empty.
+  const candidate: Game = { ...newGame, events: [], gameMode, gameState };
   const legal = parseLegalGameForMode(gameMode, candidate);
   if (!legal.result) {
     return legal;

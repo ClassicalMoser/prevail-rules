@@ -32,6 +32,7 @@ function authoritativeGame(): Game {
   return {
     blackArmy: blackMiniStarterArmy,
     blackPlayer: '22222222-2222-4222-8222-222222222222',
+    events: [],
     gameMode: 'mini',
     gameState: {
       ...gameState,

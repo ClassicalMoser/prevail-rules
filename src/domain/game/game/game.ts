@@ -1,8 +1,10 @@
 import type { Army, GameModeName } from '@entities';
+import type { Event } from '@events';
 import type { AssertExact } from '@utils';
 import type { AuthoritativeGameState } from '@game/gameState';
 
 import { armySchema, gameModeNames } from '@entities';
+import { eventSchema } from '@events';
 import { z } from 'zod';
 import { authoritativeGameStateSchema } from '@game/gameState';
 
@@ -34,12 +36,21 @@ export interface Game {
   blackArmy: Army;
   /** The army brought by the white player. */
   whiteArmy: Army;
+  /**
+   * Every event of the game, in the order it was applied: round 0 (setup)
+   * first, and each round closed by its `roundEnd`. This is the game's
+   * record. Replaying it from the armies and the mode gives every state the
+   * game has passed through; `gameState` is the latest of them, kept so the
+   * game loads without a replay.
+   */
+  events: readonly Event[];
 }
 
 const _gameSchemaObject = z
   .object({
     blackArmy: armySchema,
     blackPlayer: z.uuid(),
+    events: z.array(eventSchema).readonly(),
     gameMode: z.enum(gameModeNames),
     gameState: authoritativeGameStateSchema,
     id: z.uuid(),
