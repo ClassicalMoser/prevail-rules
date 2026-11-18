@@ -12,7 +12,8 @@ import { projectWhiteSeenGameState } from './projectWhiteSeenGameState';
  * Projects the authoritative game state into what one viewer may see, for
  * wire reconcile. A seat hides the opponent's hand and awaiting card; a
  * spectator hides both. Public piles (in play, played, discarded, burnt) and
- * the board stay readable.
+ * the board stay readable. The authoritative view hides nothing, for a viewer
+ * the server lets see every card.
  *
  * @param state - The authoritative game state
  * @param visibility - What the viewer may see
@@ -20,9 +21,14 @@ import { projectWhiteSeenGameState } from './projectWhiteSeenGameState';
  */
 export function projectGameStateForVisibility(
   state: AuthoritativeGameState,
-  visibility: Exclude<GameStateVisibility, 'authoritative'>,
+  visibility: GameStateVisibility,
 ): GameState {
   switch (visibility) {
+    case 'authoritative': {
+      // Every card is in view, so nothing is turned face down.
+      const authoritative = state;
+      return authoritative;
+    }
     case 'whiteSeen': {
       // White keeps its own cards; black's private piles are hidden.
       const whiteSeen = projectWhiteSeenGameState(state);

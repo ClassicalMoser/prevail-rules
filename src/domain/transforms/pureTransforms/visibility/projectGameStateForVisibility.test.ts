@@ -32,6 +32,23 @@ function authoritativeState(): AuthoritativeGameState {
 }
 
 describe('projectGameStateForVisibility function', () => {
+  it('keeps both hands in the authoritative view', () => {
+    // The server's own record, with a card in each hand and one awaiting play.
+    const state = authoritativeState();
+    const projected = projectGameStateForVisibility(state, 'authoritative');
+
+    // Nothing is turned face down: both hands and the awaiting card are read.
+    expect(projected.cardState.visibility).toBe('authoritative');
+    expect(projected.cardState.black.inHand).toStrictEqual([
+      tempCommandCards[1],
+    ]);
+    expect(projected.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
+    expect(projected.cardState.white.inHand).toStrictEqual([
+      tempCommandCards[3],
+      tempCommandCards[4],
+    ]);
+  });
+
   it('projects whiteSeen with white owned and black hidden', () => {
     const projected = projectGameStateForVisibility(
       authoritativeState(),
