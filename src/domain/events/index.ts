@@ -155,6 +155,9 @@ export type { CommitToRangedDefenseEvent } from './playerChoices';
 export { commitToRangedDefenseEventSchema } from './playerChoices';
 export type { CommitToMeleeEvent } from './playerChoices';
 export { commitToMeleeEventSchema } from './playerChoices';
+// The four moments a card may be committed, and a commitment at any of them.
+export type { CommitmentChoiceType, CommitmentEvent } from './playerChoices';
+export { commitmentChoiceTypes } from './playerChoices';
 export type { ChooseMeleeResolutionEvent } from './playerChoices';
 export { chooseMeleeResolutionEventSchema } from './playerChoices';
 export type { ChooseWhetherToRetreatEvent } from './playerChoices';

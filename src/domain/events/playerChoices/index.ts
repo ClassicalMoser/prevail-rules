@@ -54,6 +54,13 @@ export { commitToRangedDefenseEventSchema } from './commitToRangedDefense';
 export type { CommitToMeleeEvent } from './commitToMelee';
 export { commitToMeleeEventSchema } from './commitToMelee';
 
+// The four moments a card may be committed, and a commitment at any of them.
+export type {
+  CommitmentChoiceType,
+  CommitmentEvent,
+} from './commitmentChoices';
+export { commitmentChoiceTypes } from './commitmentChoices';
+
 // Pick which melee engagement to resolve.
 export type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
 export { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
