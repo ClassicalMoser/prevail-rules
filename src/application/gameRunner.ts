@@ -1,4 +1,4 @@
-import type { GameModeName, PlayerSide } from '@entities';
+import type { GameModeName } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState, GameStateVisibility, ProjectedGame } from '@game';
 import type { EnginePorts, PortResponse } from './ports';
@@ -37,9 +37,9 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
   const requestGameStateSnapshot = (
     gameId: string,
     gameMode: GameModeName,
-    playerSide: PlayerSide,
+    visibility: GameStateVisibility,
   ): Promise<PortResponse<GameState>> =>
-    requestGameStateSnapshotFunction(gameId, gameMode, playerSide, ports);
+    requestGameStateSnapshotFunction(gameId, gameMode, visibility, ports);
 
   const requestGameRecord = (
     gameId: string,

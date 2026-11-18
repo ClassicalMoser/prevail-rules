@@ -1,4 +1,4 @@
-import type { GameModeName, PlayerSide } from '@entities';
+import type { GameModeName } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
 import type {
   Game,
@@ -35,13 +35,15 @@ export interface GameRunner {
     gameMode: GameModeName,
   ) => Promise<PortResponse<void>>;
   /**
-   * Returns the current game projected for `playerSide` (wire reconcile after
-   * refresh / missed updates). Opponent cards are hidden; board units are full.
+   * Returns the current game state as one viewer may see it (wire reconcile
+   * after refresh / missed updates), without its history. A seat's view hides
+   * the opponent's hand, a spectator's hides both, and the authoritative view
+   * hides nothing; board units are full in every view.
    */
   requestGameStateSnapshot: (
     gameId: string,
     gameMode: GameModeName,
-    playerSide: PlayerSide,
+    visibility: GameStateVisibility,
   ) => Promise<PortResponse<GameState>>;
   /**
    * Returns the whole game as one viewer may see it: the opening state, every

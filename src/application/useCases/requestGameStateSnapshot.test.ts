@@ -92,9 +92,37 @@ function projectAsBlackSeen(game: Game): BlackSeenGameState['cardState'] {
 }
 
 /**
- * RequestGameStateSnapshot: seat-projected current game for client reconcile.
+ * RequestGameStateSnapshot: the current game in one viewer's view, for client reconcile.
  */
 describe('requestGameStateSnapshot function', () => {
+  it('returns the authoritative state with both hands in view', async () => {
+    // The stored game holds one card in each hand.
+    const game = authoritativeGame();
+    const ports = createPorts(
+      vi.fn().mockResolvedValue({ data: game, result: true as const }),
+    );
+
+    const result = await requestGameStateSnapshot(
+      gameId,
+      'mini',
+      'authoritative',
+      ports,
+    );
+
+    expect(result.result).toBe(true);
+    if (!result.result) {
+      throw new Error('expected success');
+    }
+    // A viewer allowed every card reads both hands as they are.
+    expect(result.data.cardState.visibility).toBe('authoritative');
+    expect(result.data.cardState.black.inHand).toStrictEqual([
+      tempCommandCards[0],
+    ]);
+    expect(result.data.cardState.white.inHand).toStrictEqual([
+      tempCommandCards[1],
+    ]);
+  });
+
   it('returns blackSeen projection including opponent units on the board', async () => {
     const game = authoritativeGame();
     const ports = createPorts(
@@ -104,7 +132,7 @@ describe('requestGameStateSnapshot function', () => {
     const result = await requestGameStateSnapshot(
       gameId,
       'mini',
-      'black',
+      'blackSeen',
       ports,
     );
 
@@ -154,7 +182,7 @@ describe('requestGameStateSnapshot function', () => {
     );
 
     await expect(
-      requestGameStateSnapshot(gameId, 'mini', 'white', ports),
+      requestGameStateSnapshot(gameId, 'mini', 'whiteSeen', ports),
     ).resolves.toStrictEqual({
       errorReason: `Game ${gameId} not found`,
       result: false,
@@ -166,7 +194,7 @@ describe('requestGameStateSnapshot function', () => {
     const ports = createPorts(vi.fn());
 
     await expect(
-      requestGameStateSnapshot(gameId, 'mini', 'white', ports),
+      requestGameStateSnapshot(gameId, 'mini', 'whiteSeen', ports),
     ).resolves.toStrictEqual({
       errorReason: `Game ${gameId} not found`,
       result: false,
@@ -193,7 +221,7 @@ describe('requestGameStateSnapshot function', () => {
     );
 
     await expect(
-      requestGameStateSnapshot(gameId, 'mini', 'black', ports),
+      requestGameStateSnapshot(gameId, 'mini', 'blackSeen', ports),
     ).resolves.toStrictEqual({
       errorReason: expect.stringContaining('gameState.cardState.visibility'),
       result: false,
