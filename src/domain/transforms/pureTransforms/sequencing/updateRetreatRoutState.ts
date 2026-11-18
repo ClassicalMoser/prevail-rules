@@ -5,7 +5,7 @@ import { updateRetreatState } from './updateRetreatState';
 /**
  * Creates a new game state with the rout state updated within a retreat state.
  * Handles both ranged attack resolution (issueCommands phase) and melee resolution (resolveMelee phase).
- * It writes the rout only; the retreat holding it closes in {@link settleRout}.
+ * It writes the rout only; the retreat holding it closes in `settleRout`.
  * Uses composed retreat-state query and updateRetreatState to avoid repetition.
  *
  * @param state - The current game state

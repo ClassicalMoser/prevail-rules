@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the complete attack apply game effect. */
+/** The literal discriminant for the complete attack apply game effect. */
 export const COMPLETE_ATTACK_APPLY_EFFECT_TYPE = 'completeAttackApply' as const;
 
 /**

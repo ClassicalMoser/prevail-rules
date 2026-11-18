@@ -6,7 +6,7 @@ import { findRoutLocation } from './findRoutLocation';
  * The rout this player owes cards for, or `undefined` when they are not
  * routing.
  *
- * This is `findRoutLocation` for a caller that needs the rout and not the
+ * This is {@link findRoutLocation} for a caller that needs the rout and not the
  * parent holding it, which is most of them: only `resolveRout` has to name the
  * parent it will write back to.
  *

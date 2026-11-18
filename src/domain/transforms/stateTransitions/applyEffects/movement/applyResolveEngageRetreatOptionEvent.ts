@@ -9,7 +9,7 @@ import {
  * Applies a ResolveEngageRetreatOptionEvent to the game state: the retreats
  * the defender may make are recorded in the front engagement. With none, the
  * defender stands and the engagement ends here.
- * Uses {@link getFrontEngagementStateFromMovement} (panicky narrowing) instead of a manual
+ * Uses `getFrontEngagementStateFromMovement` (panicky narrowing) instead of a manual
  * front-type check.
  *
  * @param event - The resolve engage retreat option event to apply

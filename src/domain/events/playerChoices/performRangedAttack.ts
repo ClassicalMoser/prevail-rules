@@ -4,7 +4,7 @@ import { playerSideSchema, unitWithPlacementSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the perform ranged attack event. */
+/** The literal discriminant for the perform ranged attack player choice. */
 export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack' as const;
 
 /**

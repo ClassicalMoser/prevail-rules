@@ -48,7 +48,7 @@ function modifiersKey(modifiers: Modifier[] | undefined): string {
 
 /**
  * A unit's stat as the rules give it in this view, with any committed card's
- * modifiers (`getRawUnitStat`), remembered for the view.
+ * modifiers ({@link getRawUnitStat}), remembered for the view.
  *
  * @param view - The game as the bot sees it
  * @param unit - The unit
@@ -74,7 +74,7 @@ export function recallStat(
 
 /**
  * Which of a unit's thresholds an attack value meets in this view
- * (`applyAttackValue`, §7.5.1), remembered for the view.
+ * ({@link applyAttackValue}, §7.5.1), remembered for the view.
  *
  * @param view - The game as the bot sees it
  * @param attackValue - The attack landing on it

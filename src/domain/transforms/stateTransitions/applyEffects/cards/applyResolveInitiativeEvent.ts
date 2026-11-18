@@ -13,7 +13,7 @@ import {
  * step to `complete`.
  *
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
- * log. Phase is narrowed via `getPlayCardsPhaseState` (throws if not `playCards`).
+ * log. Phase is narrowed via {@link getPlayCardsPhaseState} (throws if not `playCards`).
  *
  * @param event - The resolve initiative event to apply
  * @param state - The current game state

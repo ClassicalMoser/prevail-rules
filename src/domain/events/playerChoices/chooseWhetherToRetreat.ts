@@ -4,7 +4,7 @@ import { playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose whether to retreat event. */
+/** The literal discriminant for the choose whether to retreat player choice. */
 export const CHOOSE_WHETHER_TO_RETREAT_CHOICE_TYPE =
   'chooseWhetherToRetreat' as const;
 

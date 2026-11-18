@@ -4,7 +4,7 @@ import { coordinateSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the move commander event. */
+/** The literal discriminant for the move commander player choice. */
 export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander' as const;
 
 /**

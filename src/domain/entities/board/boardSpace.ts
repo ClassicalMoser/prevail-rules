@@ -1,9 +1,9 @@
 /**
  * One cell of the board: terrain, elevation, water, and who occupies it.
  *
- * Coordinates key spaces on {@link Board.board}; this type is the value at
- * each key. Ground cover ({@link TerrainType}), corner heights
- * ({@link Elevation}), and edge water ({@link WaterCover}) are separate so
+ * Coordinates key spaces on `Board.board`; this type is the value at
+ * each key. Ground cover (`TerrainType`), corner heights
+ * ({@link Elevation}), and edge water (`WaterCover`) are separate so
  * queries can reason about each independently. Occupancy is
  * {@link UnitPresence} (none / single / engaged) plus a list of commander
  * sides currently on the space.

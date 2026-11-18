@@ -9,7 +9,7 @@ import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
  * empty coordinates in their provisional setup zone.
  *
  * The commander may be committed on any of {@link LegalSetupUnits.coordinates}
- * in the same {@link SetupUnitsEvent} (alone or stacked with a deployed unit).
+ * in the same `SetupUnitsEvent` (alone or stacked with a deployed unit).
  */
 export interface LegalSetupUnits {
   player: PlayerSide;
@@ -27,7 +27,7 @@ export interface LegalSetupUnits {
  *
  * Does not expand placement combinations — UI places each unit onto a zone
  * coordinate and picks a commander coordinate among the same empty zone cells;
- * {@link isValidSetupUnitsEvent} checks integrity of the commit.
+ * `isValidSetupUnitsEvent` checks integrity of the commit.
  *
  * @throws Error when the player has no units left to place
  */

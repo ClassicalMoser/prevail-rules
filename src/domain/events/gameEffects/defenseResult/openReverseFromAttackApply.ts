@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the openReverseFromAttackApply game effect. */
+/** The literal discriminant for the open reverse from attack apply game effect. */
 export const OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE =
   'openReverseFromAttackApply' as const;
 

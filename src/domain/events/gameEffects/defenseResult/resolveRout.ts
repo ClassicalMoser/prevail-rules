@@ -13,7 +13,7 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 
 import { z } from 'zod';
 
-/** The type of the resolve rout game effect. */
+/** The literal discriminant for the resolve rout game effect. */
 export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
 
 /**

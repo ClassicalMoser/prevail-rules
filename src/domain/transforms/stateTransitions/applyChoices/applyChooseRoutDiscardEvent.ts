@@ -18,7 +18,7 @@ import {
  * Routed units already left the board when the rout opened. This event only
  * settles the discard debt and closes the substep.
  *
- * Event is assumed pre-validated via {@link isValidChooseRoutDiscardEvent}.
+ * Event is assumed pre-validated via `isValidChooseRoutDiscardEvent`.
  *
  * The fold follows the shape of the hand it reads. Where the hand is in view
  * the cards leave it by id. Where it is not — an opponent's seat, or a

@@ -21,9 +21,8 @@ export const playerSources: PlayerSource[] = [
  * The next event is a player's choice: who makes it, and which choice. It
  * names only the kind of choice. The legal options are enumerated from the
  * state, board included, by `getLegalPlayerChoiceOptions`, and the choice
- * made is a {@link PlayerChoiceEvent}.
+ * made is a `PlayerChoiceEvent`.
  */
-// TODO(misleading): PlayerChoiceEvent is not imported here, so the link does not resolve.
 export interface ExpectedPlayerInput {
   /** Marks a player choice, not a game effect. */
   actionType: 'playerChoice';

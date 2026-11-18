@@ -3,7 +3,7 @@ import type { OpenChoice, ChoiceRefusal } from './openChoice';
 
 /**
  * Checks a choice made one part at a time against the enumerated legal options
- * (`OpenChoice`). Validators use it so they accept exactly the legal options,
+ * ({@link OpenChoice}). Validators use it so they accept exactly the legal options,
  * and keep no rules of their own.
  *
  * @param parts - The choice, part by part

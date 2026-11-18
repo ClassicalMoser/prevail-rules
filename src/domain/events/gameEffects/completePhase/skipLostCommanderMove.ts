@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the skip lost commander move game effect. */
+/** The literal discriminant for the skip lost commander move game effect. */
 export const SKIP_LOST_COMMANDER_MOVE_EFFECT_TYPE =
   'skipLostCommanderMove' as const;
 

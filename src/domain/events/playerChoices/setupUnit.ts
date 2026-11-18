@@ -8,7 +8,7 @@ import {
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the setup units event. */
+/** The literal discriminant for the setup units player choice. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
 /**

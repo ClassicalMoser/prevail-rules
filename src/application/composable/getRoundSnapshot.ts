@@ -4,7 +4,7 @@ import type { RoundSnapshotStorage } from '@application/ports';
 import { parseLegalGameStateForMode } from '../utils/parseLegalGame';
 
 /**
- * Loads a round snapshot through `RoundSnapshotStorage` and reads it as the
+ * Loads a round snapshot through {@link RoundSnapshotStorage} and reads it as the
  * authoritative game state of a game in `gameMode`, so everything downstream
  * can trust it.
  *

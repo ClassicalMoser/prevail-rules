@@ -15,7 +15,7 @@ import { getUnitByStatValue } from './getUnitByStatValue';
  *
  * @param playerSide - Which player the unit belongs to
  * @param options - Optional configuration for the unit
- * @param options.unitType - Specific unit type to use (if not provided, will use stat-based lookup in `tempUnits`)
+ * @param options.unitType - Specific unit type to use (if not provided, will use stat-based lookup in {@link tempUnits})
  * @param options.instanceNumber - Unit instance number (defaults to 1)
  * @param options.flexibility - Flexibility stat value (used if unitType not provided)
  * @param options.attack - Attack stat value (used if unitType not provided)
@@ -103,7 +103,7 @@ export function createTestUnit(
 }
 
 /**
- * Creates a unit instance by looking up a unit with a specific stat value in `tempUnits`.
+ * Creates a unit instance by looking up a unit with a specific stat value in {@link tempUnits}.
  *
  * @param playerSide - The player side of the unit
  * @param stat - The stat name to search by

@@ -4,7 +4,7 @@ import { coordinateSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose melee resolution event. */
+/** The literal discriminant for the choose melee resolution player choice. */
 export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
   'chooseMeleeResolution' as const;
 

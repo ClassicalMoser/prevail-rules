@@ -5,11 +5,11 @@ import { createUnitInstance } from '@factories/unit';
 import { createEmptyGameState } from './createEmptyGameState';
 
 /**
- * Builds a {@link GameState} for a new game: empty board and round state,
- * unit instances from each {@link Army} in {@link GameState.reservedUnits},
+ * Builds a `GameState` for a new game: empty board and round state,
+ * unit instances from each {@link Army} in `GameState.reservedUnits`,
  * and each army's command cards dealt into that side's `inHand`.
  *
- * Instance numbers are 1-indexed (`1..count`) to match {@link eachUnitPresentOnce}.
+ * Instance numbers are 1-indexed (`1..count`) to match `eachUnitPresentOnce`.
  */
 export function createInitialGameState(options: {
   gameMode: GameModeName;

@@ -9,10 +9,10 @@
  * subtree” when applying.
  *
  * ## Typing
- * Per-effect modules define a manual interface, a private Zod object, `AssertExact` tying
+ * Per-effect modules define a manual interface, a private Zod object, {@link AssertExact} tying
  * `z.infer` to that interface, and an exported schema typed for `isolatedDeclarations`.
  *
- * ## `gameEffects` import
+ * ## {@link gameEffects} import
  * From `@ruleValues/gameEffectTypes` only — not `@entities` (circular init with this file).
  */
 import type { GameEffectType } from '@ruleValues';

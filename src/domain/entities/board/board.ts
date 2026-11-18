@@ -1,7 +1,7 @@
 /**
  * Board state shape and Zod schema.
  *
- * Size is runtime state (`boardType`), not a TypeScript parameter on `Board`.
+ * Size is runtime state (`boardType`), not a TypeScript parameter on {@link Board}.
  * The map of spaces is typed against the full {@link Coordinate} union and
  * kept partial in the type; `refineBoardLayout` in `@legality` checks that
  * the keys present match exactly the layout for `boardType`.
@@ -23,7 +23,7 @@ export const boardType = ['standard', 'small', 'large'] as const;
 
 /**
  * Which coordinate layout this board uses.
- * Selects the board's layout in `@factories`; does not change the `Board` type shape.
+ * Selects the board's layout in `@factories`; does not change the {@link Board} type shape.
  */
 export type BoardType = (typeof boardType)[number];
 
@@ -51,7 +51,7 @@ export interface Board {
 
 /**
  * Wide object schema: avoid per-size `z.object({ 'A-1': … })` shapes that
- * leak literal keys into inference and fight a single `Board` type.
+ * leak literal keys into inference and fight a single {@link Board} type.
  *
  * `partialRecord` accepts any subset of coordinates. Exact equality with the
  * layout for the declared `boardType` is a rule in `@legality`

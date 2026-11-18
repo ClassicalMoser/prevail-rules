@@ -5,7 +5,7 @@ import { findRetreatLocation } from './findRetreatLocation';
  * The retreat this player is making, or `undefined` when they are not
  * retreating.
  *
- * This is `findRetreatLocation` for a caller that needs the retreat and not
+ * This is {@link findRetreatLocation} for a caller that needs the retreat and not
  * the parent holding it, which is most of them: only finishing a retreat has
  * to know whether it closes a front engagement.
  *

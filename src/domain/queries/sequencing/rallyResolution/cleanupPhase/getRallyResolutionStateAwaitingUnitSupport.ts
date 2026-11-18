@@ -6,8 +6,8 @@ import { isAwaitingUnitSupport } from './isAwaitingUnitSupport';
  * Rally resolution state for the current resolve-rally step after the rally burn effect has been
  * applied, but before support assignment has populated `unitsLostSupport`.
  *
- * Panicky narrowing for {@link applyAssignUnitSupportEvent} /
- * {@link applyUnitsLostSupportAfterRally}.
+ * Panicky narrowing for `applyAssignUnitSupportEvent` /
+ * `applyUnitsLostSupportAfterRally`.
  *
  * @param state - The current game state
  * @param player - The rallying player (must match the cleanup step)

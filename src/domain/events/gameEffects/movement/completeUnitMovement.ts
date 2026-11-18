@@ -2,7 +2,7 @@ import type { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
-/** The type of the complete unit movement game effect. */
+/** The literal discriminant for the complete unit movement game effect. */
 export const COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE =
   'completeUnitMovement' as const;
 

@@ -13,7 +13,7 @@ import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
  * target with that card counted (§4.3.11 step 3).
  *
  * Supporters for a chosen target are enumerated by
- * {@link getLegalRangedAttackSupporters}.
+ * `getLegalRangedAttackSupporters`.
  */
 export interface LegalShooterTargets {
   /** The player carrying out the Shoot order. */

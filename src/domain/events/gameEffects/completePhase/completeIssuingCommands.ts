@@ -2,14 +2,16 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the complete issuing commands game effect. */
+/** The literal discriminant for the complete issuing commands game effect. */
 export const COMPLETE_ISSUING_COMMANDS_EFFECT_TYPE =
   'completeIssuingCommands' as const;
 
 /**
- * In Phase 3 a player issues all their orders, then carries them out (§4.3).
- * Once no order is left to issue, given or forfeited by stopping (§4.3.3),
- * this moves the player on to carrying out the orders given.
+ * A player's issuing is over. In Phase 3 each player issues all their
+ * commands before resolving any, the first player and then the second
+ * (§4.3). Issuing ends when the card has no order left: every one has been
+ * given, or the player stopped and forfeited the rest (§4.3.3). The player
+ * then resolves the orders they gave.
  *
  * `generateCompleteIssuingCommandsEvent` writes it, and
  * `applyCompleteIssuingCommandsEvent` applies it.

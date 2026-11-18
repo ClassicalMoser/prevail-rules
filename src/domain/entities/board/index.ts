@@ -1,7 +1,7 @@
 /**
  * Board package barrel.
  *
- * Public surface: board schema/types, the shared {@link Coordinate} vocabulary,
+ * Public surface: board schema/types, the shared `Coordinate` vocabulary,
  * each size's rows and columns, spaces, and the layout contract. The layout
  * values themselves are in `@factories`.
  */

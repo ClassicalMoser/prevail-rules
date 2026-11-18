@@ -13,7 +13,7 @@ import { attackApplyStateSchema } from '../combatOutcomes';
  *
  * This is a **context-specific substep** - it's tied to the `IssueCommandsPhase`.
  * It contains a composable substep:
- * - `AttackApplyState` (applies the result of the ranged attack)
+ * - {@link AttackApplyState} (applies the result of the ranged attack)
  *
  * Unlike composable substeps, this state is only used in one specific context.
  */

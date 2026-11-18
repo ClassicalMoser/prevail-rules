@@ -4,18 +4,18 @@ import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the game over game effect. */
+/** The literal discriminant for the game over game effect. */
 export const GAME_OVER_EFFECT_TYPE = 'gameOver' as const;
 
 /**
  * The game ends, and the winner is recorded. A player loses when their hand
- * is empty (§11.1), or when they owe more Morale than they can survive
- * (§11.2). Every ending names a winner — there is no draw in this game: both
+ * is empty (§11.1), when they are expected to discard at least as many cards
+ * as they have (§11.2), or when they have no units left on the board
+ * (§11.4). Every ending names a winner — there is no draw in this game: both
  * hands emptying at once goes to the holder of initiative (§11.3).
  *
  * `generateGameOverEvent` writes it, and `applyGameOverEvent` applies it.
  */
-// TODO(misleading): a player with no units on the board also loses at once (§11.4); findGameOverWinner checks it through findWinnerFromNoUnits, but this lists only §11.1 and §11.2.
 export interface GameOverEvent {
   /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;

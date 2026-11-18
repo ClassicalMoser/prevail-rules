@@ -10,7 +10,7 @@ import {
 /**
  * Applies a ResolveFlankEngagementEvent to the game state.
  * Rotates the defending unit to face the engaging unit and marks the defender as rotated.
- * Uses `event.defenderWithPlacement` and {@link getFlankEngagementStateFromMovement} (panicky
+ * Uses `event.defenderWithPlacement` and `getFlankEngagementStateFromMovement` (panicky
  * narrowing); does not call `getPositionOfUnit`.
  */
 export function applyResolveFlankEngagementEvent<S extends GameState>(

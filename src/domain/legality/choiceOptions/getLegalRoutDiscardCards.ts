@@ -23,7 +23,7 @@ export interface LegalRoutDiscardCards {
  * melee, or a retreat that found nowhere to go).
  *
  * Does not expand combinations — callers pick `numberToDiscard` IDs from
- * {@link LegalRoutDiscardCards.cardIds}; {@link isValidChooseRoutDiscardEvent}
+ * {@link LegalRoutDiscardCards.cardIds}; `isValidChooseRoutDiscardEvent`
  * checks integrity of the committed set.
  *
  * Nothing asks for a discard unless a rout is awaiting one, so being asked

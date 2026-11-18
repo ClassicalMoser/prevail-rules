@@ -13,7 +13,7 @@ import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
  *
  * This is a **context-specific substep** - it's tied to the `IssueCommandsPhase`.
  * It contains a composable substep:
- * - `EngagementState` (if movement results in engagement)
+ * - {@link EngagementState} (if movement results in engagement)
  *
  * Unlike composable substeps, this state is only used in one specific context.
  */

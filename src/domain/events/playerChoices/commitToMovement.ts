@@ -4,7 +4,7 @@ import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the commit to movement event. */
+/** The literal discriminant for the commit to movement player choice. */
 export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement' as const;
 
 /**

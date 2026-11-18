@@ -13,7 +13,7 @@ import { updatePlayerCardState } from '@transforms';
  * reached. This is the base every scenario builds on; the phase it is in
  * comes from a transform layered on top.
  *
- * @param units - Where each unit stands, as `createGameState` takes them
+ * @param units - Where each unit stands, as {@link createGameState} takes them
  * @param options - Each hand, as a count dealt from the stand-in deck (three unless said otherwise) or the very cards a rule needs; and who holds initiative
  * @returns The game, seen as the game itself sees it
  */

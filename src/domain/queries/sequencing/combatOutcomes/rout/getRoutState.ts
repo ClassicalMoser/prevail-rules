@@ -7,7 +7,7 @@ import { findRoutState } from './findRoutState';
  *
  * Every step that resolves a rout is sequenced after the rout was opened, so a
  * missing one there is a sequencing fault rather than a quiet state of the game.
- * Use `findRoutState` to ask whether the player is routing at all.
+ * Use {@link findRoutState} to ask whether the player is routing at all.
  *
  * @param state - The game state
  * @param player - The player whose rout to read

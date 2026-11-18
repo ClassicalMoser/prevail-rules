@@ -20,7 +20,7 @@ import {
  * Opens with endgame checks (empty hand / unpayable rout discard), which wait
  * while the cards are still being chosen face down (§4.1.1). When the game is
  * already finished (`winner` set), nothing is expected and it returns
- * `undefined`; {@link getExpectedEvent} is the twin that insists. Otherwise
+ * `undefined`; `getExpectedEvent` is the twin that insists. Otherwise
  * routes by phase. Optional commit discards are never treated as forced costs.
  *
  * @param state - The game state, only argument required.

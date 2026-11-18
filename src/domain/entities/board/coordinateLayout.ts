@@ -57,7 +57,7 @@ export interface CoordinateLayout<
 }
 
 /**
- * Layouts keyed by {@link BoardType} / `board.boardType`.
+ * Layouts keyed by `BoardType` / `board.boardType`.
  * Keys match the `boardType` enum literals exactly.
  */
 export interface CoordinateLayoutMap {

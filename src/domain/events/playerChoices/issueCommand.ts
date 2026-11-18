@@ -4,7 +4,7 @@ import { commandSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the issue command event. */
+/** The literal discriminant for the issue command player choice. */
 export const ISSUE_COMMAND_CHOICE_TYPE = 'issueCommand' as const;
 
 /**

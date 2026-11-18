@@ -4,7 +4,7 @@ import { engagementTypeSchema, unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the start engagement game effect. */
+/** The literal discriminant for the start engagement game effect. */
 export const START_ENGAGEMENT_EFFECT_TYPE = 'startEngagement' as const;
 
 /**

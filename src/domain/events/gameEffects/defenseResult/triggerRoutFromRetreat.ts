@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the trigger rout from retreat game effect. */
+/** The literal discriminant for the trigger rout from retreat game effect. */
 export const TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE =
   'triggerRoutFromRetreat' as const;
 

@@ -9,8 +9,8 @@ import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
  * The draw happens here; the event (with the selected card) is what makes it
  * replayable. The source is the caller's, so a fixed one burns the same card.
  *
- * The player is the one whose rally the step is on (`getRallyingPlayer`), as
- * for {@link getLegalAssignUnitSupport}.
+ * The player is the one whose rally the step is on ({@link getRallyingPlayer}), as
+ * for `getLegalAssignUnitSupport`.
  *
  * @param state - The current game state
  * @param random - The source of the draw that picks the burnt card

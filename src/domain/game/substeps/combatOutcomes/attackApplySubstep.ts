@@ -18,9 +18,9 @@ import { routStateSchema } from './routSubstep';
  * - Used in `MeleeResolutionState` (for melee combat, one per player)
  *
  * It contains nested composable substeps:
- * - `RoutState` (if unit routed)
- * - `RetreatState` (if unit retreated)
- * - `ReverseState` (if unit reversed)
+ * - {@link RoutState} (if unit routed)
+ * - {@link RetreatState} (if unit retreated)
+ * - {@link ReverseState} (if unit reversed)
  *
  * The expected event query `getExpectedAttackApplyEvent()` is composable and
  * can be called from any parent context that contains this state.

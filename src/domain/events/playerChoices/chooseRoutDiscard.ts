@@ -4,7 +4,7 @@ import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose rout discard event. */
+/** The literal discriminant for the choose rout discard player choice. */
 export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = 'chooseRoutDiscard' as const;
 
 /**

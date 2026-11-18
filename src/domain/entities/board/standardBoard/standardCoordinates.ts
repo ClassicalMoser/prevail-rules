@@ -2,7 +2,7 @@
  * Cartesian product of standard row letters × column numbers (`"A-1"` … `"L-18"`).
  *
  * Same role as the small/large coordinate modules: closed list for Zod and for
- * the shared {@link Coordinate} union. See {@link smallBoardCoordinates}.
+ * the shared `Coordinate` union. See `smallBoardCoordinates`.
  */
 
 import type { StandardBoardColumnNumber } from './standardColumnNumbers';

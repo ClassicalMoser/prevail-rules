@@ -4,7 +4,7 @@ import { commandCardSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the reveal cards game effect. */
+/** The literal discriminant for the reveal cards game effect. */
 export const REVEAL_CARDS_EFFECT_TYPE = 'revealCards' as const;
 
 /**

@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the complete play cards phase game effect. */
+/** The literal discriminant for the complete play cards phase game effect. */
 export const COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE =
   'completePlayCardsPhase' as const;
 

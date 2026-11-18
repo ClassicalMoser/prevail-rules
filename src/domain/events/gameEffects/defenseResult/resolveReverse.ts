@@ -4,7 +4,7 @@ import { unitFacingSchema, unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve reverse game effect. */
+/** The literal discriminant for the resolve reverse game effect. */
 export const RESOLVE_REVERSE_EFFECT_TYPE = 'resolveReverse' as const;
 
 /**

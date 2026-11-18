@@ -1,7 +1,7 @@
 /**
  * Standard-board size barrel: row/column lists and the coordinate product.
  *
- * Prefer the parent board barrel for the shared {@link Coordinate}. The
+ * Prefer the parent board barrel for the shared `Coordinate`. The
  * standard layout itself is in `@factories`.
  */
 

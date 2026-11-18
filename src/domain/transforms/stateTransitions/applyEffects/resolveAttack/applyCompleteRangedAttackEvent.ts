@@ -12,7 +12,7 @@ import { clearCommandResolution } from '@transforms/pureTransforms';
  * no target when a shooter is chosen is skipped for that choice only, so it
  * keeps its place: a later shot may give it a target.
  *
- * Mirrors {@link applyCompleteUnitMovementEvent} for a move.
+ * Mirrors `applyCompleteUnitMovementEvent` for a move.
  */
 export function applyCompleteRangedAttackEvent<S extends GameState>(
   _event: CompleteRangedAttackEvent,

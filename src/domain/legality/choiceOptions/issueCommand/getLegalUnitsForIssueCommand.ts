@@ -12,9 +12,9 @@ import {
  * ones (§4.3.4).
  *
  * For `size: 'units'`: the units that may be chosen (see
- * {@link getLegalUnitsToOrder}).
+ * `getLegalUnitsToOrder`).
  * For `size: 'lines'`: the units a line may be traced from, since every line
- * needs one unit within inspiration range (see {@link getLegalLines}).
+ * needs one unit within inspiration range (see `getLegalLines`).
  */
 export function getLegalUnitsForIssueCommand(
   command: Command,

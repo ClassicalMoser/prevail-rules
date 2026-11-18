@@ -4,7 +4,7 @@ import { playerSideSchema, unitWithPlacementSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose shooter event. */
+/** The literal discriminant for the choose shooter player choice. */
 export const CHOOSE_SHOOTER_CHOICE_TYPE = 'chooseShooter' as const;
 
 /**

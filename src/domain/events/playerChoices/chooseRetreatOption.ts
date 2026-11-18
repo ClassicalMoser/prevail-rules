@@ -4,7 +4,7 @@ import { moveDeltaSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose retreat option event. */
+/** The literal discriminant for the choose retreat option player choice. */
 export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = 'chooseRetreatOption' as const;
 
 /**

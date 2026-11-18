@@ -19,7 +19,7 @@ function noStream(gameId: string, roundNumber: number): PortResponse<never> {
 }
 
 /**
- * An `EventStreamStorage` that keeps each round's events in memory, in the
+ * An {@link EventStreamStorage} that keeps each round's events in memory, in the
  * order they were added. A stream must be opened before events are added to
  * it, as a new game opens round 0's and each new round opens its own.
  *

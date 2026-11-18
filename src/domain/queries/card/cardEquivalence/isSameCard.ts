@@ -6,7 +6,7 @@ import type { CommandCard } from '@entities';
  * not by reference: two copies of one card are the same card.
  *
  * This says nothing about whether the two copies agree on the card's stats;
- * {@link isSameCardValue} answers that.
+ * `isSameCardValue` answers that.
  *
  * @param card1 - The first card
  * @param card2 - The second card

@@ -6,7 +6,7 @@ import { findRetreatState } from './findRetreatState';
  *
  * Choosing a destination and moving the unit are both sequenced after the
  * retreat was opened, so a missing one there is a sequencing fault rather than
- * a quiet state of the game. Use `findRetreatState` to ask whether the player
+ * a quiet state of the game. Use {@link findRetreatState} to ask whether the player
  * is retreating at all.
  *
  * @param state - The game state

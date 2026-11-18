@@ -84,7 +84,7 @@ export const boundaries: BoundaryConfig[] = [
       '@game',
       '@factories',
       '@queries',
-      // Branch expected choice when legality empties (e.g. issue vs doneIssuing).
+      // Some sequence logic has to search for empty legality results to skip a step.
       '@legality',
     ],
     dir: 'domain/expected',

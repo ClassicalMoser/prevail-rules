@@ -4,7 +4,7 @@ import { commandCardSchema, playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve rally game effect. */
+/** The literal discriminant for the resolve rally game effect. */
 export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
 
 /**

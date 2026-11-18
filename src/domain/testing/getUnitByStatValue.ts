@@ -6,7 +6,7 @@ import { tempUnits } from '@sampleValues';
  * Use this when a test needs a real roster row; for thresholds defined only by query rules,
  * prefer an explicit {@link UnitType} in the test file instead of implying roster stats.
  *
- * @throws {Error} If no unit in `tempUnits` has that stat value
+ * @throws {Error} If no unit in {@link tempUnits} has that stat value
  */
 export function getUnitByStatValue(
   stat: UnitStatName,

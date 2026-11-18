@@ -4,7 +4,7 @@ import { attackResultSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve melee game effect. */
+/** The literal discriminant for the resolve melee game effect. */
 export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
 
 /**

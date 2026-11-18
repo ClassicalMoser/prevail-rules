@@ -2,7 +2,7 @@ import type { GameState } from '@game';
 import type { PortResponse, RoundSnapshotStorage } from '@application/ports';
 
 /**
- * A `RoundSnapshotStorage` that keeps, in memory, the state each round of
+ * A {@link RoundSnapshotStorage} that keeps, in memory, the state each round of
  * each game began with.
  *
  * @returns A snapshot storage holding no snapshots

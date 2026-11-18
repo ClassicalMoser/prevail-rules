@@ -8,7 +8,7 @@ import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 /**
  * Whether a card's inspiration range reaches a unit (§4.2.7): the unit must
  * stand within that many spaces of its own commander. A range printed as
- * unrestricted (`NO_INSPIRATION_RANGE`) reaches every unit wherever it
+ * unrestricted ({@link NO_INSPIRATION_RANGE}) reaches every unit wherever it
  * stands, and a commander who has fallen reaches no one (§4.2.8).
  *
  * Asked when a command is issued and every time a round effect's stat is read,

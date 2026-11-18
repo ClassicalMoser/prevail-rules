@@ -190,7 +190,7 @@ function getSingleSideAsked(playerSource: PlayerSource): PlayerSide {
 /**
  * Presentation router for legal player-choice options.
  *
- * Uses {@link getExpectedEvent} for what/who, then packages the matching
+ * Uses `getExpectedEvent` for what/who, then packages the matching
  * `@legality` root atoms or event lists. Selection-dependent follow-ups
  * (destinations, targets, lines, …) stay on their existing helpers.
  *

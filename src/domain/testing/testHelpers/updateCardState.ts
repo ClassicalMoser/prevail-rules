@@ -6,7 +6,7 @@ import { replaceCardState } from '@transforms';
  * by one of the same visibility.
  *
  * Production code changes a single player's cards via `updatePlayerCards`, and
- * writes a card state back with `replaceCardState`; this setter exists only to
+ * writes a card state back with {@link replaceCardState}; this setter exists only to
  * set up fixtures.
  *
  * @param state - The current game state

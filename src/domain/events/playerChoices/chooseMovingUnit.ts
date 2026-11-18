@@ -4,7 +4,7 @@ import { playerSideSchema, unitWithPlacementSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose moving unit event. */
+/** The literal discriminant for the choose moving unit player choice. */
 export const CHOOSE_MOVING_UNIT_CHOICE_TYPE = 'chooseMovingUnit' as const;
 
 /**

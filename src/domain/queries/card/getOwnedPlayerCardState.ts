@@ -6,7 +6,7 @@ import { findOwnedPlayerCardState } from './findOwnedPlayerCardState';
  * Returns the owned card slice for `player`, proven via `cardState.visibility`,
  * for a caller that knows this view can see it.
  *
- * No casts: `findOwnedPlayerCardState` reads a field TypeScript already types
+ * No casts: {@link findOwnedPlayerCardState} reads a field TypeScript already types
  * as {@link OwnedCardState}. Use that to ask whether the hand is in view.
  *
  * @param cardState - The card state, under some visibility

@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the discard played cards game effect. */
+/** The literal discriminant for the discard played cards game effect. */
 export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
 
 /**

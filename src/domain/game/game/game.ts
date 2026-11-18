@@ -12,8 +12,8 @@ import { authoritativeGameStateSchema } from '@game/gameState';
  * a spectator's view is a projection of its game state, not of the game.
  *
  * Board size lives on `gameState.boardState.boardType` and must agree with
- * the size required by {@link gameMode} (enforced by Zod).
- * TODO(misleading): `gameSchema` itself does not check this; the check is
+ * the size required by `gameMode` (enforced by Zod).
+ * TODO(misleading): {@link gameSchema} itself does not check this; the check is
  * `refineGameModeBoardSize` in `@legality`, a refine applied on top of it.
  * Settled by saying where the check lives.
  *

@@ -18,8 +18,7 @@ export { RESOLVE_RALLY_EFFECT_TYPE } from './resolveRally';
 export type { ResolveRallyEvent } from './resolveRally';
 export { resolveRallyEventSchema } from './resolveRally';
 
-// Hand is empty, or a rout discard cannot be paid.
-// TODO(misleading): an army with no units left also loses at once (§11.4), which findGameOverWinner checks through findWinnerFromNoUnits; this names only §11.1 and §11.2.
+// Hand is empty, a rout discard cannot be paid, or no units are left.
 export { GAME_OVER_EFFECT_TYPE } from './gameOver';
 export type { GameOverEvent } from './gameOver';
 export { gameOverEventSchema } from './gameOver';

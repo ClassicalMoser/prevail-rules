@@ -15,7 +15,7 @@ import {
  * Burns the specified card from the played pile, then returns all remaining played
  * and discarded cards to the player's hand.
  * Marks `rallyResolved` and stays on the resolve-rally step with
- * `unitsLostSupport: 'pending'` so {@link applyAssignUnitSupportEvent} can run next.
+ * `unitsLostSupport: 'pending'` so `applyAssignUnitSupportEvent` can run next.
  * Uses {@link getRallyResolutionStateAwaitingBurn} for sequencing invariants.
  *
  * Works for the owned slice and for the opponent's hidden slice on a seat view.

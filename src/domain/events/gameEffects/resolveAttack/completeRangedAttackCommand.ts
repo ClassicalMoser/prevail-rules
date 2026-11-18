@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the complete ranged attack command game effect. */
+/** The literal discriminant for the complete ranged attack command game effect. */
 export const COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE =
   'completeRangedAttackCommand' as const;
 

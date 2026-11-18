@@ -4,7 +4,7 @@ import { unitFacingSchema, unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve flank engagement game effect. */
+/** The literal discriminant for the resolve flank engagement game effect. */
 export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE =
   'resolveFlankEngagement' as const;
 

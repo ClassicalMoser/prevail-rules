@@ -2,7 +2,7 @@
  * Large-board size barrel: row/column lists and the coordinate product.
  *
  * Widest size; small and standard letter/number sets are prefixes of these.
- * Prefer the parent board barrel for the shared {@link Coordinate}. The
+ * Prefer the parent board barrel for the shared `Coordinate`. The
  * large layout itself is in `@factories`.
  */
 

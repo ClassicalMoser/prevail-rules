@@ -10,7 +10,7 @@ import { throwIfPending } from '@utils';
 /**
  * Generates a StartEngagementEvent by determining the engagement type
  * based on the relative facing of the engaging unit and defending unit.
- * The rear is read first, then the flank, then the front (`findEngagementType`).
+ * The rear is read first, then the flank, then the front ({@link findEngagementType}).
  * This is called when a unit first moves into an enemy space.
  *
  * @param state - The current game state

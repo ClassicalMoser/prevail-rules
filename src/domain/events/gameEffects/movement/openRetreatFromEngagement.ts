@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the open-retreat-from-engagement game effect. */
+/** The literal discriminant for the open retreat from engagement game effect. */
 export const OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE =
   'openRetreatFromEngagement' as const;
 

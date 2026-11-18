@@ -10,7 +10,7 @@ import { finishResolvingCommands } from '@transforms/pureTransforms';
  * complete).
  *
  * The expected engine asks for this only at the start of a shooter's choice,
- * with no shot under way. A finished shot is {@link applyCompleteRangedAttackEvent}'s.
+ * with no shot under way. A finished shot is `applyCompleteRangedAttackEvent`'s.
  */
 export function applyCompleteRangedAttackCommandEvent<S extends GameState>(
   _event: CompleteRangedAttackCommandEvent,

@@ -5,7 +5,7 @@ import {
   createEmptyGameState,
 } from '@factories';
 /**
- * Minimal `GameState` builders for each `GameEffectType`, used to drive
+ * Minimal `GameState` builders for each {@link GameEffectType}, used to drive
  * `generateEventFromProcedure` in registry tests.
  *
  * Phase literals use `@entities/sequence/phases` (not the `@entities` barrel) so this file

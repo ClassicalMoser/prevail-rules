@@ -8,7 +8,7 @@ import { applyUnitsLostSupportAfterRally } from '../applyEffects/cards/applyUnit
  * Applies an AssignUnitSupportEvent:
  * covered units stay; board units not in any assignment lose support and rout.
  *
- * Event is assumed pre-validated via {@link isValidAssignUnitSupportEvent}.
+ * Event is assumed pre-validated via `isValidAssignUnitSupportEvent`.
  */
 export function applyAssignUnitSupportEvent<S extends GameState>(
   event: AssignUnitSupportEvent,

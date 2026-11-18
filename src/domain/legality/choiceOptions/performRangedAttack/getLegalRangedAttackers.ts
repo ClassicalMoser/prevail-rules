@@ -25,8 +25,8 @@ import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
  * at all (§4.3.11 step 1; author, 2026-11-09: kept simple for now).
  *
  * Targets / supporters are enumerated once the shooter is named and its card
- * committed, via {@link getLegalShooterTargets} /
- * {@link getLegalRangedAttackSupporters}.
+ * committed, via `getLegalShooterTargets` /
+ * `getLegalRangedAttackSupporters`.
  */
 export interface LegalRangedAttackers {
   player: PlayerSide;

@@ -2,7 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the complete melee resolution game effect. */
+/** The literal discriminant for the complete melee resolution game effect. */
 export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE =
   'completeMeleeResolution' as const;
 

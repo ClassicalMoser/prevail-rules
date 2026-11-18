@@ -2,7 +2,7 @@ import type { Event } from '@events';
 import type { EventStreamStorage } from '@application/ports';
 import { parseStoredEventStream } from '@application/utils';
 
-/** Loads via `EventStreamStorage` (wide types), then `parseStoredEventStream`; yields validated events. */
+/** Loads via {@link EventStreamStorage} (wide types), then {@link parseStoredEventStream}; yields validated events. */
 export async function getEventStream(
   gameId: string,
   roundNumber: number,

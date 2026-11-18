@@ -9,7 +9,7 @@ import { getGridPosition } from './getGridPosition';
  * only, not a path: it ignores what stands between.
  *
  * Asking whether a unit is "within N spaces" this way is arithmetic on two
- * coordinates, where {@link getSpacesWithinDistance} spreads out ring by ring
+ * coordinates, where `getSpacesWithinDistance` spreads out ring by ring
  * to list every space in reach.
  *
  * @param board - The board both spaces are on

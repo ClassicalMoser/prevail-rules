@@ -60,7 +60,7 @@ export function refineArmyRules(
 
 /**
  * Army schema with the rules that hold in every game mode. Use it where no
- * mode is chosen yet; {@link armySchemaForMode} adds the mode's composition.
+ * mode is chosen yet; `armySchemaForMode` adds the mode's composition.
  */
 export const legalArmySchema: z.ZodType<Army> =
   armySchema.superRefine(refineArmyRules);

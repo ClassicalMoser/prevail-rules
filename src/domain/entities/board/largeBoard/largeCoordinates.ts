@@ -1,8 +1,8 @@
 /**
  * Cartesian product of large row letters × column numbers (`"A-1"` … `"X-36"`).
  *
- * Widest closed list; extensionally equal to the shared {@link Coordinate}
- * union. See {@link smallBoardCoordinates}.
+ * Widest closed list; extensionally equal to the shared `Coordinate`
+ * union. See `smallBoardCoordinates`.
  */
 
 import type { LargeBoardColumnNumber } from './largeColumnNumbers';

@@ -4,7 +4,7 @@ import { moveDeltaSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the move unit event. */
+/** The literal discriminant for the move unit player choice. */
 export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit' as const;
 
 /**

@@ -14,9 +14,9 @@ import { updateRetreatRoutState } from './updateRetreatRoutState';
 /**
  * Creates a new game state with the rout state updated. It writes the rout
  * where it sits and nothing else; closing what a settled rout held open is
- * {@link settleRout}'s.
+ * `settleRout`'s.
  *
- * Where the rout sits is `findRoutLocation`'s answer, the same one settleRout
+ * Where the rout sits is {@link findRoutLocation}'s answer, the same one settleRout
  * reads, so the two cannot disagree. A rout can sit on:
  * - the result of a ranged attack, or of either side of a melee
  * - a rear engagement during a movement (§6.3.3)

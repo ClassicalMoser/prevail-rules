@@ -4,7 +4,7 @@ import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose card event. */
+/** The literal discriminant for the choose card player choice. */
 export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard' as const;
 
 /**

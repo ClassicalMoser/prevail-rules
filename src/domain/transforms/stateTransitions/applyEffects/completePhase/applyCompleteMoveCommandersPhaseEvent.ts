@@ -18,7 +18,7 @@ import {
  * Uses `remainingCommandsFirstPlayer` and `remainingCommandsSecondPlayer` from the event
  * (initiative / non-initiative order, same as issue-commands phase fields).
  *
- * Phase is narrowed via `getMoveCommandersPhaseState` (throws if not `moveCommanders`).
+ * Phase is narrowed via {@link getMoveCommandersPhaseState} (throws if not `moveCommanders`).
  *
  * @param event - The complete move commanders phase event to apply
  * @param state - The current game state

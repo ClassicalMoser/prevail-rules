@@ -15,7 +15,7 @@ const coordinateByKey = new Map<string, Coordinate>(
  *
  * **Layout modules only** — not re-exported from the layout or `@factories`
  * barrels. Callers that need a coordinate from parts should use the board's
- * {@link CoordinateLayout.createCoordinate} (which delegates here).
+ * `CoordinateLayout.createCoordinate` (which delegates here).
  *
  * Size membership is a value concern: layouts pass parts from their own
  * `rowLetters` / `columnNumbers` (or from index math already bounded against

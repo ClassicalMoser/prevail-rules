@@ -48,8 +48,8 @@ function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
  * pending player this view can read has already committed, or when nobody's
  * hand is readable (a spectator).
  *
- * Aligns with {@link isValidChooseCardEvent} membership checks (authoritative)
- * and {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
+ * Aligns with `isValidChooseCardEvent` membership checks (authoritative)
+ * and `getExpectedPlayCardsPhaseEvent` for the chooseCards step.
  *
  * @throws Error outside the play cards phase, or off its chooseCards step
  */

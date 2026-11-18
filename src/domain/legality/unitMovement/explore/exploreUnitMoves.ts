@@ -14,7 +14,7 @@ import { walkMoveEndings } from './walkMoveEndings';
  * the move may stop.
  *
  * The rules themselves live beside it, one to a file: what a move is bound
- * by (`createMoveContext`), the turns and the step open from a point
+ * by ({@link createMoveContext}), the turns and the step open from a point
  * (`getTurnOptions`, `getStepOption`), and whether the move may end there
  * (`findMoveEnding`). Advances and forced retreats walk the same way; a
  * retreat's extra limits are carried in its context.

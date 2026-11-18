@@ -4,7 +4,7 @@ import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the commit to ranged attack event. */
+/** The literal discriminant for the commit to ranged attack player choice. */
 export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
   'commitToRangedAttack' as const;
 

@@ -10,7 +10,7 @@ import { hasUnitInArray } from './hasUnitInArray';
  * A unit's stat as the raw sum of its printed value and every modifier that
  * applies, before the floor at zero (§7.1.4).
  *
- * Most callers want {@link getCurrentUnitStat}, the finished stat. This raw
+ * Most callers want `getCurrentUnitStat`, the finished stat. This raw
  * sum is for a caller that adds more to the stat before the total is done:
  * the attack value is a unit's Attack plus its support, and is floored once,
  * as a whole, so a negative Attack cannot hit zero early and have support

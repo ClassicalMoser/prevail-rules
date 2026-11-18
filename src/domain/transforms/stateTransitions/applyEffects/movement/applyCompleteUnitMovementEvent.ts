@@ -18,7 +18,7 @@ import { throwIfPending } from '@utils';
  * the order goes on to another unit, or ends with completeMovementCommand, is
  * the expected engine's to ask for.
  *
- * Mirrors {@link applyCompleteRangedAttackEvent} for a shot.
+ * Mirrors `applyCompleteRangedAttackEvent` for a shot.
  */
 export function applyCompleteUnitMovementEvent<S extends GameState>(
   _event: CompleteUnitMovementEvent,

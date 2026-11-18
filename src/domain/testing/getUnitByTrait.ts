@@ -7,7 +7,7 @@ import { tempUnits } from '@sampleValues';
  * Use this when a test needs a real roster row; do not assert outcomes that depend on stats
  * you have not read from that row—set up state from those stats or use an explicit {@link UnitType}.
  *
- * @throws {Error} If no unit in `tempUnits` has all of the traits
+ * @throws {Error} If no unit in {@link tempUnits} has all of the traits
  */
 export function getUnitByTrait(...traits: Trait[]): UnitType {
   const unit = tempUnits.find((u) =>

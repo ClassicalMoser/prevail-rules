@@ -4,7 +4,7 @@ import { attackResultSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve ranged attack game effect. */
+/** The literal discriminant for the resolve ranged attack game effect. */
 export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
 
 /**

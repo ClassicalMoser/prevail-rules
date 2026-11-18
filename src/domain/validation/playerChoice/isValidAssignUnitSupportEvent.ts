@@ -30,7 +30,7 @@ function refusalReasonAt(
 
 /**
  * Validates an AssignUnitSupportEvent by walking its assignments through the
- * legal options (`getLegalUnitSupportAssignments`): each unit's place must
+ * legal options ({@link getLegalUnitSupportAssignments}): each unit's place must
  * have been enumerated after the assignments before it, and the player may
  * stop only when no open place could take an uncovered unit
  * (§10.4.4–10.4.5). The rules live in the legal options; this only reads the

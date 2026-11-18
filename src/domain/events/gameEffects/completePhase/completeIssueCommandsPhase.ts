@@ -4,13 +4,7 @@ import { coordinateSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/**
- * Literal discriminator for {@link CompleteIssueCommandsPhaseEvent.effectType}.
- *
- * Phase transition: issue commands → resolve melee. `remainingEngagements` is a board-derived
- * snapshot so apply does not scan for engaged coordinates at transition time.
- * This is the responsibility of the procedure, not the transform.
- */
+/** The literal discriminant for the complete issue commands phase game effect. */
 export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE =
   'completeIssueCommandsPhase' as const;
 

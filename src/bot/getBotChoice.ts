@@ -38,7 +38,7 @@ import {
  * The bot is given only what its seat may see. The board is public; the
  * opponent's hand is not, and a bot that could read it would play a game no
  * human could. Every choice is drawn from what the rules offer that seat
- * (`getLegalPlayerChoiceOptions`), so a bot cannot make an illegal choice:
+ * ({@link getLegalPlayerChoiceOptions}), so a bot cannot make an illegal choice:
  * one the rules refuse is a fault in the rules, not in the bot.
  *
  * This only dispatches: each kind of choice has its own decision.

@@ -8,7 +8,7 @@ import {
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the assign unit support event. */
+/** The literal discriminant for the assign unit support player choice. */
 export const ASSIGN_UNIT_SUPPORT_CHOICE_TYPE = 'assignUnitSupport' as const;
 
 /**

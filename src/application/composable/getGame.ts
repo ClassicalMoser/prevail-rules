@@ -4,7 +4,7 @@ import type { GameModeName } from '@entities';
 import { parseLegalGameForMode } from '../utils/parseLegalGame';
 
 /**
- * Loads a game through `GameStorage` and reads it with
+ * Loads a game through {@link GameStorage} and reads it with
  * {@link parseLegalGameForMode}, so everything downstream can trust it: a
  * legal game of the expected mode, authoritative by type.
  *

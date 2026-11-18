@@ -4,7 +4,7 @@ import { moveDeltaSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve engage retreat option game effect. */
+/** The literal discriminant for the resolve engage retreat option game effect. */
 export const RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE =
   'resolveEngageRetreatOption' as const;
 

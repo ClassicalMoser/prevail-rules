@@ -12,7 +12,7 @@ import { isValidRangedAttackSupporters } from './isValidRangedAttackSupporters';
  * - the shot is waiting for its target, and it is this player's shooter
  * - the target ∈ {@link getLegalShooterTargets}, the committed card's
  *   Range counted
- * - each supporter ∈ {@link getLegalRangedAttackSupporters} for that
+ * - each supporter ∈ `getLegalRangedAttackSupporters` for that
  *   shooter and target, at its own Range; unique, and not the shooter
  */
 export function isValidPerformRangedAttackEvent(

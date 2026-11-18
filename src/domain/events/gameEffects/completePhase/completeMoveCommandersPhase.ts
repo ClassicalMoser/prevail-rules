@@ -4,13 +4,7 @@ import { commandSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/**
- * Literal discriminator for {@link CompleteMoveCommandersPhaseEvent.effectType}.
- *
- * Phase transition: move commanders → issue commands. Next phase needs each player’s remaining
- * command set from in-play cards; that derivation stays in the procedure so apply only writes
- * the sets onto state.
- */
+/** The literal discriminant for the complete move commanders phase game effect. */
 export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE =
   'completeMoveCommandersPhase' as const;
 

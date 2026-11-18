@@ -5,7 +5,7 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  * Rally resolution state for the current resolve-rally step when the player has chosen to rally
  * but the burn / return-cards effect has not been applied yet.
  *
- * Panicky narrowing for {@link applyResolveRallyEvent}; procedure is assumed to have enforced order.
+ * Panicky narrowing for `applyResolveRallyEvent`; procedure is assumed to have enforced order.
  *
  * @param state - The current game state
  * @param player - The player resolving the rally (must match the cleanup step)

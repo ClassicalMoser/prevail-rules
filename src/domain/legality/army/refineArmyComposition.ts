@@ -6,7 +6,7 @@ import { getArmyCompositionStatus } from './getArmyCompositionStatus';
 import { refineArmyRules } from './refineArmyRules';
 
 /**
- * Adds Zod issues for army composition rules that fail for {@link mode}.
+ * Adds Zod issues for army composition rules that fail for `mode`.
  * Null rule fields are skipped (tutorial / arbitrary lists).
  */
 export function refineArmyComposition(

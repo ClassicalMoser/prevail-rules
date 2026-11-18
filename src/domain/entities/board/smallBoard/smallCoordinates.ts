@@ -2,7 +2,7 @@
  * Cartesian product of small row letters × column numbers.
  *
  * Builds the closed list of `"A-1"` … `"H-12"` strings used for Zod enums and
- * for feeding the shared {@link Coordinate} union. The template type
+ * for feeding the shared `Coordinate` union. The template type
  * {@link SmallBoardCoordinate} matches that product. Each computed string is
  * typed as that template as it is built, so the compiler checks it against the
  * same letter and number lists the type is made from; no assertion is needed.

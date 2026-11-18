@@ -3,7 +3,7 @@ import { findPositionOfUnit } from './findPositionOfUnit';
 
 /**
  * Where a unit stands on the board, for a caller that knows it must be there.
- * Use `findPositionOfUnit` to ask whether it is on the board at all.
+ * Use {@link findPositionOfUnit} to ask whether it is on the board at all.
  *
  * @param board - The board to search
  * @param unit - The unit to find

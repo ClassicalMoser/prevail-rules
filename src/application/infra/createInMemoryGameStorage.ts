@@ -2,7 +2,7 @@ import type { Game } from '@game';
 import type { GameStorage, PortResponse } from '@application/ports';
 
 /**
- * A `GameStorage` that keeps games in memory, by id, for as long as it lives.
+ * A {@link GameStorage} that keeps games in memory, by id, for as long as it lives.
  * For specs and for running games where nothing needs to outlast the process.
  *
  * @returns An empty game storage

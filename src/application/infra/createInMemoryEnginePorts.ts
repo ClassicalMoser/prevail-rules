@@ -11,7 +11,7 @@ import { mathRandom } from './mathRandom';
  * source.
  *
  * @param options - The subscribers to tell of each change (none if omitted),
- * and the random source (`mathRandom` if omitted)
+ * and the random source ({@link mathRandom} if omitted)
  * @returns A fresh set of engine ports
  */
 export function createInMemoryEnginePorts(

@@ -26,7 +26,7 @@ export function getEngagementStateFromMovement(
 }
 
 /**
- * `EngagementState` carries every resolution type. The type below names the one
+ * {@link EngagementState} carries every resolution type. The type below names the one
  * member this getter proved, because the discriminant sits on the nested
  * `engagementResolutionState`.
  */

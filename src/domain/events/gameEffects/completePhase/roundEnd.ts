@@ -2,13 +2,7 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/**
- * Literal for {@link RoundEndEvent.effectType}. The round ends: the cleanup phase
- * completes, the round advances, and the play-cards phase of the next begins. Payload is only
- * discriminators; transition details come from pure transforms and a simple
- * lookup against current state.
- */
-// TODO(misleading): round 0 (setup) also ends with this effect, with no cleanup phase before it; the interface below says so, this does not.
+/** The literal discriminant for the round end game effect. */
 export const ROUND_END_EFFECT_TYPE = 'roundEnd' as const;
 
 /**

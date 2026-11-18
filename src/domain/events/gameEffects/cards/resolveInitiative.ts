@@ -4,7 +4,7 @@ import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the resolve initiative game effect. */
+/** The literal discriminant for the resolve initiative game effect. */
 export const RESOLVE_INITIATIVE_EFFECT_TYPE = 'resolveInitiative' as const;
 
 /**

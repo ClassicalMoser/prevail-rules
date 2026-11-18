@@ -4,7 +4,7 @@ import { playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The type of the choose rally event. */
+/** The literal discriminant for the choose rally player choice. */
 export const CHOOSE_RALLY_CHOICE_TYPE = 'chooseRally' as const;
 
 /**

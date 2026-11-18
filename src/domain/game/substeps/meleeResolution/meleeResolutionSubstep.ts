@@ -13,7 +13,7 @@ import { attackApplyStateSchema } from '../combatOutcomes';
  *
  * This is a **context-specific substep** - it's tied to the `ResolveMeleePhase`.
  * It contains composable substeps:
- * - `AttackApplyState` (one for each player, named for the order the players
+ * - {@link AttackApplyState} (one for each player, named for the order the players
  *   hold initiative in)
  *
  * Unlike composable substeps, this state is only used in one specific context.

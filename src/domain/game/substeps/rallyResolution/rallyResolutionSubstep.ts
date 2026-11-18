@@ -12,7 +12,7 @@ import { routStateSchema } from '../combatOutcomes';
  *
  * This is a **context-specific substep** - it's tied to the `CleanupPhase`.
  * It contains a composable substep:
- * - `RoutState` (if units lost support and were routed)
+ * - {@link RoutState} (if units lost support and were routed)
  *
  * Unlike composable substeps, this state is only used in one specific context.
  * After cards return to hand, we need to check if any units lost support.

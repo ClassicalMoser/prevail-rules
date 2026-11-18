@@ -6,7 +6,7 @@ import { updateRetreatState } from '@transforms/pureTransforms';
 /**
  * Applies a ChooseRetreatOptionEvent: the player's choice among equally small
  * retreats (§9.1.3) is recorded as the retreat to carry out. It does not move
- * the unit — {@link applyResolveRetreatEvent} does that.
+ * the unit — `applyResolveRetreatEvent` does that.
  *
  * Retreat state can be found in:
  * - AttackApplyState (ranged attack or melee resolution)

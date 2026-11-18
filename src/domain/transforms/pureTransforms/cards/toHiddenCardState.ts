@@ -2,7 +2,7 @@ import type { HiddenCardState, OwnedCardState } from '@game';
 
 /**
  * Converts an owned card slice to the hidden perspective: hand and awaiting-play
- * identities become {@link HiddenCard} placeholders; already-public piles stay.
+ * identities become `HiddenCard` placeholders; already-public piles stay.
  */
 export function toHiddenCardState(owned: OwnedCardState): HiddenCardState {
   return {

@@ -5,7 +5,7 @@ import type { PhaseState } from '@game';
  *
  * Uses a type parameter so the **concrete phase branch** is preserved (play cards,
  * issue commands, resolve melee, cleanup, etc.). A single
- * `PhaseState` return widens spatial phases and breaks callers that need
+ * {@link PhaseState} return widens spatial phases and breaks callers that need
  * `ResolveMeleePhaseState` (and similar).
  *
  * The `as TPhase` assertion matches the domain rule that every phase allows a `complete`

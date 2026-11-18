@@ -15,8 +15,8 @@ import {
  * Atomic move-unit selection context: which player is resolving a movement
  * command start, and which remaining units (with board placements) may move.
  *
- * Destinations are not expanded here — use {@link getLegalUnitMoves} per unit.
- * `moveCommander` integrity belongs in {@link isValidMoveUnitEvent}.
+ * Destinations are not expanded here — use `getLegalUnitMoves` per unit.
+ * `moveCommander` integrity belongs in `isValidMoveUnitEvent`.
  */
 export interface LegalMoveUnits {
   player: PlayerSide;

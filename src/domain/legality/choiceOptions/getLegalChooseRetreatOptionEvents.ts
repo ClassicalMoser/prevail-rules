@@ -13,8 +13,8 @@ import { createChooseRetreatOptionEvent } from '@factories';
  * geometry — options are taken from the retreat substep (baked in when the
  * substep opened).
  *
- * Aligns with {@link isValidChooseRetreatOptionEvent} and
- * {@link getExpectedRetreatEvent} for the multi-option pending branch.
+ * Aligns with `isValidChooseRetreatOptionEvent` and
+ * `getExpectedRetreatEvent` for the multi-option pending branch.
  *
  * @throws Error when no retreat is awaiting its owner's choice of destination
  */

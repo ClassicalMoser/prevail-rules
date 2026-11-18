@@ -13,7 +13,7 @@ import {
  * Records the current phase state as completed and advances to moveCommanders phase.
  *
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
- * log. Phase is narrowed via `getPlayCardsPhaseState` (throws if not `playCards`). The
+ * log. Phase is narrowed via {@link getPlayCardsPhaseState} (throws if not `playCards`). The
  * current phase state is read only to snapshot it into `completedPhases`.
  *
  * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.

@@ -13,7 +13,7 @@ import { routStateSchema } from './routSubstep';
  * - Used in `AttackApplyState` (when unit retreats after an attack)
  * - Used in `EngagementState` (when unit retreats from engagement)
  *
- * May nest a `RoutState` when retreat fails or leads to a rout (composition,
+ * May nest a {@link RoutState} when retreat fails or leads to a rout (composition,
  * not recursion). `getExpectedRetreatEvent()` delegates to
  * `getExpectedRoutEvent()` when that nested slice is present.
  */
@@ -37,7 +37,7 @@ export interface RetreatState {
   /**
    * Rout nested under this retreat: `'pending'` when the unit has nowhere to
    * go (a rout is still due), `'bypassed'` when it has a legal retreat (a retreat
-   * with somewhere to go will never rout), or the open `RoutState`.
+   * with somewhere to go will never rout), or the open {@link RoutState}.
    */
   routState: RoutState | 'pending' | 'bypassed';
   /** Whether the retreat has been completed. */
