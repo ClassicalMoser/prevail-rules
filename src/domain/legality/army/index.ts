@@ -14,3 +14,12 @@ export {
   refineArmyComposition,
 } from './refineArmyComposition';
 export { legalArmySchema, refineArmyRules } from './refineArmyRules';
+// Each limit on a list, checked one value at a time: the army check and a list
+// builder's row-by-row display read the same comparison.
+export {
+  isWithinMaxArmyCost,
+  isWithinMaxUnitTypeCount,
+  isWithinUnitTypeLimit,
+  meetsCardsPerInitiative,
+  meetsMinMoraleValue,
+} from './limits';
