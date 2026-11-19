@@ -178,6 +178,63 @@ Rule text describes what each color does. It never says a color is favored.
 
 ---
 
+## 4A. Time and endings (notes, open)
+
+Notes from a design conversation, 2026-11-18. Nothing here is built or decided beyond what is marked settled.
+
+### 4A.1 Timestamps on player choices
+
+- **Settled.** Each player choice in a game's stream carries the time it was recorded, in UTC (`Z`). The runner writes it, from a clock port beside `random`; a client never supplies it. Replay stays exact because the time is data in the record. No rule reads it.
+- **Settled.** Game effects carry no time. They follow the choice before them at once, so a choice was owed from the time of the event before it. A stamp on effects may come back only if a hang ever needs to be shown not to be a player's fault.
+- **Settled: the shape.** A `TimestampedEvent` holds two things, the event and its time. It is what a game's stream records for a player choice. A client sends the bare choice, so it has nowhere to put a time; the runner wraps it. Folding the stream reads the event out of each entry, no harder than before. No `&` intersection types.
+- **Open.** What this means for the client and the contracts: the wire record's stream changes shape, and the client's fold unwraps each entry. Whether effects stand in the stream as bare events beside timestamped choices, or every entry is wrapped alike.
+
+### 4A.2 Time controls
+
+**What they are for.** Not a complex chess clock. They stop a lobby hanging for ten minutes, a chronic slow player tilting the other, and a scramble at the end. Play reasonably fast and the clock never matters; play too slowly and it should.
+
+- **Two time controls, async and live, and one setting choosing between them.** Everything else is implicit in which one is chosen.
+- **Live.** A first guess, to be tried at the table to see whether it feels tight:
+  - 5 minutes to start;
+  - 1 minute added each round;
+  - 20 seconds added for each choice. There are many choices, but most are simple, so a small increment per choice and a larger one per round may be fairer than a large one per choice (30 seconds was the earlier guess, with nothing per round);
+  - at most 5 minutes on any one choice, so a game never hangs however much time is banked.
+  - While cards are chosen face down (Part II §4.1.1) both players owe a choice, so both clocks run.
+  - Considered and left out for now: a record giving each choice type its own seconds by weight (placing a whole army against declining a commitment). Too much nuance for what the clock is for.
+- **Async.** A 36-hour window that starts over each time the player expected changes. 24 hours is hard on schedules; 36 gives a grace period without the game growing long. A run of choices by one player shares one window.
+  - A round holds roughly 8 to 15 changes of player, so a round can take days. Most answers will come well inside the window.
+- **Worked out from the record.** Both kinds can be read from a game's stream, its times and its start, with the server supplying only the present time. A game would need its start time recorded.
+- **Leaning: store times, not time left.** A game stores the timestamps and works each player's time left out from them. The times are what happened; time left is a sum over them, and storing both would give two records that can disagree. Times also carry more: a replay can show how long each choice took, which time left cannot give back.
+- **Leaning: the game records the values it was played under.** The values themselves, or a versioned preset name, not just "live". If 20 seconds becomes 25 after playtesting, an old game still works its clocks out with 20, so a timeout that was fair stays fair.
+- **Leaning: what a player sees.** The UI shows time left, but is sent each player's time left as of a stated moment, or the deadline in UTC, and whose clock is running, with the server's present time. The client counts down locally from that, so network delay and a wrong client clock do not skew it.
+- **Open.** Whether the values hold up in play.
+
+### 4A.3 Endings outside the rules
+
+- **Settled.** Resign, abandon and timeout are not game rules in the rulebook's sense. Part II §11 is unchanged.
+- **Settled.** A game records how it ended, outside the rules as well as by them, so the record alone tells the outcome. The rules store that ending and never judge it.
+- **Settled.** No draws. Every ending has a loser: when both timers run, one runs out first, and a hard tiebreak settles any true tie, as §11.3 does for two hands emptied at once.
+- **Abort.** Cancel within 30 seconds of the start, before the first choice. An aborted game is not stored.
+- **Abandon.** A disconnection of 30 seconds or more, or 60 seconds or more after setup (round 0). Connections are the server's; they are not in the record.
+- **Resign.** A voluntary loss, at any moment, out of turn included, so it does not fit the expected engine.
+- **Timeout.** Readable from the record once choices carry their times (4A.2).
+- **Open.** The tiebreak for a true tie on the clock.
+
+### 4A.4 How an ending reaches the runner (leaning)
+
+Endings outside the rules do not pass through the event loop: no expected event asks for them, and no engine judges them. They come to the runner from outside, and the runner records them on the game.
+
+- **Resign and abandon come in from the server.** A runner call such as `endGame(gameId, gameMode, ending)` names the loser and the kind of ending. The server decides abandon from its connections; a player's resign is passed on as it is.
+- **Timeout is checked, not taken on trust.** The runner works the clocks out from the record and the present time (4A.2) and refuses a timeout that has not happened.
+- **Timeout is also enforced on submission.** A choice that arrives after its player's time ran out is refused, and the game ends by timeout instead.
+- **Storage records an ending as its own operation,** beside recording an event, so the ending and the state it leaves are written together.
+- **Once ended, a game refuses further choices** with the runner's `gameOver` failure, as a game ended by the rules does.
+- **One read answers the next deadline:** whose clock runs and when it runs out. The server sets its timer from it, and the same answer goes to the UI.
+- **Subscribers hear of an ending** through the same change they hear of events by, carrying how the game ended.
+- **Open.** Where the ending sits in the `Game` document, and whether it joins the stream as an entry or stands beside it.
+
+---
+
 ## 5. Deferred
 
 - **Edge features.** Stakes and pavises, whose point is buying archers a shooting window. Fortifications, which are a property of the space, not of an edge.
