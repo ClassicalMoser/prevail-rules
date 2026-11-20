@@ -5,10 +5,10 @@
  * and [`procedures/`](../../procedures/README.md): `cards/`, `sequencing/`, `defenseResult/`,
  * `movement/`, `resolveAttack/`, plus root [`gameEffect.ts`](./gameEffect.ts) (discriminated union).
  *
- * **Design notes** (trust model, procedure-filled fields, `AssertExact` + Zod): see applyEffects
- * README and the file-level comment on `gameEffect.ts`.
- *
- * TODO(misleading): "see applyEffects README" is a pointer to another document, which STYLE.md rules out.
+ * **Design notes**: why an applied effect is trusted, why it carries only
+ * what a procedure decided, and how each schema is tied to its interface
+ * (`AssertExact` with Zod), are in the
+ * [`applyEffects` README](../../transforms/stateTransitions/applyEffects/README.md).
  */
 
 // Cards: discarding the played cards, the reveal, initiative, a rally, and the end of the game.
