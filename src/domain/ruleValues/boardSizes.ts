@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /**
  * The three board sizes (§2.1.3). Which mode is fought on which is the game
- * mode catalog's to say (`gameModes`).
+ * mode catalog's to say (`boardSizeByGameMode`).
  */
 export const boardType = ['standard', 'small', 'large'] as const;
 

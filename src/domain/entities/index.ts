@@ -1,7 +1,11 @@
 // Game modes, declared in `@ruleValues` and re-exported beside the game's
 // other vocabulary.
-export { gameModeNameSchema, gameModeNames, gameModes } from '@ruleValues';
-export type { GameMode, GameModeName } from '@ruleValues';
+export {
+  boardSizeByGameMode,
+  gameModeNameSchema,
+  gameModeNames,
+} from '@ruleValues';
+export type { GameModeName } from '@ruleValues';
 
 // Players
 export { playerSchema, playerSideSchema, playerSides } from './player';

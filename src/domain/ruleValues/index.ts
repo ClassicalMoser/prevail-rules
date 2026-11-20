@@ -54,5 +54,9 @@ export { coordinateLayoutMap } from './boardLayouts';
 export type { CoordinateLayout, CoordinateLayoutMap } from './boardLayouts';
 
 // Game modes, and which board size each is played on (§3.1.3).
-export { gameModeNames, gameModeNameSchema, gameModes } from './gameModes';
-export type { GameMode, GameModeName } from './gameModes';
+export {
+  boardSizeByGameMode,
+  gameModeNames,
+  gameModeNameSchema,
+} from './gameModes';
+export type { GameModeName } from './gameModes';

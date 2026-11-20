@@ -1,6 +1,6 @@
 import type { BoardType, GameModeName } from '@entities';
 
-import { gameModes } from '@entities';
+import { boardSizeByGameMode } from '@entities';
 import type { z } from 'zod';
 
 /**
@@ -19,7 +19,7 @@ export function refineGameModeBoardSize(
   path: (string | number)[] = ['gameState', 'boardState', 'boardType'],
 ): void {
   // The size this mode is played on, and the size this game's board is.
-  const expected: BoardType = gameModes[game.gameMode].boardSize;
+  const expected: BoardType = boardSizeByGameMode[game.gameMode];
   const actual = game.gameState.boardState.boardType;
   if (actual !== expected) {
     ctx.addIssue({

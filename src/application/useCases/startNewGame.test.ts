@@ -10,7 +10,6 @@ import { mathRandom } from '@application/infra';
 
 import { parseLegalGameForMode } from '../utils/parseLegalGame';
 import { startNewGame } from './startNewGame';
-import { gameModes } from '@entities';
 import { getExpectedEvent } from '@expected';
 import type { Game } from '@game';
 
@@ -52,7 +51,7 @@ describe('startNewGame function', () => {
       gameStateSubscribers: [
         {
           gameId,
-          gameMode: gameModes.mini.name,
+          gameMode: 'mini',
           onError: vi.fn(),
           onGameStateChange,
         },
@@ -66,7 +65,7 @@ describe('startNewGame function', () => {
     const [change] = onGameStateChange.mock.calls[0] ?? [];
     expect(change).toMatchObject({
       gameId,
-      gameMode: gameModes.mini.name,
+      gameMode: 'mini',
     });
     expect(change?.gameState).toBeDefined();
   });
@@ -80,19 +79,19 @@ describe('startNewGame function', () => {
       gameStateSubscribers: [
         {
           gameId,
-          gameMode: gameModes.mini.name,
+          gameMode: 'mini',
           onError: vi.fn(),
           onGameStateChange: matching,
         },
         {
           gameId: '44444444-4444-4444-8444-444444444444',
-          gameMode: gameModes.mini.name,
+          gameMode: 'mini',
           onError: vi.fn(),
           onGameStateChange: wrongId,
         },
         {
           gameId,
-          gameMode: gameModes.standard.name,
+          gameMode: 'standard',
           onError: vi.fn(),
           onGameStateChange: wrongMode,
         },
@@ -139,13 +138,13 @@ describe('startNewGame function', () => {
       gameStateSubscribers: [
         {
           gameId,
-          gameMode: gameModes.mini.name,
+          gameMode: 'mini',
           onError,
           onGameStateChange,
         },
         {
           gameId,
-          gameMode: gameModes.mini.name,
+          gameMode: 'mini',
           onError: vi.fn(),
           onGameStateChange: told,
         },

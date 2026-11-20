@@ -1,4 +1,3 @@
-import type { AssertExact } from '@utils';
 import type { BoardType } from './boardSizes';
 import { z } from 'zod';
 
@@ -21,32 +20,19 @@ export const gameModeNameSchema: z.ZodEnum<{ [K in GameModeName]: K }> =
   z.enum(gameModeNames);
 
 /**
- * Catalog of modes, keyed by name: the one table that says which board size
- * each mode is played on (§3.1.3). A caller looks a mode up by indexing it.
+ * The board size each game mode is played on (§3.1.3): the one table that
+ * says it. A caller looks a mode up by indexing it. Typed as a record over
+ * every mode name, so a mode with no size, a size for no mode, or a size no
+ * board has does not compile.
  */
-export const gameModes = {
+export const boardSizeByGameMode: Readonly<Record<GameModeName, BoardType>> = {
   // Epic, the largest battle, needs the large board's room.
-  epic: { boardSize: 'large', name: 'epic' },
+  epic: 'large',
   // Mini, a short battle with a small army, fits the small board.
-  mini: { boardSize: 'small', name: 'mini' },
+  mini: 'small',
   // Standard, the usual battle, is what the standard board is sized for.
-  standard: { boardSize: 'standard', name: 'standard' },
+  standard: 'standard',
   // The Tutorial, a first game, shares the small board with Mini, but none
   // of its army limits (§3.1.3).
-  tutorial: { boardSize: 'small', name: 'tutorial' },
-} as const;
-
-/**
- * A game mode entry from {@link gameModes}.
- */
-export type GameMode = (typeof gameModes)[GameModeName];
-
-// Every named mode has an entry, and every entry is a named mode.
-const _assertExactGameModeNames: AssertExact<GameModeName, GameMode['name']> =
-  true;
-
-// Every mode is played on a board size that exists.
-const _assertBoardSizesAreBoardType: AssertExact<
-  GameMode['boardSize'],
-  Extract<BoardType, GameMode['boardSize']>
-> = true;
+  tutorial: 'small',
+};

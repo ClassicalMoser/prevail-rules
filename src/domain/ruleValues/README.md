@@ -9,4 +9,4 @@ Constants the rules share. This layer imports nothing from the domain: `@entitie
 - `gameEffectTypes` — effect type names
 - `commitmentModifiers` — which stats each moment a card may be committed at accepts, and so every stat a card may name
 - `boardSizes`, `boardLabels`, `boardCoordinates`, `boardLayouts` — the board sizes, the labels on rows and columns, every space, and each size's depth, frontage and spaces
-- `gameModes` — the game modes, and which board size each is played on
+- `gameModes` — the game modes, and which board size each is played on (`boardSizeByGameMode`)

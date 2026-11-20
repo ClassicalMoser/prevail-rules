@@ -1,6 +1,6 @@
 import type { Board, GameModeName } from '@entities';
 import type { AuthoritativeGameState } from '@game';
-import { gameModes } from '@entities';
+import { boardSizeByGameMode } from '@entities';
 import { createCardState } from './createCardState';
 import { createEmptyBoard } from '@factories/board';
 
@@ -44,11 +44,11 @@ export function createEmptyGameState(
   // The mode catalog is the one place a mode's board size is written down;
   // the game rules check a game's board against the same catalog. A mode name
   // enters a game here, so a drifted value is refused here.
-  if (!Object.hasOwn(gameModes, name)) {
+  if (!Object.hasOwn(boardSizeByGameMode, name)) {
     throw new Error(`Unknown gameMode: ${name}`);
   }
   // Lay out an empty board of the size that mode is played on.
-  const board = createEmptyBoard(gameModes[name].boardSize);
+  const board = createEmptyBoard(boardSizeByGameMode[name]);
   const gameState = shell(board);
   return gameState;
 }

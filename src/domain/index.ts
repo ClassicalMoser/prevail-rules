@@ -59,11 +59,11 @@ export {
 export {
   engagementType,
   engagementTypeSchema,
-  gameModes,
+  boardSizeByGameMode,
   gameModeNames,
   gameModeNameSchema,
 } from '@entities';
-export type { GameMode, GameModeName } from '@entities';
+export type { GameModeName } from '@entities';
 export { playerSchema, playerSides, playerSideSchema } from '@entities';
 export { diagonalFacings, orthogonalFacings, unitFacings } from '@entities';
 export {
