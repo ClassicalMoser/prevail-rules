@@ -78,7 +78,6 @@ export function chooseCommanderMove(
   const event: MoveCommanderEvent = {
     choiceType: 'moveCommander',
     eventType: 'playerChoice',
-    from,
     player: seat,
     to,
   };

@@ -75,7 +75,7 @@ describe('applyChooseMovingUnitEvent function', () => {
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: first,
+        unit: first.unit,
       }),
       state,
     );
@@ -93,7 +93,7 @@ describe('applyChooseMovingUnitEvent function', () => {
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: first,
+        unit: first.unit,
       }),
       state,
     );
@@ -111,7 +111,7 @@ describe('applyChooseMovingUnitEvent function', () => {
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: first,
+        unit: first.unit,
       }),
       state,
     );

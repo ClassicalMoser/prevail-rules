@@ -48,16 +48,15 @@ describe('generateStartEngagementEvent function', () => {
     return { defender, full };
   }
 
-  it('given movement into E-6, event copies defender unit and board facing at target coordinate', () => {
+  it('given movement into E-6, names the defender standing there by who it is', () => {
     const { full, defender } = stateEnteringDefenderAt({
       defenderFacing: 'south',
       engagingFacing: 'north',
     });
 
     const event = generateStartEngagementEvent(full);
-    expect(event.defenderWithPlacement.unit).toBe(defender);
-    expect(event.defenderWithPlacement.placement.coordinate).toBe('E-6');
-    expect(event.defenderWithPlacement.placement.facing).toBe('south');
+    // The defender is named; where it stands and faces is the board's to say.
+    expect(event.defendingUnit).toBe(defender);
     expect(['rear', 'flank', 'front']).toContain(event.engagementType);
   });
 

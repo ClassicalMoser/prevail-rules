@@ -92,7 +92,7 @@ describe('applyPerformRangedAttackEvent function', () => {
       createPerformRangedAttackEvent({
         player: 'black',
         supportingUnits: [],
-        targetUnit: target,
+        targetUnit: target.unit,
       }),
       state,
     );
@@ -144,8 +144,8 @@ describe('applyPerformRangedAttackEvent function', () => {
     const aimed = applyPerformRangedAttackEvent(
       createPerformRangedAttackEvent({
         player: 'black',
-        supportingUnits: [supporter],
-        targetUnit: target,
+        supportingUnits: [supporter.unit],
+        targetUnit: target.unit,
       }),
       state,
     );

@@ -10,14 +10,14 @@ describe('createChooseShooterEvent function', () => {
 
     const event = createChooseShooterEvent({
       player: 'black',
-      unit,
+      unit: unit.unit,
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseShooter',
       eventType: 'playerChoice',
       player: 'black',
-      unit,
+      unit: unit.unit,
     });
   });
 });

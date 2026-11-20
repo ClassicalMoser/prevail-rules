@@ -57,6 +57,7 @@ Audit in this order (dependencies flow downward):
   - Scouted again 2026-11-13: every choice and effect says when it comes, its rule, and who writes and reads it. No marks left.
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
+  - Changed 2026-11-20, for the next read: events name units by who they are, not where they stand. `chooseMovingUnit.unit`, `chooseShooter.unit`, `performRangedAttack.targetUnit` and `supportingUnits` are `UnitInstance`; `startEngagement.defenderWithPlacement` is `defendingUnit`; `moveCommander.from` is gone. Where each stands is read from the game state's index.
   - [x] `expectedEvent/`
   - [ ] `gameEffects/`
   - [ ] `playerChoices/`

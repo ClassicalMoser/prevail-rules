@@ -13,7 +13,9 @@ export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander' as const;
  * cards' inspiration ranges reach this round (§4.2.7).
  *
  * `getLegalCommanderMoves` enumerates the legal destinations, and
- * `applyMoveCommanderEvent` applies the choice.
+ * `applyMoveCommanderEvent` applies the choice. The event names only where
+ * the commander goes: where it set out from is the board's to say, read from
+ * the game state's index.
  */
 export interface MoveCommanderEvent {
   /** A player choice, not a game effect. */
@@ -22,8 +24,6 @@ export interface MoveCommanderEvent {
   choiceType: typeof MOVE_COMMANDER_CHOICE_TYPE;
   /** The player who is moving the commander. */
   player: PlayerSide;
-  /** The space the commander stands in before the move. */
-  from: Coordinate;
   /** The space the commander moves to. It may be the space it is in (§4.2.6). */
   to: Coordinate;
 }
@@ -36,8 +36,6 @@ const _moveCommanderEventSchemaObject = z
     choiceType: z.literal(MOVE_COMMANDER_CHOICE_TYPE),
     /** The player who is moving the commander. */
     player: playerSideSchema,
-    /** The space the commander stands in before the move. */
-    from: coordinateSchema,
     /** The space the commander moves to. It may be the space it is in (§4.2.6). */
     to: coordinateSchema,
   })
@@ -57,6 +55,5 @@ export const moveCommanderEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof MOVE_COMMANDER_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  from: typeof coordinateSchema;
   to: typeof coordinateSchema;
 }> = _moveCommanderEventSchemaObject;

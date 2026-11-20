@@ -52,7 +52,7 @@ describe('isValidChooseMovingUnitEvent function', () => {
   it('accepts an ordered unit still to move', () => {
     const event = createChooseMovingUnitEvent({
       player: 'black',
-      unit: ordered,
+      unit: ordered.unit,
     });
 
     expect(isValidChooseMovingUnitEvent(event, resolvingOrder())).toStrictEqual(
@@ -60,22 +60,10 @@ describe('isValidChooseMovingUnitEvent function', () => {
     );
   });
 
-  it('refuses the unit named where it does not stand', () => {
-    // The same unit, claimed to stand one space off.
-    const event = createChooseMovingUnitEvent({
-      player: 'black',
-      unit: { ...ordered, placement: { coordinate: 'D-5', facing: 'north' } },
-    });
-
-    expect(isValidChooseMovingUnitEvent(event, resolvingOrder()).result).toBe(
-      false,
-    );
-  });
-
   it('refuses the other side naming a unit', () => {
     const event = createChooseMovingUnitEvent({
       player: 'white',
-      unit: ordered,
+      unit: ordered.unit,
     });
 
     expect(isValidChooseMovingUnitEvent(event, resolvingOrder())).toStrictEqual(
@@ -96,7 +84,7 @@ describe('isValidChooseMovingUnitEvent function', () => {
     );
     const event = createChooseMovingUnitEvent({
       player: 'black',
-      unit: ordered,
+      unit: ordered.unit,
     });
 
     // A unit named while cards are chosen is refused by the expected check

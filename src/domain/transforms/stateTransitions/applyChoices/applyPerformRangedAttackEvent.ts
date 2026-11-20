@@ -38,10 +38,10 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
   // the ones the board holds.
   const defendingUnit = getUnitWithPlacementOnBoard(
     state,
-    event.targetUnit.unit,
+    event.targetUnit,
   ).unit;
   const supportingUnits = event.supportingUnits.map(
-    (named) => getUnitWithPlacementOnBoard(state, named.unit).unit,
+    (named) => getUnitWithPlacementOnBoard(state, named).unit,
   );
 
   // The shooter's side is the one acting on this order.

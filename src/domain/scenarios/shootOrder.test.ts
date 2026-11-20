@@ -79,7 +79,7 @@ describe('a Shoot order', () => {
       applyEvent(
         createChooseShooterEvent({
           player: 'black',
-          unit: shooter,
+          unit: shooter.unit,
         }),
         start.state,
       ),
@@ -101,7 +101,7 @@ describe('a Shoot order', () => {
     const shot = createPerformRangedAttackEvent({
       player: 'black',
       supportingUnits: [],
-      targetUnit: target,
+      targetUnit: target.unit,
     });
 
     expect(validatePlayerChoice(shot, state)).toStrictEqual({ result: true });
@@ -122,7 +122,7 @@ describe('a Shoot order', () => {
     const shot = createPerformRangedAttackEvent({
       player: 'black',
       supportingUnits: [],
-      targetUnit: target,
+      targetUnit: target.unit,
     });
 
     expect(validatePlayerChoice(shot, state).result).toBe(false);
@@ -140,7 +140,7 @@ describe('a Shoot order', () => {
         createPerformRangedAttackEvent({
           player: 'black',
           supportingUnits: [],
-          targetUnit: target,
+          targetUnit: target.unit,
         }),
         state,
       ),
@@ -207,7 +207,7 @@ describe('a card committed to a shot', () => {
         createPerformRangedAttackEvent({
           player: 'black',
           supportingUnits: [],
-          targetUnit: target,
+          targetUnit: target.unit,
         }),
         waiting,
       ),
@@ -314,7 +314,7 @@ describe('a Shoot order with several shooters', () => {
         createPerformRangedAttackEvent({
           player: 'black',
           supportingUnits: [],
-          targetUnit: target,
+          targetUnit: target.unit,
         }),
         readyToAimShot(state, shooter, committed),
       ),

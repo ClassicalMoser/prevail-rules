@@ -25,11 +25,11 @@ export function applyChooseShooterEvent<S extends GameState>(
 ): S {
   // The order is carried out shot by shot; this unit's is now under way.
   const remaining = getRemainingUnitsForPlayer(state, event.player);
-  const stillToAct = arrayWithoutUnit(remaining, event.unit.unit);
+  const stillToAct = arrayWithoutUnit(remaining, event.unit);
 
   // The event names the shooter by who it is; the unit that shoots, with the
   // stats it carries, is the one the board holds.
-  const shooter = getUnitWithPlacementOnBoard(state, event.unit.unit).unit;
+  const shooter = getUnitWithPlacementOnBoard(state, event.unit).unit;
 
   // The shot opens with the shooter's commitment owed and nothing yet aimed:
   // its owner may commit a card first, and a Range card reaches further

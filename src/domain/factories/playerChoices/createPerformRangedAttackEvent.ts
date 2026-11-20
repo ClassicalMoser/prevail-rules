@@ -1,4 +1,4 @@
-import type { PlayerSide, UnitWithPlacement } from '@entities';
+import type { PlayerSide, UnitInstance } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
@@ -12,13 +12,14 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  *
  * @param fields - `player` the shooting player; `supportingUnits` the units
  * spending their shots on this one; `targetUnit` the enemy unit being shot at —
- * the shooter itself was named by `chooseShooter`
+ * the shooter itself was named by `chooseShooter`. Each is named by who it
+ * is; where it stands is the board's to say
  * @returns The event
  */
 export function createPerformRangedAttackEvent(fields: {
   player: PlayerSide;
-  supportingUnits: UnitWithPlacement[];
-  targetUnit: UnitWithPlacement;
+  supportingUnits: UnitInstance[];
+  targetUnit: UnitInstance;
 }): PerformRangedAttackEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,

@@ -2,13 +2,13 @@ import type { ValidationResult } from '@utils';
 import type { ChooseMovingUnitEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalMoveUnits } from '@legality';
-import { isSameUnitWithPlacement } from '@queries';
+import { isSameUnitInstance } from '@queries';
 
 /**
  * Validates a ChooseMovingUnitEvent by membership against
  * {@link getLegalMoveUnits}: the player carrying out a Move order names one
- * of the ordered units still to move, standing where the board has it
- * (§4.3.10).
+ * of the ordered units still to move (§4.3.10). The event names the unit by
+ * who it is; where it stands is the board's to say.
  */
 export function isValidChooseMovingUnitEvent(
   event: ChooseMovingUnitEvent,
@@ -23,9 +23,9 @@ export function isValidChooseMovingUnitEvent(
     };
   }
 
-  // Who it is and where it stands must both match an offered unit.
+  // It must be one of the units offered, by who it is.
   const offered = legal.units.some((candidate) =>
-    isSameUnitWithPlacement(candidate, event.unit),
+    isSameUnitInstance(candidate.unit, event.unit),
   );
   if (!offered) {
     return {

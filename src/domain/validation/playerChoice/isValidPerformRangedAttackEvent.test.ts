@@ -105,7 +105,7 @@ describe('isValidPerformRangedAttackEvent function', () => {
         event({
           player: 'black',
           supportingUnits: [],
-          targetUnit: defender,
+          targetUnit: defender.unit,
         }),
         state,
       ),
@@ -140,8 +140,8 @@ describe('isValidPerformRangedAttackEvent function', () => {
       isValidPerformRangedAttackEvent(
         event({
           player: 'black',
-          supportingUnits: [supporter],
-          targetUnit: defender,
+          supportingUnits: [supporter.unit],
+          targetUnit: defender.unit,
         }),
         state,
       ),
@@ -175,8 +175,8 @@ describe('isValidPerformRangedAttackEvent function', () => {
     const result = isValidPerformRangedAttackEvent(
       event({
         player: 'black',
-        supportingUnits: [facingAway],
-        targetUnit: defender,
+        supportingUnits: [facingAway.unit],
+        targetUnit: defender.unit,
       }),
       state,
     );
@@ -213,8 +213,8 @@ describe('isValidPerformRangedAttackEvent function', () => {
       isValidPerformRangedAttackEvent(
         event({
           player: 'black',
-          supportingUnits: [supporter, supporter],
-          targetUnit: defender,
+          supportingUnits: [supporter.unit, supporter.unit],
+          targetUnit: defender.unit,
         }),
         state,
       ),
@@ -243,8 +243,8 @@ describe('isValidPerformRangedAttackEvent function', () => {
       isValidPerformRangedAttackEvent(
         event({
           player: 'black',
-          supportingUnits: [attacker],
-          targetUnit: defender,
+          supportingUnits: [attacker.unit],
+          targetUnit: defender.unit,
         }),
         state,
       ),
@@ -272,7 +272,7 @@ describe('isValidPerformRangedAttackEvent function', () => {
       event({
         player: 'black',
         supportingUnits: [],
-        targetUnit: defender,
+        targetUnit: defender.unit,
       }),
       state,
     );
@@ -303,7 +303,7 @@ describe('isValidPerformRangedAttackEvent function', () => {
         event({
           player: 'black',
           supportingUnits: [],
-          targetUnit: defender,
+          targetUnit: defender.unit,
         }),
         state,
       ),
@@ -345,8 +345,8 @@ describe('isValidPerformRangedAttackEvent function', () => {
       isValidPerformRangedAttackEvent(
         event({
           player: 'black',
-          supportingUnits: [supporter],
-          targetUnit: defender,
+          supportingUnits: [supporter.unit],
+          targetUnit: defender.unit,
         }),
         state,
       ),

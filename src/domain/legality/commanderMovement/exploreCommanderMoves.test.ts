@@ -4,6 +4,7 @@ import {
   createGameStateWithUnits,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import { addCommanderToBoard } from '@transforms';
 
@@ -33,10 +34,10 @@ describe('exploreCommanderMoves function', () => {
     it('given work correctly near the board edge', () => {
       const playerSide = 'white';
       const startingCoordinate = 'E-2';
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithCommander(
-        playerSide,
-        startingCoordinate,
+      let gameState = createEmptyGameState('standard');
+      gameState = replaceBoard(
+        gameState,
+        createBoardWithCommander(playerSide, startingCoordinate),
       );
       const legalMoves = exploreCommanderMoves(
         playerSide,
@@ -50,10 +51,10 @@ describe('exploreCommanderMoves function', () => {
     it('given work correctly in the corner of the board', () => {
       const playerSide = 'white';
       const startingCoordinate = 'A-1';
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithCommander(
-        playerSide,
-        startingCoordinate,
+      let gameState = createEmptyGameState('standard');
+      gameState = replaceBoard(
+        gameState,
+        createBoardWithCommander(playerSide, startingCoordinate),
       );
       const legalMoves = exploreCommanderMoves(
         playerSide,
@@ -69,15 +70,14 @@ describe('exploreCommanderMoves function', () => {
       const enemyUnit1 = createTestUnit('black');
       const enemyUnit2 = createTestUnit('black');
       const enemyUnit3 = createTestUnit('black');
-      const gameState = createGameStateWithUnits([
+      let gameState = createGameStateWithUnits([
         placed(enemyUnit1, 'D-5', 'north'),
         placed(enemyUnit2, 'E-6', 'north'),
         placed(enemyUnit3, 'J-8', 'south'),
       ]);
-      gameState.boardState = addCommanderToBoard(
-        gameState.boardState,
-        'white',
-        'E-5',
+      gameState = replaceBoard(
+        gameState,
+        addCommanderToBoard(gameState.boardState, 'white', 'E-5'),
       );
       const legalMoves = exploreCommanderMoves(
         'white',
@@ -97,7 +97,7 @@ describe('exploreCommanderMoves function', () => {
       const enemyUnit2 = createTestUnit('black');
       const friendlyUnit3 = createTestUnit('white');
       const enemyUnit3 = createTestUnit('black');
-      const gameState = createGameStateWithUnits([
+      let gameState = createGameStateWithUnits([
         placed(friendlyUnit1, 'D-5', 'northEast'),
         placed(friendlyUnit2, 'E-6', 'north'),
         placed(friendlyUnit3, 'J-8', 'south'),
@@ -105,10 +105,9 @@ describe('exploreCommanderMoves function', () => {
         placed(enemyUnit2, 'E-6', 'south'),
         placed(enemyUnit3, 'J-8', 'north'),
       ]);
-      gameState.boardState = addCommanderToBoard(
-        gameState.boardState,
-        'white',
-        'E-5',
+      gameState = replaceBoard(
+        gameState,
+        addCommanderToBoard(gameState.boardState, 'white', 'E-5'),
       );
       const legalMoves = exploreCommanderMoves(
         'white',
@@ -127,17 +126,16 @@ describe('exploreCommanderMoves function', () => {
       const enemyUnit3 = createTestUnit('black');
       const enemyUnit4 = createTestUnit('black');
       const enemyUnit5 = createTestUnit('black');
-      const gameState = createGameStateWithUnits([
+      let gameState = createGameStateWithUnits([
         placed(enemyUnit1, 'C-6', 'north'),
         placed(enemyUnit2, 'D-6', 'north'),
         placed(enemyUnit3, 'E-6', 'north'),
         placed(enemyUnit4, 'F-6', 'north'),
         placed(enemyUnit5, 'G-6', 'north'),
       ]);
-      gameState.boardState = addCommanderToBoard(
-        gameState.boardState,
-        'white',
-        'E-5',
+      gameState = replaceBoard(
+        gameState,
+        addCommanderToBoard(gameState.boardState, 'white', 'E-5'),
       );
       const legalMoves = exploreCommanderMoves(
         'white',
@@ -166,7 +164,7 @@ describe('exploreCommanderMoves function', () => {
       const friendlyUnit6 = createTestUnit('white');
       const friendlyUnit7 = createTestUnit('white');
       const friendlyUnit8 = createTestUnit('white');
-      const gameState = createGameStateWithUnits([
+      let gameState = createGameStateWithUnits([
         placed(friendlyUnit1, 'A-2', 'northEast'),
         placed(friendlyUnit2, 'B-3', 'northEast'),
         placed(friendlyUnit3, 'C-4', 'northEast'),
@@ -176,10 +174,9 @@ describe('exploreCommanderMoves function', () => {
         placed(friendlyUnit7, 'G-8', 'northEast'),
         placed(friendlyUnit8, 'H-9', 'northEast'),
       ]);
-      gameState.boardState = addCommanderToBoard(
-        gameState.boardState,
-        'black',
-        'E-5',
+      gameState = replaceBoard(
+        gameState,
+        addCommanderToBoard(gameState.boardState, 'black', 'E-5'),
       );
       const legalMoves = exploreCommanderMoves(
         'black',

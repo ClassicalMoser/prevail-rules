@@ -2,7 +2,7 @@ import type { ValidationResult } from '@utils';
 import type { PerformRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalShooterTargets } from '@legality';
-import { isSameUnitWithPlacement } from '@queries';
+import { isSameUnitInstance } from '@queries';
 import { isValidRangedAttackSupporters } from './isValidRangedAttackSupporters';
 
 /**
@@ -31,8 +31,9 @@ export function isValidPerformRangedAttackEvent(
   }
 
   // The target must be one the shooter can reach, its card counted.
+  // Named by who it is; the offer says where it stands.
   const target = legal.targets.find((candidate) =>
-    isSameUnitWithPlacement(candidate, event.targetUnit),
+    isSameUnitInstance(candidate.unit, event.targetUnit),
   );
   if (target === undefined) {
     return {

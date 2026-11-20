@@ -14,7 +14,8 @@ import { throwIfPending } from '@utils';
  * This is called when a unit first moves into an enemy space.
  *
  * @param state - The current game state
- * @returns A complete StartEngagementEvent with engagement type and `defenderWithPlacement`
+ * @returns A complete StartEngagementEvent with engagement type and the
+ * defending unit, named by who it is
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
 export function generateStartEngagementEvent(
@@ -47,8 +48,10 @@ export function generateStartEngagementEvent(
       `Unable to determine engagement type. Engaging facing: ${engagingFacing}, Defending facing: ${defendingFacing}`,
     );
   }
+  // The defender is named by who it is: it stands in the space the move
+  // ends in, which the movement records, and faces as the board says.
   return {
-    defenderWithPlacement,
+    defendingUnit: defenderWithPlacement.unit,
     effectType: START_ENGAGEMENT_EFFECT_TYPE,
     engagementType,
     eventType: GAME_EFFECT_EVENT_TYPE,

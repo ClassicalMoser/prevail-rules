@@ -9,21 +9,19 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required: a
  * default would hide a choice the caller means.
  *
- * @param fields - `from` the coordinate the commander is moving from; `player`
- * the player who is moving the commander; `to` the coordinate the commander is
- * moving to
+ * @param fields - `player` the player who is moving the commander; `to` the
+ * coordinate the commander is moving to. Where it moves from is the board's
+ * to say.
  * @returns The event
  */
 export function createMoveCommanderEvent(fields: {
   player: PlayerSide;
-  from: Coordinate;
   to: Coordinate;
 }): MoveCommanderEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,
     choiceType: 'moveCommander',
     player: fields.player,
-    from: fields.from,
     to: fields.to,
   };
 }

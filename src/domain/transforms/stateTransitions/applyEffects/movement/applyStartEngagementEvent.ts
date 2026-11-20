@@ -19,8 +19,8 @@ import { throwIfPending } from '@utils';
 /**
  * Applies a StartEngagementEvent to the game state.
  * Creates an engagement state in the movement resolution state with the appropriate resolution state.
- * Uses `event.defenderWithPlacement` from the procedure; does not scan the target space or
- * resolve placement via `getPositionOfUnit`.
+ * The procedure names the defender by who it is; it stands in the space the
+ * move ends in, which the movement records.
  *
  * @param event - The start engagement event to apply
  * @param state - The current game state
@@ -37,7 +37,7 @@ export function applyStartEngagementEvent<S extends GameState>(
     movementState.targetPlacement,
     'The move has not been written yet',
   );
-  const defendingUnit = event.defenderWithPlacement.unit;
+  const { defendingUnit } = event;
   const engagingUnit = movementState.movingUnit.unit;
 
   // How the engaging unit meets the defender decides how the engagement opens.

@@ -90,7 +90,7 @@ describe('getLegalShooterTargets function', () => {
     const named = applyEvent(
       createChooseShooterEvent({
         player: 'black',
-        unit: shooter,
+        unit: shooter.unit,
       }),
       start.state,
     );

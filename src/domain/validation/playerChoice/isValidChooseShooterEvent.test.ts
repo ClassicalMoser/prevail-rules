@@ -41,29 +41,11 @@ describe('isValidChooseShooterEvent function', () => {
     // Black names the unit on E-5, where it stands.
     const event = createChooseShooterEvent({
       player: 'black',
-      unit: ordered,
+      unit: ordered.unit,
     });
 
     expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
       result: true,
-    });
-  });
-
-  it('refuses the unit named where it does not stand', () => {
-    const state = resolvingOrder();
-    const ordered = getSingleUnitWithPlacementAtCoordinate(
-      state.boardState,
-      'E-5',
-    );
-    // The same unit, claimed to stand one space off.
-    const event = createChooseShooterEvent({
-      player: 'black',
-      unit: { ...ordered, placement: { coordinate: 'D-5', facing: 'north' } },
-    });
-
-    expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
-      errorReason: 'Unit is not a legal ranged attacker for black',
-      result: false,
     });
   });
 
@@ -76,7 +58,7 @@ describe('isValidChooseShooterEvent function', () => {
     // White tries to name black's shooter during black's order.
     const event = createChooseShooterEvent({
       player: 'white',
-      unit: ordered,
+      unit: ordered.unit,
     });
 
     expect(isValidChooseShooterEvent(event, state)).toStrictEqual({
@@ -97,7 +79,7 @@ describe('isValidChooseShooterEvent function', () => {
     );
     const event = createChooseShooterEvent({
       player: 'black',
-      unit: ordered,
+      unit: ordered.unit,
     });
 
     // A shooter named while cards are chosen is refused by the expected check

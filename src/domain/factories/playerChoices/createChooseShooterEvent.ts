@@ -1,4 +1,4 @@
-import type { PlayerSide, UnitWithPlacement } from '@entities';
+import type { PlayerSide, UnitInstance } from '@entities';
 import type { ChooseShooterEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
@@ -11,12 +11,12 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * default would hide a choice the caller means.
  *
  * @param fields - `player` the player carrying out the order; `unit` the unit
- * that shoots next, and where it stands
+ * that shoots next, by who it is
  * @returns The event
  */
 export function createChooseShooterEvent(fields: {
   player: PlayerSide;
-  unit: UnitWithPlacement;
+  unit: UnitInstance;
 }): ChooseShooterEvent {
   const event: ChooseShooterEvent = {
     choiceType: 'chooseShooter',

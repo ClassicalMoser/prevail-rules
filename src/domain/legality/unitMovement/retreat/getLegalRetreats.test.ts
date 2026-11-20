@@ -12,6 +12,7 @@ import {
   createTestUnit,
   createUnitWithPlacement,
   placed,
+  replaceBoard,
 } from '@testing';
 import { addUnitToBoard } from '@transforms';
 
@@ -89,7 +90,7 @@ describe('getLegalRetreats function', () => {
     it('given enemy is facing from directly behind, does not allow retreat', () => {
       const primaryUnit = createTestUnit('black', { speed: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
-      const gameState = createGameStateWithEngagedUnits(
+      let gameState = createGameStateWithEngagedUnits(
         primaryUnit,
         secondaryUnit,
         'G-8',
@@ -106,7 +107,7 @@ describe('getLegalRetreats function', () => {
         unit: additionalEnemyUnit,
       };
       board = addUnitToBoard(board, additionalEnemyUnitWithPlacement);
-      gameState.boardState = board;
+      gameState = replaceBoard(gameState, board);
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
@@ -120,7 +121,7 @@ describe('getLegalRetreats function', () => {
     it('given enemy is facing from indirectly behind, does not allow retreat', () => {
       const primaryUnit = createTestUnit('black', { speed: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
-      const gameState = createGameStateWithEngagedUnits(
+      let gameState = createGameStateWithEngagedUnits(
         primaryUnit,
         secondaryUnit,
         'G-8',
@@ -137,7 +138,7 @@ describe('getLegalRetreats function', () => {
         unit: additionalEnemyUnit,
       };
       board = addUnitToBoard(board, additionalEnemyUnitWithPlacement);
-      gameState.boardState = board;
+      gameState = replaceBoard(gameState, board);
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
@@ -151,7 +152,7 @@ describe('getLegalRetreats function', () => {
     it('given allow retreat when enemy behind is not facing', () => {
       const primaryUnit = createTestUnit('black', { speed: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
-      const gameState = createGameStateWithEngagedUnits(
+      let gameState = createGameStateWithEngagedUnits(
         primaryUnit,
         secondaryUnit,
         'G-8',
@@ -168,7 +169,7 @@ describe('getLegalRetreats function', () => {
         unit: additionalEnemyUnit,
       };
       board = addUnitToBoard(board, additionalEnemyUnitWithPlacement);
-      gameState.boardState = board;
+      gameState = replaceBoard(gameState, board);
       // The black unit is one of two in an engaged space, which only the
       // side-aware lookup can pick out.
       const unit = throwIfUndefined(
@@ -205,13 +206,13 @@ describe('getLegalRetreats function', () => {
         playerSide: 'black',
         unitOptions: { flexibility: highFlexibility, instanceNumber: 4 },
       });
-      const gameState = createEmptyGameState('standard');
+      let gameState = createEmptyGameState('standard');
       let board = gameState.boardState;
       board = addUnitToBoard(board, primaryUnit);
       board = addUnitToBoard(board, secondaryUnit1);
       board = addUnitToBoard(board, secondaryUnit2);
       board = addUnitToBoard(board, secondaryUnit3);
-      gameState.boardState = board;
+      gameState = replaceBoard(gameState, board);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
         'G-8',

@@ -30,7 +30,7 @@ export function chooseMovingUnit(
     choiceType: 'chooseMovingUnit',
     eventType: 'playerChoice',
     player: offer.player,
-    unit,
+    unit: unit.unit,
   };
   return event;
 }

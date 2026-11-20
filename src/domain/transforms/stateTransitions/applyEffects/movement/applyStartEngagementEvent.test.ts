@@ -65,7 +65,7 @@ describe('applyStartEngagementEvent function', () => {
   it('given event engagementType front, movement engagement is front and engager is movingUnit', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      defenderWithPlacement,
+      defendingUnit: defenderWithPlacement.unit,
       effectType: 'startEngagement' as const,
       engagementType: 'front' as const,
       eventType: 'gameEffect' as const,
@@ -92,7 +92,7 @@ describe('applyStartEngagementEvent function', () => {
   it('given event engagementType rear, rear routState player matches defender side with pending penalty', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      defenderWithPlacement,
+      defendingUnit: defenderWithPlacement.unit,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
       eventType: 'gameEffect' as const,
@@ -126,7 +126,7 @@ describe('applyStartEngagementEvent function', () => {
     // stands where it stood before its owner is asked for the Morale.
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      defenderWithPlacement,
+      defendingUnit: defenderWithPlacement.unit,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
       eventType: 'gameEffect' as const,
@@ -155,7 +155,7 @@ describe('applyStartEngagementEvent function', () => {
     // its space at once.
     const next = applyStartEngagementEvent(
       {
-        defenderWithPlacement,
+        defendingUnit: defenderWithPlacement.unit,
         effectType: 'startEngagement',
         engagementType: 'rear',
         eventType: 'gameEffect',
@@ -172,7 +172,7 @@ describe('applyStartEngagementEvent function', () => {
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      defenderWithPlacement,
+      defendingUnit: defenderWithPlacement.unit,
       effectType: 'startEngagement' as const,
       engagementType: 'flank' as const,
       eventType: 'gameEffect' as const,
@@ -206,7 +206,7 @@ describe('applyStartEngagementEvent function', () => {
       effectType: 'startEngagement' as const,
       // Intentionally bad type cast to test error path
       engagementType: 'siege' as unknown as EngagementType,
-      defenderWithPlacement,
+      defendingUnit: defenderWithPlacement.unit,
     };
 
     expect(() => applyStartEngagementEvent(event, state)).toThrow(

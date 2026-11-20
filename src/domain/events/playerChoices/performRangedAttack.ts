@@ -1,6 +1,6 @@
-import type { PlayerSide, UnitWithPlacement } from '@entities';
+import type { PlayerSide, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema, unitWithPlacementSchema } from '@entities';
+import { playerSideSchema, unitInstanceSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -23,10 +23,16 @@ export interface PerformRangedAttackEvent {
   choiceType: typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE;
   /** The shooting player. */
   player: PlayerSide;
-  /** The enemy unit being shot at, and where it stands. */
-  targetUnit: UnitWithPlacement;
-  /** Other units of the same order spending their shots on this one (§7.3.4). */
-  supportingUnits: UnitWithPlacement[];
+  /**
+   * The enemy unit being shot at, named by who it is. Where it stands, and so
+   * whether it is in range and sight, is the board's to say.
+   */
+  targetUnit: UnitInstance;
+  /**
+   * Other units of the same order spending their shots on this one
+   * (§7.3.4), named by who they are; where each stands is read on the board.
+   */
+  supportingUnits: UnitInstance[];
 }
 
 const _performRangedAttackEventSchemaObject = z
@@ -38,9 +44,9 @@ const _performRangedAttackEventSchemaObject = z
     /** The shooting player. */
     player: playerSideSchema,
     /** Other units of the same order spending their shots on this one (§7.3.4). */
-    supportingUnits: z.array(unitWithPlacementSchema),
-    /** The enemy unit being shot at, and where it stands. */
-    targetUnit: unitWithPlacementSchema,
+    supportingUnits: z.array(unitInstanceSchema),
+    /** The enemy unit being shot at, named by who it is. */
+    targetUnit: unitInstanceSchema,
   })
   .strict();
 
@@ -58,6 +64,6 @@ export const performRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  supportingUnits: z.ZodArray<typeof unitWithPlacementSchema>;
-  targetUnit: typeof unitWithPlacementSchema;
+  supportingUnits: z.ZodArray<typeof unitInstanceSchema>;
+  targetUnit: typeof unitInstanceSchema;
 }> = _performRangedAttackEventSchemaObject;

@@ -51,7 +51,7 @@ describe('applyChooseShooterEvent function', () => {
     const named = applyChooseShooterEvent(
       createChooseShooterEvent({
         player: 'black',
-        unit: shooter,
+        unit: shooter.unit,
       }),
       state,
     );
@@ -85,7 +85,7 @@ describe('applyChooseShooterEvent function', () => {
     const named = applyChooseShooterEvent(
       createChooseShooterEvent({
         player: 'black',
-        unit: shooter,
+        unit: shooter.unit,
       }),
       state,
     );

@@ -1,5 +1,5 @@
 import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
-import { createBoardWithCommander } from '@testing';
+import { createBoardWithCommander, replaceBoard } from '@testing';
 
 import { getLegalCommanderMoves } from './getLegalCommanderMoves';
 
@@ -11,10 +11,10 @@ describe('getLegalCommanderMoves function', () => {
   it('given context, returns all moves on an empty board', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
-    const gameState = createEmptyGameState('standard');
-    gameState.boardState = createBoardWithCommander(
-      playerSide,
-      startingCoordinate,
+    let gameState = createEmptyGameState('standard');
+    gameState = replaceBoard(
+      gameState,
+      createBoardWithCommander(playerSide, startingCoordinate),
     );
     const legalMoves = getLegalCommanderMoves(
       playerSide,
@@ -37,10 +37,10 @@ describe('getLegalCommanderMoves function', () => {
   it('given if the wrong commander is at the starting position, throws', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
-    const gameState = createEmptyGameState('standard');
-    gameState.boardState = createBoardWithCommander(
-      'black',
-      startingCoordinate,
+    let gameState = createEmptyGameState('standard');
+    gameState = replaceBoard(
+      gameState,
+      createBoardWithCommander('black', startingCoordinate),
     );
     expect(() =>
       getLegalCommanderMoves(playerSide, gameState, startingCoordinate),

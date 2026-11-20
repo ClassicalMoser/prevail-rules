@@ -64,7 +64,7 @@ describe('a Move order', () => {
       applyEvent(
         createChooseMovingUnitEvent({
           player: 'black',
-          unit: mover,
+          unit: mover.unit,
         }),
         start.state,
       ),

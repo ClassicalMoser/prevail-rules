@@ -34,7 +34,7 @@ export function readyToWriteMove(
     applyEvent(
       createChooseMovingUnitEvent({
         player,
-        unit,
+        unit: unit.unit,
       }),
       start.state,
     ),

@@ -1,6 +1,6 @@
-import type { PlayerSide, UnitWithPlacement } from '@entities';
+import type { PlayerSide, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema, unitWithPlacementSchema } from '@entities';
+import { playerSideSchema, unitInstanceSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -29,8 +29,11 @@ export interface ChooseMovingUnitEvent {
   choiceType: typeof CHOOSE_MOVING_UNIT_CHOICE_TYPE;
   /** The player carrying out the order. */
   player: PlayerSide;
-  /** The unit that moves next, and where it stands. */
-  unit: UnitWithPlacement;
+  /**
+   * The unit that moves next, named by who it is. Where it stands is the
+   * board's to say, and is read there when the choice is checked and applied.
+   */
+  unit: UnitInstance;
 }
 
 const _chooseMovingUnitEventSchemaObject = z
@@ -41,8 +44,8 @@ const _chooseMovingUnitEventSchemaObject = z
     choiceType: z.literal(CHOOSE_MOVING_UNIT_CHOICE_TYPE),
     /** The player carrying out the order. */
     player: playerSideSchema,
-    /** The unit that moves next, and where it stands. */
-    unit: unitWithPlacementSchema,
+    /** The unit that moves next, named by who it is. */
+    unit: unitInstanceSchema,
   })
   .strict();
 
@@ -60,5 +63,5 @@ export const chooseMovingUnitEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof CHOOSE_MOVING_UNIT_CHOICE_TYPE>;
   player: typeof playerSideSchema;
-  unit: typeof unitWithPlacementSchema;
+  unit: typeof unitInstanceSchema;
 }> = _chooseMovingUnitEventSchemaObject;

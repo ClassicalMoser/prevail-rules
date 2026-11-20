@@ -179,7 +179,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     state = applyEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: engager,
+        unit: engager.unit,
       }),
       state,
     );

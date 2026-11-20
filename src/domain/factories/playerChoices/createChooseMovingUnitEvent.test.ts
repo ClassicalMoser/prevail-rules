@@ -9,14 +9,14 @@ describe('createChooseMovingUnitEvent function', () => {
 
     const event = createChooseMovingUnitEvent({
       player: 'black',
-      unit,
+      unit: unit.unit,
     });
 
     expect(event).toStrictEqual({
       choiceType: 'chooseMovingUnit',
       eventType: 'playerChoice',
       player: 'black',
-      unit,
+      unit: unit.unit,
     });
   });
 });

@@ -24,11 +24,11 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
 ): S {
   // The order is carried out unit by unit; this one is now under way.
   const remaining = getRemainingUnitsForPlayer(state, event.player);
-  const stillToMove = arrayWithoutUnit(remaining, event.unit.unit);
+  const stillToMove = arrayWithoutUnit(remaining, event.unit);
 
   // The event names the unit by who it is; the unit that moves, with the
   // stats it carries, is the one the board holds.
-  const mover = getUnitWithPlacementOnBoard(state, event.unit.unit);
+  const mover = getUnitWithPlacementOnBoard(state, event.unit);
 
   // The move opens with the commitment owed and the move unwritten: the
   // owner may commit a card first, and the card counts toward the move.

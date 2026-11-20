@@ -5,13 +5,13 @@ import { createPerformRangedAttackEvent } from './createPerformRangedAttackEvent
 describe('createPerformRangedAttackEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
     expect.hasAssertions();
-    const supportingUnits = [createUnitWithPlacement()];
+    const supportingUnits = [createUnitWithPlacement().unit];
     const targetUnit = createUnitWithPlacement({ coordinate: 'E-5' });
 
     const event = createPerformRangedAttackEvent({
       player: 'white',
       supportingUnits,
-      targetUnit,
+      targetUnit: targetUnit.unit,
     });
 
     expect(event).toStrictEqual({
@@ -19,7 +19,7 @@ describe('createPerformRangedAttackEvent function', () => {
       eventType: 'playerChoice',
       player: 'white',
       supportingUnits,
-      targetUnit,
+      targetUnit: targetUnit.unit,
     });
   });
 });

@@ -190,6 +190,16 @@ position of real bot games.
    exist whose board had moved ahead of its index. It was replaced the
    next day.
 
+8. **Events name units by who they are.** Five events carried a position
+   the board already holds; with the index a lookup is one entry and one
+   space, so they were cut. `chooseMovingUnit.unit`, `chooseShooter.unit`,
+   `performRangedAttack.targetUnit` and `supportingUnits` are now
+   `UnitInstance`s; `startEngagement.defenderWithPlacement` is now
+   `defendingUnit`; `moveCommander.from` is gone, its validation and apply
+   reading where the commander stands from the index. Validation compares
+   by who a unit is, against offers that still say where each stands.
+   Same games to the round.
+
 ## Where a move's enumeration goes now
 
 Listing one unit's endings (`getLegalUnitMoves`) costs about 140 µs. A
@@ -226,14 +236,6 @@ optimization work closes here.
   arrival outdoes a later one only if it has seen no worse ground on both
   counts.
 
-- **Placements on events.** Five events carry a position the board already
-  holds: `chooseMovingUnit.unit`, `chooseShooter.unit`,
-  `performRangedAttack.targetUnit` and `supportingUnits`,
-  `startEngagement.defenderWithPlacement`, and `moveCommander.from`. DESIGN
-  says a unit is named by identity and where it stands is read from the board.
-  The judgment on removing them waited on what a lookup of where a unit
-  stands costs. With the index (item 7) a lookup is one entry and one space,
-  so it no longer stands in the way.
 - **Integer positions.** Integers as indexes into the list of space names
   change no meaning, and geometry already works that way inside
   geometry.

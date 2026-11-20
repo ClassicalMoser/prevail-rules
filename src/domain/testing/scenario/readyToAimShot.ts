@@ -34,7 +34,7 @@ export function readyToAimShot(
     applyEvent(
       createChooseShooterEvent({
         player,
-        unit,
+        unit: unit.unit,
       }),
       start.state,
     ),

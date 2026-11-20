@@ -1,4 +1,4 @@
-import type { UnitWithPlacement } from '@entities';
+import type { UnitInstance, UnitWithPlacement } from '@entities';
 import {
   createChooseMovingUnitEvent,
   createChooseShooterEvent,
@@ -41,14 +41,11 @@ function game() {
  * The same unit, sent by a client that gave it stats it does not have: a
  * Speed and an Attack no unit of its kind carries.
  */
-function claimedStronger(named: UnitWithPlacement): UnitWithPlacement {
+function claimedStronger(named: UnitWithPlacement): UnitInstance {
   const stats = { ...named.unit.unitType.stats, attack: 99, speed: 99 };
-  const stronger: UnitWithPlacement = {
-    ...named,
-    unit: {
-      ...named.unit,
-      unitType: { ...named.unit.unitType, stats },
-    },
+  const stronger: UnitInstance = {
+    ...named.unit,
+    unitType: { ...named.unit.unitType, stats },
   };
   return stronger;
 }

@@ -2,7 +2,7 @@ import type { ValidationResult } from '@utils';
 import type { ChooseShooterEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalRangedAttackers } from '@legality';
-import { isSameUnitWithPlacement } from '@queries';
+import { isSameUnitInstance } from '@queries';
 
 /**
  * Validates a ChooseShooterEvent by membership against
@@ -27,9 +27,9 @@ export function isValidChooseShooterEvent(
     return wrongPlayer;
   }
 
-  // Who it is and where it stands must both match an offered unit.
+  // It must be one of the units offered, by who it is.
   const offered = legal.attackers.some((candidate) =>
-    isSameUnitWithPlacement(candidate, event.unit),
+    isSameUnitInstance(candidate.unit, event.unit),
   );
   if (!offered) {
     const notOffered: ValidationResult = {

@@ -5,7 +5,6 @@ describe('createMoveCommanderEvent function', () => {
     expect.hasAssertions();
 
     const event = createMoveCommanderEvent({
-      from: 'E-5',
       player: 'white',
       to: 'E-4',
     });
@@ -13,7 +12,6 @@ describe('createMoveCommanderEvent function', () => {
     expect(event).toStrictEqual({
       choiceType: 'moveCommander',
       eventType: 'playerChoice',
-      from: 'E-5',
       player: 'white',
       to: 'E-4',
     });

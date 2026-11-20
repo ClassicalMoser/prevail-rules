@@ -5,11 +5,10 @@ import { PLAY_CARDS_PHASE } from '@game';
 import {
   createMoveCommandersPhaseState,
   createPlayableGame,
-  replaceBoard,
   updateCardState,
 } from '@testing';
 
-import { addCommanderToBoard, updatePhaseState } from '@transforms';
+import { updatePhaseState } from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
 import {
@@ -112,7 +111,6 @@ describe('validatePlayerChoice function', () => {
   it('fails when choice type does not match the expected choice', () => {
     const state = stateInPlayCardsChooseCards();
     const event: PlayerChoiceEvent = createMoveCommanderEvent({
-      from: 'E-5',
       player: 'black',
       to: 'E-6',
     });
@@ -129,8 +127,9 @@ describe('validatePlayerChoice function', () => {
 
   it('turns a fault found while checking legality into a refusal that names the cause', () => {
     // White holds the initiative, so white moves its commander first, and the
-    // game is waiting on exactly that choice. But the commander stands on E-5,
-    // and the event moves one from E-6, which is a fault in the event.
+    // game is waiting on exactly that choice. But white's commander was never
+    // placed, so there is no commander to move: a fault in the state, not a
+    // move to weigh.
     const game = createPlayableGame(
       [
         { coord: 'A-1', facing: 'south', player: 'white' },
@@ -138,16 +137,8 @@ describe('validatePlayerChoice function', () => {
       ],
       { initiative: 'white' },
     );
-    const withCommander = replaceBoard(
-      game,
-      addCommanderToBoard(game.boardState, 'white', 'E-5'),
-    );
-    const state = updatePhaseState(
-      withCommander,
-      createMoveCommandersPhaseState(),
-    );
+    const state = updatePhaseState(game, createMoveCommandersPhaseState());
     const event = createMoveCommanderEvent({
-      from: 'E-6',
       player: 'white',
       to: 'E-7',
     });
@@ -156,7 +147,7 @@ describe('validatePlayerChoice function', () => {
 
     expect(validation).toStrictEqual({
       errorReason:
-        'Error validating player choice: Starting position does not contain specified commander',
+        'Error validating player choice: The white commander is not on the board',
       result: false,
     });
   });

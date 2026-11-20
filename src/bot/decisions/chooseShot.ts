@@ -28,7 +28,7 @@ export function chooseShooter(
     choiceType: 'chooseShooter',
     eventType: 'playerChoice',
     player: offer.player,
-    unit,
+    unit: unit.unit,
   };
   return event;
 }
@@ -83,8 +83,8 @@ export function chooseShotTarget(
     choiceType: 'performRangedAttack',
     eventType: 'playerChoice',
     player: shooter.unit.playerSide,
-    supportingUnits: supporters,
-    targetUnit: target,
+    supportingUnits: supporters.map((supporter) => supporter.unit),
+    targetUnit: target.unit,
   };
   return event;
 }

@@ -1,6 +1,6 @@
-import type { EngagementType, UnitWithPlacement } from '@entities';
+import type { EngagementType, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { engagementTypeSchema, unitWithPlacementSchema } from '@entities';
+import { engagementTypeSchema, unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -21,14 +21,18 @@ export interface StartEngagementEvent {
   effectType: typeof START_ENGAGEMENT_EFFECT_TYPE;
   /** Front, flank or rear, read from the two facings (§6.3.1). */
   engagementType: EngagementType;
-  /** The defender, and where it stands. */
-  defenderWithPlacement: UnitWithPlacement;
+  /**
+   * The defender, named by who it is. It stands in the space the move
+   * ends in, which the movement already records, and which way it faces is
+   * the board's to say.
+   */
+  defendingUnit: UnitInstance;
 }
 
 const _startEngagementEventSchemaObject = z
   .object({
-    /** The defender, and where it stands. */
-    defenderWithPlacement: unitWithPlacementSchema,
+    /** The defender, named by who it is. */
+    defendingUnit: unitInstanceSchema,
     /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
     /** Front, flank or rear, read from the two facings (§6.3.1). */
@@ -49,7 +53,7 @@ const _assertExactStartEngagementEvent: AssertExact<
 
 /** The schema for a start engagement event. */
 export const startEngagementEventSchema: z.ZodObject<{
-  defenderWithPlacement: typeof unitWithPlacementSchema;
+  defendingUnit: typeof unitInstanceSchema;
   effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
   engagementType: typeof engagementTypeSchema;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;

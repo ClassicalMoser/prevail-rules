@@ -54,7 +54,6 @@ describe('applyMoveCommanderEvent function', () => {
       );
 
       const event = createMoveCommanderEvent({
-        from: 'E-5',
         player: 'black',
         to: 'E-7',
       });
@@ -83,7 +82,6 @@ describe('applyMoveCommanderEvent function', () => {
       );
 
       const event = createMoveCommanderEvent({
-        from: 'E-6',
         player: 'white',
         to: 'E-8',
       });
@@ -110,7 +108,6 @@ describe('applyMoveCommanderEvent function', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
 
       const event = createMoveCommanderEvent({
-        from: 'E-5',
         player: 'black',
         to: 'E-7',
       });
@@ -126,7 +123,6 @@ describe('applyMoveCommanderEvent function', () => {
       const state = createGameStateInMoveCommandersStep('moveSecondCommander');
 
       const event = createMoveCommanderEvent({
-        from: 'E-6',
         player: 'white',
         to: 'E-8',
       });
@@ -146,7 +142,6 @@ describe('applyMoveCommanderEvent function', () => {
       // Black, the first player, moves its commander.
       const newState = applyMoveCommanderEvent(
         createMoveCommanderEvent({
-          from: 'E-5',
           player: 'black',
           to: 'E-7',
         }),
@@ -172,7 +167,6 @@ describe('applyMoveCommanderEvent function', () => {
       ).step;
 
       const event = createMoveCommanderEvent({
-        from: 'E-5',
         player: 'black',
         to: 'E-7',
       });

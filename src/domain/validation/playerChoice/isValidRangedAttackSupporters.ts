@@ -2,7 +2,7 @@ import type { UnitInstance, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { ValidationResult } from '@utils';
 import { getLegalRangedAttackSupporters } from '@legality';
-import { hasUnitInArray, isSameUnitWithPlacement } from '@queries';
+import { hasUnitInArray, isSameUnitInstance } from '@queries';
 
 /**
  * Whether a shot's named supporters are all allowed (§7.3.4). Each must be
@@ -10,14 +10,14 @@ import { hasUnitInArray, isSameUnitWithPlacement } from '@queries';
  * shot on its own; each is named once, since naming it spends its shot; and
  * the shooter cannot also support itself.
  *
- * @param supporters - The units the player named as supporters
+ * @param supporters - The units the player named as supporters, by who they are
  * @param attacker - The shooter, already validated
  * @param target - The target, already validated for that attacker
  * @param state - The current game state
  * @returns Success, or the first reason a supporter is not allowed
  */
 export function isValidRangedAttackSupporters(
-  supporters: readonly UnitWithPlacement[],
+  supporters: readonly UnitInstance[],
   attacker: UnitWithPlacement,
   target: UnitWithPlacement,
   state: GameState,
@@ -31,17 +31,17 @@ export function isValidRangedAttackSupporters(
 
   for (const supporter of supporters) {
     // Naming a supporter spends its shot, so it can be named only once.
-    if (hasUnitInArray(named, supporter.unit)) {
+    if (hasUnitInArray(named, supporter)) {
       const duplicate: ValidationResult = {
         errorReason: 'Duplicate supporting unit',
         result: false,
       };
       return duplicate;
     }
-    named.push(supporter.unit);
+    named.push(supporter);
 
     // The shooter adds its own shot already; it cannot add +1 as well.
-    if (isSameUnitWithPlacement(supporter, attacker)) {
+    if (isSameUnitInstance(supporter, attacker.unit)) {
       const selfSupport: ValidationResult = {
         errorReason: 'Attacker cannot also be listed as a supporter',
         result: false,
@@ -51,7 +51,7 @@ export function isValidRangedAttackSupporters(
 
     // It must be able to make this same shot on its own.
     const isOffered = legalSupporters.some((candidate) =>
-      isSameUnitWithPlacement(candidate, supporter),
+      isSameUnitInstance(candidate.unit, supporter),
     );
     if (!isOffered) {
       const cannotShoot: ValidationResult = {

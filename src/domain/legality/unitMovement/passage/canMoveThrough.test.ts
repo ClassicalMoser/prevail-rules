@@ -1,6 +1,11 @@
 import type { Coordinate } from '@entities';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import { createGameState, createTestUnit, placed } from '@testing';
+import {
+  createGameState,
+  createTestUnit,
+  placed,
+  replaceBoard,
+} from '@testing';
 import { addUnitToBoard } from '@transforms';
 import { createEmptyStandardBoard } from '@factories';
 
@@ -36,10 +41,10 @@ describe('canMoveThrough function', () => {
         board,
         placed(createTestUnit('black'), 'E-5', 'north'),
       );
-      const gameState = createGameState([
+      let gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
-      gameState.boardState = board;
+      gameState = replaceBoard(gameState, board);
       expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(false);
     });
   });
