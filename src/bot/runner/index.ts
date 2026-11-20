@@ -2,5 +2,5 @@
 export type { BotGameRecord, BotGameSetup } from './playBotGame';
 export { playBotGame } from './playBotGame';
 export type { BotGamesSummary } from './playBotGames';
-export { playBotGames } from './playBotGames';
+export { playBotGames, summarizeBotGames } from './playBotGames';
 export { createSeededRandom } from './createSeededRandom';

@@ -5,4 +5,9 @@ export { defaultBotTemperament } from './temperament';
 
 // The harness: bots playing each other from seeds, for observation.
 export type { BotGameRecord, BotGameSetup, BotGamesSummary } from './runner';
-export { createSeededRandom, playBotGame, playBotGames } from './runner';
+export {
+  createSeededRandom,
+  playBotGame,
+  playBotGames,
+  summarizeBotGames,
+} from './runner';
