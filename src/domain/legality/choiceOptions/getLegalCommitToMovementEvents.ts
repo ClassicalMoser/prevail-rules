@@ -45,7 +45,7 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
  * Returns every legal commit-to-movement event for the player whose movement
  * (or front-engagement defensive) commitment is still pending: one event per
  * in-hand card that has at least one movement-applicable modifier, plus a
- * refuse option (`committedCard: null`).
+ * refuse option (`committedCard: 'none'`).
  *
  * Nothing asks unless a commitment is owed, so being asked then is the
  * caller's mistake and throws. When the hand is hidden, only the refuse

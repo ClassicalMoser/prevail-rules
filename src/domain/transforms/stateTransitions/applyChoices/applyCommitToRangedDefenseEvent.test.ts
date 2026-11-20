@@ -75,7 +75,7 @@ describe('applyCommitToRangedDefenseEvent function', () => {
     // White refuses (§8.3).
     const refused = applyCommitToRangedDefenseEvent(
       createCommitToRangedDefenseEvent({
-        committedCard: null,
+        committedCard: 'none',
         player: 'white',
       }),
       state,

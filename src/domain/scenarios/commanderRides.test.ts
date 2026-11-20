@@ -55,7 +55,7 @@ function blackReadyToWriteMove(options: {
   const ready = readyToWriteMove(
     resolvingMoveOrder(withCommander, [mover.unit]),
     mover,
-    null,
+    'none',
   );
   return ready;
 }

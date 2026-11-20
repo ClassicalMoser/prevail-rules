@@ -32,7 +32,7 @@ function pendingShooter<S extends GameState>(gameState: S): PlayerSide {
  * Returns every legal commit-to-ranged-attack event for the shooter whose
  * commitment is still owed (§4.3.11 step 2): one event per card in hand
  * naming Range, Attack or Flexibility, plus a refuse option
- * (`committedCard: null`). The card counts for the whole shot — its Range
+ * (`committedCard: 'none'`). The card counts for the whole shot — its Range
  * when the target is chosen, its Attack when the shot lands.
  *
  * Nothing asks unless the shooter's commitment is owed, so being asked then

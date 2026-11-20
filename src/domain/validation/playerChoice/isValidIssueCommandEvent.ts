@@ -77,7 +77,7 @@ export function isValidIssueCommandEvent(
   // With no order the player stops, which is always legal while orders are
   // left (§4.3.3).
   const { order } = event;
-  if (order === null) {
+  if (order === 'none') {
     const stopping: ValidationResult = { result: true };
     return stopping;
   }

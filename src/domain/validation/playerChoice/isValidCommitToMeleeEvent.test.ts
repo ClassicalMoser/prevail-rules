@@ -119,7 +119,7 @@ describe('isValidCommitToMeleeEvent function', () => {
   it('accepts refusing the melee commitment', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
-      committedCard: null,
+      committedCard: 'none',
       player: 'white',
     });
 

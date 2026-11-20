@@ -17,7 +17,7 @@ import {
  * - the moving unit's pending CRS `commitment`, or
  * - the front-engagement defender's pending `defensiveCommitment`.
  *
- * When `committedCard` is non-null, discards that card from hand.
+ * When a card is committed, discards that card from hand.
  * Event is assumed pre-validated (issueCommands phase, movement resolution).
  * The committed card is the real card.
  */

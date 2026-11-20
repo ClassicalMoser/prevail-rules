@@ -113,7 +113,7 @@ describe('applyCommitToMeleeEvent function', () => {
     );
     const event: CommitToMeleeEvent = {
       choiceType: 'commitToMelee',
-      committedCard: null,
+      committedCard: 'none',
       eventType: 'playerChoice',
       player: 'white',
     };

@@ -357,7 +357,7 @@ describe('isValidIssueCommandEvent function', () => {
     // Stopping is always legal while orders are left (§4.3.3).
     expect(
       isValidIssueCommandEvent(
-        createIssueCommandEvent({ order: null, player: 'black' }),
+        createIssueCommandEvent({ order: 'none', player: 'black' }),
         state,
       ),
     ).toStrictEqual({ result: true });
@@ -370,7 +370,7 @@ describe('isValidIssueCommandEvent function', () => {
     // The refusal names who is issuing.
     expect(
       isValidIssueCommandEvent(
-        createIssueCommandEvent({ order: null, player: 'white' }),
+        createIssueCommandEvent({ order: 'none', player: 'white' }),
         state,
       ),
     ).toStrictEqual({

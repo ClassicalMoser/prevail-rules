@@ -59,6 +59,6 @@ describe('applyCommitCardDiscard function', () => {
     // Refusing spends no card (§8.3).
     const state = createEmptyGameState('standard');
 
-    expect(applyCommitCardDiscard(state, 'black', null)).toBe(state);
+    expect(applyCommitCardDiscard(state, 'black', 'none')).toBe(state);
   });
 });

@@ -24,15 +24,15 @@ describe('createIssueCommandEvent function', () => {
     });
   });
 
-  it('keeps a null order, which stops giving orders', () => {
+  it('keeps a stop, which gives no order', () => {
     // A player who stops issues no order.
-    const event = createIssueCommandEvent({ player: 'black', order: null });
+    const event = createIssueCommandEvent({ player: 'black', order: 'none' });
 
-    // The null is kept as it was given, not filled in.
+    // The stop is kept as it was given, not filled in.
     expect(event).toStrictEqual({
       choiceType: 'issueCommand',
       eventType: 'playerChoice',
-      order: null,
+      order: 'none',
       player: 'black',
     });
   });

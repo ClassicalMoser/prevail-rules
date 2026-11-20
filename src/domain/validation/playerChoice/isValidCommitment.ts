@@ -6,8 +6,8 @@ import { isSameCard, isSameCardValue } from '@queries';
 interface CommitmentChoice {
   /** The player committing. */
   player: PlayerSide;
-  /** The card committed, or `null` for a refusal. */
-  committedCard: CommandCard | null;
+  /** The card committed, or `'none'` for a refusal. */
+  committedCard: CommandCard | 'none';
 }
 
 /**
@@ -36,14 +36,14 @@ export function isValidCommitment(
     if (option.player !== event.player) {
       return false;
     }
-    if (option.committedCard === null || event.committedCard === null) {
+    if (option.committedCard === 'none' || event.committedCard === 'none') {
       return option.committedCard === event.committedCard;
     }
     return isSameCard(option.committedCard, event.committedCard);
   });
   if (legalOption === undefined) {
     const cardLabel =
-      event.committedCard === null
+      event.committedCard === 'none'
         ? 'refuse'
         : `card ${event.committedCard.id}`;
     const illegal: ValidationResult = {
@@ -55,7 +55,7 @@ export function isValidCommitment(
 
   // The id names a card the player holds; what the event says that card is
   // must be what it is, since the commitment's stats are read from it.
-  if (legalOption.committedCard !== null && event.committedCard !== null) {
+  if (legalOption.committedCard !== 'none' && event.committedCard !== 'none') {
     const sameCard = isSameCardValue(
       legalOption.committedCard,
       event.committedCard,

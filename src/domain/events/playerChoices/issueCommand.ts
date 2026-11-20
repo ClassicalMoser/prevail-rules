@@ -64,8 +64,8 @@ export interface IssueCommandEvent {
   choiceType: typeof ISSUE_COMMAND_CHOICE_TYPE;
   /** The player giving the order, or stopping. */
   player: PlayerSide;
-  /** The order given, or `null` to stop giving orders (§4.3.3). */
-  order: Order | null;
+  /** The order given, or `'none'` to stop giving orders (§4.3.3). */
+  order: Order | 'none';
 }
 
 const _unitsOrderSelectionSchemaObject: z.ZodObject<{
@@ -123,8 +123,8 @@ const _issueCommandEventSchemaObject = z
     choiceType: z.literal(ISSUE_COMMAND_CHOICE_TYPE),
     /** The player giving the order, or stopping. */
     player: playerSideSchema,
-    /** The order given, or `null` to stop giving orders (§4.3.3). */
-    order: _orderSchemaObject.nullable(),
+    /** The order given, or `'none'` to stop giving orders (§4.3.3). */
+    order: _orderSchemaObject.or(z.literal('none')),
   })
   .strict();
 
@@ -142,5 +142,5 @@ export const issueCommandEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'issueCommand'>;
   player: typeof playerSideSchema;
-  order: z.ZodNullable<typeof _orderSchemaObject>;
+  order: z.ZodUnion<readonly [typeof _orderSchemaObject, z.ZodLiteral<'none'>]>;
 }> = _issueCommandEventSchemaObject;

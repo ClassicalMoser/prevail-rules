@@ -103,7 +103,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
   it('accepts refusing the ranged commitment', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
-      committedCard: null,
+      committedCard: 'none',
       player: 'black',
     });
 

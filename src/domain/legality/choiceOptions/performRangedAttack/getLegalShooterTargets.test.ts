@@ -64,7 +64,7 @@ describe('getLegalShooterTargets function', () => {
       'E-5',
     );
     // Black names its unit and refuses to commit.
-    const state = readyToAimShot(ready, shooter, null);
+    const state = readyToAimShot(ready, shooter, 'none');
 
     const legal = getLegalShooterTargets(state);
 

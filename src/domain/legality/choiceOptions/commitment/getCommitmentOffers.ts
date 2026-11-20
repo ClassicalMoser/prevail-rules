@@ -5,8 +5,8 @@ import { findOwnedPlayerCardState } from '@queries';
 
 /** One commitment a player may make: a card from hand, or a refusal. */
 export interface CommitmentOffer {
-  /** The card committed, or `null` to refuse without spending one. */
-  committedCard: CommandCard | null;
+  /** The card committed, or `'none'` to refuse without spending one. */
+  committedCard: CommandCard | 'none';
 }
 
 /**
@@ -54,6 +54,6 @@ export function getCommitmentOffers<M extends StatModifier>(
     }
   }
 
-  offers.push({ committedCard: null });
+  offers.push({ committedCard: 'none' });
   return offers;
 }

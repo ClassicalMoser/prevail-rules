@@ -60,7 +60,7 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
 
   const refuseWhite = {
     choiceType: 'commitToRangedDefense' as const,
-    committedCard: null,
+    committedCard: 'none',
     eventType: 'playerChoice' as const,
     player: 'white' as const,
   };

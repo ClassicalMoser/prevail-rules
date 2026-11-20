@@ -24,10 +24,10 @@ export interface CommitToMovementEvent {
   /** The player committing or declining. */
   player: PlayerSide;
   /**
-   * The card from hand to commit, or `null` to decline. Declining is always
+   * The card from hand to commit, or `'none'` to decline. Declining is always
    * allowed and spends no card (§8.3).
    */
-  committedCard: CommandCard | null;
+  committedCard: CommandCard | 'none';
 }
 
 const _commitToMovementEventSchemaObject = z
@@ -39,10 +39,10 @@ const _commitToMovementEventSchemaObject = z
     /** The player committing or declining. */
     player: playerSideSchema,
     /**
-     * The card from hand to commit, or `null` to decline. Declining is always
+     * The card from hand to commit, or `'none'` to decline. Declining is always
      * allowed and spends no card (§8.3).
      */
-    committedCard: commandCardSchema.nullable(),
+    committedCard: commandCardSchema.or(z.literal('none')),
   })
   .strict();
 
@@ -60,5 +60,7 @@ export const commitToMovementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToMovement'>;
   player: typeof playerSideSchema;
-  committedCard: z.ZodNullable<typeof commandCardSchema>;
+  committedCard: z.ZodUnion<
+    readonly [typeof commandCardSchema, z.ZodLiteral<'none'>]
+  >;
 }> = _commitToMovementEventSchemaObject;

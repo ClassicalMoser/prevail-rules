@@ -39,7 +39,7 @@ function blackReadyToMove(): AuthoritativeGameState {
 }
 
 /** Black names its unit and commits the card for Speed, or declines. */
-function namedAndCommitted(committedCard: typeof speedCard | null) {
+function namedAndCommitted(committedCard: typeof speedCard | 'none') {
   const ready = blackReadyToMove();
   const mover = getSingleUnitWithPlacementAtCoordinate(ready.boardState, 'E-5');
   const waiting = readyToWriteMove(ready, mover, committedCard);
@@ -100,7 +100,7 @@ describe('a Move order', () => {
   });
 
   it('without the card, the same move is more than the unit can make', () => {
-    const state = namedAndCommitted(null);
+    const state = namedAndCommitted('none');
     const move = createMoveUnitEvent({
       moveCommander: false,
       path: ['step', 'step', 'step'],

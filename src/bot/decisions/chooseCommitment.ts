@@ -24,7 +24,7 @@ const SHORT_HAND = 3;
 
 /** One commitment the bot may make: a card from hand, or none (§8.3). */
 interface CommitmentOffer {
-  committedCard: CommandCard | null;
+  committedCard: CommandCard | 'none';
 }
 
 /**
@@ -72,11 +72,11 @@ export function chooseCommitment<Offer extends CommitmentOffer>(
   const affordable =
     handSize > 1
       ? offers
-      : offers.filter((offer) => offer.committedCard === null);
+      : offers.filter((offer) => offer.committedCard === 'none');
   const choice = pickBest(
     affordable,
     (offer) =>
-      offer.committedCard === null
+      offer.committedCard === 'none'
         ? 0
         : gainFrom(offer.committedCard) -
           commitmentCost(offer.committedCard, handSize, temperament.thrift),

@@ -11,12 +11,12 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  *
  * @param fields - `player` the player giving the order, or stopping; `order`
  * the command used and the units or line's two ends it is given to, or
- * `null` to stop giving orders
+ * `'none'` to stop giving orders
  * @returns The event
  */
 export function createIssueCommandEvent(fields: {
   player: PlayerSide;
-  order: Order | null;
+  order: Order | 'none';
 }): IssueCommandEvent {
   return {
     eventType: PLAYER_CHOICE_EVENT_TYPE,

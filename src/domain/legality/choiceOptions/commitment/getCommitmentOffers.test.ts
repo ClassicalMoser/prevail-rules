@@ -24,7 +24,7 @@ describe('getCommitmentOffers function', () => {
       getCommitmentOffers(state.cardState, 'white', meleeStats),
     ).toStrictEqual([
       { committedCard: speedAndAttack },
-      { committedCard: null },
+      { committedCard: 'none' },
     ]);
   });
 
@@ -46,7 +46,7 @@ describe('getCommitmentOffers function', () => {
     };
 
     expect(getCommitmentOffers(whiteSeen, 'black', meleeStats)).toStrictEqual([
-      { committedCard: null },
+      { committedCard: 'none' },
     ]);
   });
 });

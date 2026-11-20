@@ -23,10 +23,10 @@ export interface CommitToMeleeEvent {
   /** The player committing or declining. */
   player: PlayerSide;
   /**
-   * The card from hand to commit, or `null` to decline. Declining is always
+   * The card from hand to commit, or `'none'` to decline. Declining is always
    * allowed and spends no card (§8.3).
    */
-  committedCard: CommandCard | null;
+  committedCard: CommandCard | 'none';
 }
 
 const _commitToMeleeEventSchemaObject = z
@@ -38,10 +38,10 @@ const _commitToMeleeEventSchemaObject = z
     /** The player committing or declining. */
     player: playerSideSchema,
     /**
-     * The card from hand to commit, or `null` to decline. Declining is always
+     * The card from hand to commit, or `'none'` to decline. Declining is always
      * allowed and spends no card (§8.3).
      */
-    committedCard: commandCardSchema.nullable(),
+    committedCard: commandCardSchema.or(z.literal('none')),
   })
   .strict();
 
@@ -59,5 +59,7 @@ export const commitToMeleeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToMelee'>;
   player: typeof playerSideSchema;
-  committedCard: z.ZodNullable<typeof commandCardSchema>;
+  committedCard: z.ZodUnion<
+    readonly [typeof commandCardSchema, z.ZodLiteral<'none'>]
+  >;
 }> = _commitToMeleeEventSchemaObject;

@@ -59,7 +59,7 @@ function rearAttack(options: {
 
   // Black names its attacker, declines to commit, and steps north into
   // the defender's back.
-  const ready = readyToWriteMove(resolving, attacker, null);
+  const ready = readyToWriteMove(resolving, attacker, 'none');
   const moved = applyEvent(
     createMoveUnitEvent({
       moveCommander: false,

@@ -71,10 +71,10 @@ describe('isValidCommitToMovementEvent function', () => {
     });
   });
 
-  it('accepts refusing with null card and empty modifiers', () => {
+  it('accepts refusing with no card and empty modifiers', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
-      committedCard: null,
+      committedCard: 'none',
       player: 'black',
     });
 

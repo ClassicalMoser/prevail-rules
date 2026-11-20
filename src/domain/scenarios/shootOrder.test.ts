@@ -51,7 +51,7 @@ function blackReadyToShoot(): AuthoritativeGameState {
 }
 
 /** Black names its shooter and commits the card for Range, or declines. */
-function namedAndCommitted(committedCard: typeof rangeCard | null) {
+function namedAndCommitted(committedCard: typeof rangeCard | 'none') {
   const ready = blackReadyToShoot();
   const shooter = getSingleUnitWithPlacementAtCoordinate(
     ready.boardState,
@@ -114,7 +114,7 @@ describe('a Shoot order', () => {
   });
 
   it('without the card, the same target is out of reach', () => {
-    const state = namedAndCommitted(null);
+    const state = namedAndCommitted('none');
     const target = getSingleUnitWithPlacementAtCoordinate(
       state.boardState,
       'B-5',
@@ -169,7 +169,7 @@ describe('a card committed to a shot', () => {
   const attackCard = createTestCard({ modifiers: ['attack'] });
 
   /** Black shoots the cavalry, committing this card (or none); white declines to defend. */
-  function shotAtCavalry(committed: typeof attackCard | null) {
+  function shotAtCavalry(committed: typeof attackCard | 'none') {
     const game = createPlayableGame(
       [
         { coord: 'E-5', facing: 'north', player: 'black', range: 2 },
@@ -215,7 +215,7 @@ describe('a card committed to a shot', () => {
     const defended = applyEffectsUntilChoice(
       applyEvent(
         createCommitToRangedDefenseEvent({
-          committedCard: null,
+          committedCard: 'none',
           player: 'white',
         }),
         aimed.state,
@@ -225,7 +225,7 @@ describe('a card committed to a shot', () => {
   }
 
   it('without the card, the shot falls short of the cavalry’s Retreat and it stays put', () => {
-    const state = shotAtCavalry(null);
+    const state = shotAtCavalry('none');
 
     expect(state.boardState.board['C-5']?.unitPresence.presenceType).toBe(
       'single',
@@ -307,7 +307,7 @@ describe('a Shoot order with several shooters', () => {
     state: AuthoritativeGameState,
     shooter: ReturnType<typeof getSingleUnitWithPlacementAtCoordinate>,
     target: ReturnType<typeof getSingleUnitWithPlacementAtCoordinate>,
-    committed: typeof attackCard | null = null,
+    committed: typeof attackCard | 'none' = 'none',
   ) {
     const aimed = applyEffectsUntilChoice(
       applyEvent(
@@ -322,7 +322,7 @@ describe('a Shoot order with several shooters', () => {
     const defended = applyEffectsUntilChoice(
       applyEvent(
         createCommitToRangedDefenseEvent({
-          committedCard: null,
+          committedCard: 'none',
           player: 'white',
         }),
         aimed.state,

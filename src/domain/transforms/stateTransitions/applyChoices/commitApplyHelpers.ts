@@ -7,9 +7,9 @@ import {
 } from '@transforms/pureTransforms';
 
 export function commitmentFromCommittedCard(
-  committedCard: CommandCard | null,
+  committedCard: CommandCard | 'none',
 ): Commitment {
-  if (committedCard === null) {
+  if (committedCard === 'none') {
     return { commitmentType: 'declined' };
   }
   return {
@@ -30,9 +30,9 @@ export function commitmentFromCommittedCard(
 export function applyCommitCardDiscard<S extends GameState>(
   state: S,
   player: PlayerSide,
-  committedCard: CommandCard | null,
+  committedCard: CommandCard | 'none',
 ): S {
-  if (committedCard === null) {
+  if (committedCard === 'none') {
     return state;
   }
 

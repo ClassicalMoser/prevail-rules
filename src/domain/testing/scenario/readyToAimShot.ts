@@ -15,13 +15,13 @@ import { applyEffectsUntilChoice } from './applyEffectsUntilChoice';
  *
  * @param state - A game waiting for the player to name the shooter
  * @param unit - The shooter, standing where the board has it
- * @param commitment - The card committed, or `null` to decline
+ * @param commitment - The card committed, or `'none'` to decline
  * @returns The game waiting for the `performRangedAttack`
  */
 export function readyToAimShot(
   state: AuthoritativeGameState,
   unit: UnitWithPlacement,
-  commitment: CommandCard | null,
+  commitment: CommandCard | 'none',
 ): AuthoritativeGameState {
   const player = unit.unit.playerSide;
 

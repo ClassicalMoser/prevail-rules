@@ -92,7 +92,7 @@ describe('applyCommitToMovementEvent function', () => {
     expect(newState.cardState.white.inHand).toHaveLength(0);
   });
 
-  it('given front engagement refuse (null card), declines defensiveCommitment without discarding', () => {
+  it('given front engagement refuse (no card), declines defensiveCommitment without discarding', () => {
     const state = createEmptyGameState('standard');
     const card = throwIfUndefined(
       tempCommandCards[0],
@@ -114,7 +114,7 @@ describe('applyCommitToMovementEvent function', () => {
     );
     const event: CommitToMovementEvent = {
       choiceType: 'commitToMovement',
-      committedCard: null,
+      committedCard: 'none',
       eventType: 'playerChoice',
       player: 'white',
     };

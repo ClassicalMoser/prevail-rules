@@ -55,7 +55,7 @@ describe('getLegalCommitToMeleeEvents function', () => {
       },
       {
         choiceType: 'commitToMelee',
-        committedCard: null,
+        committedCard: 'none',
         eventType: 'playerChoice',
         player: 'white',
       },
@@ -77,7 +77,7 @@ describe('getLegalCommitToMeleeEvents function', () => {
     expect(getLegalCommitToMeleeEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToMelee',
-        committedCard: null,
+        committedCard: 'none',
         eventType: 'playerChoice',
         player: 'white',
       },

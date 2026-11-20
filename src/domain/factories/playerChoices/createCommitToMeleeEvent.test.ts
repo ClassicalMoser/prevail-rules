@@ -19,17 +19,17 @@ describe('createCommitToMeleeEvent function', () => {
     });
   });
 
-  it('carries a refusal as a null card', () => {
+  it('carries a refusal as no card', () => {
     expect.hasAssertions();
 
     const event = createCommitToMeleeEvent({
-      committedCard: null,
+      committedCard: 'none',
       player: 'white',
     });
 
     expect(event).toStrictEqual({
       choiceType: 'commitToMelee',
-      committedCard: null,
+      committedCard: 'none',
       eventType: 'playerChoice',
       player: 'white',
     });

@@ -339,7 +339,7 @@ describe('applyIssueCommandEvent function', () => {
 
       // Black stops instead of giving the last order (§4.3.3).
       const stopped = applyIssueCommandEvent(
-        createIssueCommandEvent({ order: null, player: 'black' }),
+        createIssueCommandEvent({ order: 'none', player: 'black' }),
         state,
       );
 
@@ -362,7 +362,7 @@ describe('applyIssueCommandEvent function', () => {
 
       // White stops without giving any order.
       const stopped = applyIssueCommandEvent(
-        createIssueCommandEvent({ order: null, player: 'white' }),
+        createIssueCommandEvent({ order: 'none', player: 'white' }),
         state,
       );
 

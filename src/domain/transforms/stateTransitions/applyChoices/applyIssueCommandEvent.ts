@@ -27,7 +27,7 @@ export function applyIssueCommandEvent<S extends GameState>(
 
   // With no order the player stops, and whatever is not issued is forfeited
   // (§4.3.3).
-  if (order === null) {
+  if (order === 'none') {
     const stopped = updateRemainingCommandsForPlayer(state, player, []);
     return stopped;
   }

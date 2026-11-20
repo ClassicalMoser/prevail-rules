@@ -11,7 +11,7 @@ export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
 /**
  * The shooter's one commitment in a ranged attack (§4.3.11, §7.4.5): after
  * the shooter is named and before its target is, its owner may commit a
- * card, or refuse (`committedCard` null). The card counts for the whole shot:
+ * card, or refuse (`committedCard` `'none'`). The card counts for the whole shot:
  * its Range when the target is chosen, its Attack when the shot lands.
  *
  * `getLegalCommitToRangedAttackEvents` enumerates the legal options, and
@@ -25,10 +25,10 @@ export interface CommitToRangedAttackEvent {
   /** The shooting player, committing or declining. */
   player: PlayerSide;
   /**
-   * The card from hand to commit, or `null` to decline. Declining is always
+   * The card from hand to commit, or `'none'` to decline. Declining is always
    * allowed and spends no card (§8.3).
    */
-  committedCard: CommandCard | null;
+  committedCard: CommandCard | 'none';
 }
 
 const _commitToRangedAttackEventSchemaObject = z
@@ -40,10 +40,10 @@ const _commitToRangedAttackEventSchemaObject = z
     /** The shooting player, committing or declining. */
     player: playerSideSchema,
     /**
-     * The card from hand to commit, or `null` to decline. Declining is always
+     * The card from hand to commit, or `'none'` to decline. Declining is always
      * allowed and spends no card (§8.3).
      */
-    committedCard: commandCardSchema.nullable(),
+    committedCard: commandCardSchema.or(z.literal('none')),
   })
   .strict();
 
@@ -61,5 +61,7 @@ export const commitToRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToRangedAttack'>;
   player: typeof playerSideSchema;
-  committedCard: z.ZodNullable<typeof commandCardSchema>;
+  committedCard: z.ZodUnion<
+    readonly [typeof commandCardSchema, z.ZodLiteral<'none'>]
+  >;
 }> = _commitToRangedAttackEventSchemaObject;

@@ -76,7 +76,7 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
 
   it('accepts the target’s owner refusing', () => {
     const event = createCommitToRangedDefenseEvent({
-      committedCard: null,
+      committedCard: 'none',
       player: 'white',
     });
 
@@ -99,7 +99,7 @@ describe('isValidCommitToRangedDefenseEvent function', () => {
   it('refuses the shooter committing for the target', () => {
     // Black, the shooter, has no say in the target's Defence.
     const event = createCommitToRangedDefenseEvent({
-      committedCard: null,
+      committedCard: 'none',
       player: 'black',
     });
 

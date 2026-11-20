@@ -45,7 +45,7 @@ describe('getLegalCommitToMovementEvents function', () => {
 
   const refuseBlack = {
     choiceType: 'commitToMovement' as const,
-    committedCard: null,
+    committedCard: 'none',
     eventType: 'playerChoice' as const,
     player: 'black' as const,
   };
@@ -108,7 +108,7 @@ describe('getLegalCommitToMovementEvents function', () => {
       },
       {
         choiceType: 'commitToMovement',
-        committedCard: null,
+        committedCard: 'none',
         eventType: 'playerChoice',
         player: 'white',
       },

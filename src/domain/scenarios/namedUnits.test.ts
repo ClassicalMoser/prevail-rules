@@ -108,7 +108,7 @@ describe('naming a unit in an order', () => {
     const ready = readyToAimShot(
       resolvingShootOrder(start, [shooter.unit]),
       shooter,
-      null,
+      'none',
     );
 
     const aimed = applyEvent(

@@ -10,13 +10,13 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required: a
  * default would hide a choice the caller means.
  *
- * @param fields - `committedCard` card from hand to commit, or `null` to
+ * @param fields - `committedCard` card from hand to commit, or `'none'` to
  * refuse; `player` the target's owner
  * @returns The event
  */
 export function createCommitToRangedDefenseEvent(fields: {
   player: PlayerSide;
-  committedCard: CommandCard | null;
+  committedCard: CommandCard | 'none';
 }): CommitToRangedDefenseEvent {
   const event: CommitToRangedDefenseEvent = {
     choiceType: 'commitToRangedDefense',

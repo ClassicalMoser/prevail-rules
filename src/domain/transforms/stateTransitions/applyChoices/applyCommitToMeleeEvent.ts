@@ -11,7 +11,7 @@ import {
 /**
  * Applies a CommitToMeleeEvent to the game state.
  * Completes or declines the player's pending melee commitment.
- * When `committedCard` is non-null, discards that card from hand.
+ * When a card is committed, discards that card from hand.
  * Event is assumed pre-validated (resolveMelee phase, player's commitment pending).
  * The committed card is the real card.
  */

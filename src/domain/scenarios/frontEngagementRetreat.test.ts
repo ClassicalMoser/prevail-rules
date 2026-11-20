@@ -43,7 +43,7 @@ function slowerAttackerEngagesFromC9(): AuthoritativeGameState {
 
   // Black names its attacker, declines to commit, and marches two spaces
   // north into white's front.
-  const ready = readyToWriteMove(resolving, attacker, null);
+  const ready = readyToWriteMove(resolving, attacker, 'none');
   const moved = applyEvent(
     createMoveUnitEvent({
       moveCommander: false,
@@ -68,7 +68,7 @@ describe('a front engagement on a faster defender', () => {
     // faster unit without one.
     const declined = applyEvent(
       createCommitToMovementEvent({
-        committedCard: null,
+        committedCard: 'none',
         player: 'white',
       }),
       engaging,
@@ -134,7 +134,7 @@ function slowerAttackerEngagesFlexibilitylessDefender(): AuthoritativeGameState 
 
   // Black names its attacker, declines to commit, and marches two spaces
   // north into white's front.
-  const ready = readyToWriteMove(resolving, attacker, null);
+  const ready = readyToWriteMove(resolving, attacker, 'none');
   const moved = applyEvent(
     createMoveUnitEvent({
       moveCommander: false,
@@ -156,7 +156,7 @@ describe('a front-engaged defender that commits a card for Flexibility', () => {
     // friend behind it blocks the straight way back.
     const { next } = applyEffectsUntilChoice(
       applyEvent(
-        createCommitToMovementEvent({ committedCard: null, player: 'white' }),
+        createCommitToMovementEvent({ committedCard: 'none', player: 'white' }),
         engaging,
       ),
     );
@@ -218,7 +218,7 @@ function attackerComesRoundFromBehind(): AuthoritativeGameState {
 
   // Black names its attacker, declines to commit, and walks round into
   // white's front: south-east, south-west, then north into E-5.
-  const ready = readyToWriteMove(resolving, attacker, null);
+  const ready = readyToWriteMove(resolving, attacker, 'none');
   const moved = applyEvent(
     createMoveUnitEvent({
       moveCommander: false,
@@ -260,7 +260,7 @@ describe('a front engagement by an attacker that came round from behind', () => 
     // White declines to commit; it is the faster without a card.
     const { state, next } = applyEffectsUntilChoice(
       applyEvent(
-        createCommitToMovementEvent({ committedCard: null, player: 'white' }),
+        createCommitToMovementEvent({ committedCard: 'none', player: 'white' }),
         engaging,
       ),
     );
@@ -290,7 +290,7 @@ describe('a front engagement by an attacker that came round from behind', () => 
     );
     const { state: asked } = applyEffectsUntilChoice(
       applyEvent(
-        createCommitToMovementEvent({ committedCard: null, player: 'white' }),
+        createCommitToMovementEvent({ committedCard: 'none', player: 'white' }),
         engaging,
       ),
     );

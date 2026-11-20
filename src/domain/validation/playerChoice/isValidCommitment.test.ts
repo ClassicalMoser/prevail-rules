@@ -11,7 +11,7 @@ describe('isValidCommitment function', () => {
   const card = createTestCard({ modifiers: ['attack'] });
   const offered = [
     { committedCard: card, player: 'black' as const },
-    { committedCard: null, player: 'black' as const },
+    { committedCard: 'none' as const, player: 'black' as const },
   ];
 
   it('accepts an offered card, and an offered refusal', () => {
@@ -24,7 +24,7 @@ describe('isValidCommitment function', () => {
     ).toStrictEqual({ result: true });
     expect(
       isValidCommitment(
-        { committedCard: null, player: 'black' },
+        { committedCard: 'none', player: 'black' },
         offered,
         'melee',
       ),
@@ -49,7 +49,7 @@ describe('isValidCommitment function', () => {
   it('refuses the other player’s commitment', () => {
     expect(
       isValidCommitment(
-        { committedCard: null, player: 'white' },
+        { committedCard: 'none', player: 'white' },
         offered,
         'ranged defense',
       ),

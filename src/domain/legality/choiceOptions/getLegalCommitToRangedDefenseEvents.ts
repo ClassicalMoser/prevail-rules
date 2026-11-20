@@ -35,7 +35,7 @@ function pendingTargetOwner<S extends GameState>(gameState: S): PlayerSide {
 /**
  * Returns every legal commit-to-ranged-defense event for the owner of a
  * shot's target (§4.3.11): one event per card in hand naming Defence or
- * Flexibility (§8.4), plus a refuse option (`committedCard: null`).
+ * Flexibility (§8.4), plus a refuse option (`committedCard: 'none'`).
  *
  * Nothing asks unless the target's commitment is owed, so being asked then
  * is the caller's mistake and throws. When the hand is hidden, only the

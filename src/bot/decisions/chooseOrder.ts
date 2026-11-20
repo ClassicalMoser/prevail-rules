@@ -127,7 +127,7 @@ export function chooseOrder(
     const stop: IssueCommandEvent = {
       choiceType: 'issueCommand',
       eventType: 'playerChoice',
-      order: null,
+      order: 'none',
       player: offer.player,
     };
     return stop;

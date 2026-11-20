@@ -277,7 +277,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       'E-5',
     );
     const ordered = resolvingMoveOrder(game, [mover.unit]);
-    const waiting = readyToWriteMove(ordered, mover, null);
+    const waiting = readyToWriteMove(ordered, mover, 'none');
 
     const options = getLegalPlayerChoiceOptions(waiting);
     if (options?.choiceType !== 'moveUnit') {
