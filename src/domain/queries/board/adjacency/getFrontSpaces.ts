@@ -1,7 +1,6 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getAdjacentFacings } from '@queries/facings';
-import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { findForwardSpace } from '../steps/findForwardSpace';
+import { getSpacesInDirections } from './getSpacesInDirections';
 
 /**
  * Get the front spaces for a given coordinate and facing, including diagonals
@@ -15,20 +14,8 @@ export function getFrontSpaces(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): Set<Coordinate> {
-  // Get adjacent facings and add the facing to get the forward facings
-  const adjacentFacings = getAdjacentFacings(facing);
-  const forwardFacings = [...adjacentFacings, facing];
-
-  // Array of coordinates and undefined values
-  const forwardSpaces = new Set(
-    forwardFacings.map((forwardFacing) =>
-      findForwardSpace(board, coordinate, forwardFacing),
-    ),
-  );
-
-  // Filter out undefined values
-  const validForwardSpaces = filterUndefinedSpaces(forwardSpaces);
-
-  // Return set of valid forward spaces
-  return validForwardSpaces;
+  // A unit's front is the space it faces and the two 45° to either side.
+  const forwardFacings = [...getAdjacentFacings(facing), facing];
+  const frontSpaces = getSpacesInDirections(board, coordinate, forwardFacings);
+  return frontSpaces;
 }
