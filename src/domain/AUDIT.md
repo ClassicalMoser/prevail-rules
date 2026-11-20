@@ -55,6 +55,7 @@ Audit in this order (dependencies flow downward):
 
 - [ ] `events/` — reopened 2026-11-12, changed since the read
   - Scouted again 2026-11-13: every choice and effect says when it comes, its rule, and who writes and reads it. No marks left.
+  - Scanned again 2026-11-20: every name in the comments resolves; every choice names the enumerator that offers it and every effect its own generator and apply, in matching folders; every § cited points at the rule it describes. Six marks from before still hold. Four new marks: `setupUnit.ts` (file name, and §3.5.4 cited for §3.5.1/§3.5.3), `resolveFlankEngagement.ts` ("beside" for "in" the defender's space), `completeUnitMovement.ts` (only a front engagement waits).
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
   - Changed 2026-11-20, for the next read: events name units by who they are, not where they stand. `chooseMovingUnit.unit`, `chooseShooter.unit`, `performRangedAttack.targetUnit` and `supportingUnits` are `UnitInstance`; `startEngagement.defenderWithPlacement` is `defendingUnit`; `moveCommander.from` is gone. Where each stands is read from the game state's index.

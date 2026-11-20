@@ -6,6 +6,7 @@ import { z } from 'zod';
 export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE =
   'resolveFlankEngagement' as const;
 
+// TODO(misleading): "sets the attacker down beside the defender" — the two share the defender's space as an engaged pair, as applyResolveFlankEngagementEvent says ("set down in the defender's space"). Settled by rewording to "in the defender's space".
 /**
  * A defender engaged from the flank is turned to face its attacker, directly
  * opposite it (§6.3.4). It may not retreat; the two fight in Phase 4.
