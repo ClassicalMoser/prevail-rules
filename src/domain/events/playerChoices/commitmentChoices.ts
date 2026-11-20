@@ -14,7 +14,8 @@ import type { CommitToRangedDefenseEvent } from './commitToRangedDefense';
  * (§4.3.10), and the defender's, when a front engagement offers it the chance
  * to fall back (§6.3.2).
  */
-// TODO(composition): the four commit events repeat one shape (the player, and committedCard: a card or null, §8.3) in interface and schema. Settled by a shared set of commitment fields, or by keeping them separate on purpose.
+// The four commit events are kept apart on purpose: the same fields, but
+// what each card adds to, when it is offered and how it is applied differ.
 export const commitmentChoiceTypes = [
   'commitToMovement',
   'commitToRangedAttack',

@@ -60,6 +60,7 @@ Audit in this order (dependencies flow downward):
   - Settled 2026-11-20: `resolveFlankEngagement.ts` now says the attacker is set down in the defender's space; its mark is gone.
   - Settled 2026-11-20: `resolveMelee` names each result for the unit that takes it, `attackResultOnWhiteUnit` and `attackResultOnBlackUnit`; its mark is gone.
   - Settled 2026-11-20: `gameEffects/index.ts` links the `applyEffects` README for the design notes and no longer points at another module's header; a document for fuller context is fine (author).
+  - Settled 2026-11-20: the four commit events stay separate on purpose (author): calculation, context and application differ. `commitmentChoices.ts` says so; its mark is gone.
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
   - Changed 2026-11-20, for the next read: events name units by who they are, not where they stand. `chooseMovingUnit.unit`, `chooseShooter.unit`, `performRangedAttack.targetUnit` and `supportingUnits` are `UnitInstance`; `startEngagement.defenderWithPlacement` is `defendingUnit`; `moveCommander.from` is gone. Where each stands is read from the game state's index.
