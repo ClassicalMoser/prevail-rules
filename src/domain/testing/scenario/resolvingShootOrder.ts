@@ -39,7 +39,6 @@ export function resolvingShootOrder(
     withOrder,
     createIssueCommandsPhaseState(withOrder, {
       currentCommandResolutionState: 'pending',
-      remainingCommandsSecondPlayer: [createTestCommand()],
       remainingUnitsFirstPlayer: [...units],
       step: 'firstPlayerResolveCommands',
     }),

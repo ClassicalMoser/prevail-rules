@@ -38,8 +38,6 @@ describe('applyCompleteIssueCommandsPhaseEvent function', () => {
     const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: [],
-      remainingCommandsSecondPlayer: [],
       remainingUnitsFirstPlayer: [],
       remainingUnitsSecondPlayer: [],
       step: 'complete',
@@ -145,8 +143,6 @@ describe('applyCompleteIssueCommandsPhaseEvent function', () => {
       const stateWithPhase: GameState = updatePhaseState(state, {
         currentCommandResolutionState: 'pending',
         phase: ISSUE_COMMANDS_PHASE,
-        remainingCommandsFirstPlayer: [],
-        remainingCommandsSecondPlayer: [],
         remainingUnitsFirstPlayer: [],
         remainingUnitsSecondPlayer: [],
         step: 'complete',

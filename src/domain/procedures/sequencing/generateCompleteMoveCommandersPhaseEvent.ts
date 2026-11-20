@@ -4,38 +4,26 @@ import {
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
-import { getCardInPlay, getOtherPlayer } from '@queries';
-
-import { toRemainingCommands } from './toRemainingCommands';
+import { getMoveCommandersPhaseState } from '@queries';
 
 /**
- * Generates a CompleteMoveCommandersPhaseEvent to complete the move commanders phase
- * and advance to issue commands phase.
+ * Generates a CompleteMoveCommandersPhaseEvent, ending Phase 2 and beginning
+ * Phase 3. Each player's orders are the command on their card in play, which
+ * the state already holds, so the event carries nothing.
  *
- * Remaining command sets are derived from each side's in-play card so replay does
- * not re-read cards. Lines ×N expand into N `number: 1` slots; units ×N stay one grant.
- *
- * @param state - The current game state
+ * @param state - The current game state, in Move Commanders
  * @returns A complete CompleteMoveCommandersPhaseEvent
+ * @throws Error outside the Move Commanders phase
  */
 export function generateCompleteMoveCommandersPhaseEvent(
   state: GameState,
 ): CompleteMoveCommandersPhaseEvent {
-  const firstPlayer = state.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
+  // Only Move Commanders can be ended here.
+  getMoveCommandersPhaseState(state);
 
-  // Each player's revealed card grants the round's orders (§4.1.6).
-  const remainingCommandsFirstPlayer = toRemainingCommands(
-    getCardInPlay(state.cardState, firstPlayer).command,
-  );
-  const remainingCommandsSecondPlayer = toRemainingCommands(
-    getCardInPlay(state.cardState, secondPlayer).command,
-  );
-
-  return {
+  const event: CompleteMoveCommandersPhaseEvent = {
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    remainingCommandsFirstPlayer,
-    remainingCommandsSecondPlayer,
   };
+  return event;
 }

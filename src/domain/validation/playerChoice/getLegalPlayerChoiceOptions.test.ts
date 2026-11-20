@@ -117,9 +117,10 @@ describe('getLegalPlayerChoiceOptions function', () => {
     ]);
   });
 
-  it('packages the orders left to issue, and says the player may stop instead', () => {
-    // Black is issuing and has one order left to give.
-    const command = tempCommandCards[0].command;
+  it('packages the command on the card in play, for the player to spend', () => {
+    // Black is issuing; the card it played gives this command.
+    const card = tempCommandCards[0];
+    const command = card.command;
 
     // A Black unit beside its general, within the order's reach of 1 space.
     const unit = createUnitWithPlacement({
@@ -133,8 +134,23 @@ describe('getLegalPlayerChoiceOptions function', () => {
       facing: 'south',
       playerSide: 'white',
     });
+    // Both hands hold a card, so neither side has lost (§11.1); Black's card
+    // in play is the one it issues from.
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
+    const withCard = updateCardState(base, {
+      ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        inHand: [createTestCard()],
+        inPlay: card,
+      },
+      white: { ...base.cardState.white, inHand: [createTestCard()] },
+    });
     const withUnit = replaceBoard(
-      underWay(),
+      withCard,
       addUnitToBoard(
         addUnitToBoard(createBoardWithCommander('black', 'E-5'), unit),
         enemy,
@@ -144,15 +160,14 @@ describe('getLegalPlayerChoiceOptions function', () => {
     const state = updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {
-        remainingCommandsFirstPlayer: [command],
         step: 'firstPlayerIssueCommands',
       }),
     );
 
-    // Black may give that order, or stop and forfeit it (§4.3.3).
+    // Black spends that command, its units offered one at a time (§4.3).
     expect(getLegalPlayerChoiceOptions(state)).toMatchObject({
-      choiceType: 'issueCommand',
-      issueCommands: { commands: [command], player: 'black' },
+      choiceType: 'issueCommands',
+      issueCommands: { command, player: 'black' },
     });
   });
 

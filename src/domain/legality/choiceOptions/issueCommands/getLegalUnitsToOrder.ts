@@ -9,10 +9,10 @@ import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
  * The units a units order may still take, given those chosen so far, and
  * whether the player may stop choosing (§4.3.2).
  *
- * An order takes between one and its printed number of eligible units: the
- * number is a ceiling, not a quota. A unit is chosen once. The choices are
- * too many to list whole, so they are offered a unit at a time, and the order
- * they were chosen in does not matter.
+ * An order takes up to its printed number of eligible units: the number is a
+ * ceiling, not a quota, and taking none declines the order. A unit is chosen
+ * once. The choices are too many to list whole, so they are offered a unit at
+ * a time, and the order they were chosen in does not matter.
  *
  * @param command - The units order being issued
  * @param player - The player issuing it
@@ -34,9 +34,10 @@ export function getLegalUnitsToOrder(
         .map((eligible) => eligible.unit)
         .filter((unit) => !hasUnitInArray(chosenSoFar, unit));
 
-  // An order is given to at least one unit.
+  // The player may stop at any point; stopping before any unit declines the
+  // order (§4.3.2).
   const choice: OpenChoice<UnitInstance> = {
-    mayStop: chosenSoFar.length > 0,
+    mayStop: true,
     next,
   };
   return choice;
@@ -70,7 +71,7 @@ export function getUnitsOrderRefusalReason(
 
   // The printed number is a ceiling.
   if (chosenSoFar.length >= command.number) {
-    return `Expected 1..${command.number} units, got ${submitted.length}`;
+    return `Expected at most ${command.number} units, got ${submitted.length}`;
   }
 
   // Otherwise the unit fails the order's restrictions, or is already

@@ -122,18 +122,16 @@ export type {
 export { unitSupportSchema } from '@entities';
 // The kinds a restriction filters by, and the kinds of unit a card's support holds.
 export { restrictionTypes, unitSupportTypes } from '@entities';
-// Orders: one order from the card in play, and the units or line it is given to.
+// How a player spends the command on their card in play: some units, or some lines.
 export {
-  unitsOrderSelectionSchema,
-  lineOrderSelectionSchema,
-  orderSelectionSchema,
-  orderSchema,
+  unitsAllocationSchema,
+  linesAllocationSchema,
+  commandAllocationSchema,
 } from '@entities';
 export type {
-  UnitsOrderSelection,
-  LineOrderSelection,
-  OrderSelection,
-  Order,
+  UnitsAllocation,
+  LinesAllocation,
+  CommandAllocation,
 } from '@entities';
 export type {
   SideTurn,
@@ -168,7 +166,6 @@ export {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   ROUND_END_EFFECT_TYPE,
   COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
-  COMPLETE_ISSUING_COMMANDS_EFFECT_TYPE,
   SKIP_LOST_COMMANDER_MOVE_EFFECT_TYPE,
   COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
@@ -188,7 +185,6 @@ export {
   completeAttackApplyEventSchema,
   roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
-  completeIssuingCommandsEventSchema,
   skipLostCommanderMoveEventSchema,
   completeMeleeResolutionEventSchema,
   completeMoveCommandersPhaseEventSchema,
@@ -261,7 +257,7 @@ export {
   commitToRangedDefenseEventSchema,
   chooseMovingUnitEventSchema,
   chooseShooterEventSchema,
-  issueCommandEventSchema,
+  issueCommandsEventSchema,
   moveCommanderEventSchema,
   moveUnitEventSchema,
   performRangedAttackEventSchema,
@@ -275,7 +271,6 @@ export type {
   CompleteAttackApplyEvent,
   RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
-  CompleteIssuingCommandsEvent,
   SkipLostCommanderMoveEvent,
   CompleteMeleeResolutionEvent,
   CompleteMoveCommandersPhaseEvent,
@@ -321,7 +316,7 @@ export type {
   CommitToRangedDefenseEvent,
   ChooseMovingUnitEvent,
   ChooseShooterEvent,
-  IssueCommandEvent,
+  IssueCommandsEvent,
   MoveCommanderEvent,
   MoveUnitEvent,
   OpenRetreatFromAttackApplyEvent,
@@ -510,8 +505,6 @@ export {
   isEngagementFromRear,
 } from '@queries';
 export {
-  findMatchingCommand,
-  getMatchingCommand,
   getAdjacentFacings,
   getCurrentUnitStat,
   getLeftFacing,
@@ -594,7 +587,6 @@ export {
   findFrontEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
-  getRemainingCommandsForPlayer,
   getRemainingUnitsForPlayer,
   getMeleeResolutionReadyForAttackCalculation,
   findMeleeResolutionState,
@@ -652,6 +644,8 @@ export {
   getLineRefusalReason,
   getLegalUnitsToOrder,
   getUnitsOrderRefusalReason,
+  getLegalLinesToOrder,
+  getLinesOrderRefusalReason,
   isCommandIssuable,
   getLegalMoveUnits,
   getLegalRangedAttackers,
@@ -791,7 +785,6 @@ export {
   openMeleeResolution,
   clearMeleeResolution,
   updateMoveCommandersStep,
-  updateRemainingCommandsForPlayer,
   updateRemainingUnitsForPlayer,
   updateIssueCommandsStep,
   openCommandResolution,

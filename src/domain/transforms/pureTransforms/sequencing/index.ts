@@ -14,9 +14,8 @@ export { updateRallyResolutionState } from './updateRallyResolutionState';
 export { updateCleanupStep } from './updateCleanupStep';
 export { updatePlayCardsStep } from './updatePlayCardsStep';
 
-// Phase 3, by player: the orders and units still to go, the step, and the
-// one unit's move or shot under way.
-export { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPlayer';
+// Phase 3, by player: the units still to act, the step, and the one unit's
+// move or shot under way.
 export { updateRemainingUnitsForPlayer } from './updateRemainingUnitsForPlayer';
 export { updateIssueCommandsStep } from './updateIssueCommandsStep';
 export { openCommandResolution } from './openCommandResolution';

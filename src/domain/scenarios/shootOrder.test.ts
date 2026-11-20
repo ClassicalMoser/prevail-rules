@@ -388,7 +388,7 @@ describe('a Shoot order with several shooters', () => {
     }
     expect(afterC.next).toMatchObject({
       actionType: 'playerChoice',
-      choiceType: 'issueCommand',
+      choiceType: 'issueCommands',
       playerSource: 'white',
     });
   });

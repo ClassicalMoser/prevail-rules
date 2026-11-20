@@ -8,7 +8,6 @@ import {
   applyCompleteAttackApplyEvent,
   applyRoundEndEvent,
   applyCompleteIssueCommandsPhaseEvent,
-  applyCompleteIssuingCommandsEvent,
   applySkipLostCommanderMoveEvent,
   applyCompleteMeleeResolutionEvent,
   applyCompleteMoveCommandersPhaseEvent,
@@ -56,9 +55,6 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'completeIssueCommandsPhase': {
       return applyCompleteIssueCommandsPhaseEvent(event, state);
-    }
-    case 'completeIssuingCommands': {
-      return applyCompleteIssuingCommandsEvent(event, state);
     }
     case 'skipLostCommanderMove': {
       return applySkipLostCommanderMoveEvent(event, state);

@@ -15,10 +15,10 @@ import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
  *
  * TODO(composition): nothing in production calls this any more. The issue
  * step used it to choose between asking for an order and asking the player to
- * stop; stopping is now an issueCommand with no order, so the step asks for
- * issueCommand either way. Settled by deprecating and removing it, or by
- * finding the caller that should use it (the bot, to tell an order with no
- * legal units from one it does not want).
+ * stop; the player now issues one allocation, and ordering nobody is always
+ * legal, so the step asks for issueCommands either way. Settled by
+ * deprecating and removing it, or by finding the caller that should use it
+ * (the bot, to tell an order with no legal units from one it does not want).
  */
 export function isCommandIssuable(
   command: Command,

@@ -16,7 +16,7 @@ import {
   applyCommitToMovementEvent,
   applyCommitToRangedAttackEvent,
   applyCommitToRangedDefenseEvent,
-  applyIssueCommandEvent,
+  applyIssueCommandsEvent,
   applyMoveCommanderEvent,
   applyChooseMovingUnitEvent,
   applyMoveUnitEvent,
@@ -71,8 +71,8 @@ export function applyPlayerChoiceEvent<S extends GameState>(
     case 'commitToRangedDefense': {
       return applyCommitToRangedDefenseEvent(event, state);
     }
-    case 'issueCommand': {
-      return applyIssueCommandEvent(event, state);
+    case 'issueCommands': {
+      return applyIssueCommandsEvent(event, state);
     }
     case 'moveCommander': {
       return applyMoveCommanderEvent(event, state);

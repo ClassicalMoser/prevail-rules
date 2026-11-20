@@ -10,9 +10,9 @@ export { chooseCardEventSchema } from './chooseCard';
 export type { MoveCommanderEvent } from './moveCommander';
 export { moveCommanderEventSchema } from './moveCommander';
 
-// Issue one order from the card in play, or stop.
-export type { IssueCommandEvent } from './issueCommand';
-export { issueCommandEventSchema } from './issueCommand';
+// Issue every order the card in play allows, at once.
+export type { IssueCommandsEvent } from './issueCommands';
+export { issueCommandsEventSchema } from './issueCommands';
 
 // Move a unit.
 export type { ChooseMovingUnitEvent } from './chooseMovingUnit';

@@ -39,8 +39,6 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
       state,
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: 'pending' as const,
-        remainingCommandsFirstPlayer: [],
-        remainingCommandsSecondPlayer: [],
         remainingUnitsFirstPlayer: [],
         remainingUnitsSecondPlayer: [],
         step,
@@ -49,43 +47,24 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     );
   }
 
-  it('given remaining commands that no unit can take, still asks for an order', () => {
-    // Black has an order left, but no unit on the board it could be given to.
+  it('given no unit the order could take, still asks for the allocation', () => {
+    // Black is issuing, but no unit of its stands on the board.
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerIssueCommands',
-      'black',
-      () => ({
-        remainingCommandsFirstPlayer: [createTestCard().command],
-      }),
     );
 
-    // Stopping is an issueCommand with no order, so the expectation is the
-    // same as when an order can be given; the only legal option is to stop
-    // (§4.3.3).
+    // Ordering nobody is always a legal allocation (§4.3.2), so the player is
+    // asked all the same, and the phase cannot stall.
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'issueCommand',
+      choiceType: 'issueCommands',
       playerSource: 'black',
     });
   });
 
-  it('given remaining commands with an issuable selection, returns issueCommand', () => {
-    const command = {
-      ...createTestCard().command,
-      number: 1,
-      restrictions: {
-        inspirationRangeRestriction: -1,
-        restrictionType: 'none' as const,
-      },
-      size: 'units' as const,
-    };
-    let state = createGameStateInIssueCommandsStep(
-      'firstPlayerIssueCommands',
-      'black',
-      () => ({
-        remainingCommandsFirstPlayer: [command],
-      }),
-    );
+  it('given a unit the order may take, asks the issuing player for the allocation', () => {
+    // Black is issuing, with one of its units on the board.
+    let state = createGameStateInIssueCommandsStep('firstPlayerIssueCommands');
     state = replaceBoard(
       state,
       addUnitToBoard(
@@ -98,25 +77,11 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
       ),
     );
 
-    // The player is asked for an order. Stopping and forfeiting the orders
-    // left (§4.3.3) is the same choice with no order, so nothing else is named.
+    // Black is asked for all its orders at once (§4.3).
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'issueCommand',
+      choiceType: 'issueCommands',
       playerSource: 'black',
-    });
-  });
-
-  it('given the first player has no orders left to issue, expects completeIssuingCommands', () => {
-    // Every order is given, or the rest forfeited by stopping.
-    const state = createGameStateInIssueCommandsStep(
-      'firstPlayerIssueCommands',
-    );
-
-    // Moving on to carrying the orders out is asked for as its own effect.
-    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
-      actionType: 'gameEffect',
-      effectType: 'completeIssuingCommands',
     });
   });
 
@@ -241,30 +206,17 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     });
   });
 
-  it('given they have remaining commands, returns issueCommand for the second player', () => {
-    const state = createGameStateInIssueCommandsStep(
-      'secondPlayerIssueCommands',
-      'black',
-      () => ({
-        remainingCommandsSecondPlayer: [createTestCard().command],
-      }),
-    );
-
-    const expectedEvent = getExpectedIssueCommandsPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
-  });
-
-  it('given the second player has no orders left to issue, expects completeIssuingCommands', () => {
-    // Every order is given, or the rest forfeited by stopping.
+  it('given the second player is issuing, asks them for the allocation', () => {
+    // Black has the initiative, so White issues second.
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerIssueCommands',
     );
 
-    // Moving on to carrying the orders out is asked for as its own effect.
+    // White is asked for all its orders at once (§4.3).
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
-      actionType: 'gameEffect',
-      effectType: 'completeIssuingCommands',
+      actionType: 'playerChoice',
+      choiceType: 'issueCommands',
+      playerSource: 'white',
     });
   });
 

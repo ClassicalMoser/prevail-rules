@@ -55,8 +55,6 @@ export function createIssueCommandsPhaseState(
   return {
     currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
-    remainingCommandsFirstPlayer: [],
-    remainingCommandsSecondPlayer: [],
     remainingUnitsFirstPlayer: [],
     remainingUnitsSecondPlayer: [],
     step: 'firstPlayerResolveCommands',

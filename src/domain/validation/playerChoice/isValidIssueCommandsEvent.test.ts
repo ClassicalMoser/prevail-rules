@@ -17,13 +17,14 @@ import {
   updateCurrentInitiative,
 } from '@transforms';
 
-import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
+import { isValidIssueCommandsEvent } from './isValidIssueCommandsEvent';
 
-import { createEmptyGameState, createIssueCommandEvent } from '@factories';
+import { createEmptyGameState, createIssueCommandsEvent } from '@factories';
 /**
- * IsValidIssueCommandEvent: remaining command + restriction integrity.
+ * IsValidIssueCommandsEvent: an allocation of the card in play's command,
+ * checked a unit or a line at a time against what the rules offer.
  */
-describe('isValidIssueCommandEvent function', () => {
+describe('isValidIssueCommandsEvent function', () => {
   function stateReadyToIssue(command = tempCommandCards[0].command) {
     const unit = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -34,9 +35,13 @@ describe('isValidIssueCommandEvent function', () => {
       createEmptyGameState('standard'),
       'black',
     );
+    // Black's card in play gives the command under test.
     state = updateCardState(state, {
       ...state.cardState,
-      black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
+      black: {
+        ...state.cardState.black,
+        inPlay: { ...tempCommandCards[0], command },
+      },
     });
     let board = addUnitToBoard(state.boardState, unit);
     board = addCommanderToBoard(board, 'black', 'E-5');
@@ -44,7 +49,6 @@ describe('isValidIssueCommandEvent function', () => {
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
-        remainingCommandsFirstPlayer: [command],
         step: 'firstPlayerIssueCommands',
       }),
     );
@@ -62,15 +66,12 @@ describe('isValidIssueCommandEvent function', () => {
       size: 'units' as const,
     };
     const { state, unit } = stateReadyToIssue(command);
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'units', units: [unit.unit] },
-      },
+      allocation: { allocationType: 'units', units: [unit.unit] },
     });
 
-    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
       result: true,
     });
   });
@@ -96,15 +97,12 @@ describe('isValidIssueCommandEvent function', () => {
       state,
       addUnitToBoard(state.boardState, other),
     );
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'units', units: [unit.unit] },
-      },
+      allocation: { allocationType: 'units', units: [unit.unit] },
     });
 
-    expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
+    expect(isValidIssueCommandsEvent(event, withSecond)).toStrictEqual({
       result: true,
     });
   });
@@ -130,21 +128,18 @@ describe('isValidIssueCommandEvent function', () => {
       state,
       addUnitToBoard(state.boardState, other),
     );
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'units', units: [unit.unit, other.unit] },
-      },
+      allocation: { allocationType: 'units', units: [unit.unit, other.unit] },
     });
 
-    expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
-      errorReason: 'Expected 1..1 units, got 2',
+    expect(isValidIssueCommandsEvent(event, withSecond)).toStrictEqual({
+      errorReason: 'Expected at most 1 units, got 2',
       result: false,
     });
   });
 
-  it('rejects an empty units selection', () => {
+  it('accepts ordering no unit at all, which declines the order', () => {
     const command = {
       ...tempCommandCards[0].command,
       number: 6,
@@ -155,17 +150,14 @@ describe('isValidIssueCommandEvent function', () => {
       size: 'units' as const,
     };
     const { state } = stateReadyToIssue(command);
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'units', units: [] },
-      },
+      allocation: { allocationType: 'units', units: [] },
     });
 
-    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
-      errorReason: 'Expected 1..6 units, got 0',
-      result: false,
+    // A player may decline to order at all (§4.3.2).
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      result: true,
     });
   });
 
@@ -188,25 +180,28 @@ describe('isValidIssueCommandEvent function', () => {
       createEmptyGameState('standard'),
       'black',
     );
+    state = updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        inPlay: { ...tempCommandCards[0], command },
+      },
+    });
     let board = addUnitToBoard(state.boardState, far);
     board = addCommanderToBoard(board, 'black', 'E-5');
     state = replaceBoard(state, board);
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
-        remainingCommandsFirstPlayer: [command],
         step: 'firstPlayerIssueCommands',
       }),
     );
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'units', units: [far.unit] },
-      },
+      allocation: { allocationType: 'units', units: [far.unit] },
     });
 
-    expect(isValidIssueCommandEvent(event, state).result).toBe(false);
+    expect(isValidIssueCommandsEvent(event, state).result).toBe(false);
   });
 
   /**
@@ -239,15 +234,18 @@ describe('isValidIssueCommandEvent function', () => {
       createEmptyGameState('standard'),
       'black',
     );
+    // Black's card in play gives that lines command.
     state = updateCardState(state, {
       ...state.cardState,
-      black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
+      black: {
+        ...state.cardState.black,
+        inPlay: { ...tempCommandCards[0], command },
+      },
     });
     state = replaceBoard(state, addCommanderToBoard(board, 'black', 'E-4'));
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
-        remainingCommandsFirstPlayer: [command],
         step: 'firstPlayerIssueCommands',
       }),
     );
@@ -258,74 +256,55 @@ describe('isValidIssueCommandEvent function', () => {
   }
 
   it('accepts a line whose only unit within inspiration range stands in its middle', () => {
-    const { command, state, unitsAt } = stateWithRankOfEight();
+    const { state, unitsAt } = stateWithRankOfEight();
 
     // Black orders the whole rank, listing every unit in rank order. Range
     // is traced from any unit in the line, not only from an end (§4.3.5).
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: {
-          selectionType: 'line',
-          units: unitsAt([
-            'E-1',
-            'E-2',
-            'E-3',
-            'E-4',
-            'E-5',
-            'E-6',
-            'E-7',
-            'E-8',
-          ]),
-        },
+      allocation: {
+        allocationType: 'lines',
+        lines: [
+          unitsAt(['E-1', 'E-2', 'E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8']),
+        ],
       },
     });
 
-    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
       result: true,
     });
   });
 
   it('accepts a line listed from either end', () => {
-    const { command, state, unitsAt } = stateWithRankOfEight();
+    const { state, unitsAt } = stateWithRankOfEight();
 
     // Black lists the stretch E-4 to E-2 from its far end; a line is the
     // same line read either way (§4.3.5).
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: {
-          selectionType: 'line',
-          units: unitsAt(['E-4', 'E-3', 'E-2']),
-        },
+      allocation: {
+        allocationType: 'lines',
+        lines: [unitsAt(['E-4', 'E-3', 'E-2'])],
       },
     });
 
-    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
       result: true,
     });
   });
 
   it('rejects a line that leaves out a unit between its ends', () => {
-    const { command, state, unitsAt } = stateWithRankOfEight();
+    const { state, unitsAt } = stateWithRankOfEight();
 
     // Black names E-2 and E-4 as the line but leaves out E-3, between them.
     // Every unit of the line is ordered, so the list must hold them all.
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: {
-          selectionType: 'line',
-          units: unitsAt(['E-2', 'E-4']),
-        },
-      },
+      allocation: { allocationType: 'lines', lines: [unitsAt(['E-2', 'E-4'])] },
     });
 
     // The ends name a legal line, but the list is not that line's units.
-    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
       errorReason:
         'The units listed are not every unit of the line between its ends, in rank order',
       result: false,
@@ -333,54 +312,159 @@ describe('isValidIssueCommandEvent function', () => {
   });
 
   it('rejects a line that lists no units', () => {
-    const { command, state } = stateWithRankOfEight();
+    const { state } = stateWithRankOfEight();
 
     // A line holds one to eight units (§4.3.5); an empty list is no line.
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
+      allocation: { allocationType: 'lines', lines: [[]] },
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'line', units: [] },
-      },
     });
 
-    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
-      errorReason: 'A line order lists at least one unit',
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      errorReason: 'A line lists at least one unit',
       result: false,
     });
   });
 
-  it('accepts stopping, with no order, from the player who is issuing', () => {
-    // Black is issuing with an order left.
-    const { state } = stateReadyToIssue();
+  it('accepts ordering no line at all, forfeiting the order', () => {
+    const { state } = stateWithRankOfEight();
 
-    // Stopping is always legal while orders are left (§4.3.3).
-    expect(
-      isValidIssueCommandEvent(
-        createIssueCommandEvent({ order: 'none', player: 'black' }),
-        state,
-      ),
-    ).toStrictEqual({ result: true });
+    // Black gives none of its lines; the rest is forfeited (§4.3.3).
+    const event = createIssueCommandsEvent({
+      allocation: { allocationType: 'lines', lines: [] },
+      player: 'black',
+    });
+
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      result: true,
+    });
   });
 
-  it('rejects stopping from the player who is not issuing', () => {
-    // Black is issuing, so White has no orders to stop giving.
+  /**
+   * The rank of eight, with a card in play allowing two lines and reaching
+   * any distance from the commander, so any stretch of it may be a line.
+   */
+  function stateWithTwoLinesOnRankOfEight() {
+    const { state, unitsAt } = stateWithRankOfEight();
+    const card = state.cardState.black.inPlay;
+    if (card === null) {
+      throw new Error('Black has a card in play');
+    }
+    const twoLines = updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        inPlay: {
+          ...card,
+          command: {
+            ...card.command,
+            number: 2,
+            restrictions: {
+              inspirationRangeRestriction: -1,
+              restrictionType: 'none',
+            },
+          },
+        },
+      },
+    });
+    return { state: twoLines, unitsAt };
+  }
+
+  it('accepts two lines that share no unit', () => {
+    const { state, unitsAt } = stateWithTwoLinesOnRankOfEight();
+
+    // Black splits its rank in two: E-1 to E-3, and E-5 to E-8 listed from
+    // its far end. E-4 is left out of both.
+    const event = createIssueCommandsEvent({
+      allocation: {
+        allocationType: 'lines',
+        lines: [
+          unitsAt(['E-1', 'E-2', 'E-3']),
+          unitsAt(['E-8', 'E-7', 'E-6', 'E-5']),
+        ],
+      },
+      player: 'black',
+    });
+
+    // Each line was offered given the one before it (§4.3.3, §4.3.6).
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('rejects a second line that takes in a unit the first already orders', () => {
+    const { state, unitsAt } = stateWithTwoLinesOnRankOfEight();
+
+    // Black orders E-2 to E-4, then E-4 to E-6: E-4 would be ordered twice
+    // (§4.3.6).
+    const event = createIssueCommandsEvent({
+      allocation: {
+        allocationType: 'lines',
+        lines: [unitsAt(['E-2', 'E-3', 'E-4']), unitsAt(['E-4', 'E-5', 'E-6'])],
+      },
+      player: 'black',
+    });
+
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      errorReason: 'A line takes in a unit already ordered by another line',
+      result: false,
+    });
+  });
+
+  it('rejects more lines than the card allows', () => {
+    const { state, unitsAt } = stateWithRankOfEight();
+
+    // The card allows one line; Black names two.
+    const event = createIssueCommandsEvent({
+      allocation: {
+        allocationType: 'lines',
+        lines: [unitsAt(['E-4']), unitsAt(['E-5'])],
+      },
+      player: 'black',
+    });
+
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      errorReason: 'Expected at most 1 lines, got 2',
+      result: false,
+    });
+  });
+
+  it('rejects an allocation of the wrong kind for the card’s command', () => {
+    const { state, unitsAt } = stateWithRankOfEight();
+
+    // The card gives a lines command; Black names units instead.
+    const event = createIssueCommandsEvent({
+      allocation: { allocationType: 'units', units: unitsAt(['E-4']) },
+      player: 'black',
+    });
+
+    // A lines command is spent on lines (§4.3.1).
+    expect(isValidIssueCommandsEvent(event, state)).toStrictEqual({
+      errorReason: 'The card in play gives a lines command, not units',
+      result: false,
+    });
+  });
+
+  it('rejects an allocation from the player who is not issuing', () => {
+    // Black is issuing, so White has no orders to give.
     const { state } = stateReadyToIssue();
 
     // The refusal names who is issuing.
     expect(
-      isValidIssueCommandEvent(
-        createIssueCommandEvent({ order: 'none', player: 'white' }),
+      isValidIssueCommandsEvent(
+        createIssueCommandsEvent({
+          allocation: { allocationType: 'units', units: [] },
+          player: 'white',
+        }),
         state,
       ),
     ).toStrictEqual({
-      errorReason: 'Expected issue command from black, got white',
+      errorReason: 'Expected issue commands from black, got white',
       result: false,
     });
   });
 
   it('throws when asked outside the issue commands phase, which the expected check rules out first', () => {
-    const command = tempCommandCards[0].command;
     const unit = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -393,17 +477,14 @@ describe('isValidIssueCommandEvent function', () => {
         step: 'chooseCards',
       },
     );
-    const event = createIssueCommandEvent({
+    const event = createIssueCommandsEvent({
       player: 'black',
-      order: {
-        command,
-        selection: { selectionType: 'units', units: [unit.unit] },
-      },
+      allocation: { allocationType: 'units', units: [unit.unit] },
     });
 
     // An order given while the cards are being chosen is refused by the
     // expected check before membership is asked; reaching here is a fault.
-    expect(() => isValidIssueCommandEvent(event, state)).toThrow(
+    expect(() => isValidIssueCommandsEvent(event, state)).toThrow(
       'Expected issueCommands phase, got playCards',
     );
   });

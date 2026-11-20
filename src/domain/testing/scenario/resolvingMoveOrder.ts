@@ -1,7 +1,7 @@
 import type { UnitInstance } from '@entities';
 import type { AuthoritativeGameState } from '@game';
 import { createIssueCommandsPhaseState } from '@testing/phaseStateHelpers';
-import { createTestCard, createTestCommand } from '../testHelpers/cardHelpers';
+import { createTestCard } from '../testHelpers/cardHelpers';
 import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 /**
@@ -30,7 +30,6 @@ export function resolvingMoveOrder(
     withOrder,
     createIssueCommandsPhaseState(withOrder, {
       currentCommandResolutionState: 'pending',
-      remainingCommandsSecondPlayer: [createTestCommand()],
       remainingUnitsFirstPlayer: [...units],
       step: 'firstPlayerResolveCommands',
     }),

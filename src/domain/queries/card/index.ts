@@ -30,10 +30,6 @@ export {
   isSameCardValue,
 } from './cardEquivalence';
 
-// A command equal in type, size, number, modifiers, and restrictions.
-export { findMatchingCommand } from './findMatchingCommand';
-export { getMatchingCommand } from './getMatchingCommand';
-
 // Modifiers from a commitment only after it is completed.
 export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 

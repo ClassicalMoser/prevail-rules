@@ -84,8 +84,6 @@ export const procedureRegistryStateFactories: Record<
     const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: [],
-      remainingCommandsSecondPlayer: [],
       remainingUnitsFirstPlayer: [],
       remainingUnitsSecondPlayer: [],
       step: 'complete',
@@ -117,23 +115,6 @@ export const procedureRegistryStateFactories: Record<
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     }),
-
-  completeIssuingCommands: (): AuthoritativeGameState => {
-    // The first player's issuing step, with no order left to issue.
-    const initialPhaseState: IssueCommandsPhaseState = {
-      currentCommandResolutionState: 'pending',
-      phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: [],
-      remainingCommandsSecondPlayer: [],
-      remainingUnitsFirstPlayer: [],
-      remainingUnitsSecondPlayer: [],
-      step: 'firstPlayerIssueCommands',
-    };
-    return updatePhaseState(
-      createEmptyGameState('standard'),
-      initialPhaseState,
-    );
-  },
 
   skipLostCommanderMove: (): AuthoritativeGameState =>
     // The first player's Move Commanders turn, with their commander fallen.

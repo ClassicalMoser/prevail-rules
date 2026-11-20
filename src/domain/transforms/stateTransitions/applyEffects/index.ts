@@ -8,7 +8,6 @@ export {
 export {
   applyRoundEndEvent,
   applyCompleteIssueCommandsPhaseEvent,
-  applyCompleteIssuingCommandsEvent,
   applySkipLostCommanderMoveEvent,
   applyCompleteMoveCommandersPhaseEvent,
   applyCompletePlayCardsPhaseEvent,

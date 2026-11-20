@@ -36,13 +36,13 @@ describe('createMoveCommandersPhaseState function', () => {
 });
 
 describe('createIssueCommandsPhaseState function', () => {
-  it('given context, returns issue commands phase with empty remaining sets', () => {
+  it('given context, returns issue commands phase with no units left to act', () => {
     expect.hasAssertions();
     const gameState = createEmptyGameState('standard');
     const state = createIssueCommandsPhaseState(gameState);
     expect(state.phase).toBe(ISSUE_COMMANDS_PHASE);
     expect(state.step).toBe('firstPlayerResolveCommands');
-    expect(state.remainingCommandsFirstPlayer).toHaveLength(0);
+    expect(state.remainingUnitsFirstPlayer).toHaveLength(0);
     expect(state.currentCommandResolutionState).toBe('pending');
   });
 });

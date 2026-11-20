@@ -20,7 +20,6 @@ export {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   ROUND_END_EFFECT_TYPE,
   COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
-  COMPLETE_ISSUING_COMMANDS_EFFECT_TYPE,
   SKIP_LOST_COMMANDER_MOVE_EFFECT_TYPE,
   COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
@@ -33,7 +32,6 @@ export {
   completeAttackApplyEventSchema,
   roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
-  completeIssuingCommandsEventSchema,
   skipLostCommanderMoveEventSchema,
   completeMeleeResolutionEventSchema,
   completeMoveCommandersPhaseEventSchema,
@@ -87,7 +85,6 @@ export type {
   CompleteAttackApplyEvent,
   RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
-  CompleteIssuingCommandsEvent,
   SkipLostCommanderMoveEvent,
   CompleteMeleeResolutionEvent,
   CompleteMoveCommandersPhaseEvent,
@@ -127,8 +124,8 @@ export type { ChooseCardEvent } from './playerChoices';
 export { chooseCardEventSchema } from './playerChoices';
 export type { MoveCommanderEvent } from './playerChoices';
 export { moveCommanderEventSchema } from './playerChoices';
-export type { IssueCommandEvent } from './playerChoices';
-export { issueCommandEventSchema } from './playerChoices';
+export type { IssueCommandsEvent } from './playerChoices';
+export { issueCommandsEventSchema } from './playerChoices';
 export type { ChooseMovingUnitEvent } from './playerChoices';
 export {
   CHOOSE_MOVING_UNIT_CHOICE_TYPE,

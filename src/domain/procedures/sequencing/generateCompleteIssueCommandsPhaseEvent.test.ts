@@ -19,8 +19,6 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
     const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: [],
-      remainingCommandsSecondPlayer: [],
       remainingUnitsFirstPlayer: [],
       remainingUnitsSecondPlayer: [],
       step: 'complete',

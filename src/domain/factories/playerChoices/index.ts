@@ -32,7 +32,7 @@ export { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEve
 export { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseEvent';
 
 // A issueCommand event with its fixed types filled in.
-export { createIssueCommandEvent } from './createIssueCommandEvent';
+export { createIssueCommandsEvent } from './createIssueCommandsEvent';
 
 // A moveCommander event with its fixed types filled in.
 export { createMoveCommanderEvent } from './createMoveCommanderEvent';

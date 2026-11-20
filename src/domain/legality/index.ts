@@ -44,6 +44,8 @@ export {
   getLineRefusalReason,
   getLegalUnitsToOrder,
   getUnitsOrderRefusalReason,
+  getLegalLinesToOrder,
+  getLinesOrderRefusalReason,
   getLegalMoveUnits,
   getLegalShooterTargets,
   getLegalRangedAttackers,

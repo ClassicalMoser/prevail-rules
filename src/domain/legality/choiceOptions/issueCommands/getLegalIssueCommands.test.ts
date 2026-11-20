@@ -8,10 +8,12 @@ import { getLegalIssueCommands } from './getLegalIssueCommands';
 
 import { createEmptyGameState } from '@factories';
 /**
- * GetLegalIssueCommands: remaining command atoms for the active issue step.
+ * GetLegalIssueCommands: the issuing player, and the command on their card in
+ * play that they spend.
  */
 describe('getLegalIssueCommands function', () => {
-  it('returns remaining commands for the first player issue step', () => {
+  it('offers the first player the command on their card in play', () => {
+    // Black holds the initiative and played this card.
     const command = tempCommandCards[0].command;
     let state = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -24,13 +26,13 @@ describe('getLegalIssueCommands function', () => {
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
-        remainingCommandsFirstPlayer: [command],
         step: 'firstPlayerIssueCommands',
       }),
     );
 
+    // Black spends its card's command (§4.3.1).
     expect(getLegalIssueCommands(state)).toStrictEqual({
-      commands: [command],
+      command,
       player: 'black',
     });
   });
@@ -51,39 +53,19 @@ describe('getLegalIssueCommands function', () => {
     );
   });
 
-  it('throws when the player has no orders left to issue', () => {
-    // Black has issued every order; the step should already have moved on to
-    // resolving them.
-    const state = updatePhaseState(
-      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-      createIssueCommandsPhaseState(
-        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-        {
-          remainingCommandsFirstPlayer: [],
-          step: 'firstPlayerIssueCommands',
-        },
-      ),
-    );
-
-    expect(() => getLegalIssueCommands(state)).toThrow(
-      'black has no orders left to issue',
-    );
-  });
-
   it('throws while the orders are being carried out rather than issued', () => {
-    // Black has stopped issuing and is carrying its orders out.
+    // Black has issued its orders and is carrying them out.
     const state = updatePhaseState(
       updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
       createIssueCommandsPhaseState(
         updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
         {
-          remainingCommandsFirstPlayer: [tempCommandCards[0].command],
           step: 'firstPlayerResolveCommands',
         },
       ),
     );
 
-    // Orders are given, or stopped, only while issuing (§4.3.3).
+    // Orders are issued only on the issuing step (§4.3).
     expect(() => getLegalIssueCommands(state)).toThrow(
       'Not on an issuing step: firstPlayerResolveCommands',
     );

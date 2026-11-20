@@ -12,7 +12,7 @@ import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
 import { isValidCommitToRangedDefenseEvent } from './isValidCommitToRangedDefenseEvent';
-import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
+import { isValidIssueCommandsEvent } from './isValidIssueCommandsEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
 import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
@@ -75,8 +75,8 @@ export function validateLegalPlayerChoice(
     case 'moveUnit': {
       return isValidMoveUnitEvent(event, state);
     }
-    case 'issueCommand': {
-      return isValidIssueCommandEvent(event, state);
+    case 'issueCommands': {
+      return isValidIssueCommandsEvent(event, state);
     }
     case 'setupUnits': {
       return isValidSetupUnitsEvent(event, state);

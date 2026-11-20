@@ -14,18 +14,17 @@ import {
 
 /**
  * Applies a CompleteMoveCommandersPhaseEvent to the game state.
- * Records the current move-commanders phase as completed and advances to issueCommands phase.
- * Uses `remainingCommandsFirstPlayer` and `remainingCommandsSecondPlayer` from the event
- * (initiative / non-initiative order, same as issue-commands phase fields).
+ * Records the current move-commanders phase as completed and advances to the
+ * issue commands phase, with the initiative player issuing first.
  *
  * Phase is narrowed via {@link getMoveCommandersPhaseState} (throws if not `moveCommanders`).
  *
- * @param event - The complete move commanders phase event to apply
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteMoveCommandersPhaseEvent<S extends GameState>(
-  event: CompleteMoveCommandersPhaseEvent,
+  _event: CompleteMoveCommandersPhaseEvent,
   state: S,
 ): S {
   // Safe type broadening: No spatial information on MoveCommandersPhaseState
@@ -37,8 +36,6 @@ export function applyCompleteMoveCommandersPhaseEvent<S extends GameState>(
   const newPhaseState: IssueCommandsPhaseState = {
     currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
-    remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
-    remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,
     remainingUnitsFirstPlayer: [],
     remainingUnitsSecondPlayer: [],
     step: 'firstPlayerIssueCommands',

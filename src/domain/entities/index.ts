@@ -115,19 +115,17 @@ export { unitSupportSchema } from './card';
 // The kinds a restriction filters by, and the kinds of unit a card's support holds.
 export { restrictionTypes, unitSupportTypes } from './card';
 
-// Orders: one order from the card in play, and the units or line it is given to
+// How a player spends the command on their card in play: some units, or some lines
 export {
-  unitsOrderSelectionSchema,
-  lineOrderSelectionSchema,
-  orderSelectionSchema,
-  orderSchema,
-} from './order';
+  unitsAllocationSchema,
+  linesAllocationSchema,
+  commandAllocationSchema,
+} from './commandAllocation';
 export type {
-  UnitsOrderSelection,
-  LineOrderSelection,
-  OrderSelection,
-  Order,
-} from './order';
+  UnitsAllocation,
+  LinesAllocation,
+  CommandAllocation,
+} from './commandAllocation';
 
 // Army
 export { armySchema, unitCountSchema } from './army';

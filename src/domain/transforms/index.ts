@@ -51,7 +51,6 @@ export {
   openMeleeResolution,
   clearMeleeResolution,
   updateMoveCommandersStep,
-  updateRemainingCommandsForPlayer,
   updateRemainingUnitsForPlayer,
   updateIssueCommandsStep,
   openCommandResolution,

@@ -105,8 +105,12 @@ export interface LegalPlayerChoiceOptionsByChoice {
     playerSource: PlayerSide;
     events: CommitToRangedDefenseEvent[];
   };
-  /** The orders still to give (§4.3.2–4.3.3). */
-  issueCommand: {
+  /**
+   * The command on the card in play, to be spent at once (§4.3); its units
+   * or lines are offered a part at a time by `getLegalUnitsToOrder` and
+   * `getLegalLinesToOrder`.
+   */
+  issueCommands: {
     playerSource: PlayerSide;
     issueCommands: LegalIssueCommands;
   };
@@ -326,13 +330,13 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         events: getLegalCommitToRangedDefenseEvents(state),
       };
     }
-    case 'issueCommand': {
-      // Offer the orders still to give. Stopping, with no order, is always
-      // open while any are left (§4.3.3), so it needs no listing.
+    case 'issueCommands': {
+      // Offer the command to spend. Its allocations are too many to list
+      // whole; ordering nobody is always open (§4.3.2–4.3.3).
       const issueCommands = getLegalIssueCommands(state);
       return {
         ...base,
-        choiceType: 'issueCommand',
+        choiceType: 'issueCommands',
         issueCommands,
       };
     }

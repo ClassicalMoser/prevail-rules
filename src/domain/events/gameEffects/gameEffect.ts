@@ -34,7 +34,6 @@ import type {
 import type {
   RoundEndEvent,
   CompleteIssueCommandsPhaseEvent,
-  CompleteIssuingCommandsEvent,
   SkipLostCommanderMoveEvent,
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
@@ -77,7 +76,6 @@ import {
 import {
   roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
-  completeIssuingCommandsEventSchema,
   skipLostCommanderMoveEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
@@ -125,7 +123,6 @@ export type GameEffectEvent =
   | CompleteAttackApplyEvent
   | RoundEndEvent
   | CompleteIssueCommandsPhaseEvent
-  | CompleteIssuingCommandsEvent
   | SkipLostCommanderMoveEvent
   | CompleteMoveCommandersPhaseEvent
   | CompleteMovementCommandEvent
@@ -158,7 +155,6 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeAttackApplyEventSchema,
   roundEndEventSchema,
   completeIssueCommandsPhaseEventSchema,
-  completeIssuingCommandsEventSchema,
   skipLostCommanderMoveEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completeMovementCommandEventSchema,

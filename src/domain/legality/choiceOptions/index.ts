@@ -25,11 +25,13 @@ export {
   getLineRefusalReason,
   getLegalUnitsToOrder,
   getUnitsOrderRefusalReason,
+  getLegalLinesToOrder,
+  getLinesOrderRefusalReason,
   getLegalUnitsForIssueCommand,
   isCommandIssuable,
   type LegalIssueCommands,
   type LegalLine,
-} from './issueCommand';
+} from './issueCommands';
 export { getLegalMoveUnits, type LegalMoveUnits } from './getLegalMoveUnits';
 export {
   getLegalRoutDiscardCards,

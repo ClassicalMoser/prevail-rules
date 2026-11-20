@@ -50,15 +50,14 @@ function getExpectedMovementResolveStart(
 }
 
 /**
- * While orders are left, the player is asked for the next one. Stopping is
- * the same choice with no order (§4.3.3), so the expectation is the same
- * whether or not any order can still be given; when none can, stopping is
- * the only legal option, and the phase cannot stall.
+ * On their issuing step the player is asked for their whole allocation at
+ * once (§4.3). An allocation that orders nobody is always legal, so the
+ * phase cannot stall even when no unit can be ordered.
  */
 function getExpectedIssueStepEvent(player: PlayerSide): ExpectedEventInfo {
   const expected: ExpectedEventInfo = {
     actionType: 'playerChoice',
-    choiceType: 'issueCommand',
+    choiceType: 'issueCommands',
     playerSource: player,
   };
   return expected;
@@ -79,15 +78,7 @@ export function getExpectedIssueCommandsPhaseEvent(
 
   switch (phaseState.step) {
     case 'firstPlayerIssueCommands': {
-      if (phaseState.remainingCommandsFirstPlayer.length > 0) {
-        return getExpectedIssueStepEvent(firstPlayer);
-      }
-      // With no order left to issue, given or forfeited, the player moves on
-      // to carrying out the orders given.
-      return {
-        actionType: 'gameEffect',
-        effectType: 'completeIssuingCommands',
-      };
+      return getExpectedIssueStepEvent(firstPlayer);
     }
 
     case 'firstPlayerResolveCommands': {
@@ -137,15 +128,7 @@ export function getExpectedIssueCommandsPhaseEvent(
     }
 
     case 'secondPlayerIssueCommands': {
-      if (phaseState.remainingCommandsSecondPlayer.length > 0) {
-        return getExpectedIssueStepEvent(secondPlayer);
-      }
-      // With no order left to issue, given or forfeited, the player moves on
-      // to carrying out the orders given.
-      return {
-        actionType: 'gameEffect',
-        effectType: 'completeIssuingCommands',
-      };
+      return getExpectedIssueStepEvent(secondPlayer);
     }
 
     case 'secondPlayerResolveCommands': {

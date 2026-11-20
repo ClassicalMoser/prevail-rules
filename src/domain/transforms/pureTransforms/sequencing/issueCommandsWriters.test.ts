@@ -1,5 +1,4 @@
 import type { GameState, IssueCommandsPhaseStep } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@factories';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
@@ -16,7 +15,6 @@ import { clearCommandResolution } from './clearCommandResolution';
 import { finishResolvingCommands } from './finishResolvingCommands';
 import { openCommandResolution } from './openCommandResolution';
 import { updateIssueCommandsStep } from './updateIssueCommandsStep';
-import { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPlayer';
 import { updateRemainingUnitsForPlayer } from './updateRemainingUnitsForPlayer';
 
 /** Issue commands on this step, with black holding initiative. */
@@ -52,23 +50,6 @@ describe('updateRemainingUnitsForPlayer function', () => {
 
     expect(black.remainingUnitsFirstPlayer).toStrictEqual([blackUnit]);
     expect(white.remainingUnitsSecondPlayer).toStrictEqual([whiteUnit]);
-  });
-});
-
-describe('updateRemainingCommandsForPlayer function', () => {
-  it('writes each player’s orders still to give to the slot their initiative gives them', () => {
-    const state = issuingOn('firstPlayerIssueCommands');
-    const order = tempCommandCards[0].command;
-
-    const black = getIssueCommandsPhaseState(
-      updateRemainingCommandsForPlayer(state, 'black', [order]),
-    );
-    const white = getIssueCommandsPhaseState(
-      updateRemainingCommandsForPlayer(state, 'white', [order]),
-    );
-
-    expect(black.remainingCommandsFirstPlayer).toStrictEqual([order]);
-    expect(white.remainingCommandsSecondPlayer).toStrictEqual([order]);
   });
 });
 
@@ -115,20 +96,17 @@ describe('openCommandResolution and clearCommandResolution functions', () => {
 });
 
 describe('beginResolvingCommands function', () => {
-  it('forfeits the orders left and moves on to carrying out the units ordered', () => {
-    // Black has ordered one unit and still holds an order it will not give.
-    const issuing = updateRemainingCommandsForPlayer(
+  it('moves on to carrying out the units ordered', () => {
+    // Black has issued its orders; units of both sides stand ordered.
+    const ordered = addUnitsToCommandedUnits(
       issuingOn('firstPlayerIssueCommands'),
-      'black',
-      [tempCommandCards[0].command],
+      [blackUnit, whiteUnit],
     );
-    const ordered = addUnitsToCommandedUnits(issuing, [blackUnit, whiteUnit]);
 
     const resolving = getIssueCommandsPhaseState(
       beginResolvingCommands(ordered),
     );
 
-    expect(resolving.remainingCommandsFirstPlayer).toStrictEqual([]);
     // Only black's own ordered units are black's to carry out.
     expect(resolving.remainingUnitsFirstPlayer).toStrictEqual([blackUnit]);
     expect(resolving.step).toBe('firstPlayerResolveCommands');

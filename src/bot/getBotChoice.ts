@@ -141,7 +141,7 @@ export function getBotChoice(
         context,
       );
     }
-    case 'issueCommand': {
+    case 'issueCommands': {
       return chooseOrder(options.issueCommands, context);
     }
     case 'moveCommander': {

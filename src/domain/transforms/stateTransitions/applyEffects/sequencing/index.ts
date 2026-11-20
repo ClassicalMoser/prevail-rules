@@ -1,6 +1,5 @@
 export { applyRoundEndEvent } from './applyRoundEndEvent';
 export { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
-export { applyCompleteIssuingCommandsEvent } from './applyCompleteIssuingCommandsEvent';
 export { applySkipLostCommanderMoveEvent } from './applySkipLostCommanderMoveEvent';
 export { applyCompleteMoveCommandersPhaseEvent } from './applyCompleteMoveCommandersPhaseEvent';
 export { applyCompletePlayCardsPhaseEvent } from './applyCompletePlayCardsPhaseEvent';

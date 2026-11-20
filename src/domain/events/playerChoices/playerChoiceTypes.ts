@@ -27,7 +27,7 @@ export const playerChoices = [
   'chooseWhetherToRetreat',
   'commitToRangedAttack',
   'commitToRangedDefense',
-  'issueCommand',
+  'issueCommands',
   'moveCommander',
   'moveUnit',
   'performRangedAttack',

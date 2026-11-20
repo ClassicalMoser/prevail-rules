@@ -9,7 +9,6 @@ export const gameEffects = [
   'completeAttackApply',
   'roundEnd',
   'completeIssueCommandsPhase',
-  'completeIssuingCommands',
   'completeMoveCommandersPhase',
   'completeMovementCommand',
   'completePlayCardsPhase',

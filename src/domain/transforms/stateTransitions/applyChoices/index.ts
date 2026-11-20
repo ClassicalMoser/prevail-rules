@@ -9,7 +9,7 @@ export { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 export { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 export { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
 export { applyCommitToRangedDefenseEvent } from './applyCommitToRangedDefenseEvent';
-export { applyIssueCommandEvent } from './applyIssueCommandEvent';
+export { applyIssueCommandsEvent } from './applyIssueCommandsEvent';
 export { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 export { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
 export { applyMoveUnitEvent } from './applyMoveUnitEvent';

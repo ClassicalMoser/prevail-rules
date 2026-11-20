@@ -10,9 +10,9 @@ import { getLegalUnitsToOrder } from './getLegalUnitsToOrder';
 import { createEmptyGameState } from '@factories';
 
 /**
- * A units order takes between one and its printed number of eligible units
- * (§4.3.2). The number is a ceiling, not a quota, and a unit is chosen once.
- * The units are offered one at a time.
+ * A units order takes up to its printed number of eligible units, and none
+ * declines it (§4.3.2). The number is a ceiling, not a quota, and a unit is
+ * chosen once. The units are offered one at a time.
  *
  * Black has three units, on E-1 to E-3, and an order for up to two of them
  * with no range limit.
@@ -33,11 +33,14 @@ describe('getLegalUnitsToOrder function', () => {
     throw new Error('Expected three units');
   }
 
-  it('offers every eligible unit first, and does not let the order go to nobody', () => {
+  it('offers every eligible unit first, and lets the player decline before choosing any', () => {
+    // Nothing chosen yet.
     const choice = getLegalUnitsToOrder(upToTwo, 'black', state, []);
 
+    // Every eligible unit is open, and stopping now orders nobody, which
+    // declines the order (§4.3.2).
     expect(choice).toStrictEqual({
-      mayStop: false,
+      mayStop: true,
       next: [first, second, third],
     });
   });
