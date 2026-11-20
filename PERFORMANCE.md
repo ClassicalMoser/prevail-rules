@@ -115,30 +115,38 @@ effects are applied.
   back, a pure function derives it and the caller that asks many questions of
   one board passes it down.
 
-## Suspended
+## Done 2026-11-20
 
-Proposed and suspended 2026-11-19, in this order. Each is one commit, with a
-failing spec first wherever behaviour changes.
+What was suspended on 2026-11-19, taken up in order. Where the answers
+could have changed, they were checked against the old code on every
+position of real bot games.
 
-1. `diagonalIsClear` reads its two corner spaces by position (`findGridPosition`,
-   `findCoordinateAtPosition`): the origin's
-   row with the target's column, and the target's row with the origin's.
-   Same answers, about twenty times cheaper. Unit movement and melee support
-   ask it too.
-2. `exploreCommanderMoves` visits each space once, keeping the most distance
-   left. A commander has no facing and no other resource, so arriving with
-   more left is never worse. Same answers.
-3. **A rule:** a move never returns to a position, the same space and facing,
-   that it has already held (proposed RULEBOOK §5.2.4). Coming back where you
-   were does nothing a shorter move could not. It prunes the walk by rule, and
-   it makes `[turnLeft, turnRight]` illegal. RULEBOOK wording first, then a
-   spec that fails, then the move walk and the validator.
-4. The move offer lists one entry per ending, with its most direct path. This
-   is for a simpler offer, not for validation: an inefficient legal path is
-   still legal, and is still accepted. Check first that nothing reads the
-   duplicates.
+1. **The two corners of a diagonal are read by position.**
+   `getDiagonalCornerSpaces` takes the origin's row with the target's
+   column, and the target's row with the origin's; `diagonalIsClear` and the
+   mover's `checkDiagonalMove` both use it. 0.57 µs to 0.10 µs a call.
+2. **A commander's walk goes out a ring at a time,** each space explored
+   once. The same spaces at 20,418 positions. Offering a commander's move:
+   400 µs to 83 µs, checking it 360 µs to 76 µs. Its offer now lists the
+   spaces in board order (`listInBoardOrder`), an order that means nothing.
+3. **A rule, RULEBOOK §5.2.4:** a move may not bring a unit back to a
+   position it has held. Every move state carries the positions held, and
+   the turn and step options refuse a repeat, so offers, validation and
+   retreats all keep it. No ending is lost: the same places to end at 914
+   moves.
+4. **One way to each ending, the plainest, in board order.**
+   `getLegalUnitMoves` keeps the fewest turns, then the fewest steps;
+   `listMovesInBoardOrder` writes the offer down. A longer legal path is
+   still accepted when submitted. Endings per unit: 295 to 122, the same
+   places at 845 moves.
+
+Still open:
+
 5. The adjacency helpers stop building sets they do not need. At the read of
    `queries/`, one helper at a time, keeping what their callers ask of them.
+6. `listMovesInBoardOrder` looks each ending's position up on every
+   comparison of its sort; working each ending's rank out once would take
+   back what it added to the move offer (about 680 µs to 750 µs).
 
 ## Waiting on these
 
