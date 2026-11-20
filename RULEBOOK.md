@@ -650,6 +650,8 @@ A move is therefore a short sequence of steps and turns, in whatever order you l
 
 **5.2.3** A unit with Flexibility 0 cannot turn at all. It moves in a straight line or not at all.
 
+**5.2.4 No repeated positions.** A move may not bring a unit back to a position it has already held during that move: the same space, facing the same way.
+
 ### 5.3 What you may move into
 
 A unit may **end its move** in a space that is:
