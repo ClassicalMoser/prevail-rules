@@ -22,12 +22,15 @@ call on its own, the bot's thinking excluded.
 
 A bot game, start to finish, at the median:
 
-| Board    | Before the tables | After the tables |
-| -------- | ----------------- | ---------------- |
-| Standard | 3.8 s             | 1.3 s            |
-| Mini     | 320 ms            | 147 ms           |
+| Board    | Before the tables | After the tables | Now (2026-11-20) |
+| -------- | ----------------- | ---------------- | ---------------- |
+| Standard | 3.8 s             | 1.3 s            | 484 ms           |
+| Mini     | 320 ms            | 147 ms           | 72 ms            |
 
-Board geometry now reads definitions in `@entities` instead of handling
+"Now" is after every item under "Done 2026-11-20". Of a standard game's
+484 ms, the engine is about 40 ms; the rest is the bot deciding.
+
+Board geometry now reads definitions in `@ruleValues` instead of handling
 strings. Each size's layout (`coordinateLayoutMap` in `@ruleValues`) is its
 depth, its frontage and the spaces they make, listed row by row; and one table, `positionByCoordinate`, gives every space's
 row and column, the same on every board it is on because the sizes nest.
@@ -35,7 +38,7 @@ Before, every step split a space's name into row and column and built the
 next name as a string. That string work was over a third of a bot game.
 `getBoardCoordinates`, `findGridPosition`, `getGridPosition`,
 `findCoordinateAtPosition` and `findForwardSpace` read these, and depend on
-`@entities` alone.
+`@ruleValues` alone.
 
 How it got there is a lesson. The tables were first built in `@factories`
 as a separate grid beside the layout: a second table describing the same
@@ -187,7 +190,41 @@ position of real bot games.
    exist whose board had moved ahead of its index. It was replaced the
    next day.
 
+## Where a move's enumeration goes now
+
+Listing one unit's endings (`getLegalUnitMoves`) costs about 140 µs. A
+profile with V8's inlining off, so each function keeps its own time:
+
+| Part                                                             | Share |
+| ---------------------------------------------------------------- | ----- |
+| The walk itself (`walkMoveEndings`, its own time)                | 25%   |
+| A step (`getStepOption`), with the two below                     | 27%   |
+| A diagonal step's corners (`checkDiagonalMove`)                  | 13%   |
+| Passing a friend (`canMoveThrough`), of which its Flexibility 7% | 12%   |
+| Turns (`getTurnOptions`)                                         | 13%   |
+| Whether the move may end here (`findMoveEnding`)                 | 13%   |
+| Refusing a position held before (`isPositionHeld`)               | 6.5%  |
+| The plainest path per ending (`getSmallestMovePerEnding`)        | 6%    |
+| The mover's stats, once at the start (`createMoveContext`)       | 4%    |
+
+Two candidates were weighed and dropped. Reading each friend's Flexibility
+once per walk would save at most its 7%. Keying the walk's arrivals by
+space then facing, and changing each list in place, saved about 5%, partly
+within noise, for bookkeeping much harder to read; most of the walk's own
+time is its recursion, not its keys. Nothing left stands out, and the
+optimization work closes here.
+
 ## Waiting on these
+
+- **Terrain on the walk.** When terrain lands, a move's Speed depends on
+  the worst ground it touches (§5.5.1): the highest terrain threshold and
+  the lowest speed limit among its spaces. That is a property of the path,
+  so each point of the walk carries the two worst values seen so far, and a
+  step folds in its new space's, rather than re-reading the path. The
+  walk's rule that a later arrival no better than an earlier one is not
+  walked again must then compare the ground seen as well: an earlier
+  arrival outdoes a later one only if it has seen no worse ground on both
+  counts.
 
 - **Placements on events.** Five events carry a position the board already
   holds: `chooseMovingUnit.unit`, `chooseShooter.unit`,
