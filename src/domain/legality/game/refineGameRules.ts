@@ -6,6 +6,7 @@ import type { z } from 'zod';
 import { refineBoardLayout } from '../board/refineBoardLayout';
 import { refineGameArmyComposition } from './refineGameArmyComposition';
 import { refineGameModeBoardSize } from './refineGameModeBoardSize';
+import { refineGameStateIndex } from './refineGameStateIndex';
 
 /** The parts of a game the game rules read. */
 interface GameRulesInput {
@@ -35,14 +36,25 @@ export function refineGameRules(
   refineGameArmyComposition(game, ctx);
 }
 
-/** {@link Game} schema including the game rules. */
-export const legalGameSchema: z.ZodType<Game> =
-  gameSchema.superRefine(refineGameRules);
+/**
+ * {@link Game} schema including the game rules, and the check that the game
+ * state's index agrees with its board and lists. A whole game is read from
+ * outside rarely, so it is worth checking in full when it is.
+ */
+export const legalGameSchema: z.ZodType<Game> = gameSchema.superRefine(
+  (game, ctx) => {
+    // The rules a whole game record must keep.
+    refineGameRules(game, ctx);
+    // The index of where every piece is says what the record says.
+    refineGameStateIndex(game.gameState, ctx, ['gameState']);
+  },
+);
 
 /**
  * The schema for an authoritative game state of a game played in `gameMode`,
  * including the rules that need the mode: a board laid out for its size, and
- * the size the mode is played on. It is what a full game state read on its
+ * the size the mode is played on; and an index that agrees with the board
+ * and the lists. It is what a full game state read on its
  * own, apart from its game, must satisfy.
  *
  * @param gameMode - The mode the state's game is played in
@@ -57,6 +69,8 @@ export function legalGameStateSchema(
       'boardType',
     ]);
     refineBoardLayout(state.boardState, ctx, ['boardState']);
+    // The index of where every piece is says what the record says.
+    refineGameStateIndex(state, ctx);
   });
   return schema;
 }

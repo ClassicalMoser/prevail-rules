@@ -112,4 +112,20 @@ describe('addCommanderToLostCommanders function', () => {
       expect(newGameState.cardState).toBe(gameState.cardState);
     });
   });
+
+  describe('the index of where every piece is', () => {
+    it('given a lost commander, files it as lost', () => {
+      // Black's commander falls; white's has not been placed yet.
+      const gameState = createEmptyGameState('standard');
+
+      const newGameState = addCommanderToLostCommanders(gameState, 'black');
+
+      // The index, set afresh from the record, has black's as lost and
+      // white's still in reserve.
+      expect(newGameState.index.commanders).toStrictEqual({
+        black: 'lost',
+        white: 'reserved',
+      });
+    });
+  });
 });

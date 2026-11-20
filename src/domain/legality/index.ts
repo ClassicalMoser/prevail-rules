@@ -23,6 +23,7 @@ export {
   refineGameArmyComposition,
   refineGameModeBoardSize,
   refineGameRules,
+  refineGameStateIndex,
 } from './game';
 export { refineBoardLayout } from './board';
 export {

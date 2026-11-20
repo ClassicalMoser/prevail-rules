@@ -1,8 +1,10 @@
-import { createTestUnit } from '@testing';
+import { createTestUnit, createUnitWithPlacement } from '@testing';
 
 import { removeUnitFromReserve } from './removeUnitFromReserve';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitIndexKey } from '@factories';
+import { addUnitToBoard } from './addUnitToBoard';
+import { updateBoardState } from '../board/updateBoardState';
 /**
  * RemoveUnitFromReserve: removeUnitFromReserve.
  */
@@ -123,6 +125,50 @@ describe('removeUnitFromReserve function', () => {
       const newGameState = removeUnitFromReserve(gameState, unit);
 
       expect(newGameState.routedUnits).toBe(gameState.routedUnits);
+    });
+  });
+
+  describe('the index of where every piece is', () => {
+    it('given a unit already placed on the board, files it where it stands', () => {
+      // Setup places the unit first, then takes it out of reserve.
+      const placed = createUnitWithPlacement({
+        coordinate: 'E-5',
+        facing: 'north',
+        playerSide: 'black',
+      });
+      const gameState = {
+        ...createEmptyGameState('standard'),
+        reservedUnits: [placed.unit],
+      };
+      const onBoard = updateBoardState(
+        gameState,
+        addUnitToBoard(gameState.boardState, placed),
+      );
+
+      const newGameState = removeUnitFromReserve(onBoard, placed.unit);
+
+      // Out of reserve, the index finds it only where it stands.
+      expect(newGameState.index.units[createUnitIndexKey(placed.unit)]).toBe(
+        'E-5',
+      );
+    });
+
+    it('given a unit not yet placed, no longer files it anywhere', () => {
+      // A reserve of one, taken away without placing it: the record now holds
+      // the unit nowhere, and the index follows the record.
+      const unit = createTestUnit('black', { attack: 3 });
+      const gameState = updateBoardState(
+        { ...createEmptyGameState('standard'), reservedUnits: [unit] },
+        createEmptyGameState('standard').boardState,
+      );
+
+      const newGameState = removeUnitFromReserve(gameState, unit);
+
+      // It was filed as in reserve; now it is not filed at all.
+      expect(gameState.index.units[createUnitIndexKey(unit)]).toBe('reserved');
+      expect(
+        Object.hasOwn(newGameState.index.units, createUnitIndexKey(unit)),
+      ).toBe(false);
     });
   });
 });

@@ -2,7 +2,7 @@ import { createTestUnit } from '@testing';
 
 import { addUnitToRouted } from './addUnitToRouted';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitIndexKey } from '@factories';
 /**
  * AddUnitToRouted: addUnitToRouted.
  */
@@ -117,6 +117,19 @@ describe('addUnitToRouted function', () => {
       const newGameState = addUnitToRouted(gameState, unit);
 
       expect(newGameState.cardState).toBe(gameState.cardState);
+    });
+  });
+
+  describe('the index of where every piece is', () => {
+    it('given a routed unit, files it as routed', () => {
+      // A unit leaving the game for good.
+      const gameState = createEmptyGameState('standard');
+      const unit = createTestUnit('black', { attack: 3 });
+
+      const newGameState = addUnitToRouted(gameState, unit);
+
+      // The index, set afresh from the record, now has it as routed.
+      expect(newGameState.index.units[createUnitIndexKey(unit)]).toBe('routed');
     });
   });
 });
