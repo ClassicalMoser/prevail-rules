@@ -56,9 +56,9 @@ export function surveyBattlefield(
   const enemy = getOtherPlayer(seat);
   const survey: BattlefieldSurvey = {
     enemy,
-    enemyCommander: findCommanderSpace(enemy, view.boardState),
+    enemyCommander: findCommanderSpace(enemy, view),
     enemyUnits: [...getPlayerUnitsWithPlacementOnBoard(view, enemy)],
-    ownCommander: findCommanderSpace(seat, view.boardState),
+    ownCommander: findCommanderSpace(seat, view),
     ownUnits: [...getPlayerUnitsWithPlacementOnBoard(view, seat)],
     seat,
     stillToMove,

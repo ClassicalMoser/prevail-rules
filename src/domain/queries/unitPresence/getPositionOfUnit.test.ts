@@ -2,6 +2,7 @@ import type { Coordinate } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
+  createGameStateWithBoard,
   createTestUnit,
   placed,
 } from '@testing';
@@ -20,7 +21,10 @@ describe('getPositionOfUnit function', () => {
       const facing = 'north';
       const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
 
-      const placement = getPositionOfUnit(board, unit);
+      const placement = getPositionOfUnit(
+        createGameStateWithBoard(board),
+        unit,
+      );
 
       expect(placement.coordinate).toBe(coordinate);
       expect(placement.facing).toBe(facing);
@@ -32,7 +36,10 @@ describe('getPositionOfUnit function', () => {
       const facing = 'southEast';
       const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
 
-      const placement = getPositionOfUnit(board, unit);
+      const placement = getPositionOfUnit(
+        createGameStateWithBoard(board),
+        unit,
+      );
 
       expect(placement.coordinate).toBe(coordinate);
       expect(placement.facing).toBe(facing);
@@ -43,7 +50,10 @@ describe('getPositionOfUnit function', () => {
       const coordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
 
-      const placement = getPositionOfUnit(board, unit);
+      const placement = getPositionOfUnit(
+        createGameStateWithBoard(board),
+        unit,
+      );
 
       expect(placement.coordinate).toBe(coordinate);
     });
@@ -62,7 +72,10 @@ describe('getPositionOfUnit function', () => {
         primaryFacing,
       );
 
-      const placement = getPositionOfUnit(board, primaryUnit);
+      const placement = getPositionOfUnit(
+        createGameStateWithBoard(board),
+        primaryUnit,
+      );
 
       expect(placement.coordinate).toBe(coordinate);
       expect(placement.facing).toBe(primaryFacing);
@@ -80,7 +93,10 @@ describe('getPositionOfUnit function', () => {
         primaryFacing,
       );
 
-      const placement = getPositionOfUnit(board, secondaryUnit);
+      const placement = getPositionOfUnit(
+        createGameStateWithBoard(board),
+        secondaryUnit,
+      );
 
       expect(placement.coordinate).toBe(coordinate);
       // Secondary unit faces opposite primary
@@ -100,7 +116,10 @@ describe('getPositionOfUnit function', () => {
       );
 
       expect(() => {
-        getPositionOfUnit(board, createTestUnit('black', { attack: 2 }));
+        getPositionOfUnit(
+          createGameStateWithBoard(board),
+          createTestUnit('black', { attack: 2 }),
+        );
       }).toThrow(new Error('Unit not found on board'));
     });
   });
@@ -111,7 +130,7 @@ describe('getPositionOfUnit function', () => {
       const board = createEmptyStandardBoard();
 
       expect(() => {
-        getPositionOfUnit(board, unit);
+        getPositionOfUnit(createGameStateWithBoard(board), unit);
       }).toThrow(new Error('Unit not found on board'));
     });
 
@@ -121,7 +140,7 @@ describe('getPositionOfUnit function', () => {
       const board = createBoardWithUnits([placed(unit2, 'E-5', 'north')]);
 
       expect(() => {
-        getPositionOfUnit(board, unit1);
+        getPositionOfUnit(createGameStateWithBoard(board), unit1);
       }).toThrow(new Error('Unit not found on board'));
     });
   });
@@ -135,7 +154,10 @@ describe('getPositionOfUnit function', () => {
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       expect(unit1).not.toBe(unit2); // Different references
 
-      const placement = getPositionOfUnit(board, unit2);
+      const placement = getPositionOfUnit(
+        createGameStateWithBoard(board),
+        unit2,
+      );
 
       // Should find it by value comparison
       expect(placement.coordinate).toBe('E-5');

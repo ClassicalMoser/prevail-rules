@@ -179,7 +179,7 @@ export function getLineRefusalReason(
   // free of an engagement, not yet ordered, and matching the order's traits
   // and types.
   for (const end of ends) {
-    const placement = findPositionOfUnit(board, end);
+    const placement = findPositionOfUnit(gameState, end);
     if (placement === undefined) {
       return `A line end is not on the board for ${player}`;
     }
@@ -199,7 +199,7 @@ export function getLineRefusalReason(
 
   // The ends must stand on one unbroken rank.
   const span = findRankSpanBetweenEnds(
-    board,
+    gameState,
     ends,
     command.restrictions,
     currentRoundState.commandedUnits,

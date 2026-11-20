@@ -1,3 +1,4 @@
+import { createGameStateWithBoard } from '@testing';
 import { createEmptyGameState } from '@factories';
 import { addCommanderToBoard } from '@transforms';
 
@@ -12,7 +13,9 @@ describe('getCommanderSpace function', () => {
       'E-5',
     );
 
-    expect(getCommanderSpace('white', board)).toBe('E-5');
+    expect(getCommanderSpace('white', createGameStateWithBoard(board))).toBe(
+      'E-5',
+    );
   });
 
   it('throws when the side’s commander is not on the board', () => {
@@ -23,8 +26,8 @@ describe('getCommanderSpace function', () => {
       'E-5',
     );
 
-    expect(() => getCommanderSpace('black', board)).toThrow(
-      'The black commander is not on the board',
-    );
+    expect(() =>
+      getCommanderSpace('black', createGameStateWithBoard(board)),
+    ).toThrow('The black commander is not on the board');
   });
 });

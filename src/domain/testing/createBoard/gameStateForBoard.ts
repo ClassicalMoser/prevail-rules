@@ -1,4 +1,5 @@
 import type {
+  Board,
   PlayerSide,
   Coordinate,
   UnitFacing,
@@ -60,5 +61,15 @@ export function createGameStateWithUnits(
 ): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithUnits(units);
+  return updateBoardState(gameState, board);
+}
+
+/**
+ * A new standard game with this board in place, its index set from the board
+ * as play would set it. For a spec that builds a board and then asks the game
+ * where something stands.
+ */
+export function createGameStateWithBoard(board: Board): AuthoritativeGameState {
+  const gameState = createEmptyGameState('standard');
   return updateBoardState(gameState, board);
 }

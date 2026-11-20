@@ -54,7 +54,7 @@ export function applyMoveUnitEvent<S extends GameState>(
   const board = enteringEnemy
     ? state.boardState
     : carryRidingCommander(
-        moveUnitOnBoard(state.boardState, mover.unit, destination),
+        moveUnitOnBoard(state, mover.unit, destination),
         written,
         destination.coordinate,
       );

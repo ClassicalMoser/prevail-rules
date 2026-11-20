@@ -28,7 +28,7 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
 
   // The event names the unit by who it is; the unit that moves, with the
   // stats it carries, is the one the board holds.
-  const mover = getUnitWithPlacementOnBoard(state.boardState, event.unit.unit);
+  const mover = getUnitWithPlacementOnBoard(state, event.unit.unit);
 
   // The move opens with the commitment owed and the move unwritten: the
   // owner may commit a card first, and the card counts toward the move.

@@ -1,24 +1,29 @@
-import type { Board, Coordinate, PlayerSide } from '@entities';
-import { getBoardCoordinates } from './getBoardCoordinates';
-import { getBoardSpace } from './getBoardSpace';
+import type { Coordinate, PlayerSide } from '@entities';
+import type { GameState } from '@game';
 
 /**
- * Gets the board coordinate containing the commander for a given player side.
+ * Where a side's commander stands, or `undefined` when it is not on the
+ * board: not yet placed at setup, or lost with a routing unit (§4.2.8).
  *
- * @param side - The player side to get the commander space for
- * @param board - The board to search
- * @returns The board coordinate containing the commander, or undefined if not found
+ * Read from the game state's index, which every write keeps in step with the
+ * board, so the board is not searched.
+ *
+ * @param side - The side whose commander is wanted
+ * @param gameState - The game, for its index
+ * @returns The coordinate the commander stands on, or `undefined` when it is not on the board
  */
 export function findCommanderSpace(
   side: PlayerSide,
-  board: Board,
+  gameState: GameState,
 ): Coordinate | undefined {
-  const coordinates = getBoardCoordinates(board);
-  for (const coordinate of coordinates) {
-    const space = getBoardSpace(board, coordinate);
-    if (space.commanders.includes(side)) {
-      return coordinate;
-    }
+  // Where the index files this side's commander.
+  const entry = gameState.index.commanders[side];
+
+  // Not yet placed, or lost: it stands nowhere.
+  if (entry === 'reserved' || entry === 'lost') {
+    return undefined;
   }
-  return undefined;
+
+  // Otherwise the entry is the space it stands on.
+  return entry;
 }

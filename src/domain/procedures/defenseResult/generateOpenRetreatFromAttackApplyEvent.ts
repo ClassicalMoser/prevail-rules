@@ -21,7 +21,7 @@ function retreatPathsFor(
   state: GameState,
   apply: AttackApplyState,
 ): MoveDelta[][] {
-  const placement = getPositionOfUnit(state.boardState, apply.defendingUnit);
+  const placement = getPositionOfUnit(state, apply.defendingUnit);
   const paths = getLegalRetreats(
     { placement, unit: apply.defendingUnit },
     state,

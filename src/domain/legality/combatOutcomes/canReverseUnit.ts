@@ -16,10 +16,7 @@ export function canReverseUnit(
 ): boolean {
   // The reverse can come due after a retreat has moved the unit, so the square
   // to judge is where the unit stands now, not where the attack found it.
-  const placement = getPositionOfUnit(
-    gameState.boardState,
-    reverseState.reversingUnit,
-  );
+  const placement = getPositionOfUnit(gameState, reverseState.reversingUnit);
   const boardSpace = getBoardSpace(gameState.boardState, placement.coordinate);
 
   // A unit still locked with an opponent cannot turn to face away from it.

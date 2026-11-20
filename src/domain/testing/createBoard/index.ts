@@ -4,6 +4,7 @@ export { createBoardWithFacingRow } from './boardWithFacingRow';
 export { createBoardWithSingleUnit } from './boardWithSingleUnit';
 export { createBoardWithUnits } from './boardWithUnits';
 export {
+  createGameStateWithBoard,
   createGameStateWithEngagedUnits,
   createGameStateWithSingleUnit,
   createGameStateWithUnits,

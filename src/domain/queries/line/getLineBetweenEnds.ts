@@ -1,9 +1,5 @@
-import type {
-  Board,
-  Restrictions,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { GameState } from '@game';
+import type { Restrictions, UnitInstance, UnitWithPlacement } from '@entities';
 
 import { getPositionOfUnit } from '@queries/unitPresence';
 
@@ -15,7 +11,7 @@ import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
  * named in either order, and a line of one names the same unit twice. The
  * order names only the ends; the board says who stands between them.
  *
- * @param board - The board state
+ * @param gameState - The game, for where the ends stand and the board
  * @param ends - The two ends of the line
  * @param restrictions - The order's restrictions; every unit must match its traits and types
  * @param commandedUnits - Units already commanded this round
@@ -29,20 +25,20 @@ import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
  * removing it, or by finding the caller that should use it.
  */
 export function getLineBetweenEnds(
-  board: Board,
+  gameState: GameState,
   ends: readonly [UnitInstance, UnitInstance],
   restrictions: Restrictions,
   commandedUnits: readonly UnitInstance[],
 ): UnitWithPlacement[] {
   const span = findRankSpanBetweenEnds(
-    board,
+    gameState,
     ends,
     restrictions,
     commandedUnits,
   );
   if (span === undefined) {
     // A first end that was never placed is its own fault, and says so.
-    getPositionOfUnit(board, ends[0]);
+    getPositionOfUnit(gameState, ends[0]);
     throw new Error(
       'The two ends of the line do not stand on one unbroken rank',
     );

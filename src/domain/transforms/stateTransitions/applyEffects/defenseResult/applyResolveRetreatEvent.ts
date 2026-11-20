@@ -33,7 +33,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
 ): S {
   // Where the unit ends is wherever its retreat path leads from where it
   // stands, read by geometry: the path was judged when it was offered.
-  const standing = getPositionOfUnit(state.boardState, event.unit);
+  const standing = getPositionOfUnit(state, event.unit);
   const landing = getPlacementAfterPath(
     state.boardState,
     standing,
@@ -42,7 +42,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
   );
 
   // Move the unit on the board
-  const unitMovedBoard = moveUnitOnBoard(state.boardState, event.unit, landing);
+  const unitMovedBoard = moveUnitOnBoard(state, event.unit, landing);
 
   // A commander standing with the retreating unit always goes with it
   // (§9.1.8). Only the unit's own commander: an enemy commander that rode

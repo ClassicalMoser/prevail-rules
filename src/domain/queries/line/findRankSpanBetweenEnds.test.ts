@@ -1,5 +1,9 @@
 import type { Coordinate, Restrictions } from '@entities';
-import { createBoardWithFacingRow, createTestUnit } from '@testing';
+import {
+  createBoardWithFacingRow,
+  createGameStateWithBoard,
+  createTestUnit,
+} from '@testing';
 
 import { findRankSpanBetweenEnds } from './findRankSpanBetweenEnds';
 
@@ -18,7 +22,7 @@ describe('findRankSpanBetweenEnds function', () => {
 
   it('finds the stretch between two ends whichever is named first', () => {
     const span = findRankSpanBetweenEnds(
-      board,
+      createGameStateWithBoard(board),
       [unitAt('E-4').unit, unitAt('E-2').unit],
       unrestricted,
       [],
@@ -30,7 +34,7 @@ describe('findRankSpanBetweenEnds function', () => {
 
   it('finds a span of one when the same unit is named at both ends', () => {
     const span = findRankSpanBetweenEnds(
-      board,
+      createGameStateWithBoard(board),
       [unitAt('E-3').unit, unitAt('E-3').unit],
       unrestricted,
       [],
@@ -44,7 +48,7 @@ describe('findRankSpanBetweenEnds function', () => {
 
     expect(
       findRankSpanBetweenEnds(
-        board,
+        createGameStateWithBoard(board),
         [unitAt('E-1').unit, elsewhere],
         unrestricted,
         [],
@@ -57,7 +61,7 @@ describe('findRankSpanBetweenEnds function', () => {
 
     expect(
       findRankSpanBetweenEnds(
-        board,
+        createGameStateWithBoard(board),
         [elsewhere, unitAt('E-1').unit],
         unrestricted,
         [],

@@ -133,7 +133,7 @@ describe('attack apply outcome flow', () => {
     // The reverse holds the unit by identity; its square is where the retreat left it.
     expect(reverse.reversingUnit).toBe(defendingUnit);
     expect(
-      getPositionOfUnit(afterReverseOpen.boardState, reverse.reversingUnit),
+      getPositionOfUnit(afterReverseOpen, reverse.reversingUnit),
     ).toStrictEqual({ coordinate: 'F-5', facing: 'north' });
   });
 

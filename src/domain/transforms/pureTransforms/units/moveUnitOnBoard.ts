@@ -1,4 +1,5 @@
 import type { Board, UnitInstance, UnitPlacement } from '@entities';
+import type { GameState } from '@game';
 import { getUnitWithPlacementOnBoard } from '@queries';
 import { addUnitToBoard } from './addUnitToBoard';
 import { removeUnitFromBoard } from './removeUnitFromBoard';
@@ -11,23 +12,27 @@ import { removeUnitFromBoard } from './removeUnitFromBoard';
  * that is set down. An event names a unit by who it is; the stats it carries
  * are the board's to say.
  *
- * @param board - The board the unit stands on
+ * Where the unit stands now is read from the game's index, so the board is
+ * not searched; the caller sets the board this returns back on the game with
+ * `updateBoardState`, which brings the index up to date.
+ *
+ * @param gameState - The game, whose board the unit stands on
  * @param unit - Who the unit is; it must be on the board
  * @param to - Where it is set down: the space and the way it faces
  * @returns A new board with the unit set down at its new placement
  * @throws {Error} If the unit is not on the board, or cannot be set down there
  */
 export function moveUnitOnBoard(
-  board: Board,
+  gameState: GameState,
   unit: UnitInstance,
   to: UnitPlacement,
 ): Board {
   // The unit as the board holds it, wherever it stands now.
-  const held = getUnitWithPlacementOnBoard(board, unit);
+  const held = getUnitWithPlacementOnBoard(gameState, unit);
 
   // It leaves its space, and is set down at the new placement as the same
   // unit the board held.
-  const lifted = removeUnitFromBoard(board, held);
+  const lifted = removeUnitFromBoard(gameState.boardState, held);
   const moved = addUnitToBoard(lifted, { placement: to, unit: held.unit });
   return moved;
 }

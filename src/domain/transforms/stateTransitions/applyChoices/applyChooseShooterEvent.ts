@@ -29,10 +29,7 @@ export function applyChooseShooterEvent<S extends GameState>(
 
   // The event names the shooter by who it is; the unit that shoots, with the
   // stats it carries, is the one the board holds.
-  const shooter = getUnitWithPlacementOnBoard(
-    state.boardState,
-    event.unit.unit,
-  ).unit;
+  const shooter = getUnitWithPlacementOnBoard(state, event.unit.unit).unit;
 
   // The shot opens with the shooter's commitment owed and nothing yet aimed:
   // its owner may commit a card first, and a Range card reaches further

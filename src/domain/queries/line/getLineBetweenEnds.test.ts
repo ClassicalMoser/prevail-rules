@@ -1,5 +1,9 @@
 import type { Coordinate, Restrictions } from '@entities';
-import { createBoardWithFacingRow, createTestUnit } from '@testing';
+import {
+  createBoardWithFacingRow,
+  createGameStateWithBoard,
+  createTestUnit,
+} from '@testing';
 
 import { getLineBetweenEnds } from './getLineBetweenEnds';
 
@@ -21,7 +25,7 @@ describe('getLineBetweenEnds function', () => {
 
   it('gives every unit from one end to the other, the ends included', () => {
     const line = getLineBetweenEnds(
-      board,
+      createGameStateWithBoard(board),
       [unitAt('E-2').unit, unitAt('E-4').unit],
       unrestricted,
       [],
@@ -36,7 +40,7 @@ describe('getLineBetweenEnds function', () => {
 
   it('gives the same line whichever end is named first', () => {
     const line = getLineBetweenEnds(
-      board,
+      createGameStateWithBoard(board),
       [unitAt('E-4').unit, unitAt('E-2').unit],
       unrestricted,
       [],
@@ -52,7 +56,7 @@ describe('getLineBetweenEnds function', () => {
 
   it('gives a line of one when the same unit is named at both ends', () => {
     const line = getLineBetweenEnds(
-      board,
+      createGameStateWithBoard(board),
       [unitAt('E-3').unit, unitAt('E-3').unit],
       unrestricted,
       [],
@@ -67,7 +71,7 @@ describe('getLineBetweenEnds function', () => {
 
     expect(() =>
       getLineBetweenEnds(
-        board,
+        createGameStateWithBoard(board),
         [unitAt('E-1').unit, elsewhere],
         unrestricted,
         [],
@@ -82,7 +86,7 @@ describe('getLineBetweenEnds function', () => {
 
     expect(() =>
       getLineBetweenEnds(
-        board,
+        createGameStateWithBoard(board),
         [offBoard, unitAt('E-1').unit],
         unrestricted,
         [],

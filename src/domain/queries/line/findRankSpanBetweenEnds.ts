@@ -1,9 +1,5 @@
-import type {
-  Board,
-  Restrictions,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { GameState } from '@game';
+import type { Restrictions, UnitInstance, UnitWithPlacement } from '@entities';
 import { findUnitIndex } from '@queries/unit';
 import { findPositionOfUnit } from '@queries/unitPresence';
 
@@ -25,7 +21,7 @@ export interface RankSpan {
  * rank is the one statement of who qualifies, so a unit that cannot stand in
  * the first one's line is not in it.
  *
- * @param board - The board state
+ * @param gameState - The game, for where the ends stand and the board
  * @param ends - The two units; the same unit twice for a rank of one
  * @param restrictions - The order's restrictions; members must match its traits and types
  * @param commandedUnits - Units already commanded this round
@@ -33,19 +29,19 @@ export interface RankSpan {
  * first end is off the board or the second is not in its rank
  */
 export function findRankSpanBetweenEnds(
-  board: Board,
+  gameState: GameState,
   ends: readonly [UnitInstance, UnitInstance],
   restrictions: Restrictions,
   commandedUnits: readonly UnitInstance[],
 ): RankSpan | undefined {
   const [oneEnd, otherEnd] = ends;
-  const placement = findPositionOfUnit(board, oneEnd);
+  const placement = findPositionOfUnit(gameState, oneEnd);
   if (placement === undefined) {
     return undefined;
   }
 
   const rank = getLineSegmentContainingUnit(
-    board,
+    gameState.boardState,
     { placement, unit: oneEnd },
     restrictions,
     commandedUnits,

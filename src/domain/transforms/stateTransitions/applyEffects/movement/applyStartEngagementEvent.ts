@@ -96,7 +96,7 @@ export function applyStartEngagementEvent<S extends GameState>(
   const attackerPlaced = updateBoardState(
     defenderGone,
     carryRidingCommander(
-      moveUnitOnBoard(defenderGone.boardState, engagingUnit, targetPlacement),
+      moveUnitOnBoard(defenderGone, engagingUnit, targetPlacement),
       movementState,
       targetPlacement.coordinate,
     ),

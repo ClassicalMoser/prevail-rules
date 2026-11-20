@@ -52,7 +52,7 @@ export function getLegalShooterTargets<S extends GameState>(
   // The shooter does not move during its shot, so where the board has it is
   // where it shoots from.
   const shootingUnit = resolution.attackingUnit;
-  const placement = getPositionOfUnit(gameState.boardState, shootingUnit);
+  const placement = getPositionOfUnit(gameState, shootingUnit);
   const shooter: UnitWithPlacement = { placement, unit: shootingUnit };
 
   // Its committed card, if any, counts toward its Range (§4.3.11 step 2).

@@ -25,7 +25,7 @@ export function removeUnitsLeavingUnderRout<S extends GameState>(
   let next = state;
   for (const unit of units) {
     // The unit's square is read now — after this write it is gone.
-    const placement = getPositionOfUnit(next.boardState, unit);
+    const placement = getPositionOfUnit(next, unit);
     // Its own commander, standing with it, falls with it.
     next = defeatCommanderWithRoutedUnit(next, { placement, unit });
     next = updateBoardState(

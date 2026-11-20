@@ -1,4 +1,5 @@
-import type { Board, Coordinate, PlayerSide } from '@entities';
+import type { Coordinate, PlayerSide } from '@entities';
+import type { GameState } from '@game';
 import { findCommanderSpace } from './findCommanderSpace';
 
 /**
@@ -8,13 +9,16 @@ import { findCommanderSpace } from './findCommanderSpace';
  * fault in whoever asked.
  *
  * @param side - The side whose commander is wanted
- * @param board - The board to search
+ * @param gameState - The game, for its index
  * @returns The coordinate the commander stands on
  * @throws When the side's commander is not on the board
  */
-export function getCommanderSpace(side: PlayerSide, board: Board): Coordinate {
+export function getCommanderSpace(
+  side: PlayerSide,
+  gameState: GameState,
+): Coordinate {
   // Where the commander stands, if anywhere.
-  const space = findCommanderSpace(side, board);
+  const space = findCommanderSpace(side, gameState);
 
   // A commander asked about must be on the board.
   if (space === undefined) {

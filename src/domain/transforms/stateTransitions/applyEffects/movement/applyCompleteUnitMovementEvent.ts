@@ -42,7 +42,7 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
   const boardWithMover = arrived
     ? state.boardState
     : carryRidingCommander(
-        moveUnitOnBoard(state.boardState, movingUnit.unit, targetPlacement),
+        moveUnitOnBoard(state, movingUnit.unit, targetPlacement),
         movementState,
         targetPlacement.coordinate,
       );

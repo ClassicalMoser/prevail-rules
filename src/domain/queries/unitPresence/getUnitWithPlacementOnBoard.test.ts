@@ -1,6 +1,7 @@
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
+  createGameStateWithBoard,
   createTestUnit,
   placed,
 } from '@testing';
@@ -12,7 +13,10 @@ describe('getUnitWithPlacementOnBoard function', () => {
     const unit = createTestUnit('black', { attack: 3 });
     const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
 
-    const held = getUnitWithPlacementOnBoard(board, unit);
+    const held = getUnitWithPlacementOnBoard(
+      createGameStateWithBoard(board),
+      unit,
+    );
 
     expect(held).toStrictEqual({
       placement: { coordinate: 'E-5', facing: 'north' },
@@ -33,7 +37,10 @@ describe('getUnitWithPlacementOnBoard function', () => {
       },
     };
 
-    const held = getUnitWithPlacementOnBoard(board, claimed);
+    const held = getUnitWithPlacementOnBoard(
+      createGameStateWithBoard(board),
+      claimed,
+    );
 
     // Who it is is what the name gave; what it is is what the board holds.
     expect(held.unit.unitType.stats.attack).toBe(3);
@@ -49,7 +56,10 @@ describe('getUnitWithPlacementOnBoard function', () => {
       'north',
     );
 
-    const held = getUnitWithPlacementOnBoard(board, secondary);
+    const held = getUnitWithPlacementOnBoard(
+      createGameStateWithBoard(board),
+      secondary,
+    );
 
     // Engaged units face one another: the secondary faces opposite the primary.
     expect(held.placement).toStrictEqual({
@@ -62,8 +72,8 @@ describe('getUnitWithPlacementOnBoard function', () => {
     const unit = createTestUnit('black', { attack: 3 });
     const board = createBoardWithUnits([]);
 
-    expect(() => getUnitWithPlacementOnBoard(board, unit)).toThrow(
-      'Unit not found on board',
-    );
+    expect(() =>
+      getUnitWithPlacementOnBoard(createGameStateWithBoard(board), unit),
+    ).toThrow('Unit not found on board');
   });
 });

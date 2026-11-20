@@ -5,6 +5,7 @@ export {
   createBoardWithFacingRow,
   createBoardWithSingleUnit,
   createBoardWithUnits,
+  createGameStateWithBoard,
   createGameStateWithEngagedUnits,
   createGameStateWithSingleUnit,
   createGameStateWithUnits,

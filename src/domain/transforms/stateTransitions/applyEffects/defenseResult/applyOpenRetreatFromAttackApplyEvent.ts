@@ -24,7 +24,7 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
   const apply = getAttackApplyAwaitingOpen(state, 'retreat');
 
   // The unit's square is read from the board now, in case a prior step moved it.
-  const placement = getPositionOfUnit(state.boardState, apply.defendingUnit);
+  const placement = getPositionOfUnit(state, apply.defendingUnit);
   const retreatingUnit = {
     placement,
     unit: apply.defendingUnit,

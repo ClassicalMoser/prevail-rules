@@ -341,7 +341,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // offer where this commander may go. A fallen commander's turn is
       // passed over before this is asked (§4.2.8), so the commander must be
       // on the board, and its absence throws.
-      const startingCoordinate = getCommanderSpace(player, state.boardState);
+      const startingCoordinate = getCommanderSpace(player, state);
       // Where it may go is a set; the offer writes it down in board order,
       // which means nothing and only keeps it from following the walk.
       const destinations = listInBoardOrder(

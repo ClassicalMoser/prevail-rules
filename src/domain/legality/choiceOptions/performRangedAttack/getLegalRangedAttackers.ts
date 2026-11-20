@@ -87,7 +87,7 @@ export function getLegalRangedAttackers<S extends GameState>(
       continue;
     }
     // A unit routed earlier is still listed but no longer on the board.
-    const placement = findPositionOfUnit(gameState.boardState, unit);
+    const placement = findPositionOfUnit(gameState, unit);
     if (placement === undefined) {
       continue;
     }

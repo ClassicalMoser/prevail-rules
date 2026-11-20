@@ -1,4 +1,5 @@
-import type { Board, UnitInstance, UnitWithPlacement } from '@entities';
+import type { UnitInstance, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
 import { findPlayerUnitWithPosition } from './findPlayerUnitWithPosition';
 import { getPositionOfUnit } from './getPositionOfUnit';
 
@@ -8,21 +9,21 @@ import { getPositionOfUnit } from './getPositionOfUnit';
  * is what the board says. A caller that has only a name reads the unit here
  * before it acts on it.
  *
- * @param board - The board to search
+ * @param gameState - The game, for its index and its board
  * @param unit - Who the unit is, as an event or an order names it
  * @returns The board's own unit with its placement
  * @throws {Error} If the unit is not on the board
  */
 export function getUnitWithPlacementOnBoard(
-  board: Board,
+  gameState: GameState,
   unit: UnitInstance,
 ): UnitWithPlacement {
   // Where it stands; this insists, as a unit that is named must be there.
-  const placement = getPositionOfUnit(board, unit);
+  const placement = getPositionOfUnit(gameState, unit);
 
   // The unit held in that space, which is the board's copy and not the name's.
   const held = findPlayerUnitWithPosition(
-    board,
+    gameState.boardState,
     placement.coordinate,
     unit.playerSide,
   );

@@ -36,10 +36,7 @@ export function generateResolveReverseEvent(
 
   // A reverse can come due after a retreat has already moved the unit, so the
   // square it turns on is read off the board rather than taken from the substep.
-  const placement = getPositionOfUnit(
-    state.boardState,
-    reverseState.reversingUnit,
-  );
+  const placement = getPositionOfUnit(state, reverseState.reversingUnit);
   // A unit still locked with an opponent holds its facing: the reverse is
   // reached and resolved, and it turns nobody. The facing on the event is the
   // record of which happened.
