@@ -29,6 +29,7 @@ import {
   getLegalIssueCommands,
   getLegalMoveUnits,
   getLegalUnitMoves,
+  listMovesInBoardOrder,
   getLegalShooterTargets,
   getLegalRangedAttackers,
   getLegalRoutDiscardCards,
@@ -368,17 +369,21 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // A unit has been named and its card settled; offer every ending its move
       // may reach, the committed card counted.
       const movement = getMovementResolutionState(state);
+      // The endings are a set; the offer writes them down in board order,
+      // which means nothing and only keeps it from following the walk.
+      const moves = listMovesInBoardOrder(
+        state.boardState,
+        getLegalUnitMoves(
+          movement.movingUnit,
+          state,
+          modifiersFromCompletedCommitment(movement.commitment),
+        ),
+      );
       return {
         ...base,
         choiceType: 'moveUnit',
         movingUnit: movement.movingUnit,
-        moves: [
-          ...getLegalUnitMoves(
-            movement.movingUnit,
-            state,
-            modifiersFromCompletedCommitment(movement.commitment),
-          ),
-        ],
+        moves,
       };
     }
     case 'chooseShooter': {

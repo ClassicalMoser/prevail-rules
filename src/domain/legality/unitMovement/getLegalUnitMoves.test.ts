@@ -99,7 +99,7 @@ describe('getLegalUnitMoves function', () => {
           facing: 'north',
           flexibility: 4,
           player: 'black',
-          speed: 3,
+          speed: 4,
         },
       ]);
       const unit = getSingleUnitWithPlacementAtCoordinate(

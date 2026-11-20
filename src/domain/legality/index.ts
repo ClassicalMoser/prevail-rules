@@ -86,4 +86,5 @@ export {
   getLegalUnitMoves,
   compareMoveSize,
   getSmallestMovePerEnding,
+  listMovesInBoardOrder,
 } from './unitMovement';

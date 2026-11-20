@@ -3,6 +3,7 @@ import type { GameState } from '@game';
 import { getBoardSpace, hasSingleUnit, isSameUnitInstance } from '@queries';
 import type { MoveResult } from './explore';
 import { exploreUnitMoves } from './explore';
+import { getSmallestMovePerEnding } from './size';
 
 /**
  * Calculates all legal moves for a unit from a given starting position.
@@ -50,14 +51,18 @@ export function getLegalUnitMoves(
     throw new Error('Reported facing is inaccurate');
   }
 
-  // Every ending of an ordered advance, each with the path that reaches it.
-  // Two paths to one placement are offered separately: they cost
-  // differently, and the player chooses.
-  const legalMoves = exploreUnitMoves(
+  // Every ending of an ordered advance, by every path the walk finds to it.
+  const everyPath = exploreUnitMoves(
     gameState,
     unitWithPlacement,
     'advance',
     commitmentModifiers,
   );
+
+  // One way to each ending, the plainest: where the move ends is what the
+  // player chooses, and what it leaves unspent is never read again. A longer
+  // legal path is still accepted when a player submits it, part by part
+  // (`findLegalMoveDeltas`).
+  const legalMoves = new Set(getSmallestMovePerEnding(everyPath));
   return legalMoves;
 }

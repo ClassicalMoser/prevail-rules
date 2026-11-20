@@ -21,3 +21,6 @@ export { getLegalRetreats } from './retreat';
 // What a player may do next in a move they are writing.
 export type { LegalMoveDeltas } from './path';
 export { findLegalMoveDeltas } from './path';
+
+// A set of move endings written down in board order, an order that means nothing.
+export { listMovesInBoardOrder } from './listMovesInBoardOrder';
