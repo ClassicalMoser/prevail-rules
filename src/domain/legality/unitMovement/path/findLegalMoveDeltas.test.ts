@@ -63,6 +63,39 @@ describe('findLegalMoveDeltas function', () => {
     ).toBeUndefined();
   });
 
+  it('after a turn, does not offer the turn that would face the way it started', () => {
+    // Turned left on E-5, the unit faces north-west. Turning right would face
+    // north on E-5 again, a position it has already held this move, so that
+    // turn is not offered; the other turns and the step lead somewhere new.
+    expect(
+      findLegalMoveDeltas(openGround, loneUnit, ['turnLeft'], 'advance'),
+    ).toStrictEqual({
+      mayStop: true,
+      next: ['turnLeft', 'turnAbout', 'step'],
+    });
+  });
+
+  it('a path that comes back to a position it held is not a legal start to a move', () => {
+    // Left then right, or about twice, ends on E-5 facing north, where the
+    // move began.
+    expect(
+      findLegalMoveDeltas(
+        openGround,
+        loneUnit,
+        ['turnLeft', 'turnRight'],
+        'advance',
+      ),
+    ).toBeUndefined();
+    expect(
+      findLegalMoveDeltas(
+        openGround,
+        loneUnit,
+        ['turnAbout', 'turnAbout'],
+        'advance',
+      ),
+    ).toBeUndefined();
+  });
+
   describe('after stepping into an enemy obliquely from the front', () => {
     // A black attacker on E-4 facing northEast; a white defender on D-5
     // facing south, so E-4 is one of its corner front spaces.
