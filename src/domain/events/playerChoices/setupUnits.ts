@@ -11,10 +11,9 @@ import { z } from 'zod';
 /** The literal discriminant for the setup units player choice. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
-// TODO(misleading): §3.5.4 is the deployment zone on a bare board; "the whole army at once, every unit in its own zone" is §3.5.1, and the general's place §3.5.3. Settled by citing those, or by saying the zone is what §3.5.4 is cited for.
 /**
  * A player deploys their whole army at once, before the first round: every
- * unit in its own zone, and the general with them (§3.5.4).
+ * unit in its own zone (§3.5.1), and the general with them (§3.5.3).
  *
  * `getLegalSetupUnits` enumerates the legal options, and
  * `applySetupUnitsEvent` applies the choice.
