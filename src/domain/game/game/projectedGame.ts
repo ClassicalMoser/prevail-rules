@@ -8,7 +8,7 @@ import type {
   WhiteSeenGameState,
 } from '@game/gameState';
 
-import { gameModeNames } from '@entities';
+import { gameModeNameSchema } from '@entities';
 import { eventSchema, projectedEventSchema } from '@events';
 import { z } from 'zod';
 import {
@@ -137,7 +137,7 @@ const _authoritativeProjectedGameSchemaObject: z.ZodObject<{
   .object({
     blackPlayer: z.uuid(),
     events: z.array(eventSchema).readonly(),
-    gameMode: z.enum(gameModeNames),
+    gameMode: gameModeNameSchema,
     gameState: authoritativeGameStateSchema,
     id: z.uuid(),
     openingState: authoritativeGameStateSchema,
@@ -159,7 +159,7 @@ const _whiteSeenProjectedGameSchemaObject: z.ZodObject<{
   .object({
     blackPlayer: z.uuid(),
     events: z.array(projectedEventSchema).readonly(),
-    gameMode: z.enum(gameModeNames),
+    gameMode: gameModeNameSchema,
     gameState: whiteSeenGameStateSchema,
     id: z.uuid(),
     openingState: whiteSeenGameStateSchema,
@@ -181,7 +181,7 @@ const _blackSeenProjectedGameSchemaObject: z.ZodObject<{
   .object({
     blackPlayer: z.uuid(),
     events: z.array(projectedEventSchema).readonly(),
-    gameMode: z.enum(gameModeNames),
+    gameMode: gameModeNameSchema,
     gameState: blackSeenGameStateSchema,
     id: z.uuid(),
     openingState: blackSeenGameStateSchema,
@@ -203,7 +203,7 @@ const _spectatorProjectedGameSchemaObject: z.ZodObject<{
   .object({
     blackPlayer: z.uuid(),
     events: z.array(projectedEventSchema).readonly(),
-    gameMode: z.enum(gameModeNames),
+    gameMode: gameModeNameSchema,
     gameState: spectatorGameStateSchema,
     id: z.uuid(),
     openingState: spectatorGameStateSchema,

@@ -3,7 +3,7 @@ import type { Event } from '@events';
 import type { AssertExact } from '@utils';
 import type { AuthoritativeGameState } from '@game/gameState';
 
-import { armySchema, gameModeNames } from '@entities';
+import { armySchema, gameModeNameSchema } from '@entities';
 import { eventSchema } from '@events';
 import { z } from 'zod';
 import { authoritativeGameStateSchema } from '@game/gameState';
@@ -53,7 +53,7 @@ const _gameSchemaObject = z
     blackArmy: armySchema,
     blackPlayer: z.uuid(),
     events: z.array(eventSchema).readonly(),
-    gameMode: z.enum(gameModeNames),
+    gameMode: gameModeNameSchema,
     gameState: authoritativeGameStateSchema,
     id: z.uuid(),
     whiteArmy: armySchema,
