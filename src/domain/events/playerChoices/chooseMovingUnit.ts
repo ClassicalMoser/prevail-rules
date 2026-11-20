@@ -16,12 +16,8 @@ export const CHOOSE_MOVING_UNIT_CHOICE_TYPE = 'chooseMovingUnit' as const;
  * `getLegalMoveUnits` enumerates the legal options, and
  * `applyChooseMovingUnitEvent` applies the choice.
  */
-// Kept apart from ChooseShooterEvent on purpose, though the two carry the same
-// fields and come at the same point: carrying out an order, naming the unit
-// that acts next. What that unit then does differs. A mover may commit for
-// Speed or Flexibility and walks a path (§4.3.10); a shooter may commit for
-// Attack, Range or Flexibility and names a target and supporters (§4.3.11).
-// Each is offered by its own enumerator and followed by its own choices.
+// Kept apart from ChooseShooterEvent on purpose: the same fields, but a move
+// follows rather than a shot.
 export interface ChooseMovingUnitEvent {
   /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
