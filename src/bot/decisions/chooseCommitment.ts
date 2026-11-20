@@ -132,7 +132,16 @@ export function meleeCommitmentGain(
 export function movementCommitmentGain(
   context: BotContext,
 ): (card: CommandCard) => number {
-  const { movingUnit } = getMovementResolutionState(context.view);
+  const { engagementState, movingUnit } = getMovementResolutionState(
+    context.view,
+  );
+  // The same choice is a front-engaged defender's, weighing whether to fall
+  // back (§6.3.2). Its gain would be the defender's, not the mover's, and
+  // this bot does not weigh it; the mover is already engaged and has no move
+  // left to appraise.
+  if (engagementState !== 'pending') {
+    return () => 0;
+  }
   const without = appraiseMoveGain(movingUnit, context);
   return (card) =>
     appraiseMoveGain(movingUnit, context, commitmentModifiers(card)) - without;
