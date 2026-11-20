@@ -1,6 +1,6 @@
 // Place units during setup.
-export type { SetupUnitsEvent } from './setupUnit';
-export { setupUnitsEventSchema } from './setupUnit';
+export type { SetupUnitsEvent } from './setupUnits';
+export { setupUnitsEventSchema } from './setupUnits';
 
 // Choose the command card for the round.
 export type { ChooseCardEvent } from './chooseCard';
@@ -89,9 +89,9 @@ export {
 export type { PlayerChoiceEvent } from './playerChoice';
 export { playerChoiceEventSchema } from './playerChoice';
 
-// Choice-type literal union.
-export type { PlayerChoiceType } from './playerChoiceTypes';
-export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
+// Choice-type names, from ruleValues, and their schema.
+export type { PlayerChoiceType } from './playerChoice';
+export { playerChoices, playerChoiceTypeSchema } from './playerChoice';
 
 // Projected choose-card, where the opponent's card is hidden. Commits stay public.
 export type {

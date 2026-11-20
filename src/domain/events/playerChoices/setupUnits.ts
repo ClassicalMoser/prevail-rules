@@ -11,7 +11,6 @@ import { z } from 'zod';
 /** The literal discriminant for the setup units player choice. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
-// TODO(misleading): the file is named setupUnit, singular, but the choice it declares is setupUnits, a whole army at once. Settled by renaming the file setupUnits.ts, or by keeping the name on purpose.
 // TODO(misleading): §3.5.4 is the deployment zone on a bare board; "the whole army at once, every unit in its own zone" is §3.5.1, and the general's place §3.5.3. Settled by citing those, or by saying the zone is what §3.5.4 is cited for.
 /**
  * A player deploys their whole army at once, before the first round: every

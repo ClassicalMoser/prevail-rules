@@ -1,4 +1,4 @@
-import type { PlayerChoiceType } from '@events/playerChoices';
+import type { PlayerChoiceType } from '@ruleValues';
 import type { PlayerSide } from '@entities';
 import { playerSides } from '@entities';
 

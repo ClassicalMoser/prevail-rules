@@ -42,6 +42,10 @@ export type { Trait } from './traits';
 export { gameEffects } from './gameEffectTypes';
 export type { GameEffectType } from './gameEffectTypes';
 
+// Player-choice type names.
+export { playerChoices } from './playerChoiceTypes';
+export type { PlayerChoiceType } from './playerChoiceTypes';
+
 // Board sizes, the labels on their rows and columns, every space, and each
 // size's depth, frontage and spaces (§2.1.3).
 export { boardType, boardTypeEnum } from './boardSizes';

@@ -26,7 +26,7 @@ import { chooseShooterEventSchema } from './chooseShooter';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import type { PlayerChoiceEvent } from './playerChoice';
-import { setupUnitsEventSchema } from './setupUnit';
+import { setupUnitsEventSchema } from './setupUnits';
 
 /**
  * A choose card event as one player sees it. Cards are chosen face down

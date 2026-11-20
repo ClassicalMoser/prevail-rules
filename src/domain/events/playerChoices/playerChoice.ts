@@ -16,9 +16,10 @@ import type { ChooseMovingUnitEvent } from './chooseMovingUnit';
 import type { ChooseShooterEvent } from './chooseShooter';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
-import type { SetupUnitsEvent } from './setupUnit';
-import type { PlayerChoiceType } from './playerChoiceTypes';
+import type { SetupUnitsEvent } from './setupUnits';
+import type { PlayerChoiceType } from '@ruleValues';
 
+import { playerChoices } from '@ruleValues';
 import { z } from 'zod';
 import { assignUnitSupportEventSchema } from './assignUnitSupport';
 import { chooseCardEventSchema } from './chooseCard';
@@ -37,10 +38,14 @@ import { chooseMovingUnitEventSchema } from './chooseMovingUnit';
 import { chooseShooterEventSchema } from './chooseShooter';
 import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
-import { setupUnitsEventSchema } from './setupUnit';
+import { setupUnitsEventSchema } from './setupUnits';
 
-export type { PlayerChoiceType } from './playerChoiceTypes';
-export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
+// The list of choice types lives in ruleValues; @events offers it beside the choices it names.
+export { playerChoices, type PlayerChoiceType };
+
+/** The schema for a player choice type. */
+export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
+  z.enum(playerChoices);
 
 /**
  * Any decision the rules leave to a player. What the game does in response

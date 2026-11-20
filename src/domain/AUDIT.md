@@ -31,6 +31,7 @@ Audit in this order (dependencies flow downward):
 - [x] `ruleValues/` — closed 2026-11-07; reopened 2026-11-12, changed since the read; closed again 2026-11-13
   - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
   - Changed 2026-11-20, for the next read: `gameEffectTypes` no longer lists `completeIssuingCommands`, removed with the issuing loop.
+  - Arrived 2026-11-20, for the next read: `playerChoiceTypes` — the list of player-choice names, moved from `events/playerChoices/` to sit beside `gameEffectTypes` (author). Its schema, `playerChoiceTypeSchema`, is built in `events/playerChoices/playerChoice.ts`, as the effect-type schema is in `gameEffect.ts`.
   - [x] Arrived after the read: `commitmentModifiers`
   - Arrived and read 2026-11-20: `boardSizes`, `boardLabels`, `boardCoordinates`, `boardLayouts` (moved from `entities/board/`, with each size now stated by its depth and frontage), and `gameModes` (moved from `entities/gameModes/`, its entry schema removed)
 
@@ -63,6 +64,7 @@ Audit in this order (dependencies flow downward):
   - Settled 2026-11-20: `resolveMelee` names each result for the unit that takes it, `attackResultOnWhiteUnit` and `attackResultOnBlackUnit`; its mark is gone.
   - Settled 2026-11-20: `gameEffects/index.ts` links the `applyEffects` README for the design notes and no longer points at another module's header; a document for fuller context is fine (author).
   - Settled 2026-11-20: the four commit events stay separate on purpose (author): calculation, context and application differ. `commitmentChoices.ts` says so; its mark is gone.
+  - Settled 2026-11-20: the player-choice list moved to `@ruleValues` (`playerChoiceTypes`), beside the game-effect list; the stale circular-init reason and its mark went with the old file.
   - Changed 2026-11-20, for the next read: a declined commitment is `committedCard: 'none'` and a stop is `issueCommand.order: 'none'`, the existing `'none'` sentinel, not `null`. Card state's empty slots keep `null`.
   - Changed 2026-11-20, for the next read: issuing is one choice, `issueCommands` (`issueCommands.ts`), carrying the whole `CommandAllocation` of the card in play's command; the units of a units order or the lines of a lines order are offered a part at a time (`getLegalUnitsToOrder`, `getLegalLinesToOrder`) and checked the same way. The `issueCommand` loop, its `'none'` stop and the `completeIssuingCommands` effect are gone; `completeMoveCommandersPhase` carries nothing.
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
