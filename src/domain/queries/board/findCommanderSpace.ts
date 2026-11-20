@@ -1,9 +1,9 @@
 import type { Board, Coordinate, PlayerSide } from '@entities';
-import { getCommanderSpaces } from './getCommanderSpaces';
+import { getBoardCoordinates } from './getBoardCoordinates';
+import { getBoardSpace } from './getBoardSpace';
 
 /**
  * Gets the board coordinate containing the commander for a given player side.
- * Each board's commander spaces are read once, by `getCommanderSpaces`.
  *
  * @param side - The player side to get the commander space for
  * @param board - The board to search
@@ -13,7 +13,12 @@ export function findCommanderSpace(
   side: PlayerSide,
   board: Board,
 ): Coordinate | undefined {
-  // A fallen commander (§4.2.8) is on no space, and the answer is undefined.
-  const space = getCommanderSpaces(board).get(side);
-  return space;
+  const coordinates = getBoardCoordinates(board);
+  for (const coordinate of coordinates) {
+    const space = getBoardSpace(board, coordinate);
+    if (space.commanders.includes(side)) {
+      return coordinate;
+    }
+  }
+  return undefined;
 }

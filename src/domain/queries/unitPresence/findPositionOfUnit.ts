@@ -1,6 +1,10 @@
 import type { Board, UnitInstance, UnitPlacement } from '@entities';
-import { getUnitIdentityKey } from '../unit/unitEquivalence/getUnitIdentityKey';
-import { getUnitPlacementsOnBoard } from './getUnitPlacementsOnBoard';
+import { getBoardCoordinates } from '../board/getBoardCoordinates';
+import { getBoardSpace } from '../board/getBoardSpace';
+import { getOppositeFacing } from '@queries/facings';
+import { isSameUnitInstance } from '../unit/unitEquivalence';
+import { hasNoUnit } from './hasNoUnit';
+import { hasSingleUnit } from './hasSingleUnit';
 
 /**
  * Where a unit stands on the board, or `undefined` when it is not on it.
@@ -12,8 +16,7 @@ import { getUnitPlacementsOnBoard } from './getUnitPlacementsOnBoard';
  *
  * The search reads each space's `unitPresence` for the unit: a lone unit stands
  * as stored, and of two engaged units the primary keeps its stored facing and
- * the secondary faces opposite it. That reading is done once per board, by
- * `getUnitPlacementsOnBoard`, and this looks the unit up in it.
+ * the secondary faces opposite it.
  *
  * @param board - The board to search
  * @param unit - The unit to find
@@ -23,10 +26,43 @@ export function findPositionOfUnit(
   board: Board,
   unit: UnitInstance,
 ): UnitPlacement | undefined {
-  // Where each unit on this board stands, read once for the board; the unit
-  // is found there by its identity. Absent means not on the board.
-  const placement = getUnitPlacementsOnBoard(board).get(
-    getUnitIdentityKey(unit),
-  );
-  return placement;
+  for (const coordinate of getBoardCoordinates(board)) {
+    const { unitPresence } = getBoardSpace(board, coordinate);
+
+    // Skip empty spaces
+    if (hasNoUnit(unitPresence)) {
+      continue;
+    }
+
+    // Check single unit presence
+    if (hasSingleUnit(unitPresence)) {
+      if (isSameUnitInstance(unitPresence.unit, unit)) {
+        const placement: UnitPlacement = {
+          coordinate,
+          facing: unitPresence.facing,
+        };
+        return placement;
+      }
+      continue;
+    }
+
+    // Engaged. The primary keeps its stored facing.
+    if (isSameUnitInstance(unitPresence.primaryUnit, unit)) {
+      const primaryPlacement: UnitPlacement = {
+        coordinate,
+        facing: unitPresence.primaryFacing,
+      };
+      return primaryPlacement;
+    }
+    // The secondary faces opposite the primary.
+    if (isSameUnitInstance(unitPresence.secondaryUnit, unit)) {
+      const secondaryPlacement: UnitPlacement = {
+        coordinate,
+        facing: getOppositeFacing(unitPresence.primaryFacing),
+      };
+      return secondaryPlacement;
+    }
+  }
+
+  return undefined;
 }
