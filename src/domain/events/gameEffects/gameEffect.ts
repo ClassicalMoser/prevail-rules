@@ -1,12 +1,20 @@
 /**
  * All **game effect** payloads (`eventType: 'gameEffect'`), discriminated by `effectType`.
  *
- * ## Trust model (with apply handlers)
- * See `src/domain/transforms/stateTransitions/applyEffects/README.md`:
- * TODO(misleading): a "see <document>" pointer, which STYLE.md rules out; the trust model it points to should be said here or named by code.
- * procedures build events from full state; **apply** trusts the log and maps payload + state to
- * the next state. Extra fields here usually mean “don’t re-scan the board / don’t guess which
- * subtree” when applying.
+ * ## Trust model
+ * A game effect is what the game does when no player is asked. A procedure
+ * builds it from the whole state (`generateEventFromProcedure`), and that is
+ * where its rule is decided: what an attack measured, the retreats a unit may
+ * make, the card a rally burns. The event records that answer, so replaying
+ * the game's stream gives the same game without deciding anything again.
+ *
+ * Applying an effect trusts it. The apply (`applyGameEffectEvent`) reads where
+ * the game is, which slot the effect writes, and where a named unit stands,
+ * then carries out the event's fixed consequences without re-checking the rule.
+ *
+ * An event carries only what the state does not already hold. It does not name
+ * the slot it writes: the apply asks the same `@queries` reader the procedure
+ * used, so the event and the state cannot disagree.
  *
  * ## Typing
  * Per-effect modules define a manual interface, a private Zod object, {@link AssertExact} tying
