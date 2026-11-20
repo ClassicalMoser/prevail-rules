@@ -1,7 +1,8 @@
 # Performance
 
 What the engine costs to run, where that cost comes from, and the work
-proposed against it. Measured 2026-11-19 on the author's machine. Nothing
+proposed against it. Measured 2026-11-19 on the author's machine, and again
+2026-11-20 after the work below. Nothing
 here changes a rule, except where an item says so.
 
 The design comes first. The architecture is pure functions; any state lives
@@ -54,37 +55,57 @@ What matters is what any bot will bind against: the engine.
 
 ## What the engine costs
 
-The engine loop alone, with a bot that chooses instantly: about **140 ms per
-standard game** (about 980 events) and **36 ms per mini game** (about 370).
+Measured again 2026-11-20, after every item under "Done 2026-11-20". The
+first column is the 2026-11-19 measurement the findings below were drawn
+from.
+
+The engine loop alone, with a bot that chooses instantly:
+
+| Board    | 2026-11-19                | 2026-11-20               |
+| -------- | ------------------------- | ------------------------ |
+| Standard | 140 ms (about 980 events) | 38 ms (about 835 events) |
+| Mini     | 36 ms (about 370 events)  | 13 ms (about 410 events) |
+
+The events per game changed because the games did: a move now offers one
+way to each ending and refuses a position it has held (§5.2.4), and a front
+engagement sets the attacker down at once, so the bots choose differently.
+These are not the games of 2026-11-19, so compare the costs per call below
+rather than per game.
 
 Pure transitions are cheap:
 
-| Step                                      | Per call |
-| ----------------------------------------- | -------- |
-| `applyEvent`, a whole new state           | 7.5 µs   |
-| `generateEventFromProcedure`              | 10 µs    |
-| `projectGameStateForVisibility`, one seat | 1 µs     |
-| `findExpectedEvent`                       | 17 µs    |
+| Step                                      | 2026-11-19 | 2026-11-20 |
+| ----------------------------------------- | ---------- | ---------- |
+| `applyEvent`, a whole new state           | 7.5 µs     | 2.5 µs     |
+| `generateEventFromProcedure`              | 10 µs      | 3.3 µs     |
+| `projectGameStateForVisibility`, one seat | 1 µs       | 0.4 µs     |
+| `findExpectedEvent`                       | 17 µs      | 7.3 µs     |
 
-Copying on every change is not what costs. A new state every 7.5 µs is about
-130,000 imagined positions a second on one thread, and every one of them is
+Copying on every change is not what costs. A new state every 2.5 µs is about
+400,000 imagined positions a second on one thread, and every one of them is
 safe to share, keep or discard. That is what purity buys a look-ahead.
 
 The cost is enumeration, the search for what is legal:
 
-| Per decision, standard board            | Cost   |
-| --------------------------------------- | ------ |
-| `getLegalUnitMoves`, one unit's endings | 510 µs |
-| Offering `moveUnit`                     | 680 µs |
-| Offering `moveCommander`                | 400 µs |
-| Validating `moveCommander`              | 360 µs |
-| Validating `moveUnit`                   | 170 µs |
+| Per decision, standard board            | 2026-11-19 | 2026-11-20 |
+| --------------------------------------- | ---------- | ---------- |
+| `getLegalUnitMoves`, one unit's endings | 510 µs     | 147 µs     |
+| Offering `moveUnit`                     | 680 µs     | 210 µs     |
+| Offering `moveCommander`                | 400 µs     | 40 µs      |
+| Validating `moveCommander`              | 360 µs     | 24 µs      |
+| Validating `moveUnit`                   | 170 µs     | 68 µs      |
 
 Validation is legality by membership, so for a choice offered whole it costs
 about what offering it did. For a bot in a seat, playing through the same
-interface as a player, that is about 100 µs a choice and of no consequence.
+interface as a player, that is a few tens of µs a choice and of no consequence.
 Inside a bot's own look-ahead it applies events without validating, as game
 effects are applied.
+
+Listing a unit's endings is the heaviest lift, and was always expected to
+be: a bot that weighs every unit it might move lists every one of their
+endings, about 166 units' worth in a standard game, 24 ms against the
+engine loop's 38. "Where a move's enumeration goes now" below says where
+that time goes and why the work stopped there.
 
 ## Findings
 
@@ -202,7 +223,7 @@ position of real bot games.
 
 ## Where a move's enumeration goes now
 
-Listing one unit's endings (`getLegalUnitMoves`) costs about 140 µs. A
+Listing one unit's endings (`getLegalUnitMoves`) costs about 145 µs. A
 profile with V8's inlining off, so each function keeps its own time:
 
 | Part                                                             | Share |
