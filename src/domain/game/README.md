@@ -4,7 +4,7 @@ Composed domain models for a running game. Import as `@game`.
 
 Same declaration-only role as `@entities` (schemas, interfaces, types), but these depend on entity primitives and assemble the sequencing tree. Follow the schema-first pattern in [`../entities/README.md`](../entities/README.md).
 
-Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) lives on `CardState` and is threaded on `GameState`. A `Game` is the server's authoritative record; what a seat or a spectator receives is its game state projected for them, not a game. `spectator` hides both hands. Board size stays on `boardState.boardType`. Mode army composition is validated in `@legality`, not here.
+Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) lives on `CardState` and is threaded on `GameState`. A `Game` is the server's authoritative record; what a seat or a spectator receives is its game state projected for them, not a game. `spectator` hides both hands. Board size stays on `boardState.boardType`. The `index` (`gameState/gameStateIndex.ts`) says where every unit and commander is, by name; it is a convenience beside the board and the lists, which stay the record. Every writer of those sets it afresh with `deriveGameStateIndex` in `@queries`, and `refineGameStateIndex` in `@legality` refuses a state read from outside whose index disagrees with them. Mode army composition is validated in `@legality`, not here.
 
 ## Outline
 
@@ -13,6 +13,7 @@ Game (authoritative)
   └─ GameState (told apart by `visibility`)
        ├─ AuthoritativeGameState | WhiteSeenGameState | BlackSeenGameState | SpectatorGameState
        ├─ boardState, cardState, reserved/routed units, …
+       ├─ index: where every unit and commander is, by name
        └─ RoundState (the same in every view)
             └─ PhaseState (discriminated on phase)
                  └─ step + nested resolution state

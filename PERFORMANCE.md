@@ -106,7 +106,7 @@ effects are applied.
   set guards nothing, and for a handful of items an array is cheaper to build
   and to scan. Sets stay right where duplicates are a real risk or the
   collection is large.
-- **Finding a unit walks the board.** `findPositionOfUnit` and
+- **Finding a unit walked the board** (answered by item 7 below). `findPositionOfUnit` and
   `findCommanderSpace` read every space to answer one question, and nearly
   every stat read asks both, to check a round effect's inspiration range
   (§4.3.7). A per-board cache in module scope was tried and reverted: a
@@ -146,6 +146,33 @@ position of real bot games.
 6. **A move's endings are ranked once** for listing in board order. Offering
    a move: about 750 µs back to 644 µs.
 
+7. **Where every piece is, by name: the game state's `index`.** It
+   answers the finding above that finding a unit walks the board, inside
+   the design: the index is part of the state, not a cache beside it. It
+   sits beside the board and the reserve, routed and lost lists, which stay
+   the record. `index.units` files each unit under
+   `side-<type id>-<number>` as a space, `'reserved'` or `'routed'`;
+   `index.commanders` files each side's commander as a space, `'reserved'`
+   or `'lost'`. Which way a unit faces stays in its space.
+   - _Kept by the writers._ `updateBoardState`, `removeUnitFromReserve`,
+     `addUnitToRouted` and `addCommanderToLostCommanders` set it afresh from
+     `deriveGameStateIndex` after every write, and the two state factories
+     set the first one. A board must therefore reach a state through
+     `updateBoardState`; fixtures and specs that spread a new board in were
+     changed to.
+   - _Checked when read from outside._ `refineGameStateIndex`, in
+     `legalGameSchema` and `legalGameStateSchema`, refuses an index that
+     disagrees with the record, and a piece the record holds in two places.
+   - _Read by the finders._ `findPositionOfUnit`, `getPositionOfUnit`,
+     `getUnitWithPlacementOnBoard`, `findCommanderSpace` and
+     `getCommanderSpace` take the state and read the index; so do
+     `moveUnitOnBoard` and the two line queries.
+
+   One unit's endings: 245 µs to 145 µs. Offering a move: 294 µs to 189 µs.
+   The engine loop: 52 ms to 42 ms per standard game. `applyEvent` pays for
+   it, 2.1 µs to 4.3 µs, rebuilding the index on each write. A median bot
+   game: 613 ms to 507 ms, the same twenty games to the round.
+
 ## Waiting on these
 
 - **Placements on events.** Five events carry a position the board already
@@ -153,8 +180,9 @@ position of real bot games.
   `performRangedAttack.targetUnit` and `supportingUnits`,
   `startEngagement.defenderWithPlacement`, and `moveCommander.from`. DESIGN
   says a unit is named by identity and where it stands is read from the board.
-  The judgment on removing them waits on what a lookup of where a unit stands
-  costs, since each removal is a lookup in its place.
+  The judgment on removing them waited on what a lookup of where a unit
+  stands costs. With the index (item 7) a lookup is one entry and one space,
+  so it no longer stands in the way.
 - **Integer positions.** Integers as indexes into the list of space names
   change no meaning, and geometry already works that way inside
   geometry.

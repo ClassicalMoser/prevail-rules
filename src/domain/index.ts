@@ -32,6 +32,7 @@ export {
   refineGameArmyComposition,
   refineGameModeBoardSize,
   refineGameRules,
+  refineGameStateIndex,
 } from '@legality';
 export type {
   ArmyCompositionRules,
@@ -355,6 +356,10 @@ export type {
   SpectatorGameState,
   WhiteSeenGameState,
   GameStateVisibility,
+  GameStateIndex,
+  UnitIndexEntry,
+  UnitIndexKey,
+  CommanderIndexEntry,
   HiddenCardState,
   OwnedCardState,
   OwnedPlayerForGameState,
@@ -377,6 +382,7 @@ export {
   spectatorGameStateSchema,
   whiteSeenGameStateSchema,
   gameStateSchema,
+  gameStateIndexSchema,
   hiddenCardStateSchema,
   ownedCardStateSchema,
   pendingCommitmentSchema,
@@ -719,6 +725,7 @@ export {
   createEmptyStandardBoard,
   createInitialGameState,
   createEmptyBoard,
+  createUnitIndexKey,
   createUnitInstance,
 } from '@factories';
 export {

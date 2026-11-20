@@ -66,6 +66,7 @@ Audit in this order (dependencies flow downward):
 
 - [ ] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
   - Changed after the read, for the next one: a game state is four named visibility variants over a shared base, not a type argument (`gameState/`); round state is split into authoritative and seen (`roundState/`); a `Game` holds the authoritative state only.
+  - Arrived 2026-11-20, for the next read: `gameState/gameStateIndex` — every state view carries `index`, where every unit and commander is by name, kept by the writers and checked by `refineGameStateIndex`. Its finders, writers and refine live in `@queries/gameStateIndex`, `@transforms` and `@legality/game`.
   - [ ] `cardState/`
   - [ ] `commitment/`
   - [ ] `game/`

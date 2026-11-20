@@ -8,7 +8,7 @@ import {
   createIssueCommandsPhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updateBoardState, updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone, throwIfUndefined } from '@utils';
 
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
@@ -106,7 +106,7 @@ describe('applyCompleteIssueCommandsPhaseEvent function', () => {
     it('given event lists E-5 and E-6 after second engagement hacked onto board, set has both', () => {
       const blackUnit1 = createTestUnit('black', { attack: 3 });
       const whiteUnit1 = createTestUnit('white', { attack: 3 });
-      const state = createGameStateWithEngagedUnits(
+      const engagedAtE5 = createGameStateWithEngagedUnits(
         blackUnit1,
         whiteUnit1,
         'E-5',
@@ -120,18 +120,26 @@ describe('applyCompleteIssueCommandsPhaseEvent function', () => {
         attack: 3,
         instanceNumber: 2,
       });
-      state.boardState.board['E-6'] = {
-        ...throwIfUndefined(
-          state.boardState.board['E-6'],
-          'expected board space at E-6',
-        ),
-        unitPresence: {
-          presenceType: 'engaged',
-          primaryFacing: 'north',
-          primaryUnit: blackUnit2,
-          secondaryUnit: whiteUnit2,
+      // A second engaged pair written straight onto E-6, through the board
+      // writer so the index of where every unit stands follows.
+      const state = updateBoardState(engagedAtE5, {
+        ...engagedAtE5.boardState,
+        board: {
+          ...engagedAtE5.boardState.board,
+          'E-6': {
+            ...throwIfUndefined(
+              engagedAtE5.boardState.board['E-6'],
+              'expected board space at E-6',
+            ),
+            unitPresence: {
+              presenceType: 'engaged',
+              primaryFacing: 'north',
+              primaryUnit: blackUnit2,
+              secondaryUnit: whiteUnit2,
+            },
+          },
         },
-      };
+      });
 
       const stateWithPhase: GameState = updatePhaseState(state, {
         currentCommandResolutionState: 'pending',
