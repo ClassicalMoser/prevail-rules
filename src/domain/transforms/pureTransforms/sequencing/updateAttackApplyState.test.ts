@@ -8,7 +8,12 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState, updateCurrentInitiative } from '../';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updateCurrentInitiative,
+  updatePhaseState,
+} from '../';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateAttackApplyState } from './updateAttackApplyState';
@@ -25,10 +30,10 @@ describe('updateAttackApplyState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placement),
+    );
     const attackApply = createAttackApplyStateWithNothingDue(unit);
     const ranged = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState: attackApply,

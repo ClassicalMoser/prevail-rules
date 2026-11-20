@@ -24,3 +24,12 @@ export type {
   OwnedPlayerForGameState,
   UnownedPlayerForGameState,
 } from './gameState';
+
+// Index of where every piece is
+export { gameStateIndexSchema } from './gameStateIndex';
+export type {
+  CommanderIndexEntry,
+  GameStateIndex,
+  UnitIndexEntry,
+  UnitIndexKey,
+} from './gameStateIndex';

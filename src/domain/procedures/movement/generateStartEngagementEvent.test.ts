@@ -7,7 +7,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 
@@ -29,13 +33,13 @@ describe('generateStartEngagementEvent function', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(
         state.boardState,
         placed(defender, 'E-6', options.defenderFacing),
       ),
-    };
+    );
     const movement = createMovementResolutionState(withBoard, {
       movingUnit: placed(createTestUnit('black'), 'E-5', 'east'),
       targetPlacement: createUnitPlacement('E-6', options.engagingFacing),

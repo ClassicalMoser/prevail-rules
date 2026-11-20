@@ -12,6 +12,7 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
+  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -31,10 +32,10 @@ describe('applyCompleteAttackApplyEvent function', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
 
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
 
     const attackApplyState =
       createAttackApplyStateWithNothingDue(defendingUnit);
@@ -63,17 +64,14 @@ describe('applyCompleteAttackApplyEvent function', () => {
     const whiteUnitWithPlacement = placed(whiteUnit, 'E-5', 'north');
     const blackUnitWithPlacement = placed(blackUnit, 'E-5', 'south');
 
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, whiteUnitWithPlacement),
-    };
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(
-        stateWithUnits.boardState,
-        blackUnitWithPlacement,
-      ),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, whiteUnitWithPlacement),
+    );
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(stateWithUnits.boardState, blackUnitWithPlacement),
+    );
 
     const whiteAttackApply = createAttackApplyStateWithNothingDue(whiteUnit, {
       completed: incompletePlayer !== 'white' && incompletePlayer !== 'both',

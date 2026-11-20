@@ -23,8 +23,9 @@ import {
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
@@ -48,10 +49,10 @@ describe('applyResolveRetreatEvent function', () => {
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
     // Add unit to board
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
 
     // Create attack apply state with retreat
     const attackApplyState = createAttackApplyStateWithRetreat(
@@ -88,17 +89,14 @@ describe('applyResolveRetreatEvent function', () => {
     const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
     // Add both units to board (engaged)
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, retreatingUnitWithPlacement),
-    };
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(
-        stateWithUnits.boardState,
-        otherUnitWithPlacement,
-      ),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, retreatingUnitWithPlacement),
+    );
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
+    );
 
     // Create attack apply state with retreat for the retreating player
     const attackApplyState = createAttackApplyStateWithRetreat(
@@ -170,13 +168,10 @@ describe('applyResolveRetreatEvent function', () => {
 
       // Add another unit at a different location
       const otherUnit = createTestUnit('black', { attack: 2 });
-      const stateWithOtherUnit = {
-        ...state,
-        boardState: addUnitToBoard(
-          state.boardState,
-          placed(otherUnit, 'D-5', 'north'),
-        ),
-      };
+      const stateWithOtherUnit = updateBoardState(
+        state,
+        addUnitToBoard(state.boardState, placed(otherUnit, 'D-5', 'north')),
+      );
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
@@ -248,10 +243,10 @@ describe('applyResolveRetreatEvent function', () => {
     it("the retreating unit's own commander in its space ends in the unit's final space (§9.1.8)", () => {
       const base = createStateWithRangedAttackRetreat();
       // White's commander stands in E-5 with the unit about to fall back.
-      const state = {
-        ...base,
-        boardState: addCommanderToBoard(base.boardState, 'white', 'E-5'),
-      };
+      const state = updateBoardState(
+        base,
+        addCommanderToBoard(base.boardState, 'white', 'E-5'),
+      );
       const retreatState = getRangedAttackRetreatState(state);
 
       const event: ResolveRetreatEvent = {
@@ -274,10 +269,10 @@ describe('applyResolveRetreatEvent function', () => {
       const base = createStateWithRangedAttackRetreat();
       // Black's commander stands in E-5 too, as it would having ridden its own
       // unit into the fight (§4.3.10). It is not white's to carry off.
-      const state = {
-        ...base,
-        boardState: addCommanderToBoard(base.boardState, 'black', 'E-5'),
-      };
+      const state = updateBoardState(
+        base,
+        addCommanderToBoard(base.boardState, 'black', 'E-5'),
+      );
       const retreatState = getRangedAttackRetreatState(state);
 
       const event: ResolveRetreatEvent = {
@@ -347,10 +342,10 @@ describe('applyResolveRetreatEvent function', () => {
       );
       const unit = createTestUnit('white', { attack: 2 });
       const placement = placed(unit, 'E-5', 'north');
-      const withBoard = {
-        ...state,
-        boardState: addUnitToBoard(state.boardState, placement),
-      };
+      const withBoard = updateBoardState(
+        state,
+        addUnitToBoard(state.boardState, placement),
+      );
       const withEngagement = updatePhaseState(
         withBoard,
         createIssueCommandsPhaseState(withBoard, {

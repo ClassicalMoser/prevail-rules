@@ -11,6 +11,7 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
+  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms';
@@ -26,10 +27,10 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApply = createAttackApplyState(defendingUnit, {
       unitRetreated: true,
       unitReversed: true,
@@ -61,11 +62,11 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
     );
     const defendingWp = placed(defendingUnit, 'E-5', 'north');
     const otherWp = placed(otherUnit, 'E-5', 'south');
-    let s = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defendingWp),
-    };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, otherWp) };
+    let s = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defendingWp),
+    );
+    s = updateBoardState(s, addUnitToBoard(s.boardState, otherWp));
     const attackApply = createAttackApplyState(defendingUnit, {
       unitRetreated: true,
       unitReversed: true,

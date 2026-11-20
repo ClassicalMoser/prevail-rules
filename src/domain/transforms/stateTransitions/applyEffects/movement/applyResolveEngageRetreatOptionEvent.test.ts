@@ -9,7 +9,11 @@ import {
   createUnitByStat,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyResolveEngageRetreatOptionEvent } from './applyResolveEngageRetreatOptionEvent';
 
@@ -39,10 +43,10 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       engagementState.targetPlacement.coordinate,
       'south',
     );
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defenderWithPlacement),
+    );
     const movement = createMovementResolutionState(withBoard, {
       engagementState,
       targetPlacement: engagementState.targetPlacement,
@@ -94,10 +98,10 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       engagementState.targetPlacement.coordinate,
       'south',
     );
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defenderWithPlacement),
+    );
     const movement = createMovementResolutionState(withBoard, {
       engagementState,
       targetPlacement: engagementState.targetPlacement,

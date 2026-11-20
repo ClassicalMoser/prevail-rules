@@ -13,6 +13,7 @@ import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 import { createBoardWithUnits } from './boardWithUnits';
 
 import { createEmptyGameState } from '@factories';
+import { updateBoardState } from '@transforms';
 /**
  * Creates a game state with a single unit at a coordinate.
  */
@@ -29,7 +30,7 @@ export function createGameStateWithSingleUnit(
 ): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithSingleUnit(coord, playerSide, options);
-  return { ...gameState, boardState: board };
+  return updateBoardState(gameState, board);
 }
 
 /**
@@ -48,7 +49,7 @@ export function createGameStateWithEngagedUnits(
     coord,
     primaryFacing,
   );
-  return { ...gameState, boardState: board };
+  return updateBoardState(gameState, board);
 }
 
 /**
@@ -59,5 +60,5 @@ export function createGameStateWithUnits(
 ): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithUnits(units);
-  return { ...gameState, boardState: board };
+  return updateBoardState(gameState, board);
 }

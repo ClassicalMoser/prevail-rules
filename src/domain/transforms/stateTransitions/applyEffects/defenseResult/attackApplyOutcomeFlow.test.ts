@@ -22,7 +22,11 @@ import {
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyOpenRetreatFromAttackApplyEvent } from './applyOpenRetreatFromAttackApplyEvent';
 import { applyOpenReverseFromAttackApplyEvent } from './applyOpenReverseFromAttackApplyEvent';
@@ -45,10 +49,10 @@ describe('attack apply outcome flow', () => {
   ): AuthoritativeGameState {
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const empty = createEmptyGameState('standard');
-    const withBoard = {
-      ...empty,
-      boardState: addUnitToBoard(empty.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      empty,
+      addUnitToBoard(empty.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit,

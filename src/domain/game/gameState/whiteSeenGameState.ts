@@ -4,9 +4,11 @@ import type { WhiteSeenCardState } from '@game/cardState';
 import type { Board, PlayerSide, UnitInstance } from '@entities';
 import { boardSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import type { RoundState } from '@game/roundState';
+import type { GameStateIndex } from './gameStateIndex';
 
 import { z } from 'zod';
 import { roundStateSchema } from '@game/roundState';
+import { gameStateIndexSchema } from './gameStateIndex';
 import { whiteSeenCardStateSchema } from '@game/cardState';
 
 /**
@@ -28,6 +30,11 @@ export interface WhiteSeenGameState {
   /** Board and piece layout. */
   boardState: Board;
   /**
+   * Where every unit and commander is, by name: kept by every write to the
+   * board and the lists above, and checked against them when a state is read.
+   */
+  index: GameStateIndex;
+  /**
    * Set by `gameOver` apply. Absent while the game is ongoing. Every
    * ending names a winner — there is no draw in this game (§11.3).
    */
@@ -42,6 +49,7 @@ const _whiteSeenGameStateSchemaObject: z.ZodObject<{
   boardState: typeof boardSchema;
   currentInitiative: typeof playerSideSchema;
   currentRoundState: typeof roundStateSchema;
+  index: typeof gameStateIndexSchema;
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
@@ -54,6 +62,7 @@ const _whiteSeenGameStateSchemaObject: z.ZodObject<{
     cardState: whiteSeenCardStateSchema,
     currentInitiative: playerSideSchema,
     currentRoundState: roundStateSchema,
+    index: gameStateIndexSchema,
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),

@@ -27,6 +27,7 @@ import { addUnitToBoard } from '../units/addUnitToBoard';
 import { updateCurrentInitiative } from '../state/updateCurrentInitiative';
 import { updatePhaseState } from '../state/updatePhaseState';
 import { settleRout } from './settleRout';
+import { updateBoardState } from '../';
 
 /**
  * SettleRout: records a rout and, once it is settled, closes what it was
@@ -64,10 +65,10 @@ describe('settleRout function', () => {
   function createStateWithRetreatRout() {
     const state = createEmptyGameState('standard');
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placement),
+    );
     const retreatState = createRetreatState(
       placement,
       legalRetreatsOf(placement, [enemyCuttingOffRetreat(placement)]),
@@ -93,10 +94,10 @@ describe('settleRout function', () => {
   function createStateWithRangedRout() {
     const state = createEmptyGameState('standard');
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placement),
+    );
     return updatePhaseState(
       stateWithUnit,
       createIssueCommandsPhaseState(stateWithUnit, {

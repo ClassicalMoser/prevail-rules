@@ -101,6 +101,10 @@ export {
   isChoosingCardsInSecret,
 } from './gameOver';
 
+// Where every piece is by name, worked out from the board and the lists.
+export { deriveGameStateIndex, listPiecePlaces } from './gameStateIndex';
+export type { CommanderPlace, UnitPlace } from './gameStateIndex';
+
 // Command lines present on the board from a unit.
 export {
   canJoinLine,

@@ -9,7 +9,11 @@ import {
   getUnitByTrait,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
@@ -32,10 +36,10 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackingUnit: createTestUnit('black', { unitType: spearmenType }),
       defendingUnit,
@@ -50,10 +54,10 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: lowRetreatType });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackingUnit: createTestUnit('black', { unitType: cavalryType }),
       defendingUnit,
@@ -77,10 +81,10 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       defendingCommitment: { commitmentType: 'pending' },
       defendingUnit,
@@ -98,10 +102,10 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackingCommitment: { commitmentType: 'pending' },
       defendingUnit,
@@ -119,10 +123,10 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: createAttackApplyStateWithNothingDue(defendingUnit),
       defendingUnit,
@@ -149,13 +153,10 @@ describe('generateResolveRangedAttackEvent function', () => {
     }): GameState {
       const state = createEmptyGameState('standard');
       const target = createTestUnit('white', { unitType: cavalryType });
-      const withBoard = {
-        ...state,
-        boardState: addUnitToBoard(
-          state.boardState,
-          placed(target, 'E-5', 'north'),
-        ),
-      };
+      const withBoard = updateBoardState(
+        state,
+        addUnitToBoard(state.boardState, placed(target, 'E-5', 'north')),
+      );
       const supporters = Array.from(
         { length: extras.supporters ?? 0 },
         (_, i) =>

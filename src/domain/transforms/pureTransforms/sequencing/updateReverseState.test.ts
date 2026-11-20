@@ -13,7 +13,12 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState, updateCurrentInitiative } from '../';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updateCurrentInitiative,
+  updatePhaseState,
+} from '../';
 
 import { updateReverseState } from './updateReverseState';
 
@@ -29,10 +34,10 @@ describe('updateReverseState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placement),
+    );
     const attackApply = createAttackApplyStateWithReverse(placement.unit);
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
       currentCommandResolutionState: createRangedAttackResolutionState(
@@ -59,14 +64,14 @@ describe('updateReverseState function', () => {
     );
     const reversingPlacement = placed(reversingUnit, 'E-5', 'north');
     const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, reversingPlacement),
-    };
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(stateWithUnits.boardState, otherPlacement),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, reversingPlacement),
+    );
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(stateWithUnits.boardState, otherPlacement),
+    );
     const attackApply = createAttackApplyStateWithReverse(
       reversingPlacement.unit,
     );

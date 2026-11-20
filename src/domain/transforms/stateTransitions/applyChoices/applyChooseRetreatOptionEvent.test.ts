@@ -19,8 +19,9 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 import { applyChooseRetreatOptionEvent } from './applyChooseRetreatOptionEvent';
@@ -48,13 +49,10 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const blocker = enemyBlockingStraightBack(placement);
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(
-        addUnitToBoard(state.boardState, placement),
-        blocker,
-      ),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
+    );
     const attackApply = createAttackApplyStateWithRetreat(
       placement,
       legalRetreatsOf(placement, [blocker]),
@@ -98,18 +96,18 @@ describe('applyChooseRetreatOptionEvent function', () => {
     );
     const retreatingPlacement = placed(retreatingUnit, 'E-5', 'north');
     const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, retreatingPlacement),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, retreatingPlacement),
+    );
     const blocker = enemyBlockingStraightBack(retreatingPlacement);
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(
         addUnitToBoard(stateWithUnits.boardState, otherPlacement),
         blocker,
       ),
-    };
+    );
     const attackApply = createAttackApplyStateWithRetreat(
       retreatingPlacement,
       legalRetreatsOf(retreatingPlacement, [blocker]),
@@ -162,13 +160,10 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
     const blocker = enemyBlockingStraightBack(placement);
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(
-        addUnitToBoard(state.boardState, placement),
-        blocker,
-      ),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
+    );
     const stateInIssueCommands = updatePhaseState(
       withBoard,
       createIssueCommandsPhaseState(withBoard, {

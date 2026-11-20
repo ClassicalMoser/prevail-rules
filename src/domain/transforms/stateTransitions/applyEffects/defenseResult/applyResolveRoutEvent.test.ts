@@ -24,8 +24,9 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 
@@ -46,10 +47,10 @@ describe('applyResolveRoutEvent function', () => {
     const routedUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(routedUnit, 'E-5', 'north');
 
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
 
     const attackApplyState = createAttackApplyStateWithRout(routedUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
@@ -79,17 +80,14 @@ describe('applyResolveRoutEvent function', () => {
     const routedUnitWithPlacement = placed(routedUnit, 'E-5', 'north');
     const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, routedUnitWithPlacement),
-    };
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(
-        stateWithUnits.boardState,
-        otherUnitWithPlacement,
-      ),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, routedUnitWithPlacement),
+    );
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
+    );
 
     const attackApplyState = createAttackApplyStateWithRout(routedUnit);
     const meleeState = createMeleeResolutionState(

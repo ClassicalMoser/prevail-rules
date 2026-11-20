@@ -9,7 +9,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyOpenRetreatFromEngagementEvent } from './applyOpenRetreatFromEngagementEvent';
 
@@ -28,10 +32,10 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     retreatPaths: MoveDelta[][] | 'pending' = [['step']],
   ): GameState {
     const state = createEmptyGameState('standard');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defender),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defender),
+    );
     // The defender could get away, and chose to; its retreat is not open.
     const front = createFrontEngagementState({
       retreatPaths,

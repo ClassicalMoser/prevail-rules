@@ -12,7 +12,11 @@ import {
   legalRetreatsOf,
   enemyBlockingStraightBack,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
 import { getLegalChooseRetreatOptionEvents } from './getLegalChooseRetreatOptionEvents';
 
@@ -39,13 +43,10 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     // A black unit on F-5, its back to white's, bars the straight step back
     // and leaves two equal ways round it (§9.1.3).
     const blocker = enemyBlockingStraightBack(placement);
-    const withUnit = {
-      ...state,
-      boardState: addUnitToBoard(
-        addUnitToBoard(state.boardState, placement),
-        blocker,
-      ),
-    };
+    const withUnit = updateBoardState(
+      state,
+      addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
+    );
     const tiedPaths = legalRetreatsOf(placement, [blocker]);
     const attackApply = createAttackApplyStateWithRetreat(
       placement,
@@ -111,13 +112,10 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     // A black unit on F-5, its back to white's, bars the straight step back
     // and leaves two equal ways round it (§9.1.3).
     const blocker = enemyBlockingStraightBack(placement);
-    const withUnit = {
-      ...state,
-      boardState: addUnitToBoard(
-        addUnitToBoard(state.boardState, placement),
-        blocker,
-      ),
-    };
+    const withUnit = updateBoardState(
+      state,
+      addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
+    );
     const tiedPaths = legalRetreatsOf(placement, [blocker]);
     const engagementState = updatePhaseState(
       withUnit,

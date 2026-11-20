@@ -6,7 +6,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
 import { generateOpenRetreatFromAttackApplyEvent } from './generateOpenRetreatFromAttackApplyEvent';
 
@@ -23,15 +27,15 @@ describe('generateOpenRetreatFromAttackApplyEvent function', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withDefender = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = {
-      ...state,
-      boardState: enemyBehind
+    const withBoard = updateBoardState(
+      state,
+      enemyBehind
         ? addUnitToBoard(
             withDefender,
             placed(createTestUnit('black'), 'F-5', 'south'),
           )
         : withDefender,
-    };
+    );
     const attackApply = createAttackApplyState(defendingUnit, {
       unitRetreated: true,
       unitReversed: false,

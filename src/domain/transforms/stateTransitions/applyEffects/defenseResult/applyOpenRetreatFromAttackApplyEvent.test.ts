@@ -13,7 +13,11 @@ import {
   createTestUnit,
   placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyOpenRetreatFromAttackApplyEvent } from './applyOpenRetreatFromAttackApplyEvent';
 
@@ -28,10 +32,10 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     // A stand-in defender on the board, the unit the retreat is opened for.
     const defendingUnit = createTestUnit('white', { attack: 2, speed: 3 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApply = createAttackApplyState(defendingUnit, {
       unitRetreated: true,
       unitReversed: false,

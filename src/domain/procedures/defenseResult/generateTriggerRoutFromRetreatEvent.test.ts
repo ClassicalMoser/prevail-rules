@@ -11,7 +11,11 @@ import {
   placed,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
 import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
@@ -30,10 +34,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     // retreat and must rout instead (§9.1.5, §9.1.6).
     const cutter = placed(createTestUnit('black'), 'F-5', 'north');
     const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(withUnit, cutter),
-    };
+    const withBoard = updateBoardState(state, addUnitToBoard(withUnit, cutter));
     const attackApply = createAttackApplyStateWithRetreat(
       unitWithPlacement,
       legalRetreatsOf(unitWithPlacement, [cutter]),
@@ -61,11 +62,11 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     );
     const retreatingWp = placed(retreatingUnit, 'E-5', 'north');
     const otherWp = placed(otherUnit, 'E-5', 'south');
-    let s = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, retreatingWp),
-    };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, otherWp) };
+    let s = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, retreatingWp),
+    );
+    s = updateBoardState(s, addUnitToBoard(s.boardState, otherWp));
     // A third unit, an enemy of the retreating one, stands directly behind it
     // facing it, so the retreating unit cannot fall back (§9.1.5).
     const cutter = placed(
@@ -73,7 +74,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
       'F-5',
       'north',
     );
-    s = { ...s, boardState: addUnitToBoard(s.boardState, cutter) };
+    s = updateBoardState(s, addUnitToBoard(s.boardState, cutter));
     const attackApply = createAttackApplyStateWithRetreat(
       retreatingWp,
       legalRetreatsOf(retreatingWp, [otherWp, cutter]),

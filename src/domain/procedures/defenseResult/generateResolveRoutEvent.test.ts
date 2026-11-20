@@ -16,8 +16,9 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms';
 
 import { generateResolveRoutEvent } from './generateResolveRoutEvent';
@@ -36,10 +37,10 @@ describe('generateResolveRoutEvent function', () => {
     );
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApply = createAttackApplyStateWithRout(defendingUnit);
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
@@ -65,8 +66,8 @@ describe('generateResolveRoutEvent function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
+    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
 
     const blackApply = createAttackApplyStateWithRout(blackUnit);
     const whiteApply = createAttackApplyStateWithRout(whiteUnit);

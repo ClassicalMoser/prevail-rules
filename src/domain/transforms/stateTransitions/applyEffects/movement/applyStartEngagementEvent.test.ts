@@ -12,6 +12,7 @@ import {
 import {
   addCommanderToBoard,
   addUnitToBoard,
+  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -43,12 +44,10 @@ describe('applyStartEngagementEvent function', () => {
       moverWithPlacement,
     );
     const commanderRides = options?.commanderRides ?? false;
-    const withBoard = {
-      ...state,
-      boardState: commanderRides
-        ? addCommanderToBoard(units, 'black', 'E-5')
-        : units,
-    };
+    const withBoard = updateBoardState(
+      state,
+      commanderRides ? addCommanderToBoard(units, 'black', 'E-5') : units,
+    );
     const movement = createMovementResolutionState(withBoard, {
       moveCommander: commanderRides,
       movingUnit: moverWithPlacement,

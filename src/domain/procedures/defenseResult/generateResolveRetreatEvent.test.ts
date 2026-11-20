@@ -14,8 +14,9 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms';
 
 import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
@@ -36,10 +37,10 @@ describe('generateResolveRetreatEvent function', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     // Open ground behind: the unit's only way back is the step already chosen.
     const openGround = legalRetreatsOf(unitWithPlacement);
     const attackApply = createAttackApplyStateWithRetreat(
@@ -75,8 +76,8 @@ describe('generateResolveRetreatEvent function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
+    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
 
     // Each engaged unit has open ground behind it, and has already chosen the
     // step back.
@@ -128,10 +129,10 @@ describe('generateResolveRetreatEvent function', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     // Two ways back, and the player has not picked one yet.
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, [
       ['step'],

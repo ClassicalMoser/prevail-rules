@@ -14,6 +14,7 @@ A `find*` is total: it answers `undefined` for an absence, which is an ordinary 
 
 - `board/` — a space, its neighbors, front / flank / rear, areas, one step forward or back (`getBoardSpace`, `getAdjacentSpaces`, `getFrontSpaces`, `getFlankingSpaces`, `getBackSpaces`, `getSpacesAhead`, `getSpacesBehind`, `findForwardSpace`, `findRearwardSpace`)
 - `facings/` — opposite, left, right, adjacent, orthogonal
+- `gameStateIndex/` — where every unit and commander is by name, worked out from the board and the lists (`deriveGameStateIndex`, `listPiecePlaces`); finders read the state's stored `index`, which every write sets from this
 - `unit/` and `unitPresence/` — a unit's stats, friendliness, and position (`findPlayerUnitWithPosition`)
 - `unitLocation/` — whether two placements, or two units with their placements, are the same (`isSamePlacement`, `isSameUnitWithPlacement`)
 - `line/` — who may stand in a line (`canJoinLine`) and the unbroken rank through a unit (`getLineSegmentContainingUnit`)

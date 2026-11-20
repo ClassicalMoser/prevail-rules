@@ -15,7 +15,7 @@ import {
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '../';
+import { addUnitToBoard, updateBoardState, updatePhaseState } from '../';
 
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
@@ -28,10 +28,10 @@ describe('updateRetreatRoutState function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placement),
+    );
     const retreatState = createRetreatState(
       placement,
       legalRetreatsOf(placement, [enemyCuttingOffRetreat(placement)]),

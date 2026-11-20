@@ -18,6 +18,7 @@ import {
 import {
   addUnitToBoard,
   updateAttackApplyState,
+  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -34,10 +35,10 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApply = createAttackApplyState(defendingUnit, {
       unitRetreated: true,
       unitReversed: true,

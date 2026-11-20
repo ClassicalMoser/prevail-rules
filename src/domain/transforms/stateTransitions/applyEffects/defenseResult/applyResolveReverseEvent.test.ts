@@ -19,8 +19,9 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 import { applyResolveReverseEvent } from './applyResolveReverseEvent';
@@ -40,10 +41,10 @@ describe('applyResolveReverseEvent function', () => {
     const reversingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(reversingUnit, 'E-5', 'north');
 
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
 
     const attackApplyState = createAttackApplyStateWithReverse(reversingUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
@@ -80,10 +81,10 @@ describe('applyResolveReverseEvent function', () => {
     );
 
     // Only the reversing unit is on the board (opponent has already retreated/routed)
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, reversingUnitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, reversingUnitWithPlacement),
+    );
 
     const opponentAttackApplyState = createAttackApplyStateWithRetreat(
       opponentUnitWithPlacement,
@@ -181,13 +182,10 @@ describe('applyResolveReverseEvent function', () => {
 
       // Add another unit at a different location
       const otherUnit = createTestUnit('black', { attack: 2 });
-      const stateWithOtherUnit = {
-        ...state,
-        boardState: addUnitToBoard(
-          state.boardState,
-          placed(otherUnit, 'D-5', 'north'),
-        ),
-      };
+      const stateWithOtherUnit = updateBoardState(
+        state,
+        addUnitToBoard(state.boardState, placed(otherUnit, 'D-5', 'north')),
+      );
 
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 

@@ -22,6 +22,7 @@ export type {
 export {
   authoritativeGameStateSchema,
   blackSeenGameStateSchema,
+  gameStateIndexSchema,
   gameStateSchema,
   spectatorGameStateSchema,
   whiteSeenGameStateSchema,
@@ -29,10 +30,14 @@ export {
 export type {
   AuthoritativeGameState,
   BlackSeenGameState,
+  CommanderIndexEntry,
   GameState,
+  GameStateIndex,
   GameStateVisibility,
   OwnedPlayerForGameState,
   SpectatorGameState,
+  UnitIndexEntry,
+  UnitIndexKey,
   UnownedPlayerForGameState,
   WhiteSeenGameState,
 } from './gameState';

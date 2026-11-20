@@ -20,8 +20,9 @@ import {
 } from '@testing';
 import {
   addUnitToBoard,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
@@ -41,10 +42,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
 
     // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
@@ -83,17 +84,14 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
     const retreatingUnitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
     const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, retreatingUnitWithPlacement),
-    };
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(
-        stateWithUnits.boardState,
-        otherUnitWithPlacement,
-      ),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, retreatingUnitWithPlacement),
+    );
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
+    );
 
     // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
@@ -217,10 +215,10 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       );
       const retreatingUnit = createTestUnit('white', { attack: 2 });
       const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-      const stateWithUnit = {
-        ...state,
-        boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-      };
+      const stateWithUnit = updateBoardState(
+        state,
+        addUnitToBoard(state.boardState, unitWithPlacement),
+      );
       // Retreat and reverse were both due; nowhere to go opens a rout instead.
       const attackApplyState = createAttackApplyStateWithRetreatAndReverse(
         unitWithPlacement,

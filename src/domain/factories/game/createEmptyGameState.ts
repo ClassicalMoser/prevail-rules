@@ -17,6 +17,12 @@ function shell(board: Board): AuthoritativeGameState {
     // White holds the initiative going into round one (§3.3.2), and so sets
     // up first in round 0.
     currentInitiative: 'white',
+    // Nothing is on the board or in reserve yet. Both commanders wait to be
+    // placed at setup.
+    index: {
+      commanders: { black: 'reserved', white: 'reserved' },
+      units: {},
+    },
     // Setup is round 0, with its own events; the first round to be played is
     // round 1, which setup starts once every unit is placed.
     currentRoundState: {

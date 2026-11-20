@@ -25,6 +25,7 @@ import { tempCommandCards } from '@sampleValues';
 import {
   addCommanderToLostCommanders,
   addUnitToBoard,
+  updateBoardState,
   updatePhaseState,
 } from '@transforms';
 
@@ -64,10 +65,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApplyState =
       createAttackApplyStateWithNothingDue(defendingUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
@@ -179,10 +180,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     // Retreat still due: the factory leaves that slot pending until the opener runs.
     const attackApply = createPendingAttackApply(defendingUnit, {
       unitRetreated: true,
@@ -209,10 +210,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     // Reverse still due: the factory leaves that slot pending until the opener runs.
     const attackApply = createPendingAttackApply(defendingUnit, {
       unitRetreated: false,
@@ -239,10 +240,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     // Rout still due: the factory leaves that slot pending until the opener runs.
     const attackApply = createPendingAttackApply(defendingUnit, {
       unitRetreated: true,
@@ -277,10 +278,10 @@ export const procedureRegistryStateFactories: Record<
       defendingUnitRetreats: true,
       retreatPaths: legalRetreatsOf(defenderWithPlacement),
     });
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defenderWithPlacement),
+    );
     const movement = createMovementResolutionState(withBoard, {
       engagementState: front,
       targetPlacement: front.targetPlacement,
@@ -309,10 +310,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defender,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defenderWithPlacement),
+    );
     const movement = createMovementResolutionState(withBoard, {
       engagementState,
       targetPlacement: engagementState.targetPlacement,
@@ -337,10 +338,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defender,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, defenderPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, defenderPlacement),
+    );
     const movement = createMovementResolutionState(withBoard, {
       engagementState: flank,
       targetPlacement: flank.targetPlacement,
@@ -390,8 +391,8 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: blackUnit,
     };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
+    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
     const phase = createResolveMeleePhaseState(s);
     return updatePhaseState(s, phase);
   },
@@ -424,10 +425,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       defendingUnit,
     });
@@ -447,10 +448,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: retreatingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     // On an open board the engine offers the unit one retreat, a step
     // straight back to F-5 (§9.1.3), and that path is already chosen.
     const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
@@ -483,10 +484,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApply = createAttackApplyStateWithReverse(
       unitWithPlacement.unit,
     );
@@ -510,10 +511,10 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, unitWithPlacement),
+    );
     const attackApply = createAttackApplyStateWithRout(defendingUnit);
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
@@ -544,16 +545,16 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, {
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, {
         placement: {
           coordinate: 'E-6',
           facing: 'south',
         },
         unit: defender,
       }),
-    };
+    );
     const movement = createMovementResolutionState(withBoard, {
       movingUnit: {
         placement: {
@@ -590,10 +591,10 @@ export const procedureRegistryStateFactories: Record<
       unit: createTestUnit('black'),
     };
     const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(withUnit, cuttingEnemy),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(withUnit, cuttingEnemy),
+    );
     const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
     const attackApply = createAttackApplyStateWithRetreat(
       unitWithPlacement,

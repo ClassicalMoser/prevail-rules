@@ -18,7 +18,12 @@ import {
   placed,
   legalRetreatsOf,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState, updateCurrentInitiative } from '../';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updateCurrentInitiative,
+  updatePhaseState,
+} from '../';
 
 import { updateRetreatState } from './updateRetreatState';
 
@@ -34,10 +39,10 @@ describe('updateRetreatState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placedUnit),
-    };
+    const stateWithUnit = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placedUnit),
+    );
     const attackApply = createAttackApplyStateWithRetreat(
       placedUnit,
       legalRetreatsOf(placedUnit),
@@ -67,14 +72,14 @@ describe('updateRetreatState function', () => {
     );
     const retreatingPlacement = placed(retreatingUnit, 'E-5', 'north');
     const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, retreatingPlacement),
-    };
-    stateWithUnits = {
-      ...stateWithUnits,
-      boardState: addUnitToBoard(stateWithUnits.boardState, otherPlacement),
-    };
+    let stateWithUnits = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, retreatingPlacement),
+    );
+    stateWithUnits = updateBoardState(
+      stateWithUnits,
+      addUnitToBoard(stateWithUnits.boardState, otherPlacement),
+    );
     const attackApply = createAttackApplyStateWithRetreat(
       retreatingPlacement,
       legalRetreatsOf(retreatingPlacement),
@@ -228,10 +233,10 @@ describe('updateRetreatState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const withBoard = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, placedUnit),
-    };
+    const withBoard = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, placedUnit),
+    );
     const opened = createRetreatState(placedUnit, legalRetreatsOf(placedUnit));
     const phaseState = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: createMovementResolutionState(withBoard, {

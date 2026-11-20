@@ -1,7 +1,11 @@
 import type { Army, GameModeName } from '@entities';
-import type { AuthoritativeGameState } from '@game';
+import type {
+  AuthoritativeGameState,
+  UnitIndexEntry,
+  UnitIndexKey,
+} from '@game';
 
-import { createUnitInstance } from '@factories/unit';
+import { createUnitIndexKey, createUnitInstance } from '@factories/unit';
 import { createEmptyGameState } from './createEmptyGameState';
 
 /**
@@ -40,6 +44,14 @@ export function createInitialGameState(options: {
     }
   }
 
+  // Every one of those units is in reserve, and the index says so by name.
+  // Nothing is on the board yet, and the commanders are still in reserve as
+  // the empty game has them.
+  const unitsInReserve: Record<UnitIndexKey, UnitIndexEntry> = {};
+  for (const unit of reservedUnits) {
+    unitsInReserve[createUnitIndexKey(unit)] = 'reserved';
+  }
+
   return {
     ...emptyGameState,
     cardState: {
@@ -58,6 +70,7 @@ export function createInitialGameState(options: {
         inHand: [...whiteArmy.commandCards],
       },
     },
+    index: { ...emptyGameState.index, units: unitsInReserve },
     // All units start out in reserve, awaiting setup. Neither side has a unit
     // on the board until it is placed in the setup phase.
     reservedUnits,

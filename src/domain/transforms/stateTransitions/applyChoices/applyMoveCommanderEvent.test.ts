@@ -5,8 +5,9 @@ import { MOVE_COMMANDERS_PHASE } from '@game';
 import { createBoardWithCommander } from '@testing';
 import {
   addCommanderToLostCommanders,
-  updatePhaseState,
+  updateBoardState,
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
@@ -32,10 +33,7 @@ describe('applyMoveCommanderEvent function', () => {
     let board = createBoardWithCommander('black', blackCommanderCoord);
     board = createBoardWithCommander('white', whiteCommanderCoord, board);
 
-    const stateWithBoard = {
-      ...state,
-      boardState: board,
-    };
+    const stateWithBoard = updateBoardState(state, board);
 
     const stateWithPhase = updatePhaseState(stateWithBoard, {
       phase: MOVE_COMMANDERS_PHASE,

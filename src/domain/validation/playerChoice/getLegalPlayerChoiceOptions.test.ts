@@ -172,10 +172,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
         inHand: [createTestCard()],
       },
     });
-    state = {
-      ...state,
-      boardState: createBoardWithCommander('black', 'E-5'),
-    };
+    state = updateBoardState(state, createBoardWithCommander('black', 'E-5'));
     state = updatePhaseState(state, {
       phase: 'moveCommanders',
       step: 'moveFirstCommander',
@@ -213,10 +210,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       },
     });
     // Black's commander stands in the north-west corner of an empty board.
-    state = {
-      ...state,
-      boardState: createBoardWithCommander('black', 'A-1'),
-    };
+    state = updateBoardState(state, createBoardWithCommander('black', 'A-1'));
     // The first commander's move is owed.
     state = updatePhaseState(state, {
       phase: 'moveCommanders',
