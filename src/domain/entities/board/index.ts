@@ -1,39 +1,36 @@
 /**
  * Board package barrel.
  *
- * Public surface: board schema/types, the shared `Coordinate` vocabulary,
- * each size's rows and columns, spaces, and the layout contract. The layout
- * values themselves are in `@factories`.
+ * Public surface: the board schema and its shape, a board space, and where a
+ * space sits. The board's vocabulary, its sizes, labels, spaces and each
+ * size's layout, is declared in `@ruleValues` and re-exported here, so a
+ * reader of a board finds it beside the board.
  */
 
-/** Board size literals, Zod enum, and full-board schema. */
-export { boardSchema, boardType, boardTypeEnum } from './board';
-/** Board state shape and `boardType` discriminator. */
-export type { Board, BoardType } from './board';
+/** Full-board schema. */
+export { boardSchema } from './board';
+/** Board state shape. */
+export type { Board } from './board';
 
-/** Every space on some board, and the Zod enum over them. */
-export { allCoordinates, coordinateSchema } from './boardCoordinates';
-/** Shared coordinate vocabulary across all board sizes. */
-export type { Coordinate } from './boardCoordinates';
+/** Board size literals and their Zod enum, from `@ruleValues`. */
+export { boardType, boardTypeEnum } from '@ruleValues';
+/** Which size a board is, from `@ruleValues`. */
+export type { BoardType } from '@ruleValues';
+
+/** Every space on some board, and the Zod enum over them, from `@ruleValues`. */
+export { allCoordinates, coordinateSchema } from '@ruleValues';
+/** Shared coordinate vocabulary across all board sizes, from `@ruleValues`. */
+export type { Coordinate } from '@ruleValues';
+
+/** Each size's depth, frontage and spaces, keyed by size, from `@ruleValues`. */
+export { coordinateLayoutMap } from '@ruleValues';
+/** A size's layout, and the map of them, from `@ruleValues`. */
+export type { CoordinateLayout, CoordinateLayoutMap } from '@ruleValues';
 
 /** Schema for one board cell (terrain, elevation, water, occupancy). */
 export { boardSpaceSchema } from './boardSpace';
 /** One cell of the board. */
 export type { BoardSpace } from './boardSpace';
 
-/** Layout contract and `boardType` → layout map type. */
-export type { CoordinateLayout, CoordinateLayoutMap } from './coordinateLayout';
-
-/** Each size's rows and columns, in order from A and 1. */
-export { smallBoardColumnNumbers, smallBoardRowLetters } from './smallBoard';
-export type { SmallBoardColumnNumber, SmallBoardRowLetter } from './smallBoard';
-export {
-  standardBoardColumnNumbers,
-  standardBoardRowLetters,
-} from './standardBoard';
-export type {
-  StandardBoardColumnNumber,
-  StandardBoardRowLetter,
-} from './standardBoard';
-export { largeBoardColumnNumbers, largeBoardRowLetters } from './largeBoard';
-export type { LargeBoardColumnNumber, LargeBoardRowLetter } from './largeBoard';
+/** Where a space sits on its board, as row and column counted from 0. */
+export type { GridPosition } from './gridPosition';

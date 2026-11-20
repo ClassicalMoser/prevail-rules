@@ -35,9 +35,14 @@ export { getBoardCoordinates } from './getBoardCoordinates';
 // Coordinates whose space holds an engagement.
 export { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
 
+// Where a space sits in rows and columns, or none off this board.
+export { findGridPosition } from './findGridPosition';
+
 // Where a space sits in rows and columns.
-export type { GridPosition } from './getGridPosition';
 export { getGridPosition } from './getGridPosition';
+
+// The space at a row and column, or none past an edge.
+export { findCoordinateAtPosition } from './findCoordinateAtPosition';
 
 // How many spaces apart two spaces are, a diagonal step counting as one.
 export { getSpacesApart } from './getSpacesApart';

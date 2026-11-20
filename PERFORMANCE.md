@@ -6,7 +6,7 @@ here changes a rule, except where an item says so.
 
 The design comes first. The architecture is pure functions; any state lives
 in function or closure scope, never module scope. A table built once from
-constants alone, such as each board size's coordinate grid, is a constant
+constants alone, such as each board size's layout with its spaces, is a constant
 and is allowed. A cache of anything a game can change is not, however much
 time it would save.
 
@@ -22,16 +22,28 @@ call on its own, the bot's thinking excluded.
 
 A bot game, start to finish, at the median:
 
-| Board    | Before the grid | After the grid |
-| -------- | --------------- | -------------- |
-| Standard | 3.8 s           | 1.3 s          |
-| Mini     | 320 ms          | 147 ms         |
+| Board    | Before the tables | After the tables |
+| -------- | ----------------- | ---------------- |
+| Standard | 3.8 s             | 1.3 s            |
+| Mini     | 320 ms            | 147 ms           |
 
-The grid (`getCoordinateGrid` in `@factories`) tables every space of a board
-size with its row and column both ways. Before it, every step split a space's
-name into row and column and built the next name as a string. That string
-work was over a third of a bot game. `getBoardCoordinates`,
-`getGridPosition` and `findForwardSpace` now read the grid.
+Board geometry now reads definitions in `@entities` instead of handling
+strings. Each size's layout (`coordinateLayoutMap` in `@ruleValues`) is its
+depth, its frontage and the spaces they make, listed row by row; and one table, `positionByCoordinate`, gives every space's
+row and column, the same on every board it is on because the sizes nest.
+Before, every step split a space's name into row and column and built the
+next name as a string. That string work was over a third of a bot game.
+`getBoardCoordinates`, `findGridPosition`, `getGridPosition`,
+`findCoordinateAtPosition` and `findForwardSpace` read these, and depend on
+`@entities` alone.
+
+How it got there is a lesson. The tables were first built in `@factories`
+as a separate grid beside the layout: a second table describing the same
+board, and a declaration in the wrong layer. Folding them into the layout
+left the layout duplicating its own lookups, and duplicating the list of
+spaces `@entities` already declared for each size. A layout is a definition,
+not a built value, so it is now defined where the sizes are, from the lists
+already there.
 
 Of what remains, about nine tenths is the bot deciding. The bot is not the
 author's design and will likely be replaced, so its own costs are not pursued.
@@ -108,7 +120,8 @@ effects are applied.
 Proposed and suspended 2026-11-19, in this order. Each is one commit, with a
 failing spec first wherever behaviour changes.
 
-1. `diagonalIsClear` reads its two corner spaces from the grid: the origin's
+1. `diagonalIsClear` reads its two corner spaces by position (`findGridPosition`,
+   `findCoordinateAtPosition`): the origin's
    row with the target's column, and the target's row with the origin's.
    Same answers, about twenty times cheaper. Unit movement and melee support
    ask it too.
@@ -137,5 +150,6 @@ failing spec first wherever behaviour changes.
   The judgment on removing them waits on what a lookup of where a unit stands
   costs, since each removal is a lookup in its place.
 - **Integer positions.** Integers as indexes into the list of space names
-  change no meaning, and the grid already works that way inside geometry.
+  change no meaning, and geometry already works that way inside
+  geometry.
   Replacing the names themselves is out.

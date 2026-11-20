@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { z } from 'zod';
-import { getCoordinateLayout } from '@factories';
+import { coordinateLayoutMap } from '@entities';
 
 /**
  * Adds Zod issues when a board's spaces differ from the spaces its size lays
@@ -15,13 +15,8 @@ export function refineBoardLayout(
   pathPrefix: (string | number)[] = [],
 ): void {
   // The grid this board's size lays out, row by column.
-  const layout = getCoordinateLayout(board);
   const expected = new Set<string>(
-    layout.rowLetters.flatMap((row) =>
-      layout.columnNumbers.map((column) =>
-        layout.createCoordinate(row, column),
-      ),
-    ),
+    coordinateLayoutMap[board.boardType].coordinates,
   );
   const actual = new Set(Object.keys(board.board));
 

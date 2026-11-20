@@ -1,10 +1,11 @@
 import type { Board } from '@entities';
-import { createEmptyBoardWithLayout } from './createEmptyBoardWithLayout';
-import { standardCoordinateLayout } from './layout';
+import { createEmptyBoard } from './createEmptyBoard';
 
 /**
  * Creates an empty standard board with all coordinates initialized to default spaces.
  */
 export function createEmptyStandardBoard(): Board {
-  return createEmptyBoardWithLayout('standard', standardCoordinateLayout);
+  // The standard board's spaces, each empty.
+  const board = createEmptyBoard('standard');
+  return board;
 }

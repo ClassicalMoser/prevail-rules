@@ -80,18 +80,20 @@ To narrow a presence, use `hasNoUnit`, `hasSingleUnit` and `hasEngagedUnits` in 
 
 ## Board size vs visibility (when to type-parameterize)
 
-**Board size is state, not a type parameter.** `boardType` selects a layout, through `getCoordinateLayout` in `@factories`:
+**Board size is state, not a type parameter.** `boardType` selects a layout, by indexing `coordinateLayoutMap`:
 
 ```typescript
-getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
+coordinateLayoutMap[board.boardType]; // depth, frontage and spaces of that size
 ```
+
+The board's vocabulary is declared in `@ruleValues` and re-exported here: the sizes, the row letters and column numbers, `Coordinate` and its schema, and each size's depth, frontage and spaces (§2.1.3). Every size labels from the north-west corner, so the sizes nest, and a space's row and column are the same on every board it is on: one table in `@queries`, `positionByCoordinate`, serves all three.
 
 `Coordinate` is the union across all sizes (extensionally the large set). Completeness is enforced by `refineBoardLayout` in `@legality` and geometry helpers, not by per-size TypeScript types.
 
 **Why one wide `partialRecord` instead of per-size schemas?**  
 `z.object(shape)` infers literal keys. Factories and unions that touch a per-size object schema leak those keys through inference and fight the unified `Board` type. One wide schema keeps the TypeScript type wide; `refineBoardLayout` in `@legality` rejects wrong keys at parse time.
 
-**Layout callables take `string`, not size-branded letter unions.** Board size lives on the layout **value** (`rowLetters` / `columnNumbers`). Layouts join parts into a {@link Coordinate} internally; callers do not re-prove "this is a small-board row." That keeps property-signature typing and avoids treating size as a type parameter again.
+**Layouts are data, not callables.** Board size lives on the layout **value** (`depth` / `frontage` / `coordinates`). Geometry in `@queries` reads a space's row and column from `positionByCoordinate` and the space at a row and column from the size's `coordinates`; callers do not re-prove "this is a small-board row." That avoids treating size as a type parameter again.
 
 **Visibility earns a type parameter; board size did not.**  
 Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) constrains which card fields are readable or writable, so `GameState` and `CardState` carry a `visibility` tag that a `switch` narrows, removing casts at call sites. A state's tag and its card state are fixed together by each variant, so the two cannot disagree. `spectator` hides both hands. Board size only asserted completeness; threading it as a type argument inflated signatures without cutting casts. Keep a parameter only when it narrows what callers may pass or read.

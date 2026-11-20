@@ -1,23 +1,8 @@
-import type { Board, BoardType, GameModeName } from '@entities';
+import type { Board, GameModeName } from '@entities';
 import type { AuthoritativeGameState } from '@game';
 import { gameModes } from '@entities';
 import { createCardState } from './createCardState';
-import {
-  createEmptyLargeBoard,
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-} from '@factories/board';
-
-// TODO(composition): this re-keys the three board factories by size, and
-// `coordinateLayoutMap` already keys the layouts the same way. A board built
-// from a `BoardType` would own the lookup. Settled by deciding whether
-// `@factories/board` exports one.
-/** The empty board for each size. Keyed by every size, so none is missed. */
-const emptyBoardBySize: Record<BoardType, () => Board> = {
-  large: createEmptyLargeBoard,
-  small: createEmptySmallBoard,
-  standard: createEmptyStandardBoard,
-};
+import { createEmptyBoard } from '@factories/board';
 
 /**
  * The game before anyone has mustered: the board it is played on, empty hands
@@ -63,7 +48,7 @@ export function createEmptyGameState(
     throw new Error(`Unknown gameMode: ${name}`);
   }
   // Lay out an empty board of the size that mode is played on.
-  const board = emptyBoardBySize[gameModes[name].boardSize]();
+  const board = createEmptyBoard(gameModes[name].boardSize);
   const gameState = shell(board);
   return gameState;
 }

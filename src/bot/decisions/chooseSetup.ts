@@ -2,7 +2,8 @@ import type { Coordinate, UnitFacing, UnitInstance } from '@entities';
 import type { SetupUnitsEvent } from '@events';
 import type { LegalSetupUnits } from '@legality';
 import type { BotContext } from './botContext';
-import { getCoordinateLayout } from '@factories';
+import { coordinateLayoutMap } from '@entities';
+import { getGridPosition } from '@queries';
 
 /** A unit at least this fast is cavalry, for setup: it belongs on a wing. */
 const CAVALRY_SPEED = 4;
@@ -16,13 +17,14 @@ function deploymentRank(
   context: BotContext,
   coordinate: Coordinate,
 ): { row: number; column: number } {
-  const layout = getCoordinateLayout(context.view.boardState);
-  const [row = '', column = ''] = coordinate.split('-');
-  const middleRow = (layout.rowLetters.length - 1) / 2;
-  const middleColumn = (layout.columnNumbers.length - 1) / 2;
+  const board = context.view.boardState;
+  const layout = coordinateLayoutMap[board.boardType];
+  const { row, column } = getGridPosition(board, coordinate);
+  const middleRow = (layout.depth - 1) / 2;
+  const middleColumn = (layout.frontage - 1) / 2;
   const rank = {
-    column: Math.abs(layout.getColumnIndex(column) - middleColumn),
-    row: Math.abs(layout.getRowIndex(row) - middleRow),
+    column: Math.abs(column - middleColumn),
+    row: Math.abs(row - middleRow),
   };
   return rank;
 }
@@ -59,7 +61,7 @@ export function chooseSetup(
   offer: LegalSetupUnits,
   context: BotContext,
 ): SetupUnitsEvent {
-  const layout = getCoordinateLayout(context.view.boardState);
+  const layout = coordinateLayoutMap[context.view.boardState.boardType];
   // Front row first, and the centre of each row before its ends.
   const spaces = offer.coordinates.toSorted((a, b) => {
     const rankA = deploymentRank(context, a);
@@ -76,9 +78,8 @@ export function chooseSetup(
   if (firstSpace === undefined) {
     throw new Error(`${offer.player} has no space left to deploy in`);
   }
-  const [zoneRow = ''] = firstSpace.split('-');
-  const facesSouth =
-    layout.getRowIndex(zoneRow) < (layout.rowLetters.length - 1) / 2;
+  const zoneRow = getGridPosition(context.view.boardState, firstSpace).row;
+  const facesSouth = zoneRow < (layout.depth - 1) / 2;
   const facing: UnitFacing = facesSouth ? 'south' : 'north';
   const unitPlacements = units.map((unit, index) => {
     const coordinate = spaces[index];

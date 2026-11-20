@@ -11,6 +11,7 @@ export {
   boardSpaceSchema,
   boardType,
   boardTypeEnum,
+  coordinateLayoutMap,
 } from '@entities';
 export {
   armyCompositionByMode,
@@ -61,7 +62,6 @@ export {
   gameModes,
   gameModeNames,
   gameModeNameSchema,
-  gameModeSchema,
 } from '@entities';
 export type { GameMode, GameModeName } from '@entities';
 export { playerSchema, playerSides, playerSideSchema } from '@entities';
@@ -95,6 +95,7 @@ export type {
   BoardType,
   CoordinateLayout,
   CoordinateLayoutMap,
+  GridPosition,
   UnitCount,
 } from '@entities';
 export type {
@@ -717,11 +718,8 @@ export {
   createEmptySmallBoard,
   createEmptyStandardBoard,
   createInitialGameState,
+  createEmptyBoard,
   createUnitInstance,
-  getCoordinateLayout,
-  largeCoordinateLayout,
-  smallCoordinateLayout,
-  standardCoordinateLayout,
 } from '@factories';
 export {
   addCommanderToBoard,

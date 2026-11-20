@@ -1,5 +1,5 @@
 import type { AssertExact } from '@utils';
-import type { BoardType } from '@entities/board';
+import type { BoardType } from './boardSizes';
 import { z } from 'zod';
 
 /**
@@ -12,8 +12,12 @@ export const gameModeNames = ['tutorial', 'mini', 'standard', 'epic'] as const;
  */
 export type GameModeName = (typeof gameModeNames)[number];
 
-/** Schema for a game mode name. */
-export const gameModeNameSchema: z.ZodType<GameModeName> =
+/**
+ * Schema for a game mode name. Typed as the exact enum, not a bare
+ * `z.ZodType`, so a game's object schema can name its `gameMode` field's
+ * schema exactly, as each projected view's does.
+ */
+export const gameModeNameSchema: z.ZodEnum<{ [K in GameModeName]: K }> =
   z.enum(gameModeNames);
 
 /**
@@ -21,9 +25,14 @@ export const gameModeNameSchema: z.ZodType<GameModeName> =
  * each mode is played on (§3.1.3). A caller looks a mode up by indexing it.
  */
 export const gameModes = {
+  // Epic, the largest battle, needs the large board's room.
   epic: { boardSize: 'large', name: 'epic' },
+  // Mini, a short battle with a small army, fits the small board.
   mini: { boardSize: 'small', name: 'mini' },
+  // Standard, the usual battle, is what the standard board is sized for.
   standard: { boardSize: 'standard', name: 'standard' },
+  // The Tutorial, a first game, shares the small board with Mini, but none
+  // of its army limits (§3.1.3).
   tutorial: { boardSize: 'small', name: 'tutorial' },
 } as const;
 
@@ -32,37 +41,12 @@ export const gameModes = {
  */
 export type GameMode = (typeof gameModes)[GameModeName];
 
+// Every named mode has an entry, and every entry is a named mode.
 const _assertExactGameModeNames: AssertExact<GameModeName, GameMode['name']> =
   true;
 
+// Every mode is played on a board size that exists.
 const _assertBoardSizesAreBoardType: AssertExact<
   GameMode['boardSize'],
   Extract<BoardType, GameMode['boardSize']>
 > = true;
-
-/** One catalog row → exact `{ name, boardSize }` object schema (keeps literals narrow). */
-function gameModeEntrySchema<
-  const B extends string,
-  const N extends string,
->(mode: { boardSize: B; name: N }) {
-  return z
-    .object({
-      boardSize: z.literal(mode.boardSize),
-      name: z.literal(mode.name),
-    })
-    .strict();
-}
-
-const _gameModeSchemaObject = z.union([
-  gameModeEntrySchema(gameModes.tutorial),
-  gameModeEntrySchema(gameModes.mini),
-  gameModeEntrySchema(gameModes.standard),
-  gameModeEntrySchema(gameModes.epic),
-]);
-
-type GameModeSchemaType = z.infer<typeof _gameModeSchemaObject>;
-
-/** Schema for a catalog game mode (exact name ↔ boardSize pair). */
-export const gameModeSchema: z.ZodType<GameMode> = _gameModeSchemaObject;
-
-const _assertExactGameMode: AssertExact<GameMode, GameModeSchemaType> = true;

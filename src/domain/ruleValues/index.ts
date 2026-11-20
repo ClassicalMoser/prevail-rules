@@ -41,3 +41,18 @@ export type { Trait } from './traits';
 // Game-effect type names.
 export { gameEffects } from './gameEffectTypes';
 export type { GameEffectType } from './gameEffectTypes';
+
+// Board sizes, the labels on their rows and columns, every space, and each
+// size's depth, frontage and spaces (§2.1.3).
+export { boardType, boardTypeEnum } from './boardSizes';
+export type { BoardType } from './boardSizes';
+export { boardColumnNumbers, boardRowLetters } from './boardLabels';
+export type { BoardColumnNumber, BoardRowLetter } from './boardLabels';
+export { allCoordinates, coordinateSchema } from './boardCoordinates';
+export type { Coordinate } from './boardCoordinates';
+export { coordinateLayoutMap } from './boardLayouts';
+export type { CoordinateLayout, CoordinateLayoutMap } from './boardLayouts';
+
+// Game modes, and which board size each is played on (§3.1.3).
+export { gameModeNames, gameModeNameSchema, gameModes } from './gameModes';
+export type { GameMode, GameModeName } from './gameModes';

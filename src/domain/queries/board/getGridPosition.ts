@@ -1,11 +1,5 @@
-import type { Board, Coordinate } from '@entities';
-import { getCoordinateGrid } from '@factories';
-
-/** A space's row and column as positions on its board, counted from 0. */
-export interface GridPosition {
-  row: number;
-  column: number;
-}
+import type { Board, Coordinate, GridPosition } from '@entities';
+import { findGridPosition } from './findGridPosition';
 
 /**
  * Where a space sits on its board, as row and column positions counted from
@@ -22,19 +16,15 @@ export function getGridPosition(
   board: Board,
   coordinate: Coordinate,
 ): GridPosition {
-  // The grid for this size tables each space's row and column, so the name
-  // need not be split and looked up afresh on every measurement.
-  const grid = getCoordinateGrid(board);
-  const row = grid.rowIndexByCoordinate.get(coordinate);
-  const column = grid.columnIndexByCoordinate.get(coordinate);
+  // Its row and column, read from its whole name, if it is on this board.
+  const position = findGridPosition(board, coordinate);
 
-  // A coordinate that names no row or column of this board is a caller's
-  // mistake, not a position.
-  if (row === undefined || column === undefined) {
+  // A coordinate that names no space of this board is a caller's mistake,
+  // not a position.
+  if (position === undefined) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
   }
 
   // Its place on the board, for counting spaces apart.
-  const position: GridPosition = { column, row };
   return position;
 }

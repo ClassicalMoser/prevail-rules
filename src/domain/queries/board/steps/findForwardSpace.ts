@@ -1,7 +1,9 @@
 import type { Board, UnitFacing, Coordinate } from '@entities';
-import { unitFacings } from '@entities';
+import { coordinateLayoutMap, unitFacings } from '@entities';
+import { boardColumnNumbers, boardRowLetters } from '@ruleValues';
 import { getColumnDelta, getRowDelta } from '../deltas';
-import { getCoordinateGrid, getCoordinateLayout } from '@factories';
+import { findCoordinateAtPosition } from '../findCoordinateAtPosition';
+import { findGridPosition } from '../findGridPosition';
 
 const facings = new Set<UnitFacing>(unitFacings);
 
@@ -10,7 +12,7 @@ const facings = new Set<UnitFacing>(unitFacings);
  * row-column, a row this size lacks, or a column it lacks.
  *
  * @param board - The board the coordinate was asked of
- * @param coordinate - The coordinate the grid does not hold
+ * @param coordinate - The coordinate the layout does not list
  * @throws Always, naming the part that is wrong
  */
 function throwInvalidCoordinate(board: Board, coordinate: Coordinate): never {
@@ -21,23 +23,30 @@ function throwInvalidCoordinate(board: Board, coordinate: Coordinate): never {
   }
   const [inputRow = '', inputColumn = ''] = parts;
 
-  // A row or a column only a larger board has.
-  const layout = getCoordinateLayout(board);
-  if (layout.getRowIndex(inputRow) === -1) {
+  // A row or a column only a larger board has. A row is this board's if its
+  // letter is among the first `depth` row letters, and a column if its number
+  // is among the first `frontage` column numbers. The labels are read as
+  // plain strings, since the part being checked may be no label at all.
+  const { depth, frontage } = coordinateLayoutMap[board.boardType];
+  const rowLetters: readonly string[] = boardRowLetters;
+  const row = rowLetters.indexOf(inputRow);
+  if (row === -1 || row >= depth) {
     throw new Error(`Invalid row: ${inputRow}`);
   }
-  if (layout.getColumnIndex(inputColumn) === -1) {
+  const columnNumbers: readonly string[] = boardColumnNumbers;
+  const column = columnNumbers.indexOf(inputColumn);
+  if (column === -1 || column >= frontage) {
     throw new Error(`Invalid column: ${inputColumn}`);
   }
 
-  // Both parts are this board's, so the grid holds the space; reaching here
-  // means the grid and the layout disagree.
+  // Both parts are this board's, so the layout lists the space; reaching here
+  // means the positions disagree with this size's rows and columns.
   throw new Error(`Invalid coordinate: ${coordinate}`);
 }
 
 /**
- * One step forward from `coordinate` along `facing`, using the grid for the
- * active board’s size (`board.boardType`).
+ * One step forward from `coordinate` along `facing`, using the active board’s
+ * coordinate layout (`board.boardType`).
  *
  * Returns `undefined` when that step would leave the board. Throws on a malformed
  * coordinate string, a row/column outside this board’s layout, or an invalid facing.
@@ -47,16 +56,14 @@ export function findForwardSpace(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): Coordinate | undefined {
-  // The grid for this size tables each space's row and column, so a step
-  // costs two lookups rather than splitting the name and naming the next
-  // space afresh. A mover's paths and a bot's weighing take many steps.
-  const grid = getCoordinateGrid(board);
-  const currentRowIndex = grid.rowIndexByCoordinate.get(coordinate);
-  const currentColumnIndex = grid.columnIndexByCoordinate.get(coordinate);
+  // Its row and column, read from its whole name, so a step costs a lookup
+  // and some arithmetic rather than splitting the name and naming the next
+  // space afresh. A mover's paths take many steps.
+  const position = findGridPosition(board, coordinate);
 
   // A space not on this board is a caller's mistake. Say which part of its
   // name is wrong, as the step always has.
-  if (currentRowIndex === undefined || currentColumnIndex === undefined) {
+  if (position === undefined) {
     throwInvalidCoordinate(board, coordinate);
   }
 
@@ -66,11 +73,13 @@ export function findForwardSpace(
   }
 
   // Calculate the new position by applying the movement deltas
-  const newRowIndex = currentRowIndex + getRowDelta(facing);
-  const newColumnIndex = currentColumnIndex + getColumnDelta(facing);
+  const forward = {
+    column: position.column + getColumnDelta(facing),
+    row: position.row + getRowDelta(facing),
+  };
 
   // A step past the last row or column leaves the board: there is no space
   // there, which is an ordinary answer (a board edge at a unit's front).
-  const forwardSpace = grid.coordinateRows[newRowIndex]?.[newColumnIndex];
+  const forwardSpace = findCoordinateAtPosition(board, forward);
   return forwardSpace;
 }

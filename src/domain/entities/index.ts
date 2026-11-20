@@ -1,11 +1,7 @@
-// Game modes
-export {
-  gameModeNameSchema,
-  gameModeNames,
-  gameModes,
-  gameModeSchema,
-} from './gameModes';
-export type { GameMode, GameModeName } from './gameModes';
+// Game modes, declared in `@ruleValues` and re-exported beside the game's
+// other vocabulary.
+export { gameModeNameSchema, gameModeNames, gameModes } from '@ruleValues';
+export type { GameMode, GameModeName } from '@ruleValues';
 
 // Players
 export { playerSchema, playerSideSchema, playerSides } from './player';
@@ -18,13 +14,8 @@ export {
   boardSpaceSchema,
   boardType,
   boardTypeEnum,
+  coordinateLayoutMap,
   coordinateSchema,
-  largeBoardColumnNumbers,
-  largeBoardRowLetters,
-  smallBoardColumnNumbers,
-  smallBoardRowLetters,
-  standardBoardColumnNumbers,
-  standardBoardRowLetters,
 } from './board';
 export type {
   Board,
@@ -33,12 +24,7 @@ export type {
   Coordinate,
   CoordinateLayout,
   CoordinateLayoutMap,
-  LargeBoardColumnNumber,
-  LargeBoardRowLetter,
-  SmallBoardColumnNumber,
-  SmallBoardRowLetter,
-  StandardBoardColumnNumber,
-  StandardBoardRowLetter,
+  GridPosition,
 } from './board';
 
 // Units
