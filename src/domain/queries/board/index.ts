@@ -44,6 +44,9 @@ export { getGridPosition } from './getGridPosition';
 // The space at a row and column, or none past an edge.
 export { findCoordinateAtPosition } from './findCoordinateAtPosition';
 
+// The two spaces a diagonal step cuts between.
+export { getDiagonalCornerSpaces } from './getDiagonalCornerSpaces';
+
 // How many spaces apart two spaces are, a diagonal step counting as one.
 export { getSpacesApart } from './getSpacesApart';
 

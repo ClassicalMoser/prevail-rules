@@ -1,9 +1,8 @@
 import type { Coordinate, PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import {
-  getAdjacentFacings,
-  findForwardSpace,
   findStepFacing,
+  getDiagonalCornerSpaces,
   isDiagonalFacing,
 } from '@queries';
 import { canMoveThrough } from './canMoveThrough';
@@ -50,18 +49,15 @@ export function checkDiagonalMove(
     throw new Error('The step is not diagonal');
   }
 
-  // Get adjacent facings (orthogonal directions)
-  const adjacentFacings = getAdjacentFacings(currentFacing);
-
-  // Get the orthogonal pass-through spaces for each adjacent facing
-  const orthogonalPassThroughSpaces: Coordinate[] = Array.from(
-    adjacentFacings,
-    (adjacentFacing) =>
-      findForwardSpace(board, currentCoordinate, adjacentFacing),
-  ).filter((space) => space !== undefined);
+  // The two corner spaces the step cuts between, read by position.
+  const corners = getDiagonalCornerSpaces(
+    board,
+    currentCoordinate,
+    targetCoordinate,
+  );
 
   // Filter out spaces that we can't move through
-  const validPassThroughSpaces = orthogonalPassThroughSpaces.filter((space) =>
+  const validPassThroughSpaces = corners.filter((space) =>
     canMoveThrough(unitSide, currentUnitFlexibility, space, gameState),
   );
 

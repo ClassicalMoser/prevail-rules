@@ -1,9 +1,6 @@
 import type { Board, Coordinate, PlayerSide } from '@entities';
-import {
-  getDiagonallyAdjacentSpaces,
-  getOrthogonallyAdjacentSpaces,
-} from './adjacency';
 import { getBoardSpace } from './getBoardSpace';
+import { getDiagonalCornerSpaces } from './getDiagonalCornerSpaces';
 import { hasEnemyUnit } from '../unitPresence/hasEnemyUnit';
 
 /**
@@ -25,35 +22,16 @@ export function diagonalIsClear(
   originCoordinate: Coordinate,
   targetCoordinate: Coordinate,
 ): boolean {
-  // The diagonal is only a diagonal if the target stands diagonally from the
-  // origin.
-  const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
+  // The two spaces the diagonal cuts between. Asking of a target that is not
+  // a diagonal neighbour throws there: it has no corners to block it.
+  const corners = getDiagonalCornerSpaces(
     board,
     originCoordinate,
-  );
-  if (!originDiagonalSpaces.has(targetCoordinate)) {
-    // Target space is not a diagonal space - check was called in error
-    throw new Error(
-      `Target space ${targetCoordinate} is not diagonally adjacent to ${originCoordinate}`,
-    );
-  }
-
-  // Find the shared orthogonal spaces between the origin and target spaces
-  const originOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
-    board,
-    originCoordinate,
-  );
-  const targetOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
-    board,
     targetCoordinate,
-  );
-  // Find intersection: spaces that are in both sets
-  const sharedOrthogonalSpaces = [...originOrthogonalSpaces].filter((space) =>
-    targetOrthogonalSpaces.has(space),
   );
 
   // Get the enemy spaces
-  const enemySpaces = sharedOrthogonalSpaces.filter((space) => {
+  const enemySpaces = corners.filter((space) => {
     // Check if the space has an enemy unit
     const hasEnemyUnitResult = hasEnemyUnit(
       playerSide,
