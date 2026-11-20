@@ -9,79 +9,85 @@ import {
   isDiagonalFacing,
 } from '@queries';
 
+/**
+ * Every space a commander can reach from where it stands, its own included
+ * (it may stay put, §4.2.6).
+ *
+ * A commander moves up to its distance in any direction, a diagonal step
+ * counting as one (§4.2.2, §4.2.3). It may pass over and stop on its own
+ * units, but never enter a space holding an enemy, engaged spaces included
+ * (§4.2.4), and never cross a diagonal enemies block (§4.2.5).
+ *
+ * The walk goes out a ring at a time: every space one step away, then two,
+ * and so on. Each step costs one, and a commander spends nothing else, so the
+ * first time the walk reaches a space is by its shortest way there, with the
+ * most distance left over. A longer way there could reach nowhere the
+ * shorter one cannot, so each space is explored once.
+ *
+ * @param playerSide - The commander's side, whose enemies bar the way
+ * @param startingCoordinate - Where the commander stands
+ * @param gameState - The game, for the board
+ * @param maxDistance - How many steps it may take
+ * @returns Every space it may end on
+ */
 export function exploreCommanderMoves(
   playerSide: PlayerSide,
   startingCoordinate: Coordinate,
   gameState: GameState,
   maxDistance: number,
 ): Set<Coordinate> {
-  // Get the board state
   const board = gameState.boardState;
 
-  // Collect the legal moves
-  const legalMoves = new Set<Coordinate>();
+  // Where the commander stands is a legal ending: it may stay put (§4.2.6).
+  const legalMoves = new Set<Coordinate>([startingCoordinate]);
 
-  // Track the visited states to avoid revisiting
-  const visitedStates = new Set<string>();
-  const getStateKey = (
-    coordinate: Coordinate,
-    remainingDistance: number,
-  ): string => `${coordinate}|${remainingDistance}`;
+  // The spaces first reached on the last step, from which the next step goes
+  // out. The walk begins at the commander's own space.
+  let ring: Coordinate[] = [startingCoordinate];
 
-  // Recursive function to explore the moves
-  function explore(
-    currentCoordinate: Coordinate,
-    remainingDistance: number,
-  ): void {
-    // Check if we have already visited this state
-    const stateKey = getStateKey(currentCoordinate, remainingDistance);
-    if (visitedStates.has(stateKey)) {
-      return;
-    }
-    visitedStates.add(stateKey);
+  // One ring per step, until the distance is spent or nowhere new is left.
+  for (let step = 0; step < maxDistance && ring.length > 0; step++) {
+    const nextRing: Coordinate[] = [];
 
-    // If we have no distance remaining, we stop
-    if (remainingDistance === 0) {
-      return;
-    }
-    // Explore in each direction
-    for (const facing of unitFacings) {
-      // Get the next space in the direction
-      const nextSpace = findForwardSpace(board, currentCoordinate, facing);
-      if (nextSpace === undefined) {
-        // If there is no space in the direction, we stop
-        continue;
-      }
-      // If the facing is diagonal,
-      // We need to check if we can even reach the target space
-      const isDiagonalFacingResult = isDiagonalFacing(facing);
-      // Check if the move is a diagonal and an the enemy blocks it
-      if (
-        isDiagonalFacingResult &&
-        !diagonalIsClear(playerSide, board, currentCoordinate, nextSpace)
-      ) {
-        // If we cannot reach the target space, we stop
-        continue;
-      }
-      // Check if we can enter the space
-      const hasEnemyUnitResult = hasEnemyUnit(
-        playerSide,
-        getBoardSpace(board, nextSpace),
-      );
-      // If we can enter the space, we add it to the legal moves
-      if (!hasEnemyUnitResult) {
-        legalMoves.add(nextSpace);
-        // Explore the next space with one less distance remaining
-        explore(nextSpace, remainingDistance - 1);
+    for (const from of ring) {
+      // A commander has no facing and may go any of the eight ways (§4.2.3).
+      for (const direction of unitFacings) {
+        // A step off the board leads nowhere.
+        const to = findForwardSpace(board, from, direction);
+        if (to === undefined) {
+          continue;
+        }
+
+        // A space already reached was reached by a way no longer than this
+        // one, so this way adds nothing.
+        if (legalMoves.has(to)) {
+          continue;
+        }
+
+        // Enemies standing on both corners of a diagonal block it (§4.2.5).
+        if (
+          isDiagonalFacing(direction) &&
+          !diagonalIsClear(playerSide, board, from, to)
+        ) {
+          continue;
+        }
+
+        // A space holding an enemy, engaged spaces included, is closed to
+        // the commander (§4.2.4).
+        if (hasEnemyUnit(playerSide, getBoardSpace(board, to))) {
+          continue;
+        }
+
+        // The commander may end here, and go on from here on the next step.
+        legalMoves.add(to);
+        nextRing.push(to);
       }
     }
+
+    // The next step goes out from the spaces this one reached.
+    ring = nextRing;
   }
 
-  // Add the starting position to the legal moves
-  legalMoves.add(startingCoordinate);
-  // Start exploring from the starting position
-  explore(startingCoordinate, maxDistance);
-
-  // Get the set of final legal positions
+  // Every space within reach, the commander's own among them.
   return legalMoves;
 }
