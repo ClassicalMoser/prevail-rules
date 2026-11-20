@@ -39,7 +39,7 @@ Commentary is extensive. 25% comments inside a function body is not too much; JS
 
 Where a step encodes a rule of the game, the comment names the rule. That is the line carrying the meaning, and a comment there that gives the operation instead — or the chain of states a lookup walks through — spends the line and loses it. Where no rule is at stake, the step still has an intended purpose and use, and that is what the comment says. A label naming the operation is not enough: it repeats what the reader can see and leaves out why the step is there and what the next one does with it. Every step has a reason; only some of those reasons are rules.
 
-A comment refers to code by name — a function, a type, a spec — so that a search finds it. It does not cite a commit hash, a line number, or another document with "see …"; those break when the code moves.
+A comment refers to code by name — a function, a type, a spec — so that a search finds it. It does not cite a commit hash or a line number; those break when the code moves. It may link a document for fuller context, but does not send the reader to another module's header comment.
 
 A comment must match the code beneath it. One describing a parameter, a branch or a value that is not there is worse than silence, because a reader trusts it and goes looking for what it promised. A comment holding a place for a real one later is the same failure in advance: it costs a line, passes review because something is there, and teaches a reader to skim.
 
