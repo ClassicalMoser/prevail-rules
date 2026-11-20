@@ -2,6 +2,13 @@ import type { Board } from '@entities';
 import type { MoveResult } from './explore';
 import { unitFacings } from '@entities';
 import { getGridPosition } from '@queries';
+import { boardColumnNumbers } from '@ruleValues';
+
+/**
+ * As many columns as the widest board has, so a row's rank always clears
+ * the last column of the row before it, on a board of any size.
+ */
+const ENOUGH_COLUMNS = boardColumnNumbers.length;
 
 /**
  * A set of move endings written down as a list, in board order: by the space
@@ -23,22 +30,19 @@ export function listMovesInBoardOrder(
   board: Board,
   moves: Iterable<MoveResult>,
 ): MoveResult[] {
-  const listed = [...moves].toSorted((a, b) => {
-    // Earlier rows first, then earlier columns: the space's place on the
-    // board.
-    const aSpace = getGridPosition(board, a.placement.coordinate);
-    const bSpace = getGridPosition(board, b.placement.coordinate);
-    const byRow = aSpace.row - bSpace.row;
-    const byColumn = aSpace.column - bSpace.column;
-
-    // On one space, the facings in their fixed order.
-    const byFacing =
-      unitFacings.indexOf(a.placement.facing) -
-      unitFacings.indexOf(b.placement.facing);
-
-    // Row, then column, then facing.
-    const order = byRow || byColumn || byFacing;
-    return order;
+  // Each ending's place in board order, worked out once: its row, its
+  // column, then its facing among the eight. Positions are counted from 0,
+  // so a row outweighs any column and a column any facing.
+  const ranked = [...moves].map((move) => {
+    const { row, column } = getGridPosition(board, move.placement.coordinate);
+    const facing = unitFacings.indexOf(move.placement.facing);
+    const rank = (row * ENOUGH_COLUMNS + column) * unitFacings.length + facing;
+    return { move, rank };
   });
+
+  // Lowest rank first: row, then column, then facing.
+  const listed = ranked
+    .toSorted((a, b) => a.rank - b.rank)
+    .map(({ move }) => move);
   return listed;
 }
