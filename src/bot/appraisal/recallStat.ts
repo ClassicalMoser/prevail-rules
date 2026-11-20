@@ -20,6 +20,7 @@ interface ViewMemory {
   attackResults: Map<string, AttackResult>;
 }
 
+// TODO(composition): a module-level WeakMap keyed by the game state is a hidden copy of what the rules answered, living for the whole process and shared by every game; the design keeps state in function or closure scope only. Settled by a memory made per decision and passed down with the survey.
 const memories = new WeakMap<GameState, ViewMemory>();
 
 function memoryOf(view: GameState): ViewMemory {

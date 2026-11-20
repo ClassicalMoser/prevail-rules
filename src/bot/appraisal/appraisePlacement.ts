@@ -51,6 +51,7 @@ const INSPIRATION_REACH = 2;
  * without that unit. Each decision has its own survey, so the memory goes
  * with it.
  */
+// TODO(composition): a module-level WeakMap is state in module scope, living for the whole process; the design keeps state in function or closure scope only. Settled by carrying these boards on the decision's survey, or a memory made with it and passed down.
 const boardsWithout = new WeakMap<BattlefieldSurvey, Map<string, Board>>();
 
 function boardWithout(
