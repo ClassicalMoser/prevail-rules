@@ -1,11 +1,3 @@
-/**
- * Resolve-rout effect: works out what the routing player owes and drives the
- * rout substep (§9.3).
- *
- * The event names the player who pays; the player names the rout, so applying it
- * needs nothing about where the rout sits. The routed units are the rout's own,
- * recorded when it opened.
- */
 import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
@@ -17,6 +9,9 @@ import { z } from 'zod';
 export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
 
 /**
+ * Resolve-rout effect: works out what the routing player owes and drives the
+ * rout substep (§9.3).
+ *
  * Records the penalty a player pays for units that routed: one card from
  * hand for each point of their Morale, which is what each unit was worth to
  * the army (§9.3.2–9.3.3). The units left the board when the rout opened.
