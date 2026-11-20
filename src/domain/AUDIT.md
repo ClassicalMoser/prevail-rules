@@ -31,12 +31,14 @@ Audit in this order (dependencies flow downward):
 - [x] `ruleValues/` — closed 2026-11-07; reopened 2026-11-12, changed since the read; closed again 2026-11-13
   - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
   - [x] Arrived after the read: `commitmentModifiers`
+  - Arrived and read 2026-11-20: `boardSizes`, `boardLabels`, `boardCoordinates`, `boardLayouts` (moved from `entities/board/`, with each size now stated by its depth and frontage), and `gameModes` (moved from `entities/gameModes/`, its entry schema removed)
 
 ### `entities/` (`@entities`)
 
 - [x] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`); reopened 2026-11-12, changed since the read; closed again 2026-11-13
   - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`; `board/groundCover` (scaffold, replacing `terrainTypes` and `waterCover`)
   - Removed after the read: `line/` (nothing used it; lines are `LegalLine` in `@legality`)
+  - Moved out 2026-11-20: the board vocabulary (`board/smallBoard/`, `standardBoard/`, `largeBoard/`, `boardCoordinates`) and `gameModes/` to `@ruleValues`, re-exported from the barrels; read. Arrived and read: `board/gridPosition`
   - [x] `army/`
   - [x] `attackResult/`
   - [x] `attackType/`
