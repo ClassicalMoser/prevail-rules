@@ -140,13 +140,11 @@ position of real bot games.
    still accepted when submitted. Endings per unit: 295 to 122, the same
    places at 845 moves.
 
-Still open:
-
-5. The adjacency helpers stop building sets they do not need. At the read of
-   `queries/`, one helper at a time, keeping what their callers ask of them.
-6. `listMovesInBoardOrder` looks each ending's position up on every
-   comparison of its sort; working each ending's rank out once would take
-   back what it added to the move offer (about 680 µs to 750 µs).
+5. **A neighbourhood's spaces are gathered straight into one set**
+   (`getSpacesInDirections`), used by the five adjacency helpers;
+   `filterUndefinedSpaces` is gone. Same answers.
+6. **A move's endings are ranked once** for listing in board order. Offering
+   a move: about 750 µs back to 644 µs.
 
 ## Waiting on these
 
