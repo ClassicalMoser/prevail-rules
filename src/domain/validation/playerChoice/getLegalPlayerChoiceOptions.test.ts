@@ -1,12 +1,16 @@
 import { tempCommandCards } from '@sampleValues';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
   createBoardWithCommander,
   createIssueCommandsPhaseState,
+  createPlayableGame,
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  readyToWriteMove,
+  resolvingMoveOrder,
   updateCardState,
 } from '@testing';
 
@@ -252,6 +256,47 @@ describe('getLegalPlayerChoiceOptions function', () => {
       'E-3',
       'E-4',
       'E-5',
+    ]);
+  });
+
+  it("lists a mover's endings in board order, which means nothing", () => {
+    // Black's unit on E-5 facing north, Speed 3 and Flexibility 0, so it can
+    // only walk straight ahead; white keeps a unit far off so both armies
+    // stay in the field.
+    const game = createPlayableGame(
+      [
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 0,
+          player: 'black',
+          speed: 3,
+        },
+        { coord: 'A-1', facing: 'south', player: 'white' },
+      ],
+      { initiative: 'black' },
+    );
+    // Black is carrying out a Move order for that unit, has named it and
+    // declined to commit, so the move itself is owed.
+    const mover = getSingleUnitWithPlacementAtCoordinate(
+      game.boardState,
+      'E-5',
+    );
+    const ordered = resolvingMoveOrder(game, [mover.unit]);
+    const waiting = readyToWriteMove(ordered, mover, null);
+
+    const options = getLegalPlayerChoiceOptions(waiting);
+    if (options?.choiceType !== 'moveUnit') {
+      throw new Error('expected moveUnit');
+    }
+    // Its four endings, listed row by row from the north edge, though the
+    // walk finds them from E-5 outward. The endings are a set; this only
+    // fixes how it is written down.
+    expect(options.moves.map((move) => move.placement)).toStrictEqual([
+      { coordinate: 'B-5', facing: 'north' },
+      { coordinate: 'C-5', facing: 'north' },
+      { coordinate: 'D-5', facing: 'north' },
+      { coordinate: 'E-5', facing: 'north' },
     ]);
   });
 

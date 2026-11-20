@@ -67,6 +67,57 @@ describe('getLegalUnitMoves function', () => {
     });
   });
 
+  describe('one way to each ending', () => {
+    it('offers only the plainest way to an ending reachable more than one way', () => {
+      // A Flexibility-4 unit on E-5 facing north can come to face south on
+      // E-5 by one turn about, or by four turns left. Where a move ends is
+      // what the offer is for, so it lists the plainer way only.
+      const gameState = createGameState([
+        { coord: 'E-5', facing: 'north', flexibility: 4, player: 'black' },
+      ]);
+      const unit = getSingleUnitWithPlacementAtCoordinate(
+        gameState.boardState,
+        'E-5',
+      );
+
+      const facingAbout = [...getLegalUnitMoves(unit, gameState)].filter(
+        (move) =>
+          move.placement.coordinate === 'E-5' &&
+          move.placement.facing === 'south',
+      );
+
+      expect(facingAbout.map((move) => move.path)).toStrictEqual([
+        ['turnAbout'],
+      ]);
+    });
+
+    it('lists each ending once', () => {
+      // However many ways lead to a space and facing, it appears once.
+      const gameState = createGameState([
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 4,
+          player: 'black',
+          speed: 3,
+        },
+      ]);
+      const unit = getSingleUnitWithPlacementAtCoordinate(
+        gameState.boardState,
+        'E-5',
+      );
+
+      const moves = [...getLegalUnitMoves(unit, gameState)];
+      const endings = new Set(
+        moves.map(
+          (move) => `${move.placement.coordinate} ${move.placement.facing}`,
+        ),
+      );
+
+      expect(moves).toHaveLength(endings.size);
+    });
+  });
+
   describe('error cases', () => {
     it('given an error when unit is not present at starting position, throws', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
