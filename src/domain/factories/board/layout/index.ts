@@ -5,3 +5,7 @@ export { standardCoordinateLayout } from './standardCoordinateLayout';
 
 // The layout for a board's size.
 export { getCoordinateLayout } from './coordinateLayoutMap';
+
+// Every space of a board's size, with its row and column both ways.
+export type { CoordinateGrid } from './buildCoordinateGrid';
+export { getCoordinateGrid } from './coordinateGridMap';

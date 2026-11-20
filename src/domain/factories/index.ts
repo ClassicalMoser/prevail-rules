@@ -17,6 +17,10 @@ export {
 // The layout for a board's size.
 export { getCoordinateLayout } from './board';
 
+// Every space of a board's size, with its row and column both ways.
+export type { CoordinateGrid } from './board';
+export { getCoordinateGrid } from './board';
+
 // Blank game for a mode: mode-sized board, empty piles, initiative black.
 export { createEmptyGameState } from './game';
 

@@ -1,13 +1,43 @@
 import type { Board, UnitFacing, Coordinate } from '@entities';
 import { unitFacings } from '@entities';
 import { getColumnDelta, getRowDelta } from '../deltas';
-import { getCoordinateLayout } from '@factories';
+import { getCoordinateGrid, getCoordinateLayout } from '@factories';
 
 const facings = new Set<UnitFacing>(unitFacings);
 
 /**
- * One step forward from `coordinate` along `facing`, using the active board’s
- * coordinate layout (`board.boardType`).
+ * Words why a coordinate is not a space on this board: a name not shaped
+ * row-column, a row this size lacks, or a column it lacks.
+ *
+ * @param board - The board the coordinate was asked of
+ * @param coordinate - The coordinate the grid does not hold
+ * @throws Always, naming the part that is wrong
+ */
+function throwInvalidCoordinate(board: Board, coordinate: Coordinate): never {
+  // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
+  const parts = coordinate.split('-');
+  if (parts.length !== 2) {
+    throw new Error(`Invalid coordinate: ${coordinate}`);
+  }
+  const [inputRow = '', inputColumn = ''] = parts;
+
+  // A row or a column only a larger board has.
+  const layout = getCoordinateLayout(board);
+  if (layout.getRowIndex(inputRow) === -1) {
+    throw new Error(`Invalid row: ${inputRow}`);
+  }
+  if (layout.getColumnIndex(inputColumn) === -1) {
+    throw new Error(`Invalid column: ${inputColumn}`);
+  }
+
+  // Both parts are this board's, so the grid holds the space; reaching here
+  // means the grid and the layout disagree.
+  throw new Error(`Invalid coordinate: ${coordinate}`);
+}
+
+/**
+ * One step forward from `coordinate` along `facing`, using the grid for the
+ * active board’s size (`board.boardType`).
  *
  * Returns `undefined` when that step would leave the board. Throws on a malformed
  * coordinate string, a row/column outside this board’s layout, or an invalid facing.
@@ -17,27 +47,17 @@ export function findForwardSpace(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): Coordinate | undefined {
-  const parts = coordinate.split('-');
-  if (parts.length !== 2) {
-    throw new Error(`Invalid coordinate: ${coordinate}`);
-  }
-  // Parse coordinate - already validated at boundary, so we trust the format
-  // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
-  const [inputRow, inputColumn] = parts;
+  // The grid for this size tables each space's row and column, so a step
+  // costs two lookups rather than splitting the name and naming the next
+  // space afresh. A mover's paths and a bot's weighing take many steps.
+  const grid = getCoordinateGrid(board);
+  const currentRowIndex = grid.rowIndexByCoordinate.get(coordinate);
+  const currentColumnIndex = grid.columnIndexByCoordinate.get(coordinate);
 
-  // Get the coordinate layout for the board
-  const layout = getCoordinateLayout(board);
-
-  // Convert string coordinates to array indices (O(1) via prebuilt maps)
-  const currentRowIndex = layout.getRowIndex(inputRow);
-  const currentColumnIndex = layout.getColumnIndex(inputColumn);
-
-  // Validate row and column (defensive check for invalid coordinates that bypass TypeScript)
-  if (currentRowIndex === -1) {
-    throw new Error(`Invalid row: ${inputRow}`);
-  }
-  if (currentColumnIndex === -1) {
-    throw new Error(`Invalid column: ${inputColumn}`);
+  // A space not on this board is a caller's mistake. Say which part of its
+  // name is wrong, as the step always has.
+  if (currentRowIndex === undefined || currentColumnIndex === undefined) {
+    throwInvalidCoordinate(board, coordinate);
   }
 
   // Validate facing (defensive check for invalid facings that bypass TypeScript)
@@ -49,25 +69,8 @@ export function findForwardSpace(
   const newRowIndex = currentRowIndex + getRowDelta(facing);
   const newColumnIndex = currentColumnIndex + getColumnDelta(facing);
 
-  // Boundary check
-  if (
-    newRowIndex < 0 ||
-    newRowIndex >= layout.rowLetters.length ||
-    newColumnIndex < 0 ||
-    newColumnIndex >= layout.columnNumbers.length
-  ) {
-    return undefined;
-  }
-
-  // Convert the calculated indices back to string coordinates.
-  // Bounds were checked above; throw if the arrays disagree with their length.
-  const newRow = layout.rowLetters[newRowIndex];
-  const newColumn = layout.columnNumbers[newColumnIndex];
-  if (newRow === undefined || newColumn === undefined) {
-    throw new Error(
-      `Layout missing row/column at indices ${newRowIndex},${newColumnIndex}`,
-    );
-  }
-
-  return layout.createCoordinate(newRow, newColumn);
+  // A step past the last row or column leaves the board: there is no space
+  // there, which is an ordinary answer (a board edge at a unit's front).
+  const forwardSpace = grid.coordinateRows[newRowIndex]?.[newColumnIndex];
+  return forwardSpace;
 }

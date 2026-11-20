@@ -1,9 +1,10 @@
 import type { Board, Coordinate } from '@entities';
-import { getCoordinateLayout } from '@factories';
+import { getCoordinateGrid } from '@factories';
 
 /**
  * Gets all coordinates for a board in a type-safe way.
- * Uses the board's coordinate layout to generate all valid coordinates.
+ * Reads them from the grid for the board's size, built once from its layout,
+ * so a walk over the board does not name every space afresh.
  *
  * @param board - The board to get coordinates for
  * @returns An array of all valid coordinates for the board type
@@ -16,12 +17,8 @@ import { getCoordinateLayout } from '@factories';
  * ```
  */
 export function getBoardCoordinates(board: Board): readonly Coordinate[] {
-  const layout = getCoordinateLayout(board);
-  const coordinates: Coordinate[] = [];
-  for (const row of layout.rowLetters) {
-    for (const column of layout.columnNumbers) {
-      coordinates.push(layout.createCoordinate(row, column));
-    }
-  }
+  // Every space of this size, row by row: the same list for every board of
+  // that size, so it is shared, not rebuilt.
+  const { coordinates } = getCoordinateGrid(board);
   return coordinates;
 }

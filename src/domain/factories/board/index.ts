@@ -15,3 +15,7 @@ export {
   smallCoordinateLayout,
   standardCoordinateLayout,
 } from './layout';
+
+// Every space of a board's size, with its row and column both ways.
+export type { CoordinateGrid } from './layout';
+export { getCoordinateGrid } from './layout';
