@@ -12,12 +12,9 @@ import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 
@@ -51,7 +48,7 @@ describe('applyPerformRangedAttackEvent function', () => {
     for (const unit of onBoard) {
       board = addUnitToBoard(board, unit);
     }
-    const state = updateBoardState(base, board);
+    const state = replaceBoard(base, board);
     const shot = createRangedAttackResolutionState(state, {
       attackingCommitment: { commitmentType: 'declined' },
       attackingUnit: shooter,

@@ -9,7 +9,6 @@ import {
 import {
   carryRidingCommander,
   moveUnitOnBoard,
-  updateBoardState,
   updateCommandResolutionState,
 } from '@transforms/pureTransforms';
 
@@ -51,17 +50,16 @@ export function applyMoveUnitEvent<S extends GameState>(
   const enteringEnemy = hasEnemyUnit(event.player, targetSpace);
   const arrived = { ...mover, placement: destination };
   const movingUnit = enteringEnemy ? mover : arrived;
-  const board = enteringEnemy
-    ? state.boardState
+  const withMover = enteringEnemy
+    ? state
     : carryRidingCommander(
         moveUnitOnBoard(state, mover.unit, destination),
         written,
         destination.coordinate,
       );
-  const withBoard = updateBoardState(state, board);
 
   // The movement records where the mover now stands.
-  const moved = updateCommandResolutionState(withBoard, {
+  const moved = updateCommandResolutionState(withMover, {
     ...written,
     movingUnit,
   });

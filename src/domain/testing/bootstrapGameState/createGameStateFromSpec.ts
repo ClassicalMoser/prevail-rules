@@ -9,7 +9,9 @@ import {
 } from './unitPlacementSpec';
 
 import { createEmptyGameState } from '@factories';
-import { updateBoardState, updateCurrentInitiative } from '@transforms';
+
+import { updateCurrentInitiative } from '@transforms';
+import { replaceBoard } from '@testing/replaceBoard';
 /**
  * Creates a game state with units placed according to the provided specifications.
  */
@@ -29,7 +31,7 @@ export function createGameState(
     normalizeUnitPlacement(spec, instanceNumber),
   );
   const board = createBoardWithUnits(normalizedUnits);
-  return updateBoardState(gameState, board);
+  return replaceBoard(gameState, board);
 }
 
 /**

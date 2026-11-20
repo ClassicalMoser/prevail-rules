@@ -7,7 +7,7 @@ import { deriveGameStateIndex } from './deriveGameStateIndex';
 
 /**
  * A new game with this board in place. The board is set directly rather than
- * through `updateBoardState`, which sets the index from the subject; the
+ * through `replaceBoard`, which sets the index from the subject; the
  * subject ignores the state's own index, so the stale one does no harm.
  */
 function withBoard(board: Board): AuthoritativeGameState {
@@ -67,7 +67,8 @@ describe('deriveGameStateIndex function', () => {
   });
 
   it('files a unit held both in reserve and on the board where it stands', () => {
-    // Setup places the unit a moment before it leaves reserve.
+    // Never written in play, but a state read from outside may hold it; the
+    // check refuses it, and this still has an answer.
     const white = createTestUnit('white', { attack: 3 });
     const onBoard = withBoard(
       createBoardWithEngagedUnits(

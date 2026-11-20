@@ -21,10 +21,10 @@ import {
   createRoutState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -47,7 +47,7 @@ describe('applyResolveRoutEvent function', () => {
     const routedUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(routedUnit, 'E-5', 'north');
 
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -80,11 +80,11 @@ describe('applyResolveRoutEvent function', () => {
     const routedUnitWithPlacement = placed(routedUnit, 'E-5', 'north');
     const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
-    let stateWithUnits = updateBoardState(
+    let stateWithUnits = replaceBoard(
       state,
       addUnitToBoard(state.boardState, routedUnitWithPlacement),
     );
-    stateWithUnits = updateBoardState(
+    stateWithUnits = replaceBoard(
       stateWithUnits,
       addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
     );

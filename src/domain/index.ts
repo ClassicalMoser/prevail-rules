@@ -730,11 +730,12 @@ export {
 } from '@factories';
 export {
   addCommanderToBoard,
-  addCommanderToLostCommanders,
+  defeatCommander,
+  deployCommander,
   addCompletedPhase,
   addUnitsToCommandedUnits,
   addUnitToBoard,
-  addUnitToRouted,
+  deployUnit,
   burnCardFromPlayed,
   burnHiddenCardFromPlayed,
 } from '@transforms';
@@ -751,7 +752,7 @@ export {
   projectGameStateForVisibility,
   removeCommanderFromBoard,
   removeUnitFromBoard,
-  removeUnitFromReserve,
+  routUnit,
   replaceCardState,
   replaceHiddenPlayerCardState,
   updatePlayerCards,
@@ -763,7 +764,8 @@ export {
   revealHiddenCard,
   toHiddenCardState,
   updateAttackApplyState,
-  updateBoardState,
+  moveCommanderOnBoard,
+  moveUnitIntoEngagement,
   updateCommandResolutionState,
 } from '@transforms';
 export {

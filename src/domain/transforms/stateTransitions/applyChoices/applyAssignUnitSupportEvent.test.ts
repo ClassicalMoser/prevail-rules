@@ -2,12 +2,9 @@ import type { AssignUnitSupportEvent } from '@events';
 import { throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 import { getBoardSpace } from '@queries';
-import { createTestCard, createTestUnit, placed } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+
+import { createTestCard, createTestUnit, placed, replaceBoard } from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyAssignUnitSupportEvent } from './applyAssignUnitSupportEvent';
 
@@ -30,11 +27,11 @@ function awaitingSupportState() {
     },
   });
   base.cardState.white.inHand = [card];
-  let withBoard = updateBoardState(
+  let withBoard = replaceBoard(
     base,
     addUnitToBoard(base.boardState, placed(covered, 'E-5', 'south')),
   );
-  withBoard = updateBoardState(
+  withBoard = replaceBoard(
     withBoard,
     addUnitToBoard(withBoard.boardState, placed(uncovered, 'E-6', 'south')),
   );

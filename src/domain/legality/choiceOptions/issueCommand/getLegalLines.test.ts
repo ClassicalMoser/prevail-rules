@@ -6,12 +6,9 @@ import {
   createTestCommand,
   createTestUnit,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
-import {
-  addCommanderToBoard,
-  addUnitToBoard,
-  updateBoardState,
-} from '@transforms';
+import { addCommanderToBoard, addUnitToBoard } from '@transforms';
 
 import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 import {
@@ -65,7 +62,7 @@ describe('getLegalLines function', () => {
       unit,
     );
     board = addCommanderToBoard(board, 'black', 'E-5');
-    const state = updateBoardState(createEmptyGameState('standard'), board);
+    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     // A line of one names the same unit at both ends.
     expect(
@@ -85,7 +82,7 @@ describe('getLegalLines function', () => {
       unit,
     );
     board = addCommanderToBoard(board, 'black', 'E-5');
-    const state = updateBoardState(createEmptyGameState('standard'), board);
+    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     // No unit of any line through it is within range.
     expect(getLegalLines(atCommanderLineCommand, 'black', state)).toStrictEqual(
@@ -99,7 +96,7 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5', 'E-6'],
     });
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       addCommanderToBoard(board, 'black', 'E-5'),
     );
@@ -130,7 +127,7 @@ describe('getLegalLines function', () => {
       'E-8',
     ];
     const { board, unitAt } = createBoardWithFacingRow({ coordinates });
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       addCommanderToBoard(board, 'black', 'E-4'),
     );
@@ -165,7 +162,7 @@ describe('getLegalLines function', () => {
       'E-10',
     ];
     const { board, unitAt } = createBoardWithFacingRow({ coordinates });
-    const state = updateBoardState(createEmptyGameState('standard'), board);
+    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     const lines = getLegalLines(unlimitedLineCommand, 'black', state);
 
@@ -190,7 +187,7 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3'],
     });
-    const base = updateBoardState(createEmptyGameState('standard'), board);
+    const base = replaceBoard(createEmptyGameState('standard'), board);
     const commanded = {
       ...base,
       currentRoundState: {
@@ -219,7 +216,7 @@ describe('getLegalLines function', () => {
     const theirs = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     // Our unit has walked into the enemy: both stand in E-5 (§2.2.1).
     const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
-    const state = updateBoardState(createEmptyGameState('standard'), board);
+    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     // An engaged unit cannot be ordered (§4.3.4), so it cannot end a line.
     expect(
@@ -232,7 +229,7 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3', 'E-4', 'E-5'],
     });
-    const base = updateBoardState(createEmptyGameState('standard'), board);
+    const base = replaceBoard(createEmptyGameState('standard'), board);
     const state = {
       ...base,
       currentRoundState: {
@@ -262,7 +259,7 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3', 'E-4'],
     });
-    const base = updateBoardState(createEmptyGameState('standard'), board);
+    const base = replaceBoard(createEmptyGameState('standard'), board);
     const state = {
       ...base,
       currentRoundState: {

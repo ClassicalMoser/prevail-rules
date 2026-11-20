@@ -7,13 +7,9 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '../';
+import { addUnitToBoard, updateCurrentInitiative, updatePhaseState } from '../';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateAttackApplyState } from './updateAttackApplyState';
@@ -30,7 +26,7 @@ describe('updateAttackApplyState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, placement),
     );

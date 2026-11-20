@@ -1,6 +1,10 @@
-import { createBoardWithUnits, createTestUnit, placed } from '@testing';
+import {
+  createBoardWithUnits,
+  createTestUnit,
+  placed,
+  replaceBoard,
+} from '@testing';
 import { createEmptyGameState } from '@factories';
-import { updateBoardState } from '@transforms';
 
 import { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
 /**
@@ -12,7 +16,7 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
 
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithUnits([
         placed(unit1, 'E-5', 'north'),
@@ -40,7 +44,7 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
   it('returns an empty set when the asked side has no unit on the board', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithUnits([placed(unit, 'E-5', 'north')]),
     );
@@ -53,7 +57,7 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
   it('returns the coordinate and facing the unit was placed with', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithUnits([placed(unit, 'E-5', 'north')]),
     );

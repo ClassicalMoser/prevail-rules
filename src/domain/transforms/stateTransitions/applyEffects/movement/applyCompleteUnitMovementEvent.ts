@@ -5,7 +5,6 @@ import {
   carryRidingCommander,
   clearCommandResolution,
   moveUnitOnBoard,
-  updateBoardState,
 } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
@@ -39,17 +38,13 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
 
   // A front engagement places the mover only now; a commander
   // riding with it comes off the start space with it (§4.3.10).
-  const boardWithMover = arrived
-    ? state.boardState
+  const stateWithMover = arrived
+    ? state
     : carryRidingCommander(
         moveUnitOnBoard(state, movingUnit.unit, targetPlacement),
         movementState,
         targetPlacement.coordinate,
       );
-  const stateWithMover =
-    boardWithMover === state.boardState
-      ? state
-      : updateBoardState(state, boardWithMover);
 
   // The unit's move is done. Whether the order goes on to another unit or
   // ends is the expected engine's to ask for.

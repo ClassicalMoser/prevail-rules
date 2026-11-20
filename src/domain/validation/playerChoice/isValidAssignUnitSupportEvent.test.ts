@@ -1,10 +1,10 @@
 import { tempUnits } from '@sampleValues';
 import { CLEANUP_PHASE } from '@game';
-import { createTestCard, createTestUnit, placed } from '@testing';
+
+import { createTestCard, createTestUnit, placed, replaceBoard } from '@testing';
 
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -29,11 +29,11 @@ function awaitingSupportState() {
     },
   });
   base.cardState.white.inHand = [card];
-  let withBoard = updateBoardState(
+  let withBoard = replaceBoard(
     base,
     addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
   );
-  withBoard = updateBoardState(
+  withBoard = replaceBoard(
     withBoard,
     addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
   );
@@ -90,7 +90,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
     base.cardState.white.inHand = [
       createTestCard({ unitSupport: { count: 0, supportType: 'generic' } }),
     ];
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
@@ -125,11 +125,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
       unitSupport: { count: 1, supportType: 'generic' },
     });
     base.cardState.white.inHand = [card];
-    let withBoard = updateBoardState(
+    let withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
-    withBoard = updateBoardState(
+    withBoard = replaceBoard(
       withBoard,
       addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
     );
@@ -164,11 +164,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
       unitSupport: { count: 1, supportType: 'generic' },
     });
     base.cardState.white.inHand = [card];
-    let withBoard = updateBoardState(
+    let withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
-    withBoard = updateBoardState(
+    withBoard = replaceBoard(
       withBoard,
       addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
     );
@@ -208,11 +208,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
       unitSupport: { count: 1, supportType: 'generic' },
     });
     base.cardState.white.inHand = [card];
-    let withBoard = updateBoardState(
+    let withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
-    withBoard = updateBoardState(
+    withBoard = replaceBoard(
       withBoard,
       addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
     );
@@ -323,11 +323,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
         },
       }),
     ];
-    let withBoard = updateBoardState(
+    let withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(typed, 'E-5', 'south')),
     );
-    withBoard = updateBoardState(
+    withBoard = replaceBoard(
       withBoard,
       addUnitToBoard(withBoard.boardState, placed(traitOnly, 'E-6', 'south')),
     );

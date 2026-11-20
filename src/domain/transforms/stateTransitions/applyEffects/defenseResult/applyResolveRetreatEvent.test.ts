@@ -17,13 +17,13 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
-  placed,
   legalRetreatsOf,
+  placed,
+  replaceBoard,
 } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -49,7 +49,7 @@ describe('applyResolveRetreatEvent function', () => {
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
     // Add unit to board
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -89,11 +89,11 @@ describe('applyResolveRetreatEvent function', () => {
     const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
     // Add both units to board (engaged)
-    let stateWithUnits = updateBoardState(
+    let stateWithUnits = replaceBoard(
       state,
       addUnitToBoard(state.boardState, retreatingUnitWithPlacement),
     );
-    stateWithUnits = updateBoardState(
+    stateWithUnits = replaceBoard(
       stateWithUnits,
       addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
     );
@@ -168,7 +168,7 @@ describe('applyResolveRetreatEvent function', () => {
 
       // Add another unit at a different location
       const otherUnit = createTestUnit('black', { attack: 2 });
-      const stateWithOtherUnit = updateBoardState(
+      const stateWithOtherUnit = replaceBoard(
         state,
         addUnitToBoard(state.boardState, placed(otherUnit, 'D-5', 'north')),
       );
@@ -243,7 +243,7 @@ describe('applyResolveRetreatEvent function', () => {
     it("the retreating unit's own commander in its space ends in the unit's final space (§9.1.8)", () => {
       const base = createStateWithRangedAttackRetreat();
       // White's commander stands in E-5 with the unit about to fall back.
-      const state = updateBoardState(
+      const state = replaceBoard(
         base,
         addCommanderToBoard(base.boardState, 'white', 'E-5'),
       );
@@ -269,7 +269,7 @@ describe('applyResolveRetreatEvent function', () => {
       const base = createStateWithRangedAttackRetreat();
       // Black's commander stands in E-5 too, as it would having ridden its own
       // unit into the fight (§4.3.10). It is not white's to carry off.
-      const state = updateBoardState(
+      const state = replaceBoard(
         base,
         addCommanderToBoard(base.boardState, 'black', 'E-5'),
       );
@@ -342,7 +342,7 @@ describe('applyResolveRetreatEvent function', () => {
       );
       const unit = createTestUnit('white', { attack: 2 });
       const placement = placed(unit, 'E-5', 'north');
-      const withBoard = updateBoardState(
+      const withBoard = replaceBoard(
         state,
         addUnitToBoard(state.boardState, placement),
       );

@@ -1,4 +1,6 @@
-export { updateBoardState } from './board';
+// One unit's or one commander's entry in the index, overwritten: shared
+// steps of the piece writers.
+export { fileCommanderInIndex, fileUnitInIndex } from './gameStateIndex';
 export {
   burnCardFromPlayed,
   burnHiddenCardFromPlayed,
@@ -27,8 +29,10 @@ export {
 } from './visibility';
 export {
   addCommanderToBoard,
-  addCommanderToLostCommanders,
   carryRidingCommander,
+  defeatCommander,
+  defeatCommanderWithRoutedUnit,
+  deployCommander,
   moveCommanderOnBoard,
   removeCommanderFromBoard,
 } from './commanders';
@@ -73,9 +77,10 @@ export {
   addUnitsToCommandedUnits,
   addUnitToBoard,
   addEngagingUnitToBoard,
-  addUnitToRouted,
+  deployUnit,
+  moveUnitIntoEngagement,
   moveUnitOnBoard,
   removeUnitFromBoard,
-  removeUnitFromReserve,
   removeUnitsLeavingUnderRout,
+  routUnit,
 } from './units';

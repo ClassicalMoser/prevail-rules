@@ -8,10 +8,10 @@ import {
   createTestUnit,
   getUnitByTrait,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms';
@@ -41,8 +41,8 @@ describe('generateResolveMeleeEvent function', () => {
     const blackUnit = createTestUnit('black', { unitType: spearmenType });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
     const phase = createResolveMeleePhaseState(s);
     return updatePhaseState(s, phase);
   }
@@ -56,8 +56,8 @@ describe('generateResolveMeleeEvent function', () => {
     const blackUnit = createTestUnit('black', { unitType: cavalryType });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
     const event = generateResolveMeleeEvent(full);
@@ -90,7 +90,7 @@ describe('generateResolveMeleeEvent function', () => {
         addUnitToBoard(state.boardState, whiteWp),
         blackWp,
       );
-      const s = updateBoardState(state, board);
+      const s = replaceBoard(state, board);
       const melee = createMeleeResolutionState(s, {
         firstPlayerCommitment: {
           card: createTestCard({ modifiers: ['attack'] }),
@@ -175,7 +175,7 @@ describe('generateResolveMeleeEvent function', () => {
           ),
         );
       }
-      const s = updateBoardState(state, board);
+      const s = replaceBoard(state, board);
       const melee = createMeleeResolutionState(s, {
         firstPlayerCommitment: { commitmentType: 'declined' },
         secondPlayerCommitment: { commitmentType: 'declined' },
@@ -217,8 +217,8 @@ describe('generateResolveMeleeEvent function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
     const melee = createMeleeResolutionState(s, {
       secondPlayerCommitment: { commitmentType: 'pending' },
     });
@@ -252,10 +252,7 @@ describe('generateResolveMeleeEvent function', () => {
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const s = updateBoardState(
-      state,
-      addUnitToBoard(state.boardState, whiteWp),
-    );
+    const s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
     expect(() => generateResolveMeleeEvent(full)).toThrow(

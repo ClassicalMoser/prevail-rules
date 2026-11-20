@@ -8,12 +8,9 @@ import {
   getUnitByStatValue,
   getUnitByTrait,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
@@ -36,7 +33,7 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -54,7 +51,7 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: lowRetreatType });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -81,7 +78,7 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -102,7 +99,7 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -123,7 +120,7 @@ describe('generateResolveRangedAttackEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -153,7 +150,7 @@ describe('generateResolveRangedAttackEvent function', () => {
     }): GameState {
       const state = createEmptyGameState('standard');
       const target = createTestUnit('white', { unitType: cavalryType });
-      const withBoard = updateBoardState(
+      const withBoard = replaceBoard(
         state,
         addUnitToBoard(state.boardState, placed(target, 'E-5', 'north')),
       );

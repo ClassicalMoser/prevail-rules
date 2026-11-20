@@ -6,12 +6,9 @@ import {
   createTestCard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 
@@ -33,7 +30,7 @@ describe('generateStartEngagementEvent function', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(
         state.boardState,

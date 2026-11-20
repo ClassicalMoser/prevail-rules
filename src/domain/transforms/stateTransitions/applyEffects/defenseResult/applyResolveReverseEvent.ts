@@ -8,7 +8,6 @@ import {
 import { throwIfBypassed } from '@utils';
 import {
   moveUnitOnBoard,
-  updateBoardState,
   updateReverseState,
 } from '@transforms/pureTransforms';
 
@@ -30,7 +29,7 @@ export function applyResolveReverseEvent<S extends GameState>(
     coordinate: standing.coordinate,
     facing: event.facing,
   };
-  const addedUnitBoard = moveUnitOnBoard(state, event.unit, finalPosition);
+  const turned = moveUnitOnBoard(state, event.unit, finalPosition);
 
   const attackApplyState = getAttackApplyStateOfPlayer(
     state,
@@ -48,6 +47,6 @@ export function applyResolveReverseEvent<S extends GameState>(
     finalPosition,
   };
 
-  const stateWithUpdatedReverse = updateReverseState(state, newReverseState);
-  return updateBoardState(stateWithUpdatedReverse, addedUnitBoard);
+  const reversed = updateReverseState(turned, newReverseState);
+  return reversed;
 }

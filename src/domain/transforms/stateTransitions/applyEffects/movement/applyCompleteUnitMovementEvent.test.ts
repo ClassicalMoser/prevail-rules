@@ -5,11 +5,11 @@ import {
   createMovementResolutionState,
   createTestUnit,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -31,7 +31,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
     const leftover = createTestUnit('black', { attack: 2 });
     const movement = createMovementResolutionState(state);
     // The mover stands where it started, E-5, and goes to E-6.
-    const withMover = updateBoardState(
+    const withMover = replaceBoard(
       state,
       addUnitToBoard(state.boardState, movement.movingUnit),
     );
@@ -55,7 +55,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state);
     // The mover stands where it started, E-5, and goes to E-6.
-    const withMover = updateBoardState(
+    const withMover = replaceBoard(
       state,
       addUnitToBoard(state.boardState, movement.movingUnit),
     );
@@ -111,7 +111,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
       unitOptions: { attack: 2 },
     });
     let state = createEmptyGameState('standard');
-    state = updateBoardState(
+    state = replaceBoard(
       state,
       addUnitToBoard(addUnitToBoard(state.boardState, mover), defender),
     );
@@ -154,7 +154,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
       playerSide: 'black',
     });
     let state = createEmptyGameState('standard');
-    state = updateBoardState(
+    state = replaceBoard(
       state,
       addCommanderToBoard(
         addUnitToBoard(addUnitToBoard(state.boardState, mover), defender),

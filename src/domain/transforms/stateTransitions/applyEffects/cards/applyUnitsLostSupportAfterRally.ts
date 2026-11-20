@@ -9,9 +9,7 @@ import {
   hasUnitInArray,
 } from '@queries';
 import {
-  addUnitToRouted,
-  removeUnitFromBoard,
-  updateBoardState,
+  routUnit,
   updateCleanupStep,
   updateRallyResolutionState,
 } from '@transforms/pureTransforms';
@@ -37,12 +35,9 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
 
   let newState = state;
   for (const unitWithPlacement of unitsToRout) {
-    const newBoardState = removeUnitFromBoard(
-      newState.boardState,
-      unitWithPlacement,
-    );
-    newState = updateBoardState(newState, newBoardState);
-    newState = addUnitToRouted(newState, unitWithPlacement.unit);
+    // Off the board and out of the game; the support check's rout takes no
+    // commander with it (§10.4).
+    newState = routUnit(newState, unitWithPlacement.unit);
   }
 
   // Uncovered units always open a rout. The discard debt (possibly zero) is

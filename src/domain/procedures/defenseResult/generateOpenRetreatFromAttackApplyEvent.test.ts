@@ -5,12 +5,9 @@ import {
   createRangedAttackResolutionState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateOpenRetreatFromAttackApplyEvent } from './generateOpenRetreatFromAttackApplyEvent';
 
@@ -27,7 +24,7 @@ describe('generateOpenRetreatFromAttackApplyEvent function', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withDefender = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       enemyBehind
         ? addUnitToBoard(

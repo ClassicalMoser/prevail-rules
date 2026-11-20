@@ -7,10 +7,10 @@ import {
   createTestCard,
   createTestUnit,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
   updatePlayerCardState,
@@ -109,7 +109,7 @@ describe('findGameOverWinner function', () => {
       playerSide: 'white',
     });
     const board = addUnitToBoard(handsOnly.boardState, survivor);
-    const state = updateBoardState(handsOnly, board);
+    const state = replaceBoard(handsOnly, board);
 
     expect(findGameOverWinner(state)).toBe('white');
   });

@@ -15,15 +15,11 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
-  placed,
   legalRetreatsOf,
+  placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '../';
+import { addUnitToBoard, updateCurrentInitiative, updatePhaseState } from '../';
 
 import { updateRetreatState } from './updateRetreatState';
 
@@ -39,7 +35,7 @@ describe('updateRetreatState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, placedUnit),
     );
@@ -72,11 +68,11 @@ describe('updateRetreatState function', () => {
     );
     const retreatingPlacement = placed(retreatingUnit, 'E-5', 'north');
     const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = updateBoardState(
+    let stateWithUnits = replaceBoard(
       state,
       addUnitToBoard(state.boardState, retreatingPlacement),
     );
-    stateWithUnits = updateBoardState(
+    stateWithUnits = replaceBoard(
       stateWithUnits,
       addUnitToBoard(stateWithUnits.boardState, otherPlacement),
     );
@@ -233,7 +229,7 @@ describe('updateRetreatState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placedUnit = placed(unit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, placedUnit),
     );

@@ -4,11 +4,11 @@ import {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -49,7 +49,7 @@ describe('getLegalMoveUnits function', () => {
       },
     });
     if (withUnitOnBoard) {
-      state = updateBoardState(
+      state = replaceBoard(
         state,
         addUnitToBoard(state.boardState, unitWithPlacement),
       );
@@ -117,7 +117,7 @@ describe('getLegalMoveUnits function', () => {
         inPlay: rangedCard,
       },
     });
-    state = updateBoardState(
+    state = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );

@@ -5,9 +5,13 @@ import {
   createGameStateWithBoard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import { createEmptyStandardBoard, createUnitIndexKey } from '@factories';
-import { addUnitToRouted } from '@transforms';
+import {
+  createEmptyGameState,
+  createEmptyStandardBoard,
+  createUnitIndexKey,
+} from '@factories';
 
 import { findPositionOfUnit } from './findPositionOfUnit';
 
@@ -89,13 +93,17 @@ describe('findPositionOfUnit function', () => {
   });
 
   it('answers undefined for a unit the index files as routed', () => {
-    // The unit has routed: out of the game, and off the board.
+    // The unit has routed: out of the game, off the board. The state is built
+    // with it among the routed and its index worked out from that, rather
+    // than routed in play, which would ask this subject where it stood.
     const unit = createTestUnit('black', { attack: 3 });
-    const state = addUnitToRouted(
-      createGameStateWithBoard(createEmptyStandardBoard()),
-      unit,
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), routedUnits: [unit] },
+      createEmptyStandardBoard(),
     );
 
+    // Filed as routed, so it stands nowhere.
+    expect(state.index.units[createUnitIndexKey(unit)]).toBe('routed');
     expect(findPositionOfUnit(state, unit)).toBeUndefined();
   });
 

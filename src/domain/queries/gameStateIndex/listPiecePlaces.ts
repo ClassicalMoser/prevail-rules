@@ -32,10 +32,10 @@ export interface CommanderPlace {
  * whole reads it too, so the two can never disagree about what the record
  * says.
  *
- * A piece the record holds in two places is listed twice. That is never a
- * legal state, but it is a passing one: setup places its units on the board a
- * moment before it takes them out of reserve. So nothing here refuses it; the
- * check on a state read from outside does.
+ * A piece the record holds in two places is listed twice. Play never writes
+ * such a state, as each piece changes place in one write, but one read from
+ * outside may hold it; listing both is how the check on such a state sees
+ * it, and refuses it.
  *
  * A commander neither on the board nor lost is not listed: it has not been
  * placed yet, and that is the index's own default.

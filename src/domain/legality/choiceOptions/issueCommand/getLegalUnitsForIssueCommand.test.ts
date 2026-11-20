@@ -3,13 +3,10 @@ import {
   createBoardWithEngagedUnits,
   createTestUnit,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
 
-import {
-  addCommanderToBoard,
-  addUnitToBoard,
-  updateBoardState,
-} from '@transforms';
+import { addCommanderToBoard, addUnitToBoard } from '@transforms';
 
 import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 
@@ -34,7 +31,7 @@ describe('getLegalUnitsForIssueCommand function', () => {
       playerSide: 'black',
     });
     let state = createEmptyGameState('standard');
-    state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
 
     expect(
       getLegalUnitsForIssueCommand(unrestrictedCommand, 'black', state),
@@ -65,7 +62,7 @@ describe('getLegalUnitsForIssueCommand function', () => {
     let board = addUnitToBoard(state.boardState, near);
     board = addUnitToBoard(board, far);
     board = addCommanderToBoard(board, 'black', 'E-5');
-    state = updateBoardState(state, board);
+    state = replaceBoard(state, board);
 
     expect(
       getLegalUnitsForIssueCommand(rangedCommand, 'black', state),
@@ -79,7 +76,7 @@ describe('getLegalUnitsForIssueCommand function', () => {
       playerSide: 'black',
     });
     let state = createEmptyGameState('standard');
-    state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
     state = {
       ...state,
       currentRoundState: {
@@ -98,7 +95,7 @@ describe('getLegalUnitsForIssueCommand function', () => {
     const theirs = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     // Our unit and an enemy stand in E-5, locked in a fight (§2.2.1).
     const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
-    const state = updateBoardState(createEmptyGameState('standard'), board);
+    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     // An engaged unit cannot be ordered (§4.3.4), so nobody is offered.
     expect(

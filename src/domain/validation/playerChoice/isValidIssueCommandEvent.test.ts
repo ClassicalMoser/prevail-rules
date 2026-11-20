@@ -6,13 +6,13 @@ import {
   createIssueCommandsPhaseState,
   createTestCommand,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -40,7 +40,7 @@ describe('isValidIssueCommandEvent function', () => {
     });
     let board = addUnitToBoard(state.boardState, unit);
     board = addCommanderToBoard(board, 'black', 'E-5');
-    state = updateBoardState(state, board);
+    state = replaceBoard(state, board);
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
@@ -92,7 +92,7 @@ describe('isValidIssueCommandEvent function', () => {
       playerSide: 'black',
       unitOptions: { instanceNumber: 2 },
     });
-    const withSecond = updateBoardState(
+    const withSecond = replaceBoard(
       state,
       addUnitToBoard(state.boardState, other),
     );
@@ -126,7 +126,7 @@ describe('isValidIssueCommandEvent function', () => {
       playerSide: 'black',
       unitOptions: { instanceNumber: 2 },
     });
-    const withSecond = updateBoardState(
+    const withSecond = replaceBoard(
       state,
       addUnitToBoard(state.boardState, other),
     );
@@ -190,7 +190,7 @@ describe('isValidIssueCommandEvent function', () => {
     );
     let board = addUnitToBoard(state.boardState, far);
     board = addCommanderToBoard(board, 'black', 'E-5');
-    state = updateBoardState(state, board);
+    state = replaceBoard(state, board);
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
@@ -243,7 +243,7 @@ describe('isValidIssueCommandEvent function', () => {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
     });
-    state = updateBoardState(state, addCommanderToBoard(board, 'black', 'E-4'));
+    state = replaceBoard(state, addCommanderToBoard(board, 'black', 'E-4'));
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

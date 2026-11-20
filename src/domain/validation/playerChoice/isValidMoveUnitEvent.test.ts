@@ -6,11 +6,11 @@ import {
   createMovementResolutionState,
   createTestCard,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
 } from '@transforms';
 
@@ -38,7 +38,7 @@ function stateAwaitingMove(options?: {
   if (options?.withCommander) {
     board = addCommanderToBoard(board, 'black', 'E-5');
   }
-  state = updateBoardState(state, board);
+  state = replaceBoard(state, board);
   const movement = createMovementResolutionState(state, {
     commitment: options?.commitment ?? { commitmentType: 'declined' },
     moveCommander: 'pending',

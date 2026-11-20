@@ -9,10 +9,10 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -32,7 +32,7 @@ describe('applyCompleteAttackApplyEvent function', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
 
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -64,11 +64,11 @@ describe('applyCompleteAttackApplyEvent function', () => {
     const whiteUnitWithPlacement = placed(whiteUnit, 'E-5', 'north');
     const blackUnitWithPlacement = placed(blackUnit, 'E-5', 'south');
 
-    let stateWithUnits = updateBoardState(
+    let stateWithUnits = replaceBoard(
       state,
       addUnitToBoard(state.boardState, whiteUnitWithPlacement),
     );
-    stateWithUnits = updateBoardState(
+    stateWithUnits = replaceBoard(
       stateWithUnits,
       addUnitToBoard(stateWithUnits.boardState, blackUnitWithPlacement),
     );

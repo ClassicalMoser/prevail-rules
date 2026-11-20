@@ -14,12 +14,12 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-  placed,
   legalRetreatsOf,
+  placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -41,7 +41,7 @@ describe('applyResolveReverseEvent function', () => {
     const reversingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(reversingUnit, 'E-5', 'north');
 
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -81,7 +81,7 @@ describe('applyResolveReverseEvent function', () => {
     );
 
     // Only the reversing unit is on the board (opponent has already retreated/routed)
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, reversingUnitWithPlacement),
     );
@@ -182,7 +182,7 @@ describe('applyResolveReverseEvent function', () => {
 
       // Add another unit at a different location
       const otherUnit = createTestUnit('black', { attack: 2 });
-      const stateWithOtherUnit = updateBoardState(
+      const stateWithOtherUnit = replaceBoard(
         state,
         addUnitToBoard(state.boardState, placed(otherUnit, 'D-5', 'north')),
       );

@@ -8,10 +8,10 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms';
@@ -27,7 +27,7 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -62,11 +62,8 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
     );
     const defendingWp = placed(defendingUnit, 'E-5', 'north');
     const otherWp = placed(otherUnit, 'E-5', 'south');
-    let s = updateBoardState(
-      state,
-      addUnitToBoard(state.boardState, defendingWp),
-    );
-    s = updateBoardState(s, addUnitToBoard(s.boardState, otherWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, defendingWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, otherWp));
     const attackApply = createAttackApplyState(defendingUnit, {
       unitRetreated: true,
       unitReversed: true,

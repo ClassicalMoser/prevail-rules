@@ -63,3 +63,9 @@ export {
   resolvingMoveOrder,
   resolvingShootOrder,
 } from './scenario';
+// A whole new board put into a game state, its index worked out afresh.
+export { replaceBoard } from './replaceBoard';
+// A game state with one side's commander defeated.
+export { withLostCommander } from './withLostCommander';
+// A game state with these units waiting in reserve, filed there.
+export { withReservedUnits } from './withReservedUnits';

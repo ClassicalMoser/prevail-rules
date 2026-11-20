@@ -1,4 +1,4 @@
-import { createTestUnit } from '@testing';
+import { createTestUnit, withReservedUnits } from '@testing';
 import { updateCurrentInitiative } from '@transforms';
 
 import { getExpectedSetupEvent } from './getExpectedSetupEvent';
@@ -11,10 +11,10 @@ import { createEmptyGameState } from '@factories';
  */
 describe('getExpectedSetupEvent function', () => {
   it('asks the side with the initiative to set up first', () => {
-    const state = {
-      ...updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
-      reservedUnits: [createTestUnit('black'), createTestUnit('white')],
-    };
+    const state = withReservedUnits(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
+      [createTestUnit('black'), createTestUnit('white')],
+    );
 
     expect(getExpectedSetupEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
@@ -24,10 +24,10 @@ describe('getExpectedSetupEvent function', () => {
   });
 
   it('follows the initiative, whichever side holds it', () => {
-    const state = {
-      ...updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-      reservedUnits: [createTestUnit('white'), createTestUnit('black')],
-    };
+    const state = withReservedUnits(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      [createTestUnit('white'), createTestUnit('black')],
+    );
 
     expect(getExpectedSetupEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
@@ -37,10 +37,10 @@ describe('getExpectedSetupEvent function', () => {
   });
 
   it('asks the other side once the first has placed its army', () => {
-    const state = {
-      ...updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
-      reservedUnits: [createTestUnit('black')],
-    };
+    const state = withReservedUnits(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
+      [createTestUnit('black')],
+    );
 
     expect(getExpectedSetupEvent(state)).toStrictEqual({
       actionType: 'playerChoice',

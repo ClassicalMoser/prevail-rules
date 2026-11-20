@@ -7,8 +7,9 @@ import {
   createGameStateWithEngagedUnits,
   createIssueCommandsPhaseState,
   createTestUnit,
+  replaceBoard,
 } from '@testing';
-import { updateBoardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone, throwIfUndefined } from '@utils';
 
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
@@ -122,7 +123,7 @@ describe('applyCompleteIssueCommandsPhaseEvent function', () => {
       });
       // A second engaged pair written straight onto E-6, through the board
       // writer so the index of where every unit stands follows.
-      const state = updateBoardState(engagedAtE5, {
+      const state = replaceBoard(engagedAtE5, {
         ...engagedAtE5.boardState,
         board: {
           ...engagedAtE5.boardState.board,

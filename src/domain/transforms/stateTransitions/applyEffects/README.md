@@ -36,7 +36,7 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 
 ## Code structure (handlers)
 
-- Prefer **`updatePhaseState`**, **`updateRoundState`**, **`updateBoardState`**, **`updatePlayerCards`** and **`replaceCardState`** (cards), **`updateCommandResolutionState`** (when replacing the active command resolution subtree), **`updateCurrentInitiative`**, and other **pure transforms** over hand-rolled top-level or nested spreads.
+- Prefer **`updatePhaseState`**, **`updateRoundState`**, the piece writers (**`deployUnit`**, **`moveUnitOnBoard`**, **`moveUnitIntoEngagement`**, **`routUnit`**, **`deployCommander`**, **`moveCommanderOnBoard`**, **`defeatCommander`**, which change the board and the index together), **`updatePlayerCards`** and **`replaceCardState`** (cards), **`updateCommandResolutionState`** (when replacing the active command resolution subtree), **`updateCurrentInitiative`**, and other **pure transforms** over hand-rolled top-level or nested spreads.
 - Prefer **`@queries`** shared with procedures over re-implementing lookups in apply.
 
 ## Events

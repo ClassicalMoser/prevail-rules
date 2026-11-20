@@ -154,24 +154,38 @@ position of real bot games.
    `side-<type id>-<number>` as a space, `'reserved'` or `'routed'`;
    `index.commanders` files each side's commander as a space, `'reserved'`
    or `'lost'`. Which way a unit faces stays in its space.
-   - _Kept by the writers._ `updateBoardState`, `removeUnitFromReserve`,
-     `addUnitToRouted` and `addCommanderToLostCommanders` set it afresh from
-     `deriveGameStateIndex` after every write, and the two state factories
-     set the first one. A board must therefore reach a state through
-     `updateBoardState`; fixtures and specs that spread a new board in were
-     changed to.
+   - _Kept by the writers, one entry at a time._ Every change to where a
+     piece is happens through one complete writer: `deployUnit`,
+     `moveUnitOnBoard`, `moveUnitIntoEngagement`, `routUnit`,
+     `deployCommander`, `moveCommanderOnBoard` (and `carryRidingCommander`
+     through it) and `defeatCommander`. Each changes the board, the lists and
+     that one piece's entry in the same new state, so no state is half
+     written. Deploying and routing are one write each, so no state holds a
+     unit in two places. The board-level steps (`addUnitToBoard`,
+     `removeUnitFromBoard`, `addEngagingUnitToBoard`, `addCommanderToBoard`,
+     `removeCommanderFromBoard`) are shared parts of those writers and work
+     on a bare board, which has no index to leave behind. Nothing in play
+     replaces a whole board, so `updateBoardState` is gone; a spec that
+     builds one uses `replaceBoard` in `@testing`, which derives the whole
+     index, as a whole new board calls for.
    - _Checked when read from outside._ `refineGameStateIndex`, in
      `legalGameSchema` and `legalGameStateSchema`, refuses an index that
      disagrees with the record, and a piece the record holds in two places.
    - _Read by the finders._ `findPositionOfUnit`, `getPositionOfUnit`,
      `getUnitWithPlacementOnBoard`, `findCommanderSpace` and
-     `getCommanderSpace` take the state and read the index; so do
-     `moveUnitOnBoard` and the two line queries.
+     `getCommanderSpace` take the state and read the index; so do the two
+     line queries.
 
    One unit's endings: 245 µs to 145 µs. Offering a move: 294 µs to 189 µs.
-   The engine loop: 52 ms to 42 ms per standard game. `applyEvent` pays for
-   it, 2.1 µs to 4.3 µs, rebuilding the index on each write. A median bot
-   game: 613 ms to 507 ms, the same twenty games to the round.
+   The engine loop: 52 ms to 38 ms per standard game. `applyEvent` is
+   unchanged at 2 µs. A median bot game: 613 ms to 484 ms, the same twenty
+   games to the round on both boards.
+
+   A first version rebuilt the whole index from the board on every write,
+   because the piece writers returned boards and only the state-level
+   `updateBoardState` saw a state; it doubled `applyEvent` and let a state
+   exist whose board had moved ahead of its index. It was replaced the
+   next day.
 
 ## Waiting on these
 

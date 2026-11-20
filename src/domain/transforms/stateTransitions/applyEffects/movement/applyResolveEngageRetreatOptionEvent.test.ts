@@ -8,12 +8,9 @@ import {
   createTestCard,
   createUnitByStat,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyResolveEngageRetreatOptionEvent } from './applyResolveEngageRetreatOptionEvent';
 
@@ -43,7 +40,7 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       engagementState.targetPlacement.coordinate,
       'south',
     );
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderWithPlacement),
     );
@@ -98,7 +95,7 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       engagementState.targetPlacement.coordinate,
       'south',
     );
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderWithPlacement),
     );

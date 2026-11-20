@@ -11,7 +11,6 @@ import {
   carryRidingCommander,
   moveUnitOnBoard,
   removeUnitsLeavingUnderRout,
-  updateBoardState,
   updateCommandResolutionState,
   updateEngagementStateInMovement,
 } from '@transforms/pureTransforms';
@@ -93,13 +92,10 @@ export function applyStartEngagementEvent<S extends GameState>(
     placement: targetPlacement,
     unit: engagingUnit,
   };
-  const attackerPlaced = updateBoardState(
-    defenderGone,
-    carryRidingCommander(
-      moveUnitOnBoard(defenderGone, engagingUnit, targetPlacement),
-      movementState,
-      targetPlacement.coordinate,
-    ),
+  const attackerPlaced = carryRidingCommander(
+    moveUnitOnBoard(defenderGone, engagingUnit, targetPlacement),
+    movementState,
+    targetPlacement.coordinate,
   );
   // The movement records where the mover now stands.
   const rearResolved = updateCommandResolutionState(attackerPlaced, {

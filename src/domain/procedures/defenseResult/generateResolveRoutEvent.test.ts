@@ -13,10 +13,10 @@ import {
   createTestCard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms';
@@ -37,7 +37,7 @@ describe('generateResolveRoutEvent function', () => {
     );
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -66,8 +66,8 @@ describe('generateResolveRoutEvent function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
 
     const blackApply = createAttackApplyStateWithRout(blackUnit);
     const whiteApply = createAttackApplyStateWithRout(whiteUnit);

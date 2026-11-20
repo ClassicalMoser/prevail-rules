@@ -1,6 +1,7 @@
-import type { Board, UnitInstance, UnitPlacement } from '@entities';
+import type { UnitInstance, UnitPlacement } from '@entities';
 import type { GameState } from '@game';
 import { getUnitWithPlacementOnBoard } from '@queries';
+import { fileUnitInIndex } from '../gameStateIndex/fileUnitInIndex';
 import { addUnitToBoard } from './addUnitToBoard';
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 
@@ -12,27 +13,32 @@ import { removeUnitFromBoard } from './removeUnitFromBoard';
  * that is set down. An event names a unit by who it is; the stats it carries
  * are the board's to say.
  *
- * Where the unit stands now is read from the game's index, so the board is
- * not searched; the caller sets the board this returns back on the game with
- * `updateBoardState`, which brings the index up to date.
+ * The board and the unit's entry in the index change in the same write.
  *
- * @param gameState - The game, whose board the unit stands on
+ * @param state - The game, with the unit on the board
  * @param unit - Who the unit is; it must be on the board
  * @param to - Where it is set down: the space and the way it faces
- * @returns A new board with the unit set down at its new placement
+ * @returns The state with the unit at its new placement, and filed there
  * @throws {Error} If the unit is not on the board, or cannot be set down there
  */
-export function moveUnitOnBoard(
-  gameState: GameState,
+export function moveUnitOnBoard<S extends GameState>(
+  state: S,
   unit: UnitInstance,
   to: UnitPlacement,
-): Board {
+): S {
   // The unit as the board holds it, wherever it stands now.
-  const held = getUnitWithPlacementOnBoard(gameState, unit);
+  const held = getUnitWithPlacementOnBoard(state, unit);
 
   // It leaves its space, and is set down at the new placement as the same
   // unit the board held.
-  const lifted = removeUnitFromBoard(gameState.boardState, held);
+  const lifted = removeUnitFromBoard(state.boardState, held);
   const moved = addUnitToBoard(lifted, { placement: to, unit: held.unit });
-  return moved;
+
+  // The new board, and the unit filed at the space it was set down on.
+  const written: S = {
+    ...state,
+    boardState: moved,
+    index: fileUnitInIndex(state.index, held.unit, to.coordinate),
+  };
+  return written;
 }

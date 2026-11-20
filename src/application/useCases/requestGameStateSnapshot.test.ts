@@ -6,10 +6,11 @@ import {
 import type { EnginePorts } from '@application/ports';
 import { mathRandom } from '@application/infra';
 import type { BlackSeenGameState, Game } from '@game';
-import { createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement, replaceBoard } from '@testing';
 
 import { createEmptyGameState } from '@factories';
-import { addUnitToBoard, updateBoardState } from '@transforms';
+
+import { addUnitToBoard } from '@transforms';
 
 import { requestGameStateSnapshot } from './requestGameStateSnapshot';
 
@@ -25,7 +26,7 @@ function authoritativeGame(): Game {
   // A legal mini game: its armies keep mini's army rules, as a stored game
   // must to be loaded at all.
   let gameState = createEmptyGameState('mini');
-  gameState = updateBoardState(
+  gameState = replaceBoard(
     gameState,
     addUnitToBoard(gameState.boardState, unit),
   );

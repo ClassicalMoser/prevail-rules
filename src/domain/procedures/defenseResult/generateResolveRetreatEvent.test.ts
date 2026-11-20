@@ -9,12 +9,12 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
-  placed,
   legalRetreatsOf,
+  placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms';
@@ -37,7 +37,7 @@ describe('generateResolveRetreatEvent function', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -76,8 +76,8 @@ describe('generateResolveRetreatEvent function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
 
     // Each engaged unit has open ground behind it, and has already chosen the
     // step back.
@@ -129,7 +129,7 @@ describe('generateResolveRetreatEvent function', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );

@@ -3,9 +3,8 @@ import type { CompletePlayCardsPhaseEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
-import { createPlayCardsPhaseState } from '@testing';
+import { createPlayCardsPhaseState, withLostCommander } from '@testing';
 import {
-  addCommanderToLostCommanders,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms/pureTransforms';
@@ -52,7 +51,7 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
       'black',
     );
     const full: GameState = updatePhaseState(
-      addCommanderToLostCommanders(base, 'black'),
+      withLostCommander(base, 'black'),
       createPlayCardsPhaseState({ step: 'complete' }),
     );
 

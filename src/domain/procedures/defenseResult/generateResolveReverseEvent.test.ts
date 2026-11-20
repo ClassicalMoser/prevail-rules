@@ -8,10 +8,10 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms';
@@ -29,7 +29,7 @@ describe('generateResolveReverseEvent function', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -60,8 +60,8 @@ describe('generateResolveReverseEvent function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp = placed(whiteUnit, 'E-5', 'east');
     const blackWp = placed(blackUnit, 'E-5', 'west');
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
 
     const whiteApply = createAttackApplyStateWithReverse(whiteWp.unit);
     const blackApply = createAttackApplyStateWithReverse(blackWp.unit);

@@ -10,11 +10,11 @@ import {
   createIssueCommandsPhaseState,
   createTestCard,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms/pureTransforms';
@@ -43,7 +43,7 @@ function resolvingOrder(units: UnitWithPlacement[]): GameState {
   for (const unit of units) {
     board = addUnitToBoard(board, unit);
   }
-  state = updateBoardState(state, board);
+  state = replaceBoard(state, board);
   const resolving = updatePhaseState(
     state,
     createIssueCommandsPhaseState(state, {

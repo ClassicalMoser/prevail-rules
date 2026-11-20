@@ -2,10 +2,12 @@ import type { Coordinate } from '@entities';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
-import { createBoardWithCommander } from '@testing';
 import {
-  addCommanderToLostCommanders,
-  updateBoardState,
+  createBoardWithCommander,
+  replaceBoard,
+  withLostCommander,
+} from '@testing';
+import {
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -33,7 +35,7 @@ describe('applyMoveCommanderEvent function', () => {
     let board = createBoardWithCommander('black', blackCommanderCoord);
     board = createBoardWithCommander('white', whiteCommanderCoord, board);
 
-    const stateWithBoard = updateBoardState(state, board);
+    const stateWithBoard = replaceBoard(state, board);
 
     const stateWithPhase = updatePhaseState(stateWithBoard, {
       phase: MOVE_COMMANDERS_PHASE,
@@ -139,7 +141,7 @@ describe('applyMoveCommanderEvent function', () => {
     it('when the second player’s commander has fallen, the first player’s move still passes to the second player’s turn', () => {
       // White's commander was defeated earlier (§4.2.8): white has no turn.
       const base = createGameStateInMoveCommandersStep('moveFirstCommander');
-      const state = addCommanderToLostCommanders(base, 'white');
+      const state = withLostCommander(base, 'white');
 
       // Black, the first player, moves its commander.
       const newState = applyMoveCommanderEvent(

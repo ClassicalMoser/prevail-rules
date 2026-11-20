@@ -7,14 +7,16 @@ import { listPiecePlaces } from './listPiecePlaces';
  * commanders. The state's own `index` is ignored, as this is what it must
  * equal.
  *
- * Every write to the board or to those lists sets the index from this, and a
- * full state read from outside is refused unless its index equals this, so
- * there is one way to work the index out.
+ * Play never calls this: each writer that moves a piece overwrites that
+ * piece's one entry. It is the measure a full state read from outside is
+ * checked against, and how a spec that builds a whole board at once gets the
+ * index that board calls for.
  *
  * A commander not yet placed at setup is in reserve, as is any commander the
- * record puts nowhere. A piece held in two places, which only happens for a
- * moment within a write, is where the board says it is: the board is listed
- * last, and the last place listed stands.
+ * record puts nowhere. A piece held in two places is never a whole state, and
+ * the check refuses it; here it is filed where the board says, as the board
+ * is listed last and the last place listed stands, so that this always has
+ * an answer.
  *
  * @param state - The game whose index to work out
  * @returns The index its record calls for

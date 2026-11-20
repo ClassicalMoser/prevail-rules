@@ -1,4 +1,4 @@
-import { createTestUnit, placed } from '@testing';
+import { createTestUnit, placed, replaceBoard } from '@testing';
 import {
   createEmptyGameState,
   createEmptyStandardBoard,
@@ -13,11 +13,10 @@ import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 describe('isValidSetupUnitsEvent function', () => {
   it('accepts placing all reserved units into empty zone spaces', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: createEmptyStandardBoard(),
-      reservedUnits: [unit],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [unit] },
+      createEmptyStandardBoard(),
+    );
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'A-3',
       player: 'white',
@@ -31,11 +30,10 @@ describe('isValidSetupUnitsEvent function', () => {
 
   it('accepts commander alone on an empty setup-zone coordinate', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: createEmptyStandardBoard(),
-      reservedUnits: [unit],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [unit] },
+      createEmptyStandardBoard(),
+    );
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'A-4',
       player: 'white',
@@ -49,11 +47,10 @@ describe('isValidSetupUnitsEvent function', () => {
 
   it('rejects a coordinate outside the setup zone', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: createEmptyStandardBoard(),
-      reservedUnits: [unit],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [unit] },
+      createEmptyStandardBoard(),
+    );
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       player: 'white',
@@ -66,11 +63,10 @@ describe('isValidSetupUnitsEvent function', () => {
   it('rejects when not all reserved units are placed', () => {
     const unit1 = createTestUnit('black', { attack: 2, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 2, instanceNumber: 2 });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: createEmptyStandardBoard(),
-      reservedUnits: [unit1, unit2],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [unit1, unit2] },
+      createEmptyStandardBoard(),
+    );
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'L-3',
       player: 'black',
@@ -82,11 +78,10 @@ describe('isValidSetupUnitsEvent function', () => {
 
   it('rejects commander outside the empty setup zone', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: createEmptyStandardBoard(),
-      reservedUnits: [unit],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [unit] },
+      createEmptyStandardBoard(),
+    );
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       player: 'white',

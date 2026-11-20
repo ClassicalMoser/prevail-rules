@@ -7,11 +7,11 @@ import {
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -31,7 +31,7 @@ function awaitingMove(
   for (const other of others) {
     board = addUnitToBoard(board, other);
   }
-  state = updateBoardState(state, board);
+  state = replaceBoard(state, board);
   const movement = createMovementResolutionState(state, {
     commitment: { commitmentType: 'declined' },
     moveCommander: 'pending',
@@ -143,7 +143,7 @@ describe('applyMoveUnitEvent function', () => {
     });
     const opened = awaitingMove(mover);
     // The commander stands with the unit, so it may ride.
-    const state = updateBoardState(
+    const state = replaceBoard(
       opened,
       addCommanderToBoard(opened.boardState, 'black', 'E-5'),
     );
@@ -180,7 +180,7 @@ describe('applyMoveUnitEvent function', () => {
     });
     const opened = awaitingMove(engager, [defender]);
     // The commander stands with the engager, so it may ride into the fight.
-    const state = updateBoardState(
+    const state = replaceBoard(
       opened,
       addCommanderToBoard(opened.boardState, 'black', 'E-5'),
     );

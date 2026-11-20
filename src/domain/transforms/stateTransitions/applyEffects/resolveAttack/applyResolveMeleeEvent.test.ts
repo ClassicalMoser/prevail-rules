@@ -9,10 +9,10 @@ import {
   createResolveMeleePhaseState,
   createTestCard,
   createTestUnit,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 import {
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms/pureTransforms';
@@ -37,7 +37,7 @@ describe('applyResolveMeleeEvent function', () => {
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     // White's unit and Black's stand engaged on E-5, the melee's space.
-    const engaged = updateBoardState(
+    const engaged = replaceBoard(
       withCards,
       createBoardWithEngagedUnits(
         createTestUnit('white', { attack: 2 }),

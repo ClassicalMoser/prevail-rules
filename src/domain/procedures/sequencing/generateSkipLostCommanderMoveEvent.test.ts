@@ -1,13 +1,10 @@
 import { createEmptyGameState } from '@factories';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 import type { MoveCommandersPhaseStep } from '@game';
-import {
-  addCommanderToLostCommanders,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { generateSkipLostCommanderMoveEvent } from './generateSkipLostCommanderMoveEvent';
+import { withLostCommander } from '@testing';
 
 /**
  * A fallen commander's Move Commanders turn is passed over (§4.2.8). Black
@@ -29,10 +26,7 @@ describe('generateSkipLostCommanderMoveEvent function', () => {
 
   it("passes over the first player's turn when their commander has fallen", () => {
     // Black's turn, and Black's commander is lost.
-    const state = addCommanderToLostCommanders(
-      onStep('moveFirstCommander'),
-      'black',
-    );
+    const state = withLostCommander(onStep('moveFirstCommander'), 'black');
 
     // The effect carries nothing; the state says whose turn passes.
     expect(generateSkipLostCommanderMoveEvent(state)).toStrictEqual({
@@ -43,10 +37,7 @@ describe('generateSkipLostCommanderMoveEvent function', () => {
 
   it("passes over the second player's turn when their commander has fallen", () => {
     // White's turn, and White's commander is lost.
-    const state = addCommanderToLostCommanders(
-      onStep('moveSecondCommander'),
-      'white',
-    );
+    const state = withLostCommander(onStep('moveSecondCommander'), 'white');
 
     expect(generateSkipLostCommanderMoveEvent(state).effectType).toBe(
       'skipLostCommanderMove',
@@ -55,10 +46,7 @@ describe('generateSkipLostCommanderMoveEvent function', () => {
 
   it('throws when the player whose turn it is still has their commander, where nothing asks', () => {
     // Black's turn; it is White's commander that fell.
-    const state = addCommanderToLostCommanders(
-      onStep('moveFirstCommander'),
-      'white',
-    );
+    const state = withLostCommander(onStep('moveFirstCommander'), 'white');
 
     // Black moves its own commander, so its turn is not passed over.
     expect(() => generateSkipLostCommanderMoveEvent(state)).toThrow(

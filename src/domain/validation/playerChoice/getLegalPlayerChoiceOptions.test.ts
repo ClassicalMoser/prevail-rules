@@ -10,13 +10,13 @@ import {
   createTestCommand,
   createUnitWithPlacement,
   readyToWriteMove,
+  replaceBoard,
   resolvingMoveOrder,
   updateCardState,
 } from '@testing';
 
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -133,7 +133,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       facing: 'south',
       playerSide: 'white',
     });
-    const withUnit = updateBoardState(
+    const withUnit = replaceBoard(
       underWay(),
       addUnitToBoard(
         addUnitToBoard(createBoardWithCommander('black', 'E-5'), unit),
@@ -172,7 +172,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
         inHand: [createTestCard()],
       },
     });
-    state = updateBoardState(state, createBoardWithCommander('black', 'E-5'));
+    state = replaceBoard(state, createBoardWithCommander('black', 'E-5'));
     state = updatePhaseState(state, {
       phase: 'moveCommanders',
       step: 'moveFirstCommander',
@@ -210,7 +210,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       },
     });
     // Black's commander stands in the north-west corner of an empty board.
-    state = updateBoardState(state, createBoardWithCommander('black', 'A-1'));
+    state = replaceBoard(state, createBoardWithCommander('black', 'A-1'));
     // The first commander's move is owed.
     state = updatePhaseState(state, {
       phase: 'moveCommanders',
@@ -326,7 +326,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
         inHand: [createTestCard()],
       },
     });
-    state = updateBoardState(
+    state = replaceBoard(
       state,
       addUnitToBoard(addUnitToBoard(state.boardState, attacker), target),
     );

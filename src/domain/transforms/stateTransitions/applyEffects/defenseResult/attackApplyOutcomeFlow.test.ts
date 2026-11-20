@@ -18,15 +18,12 @@ import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
-  placed,
   enemyCuttingOffRetreat,
   legalRetreatsOf,
+  placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyOpenRetreatFromAttackApplyEvent } from './applyOpenRetreatFromAttackApplyEvent';
 import { applyOpenReverseFromAttackApplyEvent } from './applyOpenReverseFromAttackApplyEvent';
@@ -49,7 +46,7 @@ describe('attack apply outcome flow', () => {
   ): AuthoritativeGameState {
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const empty = createEmptyGameState('standard');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       empty,
       addUnitToBoard(empty.boardState, unitWithPlacement),
     );

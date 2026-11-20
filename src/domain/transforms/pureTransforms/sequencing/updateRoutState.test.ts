@@ -17,8 +17,9 @@ import {
   createTestCard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updateBoardState, updatePhaseState } from '../';
+import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRoutState } from './updateRoutState';
 
@@ -35,7 +36,7 @@ describe('updateRoutState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, placement),
     );
@@ -63,11 +64,11 @@ describe('updateRoutState function', () => {
     );
     const routedPlacement = placed(routedUnit, 'E-5', 'north');
     const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = updateBoardState(
+    let stateWithUnits = replaceBoard(
       state,
       addUnitToBoard(state.boardState, routedPlacement),
     );
-    stateWithUnits = updateBoardState(
+    stateWithUnits = replaceBoard(
       stateWithUnits,
       addUnitToBoard(stateWithUnits.boardState, otherPlacement),
     );

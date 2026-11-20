@@ -4,11 +4,11 @@ import {
   createIssueCommandsPhaseState,
   createTestCard,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -37,7 +37,7 @@ describe('isValidChooseMovingUnitEvent function', () => {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: createTestCard() },
     });
-    state = updateBoardState(state, addUnitToBoard(state.boardState, ordered));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, ordered));
     const resolving = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

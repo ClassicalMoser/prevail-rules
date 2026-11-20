@@ -4,8 +4,9 @@ import {
   createGameStateWithEngagedUnits,
   createReverseState,
   createTestUnit,
+  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updateBoardState } from '@transforms';
+import { addUnitToBoard } from '@transforms';
 
 import { canReverseUnit } from './canReverseUnit';
 
@@ -22,7 +23,7 @@ describe('canReverseUnit function', () => {
     } satisfies UnitWithPlacement['placement'];
     const reverse = createReverseState(unit);
     const empty = createEmptyGameState('standard');
-    const state = updateBoardState(
+    const state = replaceBoard(
       empty,
       addUnitToBoard(empty.boardState, { placement, unit }),
     );

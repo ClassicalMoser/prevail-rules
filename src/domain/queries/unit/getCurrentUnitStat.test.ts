@@ -7,10 +7,10 @@ import {
   createTestCard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitsToCommandedUnits,
-  updateBoardState,
   updatePlayerCardState,
   updateRoundState,
 } from '@transforms';
@@ -25,7 +25,7 @@ type InPlayCard = NonNullable<StandardState['cardState']['black']['inPlay']>;
  */
 function stateWithUnit(unit: UnitInstance): StandardState {
   const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
-  return updateBoardState(createEmptyGameState('standard'), board);
+  return replaceBoard(createEmptyGameState('standard'), board);
 }
 
 /**
@@ -41,7 +41,7 @@ function stateWithUnitAndCommander(
     commanderCoordinate,
     boardWithUnit,
   );
-  return updateBoardState(createEmptyGameState('standard'), board);
+  return replaceBoard(createEmptyGameState('standard'), board);
 }
 
 /**

@@ -14,7 +14,8 @@ import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 import { createBoardWithUnits } from './boardWithUnits';
 
 import { createEmptyGameState } from '@factories';
-import { updateBoardState } from '@transforms';
+import { replaceBoard } from '@testing/replaceBoard';
+
 /**
  * Creates a game state with a single unit at a coordinate.
  */
@@ -31,7 +32,7 @@ export function createGameStateWithSingleUnit(
 ): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithSingleUnit(coord, playerSide, options);
-  return updateBoardState(gameState, board);
+  return replaceBoard(gameState, board);
 }
 
 /**
@@ -50,7 +51,7 @@ export function createGameStateWithEngagedUnits(
     coord,
     primaryFacing,
   );
-  return updateBoardState(gameState, board);
+  return replaceBoard(gameState, board);
 }
 
 /**
@@ -61,7 +62,7 @@ export function createGameStateWithUnits(
 ): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithUnits(units);
-  return updateBoardState(gameState, board);
+  return replaceBoard(gameState, board);
 }
 
 /**
@@ -71,5 +72,5 @@ export function createGameStateWithUnits(
  */
 export function createGameStateWithBoard(board: Board): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
-  return updateBoardState(gameState, board);
+  return replaceBoard(gameState, board);
 }

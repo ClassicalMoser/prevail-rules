@@ -1,9 +1,7 @@
 import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { getBoardSpace } from '@queries';
-import { updateBoardState } from '../board/updateBoardState';
-import { addCommanderToLostCommanders } from './addCommanderToLostCommanders';
-import { removeCommanderFromBoard } from './removeCommanderFromBoard';
+import { defeatCommander } from './defeatCommander';
 
 /**
  * A commander standing where one of its own units routs in combat is
@@ -32,10 +30,6 @@ export function defeatCommanderWithRoutedUnit<S extends GameState>(
   }
 
   // It falls with the unit: off the board, and recorded as lost.
-  const withoutCommander = updateBoardState(
-    state,
-    removeCommanderFromBoard(state.boardState, coordinate, side),
-  );
-  const defeated = addCommanderToLostCommanders(withoutCommander, side);
+  const defeated = defeatCommander(state, side);
   return defeated;
 }

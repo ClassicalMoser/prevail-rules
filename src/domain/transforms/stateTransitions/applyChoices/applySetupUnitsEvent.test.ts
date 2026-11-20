@@ -1,4 +1,4 @@
-import { createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement, withReservedUnits } from '@testing';
 
 import { applySetupUnitsEvent } from './applySetupUnitsEvent';
 
@@ -15,10 +15,9 @@ describe('applySetupUnitsEvent function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    const state = {
-      ...createEmptyGameState('standard'),
-      reservedUnits: [unitWithPlacement.unit],
-    };
+    const state = withReservedUnits(createEmptyGameState('standard'), [
+      unitWithPlacement.unit,
+    ]);
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
@@ -56,10 +55,10 @@ describe('applySetupUnitsEvent function', () => {
       facing: 'south',
       playerSide: 'white',
     });
-    const state = {
-      ...createEmptyGameState('standard'),
-      reservedUnits: [blackUnit.unit, whiteUnit.unit],
-    };
+    const state = withReservedUnits(createEmptyGameState('standard'), [
+      blackUnit.unit,
+      whiteUnit.unit,
+    ]);
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
@@ -84,10 +83,9 @@ describe('applySetupUnitsEvent function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    const state = {
-      ...createEmptyGameState('standard'),
-      reservedUnits: [unit.unit],
-    };
+    const state = withReservedUnits(createEmptyGameState('standard'), [
+      unit.unit,
+    ]);
 
     const event = createSetupUnitsEvent({
       commanderCoordinate: 'L-4',
@@ -109,10 +107,9 @@ describe('applySetupUnitsEvent function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    const state = {
-      ...createEmptyGameState('standard'),
-      reservedUnits: [unitWithPlacement.unit],
-    };
+    const state = withReservedUnits(createEmptyGameState('standard'), [
+      unitWithPlacement.unit,
+    ]);
     const originalBoardRef = state.boardState;
 
     const event = createSetupUnitsEvent({

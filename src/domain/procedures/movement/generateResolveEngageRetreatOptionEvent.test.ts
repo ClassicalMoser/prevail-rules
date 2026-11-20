@@ -10,13 +10,9 @@ import {
   createUnitByStat,
   createUnitWithPlacement,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  applyEvent,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms';
+import { addUnitToBoard, applyEvent, updatePhaseState } from '@transforms';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
@@ -67,7 +63,7 @@ function buildStateWithFrontEngagement(options: {
         placed(createTestUnit('black', { instanceNumber: 7 }), 'D-5', 'north'),
       )
     : withDefender;
-  const withBoard = { ...state, boardState };
+  const withBoard = replaceBoard(state, boardState);
   const movement = createMovementResolutionState(withBoard, {
     engagementState,
     targetPlacement: engagementState.targetPlacement,
@@ -169,7 +165,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
       defender,
     );
     const withCommander = createBoardWithCommander('black', 'E-5', withUnits);
-    state = updateBoardState(state, withCommander);
+    state = replaceBoard(state, withCommander);
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

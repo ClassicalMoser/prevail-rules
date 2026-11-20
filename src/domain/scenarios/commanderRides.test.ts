@@ -5,9 +5,10 @@ import {
   applyEffectsUntilChoice,
   createPlayableGame,
   readyToWriteMove,
+  replaceBoard,
   resolvingMoveOrder,
 } from '@testing';
-import { addCommanderToBoard, applyEvent, updateBoardState } from '@transforms';
+import { addCommanderToBoard, applyEvent } from '@transforms';
 import { validatePlayerChoice } from '@validation';
 
 /**
@@ -43,7 +44,7 @@ function blackReadyToWriteMove(options: {
     { initiative: 'black' },
   );
   // The commander stands with the unit.
-  const withCommander = updateBoardState(
+  const withCommander = replaceBoard(
     game,
     addCommanderToBoard(game.boardState, 'black', options.start),
   );

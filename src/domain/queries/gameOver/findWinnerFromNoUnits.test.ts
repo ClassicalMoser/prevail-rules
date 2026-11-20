@@ -1,8 +1,12 @@
 import type { Army } from '@entities';
 import { createEmptyGameState, createInitialGameState } from '@factories';
 import type { GameState } from '@game';
-import { createTestUnit, createUnitWithPlacement } from '@testing';
-import { addUnitToBoard, updateBoardState } from '@transforms';
+import {
+  createTestUnit,
+  createUnitWithPlacement,
+  replaceBoard,
+} from '@testing';
+import { addUnitToBoard } from '@transforms';
 
 import { findWinnerFromNoUnits } from './findWinnerFromNoUnits';
 
@@ -20,7 +24,7 @@ function withUnitOnBoard(
   // One survivor anywhere on the field keeps that army in the game.
   const unit = createUnitWithPlacement({ coordinate, playerSide });
   const board = addUnitToBoard(state.boardState, unit);
-  const next = updateBoardState(state, board);
+  const next = replaceBoard(state, board);
   return next;
 }
 

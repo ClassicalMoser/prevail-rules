@@ -8,11 +8,11 @@ import {
   createTestCard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -44,7 +44,7 @@ describe('applyStartEngagementEvent function', () => {
       moverWithPlacement,
     );
     const commanderRides = options?.commanderRides ?? false;
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       commanderRides ? addCommanderToBoard(units, 'black', 'E-5') : units,
     );

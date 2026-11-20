@@ -6,13 +6,10 @@ import {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteRangedAttackEvent } from './applyCompleteRangedAttackEvent';
 
@@ -45,7 +42,7 @@ describe('applyCompleteRangedAttackEvent function', () => {
       white: { ...state.cardState.white, inPlay: createTestCard() },
     });
     for (const unit of remaining) {
-      state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
+      state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
     }
     return updatePhaseState(
       state,

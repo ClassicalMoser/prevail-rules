@@ -1,5 +1,9 @@
 import type { Coordinate } from '@entities';
-import { createTestUnit, createUnitWithPlacement } from '@testing';
+import {
+  createTestUnit,
+  createUnitWithPlacement,
+  replaceBoard,
+} from '@testing';
 import { addUnitToBoard } from '@transforms';
 import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
 
@@ -12,11 +16,10 @@ import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
 describe('getLegalSetupUnits function', () => {
   it('returns reserved units and empty zone coordinates for the player', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: createEmptyStandardBoard(),
-      reservedUnits: [unit],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [unit] },
+      createEmptyStandardBoard(),
+    );
 
     const legal = getLegalSetupUnits(state, 'white');
     expect(legal).not.toBeNull();
@@ -34,11 +37,10 @@ describe('getLegalSetupUnits function', () => {
       playerSide: 'black',
       unitOptions: { instanceNumber: 2 },
     });
-    const state = {
-      ...createEmptyGameState('standard'),
-      boardState: addUnitToBoard(createEmptyStandardBoard(), blocker),
-      reservedUnits: [reserved],
-    };
+    const state = replaceBoard(
+      { ...createEmptyGameState('standard'), reservedUnits: [reserved] },
+      addUnitToBoard(createEmptyStandardBoard(), blocker),
+    );
 
     const legal = getLegalSetupUnits(state, 'black');
     expect(legal?.coordinates).not.toContain('L-3');

@@ -34,10 +34,10 @@ export type CommanderIndexEntry = Coordinate | 'reserved' | 'lost';
  * commander stands constantly: every inspiration range, every stat read in a
  * move. The index answers that by name instead.
  *
- * It is a convenience with a guarantee. Every write to the board or to those
- * lists rebuilds it from what was written, and a full state read from outside
- * is refused unless its index agrees with them, so the index never says
- * anything the record does not.
+ * It is a convenience with a guarantee. Every write that moves a piece
+ * changes the record and that piece's one entry together, and a full state
+ * read from outside is refused unless its index agrees with the record, so
+ * the index never says anything the record does not.
  */
 export interface GameStateIndex {
   /** Every unit in the game, by its key. */

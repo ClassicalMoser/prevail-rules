@@ -1,8 +1,8 @@
 import { CLEANUP_PHASE } from '@game';
-import { createTestCard, createTestUnit, placed } from '@testing';
+
+import { createTestCard, createTestUnit, placed, replaceBoard } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -41,7 +41,7 @@ describe('getLegalAssignUnitSupport function', () => {
       },
     });
     base.cardState.white.inHand = [cardA, cardB];
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
@@ -82,11 +82,11 @@ describe('getLegalAssignUnitSupport function', () => {
       unitSupport: { count: 1, supportType: 'generic' },
     });
     base.cardState.white.inHand = [card];
-    let withBoard = updateBoardState(
+    let withBoard = replaceBoard(
       base,
       addUnitToBoard(base.boardState, placed(unitA, 'E-5', 'south')),
     );
-    withBoard = updateBoardState(
+    withBoard = replaceBoard(
       withBoard,
       addUnitToBoard(withBoard.boardState, placed(unitB, 'E-6', 'south')),
     );

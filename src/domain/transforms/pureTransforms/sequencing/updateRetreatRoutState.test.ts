@@ -11,11 +11,12 @@ import {
   createRetreatState,
   createRoutState,
   createTestUnit,
-  placed,
   enemyCuttingOffRetreat,
   legalRetreatsOf,
+  placed,
+  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updateBoardState, updatePhaseState } from '../';
+import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
@@ -28,7 +29,7 @@ describe('updateRetreatRoutState function', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, placement),
     );

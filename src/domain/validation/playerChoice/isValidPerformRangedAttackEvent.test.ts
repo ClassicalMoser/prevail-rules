@@ -6,11 +6,11 @@ import {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -55,7 +55,7 @@ describe('isValidPerformRangedAttackEvent function', () => {
       black: { ...state.cardState.black, inPlay: rangedCard },
     });
     for (const unit of board) {
-      state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
+      state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
     }
     const shot = createRangedAttackResolutionState(state, {
       // Refused unless the case commits a card.

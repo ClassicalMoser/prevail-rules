@@ -9,9 +9,10 @@ import {
   applyEffectsUntilChoice,
   createPlayableGame,
   readyToWriteMove,
+  replaceBoard,
   resolvingMoveOrder,
 } from '@testing';
-import { addCommanderToBoard, applyEvent, updateBoardState } from '@transforms';
+import { addCommanderToBoard, applyEvent } from '@transforms';
 
 /**
  * Engaging from the rear (§6.3.3), played through the engines: the defender
@@ -48,10 +49,7 @@ function rearAttack(options: {
   // White's commander stands with the defender, if the case says so.
   const withCommander =
     options.whiteCommanderWithDefender === true
-      ? updateBoardState(
-          game,
-          addCommanderToBoard(game.boardState, 'white', 'E-5'),
-        )
+      ? replaceBoard(game, addCommanderToBoard(game.boardState, 'white', 'E-5'))
       : game;
   const attacker = getSingleUnitWithPlacementAtCoordinate(
     withCommander.boardState,

@@ -22,12 +22,8 @@ import {
 
 import { getLegalRetreats } from '@legality';
 import { tempCommandCards } from '@sampleValues';
-import {
-  addCommanderToLostCommanders,
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms';
+
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import {
   createAttackApplyStateWithNothingDue,
@@ -49,6 +45,8 @@ import {
   updateCardState,
 } from './testHelpers';
 import { createTestUnit, createUnitByStat } from './unitHelpers';
+import { replaceBoard } from './replaceBoard';
+import { withLostCommander } from './withLostCommander';
 
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
 export const procedureRegistryStateFactories: Record<
@@ -65,7 +63,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -140,7 +138,7 @@ export const procedureRegistryStateFactories: Record<
   skipLostCommanderMove: (): AuthoritativeGameState =>
     // The first player's Move Commanders turn, with their commander fallen.
     updatePhaseState(
-      addCommanderToLostCommanders(createEmptyGameState('standard'), 'white'),
+      withLostCommander(createEmptyGameState('standard'), 'white'),
       { phase: MOVE_COMMANDERS_PHASE, step: 'moveFirstCommander' },
     ),
 
@@ -180,7 +178,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -210,7 +208,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -240,7 +238,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -278,7 +276,7 @@ export const procedureRegistryStateFactories: Record<
       defendingUnitRetreats: true,
       retreatPaths: legalRetreatsOf(defenderWithPlacement),
     });
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderWithPlacement),
     );
@@ -310,7 +308,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defender,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderWithPlacement),
     );
@@ -338,7 +336,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defender,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderPlacement),
     );
@@ -391,8 +389,8 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: blackUnit,
     };
-    let s = updateBoardState(state, addUnitToBoard(state.boardState, whiteWp));
-    s = updateBoardState(s, addUnitToBoard(s.boardState, blackWp));
+    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
+    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
     const phase = createResolveMeleePhaseState(s);
     return updatePhaseState(s, phase);
   },
@@ -425,7 +423,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -448,7 +446,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: retreatingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -484,7 +482,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -511,7 +509,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: defendingUnit,
     };
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
@@ -545,7 +543,7 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, {
         placement: {
@@ -591,7 +589,7 @@ export const procedureRegistryStateFactories: Record<
       unit: createTestUnit('black'),
     };
     const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(withUnit, cuttingEnemy),
     );

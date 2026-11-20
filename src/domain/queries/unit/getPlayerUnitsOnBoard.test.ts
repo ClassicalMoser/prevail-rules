@@ -3,9 +3,10 @@ import {
   createBoardWithUnits,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import { createEmptyGameState } from '@factories';
-import { updateBoardState } from '@transforms';
+
 import { throwIfUndefined } from '@utils';
 
 import { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
@@ -18,7 +19,7 @@ describe('getPlayerUnitsOnBoard function', () => {
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
 
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithUnits([
         placed(unit1, 'E-5', 'north'),
@@ -39,7 +40,7 @@ describe('getPlayerUnitsOnBoard function', () => {
   it('returns an empty set when the asked side has no unit on the board', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithUnits([placed(unit, 'E-5', 'north')]),
     );
@@ -79,7 +80,7 @@ describe('getPlayerUnitsOnBoard function', () => {
         },
       },
     };
-    const state = updateBoardState(createEmptyGameState('standard'), board);
+    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     const blackUnits = getPlayerUnitsOnBoard(state, 'black');
 
@@ -92,7 +93,7 @@ describe('getPlayerUnitsOnBoard function', () => {
   it('returns the engaged secondary when that unit is the asked side', () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
-    const state = updateBoardState(
+    const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithEngagedUnits(blackUnit, whiteUnit, 'E-5', 'north'),
     );

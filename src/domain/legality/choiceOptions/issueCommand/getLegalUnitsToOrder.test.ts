@@ -1,6 +1,9 @@
 import type { Coordinate } from '@entities';
-import { createBoardWithFacingRow, createTestCommand } from '@testing';
-import { updateBoardState } from '@transforms';
+import {
+  createBoardWithFacingRow,
+  createTestCommand,
+  replaceBoard,
+} from '@testing';
 
 import { getLegalUnitsToOrder } from './getLegalUnitsToOrder';
 
@@ -22,7 +25,7 @@ describe('getLegalUnitsToOrder function', () => {
   });
   const coordinates: Coordinate[] = ['E-1', 'E-2', 'E-3'];
   const { board, unitAt } = createBoardWithFacingRow({ coordinates });
-  const state = updateBoardState(createEmptyGameState('standard'), board);
+  const state = replaceBoard(createEmptyGameState('standard'), board);
   const [first, second, third] = coordinates.map(
     (coordinate) => unitAt(coordinate).unit,
   );

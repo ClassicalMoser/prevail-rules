@@ -10,7 +10,6 @@ import {
 import {
   moveCommanderOnBoard,
   moveUnitOnBoard,
-  updateBoardState,
   updateEngagementStateInMovement,
   updateRetreatState,
 } from '@transforms/pureTransforms';
@@ -41,8 +40,8 @@ export function applyResolveRetreatEvent<S extends GameState>(
     'retreat',
   );
 
-  // Move the unit on the board
-  const unitMovedBoard = moveUnitOnBoard(state, event.unit, landing);
+  // The unit goes where its path leads.
+  const unitMoved = moveUnitOnBoard(state, event.unit, landing);
 
   // A commander standing with the retreating unit always goes with it
   // (§9.1.8). Only the unit's own commander: an enemy commander that rode
@@ -53,14 +52,9 @@ export function applyResolveRetreatEvent<S extends GameState>(
     state.boardState,
     startCoordinate,
   ).commanders.includes(retreatingSide);
-  const addedUnitBoard = commanderWithUnit
-    ? moveCommanderOnBoard(
-        unitMovedBoard,
-        retreatingSide,
-        startCoordinate,
-        landing.coordinate,
-      )
-    : unitMovedBoard;
+  const withCommander = commanderWithUnit
+    ? moveCommanderOnBoard(unitMoved, retreatingSide, landing.coordinate)
+    : unitMoved;
 
   // The retreat being finished, and the parent holding it.
   const retreatingPlayer = event.unit.playerSide;
@@ -75,8 +69,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
     completed: true,
   };
 
-  const stateWithUpdatedRetreat = updateRetreatState(state, newRetreatState);
-  const moved = updateBoardState(stateWithUpdatedRetreat, addedUnitBoard);
+  const moved = updateRetreatState(withCommander, newRetreatState);
 
   // A defender that gave ground ends the front engagement: no melee is
   // fought (§6.3.2). A retreat an attack forced leaves its attack to finish.

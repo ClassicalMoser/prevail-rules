@@ -1,7 +1,7 @@
 import { createEmptyGameState } from '@factories';
-import { createUnitWithPlacement } from '@testing';
 
-import { updateBoardState } from '../board/updateBoardState';
+import { createUnitWithPlacement, replaceBoard } from '@testing';
+
 import { addCommanderToBoard } from './addCommanderToBoard';
 import { defeatCommanderWithRoutedUnit } from './defeatCommanderWithRoutedUnit';
 
@@ -19,7 +19,7 @@ describe('defeatCommanderWithRoutedUnit function', () => {
   it('fells the routing unit’s own commander standing with it', () => {
     // White's commander stands on E-5 with the unit.
     const base = createEmptyGameState('standard');
-    const state = updateBoardState(
+    const state = replaceBoard(
       base,
       addCommanderToBoard(base.boardState, 'white', 'E-5'),
     );
@@ -36,7 +36,7 @@ describe('defeatCommanderWithRoutedUnit function', () => {
     // is there too.
     const base = createEmptyGameState('standard');
     const withWhite = addCommanderToBoard(base.boardState, 'white', 'E-5');
-    const state = updateBoardState(
+    const state = replaceBoard(
       base,
       addCommanderToBoard(withWhite, 'black', 'E-5'),
     );
@@ -51,7 +51,7 @@ describe('defeatCommanderWithRoutedUnit function', () => {
   it('changes nothing when the routing unit’s commander is elsewhere', () => {
     // White's commander stands on A-1, far from the rout.
     const base = createEmptyGameState('standard');
-    const state = updateBoardState(
+    const state = replaceBoard(
       base,
       addCommanderToBoard(base.boardState, 'white', 'A-1'),
     );

@@ -8,12 +8,12 @@ import {
   createBoardWithFacingRow,
   createTestCommand,
   createTestUnit,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 
 import {
   addUnitsToCommandedUnits,
-  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
@@ -300,7 +300,7 @@ describe('applyIssueCommandEvent function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3', 'E-4'],
     });
-    const base = updateBoardState(createGameStateWithCommands(), board);
+    const base = replaceBoard(createGameStateWithCommands(), board);
     const state = updatePhaseState(base, {
       ...getIssueCommandsPhaseState(base),
       remainingCommandsFirstPlayer: [lineCommand],

@@ -5,14 +5,11 @@ import { PLAY_CARDS_PHASE } from '@game';
 import {
   createMoveCommandersPhaseState,
   createPlayableGame,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 
-import {
-  addCommanderToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms';
+import { addCommanderToBoard, updatePhaseState } from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
 import {
@@ -141,7 +138,7 @@ describe('validatePlayerChoice function', () => {
       ],
       { initiative: 'white' },
     );
-    const withCommander = updateBoardState(
+    const withCommander = replaceBoard(
       game,
       addCommanderToBoard(game.boardState, 'white', 'E-5'),
     );

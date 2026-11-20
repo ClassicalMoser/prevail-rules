@@ -8,6 +8,7 @@ import {
   createTestCard,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -29,7 +30,7 @@ describe('applyResolveFlankEngagementEvent function', () => {
       addUnitToBoard(state.boardState, placed(defender, 'E-5', 'east')),
       start,
     );
-    const withBoard = { ...state, boardState };
+    const withBoard = replaceBoard(state, boardState);
     const movement = createMovementResolutionState(withBoard, {
       engagementState: flank,
       movingUnit: start,

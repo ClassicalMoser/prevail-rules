@@ -8,12 +8,9 @@ import {
   createRangedAttackResolutionState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatEvent';
 
@@ -32,7 +29,7 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
       defender ??
       placed(createTestUnit('white', { attack: 2, speed: 3 }), 'E-5', 'north');
     const state = createEmptyGameState('standard');
-    const withBoard = updateBoardState(
+    const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defendingUnit),
     );

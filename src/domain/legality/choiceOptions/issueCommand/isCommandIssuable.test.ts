@@ -1,6 +1,6 @@
 import type { Command } from '@entities';
-import { createUnitWithPlacement } from '@testing';
-import { addUnitToBoard, updateBoardState } from '@transforms';
+import { createUnitWithPlacement, replaceBoard } from '@testing';
+import { addUnitToBoard } from '@transforms';
 
 import { isCommandIssuable } from './isCommandIssuable';
 
@@ -34,7 +34,7 @@ describe('isCommandIssuable function', () => {
       playerSide: 'black',
       unitOptions: { instanceNumber: 2 },
     });
-    state = updateBoardState(
+    state = replaceBoard(
       state,
       addUnitToBoard(addUnitToBoard(state.boardState, a), b),
     );
@@ -49,7 +49,7 @@ describe('isCommandIssuable function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    state = updateBoardState(state, addUnitToBoard(state.boardState, a));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, a));
 
     expect(isCommandIssuable(unrestrictedUnits(2), 'black', state)).toBe(true);
   });
@@ -67,7 +67,7 @@ describe('isCommandIssuable function', () => {
       facing: 'north',
       playerSide: 'black',
     });
-    state = updateBoardState(state, addUnitToBoard(state.boardState, a));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, a));
     const lineCommand: Command = {
       ...unrestrictedUnits(1),
       size: 'lines',

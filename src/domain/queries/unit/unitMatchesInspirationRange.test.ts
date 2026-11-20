@@ -1,11 +1,8 @@
 import type { Restrictions } from '@entities';
 import { createEmptyGameState } from '@factories';
-import { createUnitWithPlacement } from '@testing';
-import {
-  addCommanderToBoard,
-  addUnitToBoard,
-  updateBoardState,
-} from '@transforms';
+
+import { createUnitWithPlacement, replaceBoard } from '@testing';
+import { addCommanderToBoard, addUnitToBoard } from '@transforms';
 import { unitMatchesInspirationRange } from './unitMatchesInspirationRange';
 
 /** Restrictions that name only a range from the commander. */
@@ -33,7 +30,7 @@ describe('unitMatchesInspirationRange function', () => {
       commander === undefined
         ? withUnit
         : addCommanderToBoard(withUnit, 'black', commander);
-    return updateBoardState(state, board);
+    return replaceBoard(state, board);
   }
 
   it('reaches a unit wherever it stands when the range is unrestricted, even with no commander', () => {

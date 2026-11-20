@@ -4,13 +4,10 @@ import {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
 
@@ -46,7 +43,7 @@ describe('applyCompleteRangedAttackCommandEvent function', () => {
       black: { ...state.cardState.black, inPlay: rangedCard },
       white: { ...state.cardState.white, inPlay: createTestCard() },
     });
-    state = updateBoardState(state, addUnitToBoard(state.boardState, attacker));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, attacker));
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

@@ -1,11 +1,8 @@
 import type { GameState } from '@game';
 import { createEmptyGameState, createUnitIndexKey } from '@factories';
-import { createUnitWithPlacement } from '@testing';
-import {
-  addCommanderToBoard,
-  addUnitToBoard,
-  updateBoardState,
-} from '@transforms';
+
+import { createUnitWithPlacement, replaceBoard } from '@testing';
+import { addCommanderToBoard, addUnitToBoard } from '@transforms';
 import { z } from 'zod';
 
 import { refineGameStateIndex } from './refineGameStateIndex';
@@ -29,7 +26,7 @@ describe('refineGameStateIndex function', () => {
     playerSide: 'white',
   });
   const key = createUnitIndexKey(standing.unit);
-  const kept = updateBoardState(
+  const kept = replaceBoard(
     createEmptyGameState('standard'),
     addCommanderToBoard(
       addUnitToBoard(createEmptyGameState('standard').boardState, standing),
@@ -112,7 +109,7 @@ describe('refineGameStateIndex function', () => {
       ...kept,
       reservedUnits: [standing.unit],
     };
-    const reindexed = updateBoardState(state, state.boardState);
+    const reindexed = replaceBoard(state, state.boardState);
 
     const result = indexed.safeParse(reindexed);
 
@@ -128,7 +125,7 @@ describe('refineGameStateIndex function', () => {
   it('refuses a commander both on the board and lost', () => {
     // White's commander stands at E-6 and is also recorded as lost.
     const state = { ...kept, lostCommanders: ['white' as const] };
-    const reindexed = updateBoardState(state, state.boardState);
+    const reindexed = replaceBoard(state, state.boardState);
 
     const result = indexed.safeParse(reindexed);
 

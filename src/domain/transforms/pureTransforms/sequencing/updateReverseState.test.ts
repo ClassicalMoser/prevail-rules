@@ -12,13 +12,9 @@ import {
   createReverseState,
   createTestUnit,
   placed,
+  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '../';
+import { addUnitToBoard, updateCurrentInitiative, updatePhaseState } from '../';
 
 import { updateReverseState } from './updateReverseState';
 
@@ -34,7 +30,7 @@ describe('updateReverseState function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = updateBoardState(
+    const stateWithUnit = replaceBoard(
       state,
       addUnitToBoard(state.boardState, placement),
     );
@@ -64,11 +60,11 @@ describe('updateReverseState function', () => {
     );
     const reversingPlacement = placed(reversingUnit, 'E-5', 'north');
     const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = updateBoardState(
+    let stateWithUnits = replaceBoard(
       state,
       addUnitToBoard(state.boardState, reversingPlacement),
     );
-    stateWithUnits = updateBoardState(
+    stateWithUnits = replaceBoard(
       stateWithUnits,
       addUnitToBoard(stateWithUnits.boardState, otherPlacement),
     );

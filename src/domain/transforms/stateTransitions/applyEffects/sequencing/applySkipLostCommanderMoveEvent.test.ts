@@ -2,12 +2,10 @@ import { createEmptyGameState } from '@factories';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 import type { MoveCommandersPhaseStep } from '@game';
 import { getMoveCommandersPhaseState } from '@queries';
-import {
-  addCommanderToLostCommanders,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applySkipLostCommanderMoveEvent } from './applySkipLostCommanderMoveEvent';
+import { withLostCommander } from '@testing';
 
 /**
  * A fallen commander's turn passes on as a move would (§4.2.1, §4.2.8), with
@@ -21,10 +19,7 @@ describe('applySkipLostCommanderMoveEvent function', () => {
 
   /** The given Move Commanders step, with White's commander fallen. */
   function onStep(step: MoveCommandersPhaseStep) {
-    const lost = addCommanderToLostCommanders(
-      createEmptyGameState('standard'),
-      'white',
-    );
+    const lost = withLostCommander(createEmptyGameState('standard'), 'white');
     const state = updatePhaseState(lost, {
       phase: MOVE_COMMANDERS_PHASE,
       step,

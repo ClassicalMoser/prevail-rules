@@ -5,10 +5,10 @@ import {
   createTestCard,
   createTestUnit,
   createUnitWithPlacement,
+  replaceBoard,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -86,7 +86,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
         remainingCommandsFirstPlayer: [command],
       }),
     );
-    state = updateBoardState(
+    state = replaceBoard(
       state,
       addUnitToBoard(
         state.boardState,
@@ -155,7 +155,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
         remainingUnitsFirstPlayer: [onBoard.unit],
       }),
     );
-    state = updateBoardState(state, addUnitToBoard(state.boardState, onBoard));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, onBoard));
 
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
@@ -303,7 +303,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
         remainingUnitsSecondPlayer: [onBoard.unit],
       }),
     );
-    state = updateBoardState(state, addUnitToBoard(state.boardState, onBoard));
+    state = replaceBoard(state, addUnitToBoard(state.boardState, onBoard));
 
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',

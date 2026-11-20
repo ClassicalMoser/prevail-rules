@@ -4,11 +4,11 @@ import {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  replaceBoard,
   updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
-  updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
@@ -45,7 +45,7 @@ describe('performRangedAttack legality atoms', () => {
       black: { ...state.cardState.black, inPlay: rangedCard },
     });
     for (const unit of units) {
-      state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
+      state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
     }
     return state;
   }
@@ -148,10 +148,7 @@ describe('performRangedAttack legality atoms', () => {
         ...state.cardState,
         black: { ...state.cardState.black, inPlay: movementCard },
       });
-      state = updateBoardState(
-        state,
-        addUnitToBoard(state.boardState, attacker),
-      );
+      state = replaceBoard(state, addUnitToBoard(state.boardState, attacker));
       state = updatePhaseState(
         state,
         createIssueCommandsPhaseState(state, {
