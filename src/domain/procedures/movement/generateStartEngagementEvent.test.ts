@@ -1,10 +1,12 @@
 import type { UnitFacing } from '@entities';
 import type { GameState } from '@game';
+import type { StatModifier } from '@ruleValues';
 import {
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
+  createUnitByStat,
   placed,
   replaceBoard,
 } from '@testing';
@@ -23,12 +25,17 @@ describe('generateStartEngagementEvent function', () => {
   function stateEnteringDefenderAt(options: {
     defenderFacing: UnitFacing;
     engagingFacing: UnitFacing;
+    moverSpeed?: number;
+    moverCardModifiers?: StatModifier[];
   }): {
     full: GameState;
     defender: ReturnType<typeof createTestUnit>;
   } {
     const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
+    // The mover's committed card is black's card in play.
+    state.cardState.black.inPlay = createTestCard({
+      modifiers: options.moverCardModifiers ?? [],
+    });
     const defender = createTestUnit('white');
     const withBoard = replaceBoard(
       state,
@@ -38,7 +45,11 @@ describe('generateStartEngagementEvent function', () => {
       ),
     );
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: placed(createTestUnit('black'), 'E-5', 'east'),
+      movingUnit: placed(
+        createUnitByStat('black', 'speed', options.moverSpeed ?? 2),
+        'E-5',
+        'east',
+      ),
       targetPlacement: createUnitPlacement('E-6', options.engagingFacing),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
@@ -92,5 +103,30 @@ describe('generateStartEngagementEvent function', () => {
     expect(() => generateStartEngagementEvent(full)).toThrow(
       'Unable to determine engagement type. Engaging facing: south, Defending facing: northEast',
     );
+  });
+
+  it('records the engaging unit’s Speed, sampled where its move began', () => {
+    // A black mover of Speed 3, no card counted, enters white head-on.
+    const { full } = stateEnteringDefenderAt({
+      defenderFacing: 'west',
+      engagingFacing: 'east',
+      moverSpeed: 3,
+    });
+
+    // Its Speed as it stood on E-5, before the engagement sets it down.
+    expect(generateStartEngagementEvent(full).engagingSpeed).toBe(3);
+  });
+
+  it('counts the card the mover committed in the Speed it records', () => {
+    // The same mover committed a card for +1 Speed before it moved (§4.3.10).
+    const { full } = stateEnteringDefenderAt({
+      defenderFacing: 'west',
+      engagingFacing: 'east',
+      moverCardModifiers: ['speed'],
+      moverSpeed: 3,
+    });
+
+    // The card counts toward the mover's own Speed, and only its own.
+    expect(generateStartEngagementEvent(full).engagingSpeed).toBe(4);
   });
 });

@@ -66,6 +66,7 @@ describe('applyStartEngagementEvent function', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
       defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 2,
       effectType: 'startEngagement' as const,
       engagementType: 'front' as const,
       eventType: 'gameEffect' as const,
@@ -89,10 +90,72 @@ describe('applyStartEngagementEvent function', () => {
     expect(engagement.engagingUnit).toBe(cmd.movingUnit.unit);
   });
 
+  it('sets a front attacker down with the defender at once, recording its Speed', () => {
+    // Black waits on E-5; its move ends head-on into white on E-6.
+    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
+    const event: StartEngagementEvent = {
+      defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 3,
+      effectType: 'startEngagement' as const,
+      engagementType: 'front' as const,
+      eventType: 'gameEffect' as const,
+    };
+
+    const next = applyStartEngagementEvent(event, state);
+
+    // The attacker has left E-5 and stands engaged with white on E-6, before
+    // the defender decides whether to fall back (§6.3.2).
+    expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
+      'none',
+    );
+    expect(next.boardState.board['E-6']?.unitPresence).toMatchObject({
+      presenceType: 'engaged',
+      primaryFacing: 'north',
+      secondaryUnit: defenderWithPlacement.unit,
+    });
+    // The movement has the mover where it now stands, and the engagement
+    // keeps the Speed sampled where its move began.
+    expect(next).toMatchObject({
+      currentRoundState: {
+        currentPhaseState: {
+          currentCommandResolutionState: {
+            engagementState: {
+              engagementResolutionState: { engagingSpeed: 3 },
+            },
+            movingUnit: { placement: { coordinate: 'E-6', facing: 'north' } },
+          },
+        },
+      },
+    });
+  });
+
+  it('a commander riding into a front engagement joins the fight with its unit', () => {
+    // §4.3.10: the one way a commander comes to share an enemy's space.
+    // Black's commander rides with the mover from E-5 into white on E-6.
+    const { state, defenderWithPlacement } = stateWithMovementToEnemy({
+      commanderRides: true,
+    });
+    const event: StartEngagementEvent = {
+      defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 3,
+      effectType: 'startEngagement' as const,
+      engagementType: 'front' as const,
+      eventType: 'gameEffect' as const,
+    };
+
+    const next = applyStartEngagementEvent(event, state);
+
+    // The commander has left E-5 with its unit and stands in the engaged
+    // space, committed to the fight.
+    expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
+    expect(next.boardState.board['E-6']?.commanders).toStrictEqual(['black']);
+  });
+
   it('given event engagementType rear, rear routState player matches defender side with pending penalty', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
       defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 2,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
       eventType: 'gameEffect' as const,
@@ -127,6 +190,7 @@ describe('applyStartEngagementEvent function', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
       defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 2,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
       eventType: 'gameEffect' as const,
@@ -156,6 +220,7 @@ describe('applyStartEngagementEvent function', () => {
     const next = applyStartEngagementEvent(
       {
         defendingUnit: defenderWithPlacement.unit,
+        engagingSpeed: 2,
         effectType: 'startEngagement',
         engagementType: 'rear',
         eventType: 'gameEffect',
@@ -173,6 +238,7 @@ describe('applyStartEngagementEvent function', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
       defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 2,
       effectType: 'startEngagement' as const,
       engagementType: 'flank' as const,
       eventType: 'gameEffect' as const,
@@ -207,6 +273,7 @@ describe('applyStartEngagementEvent function', () => {
       // Intentionally bad type cast to test error path
       engagementType: 'siege' as unknown as EngagementType,
       defendingUnit: defenderWithPlacement.unit,
+      engagingSpeed: 2,
     };
 
     expect(() => applyStartEngagementEvent(event, state)).toThrow(

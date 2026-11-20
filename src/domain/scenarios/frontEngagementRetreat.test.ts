@@ -1,5 +1,9 @@
 import type { AuthoritativeGameState } from '@game';
-import { createCommitToMovementEvent, createMoveUnitEvent } from '@factories';
+import {
+  createChooseWhetherToRetreatEvent,
+  createCommitToMovementEvent,
+  createMoveUnitEvent,
+} from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
   applyEffectsUntilChoice,
@@ -183,6 +187,135 @@ describe('a front-engaged defender that commits a card for Flexibility', () => {
     expect(next).toMatchObject({
       choiceType: 'chooseWhetherToRetreat',
       playerSource: 'white',
+    });
+  });
+});
+
+/**
+ * An attacker that sets off from behind its defender. White on E-5 faces
+ * south and is the faster. Black starts on D-5, directly behind it, and
+ * walks round to engage it from the front: a step to E-6, a step to F-5,
+ * and a step north into E-5, head-on (§6.2.3).
+ *
+ * The attacker has left D-5, so the way straight back is open to the
+ * defender, and its smallest retreat is the single step there (§9.1.3).
+ */
+function attackerComesRoundFromBehind(): AuthoritativeGameState {
+  const game = createPlayableGame(
+    [
+      { coord: 'D-5', facing: 'southEast', player: 'black', speed: 4 },
+      { coord: 'E-5', facing: 'south', player: 'white', speed: 5 },
+      { coord: 'I-1', facing: 'north', instanceNumber: 2, player: 'black' },
+      { coord: 'A-1', facing: 'south', instanceNumber: 2, player: 'white' },
+    ],
+    { initiative: 'black' },
+  );
+  const attacker = getSingleUnitWithPlacementAtCoordinate(
+    game.boardState,
+    'D-5',
+  );
+  const resolving = resolvingMoveOrder(game, [attacker.unit]);
+
+  // Black names its attacker, declines to commit, and walks round into
+  // white's front: south-east, south-west, then north into E-5.
+  const ready = readyToWriteMove(resolving, attacker, null);
+  const moved = applyEvent(
+    createMoveUnitEvent({
+      moveCommander: false,
+      path: [
+        'step',
+        'turnRight',
+        'turnRight',
+        'step',
+        'turnLeft',
+        'turnAbout',
+        'step',
+      ],
+      player: 'black',
+    }),
+    ready,
+  );
+  return moved;
+}
+
+describe('a front engagement by an attacker that came round from behind', () => {
+  it('has the attacker in the defender’s space while the defender decides', () => {
+    // The engagement starts and white is asked whether to commit.
+    const { state } = applyEffectsUntilChoice(attackerComesRoundFromBehind());
+
+    // The two stand engaged on E-5, and the attacker's start space is empty.
+    expect(state.boardState.board['E-5']?.unitPresence.presenceType).toBe(
+      'engaged',
+    );
+    expect(state.boardState.board['D-5']?.unitPresence.presenceType).toBe(
+      'none',
+    );
+  });
+
+  it('offers the defender the step straight back, through the space the attacker left', () => {
+    const { state: engaging } = applyEffectsUntilChoice(
+      attackerComesRoundFromBehind(),
+    );
+
+    // White declines to commit; it is the faster without a card.
+    const { state, next } = applyEffectsUntilChoice(
+      applyEvent(
+        createCommitToMovementEvent({ committedCard: null, player: 'white' }),
+        engaging,
+      ),
+    );
+
+    // It is asked whether to fall back.
+    expect(next).toMatchObject({
+      choiceType: 'chooseWhetherToRetreat',
+      playerSource: 'white',
+    });
+    // Its smallest retreat is one step straight back onto D-5 (§9.1.3).
+    expect(state).toMatchObject({
+      currentRoundState: {
+        currentPhaseState: {
+          currentCommandResolutionState: {
+            engagementState: {
+              engagementResolutionState: { retreatPaths: [['step']] },
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('leaves the attacker holding the space alone once the defender falls back', () => {
+    const { state: engaging } = applyEffectsUntilChoice(
+      attackerComesRoundFromBehind(),
+    );
+    const { state: asked } = applyEffectsUntilChoice(
+      applyEvent(
+        createCommitToMovementEvent({ committedCard: null, player: 'white' }),
+        engaging,
+      ),
+    );
+
+    // White falls back.
+    const { state } = applyEffectsUntilChoice(
+      applyEvent(
+        createChooseWhetherToRetreatEvent({
+          choosesToRetreat: true,
+          player: 'white',
+        }),
+        asked,
+      ),
+    );
+
+    // White stands on D-5; black holds E-5 alone, facing north.
+    expect(state.boardState.board['D-5']?.unitPresence).toMatchObject({
+      facing: 'south',
+      presenceType: 'single',
+      unit: { playerSide: 'white' },
+    });
+    expect(state.boardState.board['E-5']?.unitPresence).toMatchObject({
+      facing: 'north',
+      presenceType: 'single',
+      unit: { playerSide: 'black' },
     });
   });
 });

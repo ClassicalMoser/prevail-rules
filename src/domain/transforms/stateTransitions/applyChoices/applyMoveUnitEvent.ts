@@ -17,8 +17,9 @@ import {
  * `chooseMovingUnit` opened (§4.3.10).
  *
  * - Open ground: the mover leaves its space and stands where the path ends.
- * - An enemy's space: the mover waits on its start space, where its stats
- *   were read (§5.1.4), until the engagement places it.
+ * - An enemy's space: the mover waits on its start space until the
+ *   engagement places it, so that the engagement samples its Speed there,
+ *   where the move began (§5.1.4).
  *
  * Event is assumed pre-validated (a legal path for the moving unit).
  */

@@ -7,18 +7,15 @@ import {
   createUnitWithPlacement,
   replaceBoard,
 } from '@testing';
-import {
-  addCommanderToBoard,
-  addUnitToBoard,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteUnitMovementEvent } from './applyCompleteUnitMovementEvent';
 
 import { createEmptyGameState } from '@factories';
 /**
  * After path + engagement finish, completeUnitMovement clears CRS and either
- * waits for the next moveUnit or advances the issue-commands step.
+ * waits for the next moveUnit or advances the issue-commands step. The mover
+ * already stands where its move ends; this sets nobody down.
  */
 describe('applyCompleteUnitMovementEvent function', () => {
   const event = {
@@ -26,11 +23,25 @@ describe('applyCompleteUnitMovementEvent function', () => {
     eventType: 'gameEffect' as const,
   };
 
+  /** A movement whose black mover has been set down on E-6, where it ends. */
+  function arrivedAtE6(state: GameState) {
+    const mover = createUnitWithPlacement({
+      coordinate: 'E-6',
+      facing: 'north',
+      playerSide: 'black',
+    });
+    const movement = createMovementResolutionState(state, {
+      movingUnit: mover,
+      targetPlacement: mover.placement,
+    });
+    return movement;
+  }
+
   it('clears CRS to pending when more units remain to resolve', () => {
     const state = createEmptyGameState('standard');
     const leftover = createTestUnit('black', { attack: 2 });
-    const movement = createMovementResolutionState(state);
-    // The mover stands where it started, E-5, and goes to E-6.
+    const movement = arrivedAtE6(state);
+    // The mover has been set down on E-6, where its move ends.
     const withMover = replaceBoard(
       state,
       addUnitToBoard(state.boardState, movement.movingUnit),
@@ -53,8 +64,8 @@ describe('applyCompleteUnitMovementEvent function', () => {
 
   it('leaves the step where it is when the last unit has moved, for the order to be completed next', () => {
     const state = createEmptyGameState('standard');
-    const movement = createMovementResolutionState(state);
-    // The mover stands where it started, E-5, and goes to E-6.
+    const movement = arrivedAtE6(state);
+    // The mover has been set down on E-6, where its move ends.
     const withMover = replaceBoard(
       state,
       addUnitToBoard(state.boardState, movement.movingUnit),
@@ -78,8 +89,9 @@ describe('applyCompleteUnitMovementEvent function', () => {
     expect(phase.step).toBe('firstPlayerResolveCommands');
   });
 
-  it('throws when the mover is nowhere on the board, since there is no unit to finish the move', () => {
-    // The move was written to E-6, but the mover stands on no space at all.
+  it('throws when the mover has not been set down where its move ends', () => {
+    // The move was written to E-6, but the movement still has the mover on
+    // E-5, where it started.
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state);
     const full: GameState = updatePhaseState(
@@ -91,97 +103,10 @@ describe('applyCompleteUnitMovementEvent function', () => {
       }),
     );
 
-    // A move finishes the unit that made it; setting one down from nowhere
-    // would hide whatever took it off the board.
+    // The move itself, or the engagement, sets the mover down; finishing a
+    // move that was never carried out would hide whatever skipped it.
     expect(() => applyCompleteUnitMovementEvent(event, full)).toThrow(
-      'Unit not found on board',
+      'The mover has not been set down where its move ends',
     );
-  });
-
-  it('moves a unit that is still on its starting hex onto the enemy target', () => {
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const mover = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { attack: 2 },
-    });
-    let state = createEmptyGameState('standard');
-    state = replaceBoard(
-      state,
-      addUnitToBoard(addUnitToBoard(state.boardState, mover), defender),
-    );
-    const movement = createMovementResolutionState(state, {
-      movingUnit: mover,
-      targetPlacement: { coordinate: 'D-5', facing: 'north' },
-    });
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-        remainingUnitsFirstPlayer: [],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
-
-    const next = applyCompleteUnitMovementEvent(event, state);
-
-    expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
-    );
-    expect(next.boardState.board['D-5']?.unitPresence).toMatchObject({
-      presenceType: 'engaged',
-      primaryUnit: defender.unit,
-      secondaryUnit: mover.unit,
-    });
-  });
-
-  it('a commander riding into an engagement joins the fight with the unit', () => {
-    // §4.3.10: the one way a commander comes to share an enemy's space.
-    // Black's commander rides with the mover from E-5 into white on D-5.
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const mover = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    let state = createEmptyGameState('standard');
-    state = replaceBoard(
-      state,
-      addCommanderToBoard(
-        addUnitToBoard(addUnitToBoard(state.boardState, mover), defender),
-        'black',
-        'E-5',
-      ),
-    );
-    const movement = createMovementResolutionState(state, {
-      moveCommander: true,
-      movingUnit: mover,
-      targetPlacement: { coordinate: 'D-5', facing: 'north' },
-    });
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-        remainingUnitsFirstPlayer: [],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
-
-    // The front engagement is settled and the mover is placed on the defender.
-    const next = applyCompleteUnitMovementEvent(event, state);
-
-    // The commander has left E-5 with its unit and stands in the engaged
-    // space, committed to the fight.
-    expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
-    expect(next.boardState.board['D-5']?.commanders).toStrictEqual(['black']);
   });
 });

@@ -6,10 +6,10 @@ import {
 } from '@events';
 import { getLegalRetreats } from '@legality';
 import {
+  findPlayerUnitWithPosition,
   getCurrentUnitStat,
   getFrontEngagementStateFromMovement,
-  getMovementResolutionState,
-  getSingleUnitWithPlacementAtCoordinate,
+  getOtherPlayer,
   modifiersFromCompletedCommitment,
 } from '@queries';
 /**
@@ -27,19 +27,21 @@ import {
 export function generateResolveEngageRetreatOptionEvent(
   state: GameState,
 ): ResolveEngageRetreatOptionEvent {
-  const movementResolutionState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
-
-  const defender = getSingleUnitWithPlacementAtCoordinate(
-    state.boardState,
-    engagementState.targetPlacement.coordinate,
-  );
-  const defendingUnit = defender.unit;
   const { engagingUnit } = engagementState;
 
-  const engagingCommitmentModifiers = modifiersFromCompletedCommitment(
-    movementResolutionState.commitment,
+  // The defender shares its space with the engaging unit, which entered it
+  // as the engagement started; it is the other side's unit there.
+  const defender = findPlayerUnitWithPosition(
+    state.boardState,
+    engagementState.targetPlacement.coordinate,
+    getOtherPlayer(engagingUnit.playerSide),
   );
+  if (defender === undefined) {
+    throw new Error('No defender stands in the engaged space');
+  }
+  const defendingUnit = defender.unit;
+
   const defendingCommitmentModifiers = modifiersFromCompletedCommitment(
     engagementState.engagementResolutionState.defensiveCommitment,
   );
@@ -51,12 +53,10 @@ export function generateResolveEngageRetreatOptionEvent(
     defendingCommitmentModifiers,
   );
 
-  const engagingSpeed = getCurrentUnitStat(
-    engagingUnit,
-    'speed',
-    state,
-    engagingCommitmentModifiers,
-  );
+  // The engaging unit's Speed was sampled where its move began, its own
+  // card counted, and recorded as the engagement started (§5.1.4); it now
+  // stands in the defender's space, where a fresh reading would be wrong.
+  const { engagingSpeed } = engagementState.engagementResolutionState;
 
   // The defender may fall back only if it is strictly the faster (§6.3.2),
   // and only if it has somewhere to fall back to (§9.1): a retreat it could

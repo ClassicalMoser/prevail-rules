@@ -2,9 +2,11 @@ import type { StartEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
+  findEngagementType,
+  getCurrentUnitStat,
   getMovementResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
-  findEngagementType,
+  modifiersFromCompletedCommitment,
 } from '@queries';
 import { throwIfPending } from '@utils';
 /**
@@ -14,8 +16,8 @@ import { throwIfPending } from '@utils';
  * This is called when a unit first moves into an enemy space.
  *
  * @param state - The current game state
- * @returns A complete StartEngagementEvent with engagement type and the
- * defending unit, named by who it is
+ * @returns A complete StartEngagementEvent with engagement type, the
+ * defending unit, named by who it is, and the engaging unit's Speed
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
 export function generateStartEngagementEvent(
@@ -48,10 +50,22 @@ export function generateStartEngagementEvent(
       `Unable to determine engagement type. Engaging facing: ${engagingFacing}, Defending facing: ${defendingFacing}`,
     );
   }
+  // The engaging unit's Speed for this move, sampled where the move began,
+  // its own committed card counted (§5.1.4, §4.3.10). It still stands on
+  // that space now; once the engagement starts it stands in the defender's,
+  // so this is the moment to read it.
+  const engagingSpeed = getCurrentUnitStat(
+    movementResolutionState.movingUnit.unit,
+    'speed',
+    state,
+    modifiersFromCompletedCommitment(movementResolutionState.commitment),
+  );
+
   // The defender is named by who it is: it stands in the space the move
   // ends in, which the movement records, and faces as the board says.
   return {
     defendingUnit: defenderWithPlacement.unit,
+    engagingSpeed,
     effectType: START_ENGAGEMENT_EFFECT_TYPE,
     engagementType,
     eventType: GAME_EFFECT_EVENT_TYPE,

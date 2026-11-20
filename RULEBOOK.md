@@ -743,11 +743,11 @@ Look at which of the defender's spaces you are stepping **from**:
 
 Read it as a picture: if the two units are looking at each other, that is a Front engagement. If one is looking across the other, that is a Flank. If they are both looking the same way, the attacker has come from behind. Because a front approach always squares up (§6.2.3), no engagement falls between these three.
 
-**6.3.2 Front engagement.** The defender may be offered the chance to fall back:
+**6.3.2 Front engagement.** The engaging unit enters the defender's space, and the two stand engaged while the defender may be offered the chance to fall back:
 
 1. The defender may **commit** a card for +1 Speed or +1 Flexibility (§8). Optional. (The engaging player had their chance before moving, §4.3.10.)
 2. Compare current **Speed**: each unit's full Speed, including round effects, command modifiers and the deficit of the ground it stands on (§2.5.2), not what is left of its move. Ground counts here as it does everywhere. Each unit's Speed is the one its own move runs on (§5.1.4): the engaging unit's was sampled where its move began, commitment and all (§4.3.10); the defender samples here and now, where it stands with its commit window open — the start of the retreat it is weighing. The defender may retreat **only if its Speed is strictly greater** than the engaging unit's, and only if it has a retreat to make (§9.1). A defender with nowhere to fall back to is not offered the choice; it stays and fights.
-3. If it may and chooses to, it makes a retreat move (§9.1). The engagement ends at once; no melee is fought.
+3. If it may and chooses to, it makes a retreat move (§9.1). The engagement ends at once; the engaging unit holds the space alone, and no melee is fought.
 4. Otherwise both units stay locked and fight in Phase 4.
 
 **6.3.3 Rear engagement.** The defender is **routed immediately** (§9.3). No melee, no commitment, no reply. Its owner pays its Morale at once. The engaging unit remains where it stands.

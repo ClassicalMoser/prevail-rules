@@ -30,8 +30,12 @@ export function createFrontEngagementState(
 ): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
+  // The engaging unit's Speed, by default its printed Speed: no round
+  // effect or committed card counted unless the spec says otherwise.
   const resolution: FrontEngagementResolutionState = {
-    ...createOpenedFrontEngagementResolutionState(),
+    ...createOpenedFrontEngagementResolutionState(
+      defaultEngagingUnit().unitType.stats.speed,
+    ),
     ...overrides,
   };
   const engagement = createOpenedEngagementState(

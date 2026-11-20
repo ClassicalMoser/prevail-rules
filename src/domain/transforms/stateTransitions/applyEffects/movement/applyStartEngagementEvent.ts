@@ -9,6 +9,7 @@ import {
 import { getMovementResolutionState } from '@queries';
 import {
   carryRidingCommander,
+  moveUnitIntoEngagement,
   moveUnitOnBoard,
   removeUnitsLeavingUnderRout,
   updateCommandResolutionState,
@@ -19,6 +20,8 @@ import { throwIfPending } from '@utils';
 /**
  * Applies a StartEngagementEvent to the game state.
  * Creates an engagement state in the movement resolution state with the appropriate resolution state.
+ * From the front or the rear the engaging unit is set down at once; from the
+ * flank, once the defender has been turned.
  * The procedure names the defender by who it is; it stands in the space the
  * move ends in, which the movement records.
  *
@@ -55,8 +58,9 @@ export function applyStartEngagementEvent<S extends GameState>(
       }
       case 'front': {
         // Head-on the defender may commit, then may be offered a retreat
-        // (§6.3.2).
-        return createOpenedFrontEngagementResolutionState();
+        // (§6.3.2), compared against the engaging unit's Speed as it was
+        // sampled where its move began.
+        return createOpenedFrontEngagementResolutionState(event.engagingSpeed);
       }
       default: {
         // Exhaustiveness check for TypeScript
@@ -76,6 +80,26 @@ export function applyStartEngagementEvent<S extends GameState>(
     engagementState,
   );
 
+  // From the front, the engaging unit enters the defender's space at once,
+  // and the two stand engaged while the defender decides whether to fall
+  // back (§6.3.2). A commander riding with it arrives too (§4.3.10). If the
+  // defender falls back, the engaging unit holds the space alone.
+  if (event.engagementType === 'front') {
+    const engaged = carryRidingCommander(
+      moveUnitIntoEngagement(withEngagement, engagingUnit, targetPlacement),
+      movementState,
+      targetPlacement.coordinate,
+    );
+    // The movement records where the mover now stands.
+    const frontOpened = updateCommandResolutionState(engaged, {
+      ...getMovementResolutionState(engaged),
+      movingUnit: { placement: targetPlacement, unit: engagingUnit },
+    });
+    return frontOpened;
+  }
+
+  // From the flank, the defender is turned first, and the engaging unit set
+  // down with it then (resolveFlankEngagement).
   if (event.engagementType !== 'rear') {
     return withEngagement;
   }

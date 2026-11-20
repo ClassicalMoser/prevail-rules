@@ -1,4 +1,3 @@
-import type { StatModifier } from '@ruleValues';
 import type { Commitment, GameState } from '@game';
 import {
   createBoardWithCommander,
@@ -26,24 +25,26 @@ import {
 /**
  * Minimal front-engagement stack: defender on `createFrontEngagementState` default cell (E-5),
  * engager speeds swapped via createUnitByStat; black.inPlay feeds the mover's commitment factory.
+ * The engaging unit's Speed is recorded on the engagement, as it was sampled
+ * where its move began; `recordedEngagingSpeed` sets a record apart from the
+ * unit's printed Speed.
  */
 function buildStateWithFrontEngagement(options: {
   defendingSpeed: number;
   engagingSpeed: number;
-  engagingCardModifiers?: StatModifier[];
+  recordedEngagingSpeed?: number;
   defensiveCommitment?: Commitment;
   enemyBehindDefender?: boolean;
 }): GameState {
   const state = createEmptyGameState('standard');
-  state.cardState.black.inPlay = createTestCard({
-    modifiers: options.engagingCardModifiers ?? [],
-  });
+  state.cardState.black.inPlay = createTestCard();
   const defender = createUnitByStat('white', 'speed', options.defendingSpeed);
-  const front = createFrontEngagementState(
-    options.defensiveCommitment
+  const front = createFrontEngagementState({
+    engagingSpeed: options.recordedEngagingSpeed ?? options.engagingSpeed,
+    ...(options.defensiveCommitment
       ? { defensiveCommitment: options.defensiveCommitment }
-      : undefined,
-  );
+      : {}),
+  });
   const engagementState = {
     ...front,
     engagingUnit: createUnitByStat('black', 'speed', options.engagingSpeed),
@@ -118,14 +119,19 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     expect(event.retreatPaths).toStrictEqual([]);
   });
 
-  it('given the mover committed +1 speed, does not apply that card to the defender', () => {
+  it('compares against the Speed recorded when the engagement started, not one read now', () => {
+    // The engaging unit's printed Speed is 2, but the Speed sampled where
+    // its move began, a card counted, was 4. The defender's 3 is not faster.
     const full = buildStateWithFrontEngagement({
-      defendingSpeed: 4,
-      defensiveCommitment: { commitmentType: 'declined' },
-      engagingCardModifiers: ['speed'],
-      engagingSpeed: 3,
+      defendingSpeed: 3,
+      engagingSpeed: 2,
+      recordedEngagingSpeed: 4,
     });
+
     const event = generateResolveEngageRetreatOptionEvent(full);
+
+    // Read afresh, 3 against 2 would let it fall back; against the record
+    // it stands (§6.3.2, §5.1.4).
     expect(event.retreatPaths).toStrictEqual([]);
   });
 
@@ -142,7 +148,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     expect(event.retreatPaths.length).toBeGreaterThan(0);
   });
 
-  it('a speed round effect in inspiration range uses the engager hex it has not left yet', () => {
+  it('a speed round effect counts if its inspiration range reached the engager where its move began', () => {
     const engager = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -203,8 +209,9 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
 
     const event = generateResolveEngageRetreatOptionEvent(state);
 
-    // Commander is on E-5. Range 0 reaches that hex and not D-5.
-    // Engager 3+1 is not slower than defender 4.
+    // Commander is on E-5. Range 0 reaches that hex and not D-5, where the
+    // engager now stands; its Speed was sampled on E-5, so 3+1 counts, and
+    // is not slower than the defender's 4.
     expect(event.retreatPaths).toStrictEqual([]);
   });
 });

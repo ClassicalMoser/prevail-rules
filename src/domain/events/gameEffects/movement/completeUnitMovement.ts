@@ -6,11 +6,11 @@ import { z } from 'zod';
 export const COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE =
   'completeUnitMovement' as const;
 
-// TODO(misleading): "a unit that moved into an enemy waited on its own space" holds only for a front engagement; a flank or rear engagement has already set the mover down (applyCompleteUnitMovementEvent: "Open ground and a rear or flank engagement have already set it down"). Settled by naming the front engagement.
 /**
  * One unit's move under a Move order is finished, before the next unit
- * begins (§4.3.9). A unit that moved into an enemy waited on its own space
- * while the engagement was set up, and steps onto the enemy's space now.
+ * begins (§4.3.9). The unit already stands where its move ends: the move set
+ * it down on open ground, and an engagement set it down in the enemy's
+ * space.
  *
  * `generateCompleteUnitMovementEvent` writes it, and `applyCompleteUnitMovementEvent` applies it.
  */

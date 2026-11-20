@@ -27,12 +27,22 @@ export interface StartEngagementEvent {
    * the board's to say.
    */
   defendingUnit: UnitInstance;
+  /**
+   * The engaging unit's Speed, sampled where its move began, its own
+   * committed card included (§5.1.4). Worked out here, while it still stands
+   * on that space: the engagement then sets it down in the defender's. Only a
+   * front engagement compares it (§6.3.2); flank and rear record it all the
+   * same, as a fact of every engagement.
+   */
+  engagingSpeed: number;
 }
 
 const _startEngagementEventSchemaObject = z
   .object({
     /** The defender, named by who it is. */
     defendingUnit: unitInstanceSchema,
+    /** The engaging unit's Speed, sampled where its move began. */
+    engagingSpeed: z.int().min(0),
     /** Which effect this is. Game effects are told apart by it. */
     effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
     /** Front, flank or rear, read from the two facings (§6.3.1). */
@@ -54,6 +64,7 @@ const _assertExactStartEngagementEvent: AssertExact<
 /** The schema for a start engagement event. */
 export const startEngagementEventSchema: z.ZodObject<{
   defendingUnit: typeof unitInstanceSchema;
+  engagingSpeed: z.ZodInt;
   effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
   engagementType: typeof engagementTypeSchema;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;

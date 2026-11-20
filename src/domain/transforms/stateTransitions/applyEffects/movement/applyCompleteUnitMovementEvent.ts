@@ -1,19 +1,14 @@
 import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState } from '@game';
 import { getMovementResolutionState, isSamePlacement } from '@queries';
-import {
-  carryRidingCommander,
-  clearCommandResolution,
-  moveUnitOnBoard,
-} from '@transforms/pureTransforms';
+import { clearCommandResolution } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
 /**
- * Finishes a movement command-resolution slice:
- * ensures the mover is on the target space. A front engagement
- * leaves the mover on its starting space until now, so it is moved onto the
- * defender here; the movement's record of where the mover stands says which.
- * Clears CRS back to `pending`. Whether
+ * Finishes a movement command-resolution slice. The mover already stands
+ * where its move ends: set down there by the move itself onto open ground,
+ * and by the engagement when it moved into an enemy. Clears CRS back to
+ * `pending`. Whether
  * the order goes on to another unit, or ends with completeMovementCommand, is
  * the expected engine's to ask for.
  *
@@ -31,23 +26,15 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
   );
   const { movingUnit } = movementState;
 
-  // The movement records where the mover stands. Open ground and a rear or
-  // flank engagement have already set it down; a front engagement left it
-  // on its start space until now.
-  const arrived = isSamePlacement(movingUnit.placement, targetPlacement);
-
-  // A front engagement places the mover only now; a commander
-  // riding with it comes off the start space with it (§4.3.10).
-  const stateWithMover = arrived
-    ? state
-    : carryRidingCommander(
-        moveUnitOnBoard(state, movingUnit.unit, targetPlacement),
-        movementState,
-        targetPlacement.coordinate,
-      );
+  // The movement records where the mover stands, and by now it stands where
+  // its move ends, however the move went. A mover anywhere else is a fault
+  // in whatever wrote the move.
+  if (!isSamePlacement(movingUnit.placement, targetPlacement)) {
+    throw new Error('The mover has not been set down where its move ends');
+  }
 
   // The unit's move is done. Whether the order goes on to another unit or
   // ends is the expected engine's to ask for.
-  const cleared = clearCommandResolution(stateWithMover);
+  const cleared = clearCommandResolution(state);
   return cleared;
 }

@@ -11,6 +11,14 @@ import { retreatStateSchema } from '../combatOutcomes';
 export interface FrontEngagementResolutionState {
   /** The type of engagement. */
   engagementType: 'front';
+  /**
+   * The engaging unit's Speed, as the comparison reads it (§6.3.2): its full
+   * Speed sampled where its move began, its own committed card included
+   * (§5.1.4, §4.3.10). Recorded when the engagement starts, because the
+   * engaging unit enters the defender's space then, and a Speed read there
+   * would measure its reach from the wrong space.
+   */
+  engagingSpeed: number;
   /** The commitment of the defending player. */
   defensiveCommitment: Commitment;
   /**
@@ -32,6 +40,8 @@ const _frontEngagementResolutionStateSchemaObject = z
   .object({
     /** The type of engagement. */
     engagementType: z.literal('front'),
+    /** The engaging unit's Speed, sampled where its move began. */
+    engagingSpeed: z.int().min(0),
     /** The commitment of the defending player. */
     defensiveCommitment: commitmentSchema,
     /** The retreats the defender may make, each as its path. */
@@ -50,6 +60,7 @@ type FrontEngagementResolutionStateSchemaType = z.infer<
 /** The schema for the front engagement resolution state. */
 export const frontEngagementResolutionStateSchema: z.ZodObject<{
   engagementType: z.ZodLiteral<'front'>;
+  engagingSpeed: z.ZodInt;
   defensiveCommitment: z.ZodType<Commitment>;
   retreatPaths: z.ZodType<'pending' | MoveDelta[][]>;
   defendingUnitRetreats: z.ZodType<'pending' | boolean>;

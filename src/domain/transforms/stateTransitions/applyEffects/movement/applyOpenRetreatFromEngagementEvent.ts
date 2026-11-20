@@ -2,8 +2,9 @@ import type { OpenRetreatFromEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import { createOpenedRetreatState } from '@factories';
 import {
+  findPlayerUnitWithPosition,
   getFrontEngagementStateFromMovement,
-  getSingleUnitWithPlacementAtCoordinate,
+  getOtherPlayer,
 } from '@queries';
 import { throwIfPending } from '@utils';
 import { updateFrontEngagementResolutionState } from '@transforms/pureTransforms';
@@ -26,11 +27,16 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
 ): S {
   const engagementState = getFrontEngagementStateFromMovement(state);
 
-  // The defender still stands in the space it was engaged in.
-  const retreatingUnit = getSingleUnitWithPlacementAtCoordinate(
+  // The defender still stands in the space it was engaged in, sharing it
+  // with the engaging unit; it is the other side's unit there.
+  const retreatingUnit = findPlayerUnitWithPosition(
     state.boardState,
     engagementState.targetPlacement.coordinate,
+    getOtherPlayer(engagementState.engagingUnit.playerSide),
   );
+  if (retreatingUnit === undefined) {
+    throw new Error('No defender stands in the engaged space');
+  }
 
   // The retreats were worked out when the retreat option was resolved. A
   // defender with nowhere to fall back to stands, and no retreat opens for
