@@ -1,5 +1,5 @@
-import type { PlayerSide } from '@entities';
-import type { IssueCommandEvent, Order } from '@events';
+import type { Order, PlayerSide } from '@entities';
+import type { IssueCommandEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**

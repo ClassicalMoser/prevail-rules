@@ -11,13 +11,7 @@ export type { MoveCommanderEvent } from './moveCommander';
 export { moveCommanderEventSchema } from './moveCommander';
 
 // Issue one order from the card in play, or stop.
-export type {
-  IssueCommandEvent,
-  Order,
-  LineOrderSelection,
-  OrderSelection,
-  UnitsOrderSelection,
-} from './issueCommand';
+export type { IssueCommandEvent } from './issueCommand';
 export { issueCommandEventSchema } from './issueCommand';
 
 // Move a unit.

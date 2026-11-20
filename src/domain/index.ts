@@ -122,6 +122,19 @@ export type {
 export { unitSupportSchema } from '@entities';
 // The kinds a restriction filters by, and the kinds of unit a card's support holds.
 export { restrictionTypes, unitSupportTypes } from '@entities';
+// Orders: one order from the card in play, and the units or line it is given to.
+export {
+  unitsOrderSelectionSchema,
+  lineOrderSelectionSchema,
+  orderSelectionSchema,
+  orderSchema,
+} from '@entities';
+export type {
+  UnitsOrderSelection,
+  LineOrderSelection,
+  OrderSelection,
+  Order,
+} from '@entities';
 export type {
   SideTurn,
   MoveTurn,
@@ -309,10 +322,6 @@ export type {
   ChooseMovingUnitEvent,
   ChooseShooterEvent,
   IssueCommandEvent,
-  LineOrderSelection,
-  Order,
-  OrderSelection,
-  UnitsOrderSelection,
   MoveCommanderEvent,
   MoveUnitEvent,
   OpenRetreatFromAttackApplyEvent,

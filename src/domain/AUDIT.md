@@ -38,6 +38,7 @@ Audit in this order (dependencies flow downward):
 - [x] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`); reopened 2026-11-12, changed since the read; closed again 2026-11-13
   - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`; `board/groundCover` (scaffold, replacing `terrainTypes` and `waterCover`)
   - Removed after the read: `line/` (nothing used it; lines are `LegalLine` in `@legality`)
+  - Arrived 2026-11-20, for the next read: `order/` — `Order` and what it is given to (`UnitsOrderSelection`, `LineOrderSelection`, `OrderSelection`), with their schemas, moved out of `events/playerChoices/issueCommand.ts` at the author's request; the barrel lists them after cards.
   - Moved out 2026-11-20: the board vocabulary (`board/smallBoard/`, `standardBoard/`, `largeBoard/`, `boardCoordinates`) and `gameModes/` to `@ruleValues`, re-exported from the barrels; read. Arrived and read: `board/gridPosition`
   - [x] `army/`
   - [x] `attackResult/`
@@ -62,6 +63,7 @@ Audit in this order (dependencies flow downward):
   - Settled 2026-11-20: `gameEffects/index.ts` links the `applyEffects` README for the design notes and no longer points at another module's header; a document for fuller context is fine (author).
   - Settled 2026-11-20: the four commit events stay separate on purpose (author): calculation, context and application differ. `commitmentChoices.ts` says so; its mark is gone.
   - Changed 2026-11-20, for the next read: a declined commitment is `committedCard: 'none'` and a stop is `issueCommand.order: 'none'`, the existing `'none'` sentinel, not `null`. Card state's empty slots keep `null`.
+  - Changed 2026-11-20, for the next read: `issueCommand.ts` declares the event alone; the order it carries is `Order` in `@entities`.
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
   - Changed 2026-11-20, for the next read: events name units by who they are, not where they stand. `chooseMovingUnit.unit`, `chooseShooter.unit`, `performRangedAttack.targetUnit` and `supportingUnits` are `UnitInstance`; `startEngagement.defenderWithPlacement` is `defendingUnit`; `moveCommander.from` is gone. Where each stands is read from the game state's index.

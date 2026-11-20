@@ -1,5 +1,10 @@
-import type { Command, UnitInstance, UnitWithPlacement } from '@entities';
-import type { IssueCommandEvent, OrderSelection } from '@events';
+import type {
+  Command,
+  OrderSelection,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
+import type { IssueCommandEvent } from '@events';
 import type { LegalIssueCommands } from '@legality';
 import type { BotContext } from './botContext';
 import {

@@ -1,6 +1,11 @@
 import type { ValidationResult } from '@utils';
-import type { IssueCommandEvent, UnitsOrderSelection } from '@events';
-import type { Command, PlayerSide, UnitInstance } from '@entities';
+import type { IssueCommandEvent } from '@events';
+import type {
+  Command,
+  PlayerSide,
+  UnitInstance,
+  UnitsOrderSelection,
+} from '@entities';
 import type { GameState } from '@game';
 import {
   findLegalLine,
