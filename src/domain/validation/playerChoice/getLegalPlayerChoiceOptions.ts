@@ -47,6 +47,7 @@ import type {
 import {
   getCommanderSpace,
   getMovementResolutionState,
+  listInBoardOrder,
   modifiersFromCompletedCommitment,
 } from '@queries';
 
@@ -340,12 +341,16 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // passed over before this is asked (§4.2.8), so the commander must be
       // on the board, and its absence throws.
       const startingCoordinate = getCommanderSpace(player, state.boardState);
+      // Where it may go is a set; the offer writes it down in board order,
+      // which means nothing and only keeps it from following the walk.
+      const destinations = listInBoardOrder(
+        state.boardState,
+        getLegalCommanderMoves(player, state, startingCoordinate),
+      );
       return {
         ...base,
         choiceType: 'moveCommander',
-        destinations: [
-          ...getLegalCommanderMoves(player, state, startingCoordinate),
-        ],
+        destinations,
         startingCoordinate,
       };
     }

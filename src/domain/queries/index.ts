@@ -37,6 +37,7 @@ export {
   getGridPosition,
   findCoordinateAtPosition,
   getDiagonalCornerSpaces,
+  listInBoardOrder,
   getSpacesApart,
   getSpacesWithinDistance,
 } from './board';

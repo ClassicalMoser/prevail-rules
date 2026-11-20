@@ -47,6 +47,9 @@ export { findCoordinateAtPosition } from './findCoordinateAtPosition';
 // The two spaces a diagonal step cuts between.
 export { getDiagonalCornerSpaces } from './getDiagonalCornerSpaces';
 
+// A set of spaces written down in board order, an order that means nothing.
+export { listInBoardOrder } from './listInBoardOrder';
+
 // How many spaces apart two spaces are, a diagonal step counting as one.
 export { getSpacesApart } from './getSpacesApart';
 
