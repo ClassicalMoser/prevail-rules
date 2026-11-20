@@ -190,6 +190,71 @@ describe('getLegalPlayerChoiceOptions function', () => {
     expect(options.destinations).toContain('E-5');
   });
 
+  it("lists a commander's destinations in board order, which means nothing", () => {
+    // Black, holding the initiative, moves its commander first (§4.2.1).
+    let state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
+    // Both hands hold a card, so neither player has lost.
+    state = updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        inHand: [createTestCard()],
+      },
+      white: {
+        ...state.cardState.white,
+        inHand: [createTestCard()],
+      },
+    });
+    // Black's commander stands in the north-west corner of an empty board.
+    state = {
+      ...state,
+      boardState: createBoardWithCommander('black', 'A-1'),
+    };
+    // The first commander's move is owed.
+    state = updatePhaseState(state, {
+      phase: 'moveCommanders',
+      step: 'moveFirstCommander',
+    });
+
+    const options = getLegalPlayerChoiceOptions(state);
+    if (options?.choiceType !== 'moveCommander') {
+      throw new Error('expected moveCommander');
+    }
+    // Within four steps of A-1 lie rows A to E, columns 1 to 5. The offer
+    // lists them row by row from A-1, whatever order the walk found them in:
+    // a set has no order, and this one only fixes how it is written down.
+    expect(options.destinations).toStrictEqual([
+      'A-1',
+      'A-2',
+      'A-3',
+      'A-4',
+      'A-5',
+      'B-1',
+      'B-2',
+      'B-3',
+      'B-4',
+      'B-5',
+      'C-1',
+      'C-2',
+      'C-3',
+      'C-4',
+      'C-5',
+      'D-1',
+      'D-2',
+      'D-3',
+      'D-4',
+      'D-5',
+      'E-1',
+      'E-2',
+      'E-3',
+      'E-4',
+      'E-5',
+    ]);
+  });
+
   it('packages chooseShooter root attackers', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
