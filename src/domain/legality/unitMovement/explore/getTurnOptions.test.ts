@@ -27,6 +27,8 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
@@ -48,6 +50,8 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: ['turnLeft', 'turnRight'],
       remainingFlexibility: 0,
       remainingSpeed: 2,
@@ -66,6 +70,8 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
@@ -84,6 +90,8 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'northEast',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'northEast' }],
       path: ['turnRight'],
       remainingFlexibility: 1,
       remainingSpeed: 2,
@@ -102,6 +110,8 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'F-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'F-5', facing: 'north' }],
       path: ['step'],
       remainingFlexibility: 2,
       remainingSpeed: 1,

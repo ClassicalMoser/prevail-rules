@@ -1,4 +1,9 @@
-import type { Coordinate, MoveDelta, UnitFacing } from '@entities';
+import type {
+  Coordinate,
+  MoveDelta,
+  UnitFacing,
+  UnitPlacement,
+} from '@entities';
 
 /**
  * One point in a move in progress. A move is a run of steps and turns
@@ -26,4 +31,10 @@ export interface MoveState {
    * move event records, so a player can make exactly this move.
    */
   path: readonly MoveDelta[];
+  /**
+   * Every position the unit has held so far in this move, this one
+   * included: each space it stood on, with each way it faced there. A move
+   * may not come back to any of them (§5.2.4).
+   */
+  heldPositions: readonly UnitPlacement[];
 }

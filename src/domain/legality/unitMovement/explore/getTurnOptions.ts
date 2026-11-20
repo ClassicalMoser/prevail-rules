@@ -2,22 +2,20 @@ import type { MoveTurn } from '@entities';
 import type { MoveContext } from './moveContext';
 import type { MoveState } from './moveState';
 import { moveTurns, sideTurns } from '@entities';
+import { getTurnedFacing } from '@queries';
+import { isPositionHeld } from './isPositionHeld';
 
 /**
- * The turns a unit may make from this point in its move, each for
- * 1 Flexibility. Ordinarily that is 45° to its left or right, or about
- * (§5.2.1), as often as the allowance lasts (§5.2.2).
- *
- * A retreat is the exception (§9.1.4). It never turns about: a unit forced
- * back does not reverse to face the other way. And before its first step
- * back it may turn at most 45° in all. After the first step it turns 45°
- * either way, as often as its Flexibility lasts.
+ * The turns a unit's Flexibility and the kind of move allow from this point,
+ * before asking whether a turn would bring the move back to a position it
+ * held: 45° either way or about for an advance, the narrower set for a
+ * retreat (§9.1.4).
  *
  * @param context - What the whole move is bound by
  * @param state - The point in the move the turn would be made from
- * @returns The turns allowed from here; empty when no turn is allowed
+ * @returns The turns allowed by Flexibility and direction
  */
-export function getTurnOptions(
+function getCandidateTurns(
   context: MoveContext,
   state: MoveState,
 ): Set<MoveTurn> {
@@ -49,4 +47,44 @@ export function getTurnOptions(
   }
   const opening = new Set<MoveTurn>(sideTurns);
   return opening;
+}
+
+/**
+ * The turns a unit may make from this point in its move, each for
+ * 1 Flexibility. Ordinarily that is 45° to its left or right, or about
+ * (§5.2.1), as often as the allowance lasts (§5.2.2).
+ *
+ * A retreat is the exception (§9.1.4). It never turns about: a unit forced
+ * back does not reverse to face the other way. And before its first step
+ * back it may turn at most 45° in all. After the first step it turns 45°
+ * either way, as often as its Flexibility lasts.
+ *
+ * Either way, a turn that would face the unit the way it has already faced
+ * on this space in this move is not allowed (§5.2.4): it would bring the
+ * move back to a position it held.
+ *
+ * @param context - What the whole move is bound by
+ * @param state - The point in the move the turn would be made from
+ * @returns The turns allowed from here; empty when no turn is allowed
+ */
+export function getTurnOptions(
+  context: MoveContext,
+  state: MoveState,
+): Set<MoveTurn> {
+  // The turns the unit's Flexibility and its kind of move allow.
+  const candidates = getCandidateTurns(context, state);
+
+  // Of those, only a turn to a facing it has not yet held on this space
+  // (§5.2.4).
+  const allowed = new Set<MoveTurn>(
+    [...candidates].filter(
+      (turn) =>
+        !isPositionHeld(
+          state,
+          state.coordinate,
+          getTurnedFacing(state.facing, turn),
+        ),
+    ),
+  );
+  return allowed;
 }

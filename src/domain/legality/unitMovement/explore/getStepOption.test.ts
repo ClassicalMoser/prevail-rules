@@ -25,6 +25,8 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
@@ -38,6 +40,11 @@ describe('getStepOption function', () => {
         cameFrom: 'E-5',
         coordinate: 'D-5',
         facing: 'north',
+        // Where it started, then the space it stepped into.
+        heldPositions: [
+          { coordinate: 'E-5', facing: 'north' },
+          { coordinate: 'D-5', facing: 'north' },
+        ],
         path: ['step'],
         remainingFlexibility: 1,
         remainingSpeed: 1,
@@ -59,6 +66,8 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
@@ -72,6 +81,11 @@ describe('getStepOption function', () => {
         cameFrom: 'E-5',
         coordinate: 'F-5',
         facing: 'north',
+        // Where it started, then the space it stepped into.
+        heldPositions: [
+          { coordinate: 'E-5', facing: 'north' },
+          { coordinate: 'F-5', facing: 'north' },
+        ],
         path: ['step'],
         remainingFlexibility: 1,
         remainingSpeed: 1,
@@ -93,6 +107,8 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 1,
       remainingSpeed: 0,
@@ -117,6 +133,8 @@ describe('getStepOption function', () => {
       cameFrom: 'A-5',
       coordinate: 'A-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'A-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
@@ -145,6 +163,8 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
@@ -158,6 +178,11 @@ describe('getStepOption function', () => {
         cameFrom: 'E-5',
         coordinate: 'D-5',
         facing: 'north',
+        // Where it started, then the enemy's space it stepped into.
+        heldPositions: [
+          { coordinate: 'E-5', facing: 'north' },
+          { coordinate: 'D-5', facing: 'north' },
+        ],
         path: ['step'],
         remainingFlexibility: 1,
         remainingSpeed: 1,
@@ -184,6 +209,8 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'northEast',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'northEast' }],
       path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,

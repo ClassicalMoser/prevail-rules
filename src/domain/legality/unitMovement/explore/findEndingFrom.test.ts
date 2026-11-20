@@ -48,6 +48,8 @@ describe('findEndingFrom function', () => {
       cameFrom: 'E-5',
       coordinate: 'D-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'D-5', facing: 'north' }],
       path: ['step'],
       remainingFlexibility: 4,
       remainingSpeed: 1,
@@ -62,6 +64,8 @@ describe('findEndingFrom function', () => {
       cameFrom: 'D-5',
       coordinate: 'C-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'C-5', facing: 'north' }],
       path: ['step', 'step'],
       remainingFlexibility: 4,
       remainingSpeed: 0,

@@ -6,6 +6,7 @@ import {
 import type { MoveContext } from './moveContext';
 import type { MoveState } from './moveState';
 import { canMoveThrough, checkDiagonalMove } from '../passage';
+import { isPositionHeld } from './isPositionHeld';
 import { isWithinMoveBounds } from './isWithinMoveBounds';
 
 /**
@@ -13,6 +14,9 @@ import { isWithinMoveBounds } from './isWithinMoveBounds';
  * 1 Speed: into the space it faces when advancing, or the space behind it
  * when retreating (§5.1.2–§5.1.3, §9.1.1). A unit never steps sideways;
  * to go elsewhere it turns first.
+ *
+ * A step back onto a position the move already held is not offered
+ * (§5.2.4).
  *
  * The step is offered with whether the move may go on from the space it
  * enters. A space the unit cannot pass through — an enemy, most
@@ -46,6 +50,12 @@ export function getStepOption(
     return undefined;
   }
 
+  // A step may not bring the move back to a position it held: that space,
+  // facing this way (§5.2.4).
+  if (isPositionHeld(state, nextCoordinate, state.facing)) {
+    return undefined;
+  }
+
   // A diagonal step must pass between the two corner spaces flanking the
   // diagonal (§5.4.5): no slipping between two units standing corner to
   // corner. Whether the step may then end on the space is not this test's
@@ -74,10 +84,16 @@ export function getStepOption(
       context.gameState,
     ) && isWithinMoveBounds(context, nextCoordinate);
 
+  // The unit on the next space, facing as it did, a point of Speed spent,
+  // and this position held from now on.
   const next: MoveState = {
     cameFrom: state.coordinate,
     coordinate: nextCoordinate,
     facing: state.facing,
+    heldPositions: [
+      ...state.heldPositions,
+      { coordinate: nextCoordinate, facing: state.facing },
+    ],
     path: [...state.path, 'step'],
     remainingFlexibility: state.remainingFlexibility,
     remainingSpeed: state.remainingSpeed - 1,

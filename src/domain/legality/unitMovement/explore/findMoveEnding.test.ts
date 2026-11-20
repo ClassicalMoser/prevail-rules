@@ -34,6 +34,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
@@ -71,6 +73,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
@@ -104,6 +108,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'D-5',
       coordinate: 'E-5',
       facing: 'south',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'E-5', facing: 'south' }],
       path: ['step', 'turnAbout', 'step'],
       remainingFlexibility: 1,
       remainingSpeed: 0,
@@ -136,6 +142,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'D-6',
       facing: 'northEast',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'D-6', facing: 'northEast' }],
       path: ['turnRight', 'step'],
       remainingFlexibility: 1,
       remainingSpeed: 1,
@@ -174,6 +182,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'D-5',
       facing: 'north',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'D-5', facing: 'north' }],
       path: ['step'],
       remainingFlexibility: 2,
       remainingSpeed: 1,
@@ -208,6 +218,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'E-4',
       coordinate: 'D-5',
       facing: 'northEast',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'D-5', facing: 'northEast' }],
       path: ['step'],
       remainingFlexibility: 2,
       remainingSpeed: 1,
@@ -247,6 +259,8 @@ describe('findMoveEnding function', () => {
       cameFrom: 'E-4',
       coordinate: 'D-5',
       facing: 'northEast',
+      // Only the position it stands in now: no earlier one bears on this case.
+      heldPositions: [{ coordinate: 'D-5', facing: 'northEast' }],
       path: ['turnLeft', 'turnRight', 'step'],
       remainingFlexibility: 0,
       remainingSpeed: 1,

@@ -29,6 +29,8 @@ describe('getStartState function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      // Its starting position is the only one it has held.
+      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
       path: [],
       remainingFlexibility: 5,
       remainingSpeed: 3,
