@@ -65,10 +65,10 @@ describe('applyResolveMeleeEvent function', () => {
   /** A resolveMelee event with these results for White's unit; Black's reached nothing. */
   function meleeEvent(white: Partial<AttackResult> = {}): ResolveMeleeEvent {
     return {
-      blackAttackResult: nothingReached,
+      attackResultOnBlackUnit: nothingReached,
+      attackResultOnWhiteUnit: { ...nothingReached, ...white },
       effectType: 'resolveMelee',
       eventType: 'gameEffect',
-      whiteAttackResult: { ...nothingReached, ...white },
     };
   }
 

@@ -26,11 +26,11 @@ export function applyResolveMeleeEvent<S extends GameState>(
   // Only the factory decides which slots are due; no substep is written here.
   const whiteAttackApplyState = createAttackApplyState(
     white.unit,
-    event.whiteAttackResult,
+    event.attackResultOnWhiteUnit,
   );
   const blackAttackApplyState = createAttackApplyState(
     black.unit,
-    event.blackAttackResult,
+    event.attackResultOnBlackUnit,
   );
 
   // The event records what happened to each side's unit; each apply is

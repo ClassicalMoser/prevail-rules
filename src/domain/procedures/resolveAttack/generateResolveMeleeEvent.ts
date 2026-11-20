@@ -94,9 +94,9 @@ export function generateResolveMeleeEvent(state: GameState): ResolveMeleeEvent {
 
   // Legal retreat hexes are computed when the retreat opens, not on this event.
   return {
-    blackAttackResult: blackUnitResult,
+    attackResultOnBlackUnit: blackUnitResult,
+    attackResultOnWhiteUnit: whiteUnitResult,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    whiteAttackResult: whiteUnitResult,
   };
 }
