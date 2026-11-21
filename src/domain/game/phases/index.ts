@@ -41,13 +41,13 @@ export type { CleanupPhaseState, CleanupPhaseStep } from './cleanupPhase';
 
 // Phase catalog + union
 export {
-  CLEANUP_PHASE,
-  ISSUE_COMMANDS_PHASE,
-  MOVE_COMMANDERS_PHASE,
-  PLAY_CARDS_PHASE,
-  RESOLVE_MELEE_PHASE,
   phases,
   phaseSchema,
+  PLAY_CARDS_PHASE,
+  MOVE_COMMANDERS_PHASE,
+  ISSUE_COMMANDS_PHASE,
+  RESOLVE_MELEE_PHASE,
+  CLEANUP_PHASE,
   phaseStateSchema,
 } from './phases';
 export type { Phase, PhaseState } from './phases';

@@ -5,15 +5,15 @@ export type { Game } from './game';
 // The game as one viewer may see it: one variant per view, then any view.
 export {
   authoritativeProjectedGameSchema,
-  blackSeenProjectedGameSchema,
-  projectedGameSchema,
-  spectatorProjectedGameSchema,
   whiteSeenProjectedGameSchema,
+  blackSeenProjectedGameSchema,
+  spectatorProjectedGameSchema,
+  projectedGameSchema,
 } from './projectedGame';
 export type {
   AuthoritativeProjectedGame,
-  BlackSeenProjectedGame,
-  ProjectedGame,
-  SpectatorProjectedGame,
   WhiteSeenProjectedGame,
+  BlackSeenProjectedGame,
+  SpectatorProjectedGame,
+  ProjectedGame,
 } from './projectedGame';
