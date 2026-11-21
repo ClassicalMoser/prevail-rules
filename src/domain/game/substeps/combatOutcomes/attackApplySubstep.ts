@@ -62,6 +62,7 @@ const _attackApplyStateSchemaObject = z
 
 type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
 
+/** The schema for an attack's results being applied to the unit it struck. */
 export const attackApplyStateSchema: z.ZodType<AttackApplyState> =
   _attackApplyStateSchemaObject;
 

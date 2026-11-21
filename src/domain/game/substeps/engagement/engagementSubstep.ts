@@ -25,6 +25,10 @@ export interface EngagementState {
   /** The unit that is engaging. */
   engagingUnit: UnitInstance;
   /** The target placement of the engagement. */
+  // TODO(composition): a copy of the parent movement's `targetPlacement`,
+  // taken when the engagement starts (applyStartEngagementEvent), and the
+  // engagement only ever sits inside that movement. Settled by reading the
+  // parent's, or by saying when the two can differ.
   targetPlacement: UnitPlacement;
   /** The resolution state of the engagement. */
   engagementResolutionState: EngagementResolutionState;
@@ -44,6 +48,7 @@ const _engagementStateSchemaObject = z
 
 type EngagementStateSchemaType = z.infer<typeof _engagementStateSchemaObject>;
 
+/** The schema for an engagement a moving unit has started. */
 export const engagementStateSchema: z.ZodType<EngagementState> =
   _engagementStateSchemaObject;
 

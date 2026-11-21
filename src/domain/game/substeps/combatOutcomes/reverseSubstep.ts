@@ -23,6 +23,10 @@ export interface ReverseState {
    */
   reversingUnit: UnitInstance;
   /** The final position of the reversing unit. */
+  // TODO(composition): written with `completed` in the same apply, and read
+  // only as "not yet" against 'pending' (getExpectedReverseEvent,
+  // getNextMeleeReverseState); where the unit ends is the board's. Settled by
+  // reading `completed`, or by saying what the placement is kept for.
   finalPosition: UnitPlacement | 'pending';
   /** Whether the reverse has been completed. */
   completed: boolean;
@@ -39,6 +43,7 @@ const _reverseStateSchemaObject = z
 
 type ReverseStateSchemaType = z.infer<typeof _reverseStateSchemaObject>;
 
+/** The schema for a unit turning to face its attacker. */
 export const reverseStateSchema: z.ZodType<ReverseState> =
   _reverseStateSchemaObject;
 

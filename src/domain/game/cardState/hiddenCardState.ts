@@ -4,13 +4,22 @@ import type { AssertExact } from '@utils';
 import { commandCardSchema, hiddenCardSchema } from '@entities';
 import { z } from 'zod';
 
+// TODO(misleading): "the opposing player's cards" is one use; a spectator's
+// view holds both sides' cards this way. Settled by a header that says whose
+// hand is face down, not whose side it is.
 /** The state of the opposing player's cards. */
 export interface HiddenCardState {
+  /** The cards in the player's hand, face down: how many, not which (§1.4). */
   inHand: HiddenCard[];
+  /** The card the player has chosen this round, face down until the reveal. */
   awaitingPlay: HiddenCard | null;
+  /** The card in play, face up once revealed. */
   inPlay: CommandCard | null;
+  /** The cards played in earlier rounds, face up. */
   played: CommandCard[];
+  /** The cards discarded, face up. */
   discarded: CommandCard[];
+  /** The cards burnt and out of the game, face up. */
   burnt: CommandCard[];
 }
 

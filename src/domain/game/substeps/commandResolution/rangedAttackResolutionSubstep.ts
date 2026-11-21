@@ -61,6 +61,7 @@ type RangedAttackResolutionStateSchemaType = z.infer<
   typeof _rangedAttackResolutionStateSchemaObject
 >;
 
+/** The schema for one shot under a Shoot order. */
 export const rangedAttackResolutionStateSchema: z.ZodType<RangedAttackResolutionState> =
   _rangedAttackResolutionStateSchemaObject;
 

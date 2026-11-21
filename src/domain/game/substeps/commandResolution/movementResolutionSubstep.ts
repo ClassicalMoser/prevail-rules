@@ -23,6 +23,11 @@ export interface MovementResolutionState {
   /** The type of command resolution. */
   commandResolutionType: 'movement';
   /** The unit that is moving, and where it now stands. */
+  // TODO(composition): where the unit stands is the board's, and the index
+  // finds it by name; this copy has to be kept in step (applyStartEngagementEvent
+  // rewrites it when the unit enters an engagement). A Shoot order names its
+  // shooter by identity alone (`attackingUnit`), as events now do. Settled by
+  // naming the mover by identity, or by saying why the copy is needed.
   movingUnit: UnitWithPlacement;
   /**
    * Where the move ends. `'pending'` from the moment the unit is chosen
@@ -57,6 +62,7 @@ type MovementResolutionStateSchemaType = z.infer<
   typeof _movementResolutionStateSchemaObject
 >;
 
+/** The schema for one unit's move under a Move order. */
 export const movementResolutionStateSchema: z.ZodType<MovementResolutionState> =
   _movementResolutionStateSchemaObject;
 

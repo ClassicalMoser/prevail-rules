@@ -8,6 +8,9 @@ import { ROUT_SUBSTEP_TYPE } from '../substepType';
  * Composable substep that handles card discarding when units rout.
  *
  * This is a **composable substep** - it can be reused in multiple contexts:
+ * TODO(misleading): the list leaves out `AttackApplyState`, the commonest
+ * parent: an attack that reaches its Rout threshold opens a rout there. Settled
+ * by adding it, as the substeps README lists all four.
  * - Used in `RetreatState` (when no legal retreat options exist)
  * - Used in `EngagementState` (for rear engagements)
  * - Used in `RallyResolutionState` (when units lose support)

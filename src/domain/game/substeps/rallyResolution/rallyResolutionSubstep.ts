@@ -28,6 +28,10 @@ export interface RallyResolutionState {
   /** Units that lost support after the rally. */
   unitsLostSupport: UnitInstance[] | 'pending';
   /** The rout discard penalty state (if units were routed). */
+  // TODO(misleading): stays 'pending' when the support check routs nobody
+  // (applyUnitsLostSupportAfterRally), so 'pending' means both "not yet" and
+  // "never"; every other substep says the second with 'bypassed'. Settled by
+  // 'bypassed', or by saying `unitsLostSupport` is what tells them apart.
   routState: RoutState | 'pending';
   /** Whether the rally resolution substep is complete. */
   completed: boolean;

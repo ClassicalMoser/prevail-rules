@@ -21,6 +21,10 @@ export interface RetreatState {
   /** The type of the substep. */
   substepType: typeof RETREAT_SUBSTEP_TYPE;
   /** The unit that is retreating. */
+  // TODO(composition): where the unit stands is the board's, and the index
+  // finds it by name; a reverse names its unit by identity for that reason
+  // (`reversingUnit`). Settled by naming the retreating unit by identity, or
+  // by saying the placement is kept as where the retreat paths start.
   retreatingUnit: UnitWithPlacement;
   /**
    * The retreats the unit may make, each as its path from where it stands
@@ -59,6 +63,7 @@ const _retreatStateSchemaObject = z
 
 type RetreatStateSchemaType = z.infer<typeof _retreatStateSchemaObject>;
 
+/** The schema for a unit falling back. */
 export const retreatStateSchema: z.ZodType<RetreatState> =
   _retreatStateSchemaObject;
 

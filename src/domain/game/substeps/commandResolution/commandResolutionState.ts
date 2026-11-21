@@ -20,6 +20,7 @@ type CommandResolutionStateSchemaType = z.infer<
   typeof _commandResolutionStateSchemaObject
 >;
 
+/** The schema for an order being carried out, by Move or by Shoot. */
 export const commandResolutionStateSchema: z.ZodType<CommandResolutionState> =
   _commandResolutionStateSchemaObject;
 

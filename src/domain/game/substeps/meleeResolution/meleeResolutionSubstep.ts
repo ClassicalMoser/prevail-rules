@@ -70,6 +70,7 @@ type MeleeResolutionStateSchemaType = z.infer<
   typeof _meleeResolutionStateSchemaObject
 >;
 
+/** The schema for one melee being resolved, in one space. */
 export const meleeResolutionStateSchema: z.ZodType<MeleeResolutionState> =
   _meleeResolutionStateSchemaObject;
 

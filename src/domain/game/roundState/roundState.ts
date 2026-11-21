@@ -32,6 +32,8 @@ const _roundStateSchemaObject = z
     /** The phases that have been completed in the round. */
     completedPhases: z.array(phaseStateSchema),
     /** The state of the current phase of the round. */
+    // 'none' during setup, round 0, which has no phases; every later round
+    // is always in one of its five.
     currentPhaseState: phaseStateSchema.or(z.literal('none')),
     /** Units that have been commanded this round. */
     commandedUnits: z.array(unitInstanceSchema),
