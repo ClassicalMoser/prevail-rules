@@ -56,7 +56,7 @@ Audit in this order (dependencies flow downward):
 
 ### `events/` (`@events`)
 
-- [ ] `events/` — reopened 2026-11-12, changed since the read
+- [x] `events/` — reopened 2026-11-12, changed since the read
   - Scouted again 2026-11-13: every choice and effect says when it comes, its rule, and who writes and reads it. No marks left.
   - Scanned again 2026-11-20: every name in the comments resolves; every choice names the enumerator that offers it and every effect its own generator and apply, in matching folders; every § cited points at the rule it describes. Six marks from before still hold. Four new marks: `setupUnit.ts` (file name, and §3.5.4 cited for §3.5.1/§3.5.3), `resolveFlankEngagement.ts` ("beside" for "in" the defender's space), `completeUnitMovement.ts` (only a front engagement waits).
   - Changed 2026-11-20, for the next read: a front engagement sets the engaging unit down in the defender's space at `startEngagement`, as a rear one does; `startEngagement` records `engagingSpeed`, sampled where the move began, and the front engagement compares against it. `completeUnitMovement` sets nobody down; its mark is settled by the change.
@@ -66,15 +66,15 @@ Audit in this order (dependencies flow downward):
   - Settled 2026-11-20: the four commit events stay separate on purpose (author): calculation, context and application differ. `commitmentChoices.ts` says so; its mark is gone.
   - Settled 2026-11-20: the player-choice list moved to `@ruleValues` (`playerChoiceTypes`), beside the game-effect list; the stale circular-init reason and its mark went with the old file.
   - Settled 2026-11-20: `setupUnit.ts` is renamed `setupUnits.ts` (author), and cites §3.5.1 for the army and §3.5.3 for the general; both marks are gone.
-  - Changed 2026-11-20, for the next read: a declined commitment is `committedCard: 'none'` and a stop is `issueCommand.order: 'none'`, the existing `'none'` sentinel, not `null`. Card state's empty slots keep `null`.
+  - Changed 2026-11-20, for the next read: a declined commitment is `committedCard: 'none'`, the existing `'none'` sentinel, not `null` (the issuing stop that also took `'none'` went with the issuing loop, below). Card state's empty slots keep `null`.
   - Changed 2026-11-20, for the next read: issuing is one choice, `issueCommands` (`issueCommands.ts`), carrying the whole `CommandAllocation` of the card in play's command; the units of a units order or the lines of a lines order are offered a part at a time (`getLegalUnitsToOrder`, `getLegalLinesToOrder`) and checked the same way. The `issueCommand` loop, its `'none'` stop and the `completeIssuingCommands` effect are gone; `completeMoveCommandersPhase` carries nothing.
   - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
   - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
   - Changed 2026-11-20, for the next read: events name units by who they are, not where they stand. `chooseMovingUnit.unit`, `chooseShooter.unit`, `performRangedAttack.targetUnit` and `supportingUnits` are `UnitInstance`; `startEngagement.defenderWithPlacement` is `defendingUnit`; `moveCommander.from` is gone. Where each stands is read from the game state's index.
   - [x] `expectedEvent/`
   - [x] `gameEffects/`
-  - [ ] `playerChoices/`
-  - [ ] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
+  - [x] `playerChoices/`
+  - [x] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
 
 ### `game/` (`@game`)
 
