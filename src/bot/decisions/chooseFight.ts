@@ -5,11 +5,12 @@ import type {
 } from '@events';
 import type { BotContext } from './botContext';
 import {
-  getEngagementStateFromMovement,
+  getMovementResolutionState,
   getMeleeSupportValue,
   isSameUnitInstance,
 } from '@queries';
 import { appraiseMelee, pickBest } from '@bot/appraisal';
+import { throwIfPending } from '@utils';
 
 /** What giving ground costs a unit, as a share of its cost. */
 const RETREAT_SHARE = 0.2;
@@ -79,12 +80,18 @@ export function chooseWhetherToRetreat(
   context: BotContext,
 ): ChooseWhetherToRetreatEvent {
   const { view, survey, temperament } = context;
-  const engagement = getEngagementStateFromMovement(view);
+  // The defender stands in the space the move ends in.
+  const { movingUnit: engagingUnit, targetPlacement } =
+    getMovementResolutionState(view);
+  const engagedSpace = throwIfPending(
+    targetPlacement,
+    'The move has not been written yet',
+  );
   const defender = survey.ownUnits.find(
-    (own) => own.placement.coordinate === engagement.targetPlacement.coordinate,
+    (own) => own.placement.coordinate === engagedSpace.coordinate,
   );
   const engager = survey.enemyUnits.find((enemy) =>
-    isSameUnitInstance(enemy.unit, engagement.engagingUnit),
+    isSameUnitInstance(enemy.unit, engagingUnit),
   );
   let fightWorth = 0;
   if (defender !== undefined) {
@@ -99,7 +106,7 @@ export function chooseWhetherToRetreat(
         support: getMeleeSupportValue(view.boardState, defender),
         unit: defender.unit,
       },
-      { support: engagerSupport, unit: engagement.engagingUnit },
+      { support: engagerSupport, unit: engagingUnit },
     );
   }
   const cost = defender === undefined ? 0 : defender.unit.unitType.cost;

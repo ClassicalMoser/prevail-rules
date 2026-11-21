@@ -13,8 +13,8 @@ import { attackApplyStateSchema } from '../combatOutcomes';
  *
  * This is a **context-specific substep** - it's tied to the `ResolveMeleePhase`.
  * It contains composable substeps:
- * - {@link AttackApplyState} (one for each player, named for the order the players
- *   hold initiative in)
+ * - {@link AttackApplyState} (one for each player's unit, the attack it
+ *   takes, named for the order the players hold initiative in)
  *
  * Unlike composable substeps, this state is only used in one specific context.
  * Repeated for each melee that needs to be resolved in a round.
@@ -25,13 +25,8 @@ export interface MeleeResolutionState {
   /** The location of the melee. */
   location: Coordinate;
   /**
-   * The state of the first player's attack apply.
-   *
-   * TODO(misleading): "the first player's attack apply" reads as the first
-   * player's attack, but the slot holds the result applied to the first
-   * player's unit, as the substeps README says: `updateMeleeAttackApplyState`
-   * writes it for the player whose unit takes the result. Settled with the
-   * open question on `getMeleeAttackApplyState`'s `player`.
+   * The apply of the second player's attack on the first player's unit:
+   * the result that unit takes.
    *
    * Both units strike at once, and the slots are named for the order the
    * players hold initiative in: first and second. The applies take effect
@@ -39,9 +34,9 @@ export interface MeleeResolutionState {
    * a rule of the version being played; who owns an apply is read from its
    * `defendingUnit`.
    */
-  firstPlayerAttackApplyState: AttackApplyState | 'pending';
-  /** The state of the second player's attack apply. */
-  secondPlayerAttackApplyState: AttackApplyState | 'pending';
+  attackOnFirstPlayerApplyState: AttackApplyState | 'pending';
+  /** The apply of the first player's attack on the second player's unit. */
+  attackOnSecondPlayerApplyState: AttackApplyState | 'pending';
   /** The first player's commitment.*/
   firstPlayerCommitment: Commitment;
   /** The second player's commitment. */
@@ -52,14 +47,14 @@ export interface MeleeResolutionState {
 
 const _meleeResolutionStateSchemaObject = z
   .object({
-    firstPlayerAttackApplyState: attackApplyStateSchema.or(
+    attackOnFirstPlayerApplyState: attackApplyStateSchema.or(
       z.literal('pending'),
     ),
     firstPlayerCommitment: commitmentSchema,
     completed: z.boolean(),
     location: coordinateSchema,
     substepType: z.literal(MELEE_RESOLUTION_SUBSTEP_TYPE),
-    secondPlayerAttackApplyState: attackApplyStateSchema.or(
+    attackOnSecondPlayerApplyState: attackApplyStateSchema.or(
       z.literal('pending'),
     ),
     secondPlayerCommitment: commitmentSchema,

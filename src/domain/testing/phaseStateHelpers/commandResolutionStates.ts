@@ -34,13 +34,7 @@ export function createMovementResolutionState(
     completed: false,
     engagementState: 'pending',
     moveCommander: false,
-    movingUnit: {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: createTestUnit('black', { attack: 2 }),
-    },
+    movingUnit: createTestUnit('black', { attack: 2 }),
     substepType: 'commandResolution' as const,
     targetPlacement: {
       coordinate: 'E-6',

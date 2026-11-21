@@ -72,13 +72,13 @@ describe('findRoutState function', () => {
     const blackRout = createRoutState('black', blackDefender);
     const whiteRout = createRoutState('white', whiteDefender);
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRout(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(
         blackDefender,
         {
           routState: blackRout,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRout(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRout(
         whiteDefender,
         {
           routState: whiteRout,
@@ -108,11 +108,11 @@ describe('findRoutState function', () => {
     const nested = createRoutState('black', defender);
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(
-        standing,
+        standing.unit,
         legalRetreatsOf(standing),
         {
           retreatState: createRetreatState(
-            standing,
+            standing.unit,
             legalRetreatsOf(standing, [enemyCuttingOffRetreat(standing)]),
             {
               routState: nested,

@@ -35,7 +35,7 @@ function awaitingMove(
   const movement = createMovementResolutionState(state, {
     commitment: { commitmentType: 'declined' },
     moveCommander: 'pending',
-    movingUnit: mover,
+    movingUnit: mover.unit,
     targetPlacement: 'pending',
   });
   const opened = updatePhaseState(
@@ -125,7 +125,6 @@ describe('applyMoveUnitEvent function', () => {
       unit: defender.unit,
     });
     const movement = getMovementResolutionState(moved);
-    expect(movement.movingUnit.placement).toStrictEqual(engager.placement);
     expect(movement.targetPlacement).toStrictEqual({
       coordinate: 'D-5',
       facing: 'north',

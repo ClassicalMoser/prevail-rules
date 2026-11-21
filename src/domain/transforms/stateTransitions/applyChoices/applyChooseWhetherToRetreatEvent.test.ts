@@ -83,8 +83,9 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
       engagementState.engagementResolutionState.defendingUnitRetreats,
     ).toBe(false);
     expect(engagementState.completed).toBe(true);
+    // Standing, the defender will never fall back.
     expect(engagementState.engagementResolutionState.retreatState).toBe(
-      'pending',
+      'bypassed',
     );
   });
 

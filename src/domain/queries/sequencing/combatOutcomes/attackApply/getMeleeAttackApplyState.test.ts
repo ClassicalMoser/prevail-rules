@@ -21,7 +21,7 @@ describe('getMeleeAttackApplyState function', () => {
       { completed: true },
     );
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: apply,
+      attackOnSecondPlayerApplyState: apply,
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -40,7 +40,7 @@ describe('getMeleeAttackApplyState function', () => {
       createTestUnit('black', { attack: 2 }),
     );
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: apply,
+      attackOnFirstPlayerApplyState: apply,
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -68,8 +68,8 @@ describe('getMeleeAttackApplyState function', () => {
         createTestUnit(secondPlayer, { attack: 2 }),
       );
       const melee = createMeleeResolutionState(empty, {
-        firstPlayerAttackApplyState: firstApply,
-        secondPlayerAttackApplyState: secondApply,
+        attackOnFirstPlayerApplyState: firstApply,
+        attackOnSecondPlayerApplyState: secondApply,
       });
       const state = updatePhaseState(
         empty,
@@ -93,7 +93,7 @@ describe('getMeleeAttackApplyState function', () => {
       'black',
     );
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: 'pending',
+      attackOnSecondPlayerApplyState: 'pending',
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -101,7 +101,7 @@ describe('getMeleeAttackApplyState function', () => {
     const state = updatePhaseState(empty, phase);
 
     expect(() => getMeleeAttackApplyState(state, 'white')).toThrow(
-      'No white attack apply state found in melee resolution',
+      'No attack apply on white found in melee resolution',
     );
   });
 });

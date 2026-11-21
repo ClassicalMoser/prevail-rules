@@ -79,11 +79,11 @@ describe('applyResolveMeleeEvent function', () => {
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'apply',
     );
     const blackApply = throwIfPending(
-      melee.firstPlayerAttackApplyState,
+      melee.attackOnFirstPlayerApplyState,
       'apply',
     );
     // A miss still needs completeAttackApply to close the shell.
@@ -104,11 +104,11 @@ describe('applyResolveMeleeEvent function', () => {
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'apply',
     );
     const blackApply = throwIfPending(
-      melee.firstPlayerAttackApplyState,
+      melee.attackOnFirstPlayerApplyState,
       'apply',
     );
     expect(whiteApply.reverseState).toBe('pending');
@@ -126,11 +126,11 @@ describe('applyResolveMeleeEvent function', () => {
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'apply',
     );
     const blackApply = throwIfPending(
-      melee.firstPlayerAttackApplyState,
+      melee.attackOnFirstPlayerApplyState,
       'apply',
     );
     // White's unit was hit only to rout, so its rout is the one result due.
@@ -149,7 +149,7 @@ describe('applyResolveMeleeEvent function', () => {
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'apply',
     );
     // Legal options are not recorded here — the retreat opener computes them.

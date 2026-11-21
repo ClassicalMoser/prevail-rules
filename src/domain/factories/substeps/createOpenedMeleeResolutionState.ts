@@ -13,10 +13,10 @@ export function createOpenedMeleeResolutionState(
 ): MeleeResolutionState {
   const meleeState: MeleeResolutionState = {
     completed: false,
-    firstPlayerAttackApplyState: 'pending',
+    attackOnFirstPlayerApplyState: 'pending',
     firstPlayerCommitment: { commitmentType: 'pending' },
     location,
-    secondPlayerAttackApplyState: 'pending',
+    attackOnSecondPlayerApplyState: 'pending',
     secondPlayerCommitment: { commitmentType: 'pending' },
     substepType: 'meleeResolution',
   };

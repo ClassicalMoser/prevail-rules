@@ -25,11 +25,10 @@ export function applyResolveReverseEvent<S extends GameState>(
 ): S {
   // The unit turns about where it stands, to the facing the procedure worked out.
   const standing = getPositionOfUnit(state, event.unit);
-  const finalPosition = {
+  const turned = moveUnitOnBoard(state, event.unit, {
     coordinate: standing.coordinate,
     facing: event.facing,
-  };
-  const turned = moveUnitOnBoard(state, event.unit, finalPosition);
+  });
 
   const attackApplyState = getAttackApplyStateOfPlayer(
     state,
@@ -44,7 +43,6 @@ export function applyResolveReverseEvent<S extends GameState>(
   const newReverseState: ReverseState = {
     ...currentReverseState,
     completed: true,
-    finalPosition,
   };
 
   const reversed = updateReverseState(turned, newReverseState);

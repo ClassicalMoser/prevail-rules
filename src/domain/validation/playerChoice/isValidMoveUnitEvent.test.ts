@@ -42,7 +42,7 @@ function stateAwaitingMove(options?: {
   const movement = createMovementResolutionState(state, {
     commitment: options?.commitment ?? { commitmentType: 'declined' },
     moveCommander: 'pending',
-    movingUnit: mover,
+    movingUnit: mover.unit,
     targetPlacement: 'pending',
   });
   const awaiting = updatePhaseState(

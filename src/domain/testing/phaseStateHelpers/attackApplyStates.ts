@@ -1,9 +1,4 @@
-import type {
-  AttackResult,
-  MoveDelta,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { AttackResult, MoveDelta, UnitInstance } from '@entities';
 import type { AttackApplyState } from '@game';
 import { createAttackApplyState as attackApplyFromResult } from '@factories';
 import {
@@ -52,13 +47,13 @@ export function createAttackApplyStateWithNothingDue(
 /**
  * An attack that reached the retreat threshold, with the retreat open.
  *
- * @param retreatingUnit - The defender and where it stands before retreating
+ * @param retreatingUnit - The defender falling back
  * @param legalRetreatPaths - The paths the engine offers it (see `legalRetreatsOf`)
  * @param overrides - Fields to replace, for a state the game cannot reach
  * @returns The attack-apply with its retreat written
  */
 export function createAttackApplyStateWithRetreat(
-  retreatingUnit: UnitWithPlacement,
+  retreatingUnit: UnitInstance,
   legalRetreatPaths: MoveDelta[][],
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
@@ -67,7 +62,7 @@ export function createAttackApplyStateWithRetreat(
     unitReversed: false,
     unitRouted: false,
   };
-  const apply = attackApplyFromResult(retreatingUnit.unit, measured);
+  const apply = attackApplyFromResult(retreatingUnit, measured);
   const withRetreat: AttackApplyState = {
     ...apply,
     retreatState: createRetreatState(retreatingUnit, legalRetreatPaths),
@@ -81,13 +76,13 @@ export function createAttackApplyStateWithRetreat(
  * retreat open and the reverse still due. A reverse holds the unit's placement,
  * which is not known until the retreat has moved it.
  *
- * @param retreatingUnit - The defender and where it stands before retreating
+ * @param retreatingUnit - The defender falling back
  * @param legalRetreatPaths - The paths the engine offers it (see `legalRetreatsOf`)
  * @param overrides - Fields to replace, for a state the game cannot reach
  * @returns The attack-apply with its retreat written and its reverse pending
  */
 export function createAttackApplyStateWithRetreatAndReverse(
-  retreatingUnit: UnitWithPlacement,
+  retreatingUnit: UnitInstance,
   legalRetreatPaths: MoveDelta[][],
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
@@ -98,7 +93,7 @@ export function createAttackApplyStateWithRetreatAndReverse(
     unitReversed: true,
     unitRouted: false,
   };
-  const apply = attackApplyFromResult(retreatingUnit.unit, measured);
+  const apply = attackApplyFromResult(retreatingUnit, measured);
   const withRetreat: AttackApplyState = {
     ...apply,
     retreatState: createRetreatState(retreatingUnit, legalRetreatPaths),

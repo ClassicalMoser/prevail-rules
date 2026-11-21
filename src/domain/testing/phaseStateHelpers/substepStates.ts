@@ -1,9 +1,4 @@
-import type {
-  MoveDelta,
-  PlayerSide,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { MoveDelta, PlayerSide, UnitInstance } from '@entities';
 import type {
   RallyResolutionState,
   RetreatState,
@@ -24,13 +19,13 @@ import {
  * supplies them (see `legalRetreatsOf`) rather than this fixture inventing a
  * retreat the rules might not offer.
  *
- * @param unit - The retreating unit and where it stands
+ * @param unit - The retreating unit
  * @param legalRetreatPaths - The paths the engine offers it; empty when it cannot retreat
  * @param overrides - Fields to replace, for a state the game cannot reach
  * @returns The retreat substep, open; with one legal path that path is chosen
  */
 export function createRetreatState(
-  unit: UnitWithPlacement,
+  unit: UnitInstance,
   legalRetreatPaths: MoveDelta[][],
   overrides?: Partial<RetreatState>,
 ): RetreatState {

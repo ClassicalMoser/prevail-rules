@@ -24,9 +24,9 @@ function placed(
 describe('getRetreatStateFromAttackApply function', () => {
   it('returns the retreat on the attack apply', () => {
     const unit = placed('black', 'north');
-    const retreat = createRetreatState(unit, legalRetreatsOf(unit));
+    const retreat = createRetreatState(unit.unit, legalRetreatsOf(unit));
     const apply = createAttackApplyStateWithRetreat(
-      unit,
+      unit.unit,
       legalRetreatsOf(unit),
       {
         retreatState: retreat,

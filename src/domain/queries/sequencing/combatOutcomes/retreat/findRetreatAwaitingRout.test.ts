@@ -48,22 +48,22 @@ describe('findRetreatAwaitingRout function', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'north');
     const white = placed('white', 'south');
-    const fellBack = createRetreatState(white, legalRetreatsOf(white), {
+    const fellBack = createRetreatState(white.unit, legalRetreatsOf(white), {
       chosenRetreatPath: ['step'],
       completed: true,
     });
     const cutOff = createRetreatState(
-      black,
+      black.unit,
       legalRetreatsOf(black, [enemyCuttingOffRetreat(black)]),
     );
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         { retreatState: cutOff },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
         { retreatState: fellBack },
       ),
@@ -83,22 +83,22 @@ describe('findRetreatAwaitingRout function', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'north');
     const white = placed('white', 'south');
-    const fellBack = createRetreatState(black, legalRetreatsOf(black), {
+    const fellBack = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: ['step'],
       completed: true,
     });
     const cutOff = createRetreatState(
-      white,
+      white.unit,
       legalRetreatsOf(white, [enemyCuttingOffRetreat(white)]),
     );
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         { retreatState: fellBack },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
         { retreatState: cutOff },
       ),
@@ -117,13 +117,13 @@ describe('findRetreatAwaitingRout function', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'north');
     const routing = createRetreatState(
-      black,
+      black.unit,
       legalRetreatsOf(black, [enemyCuttingOffRetreat(black)]),
       { routState: createRoutState('black', black.unit) },
     );
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         { retreatState: routing },
       ),
@@ -137,10 +137,10 @@ describe('findRetreatAwaitingRout function', () => {
     // An open line of withdrawal is a retreat to make, not a rout.
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'north');
-    const open = createRetreatState(black, legalRetreatsOf(black));
+    const open = createRetreatState(black.unit, legalRetreatsOf(black));
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         { retreatState: open },
       ),

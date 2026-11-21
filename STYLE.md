@@ -18,7 +18,7 @@ A router or switch that only dispatches, one branch per case, may be long; its b
 
 ## Names
 
-Names use the game's own vocabulary. Do not drop a word that carries meaning (`attack` in `firstPlayerAttackApplyState`), coin a term the rules do not use, or borrow a connotation the game lacks ("fire" for a ranged attack). Prefer the existing term even when it is a little long. The same holds for the code's own terms (legal options, enumerated): reuse them rather than paraphrasing a variable name into prose, and where the author has reworded a line, follow that wording. A reader that answers `undefined` for an absence is a `find*`; one that throws is a `get*` ([`DESIGN.md`](./DESIGN.md)).
+Names use the game's own vocabulary. Do not drop a word that carries meaning (`attack` in `attackOnFirstPlayerApplyState`), coin a term the rules do not use, or borrow a connotation the game lacks ("fire" for a ranged attack). Prefer the existing term even when it is a little long. The same holds for the code's own terms (legal options, enumerated): reuse them rather than paraphrasing a variable name into prose, and where the author has reworded a line, follow that wording. A reader that answers `undefined` for an absence is a `find*`; one that throws is a `get*` ([`DESIGN.md`](./DESIGN.md)).
 
 ```typescript
 const white = updatePlayerCardState(base, 'white', whiteCardState);

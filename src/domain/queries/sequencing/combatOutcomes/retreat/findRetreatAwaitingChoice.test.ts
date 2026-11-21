@@ -45,10 +45,10 @@ describe('findRetreatAwaitingChoice function', () => {
   it('returns the retreat whose owner has not yet chosen among several ways back', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const retreat = createRetreatState(white, twoWaysBack);
+    const retreat = createRetreatState(white.unit, twoWaysBack);
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         twoWaysBack,
         { retreatState: retreat },
       ),
@@ -62,12 +62,12 @@ describe('findRetreatAwaitingChoice function', () => {
   it('answers undefined once the owner has chosen', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const chosen = createRetreatState(white, twoWaysBack, {
+    const chosen = createRetreatState(white.unit, twoWaysBack, {
       chosenRetreatPath: ['step'],
     });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         twoWaysBack,
         { retreatState: chosen },
       ),
@@ -83,16 +83,16 @@ describe('findRetreatAwaitingChoice function', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const black = placed('black', 'south');
-    const whiteRetreat = createRetreatState(white, twoWaysBack);
-    const blackRetreat = createRetreatState(black, twoWaysBack);
+    const whiteRetreat = createRetreatState(white.unit, twoWaysBack);
+    const blackRetreat = createRetreatState(black.unit, twoWaysBack);
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         twoWaysBack,
         { retreatState: whiteRetreat },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         twoWaysBack,
         { retreatState: blackRetreat },
       ),

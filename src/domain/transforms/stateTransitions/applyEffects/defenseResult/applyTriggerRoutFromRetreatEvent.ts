@@ -27,10 +27,10 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
   state: S,
 ): S {
   const { retreatState } = getRetreatAwaitingRout(state);
-  const retreatingPlayer = retreatState.retreatingUnit.unit.playerSide;
+  const retreatingPlayer = retreatState.retreatingUnit.playerSide;
 
   const routState = createOpenedRoutState(retreatingPlayer, [
-    retreatState.retreatingUnit.unit,
+    retreatState.retreatingUnit,
   ]);
 
   const withNestedRout = updateRetreatRoutState(state, routState);

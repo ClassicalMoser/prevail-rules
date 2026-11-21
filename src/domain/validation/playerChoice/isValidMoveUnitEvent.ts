@@ -4,6 +4,7 @@ import type { GameState } from '@game';
 import {
   getBoardSpace,
   getMovementResolutionState,
+  getUnitWithPlacementOnBoard,
   modifiersFromCompletedCommitment,
 } from '@queries';
 import { isValidMovePath } from './isValidMovePath';
@@ -26,13 +27,15 @@ export function isValidMoveUnitEvent(
       result: false,
     };
   }
-  const mover = movement.movingUnit;
-  if (mover.unit.playerSide !== event.player) {
+  if (movement.movingUnit.playerSide !== event.player) {
     return {
-      errorReason: `Expected the move from ${mover.unit.playerSide}, got ${event.player}`,
+      errorReason: `Expected the move from ${movement.movingUnit.playerSide}, got ${event.player}`,
       result: false,
     };
   }
+
+  // The move is from where the unit stands, which the board holds.
+  const mover = getUnitWithPlacementOnBoard(state, movement.movingUnit);
 
   // The path must be a legal move, every step and turn of it, with
   // the card committed for it counted (§4.3.10).

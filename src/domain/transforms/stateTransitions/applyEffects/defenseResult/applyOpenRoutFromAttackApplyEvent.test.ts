@@ -86,10 +86,14 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     // turned about, and those results stay recorded.
     const before = getRangedAttackApplyState(state);
     const standing = placed(defendingUnit, 'E-5', 'north');
-    const retreated = createRetreatState(standing, legalRetreatsOf(standing), {
-      chosenRetreatPath: ['step'],
-      completed: true,
-    });
+    const retreated = createRetreatState(
+      standing.unit,
+      legalRetreatsOf(standing),
+      {
+        chosenRetreatPath: ['step'],
+        completed: true,
+      },
+    );
     const reversed = createReverseState(defendingUnit, { completed: true });
     const ready = updateAttackApplyState(state, {
       ...before,

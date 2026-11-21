@@ -29,7 +29,7 @@ export function getExpectedMeleeResolutionEvent(
     throw new Error('Melee resolution state is already complete');
   }
 
-  const { firstPlayerAttackApplyState, secondPlayerAttackApplyState } =
+  const { attackOnFirstPlayerApplyState, attackOnSecondPlayerApplyState } =
     meleeState;
 
   // Each player may commit a card before the attack values are counted, the first
@@ -46,8 +46,8 @@ export function getExpectedMeleeResolutionEvent(
   // Both commitments resolved, check if resolveMelee has been applied
   // ResolveMelee creates both attackApplyStates
   if (
-    firstPlayerAttackApplyState === 'pending' ||
-    secondPlayerAttackApplyState === 'pending'
+    attackOnFirstPlayerApplyState === 'pending' ||
+    attackOnSecondPlayerApplyState === 'pending'
   ) {
     return {
       actionType: 'gameEffect',

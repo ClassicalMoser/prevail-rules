@@ -94,7 +94,10 @@ describe('applyChooseRoutDiscardEvent function', () => {
       phase.firstPlayerRallyResolutionState,
       'rally',
     );
-    const rout = throwIfPending(rallyState.routState, 'rout');
+    const rout = throwIfBypassed(
+      throwIfPending(rallyState.routState, 'rout'),
+      'rout',
+    );
     expect(rallyState.completed).toBe(true);
     expect(rout.cardsChosen).toBe(true);
     expect(rout.completed).toBe(true);
@@ -127,8 +130,14 @@ describe('applyChooseRoutDiscardEvent function', () => {
       'rally',
     );
     expect(rallyState.completed).toBe(true);
-    expect(throwIfPending(rallyState.routState, 'rout').cardsChosen).toBe(true);
-    expect(throwIfPending(rallyState.routState, 'rout').completed).toBe(true);
+    expect(
+      throwIfBypassed(throwIfPending(rallyState.routState, 'rout'), 'rout')
+        .cardsChosen,
+    ).toBe(true);
+    expect(
+      throwIfBypassed(throwIfPending(rallyState.routState, 'rout'), 'rout')
+        .completed,
+    ).toBe(true);
   });
 
   it('given rear engagement rout, discards and completes engagement', () => {
@@ -160,7 +169,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
             coordinate: 'E-6',
             facing: 'north',
             playerSide: 'black',
-          }),
+          }).unit,
           targetPlacement: { coordinate: 'E-6', facing: 'north' },
         }),
       }),
@@ -220,7 +229,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
     state = { ...state, routedUnits: [defender.unit] };
     // No legal retreat options is what made this a rout; one card owed.
     const retreatState = createRetreatState(
-      defender,
+      defender.unit,
       legalRetreatsOf(defender, [enemyCuttingOffRetreat(defender)]),
       {
         routState: createRoutState('white', defender.unit, {
@@ -247,7 +256,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
       createIssueCommandsPhaseState(base, {
         currentCommandResolutionState: createRangedAttackResolutionState(base, {
           attackApplyState: createAttackApplyStateWithRetreat(
-            defender,
+            defender.unit,
             legalRetreatsOf(defender),
             {
               retreatState,
@@ -311,8 +320,8 @@ describe('applyChooseRoutDiscardEvent function', () => {
       updateCurrentInitiative(base, 'black'),
       createResolveMeleePhaseState(base, {
         currentMeleeResolutionState: createMeleeResolutionState(base, {
-          secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-            defender,
+          attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+            defender.unit,
             retreatState.legalRetreatPaths,
             { retreatState },
           ),
@@ -327,7 +336,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
       getResolveMeleePhaseState(next).currentMeleeResolutionState,
       'melee',
     );
-    const apply = throwIfPending(melee.secondPlayerAttackApplyState, 'apply');
+    const apply = throwIfPending(melee.attackOnSecondPlayerApplyState, 'apply');
     const retreat = throwIfBypassed(
       getRetreatStateFromAttackApply(apply),
       'retreat',

@@ -48,9 +48,9 @@ describe('updateAttackApplyState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState:
+      attackOnFirstPlayerApplyState:
         createAttackApplyStateWithNothingDue(blackUnit),
-      secondPlayerAttackApplyState:
+      attackOnSecondPlayerApplyState:
         createAttackApplyStateWithNothingDue(whiteUnit),
     });
     return updatePhaseState(
@@ -112,7 +112,7 @@ describe('updateAttackApplyState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'white apply',
     );
     expect(whiteApply.completed).toBe(true);
@@ -137,7 +137,7 @@ describe('updateAttackApplyState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.firstPlayerAttackApplyState,
+      melee.attackOnFirstPlayerApplyState,
       'black apply',
     );
     expect(blackApply.completed).toBe(true);

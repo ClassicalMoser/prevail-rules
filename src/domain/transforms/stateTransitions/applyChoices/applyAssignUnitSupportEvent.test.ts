@@ -1,5 +1,5 @@
 import type { AssignUnitSupportEvent } from '@events';
-import { throwIfNone, throwIfPending } from '@utils';
+import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 import { getBoardSpace } from '@queries';
 
@@ -96,7 +96,10 @@ describe('applyAssignUnitSupportEvent function', () => {
     expect(throwIfPending(rally.unitsLostSupport, 'lost')).toContainEqual(
       uncovered,
     );
-    expect(throwIfPending(rally.routState, 'rout').completed).toBe(false);
+    expect(
+      throwIfBypassed(throwIfPending(rally.routState, 'rout'), 'rout')
+        .completed,
+    ).toBe(false);
   });
 
   it('given empty board and empty assignments, advances cleanup with no rout', () => {
@@ -137,7 +140,8 @@ describe('applyAssignUnitSupportEvent function', () => {
       phase.firstPlayerRallyResolutionState,
       'rally',
     );
+    // Every unit kept its support, so the rally costs no rout.
     expect(throwIfPending(rally.unitsLostSupport, 'lost')).toStrictEqual([]);
-    expect(rally.routState).toBe('pending');
+    expect(rally.routState).toBe('bypassed');
   });
 });

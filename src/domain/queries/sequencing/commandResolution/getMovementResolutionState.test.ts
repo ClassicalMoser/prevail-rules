@@ -4,7 +4,6 @@ import {
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createTestUnit,
-  placed,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
@@ -14,11 +13,7 @@ describe('getMovementResolutionState function', () => {
   it('returns the movement resolution', () => {
     const empty = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(empty, {
-      movingUnit: placed(
-        createTestUnit('black', { attack: 2 }),
-        'D-4',
-        'south',
-      ),
+      movingUnit: createTestUnit('black', { attack: 2 }),
     });
     const phase = createIssueCommandsPhaseState(empty, {
       currentCommandResolutionState: resolution,

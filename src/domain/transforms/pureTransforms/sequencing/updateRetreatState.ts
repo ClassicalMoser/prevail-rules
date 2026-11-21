@@ -43,7 +43,7 @@ export function updateRetreatState<S extends GameState>(
     );
     if (commandState.commandResolutionType === 'movement') {
       const engagement = getFrontEngagementStateFromMovement(state);
-      if (engagement.engagementResolutionState.retreatState === 'pending') {
+      if (!isOpenSubstep(engagement.engagementResolutionState.retreatState)) {
         throw new Error('No retreat state found in front engagement');
       }
       return updateFrontEngagementResolutionState(state, { retreatState });
@@ -53,7 +53,7 @@ export function updateRetreatState<S extends GameState>(
   // Otherwise it sits on the apply of the attack that forced it.
   const apply = getAttackApplyStateOfPlayer(
     state,
-    retreatState.retreatingUnit.unit.playerSide,
+    retreatState.retreatingUnit.playerSide,
   );
   // 'bypassed' is a retreat this attack will never resolve.
   if (!isOpenSubstep(apply.retreatState)) {

@@ -77,8 +77,8 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     // Both have committed, and neither unit's results are measured yet.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: 'pending' as const,
-      secondPlayerAttackApplyState: 'pending' as const,
+      attackOnFirstPlayerApplyState: 'pending' as const,
+      attackOnSecondPlayerApplyState: 'pending' as const,
     });
 
     // Both units attack at once, and their results are measured.
@@ -95,10 +95,10 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     // first player's is not.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white'),
         {
           completed: true,
@@ -120,13 +120,13 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     // second player's is not.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
         {
           completed: true,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white'),
       ),
     });
@@ -144,13 +144,13 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     // Every stage is done and both applies are closed.
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
         {
           completed: true,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white'),
         {
           completed: true,
@@ -181,12 +181,12 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       // reverses while still engaged, and so does not turn. A stage at a time,
       // the first player's unit falls back first, and the second turns.
       const meleeState = createMeleeResolutionState(gameState, {
-        firstPlayerAttackApplyState: createPendingAttackApply(black, {
+        attackOnFirstPlayerApplyState: createPendingAttackApply(black, {
           unitRetreated: true,
           unitReversed: false,
           unitRouted: false,
         }),
-        secondPlayerAttackApplyState: createPendingAttackApply(white, {
+        attackOnSecondPlayerApplyState: createPendingAttackApply(white, {
           unitRetreated: false,
           unitReversed: true,
           unitRouted: false,
@@ -208,12 +208,12 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       // reverse is carried out before any rout, and a unit still to rout is
       // on the board until then (§7.5.6).
       const meleeState = createMeleeResolutionState(gameState, {
-        firstPlayerAttackApplyState: createPendingAttackApply(black, {
+        attackOnFirstPlayerApplyState: createPendingAttackApply(black, {
           unitRetreated: false,
           unitReversed: true,
           unitRouted: false,
         }),
-        secondPlayerAttackApplyState: createPendingAttackApply(white, {
+        attackOnSecondPlayerApplyState: createPendingAttackApply(white, {
           unitRetreated: false,
           unitReversed: false,
           unitRouted: true,
@@ -247,12 +247,12 @@ describe('getExpectedMeleeResolutionEvent function', () => {
         cutter,
       ]);
       const meleeState = createMeleeResolutionState(gameState, {
-        firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-          blackPlacement,
+        attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+          blackPlacement.unit,
           blackRetreats,
         ),
-        secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-          whitePlacement,
+        attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+          whitePlacement.unit,
           whiteRetreats,
         ),
       });

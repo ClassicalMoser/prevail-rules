@@ -1,4 +1,5 @@
 import type { FrontEngagementResolutionState } from '@game';
+import { throwIfBypassed } from '@utils';
 
 /**
  * Where a front engagement stands (§6.3). The defender first commits a card
@@ -54,7 +55,13 @@ export function getFrontEngagementStage(
   if (resolution.retreatState === 'pending') {
     return 'retreatOpening';
   }
-  const stage: FrontEngagementStage = resolution.retreatState.completed
+  // A defender that chose to fall back has its retreat bypassed only by a
+  // fault in whatever recorded the choice.
+  const retreat = throwIfBypassed(
+    resolution.retreatState,
+    'A defender that falls back has its retreat bypassed',
+  );
+  const stage: FrontEngagementStage = retreat.completed
     ? 'retreated'
     : 'retreating';
   return stage;

@@ -59,8 +59,8 @@ describe('getAttackApplyStateOfPlayer function', () => {
       empty,
       createResolveMeleePhaseState(empty, {
         currentMeleeResolutionState: createMeleeResolutionState(empty, {
-          firstPlayerAttackApplyState: blackApply,
-          secondPlayerAttackApplyState: whiteApply,
+          attackOnFirstPlayerApplyState: blackApply,
+          attackOnSecondPlayerApplyState: whiteApply,
         }),
       }),
     );

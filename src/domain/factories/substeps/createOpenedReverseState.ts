@@ -14,7 +14,6 @@ export function createOpenedReverseState(
 ): ReverseState {
   const reverseState: ReverseState = {
     completed: false,
-    finalPosition: 'pending',
     reversingUnit,
     substepType: 'reverse',
   };

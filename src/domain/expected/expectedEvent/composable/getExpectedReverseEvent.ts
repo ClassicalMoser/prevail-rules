@@ -15,22 +15,14 @@ import type { ReverseState } from '@game';
 export function getExpectedReverseEvent(
   reverseState: ReverseState,
 ): ExpectedEventInfo {
-  // Check if reverse is completed (all work done, ready for parent to handle)
+  // A unit that has turned has nothing left to do here; the parent moves on.
   if (reverseState.completed) {
     throw new Error('Reverse state is already complete');
   }
 
-  // Check if the final position has been determined
-  if (reverseState.finalPosition === 'pending') {
-    // Reverse is deterministic - expect resolve reverse effect
-    return {
-      actionType: 'gameEffect',
-      effectType: 'resolveReverse',
-    };
-  }
-  // Final position determined but not completed - this shouldn't happen if completed is set correctly
-  // But we'll throw an error to be safe
-  throw new Error(
-    'Reverse state has final position but not marked as completed',
-  );
+  // The turn is deterministic, so the engine resolves it.
+  return {
+    actionType: 'gameEffect',
+    effectType: 'resolveReverse',
+  };
 }

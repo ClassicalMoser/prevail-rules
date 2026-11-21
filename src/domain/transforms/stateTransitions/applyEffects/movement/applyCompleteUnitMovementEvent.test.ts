@@ -31,20 +31,20 @@ describe('applyCompleteUnitMovementEvent function', () => {
       playerSide: 'black',
     });
     const movement = createMovementResolutionState(state, {
-      movingUnit: mover,
+      movingUnit: mover.unit,
       targetPlacement: mover.placement,
     });
-    return movement;
+    return { mover, movement };
   }
 
   it('clears CRS to pending when more units remain to resolve', () => {
     const state = createEmptyGameState('standard');
     const leftover = createTestUnit('black', { attack: 2 });
-    const movement = arrivedAtE6(state);
+    const { mover, movement } = arrivedAtE6(state);
     // The mover has been set down on E-6, where its move ends.
     const withMover = replaceBoard(
       state,
-      addUnitToBoard(state.boardState, movement.movingUnit),
+      addUnitToBoard(state.boardState, mover),
     );
     const full: GameState = updatePhaseState(
       withMover,
@@ -64,11 +64,11 @@ describe('applyCompleteUnitMovementEvent function', () => {
 
   it('leaves the step where it is when the last unit has moved, for the order to be completed next', () => {
     const state = createEmptyGameState('standard');
-    const movement = arrivedAtE6(state);
+    const { mover, movement } = arrivedAtE6(state);
     // The mover has been set down on E-6, where its move ends.
     const withMover = replaceBoard(
       state,
-      addUnitToBoard(state.boardState, movement.movingUnit),
+      addUnitToBoard(state.boardState, mover),
     );
     const full: GameState = updatePhaseState(
       withMover,
@@ -90,10 +90,17 @@ describe('applyCompleteUnitMovementEvent function', () => {
   });
 
   it('throws when the mover has not been set down where its move ends', () => {
-    // The move was written to E-6, but the movement still has the mover on
-    // E-5, where it started.
-    const state = createEmptyGameState('standard');
-    const movement = createMovementResolutionState(state);
+    // The move was written to E-6, but the mover still stands on E-5,
+    // where it started.
+    const empty = createEmptyGameState('standard');
+    const movement = createMovementResolutionState(empty);
+    const state = replaceBoard(
+      empty,
+      addUnitToBoard(empty.boardState, {
+        placement: { coordinate: 'E-5', facing: 'north' },
+        unit: movement.movingUnit,
+      }),
+    );
     const full: GameState = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

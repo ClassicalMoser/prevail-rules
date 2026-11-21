@@ -5,6 +5,7 @@ import { createChooseWhetherToRetreatEvent } from '@factories';
 import {
   findFrontEngagementStateFromMovement,
   getFrontEngagementStage,
+  getMovementResolutionState,
   getOtherPlayer,
 } from '@queries';
 
@@ -39,7 +40,10 @@ function pendingWhetherToRetreatPlayer<S extends GameState>(
     throw new Error('The defender has already decided whether to retreat');
   }
 
-  return getOtherPlayer(front.engagingUnit.playerSide);
+  // The defender is the other side from the unit that moved into it.
+  return getOtherPlayer(
+    getMovementResolutionState(gameState).movingUnit.playerSide,
+  );
 }
 
 /**

@@ -5,7 +5,6 @@ import {
   carryRidingCommander,
   completeEngagementInMovement,
   moveUnitIntoEngagement,
-  updateCommandResolutionState,
   updateFlankEngagementResolutionState,
 } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -35,26 +34,19 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
     movementState.targetPlacement,
     'The move has not been written yet',
   );
-  const { movingUnit } = movementState;
-  const arrived = { placement: targetPlacement, unit: movingUnit.unit };
 
   // The attacker leaves the space it waited on and joins the defender, which
   // is dragged round to face it (§6.3.4). A commander riding with it arrives
   // too (§4.3.10).
   const engaged = carryRidingCommander(
-    moveUnitIntoEngagement(state, movingUnit.unit, targetPlacement),
+    moveUnitIntoEngagement(state, movementState.movingUnit, targetPlacement),
     movementState,
     targetPlacement.coordinate,
   );
 
-  // The movement records where the mover now stands, and the engagement is
-  // done: the defender has turned.
-  const placed = updateCommandResolutionState(engaged, {
-    ...movementState,
-    movingUnit: arrived,
-  });
+  // The engagement is done: the defender has turned.
   const turned = completeEngagementInMovement(
-    updateFlankEngagementResolutionState(placed, { defenderRotated: true }),
+    updateFlankEngagementResolutionState(engaged, { defenderRotated: true }),
   );
   return turned;
 }

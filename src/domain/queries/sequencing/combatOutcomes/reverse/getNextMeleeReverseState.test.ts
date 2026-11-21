@@ -17,13 +17,13 @@ describe('getNextMeleeReverseState function', () => {
    * A melee where both sides are reversing. `firstPlayer` says which colour
    * holds the initiative, so the tests can show that the answer follows the
    * order the attacks take effect in (the second player's unit first, §7.5.6) and not
-   * the colour.
+   * the colour. `turned` says which side's unit has already turned about.
    */
   function meleeWithReverses(
     firstPlayer: 'white' | 'black',
-    finals: {
-      first?: ReverseState['finalPosition'];
-      second?: ReverseState['finalPosition'];
+    turned: {
+      first?: boolean;
+      second?: boolean;
     },
   ): { state: GameState; first: ReverseState; second: ReverseState } {
     const empty = updateCurrentInitiative(
@@ -36,19 +36,19 @@ describe('getNextMeleeReverseState function', () => {
     const firstPlacement = placed(firstUnit, 'E-5', 'east');
     const secondPlacement = placed(secondUnit, 'E-5', 'west');
     const first = createReverseState(firstPlacement.unit, {
-      finalPosition: finals.first ?? 'pending',
+      completed: turned.first ?? false,
     });
     const second = createReverseState(secondPlacement.unit, {
-      finalPosition: finals.second ?? 'pending',
+      completed: turned.second ?? false,
     });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithReverse(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithReverse(
         firstPlacement.unit,
         {
           reverseState: first,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithReverse(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithReverse(
         secondPlacement.unit,
         {
           reverseState: second,
@@ -62,7 +62,7 @@ describe('getNextMeleeReverseState function', () => {
   }
 
   it("returns the second player's reverse first, since the first player's attack takes effect first", () => {
-    // §7.5.6: both reverses are due and neither has its facing yet.
+    // §7.5.6: both reverses are due and neither unit has turned yet.
     const { second, state } = meleeWithReverses('white', {});
 
     expect(getNextMeleeReverseState(state)).toBe(second);
@@ -74,46 +74,37 @@ describe('getNextMeleeReverseState function', () => {
     expect(getNextMeleeReverseState(state)).toBe(second);
   });
 
-  it("returns the first player's reverse once the second player's has its facing", () => {
-    const secondFacing = {
-      coordinate: 'E-6',
-      facing: 'west',
-    } satisfies ReverseState['finalPosition'];
+  it("returns the first player's reverse once the second player's unit has turned", () => {
+    // The second player's unit has already turned about.
     const { first, state } = meleeWithReverses('white', {
-      second: secondFacing,
+      second: true,
     });
 
     expect(getNextMeleeReverseState(state)).toBe(first);
   });
 
-  it('passes over a first player reverse that already has its facing', () => {
-    const firstFacing = {
-      coordinate: 'E-4',
-      facing: 'east',
-    } satisfies ReverseState['finalPosition'];
+  it('passes over a first player reverse whose unit has already turned', () => {
+    // The first player's unit has already turned about.
     const { second, state } = meleeWithReverses('white', {
-      first: firstFacing,
+      first: true,
     });
 
     expect(getNextMeleeReverseState(state)).toBe(second);
   });
 
-  it('passes over a first player reverse that already has its facing when black is first', () => {
-    const firstFacing = {
-      coordinate: 'E-4',
-      facing: 'west',
-    } satisfies ReverseState['finalPosition'];
+  it('passes over a first player reverse whose unit has already turned when black is first', () => {
+    // The first player's unit has already turned about.
     const { second, state } = meleeWithReverses('black', {
-      first: firstFacing,
+      first: true,
     });
 
     expect(getNextMeleeReverseState(state)).toBe(second);
   });
 
-  it('throws when both reverses already have a facing', () => {
+  it('throws when both units have already turned', () => {
     const { state } = meleeWithReverses('white', {
-      first: { coordinate: 'E-4', facing: 'east' },
-      second: { coordinate: 'E-6', facing: 'west' },
+      first: true,
+      second: true,
     });
 
     expect(() => getNextMeleeReverseState(state)).toThrow(

@@ -9,9 +9,11 @@ import {
   findPlayerUnitWithPosition,
   getCurrentUnitStat,
   getFrontEngagementStateFromMovement,
+  getMovementResolutionState,
   getOtherPlayer,
   modifiersFromCompletedCommitment,
 } from '@queries';
+import { throwIfPending } from '@utils';
 /**
  * Generates a ResolveEngageRetreatOptionEvent by working out the retreats the
  * defending unit may make during a front engagement.
@@ -28,13 +30,19 @@ export function generateResolveEngageRetreatOptionEvent(
   state: GameState,
 ): ResolveEngageRetreatOptionEvent {
   const engagementState = getFrontEngagementStateFromMovement(state);
-  const { engagingUnit } = engagementState;
+  const { movingUnit: engagingUnit, targetPlacement } =
+    getMovementResolutionState(state);
 
-  // The defender shares its space with the engaging unit, which entered it
-  // as the engagement started; it is the other side's unit there.
+  // The defender shares the space the move ends in with the engaging unit,
+  // which entered it as the engagement started; it is the other side's unit
+  // there.
+  const engagedSpace = throwIfPending(
+    targetPlacement,
+    'The move has not been written yet',
+  );
   const defender = findPlayerUnitWithPosition(
     state.boardState,
-    engagementState.targetPlacement.coordinate,
+    engagedSpace.coordinate,
     getOtherPlayer(engagingUnit.playerSide),
   );
   if (defender === undefined) {

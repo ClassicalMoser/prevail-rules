@@ -6,7 +6,7 @@ import { movementResolutionStateSchema } from './movementResolutionSubstep';
 import { rangedAttackResolutionStateSchema } from './rangedAttackResolutionSubstep';
 import { z } from 'zod';
 
-/** Command resolution while issuing commands: movement or ranged attack. */
+/** One unit carrying out its order: a move or a shot. */
 export type CommandResolutionState =
   | MovementResolutionState
   | RangedAttackResolutionState;
@@ -20,7 +20,7 @@ type CommandResolutionStateSchemaType = z.infer<
   typeof _commandResolutionStateSchemaObject
 >;
 
-/** The schema for an order being carried out, by Move or by Shoot. */
+/** The schema for one unit carrying out its order: a move or a shot. */
 export const commandResolutionStateSchema: z.ZodType<CommandResolutionState> =
   _commandResolutionStateSchemaObject;
 

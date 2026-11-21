@@ -4,6 +4,7 @@ import {
   getBoardSpace,
   getMovementResolutionState,
   getPlacementAfterPath,
+  getPositionOfUnit,
   hasEnemyUnit,
 } from '@queries';
 import {
@@ -30,11 +31,11 @@ export function applyMoveUnitEvent<S extends GameState>(
   const movement = getMovementResolutionState(state);
   const mover = movement.movingUnit;
 
-  // The destination is wherever the validated path leads, read by
-  // geometry rather than judged again.
+  // The destination is wherever the validated path leads from where the
+  // mover stands, read by geometry rather than judged again.
   const destination = getPlacementAfterPath(
     state.boardState,
-    mover.placement,
+    getPositionOfUnit(state, mover),
     event.path,
     'advance',
   );
@@ -49,20 +50,14 @@ export function applyMoveUnitEvent<S extends GameState>(
   // onto open ground, both move now.
   const targetSpace = getBoardSpace(state.boardState, destination.coordinate);
   const enteringEnemy = hasEnemyUnit(event.player, targetSpace);
-  const arrived = { ...mover, placement: destination };
-  const movingUnit = enteringEnemy ? mover : arrived;
   const withMover = enteringEnemy
     ? state
     : carryRidingCommander(
-        moveUnitOnBoard(state, mover.unit, destination),
+        moveUnitOnBoard(state, mover, destination),
         written,
         destination.coordinate,
       );
 
-  // The movement records where the mover now stands.
-  const moved = updateCommandResolutionState(withMover, {
-    ...written,
-    movingUnit,
-  });
+  const moved = updateCommandResolutionState(withMover, written);
   return moved;
 }

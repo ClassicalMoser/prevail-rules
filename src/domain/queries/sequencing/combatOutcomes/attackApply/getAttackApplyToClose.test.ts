@@ -55,8 +55,8 @@ describe('getAttackApplyToClose function', () => {
         empty,
         createResolveMeleePhaseState(empty, {
           currentMeleeResolutionState: createMeleeResolutionState(empty, {
-            firstPlayerAttackApplyState: blackApply,
-            secondPlayerAttackApplyState: {
+            attackOnFirstPlayerApplyState: blackApply,
+            attackOnSecondPlayerApplyState: {
               ...whiteApply,
               completed: secondApplyDone,
             },
@@ -80,8 +80,8 @@ describe('getAttackApplyToClose function', () => {
       empty,
       createResolveMeleePhaseState(empty, {
         currentMeleeResolutionState: createMeleeResolutionState(empty, {
-          firstPlayerAttackApplyState: closed(black),
-          secondPlayerAttackApplyState: closed(white),
+          attackOnFirstPlayerApplyState: closed(black),
+          attackOnSecondPlayerApplyState: closed(white),
         }),
       }),
     );

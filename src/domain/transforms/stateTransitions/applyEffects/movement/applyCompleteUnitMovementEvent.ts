@@ -1,6 +1,10 @@
 import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState } from '@game';
-import { getMovementResolutionState, isSamePlacement } from '@queries';
+import {
+  getMovementResolutionState,
+  getPositionOfUnit,
+  isSamePlacement,
+} from '@queries';
 import { clearCommandResolution } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
@@ -24,12 +28,10 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
     movementState.targetPlacement,
     'The move has not been written yet',
   );
-  const { movingUnit } = movementState;
-
-  // The movement records where the mover stands, and by now it stands where
-  // its move ends, however the move went. A mover anywhere else is a fault
-  // in whatever wrote the move.
-  if (!isSamePlacement(movingUnit.placement, targetPlacement)) {
+  // By now the mover stands where its move ends, however the move went. A
+  // mover anywhere else is a fault in whatever wrote the move.
+  const standing = getPositionOfUnit(state, movementState.movingUnit);
+  if (!isSamePlacement(standing, targetPlacement)) {
     throw new Error('The mover has not been set down where its move ends');
   }
 

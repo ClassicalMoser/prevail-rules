@@ -76,7 +76,6 @@ describe('getFlankEngagementStateFromMovement function', () => {
     expect(result.engagementResolutionState).toBe(
       engagement.engagementResolutionState,
     );
-    expect(result.engagingUnit).toBe(engagement.engagingUnit);
   });
 
   it('throws when the engagement is not flank', () => {
@@ -98,7 +97,6 @@ describe('getFrontEngagementStateFromMovement function', () => {
     expect(result.engagementResolutionState).toBe(
       engagement.engagementResolutionState,
     );
-    expect(result.engagingUnit).toBe(engagement.engagingUnit);
   });
 
   it('throws when the engagement is not front', () => {
@@ -120,7 +118,6 @@ describe('getRearEngagementStateFromMovement function', () => {
     expect(result.engagementResolutionState).toBe(
       engagement.engagementResolutionState,
     );
-    expect(result.engagingUnit).toBe(engagement.engagingUnit);
   });
 
   it('throws when the engagement is not rear', () => {

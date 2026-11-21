@@ -3,6 +3,7 @@ import type { ResolveReverseEvent } from '@events';
 import type { GameState } from '@game';
 import {
   getMeleeAttackApplyState,
+  getPositionOfUnit,
   getRangedAttackApplyState,
   getReverseStateFromAttackApply,
 } from '@queries';
@@ -29,7 +30,7 @@ import { applyResolveReverseEvent } from './applyResolveReverseEvent';
 import { createEmptyGameState } from '@factories';
 /**
  * Defender’s counterattack facing: turns the unit on its space to the event's `facing` and closes the
- * reverse substep (`completed`, `finalPosition`) for ranged or the correct melee apply side.
+ * reverse substep (`completed`) for ranged or the correct melee apply side.
  */
 describe('applyResolveReverseEvent function', () => {
   /** IssueCommands + ranged apply in reverse substep for white on E-5. */
@@ -87,7 +88,7 @@ describe('applyResolveReverseEvent function', () => {
     );
 
     const opponentAttackApplyState = createAttackApplyStateWithRetreat(
-      opponentUnitWithPlacement,
+      opponentUnitWithPlacement.unit,
       legalRetreatsOf(opponentUnitWithPlacement),
     );
     const reversingAttackApplyState =
@@ -97,12 +98,12 @@ describe('applyResolveReverseEvent function', () => {
       stateWithUnit,
       reversingPlayer === 'white'
         ? {
-            firstPlayerAttackApplyState: opponentAttackApplyState,
-            secondPlayerAttackApplyState: reversingAttackApplyState,
+            attackOnFirstPlayerApplyState: opponentAttackApplyState,
+            attackOnSecondPlayerApplyState: reversingAttackApplyState,
           }
         : {
-            firstPlayerAttackApplyState: reversingAttackApplyState,
-            secondPlayerAttackApplyState: opponentAttackApplyState,
+            attackOnFirstPlayerApplyState: reversingAttackApplyState,
+            attackOnSecondPlayerApplyState: opponentAttackApplyState,
           },
     );
     const phaseState = createResolveMeleePhaseState(stateWithUnit, {
@@ -142,7 +143,7 @@ describe('applyResolveReverseEvent function', () => {
       }
     });
 
-    it('given same event, reverse substep completed and finalPosition matches placement', () => {
+    it('given same event, reverse substep completed and the unit stands turned', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getRangedAttackApplyState(state);
       const reverseState = throwIfBypassed(
@@ -167,7 +168,8 @@ describe('applyResolveReverseEvent function', () => {
       );
 
       expect(newReverseState.completed).toBe(true);
-      expect(newReverseState.finalPosition).toStrictEqual(
+      // The unit stands turned on the board.
+      expect(getPositionOfUnit(newState, newPlacement.unit)).toStrictEqual(
         newPlacement.placement,
       );
     });
@@ -233,7 +235,8 @@ describe('applyResolveReverseEvent function', () => {
       );
 
       expect(newReverseState.completed).toBe(true);
-      expect(newReverseState.finalPosition).toStrictEqual(
+      // The unit stands turned on the board.
+      expect(getPositionOfUnit(newState, newPlacement.unit)).toStrictEqual(
         newPlacement.placement,
       );
 
@@ -241,7 +244,7 @@ describe('applyResolveReverseEvent function', () => {
       expect(boardSpace?.unitPresence.presenceType).toBe('single');
     });
 
-    it('given white reverses east on E-5, white reverse completed and finalPosition east', () => {
+    it('given white reverses east on E-5, white reverse completed and white faces east', () => {
       const state = createStateWithMeleeReverse('white');
       const attackApplyState = getMeleeAttackApplyState(state, 'white');
       const reverseState = throwIfBypassed(
@@ -266,7 +269,8 @@ describe('applyResolveReverseEvent function', () => {
       );
 
       expect(newReverseState.completed).toBe(true);
-      expect(newReverseState.finalPosition).toStrictEqual(
+      // The unit stands turned on the board.
+      expect(getPositionOfUnit(newState, newPlacement.unit)).toStrictEqual(
         newPlacement.placement,
       );
     });

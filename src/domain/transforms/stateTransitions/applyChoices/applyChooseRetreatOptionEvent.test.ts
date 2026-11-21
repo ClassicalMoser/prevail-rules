@@ -54,7 +54,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
       addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
     );
     const attackApply = createAttackApplyStateWithRetreat(
-      placement,
+      placement.unit,
       legalRetreatsOf(placement, [blocker]),
     );
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
@@ -109,14 +109,14 @@ describe('applyChooseRetreatOptionEvent function', () => {
       ),
     );
     const attackApply = createAttackApplyStateWithRetreat(
-      retreatingPlacement,
+      retreatingPlacement.unit,
       legalRetreatsOf(retreatingPlacement, [blocker]),
     );
     const melee = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
-        ? { secondPlayerAttackApplyState: attackApply }
-        : { firstPlayerAttackApplyState: attackApply },
+        ? { attackOnSecondPlayerApplyState: attackApply }
+        : { attackOnFirstPlayerApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,
@@ -173,7 +173,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
             engagementState: createFrontEngagementState({
               defendingUnitRetreats: true,
               retreatState: createRetreatState(
-                placement,
+                placement.unit,
                 legalRetreatsOf(placement, [blocker]),
               ),
             }),

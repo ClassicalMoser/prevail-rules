@@ -1,7 +1,7 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { MoveDelta, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
-import { moveDeltaSchema, unitWithPlacementSchema } from '@entities';
+import { moveDeltaSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { RETREAT_SUBSTEP_TYPE } from '../substepType';
 import { routStateSchema } from './routSubstep';
@@ -20,12 +20,11 @@ import { routStateSchema } from './routSubstep';
 export interface RetreatState {
   /** The type of the substep. */
   substepType: typeof RETREAT_SUBSTEP_TYPE;
-  /** The unit that is retreating. */
-  // TODO(composition): where the unit stands is the board's, and the index
-  // finds it by name; a reverse names its unit by identity for that reason
-  // (`reversingUnit`). Settled by naming the retreating unit by identity, or
-  // by saying the placement is kept as where the retreat paths start.
-  retreatingUnit: UnitWithPlacement;
+  /**
+   * The unit that is retreating, by identity. It stands where it was until
+   * the retreat is carried out, so the board says where its paths start.
+   */
+  retreatingUnit: UnitInstance;
   /**
    * The retreats the unit may make, each as its path from where it stands
    * (§9.1.3): one path per space it could end in. Where each ends is read
@@ -53,7 +52,7 @@ const _retreatStateSchemaObject = z
     chosenRetreatPath: z.array(moveDeltaSchema).or(z.literal('pending')),
     completed: z.boolean(),
     legalRetreatPaths: z.array(z.array(moveDeltaSchema)),
-    retreatingUnit: unitWithPlacementSchema,
+    retreatingUnit: unitInstanceSchema,
     routState: routStateSchema
       .or(z.literal('pending'))
       .or(z.literal('bypassed')),

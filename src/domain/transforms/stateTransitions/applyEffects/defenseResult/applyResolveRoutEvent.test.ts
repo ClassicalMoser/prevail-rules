@@ -93,8 +93,8 @@ describe('applyResolveRoutEvent function', () => {
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
       routingPlayer === 'white'
-        ? { secondPlayerAttackApplyState: attackApplyState }
-        : { firstPlayerAttackApplyState: attackApplyState },
+        ? { attackOnSecondPlayerApplyState: attackApplyState }
+        : { attackOnFirstPlayerApplyState: attackApplyState },
     );
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,
@@ -125,11 +125,9 @@ describe('applyResolveRoutEvent function', () => {
             unitsToRout: [defender],
           },
         },
-        engagingUnit: attacker,
         substepType: 'engagementResolution',
-        targetPlacement: createUnitPlacement('E-5', 'south'),
       },
-      movingUnit: placed(attacker, 'E-4', 'south'),
+      movingUnit: attacker,
       targetPlacement: createUnitPlacement('E-5', 'south'),
     });
     const phaseState = createIssueCommandsPhaseState(state, {
@@ -315,7 +313,10 @@ describe('applyResolveRoutEvent function', () => {
         newPhaseState.firstPlayerRallyResolutionState,
         'rally',
       );
-      const newRoutState = getRoutStateFromRally(newRallyState);
+      const newRoutState = throwIfBypassed(
+        getRoutStateFromRally(newRallyState),
+        'rout',
+      );
 
       expect(newRoutState.numberToDiscard).toBe(2);
     });

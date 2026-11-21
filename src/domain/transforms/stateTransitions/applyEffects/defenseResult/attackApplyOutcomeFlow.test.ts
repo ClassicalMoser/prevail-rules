@@ -101,7 +101,7 @@ describe('attack apply outcome flow', () => {
       effectType: 'resolveRetreat',
       eventType: 'gameEffect',
       path: chosen,
-      unit: retreat.retreatingUnit.unit,
+      unit: retreat.retreatingUnit,
     };
     const afterRetreat = applyResolveRetreatEvent(
       resolveRetreat,
@@ -139,7 +139,7 @@ describe('attack apply outcome flow', () => {
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
     const attackApply = createAttackApplyStateWithRetreatAndReverse(
-      unitWithPlacement,
+      unitWithPlacement.unit,
       // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
       legalRetreatsOf(unitWithPlacement, [
         enemyCuttingOffRetreat(unitWithPlacement),

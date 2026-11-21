@@ -167,8 +167,8 @@ function routInCurrentContext(
     // Both sides strike at once, so both can be routing. The slots are named
     // for the order they resolve in, so the owner is placed in that order.
     const sideApply = hasInitiative(state, player)
-      ? melee.firstPlayerAttackApplyState
-      : melee.secondPlayerAttackApplyState;
+      ? melee.attackOnFirstPlayerApplyState
+      : melee.attackOnSecondPlayerApplyState;
     if (isPending(sideApply)) {
       return undefined;
     }

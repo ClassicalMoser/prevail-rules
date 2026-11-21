@@ -77,7 +77,7 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     );
 
     const retreat = openedRetreat(next);
-    expect(retreat.retreatingUnit.unit.playerSide).toBe('white');
+    expect(retreat.retreatingUnit.playerSide).toBe('white');
     expect(retreat.legalRetreatPaths).toStrictEqual([['step']]);
     // One legal retreat is no choice (§9.1.3), and one that can be made never
     // turns into a rout (§9.1.6).

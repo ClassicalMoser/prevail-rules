@@ -37,10 +37,13 @@ describe('getRangedAttackRetreatState function', () => {
   it('returns the retreat on the ranged attack apply', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
+    const retreat = createRetreatState(
+      defender.unit,
+      legalRetreatsOf(defender),
+    );
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(
-        defender,
+        defender.unit,
         legalRetreatsOf(defender),
         {
           retreatState: retreat,

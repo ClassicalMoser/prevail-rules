@@ -71,7 +71,7 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
     });
     // The defender's apply is the second player's, and it resolves first.
     const melee = createMeleeResolutionState(s, {
-      secondPlayerAttackApplyState: attackApply,
+      attackOnSecondPlayerApplyState: attackApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,

@@ -6,6 +6,7 @@ import {
   getMovementResolutionState,
   getOwnedPlayerCardState,
   getRangedAttackResolutionState,
+  getUnitWithPlacementOnBoard,
   isSameUnitInstance,
   modifiersFromCompletedCommitment,
 } from '@queries';
@@ -142,9 +143,11 @@ export function movementCommitmentGain(
   if (engagementState !== 'pending') {
     return () => 0;
   }
-  const without = appraiseMoveGain(movingUnit, context);
+  // The move sets off from where the unit stands, which the board holds.
+  const mover = getUnitWithPlacementOnBoard(context.view, movingUnit);
+  const without = appraiseMoveGain(mover, context);
   return (card) =>
-    appraiseMoveGain(movingUnit, context, commitmentModifiers(card)) - without;
+    appraiseMoveGain(mover, context, commitmentModifiers(card)) - without;
 }
 
 /**

@@ -1,6 +1,6 @@
-import type { UnitInstance, UnitPlacement } from '@entities';
+import type { UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitInstanceSchema, unitPlacementSchema } from '@entities';
+import { unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { REVERSE_SUBSTEP_TYPE } from '../substepType';
 
@@ -22,13 +22,9 @@ export interface ReverseState {
    * board rather than copied here.
    */
   reversingUnit: UnitInstance;
-  /** The final position of the reversing unit. */
-  // TODO(composition): written with `completed` in the same apply, and read
-  // only as "not yet" against 'pending' (getExpectedReverseEvent,
-  // getNextMeleeReverseState); where the unit ends is the board's. Settled by
-  // reading `completed`, or by saying what the placement is kept for.
-  finalPosition: UnitPlacement | 'pending';
-  /** Whether the reverse has been completed. */
+  /**
+   * Whether the unit has turned. Where it ends up facing is the board's.
+   */
   completed: boolean;
 }
 
@@ -36,7 +32,6 @@ const _reverseStateSchemaObject = z
   .object({
     substepType: z.literal(REVERSE_SUBSTEP_TYPE),
     reversingUnit: unitInstanceSchema,
-    finalPosition: unitPlacementSchema.or(z.literal('pending')),
     completed: z.boolean(),
   })
   .strict();

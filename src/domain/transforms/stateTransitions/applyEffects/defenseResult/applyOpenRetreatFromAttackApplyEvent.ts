@@ -1,7 +1,7 @@
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createOpenedRetreatState } from '@factories';
-import { getAttackApplyAwaitingOpen, getPositionOfUnit } from '@queries';
+import { getAttackApplyAwaitingOpen } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
 
 /**
@@ -23,15 +23,10 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
   // The apply whose retreat opens next, in the order results take effect.
   const apply = getAttackApplyAwaitingOpen(state, 'retreat');
 
-  // The unit's square is read from the board now, in case a prior step moved it.
-  const placement = getPositionOfUnit(state, apply.defendingUnit);
-  const retreatingUnit = {
-    placement,
-    unit: apply.defendingUnit,
-  };
-  // The procedure worked out the legal retreats; they are written as given.
+  // The defender falls back. The procedure worked out the legal retreats
+  // from where it stands; they are written as given.
   const retreatState = createOpenedRetreatState(
-    retreatingUnit,
+    apply.defendingUnit,
     event.retreatPaths,
   );
 

@@ -65,7 +65,7 @@ export function findRetreatLocation(
         return undefined;
       }
       // The defender of a ranged attack may be either player's unit.
-      if (!isFriendlyUnit(rangedRetreat.retreatingUnit.unit, player)) {
+      if (!isFriendlyUnit(rangedRetreat.retreatingUnit, player)) {
         return undefined;
       }
       const rangedLocation = {
@@ -86,10 +86,10 @@ export function findRetreatLocation(
       return undefined;
     }
     const frontRetreat = resolution.retreatState;
-    if (isPending(frontRetreat)) {
+    if (!isOpenSubstep(frontRetreat)) {
       return undefined;
     }
-    if (!isFriendlyUnit(frontRetreat.retreatingUnit.unit, player)) {
+    if (!isFriendlyUnit(frontRetreat.retreatingUnit, player)) {
       return undefined;
     }
     const frontLocation = {
@@ -107,8 +107,8 @@ export function findRetreatLocation(
     // The slots are named for whose unit holds the result, so the owner
     // picks the slot.
     const sideApply = hasInitiative(state, player)
-      ? melee.firstPlayerAttackApplyState
-      : melee.secondPlayerAttackApplyState;
+      ? melee.attackOnFirstPlayerApplyState
+      : melee.attackOnSecondPlayerApplyState;
     if (isPending(sideApply)) {
       return undefined;
     }

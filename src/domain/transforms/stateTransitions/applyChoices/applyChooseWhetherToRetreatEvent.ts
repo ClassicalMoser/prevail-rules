@@ -25,6 +25,7 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
     const stood = completeEngagementInMovement(
       updateFrontEngagementResolutionState(state, {
         defendingUnitRetreats: false,
+        retreatState: 'bypassed',
       }),
     );
     return stood;

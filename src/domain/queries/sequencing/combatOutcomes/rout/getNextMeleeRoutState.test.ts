@@ -28,13 +28,13 @@ describe('getNextMeleeRoutState function', () => {
     const firstUnit = createTestUnit(firstPlayer, { attack: 2 });
     const secondUnit = createTestUnit(secondPlayer, { attack: 2 });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         firstUnit,
         {
           routState: routs.first ?? 'pending',
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         secondUnit,
         {
           routState: routs.second ?? 'pending',

@@ -41,7 +41,7 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: createMovementResolutionState(withBoard, {
         engagementState: front,
-        targetPlacement: front.targetPlacement,
+        targetPlacement: { coordinate: 'E-5', facing: 'north' },
       }),
     });
     return updatePhaseState(withBoard, phase);
@@ -58,7 +58,7 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     );
     const { retreatState } =
       getFrontEngagementStateFromMovement(next).engagementResolutionState;
-    if (retreatState === 'pending') {
+    if (retreatState === 'pending' || retreatState === 'bypassed') {
       throw new Error('The retreat should be open');
     }
     return retreatState;
@@ -68,7 +68,7 @@ describe('applyOpenRetreatFromEngagementEvent function', () => {
     // On an empty board the defender's one retreat is a step straight back.
     const retreat = openedWith([['step']]);
 
-    expect(retreat.retreatingUnit).toStrictEqual(defender);
+    expect(retreat.retreatingUnit).toStrictEqual(defender.unit);
     // One legal retreat is no choice (§9.1.3), and one that can be made
     // never turns into a rout (§9.1.6).
     expect(retreat.chosenRetreatPath).toStrictEqual(['step']);

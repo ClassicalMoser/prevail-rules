@@ -4,6 +4,7 @@ import { createOpenedRetreatState } from '@factories';
 import {
   findPlayerUnitWithPosition,
   getFrontEngagementStateFromMovement,
+  getMovementResolutionState,
   getOtherPlayer,
 } from '@queries';
 import { throwIfPending } from '@utils';
@@ -27,14 +28,20 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
 ): S {
   const engagementState = getFrontEngagementStateFromMovement(state);
 
-  // The defender still stands in the space it was engaged in, sharing it
+  // The defender still stands in the space the move ends in, sharing it
   // with the engaging unit; it is the other side's unit there.
-  const retreatingUnit = findPlayerUnitWithPosition(
-    state.boardState,
-    engagementState.targetPlacement.coordinate,
-    getOtherPlayer(engagementState.engagingUnit.playerSide),
+  const { movingUnit: engagingUnit, targetPlacement } =
+    getMovementResolutionState(state);
+  const engagedSpace = throwIfPending(
+    targetPlacement,
+    'The move has not been written yet',
   );
-  if (retreatingUnit === undefined) {
+  const defender = findPlayerUnitWithPosition(
+    state.boardState,
+    engagedSpace.coordinate,
+    getOtherPlayer(engagingUnit.playerSide),
+  );
+  if (defender === undefined) {
     throw new Error('No defender stands in the engaged space');
   }
 
@@ -52,7 +59,7 @@ export function applyOpenRetreatFromEngagementEvent<S extends GameState>(
   }
 
   // The retreats are written as the engagement recorded them.
-  const retreatState = createOpenedRetreatState(retreatingUnit, retreatPaths);
+  const retreatState = createOpenedRetreatState(defender.unit, retreatPaths);
 
   const opened = updateFrontEngagementResolutionState(state, { retreatState });
   return opened;

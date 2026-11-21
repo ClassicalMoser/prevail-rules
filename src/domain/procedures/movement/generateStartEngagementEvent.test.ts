@@ -45,11 +45,7 @@ describe('generateStartEngagementEvent function', () => {
       ),
     );
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: placed(
-        createUnitByStat('black', 'speed', options.moverSpeed ?? 2),
-        'E-5',
-        'east',
-      ),
+      movingUnit: createUnitByStat('black', 'speed', options.moverSpeed ?? 2),
       targetPlacement: createUnitPlacement('E-6', options.engagingFacing),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {

@@ -61,7 +61,7 @@ describe('getSubstepsInProgress function', () => {
     const empty = createEmptyGameState('standard');
     // The defender fell back rather than stand, and has yet to pick a path.
     const defender = createUnitWithPlacement({ playerSide: 'white' });
-    const retreat = createRetreatState(defender, []);
+    const retreat = createRetreatState(defender.unit, []);
     const engagement = createFrontEngagementState({
       defendingUnitRetreats: true,
       retreatState: retreat,
@@ -116,8 +116,8 @@ describe('getSubstepsInProgress function', () => {
     // The unit had no path back, so it routs instead (§9.1.6).
     const defender = createUnitWithPlacement({ playerSide: 'white' });
     const rout = createRoutState('white', defender.unit);
-    const retreat = createRetreatState(defender, [], { routState: rout });
-    const apply = createAttackApplyStateWithRetreat(defender, [], {
+    const retreat = createRetreatState(defender.unit, [], { routState: rout });
+    const apply = createAttackApplyStateWithRetreat(defender.unit, [], {
       retreatState: retreat,
     });
     const shot = createRangedAttackResolutionState(empty, {
@@ -137,10 +137,14 @@ describe('getSubstepsInProgress function', () => {
     const empty = createEmptyGameState('standard');
     // The unit has fallen back; turning about comes next (§7.5.2).
     const defender = createUnitWithPlacement({ playerSide: 'white' });
-    const finished = createRetreatState(defender, [], { completed: true });
-    const apply = createAttackApplyStateWithRetreatAndReverse(defender, [], {
-      retreatState: finished,
-    });
+    const finished = createRetreatState(defender.unit, [], { completed: true });
+    const apply = createAttackApplyStateWithRetreatAndReverse(
+      defender.unit,
+      [],
+      {
+        retreatState: finished,
+      },
+    );
     const shot = createRangedAttackResolutionState(empty, {
       attackApplyState: apply,
       defendingUnit: defender.unit,
@@ -180,11 +184,11 @@ describe('getSubstepsInProgress function', () => {
     const empty = createEmptyGameState('standard');
     const whiteUnit = createUnitWithPlacement({ playerSide: 'white' });
     const blackUnit = createUnitWithPlacement({ playerSide: 'black' });
-    const whiteApply = createAttackApplyStateWithRetreat(whiteUnit, []);
-    const blackApply = createAttackApplyStateWithRetreat(blackUnit, []);
+    const whiteApply = createAttackApplyStateWithRetreat(whiteUnit.unit, []);
+    const blackApply = createAttackApplyStateWithRetreat(blackUnit.unit, []);
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: whiteApply,
-      secondPlayerAttackApplyState: blackApply,
+      attackOnFirstPlayerApplyState: whiteApply,
+      attackOnSecondPlayerApplyState: blackApply,
     });
     const fighting = updatePhaseState(
       empty,
@@ -206,15 +210,19 @@ describe('getSubstepsInProgress function', () => {
     const empty = createEmptyGameState('standard');
     const whiteUnit = createUnitWithPlacement({ playerSide: 'white' });
     const blackUnit = createUnitWithPlacement({ playerSide: 'black' });
-    const whiteApply = createAttackApplyStateWithRetreat(whiteUnit, []);
+    const whiteApply = createAttackApplyStateWithRetreat(whiteUnit.unit, []);
     const blackApply = createAttackApplyStateWithRetreatAndReverse(
-      blackUnit,
+      blackUnit.unit,
       [],
-      { retreatState: createRetreatState(blackUnit, [], { completed: true }) },
+      {
+        retreatState: createRetreatState(blackUnit.unit, [], {
+          completed: true,
+        }),
+      },
     );
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: whiteApply,
-      secondPlayerAttackApplyState: blackApply,
+      attackOnFirstPlayerApplyState: whiteApply,
+      attackOnSecondPlayerApplyState: blackApply,
     });
     const fighting = updatePhaseState(
       empty,

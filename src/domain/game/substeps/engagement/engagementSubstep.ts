@@ -1,13 +1,13 @@
-import type { UnitInstance, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import type { EngagementResolutionState } from './engagementResolutionState';
-import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 import { z } from 'zod';
 import { ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { engagementResolutionStateSchema } from './engagementResolutionState';
 
 /**
  * Composable substep that handles engagement resolution (flank, front, rear).
+ * The engaging unit, and the space its move ends in, are the parent
+ * movement's (`movingUnit`, `targetPlacement`).
  *
  * This is a **composable substep** - it can be reused in multiple contexts:
  * - Used in `MovementResolutionState` (when movement results in engagement)
@@ -22,14 +22,6 @@ import { engagementResolutionStateSchema } from './engagementResolutionState';
 export interface EngagementState {
   /** The type of the substep. */
   substepType: typeof ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE;
-  /** The unit that is engaging. */
-  engagingUnit: UnitInstance;
-  /** The target placement of the engagement. */
-  // TODO(composition): a copy of the parent movement's `targetPlacement`,
-  // taken when the engagement starts (applyStartEngagementEvent), and the
-  // engagement only ever sits inside that movement. Settled by reading the
-  // parent's, or by saying when the two can differ.
-  targetPlacement: UnitPlacement;
   /** The resolution state of the engagement. */
   engagementResolutionState: EngagementResolutionState;
   /** Whether the engagement is complete. */
@@ -40,9 +32,7 @@ const _engagementStateSchemaObject = z
   .object({
     completed: z.boolean(),
     engagementResolutionState: engagementResolutionStateSchema,
-    engagingUnit: unitInstanceSchema,
     substepType: z.literal(ENGAGEMENT_RESOLUTION_SUBSTEP_TYPE),
-    targetPlacement: unitPlacementSchema,
   })
   .strict();
 

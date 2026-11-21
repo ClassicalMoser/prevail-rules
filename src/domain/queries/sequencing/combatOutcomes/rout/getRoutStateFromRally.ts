@@ -2,20 +2,20 @@ import type { RallyResolutionState, RoutState } from '@game';
 import { throwIfPending } from '@utils';
 
 /**
- * Gets the rout state from a rally resolution state.
- * Assumes the rally resolution state has a rout state (validation should happen elsewhere).
+ * The rout a rally's support check costs, or `'bypassed'` when every unit
+ * kept its support and nothing routs.
+ *
+ * `'bypassed'` is an answer: the check was made and routed nobody. `'pending'`
+ * is not: the check has not been made, so asking for the rout then is a
+ * sequencing fault rather than a fact about the game.
  *
  * @param rallyState - The rally resolution state
- * @returns The rout state
- * @throws Error if rout state is missing
+ * @returns The rout substep, or `'bypassed'` when nothing routs
+ * @throws Error when the support check has not been made yet
  */
-// TODO(misleading): the README lists this as a parent reader that answers
-// `'bypassed'`, but a rally's rout slot has no `'bypassed'`: `'pending'` there
-// also means nobody lost support and nothing will rout. Settled by giving the
-// rally slot `'bypassed'` (a `@game` decision), or by the README not listing it.
 export function getRoutStateFromRally(
   rallyState: RallyResolutionState,
-): RoutState {
+): RoutState | 'bypassed' {
   return throwIfPending(
     rallyState.routState,
     'No rout state found in rally resolution state',

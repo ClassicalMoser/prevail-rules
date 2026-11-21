@@ -1,4 +1,4 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { MoveDelta, UnitInstance } from '@entities';
 import type { RetreatState } from '@game';
 
 /**
@@ -11,12 +11,12 @@ import type { RetreatState } from '@game';
  * from the retreat, so that slot is bypassed; with nowhere to go it routs
  * instead (§9.1.6), and the rout stays pending until it is opened.
  *
- * @param retreatingUnit - The unit falling back, and where it stands
+ * @param retreatingUnit - The unit falling back
  * @param legalRetreatPaths - Every retreat it may make, each as its path
  * @returns The retreat substep, open and unfinished
  */
 export function createOpenedRetreatState(
-  retreatingUnit: UnitWithPlacement,
+  retreatingUnit: UnitInstance,
   legalRetreatPaths: MoveDelta[][],
 ): RetreatState {
   const onlyPath =

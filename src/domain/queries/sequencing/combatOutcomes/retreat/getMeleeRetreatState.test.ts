@@ -42,10 +42,10 @@ describe('getMeleeRetreatState function', () => {
   it('returns the white retreat', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const retreat = createRetreatState(white, legalRetreatsOf(white));
+    const retreat = createRetreatState(white.unit, legalRetreatsOf(white));
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
         {
           retreatState: retreat,
@@ -60,10 +60,10 @@ describe('getMeleeRetreatState function', () => {
   it('returns the black retreat', () => {
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'south');
-    const retreat = createRetreatState(black, legalRetreatsOf(black));
+    const retreat = createRetreatState(black.unit, legalRetreatsOf(black));
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         {
           retreatState: retreat,
@@ -78,12 +78,12 @@ describe('getMeleeRetreatState function', () => {
   it('throws when the white attack apply is still pending', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: 'pending',
+      attackOnFirstPlayerApplyState: 'pending',
     });
     const state = resolveMelee(melee);
 
     expect(() => getMeleeRetreatState(state, 'white')).toThrow(
-      'No white attack apply state found in melee resolution',
+      'No attack apply on white found in melee resolution',
     );
   });
 });

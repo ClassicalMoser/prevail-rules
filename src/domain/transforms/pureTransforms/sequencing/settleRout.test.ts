@@ -70,12 +70,12 @@ describe('settleRout function', () => {
       addUnitToBoard(state.boardState, placement),
     );
     const retreatState = createRetreatState(
-      placement,
+      placement.unit,
       legalRetreatsOf(placement, [enemyCuttingOffRetreat(placement)]),
       { routState: createRoutState('white', unit) },
     );
     const attackApply = createAttackApplyStateWithRetreat(
-      placement,
+      placement.unit,
       legalRetreatsOf(placement),
       { retreatState },
     );

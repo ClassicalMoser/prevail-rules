@@ -44,10 +44,10 @@ describe('generateResolveRetreatEvent function', () => {
     // Open ground behind: the unit's only way back is the step already chosen.
     const openGround = legalRetreatsOf(unitWithPlacement);
     const attackApply = createAttackApplyStateWithRetreat(
-      unitWithPlacement,
+      unitWithPlacement.unit,
       openGround,
       {
-        retreatState: createRetreatState(unitWithPlacement, openGround, {
+        retreatState: createRetreatState(unitWithPlacement.unit, openGround, {
           chosenRetreatPath: stepBack,
         }),
       },
@@ -83,23 +83,31 @@ describe('generateResolveRetreatEvent function', () => {
     // step back.
     const whitePaths = legalRetreatsOf(whiteWp, [blackWp]);
     const blackPaths = legalRetreatsOf(blackWp, [whiteWp]);
-    const whiteRetreat = createRetreatState(whiteWp, whitePaths, {
+    const whiteRetreat = createRetreatState(whiteWp.unit, whitePaths, {
       chosenRetreatPath: stepBack,
     });
-    const blackRetreat = createRetreatState(blackWp, blackPaths, {
+    const blackRetreat = createRetreatState(blackWp.unit, blackPaths, {
       chosenRetreatPath: stepBack,
     });
 
-    const whiteApply = createAttackApplyStateWithRetreat(whiteWp, whitePaths, {
-      retreatState: whiteRetreat,
-    });
-    const blackApply = createAttackApplyStateWithRetreat(blackWp, blackPaths, {
-      retreatState: blackRetreat,
-    });
+    const whiteApply = createAttackApplyStateWithRetreat(
+      whiteWp.unit,
+      whitePaths,
+      {
+        retreatState: whiteRetreat,
+      },
+    );
+    const blackApply = createAttackApplyStateWithRetreat(
+      blackWp.unit,
+      blackPaths,
+      {
+        retreatState: blackRetreat,
+      },
+    );
 
     const melee = createMeleeResolutionState(s, {
-      secondPlayerAttackApplyState: blackApply,
-      firstPlayerAttackApplyState: whiteApply,
+      attackOnSecondPlayerApplyState: blackApply,
+      attackOnFirstPlayerApplyState: whiteApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
@@ -134,10 +142,10 @@ describe('generateResolveRetreatEvent function', () => {
       addUnitToBoard(state.boardState, unitWithPlacement),
     );
     // Two ways back, and the player has not picked one yet.
-    const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, [
-      ['step'],
-      ['turnLeft', 'step'],
-    ]);
+    const attackApply = createAttackApplyStateWithRetreat(
+      unitWithPlacement.unit,
+      [['step'], ['turnLeft', 'step']],
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit: retreatingUnit,

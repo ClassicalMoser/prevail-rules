@@ -48,12 +48,12 @@ describe('findRetreatAwaitingMove function', () => {
   it('returns the first player retreat whose retreat is chosen', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const retreat = createRetreatState(white, legalRetreatsOf(white), {
+    const retreat = createRetreatState(white.unit, legalRetreatsOf(white), {
       chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
         {
           retreatState: retreat,
@@ -72,16 +72,16 @@ describe('findRetreatAwaitingMove function', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const black = placed('black', 'south');
-    const retreat = createRetreatState(black, legalRetreatsOf(black), {
+    const retreat = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         {
           retreatState: retreat,
@@ -101,14 +101,14 @@ describe('findRetreatAwaitingMove function', () => {
     const white = placed('white', 'north');
     const black = placed('black', 'south');
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, [
-        ['step'],
-        ['turnLeft', 'step'],
-      ]),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, [
-        ['step'],
-        ['turnLeft', 'step'],
-      ]),
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
+        [['step'], ['turnLeft', 'step']],
+      ),
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
+        [['step'], ['turnLeft', 'step']],
+      ),
     });
     const state = resolveMelee(melee, 'white');
 
@@ -122,12 +122,12 @@ describe('findRetreatAwaitingMove function', () => {
     // same way white holding it is.
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'south');
-    const retreat = createRetreatState(black, legalRetreatsOf(black), {
+    const retreat = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         {
           retreatState: retreat,
@@ -148,21 +148,21 @@ describe('findRetreatAwaitingMove function', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
     const black = placed('black', 'south');
-    const done = createRetreatState(black, legalRetreatsOf(black), {
+    const done = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: chosen,
       completed: true,
     });
-    const due = createRetreatState(white, legalRetreatsOf(white), {
+    const due = createRetreatState(white.unit, legalRetreatsOf(white), {
       chosenRetreatPath: chosen,
     });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
         { retreatState: due },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        black,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
         legalRetreatsOf(black),
         { retreatState: done },
       ),
@@ -180,9 +180,13 @@ describe('findRetreatAwaitingMove function', () => {
     // back with it.
     const empty = createEmptyGameState('standard');
     const defender = placed('black', 'south');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender), {
-      chosenRetreatPath: chosen,
-    });
+    const retreat = createRetreatState(
+      defender.unit,
+      legalRetreatsOf(defender),
+      {
+        chosenRetreatPath: chosen,
+      },
+    );
     const state = updatePhaseState(
       empty,
       createIssueCommandsPhaseState(empty, {
@@ -190,7 +194,7 @@ describe('findRetreatAwaitingMove function', () => {
           empty,
           {
             attackApplyState: createAttackApplyStateWithRetreat(
-              defender,
+              defender.unit,
               legalRetreatsOf(defender),
               { retreatState: retreat },
             ),

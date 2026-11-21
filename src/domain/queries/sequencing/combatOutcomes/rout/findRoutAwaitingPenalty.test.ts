@@ -33,11 +33,11 @@ describe('findRoutAwaitingPenalty function', () => {
           empty,
           {
             attackApplyState: createAttackApplyStateWithRetreat(
-              standing,
+              standing.unit,
               legalRetreatsOf(standing),
               {
                 retreatState: createRetreatState(
-                  standing,
+                  standing.unit,
                   legalRetreatsOf(standing, [enemyCuttingOffRetreat(standing)]),
                   {
                     routState: nested,

@@ -1,7 +1,8 @@
+import type { PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { EngagementState } from '@game';
 import { getFrontEngagementStage, getOtherPlayer } from '@queries';
-import { throwIfPending } from '@utils';
+import { throwIfBypassed, throwIfPending } from '@utils';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
@@ -12,12 +13,13 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  *
  * @param engagementState - The engagement state, relevant to this engagement resolution
  * Prevents having to scan through phases to find the engagement state
+ * @param attackingPlayer - The player whose unit moved into the enemy
  * @returns Information about what event is expected
  */
 export function getExpectedEngagementEvent(
   engagementState: EngagementState,
+  attackingPlayer: PlayerSide,
 ): ExpectedEventInfo {
-  const attackingPlayer = engagementState.engagingUnit.playerSide;
   const defendingPlayer = getOtherPlayer(attackingPlayer);
 
   const resolutionState = engagementState.engagementResolutionState;
@@ -99,9 +101,12 @@ export function getExpectedEngagementEvent(
       }
       case 'retreating': {
         return getExpectedRetreatEvent(
-          throwIfPending(
-            resolutionState.retreatState,
-            'The retreat is not open',
+          throwIfBypassed(
+            throwIfPending(
+              resolutionState.retreatState,
+              'The retreat is not open',
+            ),
+            'The defender stood and has no retreat',
           ),
         );
       }

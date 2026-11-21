@@ -70,7 +70,9 @@ describe('naming a unit in an order', () => {
     const named = applyEvent(event, resolving);
 
     // The move opens for the unit as the board has it.
-    expect(getMovementResolutionState(named).movingUnit).toStrictEqual(onBoard);
+    expect(getMovementResolutionState(named).movingUnit).toStrictEqual(
+      onBoard.unit,
+    );
   });
 
   it('shoots with the unit the board holds, whatever stats the client claims for it', () => {

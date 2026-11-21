@@ -34,7 +34,7 @@ describe('carryRidingCommander function', () => {
       {
         commitment: { commitmentType: 'declined' },
         moveCommander,
-        movingUnit: mover,
+        movingUnit: mover.unit,
         targetPlacement: { coordinate: 'C-5', facing: 'north' },
       },
     );

@@ -21,7 +21,7 @@ function retreat(completed: boolean) {
     facing: 'south',
     playerSide: 'white',
   });
-  const state = createRetreatState(unit, [['step']], { completed });
+  const state = createRetreatState(unit.unit, [['step']], { completed });
   return state;
 }
 

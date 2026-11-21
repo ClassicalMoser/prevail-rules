@@ -18,6 +18,8 @@ export interface FrontEngagementResolutionState {
    * engaging unit enters the defender's space then, and a Speed read there
    * would measure its reach from the wrong space.
    */
+  // TODO (once terrain lands): This does not reflect terrain deficits or speed limits.
+  // A solution that does will be needed in the future to prevent absurd outcomes.
   engagingSpeed: number;
   /** The commitment of the defending player. */
   defensiveCommitment: Commitment;
@@ -30,10 +32,12 @@ export interface FrontEngagementResolutionState {
   /** Whether the defending unit chooses to retreat. */
   defendingUnitRetreats: 'pending' | boolean;
   /**
-   * Nested retreat substep once the defender accepts retreat.
-   * Baked with {@link RetreatState.legalRetreatPaths} like attack-apply.
+   * The defender's retreat: `'pending'` until it has fallen back or stood,
+   * `'bypassed'` when it stands (it had nowhere to go, or chose to hold), or
+   * the open {@link RetreatState}, written with the retreats the engagement
+   * recorded, as an attack apply's is.
    */
-  retreatState: RetreatState | 'pending';
+  retreatState: RetreatState | 'pending' | 'bypassed';
 }
 
 const _frontEngagementResolutionStateSchemaObject = z
@@ -48,8 +52,10 @@ const _frontEngagementResolutionStateSchemaObject = z
     retreatPaths: z.array(z.array(moveDeltaSchema)).or(z.literal('pending')),
     /** Whether the defending unit chooses to retreat. */
     defendingUnitRetreats: z.boolean().or(z.literal('pending')),
-    /** Nested retreat substep once the defender accepts retreat. */
-    retreatState: retreatStateSchema.or(z.literal('pending')),
+    /** The defender's retreat, once it falls back. */
+    retreatState: retreatStateSchema
+      .or(z.literal('pending'))
+      .or(z.literal('bypassed')),
   })
   .strict();
 
@@ -64,7 +70,7 @@ export const frontEngagementResolutionStateSchema: z.ZodObject<{
   defensiveCommitment: z.ZodType<Commitment>;
   retreatPaths: z.ZodType<'pending' | MoveDelta[][]>;
   defendingUnitRetreats: z.ZodType<'pending' | boolean>;
-  retreatState: z.ZodType<RetreatState | 'pending'>;
+  retreatState: z.ZodType<RetreatState | 'pending' | 'bypassed'>;
 }> = _frontEngagementResolutionStateSchemaObject;
 
 const _assertExactFrontEngagementResolutionState: AssertExact<

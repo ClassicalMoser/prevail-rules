@@ -1,5 +1,6 @@
 import type { ExpectedEventInfo, PlayerSource } from '@events';
 import type { RallyResolutionState } from '@game';
+import { isOpenSubstep } from '@queries';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
 /**
@@ -37,7 +38,7 @@ export function getExpectedRallyResolutionEvent(
   }
 
   if (rallyState.unitsLostSupport.length > 0) {
-    if (rallyState.routState === 'pending') {
+    if (!isOpenSubstep(rallyState.routState)) {
       throw new Error('Rout state is required when units lost support');
     }
     // Check if rout is completed

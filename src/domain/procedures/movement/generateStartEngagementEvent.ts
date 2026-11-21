@@ -55,7 +55,7 @@ export function generateStartEngagementEvent(
   // that space now; once the engagement starts it stands in the defender's,
   // so this is the moment to read it.
   const engagingSpeed = getCurrentUnitStat(
-    movementResolutionState.movingUnit.unit,
+    movementResolutionState.movingUnit,
     'speed',
     state,
     modifiersFromCompletedCommitment(movementResolutionState.commitment),

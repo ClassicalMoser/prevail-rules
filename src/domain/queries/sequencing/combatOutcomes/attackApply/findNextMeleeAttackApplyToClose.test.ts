@@ -20,13 +20,13 @@ describe('findNextMeleeAttackApplyToClose function', () => {
 
   it('returns the second player’s apply first, while it is open', () => {
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         blackUnit,
         {
           completed: false,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         whiteUnit,
         {
           completed: false,
@@ -42,13 +42,13 @@ describe('findNextMeleeAttackApplyToClose function', () => {
 
   it('returns the first player’s apply once the second player’s is closed', () => {
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         blackUnit,
         {
           completed: false,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         whiteUnit,
         {
           completed: true,
@@ -63,13 +63,13 @@ describe('findNextMeleeAttackApplyToClose function', () => {
 
   it('returns nothing when both applies are closed', () => {
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         blackUnit,
         {
           completed: true,
         },
       ),
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         whiteUnit,
         {
           completed: true,
@@ -83,8 +83,8 @@ describe('findNextMeleeAttackApplyToClose function', () => {
   it('returns nothing before both applies are written, because the order is not yet known', () => {
     // The first player's attack has not been measured yet.
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: 'pending',
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: 'pending',
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         whiteUnit,
         {
           completed: false,

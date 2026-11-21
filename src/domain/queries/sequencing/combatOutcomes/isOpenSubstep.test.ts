@@ -13,7 +13,10 @@ describe('isOpenSubstep function', () => {
       coordinate: 'E-5',
       facing: 'north',
     });
-    const retreat = createRetreatState(standing, legalRetreatsOf(standing));
+    const retreat = createRetreatState(
+      standing.unit,
+      legalRetreatsOf(standing),
+    );
 
     expect(isOpenSubstep(retreat)).toBe(true);
   });

@@ -22,8 +22,8 @@ describe('getMeleeAppliesInResolutionOrder function', () => {
       unitRouted: false,
     });
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: black,
-      secondPlayerAttackApplyState: white,
+      attackOnFirstPlayerApplyState: black,
+      attackOnSecondPlayerApplyState: white,
     });
 
     const inOrder = getMeleeAppliesInResolutionOrder(melee);
@@ -35,8 +35,8 @@ describe('getMeleeAppliesInResolutionOrder function', () => {
   it('an apply not yet written is left out', () => {
     const state = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: 'pending',
-      secondPlayerAttackApplyState: 'pending',
+      attackOnFirstPlayerApplyState: 'pending',
+      attackOnSecondPlayerApplyState: 'pending',
     });
 
     // Nothing has been resolved against either unit yet.

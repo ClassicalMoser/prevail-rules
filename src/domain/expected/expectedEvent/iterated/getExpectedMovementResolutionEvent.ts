@@ -56,7 +56,10 @@ export function getExpectedMovementResolutionEvent(
         effectType: 'completeUnitMovement',
       };
     }
-    return getExpectedEngagementEvent(engagementState);
+    return getExpectedEngagementEvent(
+      engagementState,
+      resolutionState.movingUnit.playerSide,
+    );
   }
 
   // No engagement yet: a move that ends on an enemy starts one (§6.1).

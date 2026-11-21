@@ -19,8 +19,8 @@ export function getMeleeAppliesInResolutionOrder(
   meleeState: MeleeResolutionState,
 ): AttackApplyState[] {
   const written = [
-    meleeState.secondPlayerAttackApplyState,
-    meleeState.firstPlayerAttackApplyState,
+    meleeState.attackOnSecondPlayerApplyState,
+    meleeState.attackOnFirstPlayerApplyState,
   ].filter((apply) => apply !== 'pending');
   return written;
 }

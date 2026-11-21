@@ -52,7 +52,7 @@ export function generateResolveRetreatEvent(
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     path,
-    unit: retreatState.retreatingUnit.unit,
+    unit: retreatState.retreatingUnit,
   };
 
   return gameEffectEvent;

@@ -38,7 +38,10 @@ describe('isValidChooseRetreatOptionEvent function', () => {
       addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
     );
     const tiedPaths = legalRetreatsOf(placement, [blocker]);
-    const attackApply = createAttackApplyStateWithRetreat(placement, tiedPaths);
+    const attackApply = createAttackApplyStateWithRetreat(
+      placement.unit,
+      tiedPaths,
+    );
     return updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {

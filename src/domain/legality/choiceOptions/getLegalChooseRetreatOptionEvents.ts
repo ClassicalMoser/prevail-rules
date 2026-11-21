@@ -28,7 +28,7 @@ export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   }
   const { retreatState } = awaiting;
 
-  const player = retreatState.retreatingUnit.unit.playerSide;
+  const player = retreatState.retreatingUnit.playerSide;
 
   // Each offered retreat is chosen by naming its path.
   const choices = retreatState.legalRetreatPaths.map((path) =>

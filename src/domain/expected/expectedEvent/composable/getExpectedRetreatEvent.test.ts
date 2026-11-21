@@ -36,7 +36,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('given trigger rout when there are no legal retreat options and no rout state', () => {
     // Cut off from every retreat, and the rout slot not yet opened.
-    const retreatState = createRetreatState(unitPlacement, cutOff);
+    const retreatState = createRetreatState(unitPlacement.unit, cutOff);
 
     expect(getExpectedRetreatEvent(retreatState)).toStrictEqual({
       actionType: 'gameEffect',
@@ -46,7 +46,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('given delegate to rout when retreat has no options and rout is not complete', () => {
     // Cut off from every retreat, and the unit's rout is open but unfinished.
-    const retreatState = createRetreatState(unitPlacement, cutOff, {
+    const retreatState = createRetreatState(unitPlacement.unit, cutOff, {
       routState: createRoutState('black', unitPlacement.unit, {
         cardsChosen: false,
       }),
@@ -60,7 +60,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('given multiple options exist, asks the player to choose a retreat option', () => {
     // Two tied ways back, so the player has a real choice to make.
-    const retreatState = createRetreatState(unitPlacement, tied);
+    const retreatState = createRetreatState(unitPlacement.unit, tied);
 
     expect(getExpectedRetreatEvent(retreatState)).toStrictEqual({
       actionType: 'playerChoice',
@@ -71,7 +71,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('given the retreat is already chosen, returns resolveRetreat', () => {
     // The one way back is already picked; the unit only has to move.
-    const retreatState = createRetreatState(unitPlacement, openGround, {
+    const retreatState = createRetreatState(unitPlacement.unit, openGround, {
       chosenRetreatPath: ['step'],
     });
 
@@ -83,7 +83,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('given when the retreat is already complete, throws', () => {
     // The retreat has been fully played out, so nothing more is expected of it.
-    const retreatState = createRetreatState(unitPlacement, openGround, {
+    const retreatState = createRetreatState(unitPlacement.unit, openGround, {
       completed: true,
       chosenRetreatPath: ['step'],
     });
@@ -95,7 +95,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('given when rout is complete but retreat is not marked complete, throws', () => {
     // The rout of the cut-off unit has finished, yet the retreat still reads open.
-    const retreatState = createRetreatState(unitPlacement, cutOff, {
+    const retreatState = createRetreatState(unitPlacement.unit, cutOff, {
       routState: createRoutState('black', unitPlacement.unit, {
         cardsChosen: true,
         completed: true,
@@ -110,7 +110,7 @@ describe('getExpectedRetreatEvent function', () => {
 
   it('a single retreat option left unchosen when the retreat opens throws', () => {
     // Open ground leaves one way back, which the game picks when the retreat opens.
-    const retreatState = createRetreatState(unitPlacement, openGround, {
+    const retreatState = createRetreatState(unitPlacement.unit, openGround, {
       chosenRetreatPath: 'pending' as const,
     });
 

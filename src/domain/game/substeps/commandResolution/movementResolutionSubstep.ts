@@ -1,4 +1,4 @@
-import type { UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitInstance, UnitPlacement } from '@entities';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
 import type { EngagementState } from '../engagement';
@@ -6,7 +6,7 @@ import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
 import { COMMAND_RESOLUTION_SUBSTEP_TYPE } from '../substepType';
 import { engagementStateSchema } from '../engagement';
-import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
+import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 
 /**
  * Context-specific substep that resolves movement commands.
@@ -22,13 +22,12 @@ export interface MovementResolutionState {
   substepType: typeof COMMAND_RESOLUTION_SUBSTEP_TYPE;
   /** The type of command resolution. */
   commandResolutionType: 'movement';
-  /** The unit that is moving, and where it now stands. */
-  // TODO(composition): where the unit stands is the board's, and the index
-  // finds it by name; this copy has to be kept in step (applyStartEngagementEvent
-  // rewrites it when the unit enters an engagement). A Shoot order names its
-  // shooter by identity alone (`attackingUnit`), as events now do. Settled by
-  // naming the mover by identity, or by saying why the copy is needed.
-  movingUnit: UnitWithPlacement;
+  /**
+   * The unit that is moving, by identity. Where it stands is the board's: on
+   * the space it set off from until its move is written, and where the move
+   * ends once it has arrived there (`targetPlacement`).
+   */
+  movingUnit: UnitInstance;
   /**
    * Where the move ends. `'pending'` from the moment the unit is chosen
    * until its owner, having committed a card or not, writes the move
@@ -52,7 +51,7 @@ const _movementResolutionStateSchemaObject = z
     completed: z.boolean(),
     engagementState: engagementStateSchema.or(z.literal('pending')),
     moveCommander: z.boolean().or(z.literal('pending')),
-    movingUnit: unitWithPlacementSchema,
+    movingUnit: unitInstanceSchema,
     substepType: z.literal(COMMAND_RESOLUTION_SUBSTEP_TYPE),
     targetPlacement: unitPlacementSchema.or(z.literal('pending')),
   })

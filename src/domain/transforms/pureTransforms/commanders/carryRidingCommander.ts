@@ -30,7 +30,7 @@ export function carryRidingCommander<S extends GameState>(
   // It goes with the unit to where the unit landed.
   const carried = moveCommanderOnBoard(
     state,
-    movement.movingUnit.unit.playerSide,
+    movement.movingUnit.playerSide,
     landing,
   );
   return carried;

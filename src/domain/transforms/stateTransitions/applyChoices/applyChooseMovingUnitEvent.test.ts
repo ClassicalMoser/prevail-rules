@@ -81,7 +81,7 @@ describe('applyChooseMovingUnitEvent function', () => {
     );
 
     const movement = getMovementResolutionState(named);
-    expect(movement.movingUnit).toStrictEqual(first);
+    expect(movement.movingUnit).toStrictEqual(first.unit);
     expect(movement.commitment).toStrictEqual({ commitmentType: 'pending' });
     expect(movement.targetPlacement).toBe('pending');
     expect(movement.moveCommander).toBe('pending');

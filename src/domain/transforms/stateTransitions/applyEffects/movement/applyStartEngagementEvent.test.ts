@@ -50,7 +50,7 @@ describe('applyStartEngagementEvent function', () => {
     );
     const movement = createMovementResolutionState(withBoard, {
       moveCommander: commanderRides,
-      movingUnit: moverWithPlacement,
+      movingUnit: blackMover,
       targetPlacement: createUnitPlacement('E-6', 'north'),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
@@ -62,7 +62,7 @@ describe('applyStartEngagementEvent function', () => {
     };
   }
 
-  it('given event engagementType front, movement engagement is front and engager is movingUnit', () => {
+  it('given event engagementType front, movement engagement is front', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
       defendingUnit: defenderWithPlacement.unit,
@@ -87,7 +87,6 @@ describe('applyStartEngagementEvent function', () => {
     }
     const engagement = throwIfPending(cmd.engagementState, 'engagement');
     expect(engagement.engagementResolutionState.engagementType).toBe('front');
-    expect(engagement.engagingUnit).toBe(cmd.movingUnit.unit);
   });
 
   it('sets a front attacker down with the defender at once, recording its Speed', () => {
@@ -113,8 +112,7 @@ describe('applyStartEngagementEvent function', () => {
       primaryFacing: 'north',
       secondaryUnit: defenderWithPlacement.unit,
     });
-    // The movement has the mover where it now stands, and the engagement
-    // keeps the Speed sampled where its move began.
+    // The engagement keeps the Speed sampled where its move began.
     expect(next).toMatchObject({
       currentRoundState: {
         currentPhaseState: {
@@ -122,7 +120,6 @@ describe('applyStartEngagementEvent function', () => {
             engagementState: {
               engagementResolutionState: { engagingSpeed: 3 },
             },
-            movingUnit: { placement: { coordinate: 'E-6', facing: 'north' } },
           },
         },
       },

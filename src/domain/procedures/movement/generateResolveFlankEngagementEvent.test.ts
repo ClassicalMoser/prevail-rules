@@ -30,7 +30,7 @@ describe('generateResolveFlankEngagementEvent function', () => {
     const flank = createFlankEngagementState();
     const movement = createMovementResolutionState(state, {
       engagementState: flank,
-      targetPlacement: flank.targetPlacement,
+      targetPlacement: { coordinate: 'E-5', facing: 'north' },
     });
 
     expect(
@@ -47,7 +47,7 @@ describe('generateResolveFlankEngagementEvent function', () => {
     const front = createFrontEngagementState();
     const movement = createMovementResolutionState(state, {
       engagementState: front,
-      targetPlacement: front.targetPlacement,
+      targetPlacement: { coordinate: 'E-5', facing: 'north' },
     });
 
     expect(() =>

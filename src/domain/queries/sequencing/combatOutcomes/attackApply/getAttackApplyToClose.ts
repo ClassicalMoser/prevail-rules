@@ -30,8 +30,8 @@ export function getAttackApplyToClose(state: GameState): AttackApplyState {
     const melee = getMeleeResolutionState(state);
     // Both sides' applies are written before either is closed (§7.5.6).
     if (
-      isPending(melee.firstPlayerAttackApplyState) ||
-      isPending(melee.secondPlayerAttackApplyState)
+      isPending(melee.attackOnFirstPlayerApplyState) ||
+      isPending(melee.attackOnSecondPlayerApplyState)
     ) {
       throw new Error(
         'A melee attack apply has not been written yet, so none can close',

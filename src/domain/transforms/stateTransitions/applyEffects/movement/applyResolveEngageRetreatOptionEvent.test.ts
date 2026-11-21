@@ -35,18 +35,14 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 3);
     const engagementState = baseFrontEngagementState();
-    const defenderWithPlacement = placed(
-      defender,
-      engagementState.targetPlacement.coordinate,
-      'south',
-    );
+    const defenderWithPlacement = placed(defender, 'E-5', 'south');
     const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderWithPlacement),
     );
     const movement = createMovementResolutionState(withBoard, {
       engagementState,
-      targetPlacement: engagementState.targetPlacement,
+      targetPlacement: { coordinate: 'E-5', facing: 'north' },
     });
     const full: GameState = updatePhaseState(
       withBoard,
@@ -90,18 +86,14 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       ...baseFrontEngagementState(),
       engagingUnit: createUnitByStat('black', 'speed', 4),
     };
-    const defenderWithPlacement = placed(
-      defender,
-      engagementState.targetPlacement.coordinate,
-      'south',
-    );
+    const defenderWithPlacement = placed(defender, 'E-5', 'south');
     const withBoard = replaceBoard(
       state,
       addUnitToBoard(state.boardState, defenderWithPlacement),
     );
     const movement = createMovementResolutionState(withBoard, {
       engagementState,
-      targetPlacement: engagementState.targetPlacement,
+      targetPlacement: { coordinate: 'E-5', facing: 'north' },
     });
     const full: GameState = updatePhaseState(
       withBoard,
@@ -135,5 +127,7 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       throw new Error('front');
     }
     expect(engagement.engagementResolutionState.retreatPaths).toStrictEqual([]);
+    // With nowhere to go, it will never fall back.
+    expect(engagement.engagementResolutionState.retreatState).toBe('bypassed');
   });
 });

@@ -49,11 +49,7 @@ function buildStateWithFrontEngagement(options: {
     ...front,
     engagingUnit: createUnitByStat('black', 'speed', options.engagingSpeed),
   };
-  const defenderWithPlacement = placed(
-    defender,
-    engagementState.targetPlacement.coordinate,
-    'south',
-  );
+  const defenderWithPlacement = placed(defender, 'E-5', 'south');
   const withDefender = addUnitToBoard(state.boardState, defenderWithPlacement);
   // An enemy behind a south-facing defender stands on the space north of it,
   // facing away, so it holds the way straight back without cutting off every
@@ -67,7 +63,7 @@ function buildStateWithFrontEngagement(options: {
   const withBoard = replaceBoard(state, boardState);
   const movement = createMovementResolutionState(withBoard, {
     engagementState,
-    targetPlacement: engagementState.targetPlacement,
+    targetPlacement: { coordinate: 'E-5', facing: 'north' },
   });
   return updatePhaseState(
     withBoard,

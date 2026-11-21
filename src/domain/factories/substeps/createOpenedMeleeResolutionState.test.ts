@@ -8,10 +8,10 @@ describe('createOpenedMeleeResolutionState function', () => {
   it('opens a melee at its space with nothing committed and nothing struck', () => {
     expect(createOpenedMeleeResolutionState('E-5')).toStrictEqual({
       completed: false,
-      firstPlayerAttackApplyState: 'pending',
+      attackOnFirstPlayerApplyState: 'pending',
       firstPlayerCommitment: { commitmentType: 'pending' },
       location: 'E-5',
-      secondPlayerAttackApplyState: 'pending',
+      attackOnSecondPlayerApplyState: 'pending',
       secondPlayerCommitment: { commitmentType: 'pending' },
       substepType: 'meleeResolution',
     });

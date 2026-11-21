@@ -81,8 +81,8 @@ describe('applyCompleteAttackApplyEvent function', () => {
     });
 
     const meleeState = createMeleeResolutionState(stateWithUnits, {
-      firstPlayerAttackApplyState: blackAttackApply,
-      secondPlayerAttackApplyState: whiteAttackApply,
+      attackOnFirstPlayerApplyState: blackAttackApply,
+      attackOnSecondPlayerApplyState: whiteAttackApply,
     });
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,
@@ -135,12 +135,12 @@ describe('applyCompleteAttackApplyEvent function', () => {
       const state = createStateWithMeleeApply('black');
       const meleeState = getMeleeResolutionState(state);
       const firstPlayer = state.currentInitiative;
-      const firstPlayerAttackApply =
+      const attackOnFirstPlayerApply =
         firstPlayer === 'white'
-          ? meleeState.secondPlayerAttackApplyState
-          : meleeState.firstPlayerAttackApplyState;
+          ? meleeState.attackOnSecondPlayerApplyState
+          : meleeState.attackOnFirstPlayerApplyState;
 
-      expect(throwIfPending(firstPlayerAttackApply, 'apply').completed).toBe(
+      expect(throwIfPending(attackOnFirstPlayerApply, 'apply').completed).toBe(
         false,
       );
 
@@ -151,14 +151,14 @@ describe('applyCompleteAttackApplyEvent function', () => {
 
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newMeleeState = getMeleeResolutionState(newState);
-      const newFirstPlayerAttackApply =
+      const newAttackOnFirstPlayerApply =
         firstPlayer === 'white'
-          ? newMeleeState.secondPlayerAttackApplyState
-          : newMeleeState.firstPlayerAttackApplyState;
+          ? newMeleeState.attackOnSecondPlayerApplyState
+          : newMeleeState.attackOnFirstPlayerApplyState;
 
-      expect(throwIfPending(newFirstPlayerAttackApply, 'apply').completed).toBe(
-        true,
-      );
+      expect(
+        throwIfPending(newAttackOnFirstPlayerApply, 'apply').completed,
+      ).toBe(true);
     });
 
     it('with both melee applies open, closes the second player’s first', () => {
@@ -173,10 +173,10 @@ describe('applyCompleteAttackApplyEvent function', () => {
 
       const melee = getMeleeResolutionState(newState);
       expect(
-        throwIfPending(melee.secondPlayerAttackApplyState, 'apply').completed,
+        throwIfPending(melee.attackOnSecondPlayerApplyState, 'apply').completed,
       ).toBe(true);
       expect(
-        throwIfPending(melee.firstPlayerAttackApplyState, 'apply').completed,
+        throwIfPending(melee.attackOnFirstPlayerApplyState, 'apply').completed,
       ).toBe(false);
     });
 
@@ -185,12 +185,12 @@ describe('applyCompleteAttackApplyEvent function', () => {
       const meleeState = getMeleeResolutionState(state);
       const firstPlayer = state.currentInitiative;
       const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const secondPlayerAttackApply =
+      const attackOnSecondPlayerApply =
         secondPlayer === 'white'
-          ? meleeState.secondPlayerAttackApplyState
-          : meleeState.firstPlayerAttackApplyState;
+          ? meleeState.attackOnSecondPlayerApplyState
+          : meleeState.attackOnFirstPlayerApplyState;
 
-      expect(throwIfPending(secondPlayerAttackApply, 'apply').completed).toBe(
+      expect(throwIfPending(attackOnSecondPlayerApply, 'apply').completed).toBe(
         false,
       );
 
@@ -201,13 +201,13 @@ describe('applyCompleteAttackApplyEvent function', () => {
 
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newMeleeState = getMeleeResolutionState(newState);
-      const newSecondPlayerAttackApply =
+      const newAttackOnSecondPlayerApply =
         secondPlayer === 'white'
-          ? newMeleeState.secondPlayerAttackApplyState
-          : newMeleeState.firstPlayerAttackApplyState;
+          ? newMeleeState.attackOnSecondPlayerApplyState
+          : newMeleeState.attackOnFirstPlayerApplyState;
 
       expect(
-        throwIfPending(newSecondPlayerAttackApply, 'apply').completed,
+        throwIfPending(newAttackOnSecondPlayerApply, 'apply').completed,
       ).toBe(true);
     });
   });
@@ -236,7 +236,7 @@ describe('applyCompleteAttackApplyEvent function', () => {
       const phaseState = createResolveMeleePhaseState(state, {
         currentMeleeResolutionState: {
           ...meleeState,
-          secondPlayerAttackApplyState: 'pending',
+          attackOnSecondPlayerApplyState: 'pending',
         },
       });
       const stateMissingWhiteApply = updatePhaseState(state, phaseState);

@@ -57,7 +57,7 @@ export function getExpectedRetreatEvent(
     return {
       actionType: 'playerChoice',
       choiceType: 'chooseRetreatOption',
-      playerSource: retreatState.retreatingUnit.unit.playerSide,
+      playerSource: retreatState.retreatingUnit.playerSide,
     };
   }
   // The retreat is chosen (by the player, or as the only one)

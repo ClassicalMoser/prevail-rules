@@ -12,7 +12,6 @@ import {
   moveUnitIntoEngagement,
   moveUnitOnBoard,
   removeUnitsLeavingUnderRout,
-  updateCommandResolutionState,
   updateEngagementStateInMovement,
 } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -41,7 +40,7 @@ export function applyStartEngagementEvent<S extends GameState>(
     'The move has not been written yet',
   );
   const { defendingUnit } = event;
-  const engagingUnit = movementState.movingUnit.unit;
+  const engagingUnit = movementState.movingUnit;
 
   // How the engaging unit meets the defender decides how the engagement opens.
   const engagementResolutionState = (() => {
@@ -71,8 +70,6 @@ export function applyStartEngagementEvent<S extends GameState>(
   })();
   const engagementState = createOpenedEngagementState(
     engagementResolutionState,
-    engagingUnit,
-    targetPlacement,
   );
 
   const withEngagement = updateEngagementStateInMovement(
@@ -85,16 +82,11 @@ export function applyStartEngagementEvent<S extends GameState>(
   // back (§6.3.2). A commander riding with it arrives too (§4.3.10). If the
   // defender falls back, the engaging unit holds the space alone.
   if (event.engagementType === 'front') {
-    const engaged = carryRidingCommander(
+    const frontOpened = carryRidingCommander(
       moveUnitIntoEngagement(withEngagement, engagingUnit, targetPlacement),
       movementState,
       targetPlacement.coordinate,
     );
-    // The movement records where the mover now stands.
-    const frontOpened = updateCommandResolutionState(engaged, {
-      ...getMovementResolutionState(engaged),
-      movingUnit: { placement: targetPlacement, unit: engagingUnit },
-    });
     return frontOpened;
   }
 
@@ -112,19 +104,10 @@ export function applyStartEngagementEvent<S extends GameState>(
   // The attacker steps into the space it left, so it stands where it
   // fought before the defender's owner is asked for the Morale. A commander
   // riding with it arrives too (§4.3.10).
-  const arrived = {
-    placement: targetPlacement,
-    unit: engagingUnit,
-  };
-  const attackerPlaced = carryRidingCommander(
+  const rearResolved = carryRidingCommander(
     moveUnitOnBoard(defenderGone, engagingUnit, targetPlacement),
     movementState,
     targetPlacement.coordinate,
   );
-  // The movement records where the mover now stands.
-  const rearResolved = updateCommandResolutionState(attackerPlaced, {
-    ...getMovementResolutionState(attackerPlaced),
-    movingUnit: arrived,
-  });
   return rearResolved;
 }

@@ -64,12 +64,12 @@ Audit in this order (dependencies flow downward):
   - [ ] `gameState/`
   - [ ] `phases/`
   - [ ] `roundState/`
-  - [ ] `substeps/`
-    - [ ] `commandResolution/`
-    - [ ] `meleeResolution/`
-    - [ ] `rallyResolution/`
-    - [ ] `combatOutcomes/`
-    - [ ] `engagement/`
+  - [x] `substeps/`
+    - [x] `commandResolution/`
+    - [x] `meleeResolution/`
+    - [x] `rallyResolution/`
+    - [x] `combatOutcomes/`
+    - [x] `engagement/`
 
 ### `sampleValues/` (`@sampleValues`)
 

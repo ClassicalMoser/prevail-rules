@@ -54,7 +54,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
   it('throws when the white attack apply already exists', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
@@ -72,7 +72,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
   it('throws when the black attack apply already exists', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithNothingDue(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),

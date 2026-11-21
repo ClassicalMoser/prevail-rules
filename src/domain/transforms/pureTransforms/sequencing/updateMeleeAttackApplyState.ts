@@ -8,11 +8,11 @@ import {
 import { updatePhaseState } from '../state';
 
 /**
- * Creates a new game state with the attack apply state updated for a specific player in melee resolution.
+ * Creates a new game state with the apply of the attack on one player's unit updated in melee resolution.
  * Uses queries internally to navigate to the attack apply state.
  *
  * @param state - The current game state
- * @param player - The player whose attack apply state to update ('white' or 'black')
+ * @param defendingPlayer - The player whose unit takes the attack
  * @param attackApplyState - The new attack apply state to set
  * @returns A new game state with the updated attack apply state
  *
@@ -26,7 +26,7 @@ import { updatePhaseState } from '../state';
  */
 export function updateMeleeAttackApplyState<S extends GameState>(
   state: S,
-  player: PlayerSide,
+  defendingPlayer: PlayerSide,
   attackApplyState: AttackApplyState,
 ): S {
   const resolveMeleePhaseState = getResolveMeleePhaseState(state);
@@ -34,9 +34,9 @@ export function updateMeleeAttackApplyState<S extends GameState>(
 
   const newMeleeState = {
     ...meleeState,
-    ...(hasInitiative(state, player)
-      ? { firstPlayerAttackApplyState: attackApplyState }
-      : { secondPlayerAttackApplyState: attackApplyState }),
+    ...(hasInitiative(state, defendingPlayer)
+      ? { attackOnFirstPlayerApplyState: attackApplyState }
+      : { attackOnSecondPlayerApplyState: attackApplyState }),
   };
 
   const newPhaseState = {

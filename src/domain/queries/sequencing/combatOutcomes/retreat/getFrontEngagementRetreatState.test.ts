@@ -43,7 +43,7 @@ describe('getFrontEngagementRetreatState function', () => {
     const defendingUnit = defender();
     // A front engagement the defender yields to opens a retreat for that unit.
     const retreat = createRetreatState(
-      defendingUnit,
+      defendingUnit.unit,
       legalRetreatsOf(defendingUnit),
     );
     // The engagement is reached through the movement that caused it.

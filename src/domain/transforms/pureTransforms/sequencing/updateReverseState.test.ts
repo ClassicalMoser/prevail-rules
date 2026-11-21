@@ -74,8 +74,8 @@ describe('updateReverseState function', () => {
     const melee = createMeleeResolutionState(
       stateWithUnits,
       reversingPlayer === 'white'
-        ? { secondPlayerAttackApplyState: attackApply }
-        : { firstPlayerAttackApplyState: attackApply },
+        ? { attackOnSecondPlayerApplyState: attackApply }
+        : { attackOnFirstPlayerApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,
@@ -91,10 +91,6 @@ describe('updateReverseState function', () => {
     const placement = placed(unit, 'E-5', 'north');
     const newReverse = createReverseState(placement.unit, {
       completed: true,
-      finalPosition: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
     });
 
     const newState = updateReverseState(state, newReverse);
@@ -144,7 +140,7 @@ describe('updateReverseState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'white apply',
     );
     expect(
@@ -173,7 +169,7 @@ describe('updateReverseState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.firstPlayerAttackApplyState,
+      melee.attackOnFirstPlayerApplyState,
       'black apply',
     );
     expect(
@@ -248,10 +244,10 @@ describe('updateReverseState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithReverse(
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithReverse(
         blackPlacement.unit,
       ),
-      secondPlayerAttackApplyState:
+      attackOnSecondPlayerApplyState:
         createAttackApplyStateWithNothingDue(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
@@ -276,9 +272,9 @@ describe('updateReverseState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState:
+      attackOnFirstPlayerApplyState:
         createAttackApplyStateWithNothingDue(blackUnit),
-      secondPlayerAttackApplyState: createAttackApplyStateWithReverse(
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithReverse(
         whitePlacement.unit,
       ),
     });

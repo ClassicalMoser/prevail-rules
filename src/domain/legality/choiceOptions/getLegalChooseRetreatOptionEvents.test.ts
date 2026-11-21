@@ -46,10 +46,10 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     );
     const tiedPaths = legalRetreatsOf(placement, [blocker]);
     const attackApply = createAttackApplyStateWithRetreat(
-      placement,
+      placement.unit,
       tiedPaths,
       {
-        retreatState: createRetreatState(placement, tiedPaths, {
+        retreatState: createRetreatState(placement.unit, tiedPaths, {
           chosenRetreatPath,
         }),
       },
@@ -120,7 +120,7 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
         currentCommandResolutionState: createMovementResolutionState(withUnit, {
           engagementState: createFrontEngagementState({
             defendingUnitRetreats: true,
-            retreatState: createRetreatState(placement, tiedPaths),
+            retreatState: createRetreatState(placement.unit, tiedPaths),
           }),
         }),
       }),

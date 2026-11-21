@@ -24,10 +24,13 @@ describe('getRetreatState function', () => {
   it('returns the retreat that player is making', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
+    const retreat = createRetreatState(
+      defender.unit,
+      legalRetreatsOf(defender),
+    );
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(
-        defender,
+        defender.unit,
         legalRetreatsOf(defender),
         {
           retreatState: retreat,

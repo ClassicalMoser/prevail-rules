@@ -1,4 +1,4 @@
-import type { UnitInstance, UnitPlacement } from '@entities';
+import type { UnitInstance } from '@entities';
 import type {
   EngagementState,
   FlankEngagementResolutionState,
@@ -17,11 +17,6 @@ import {
 const defaultEngagingUnit = (): UnitInstance =>
   createUnitWithPlacement({ playerSide: 'black' }).unit;
 
-const defaultTargetPlacement: UnitPlacement = {
-  coordinate: 'E-5' as const,
-  facing: 'north',
-};
-
 /**
  * Creates a front EngagementState with sensible defaults.
  */
@@ -38,11 +33,7 @@ export function createFrontEngagementState(
     ),
     ...overrides,
   };
-  const engagement = createOpenedEngagementState(
-    resolution,
-    defaultEngagingUnit(),
-    defaultTargetPlacement,
-  );
+  const engagement = createOpenedEngagementState(resolution);
   return { ...engagement, engagementResolutionState: resolution };
 }
 
@@ -58,11 +49,7 @@ export function createFlankEngagementState(
     ...createOpenedFlankEngagementResolutionState(),
     ...overrides,
   };
-  const engagement = createOpenedEngagementState(
-    resolution,
-    defaultEngagingUnit(),
-    defaultTargetPlacement,
-  );
+  const engagement = createOpenedEngagementState(resolution);
   return { ...engagement, engagementResolutionState: resolution };
 }
 
@@ -79,10 +66,6 @@ export function createRearEngagementState(
     ...createOpenedRearEngagementResolutionState(createTestUnit('white')),
     ...overrides,
   };
-  const engagement = createOpenedEngagementState(
-    resolution,
-    defaultEngagingUnit(),
-    defaultTargetPlacement,
-  );
+  const engagement = createOpenedEngagementState(resolution);
   return { ...engagement, engagementResolutionState: resolution };
 }

@@ -49,7 +49,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
 
     // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
-      unitWithPlacement,
+      unitWithPlacement.unit,
       // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
       legalRetreatsOf(unitWithPlacement, [
         enemyCuttingOffRetreat(unitWithPlacement),
@@ -95,7 +95,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
 
     // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
-      retreatingUnitWithPlacement,
+      retreatingUnitWithPlacement.unit,
       // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
       legalRetreatsOf(retreatingUnitWithPlacement, [
         enemyCuttingOffRetreat(retreatingUnitWithPlacement),
@@ -104,8 +104,8 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
-        ? { secondPlayerAttackApplyState: attackApplyState }
-        : { firstPlayerAttackApplyState: attackApplyState },
+        ? { attackOnSecondPlayerApplyState: attackApplyState }
+        : { attackOnFirstPlayerApplyState: attackApplyState },
     );
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,
@@ -135,8 +135,8 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
         throw new Error('expected open rout');
       }
       expect(rout.substepType).toBe('rout');
-      expect(rout.player).toBe(retreatState.retreatingUnit.unit.playerSide);
-      expect(rout.unitsToRout).toContain(retreatState.retreatingUnit.unit);
+      expect(rout.player).toBe(retreatState.retreatingUnit.playerSide);
+      expect(rout.unitsToRout).toContain(retreatState.retreatingUnit);
     });
 
     it('given same trigger, new rout has undefined discard count and not completed', () => {
@@ -221,7 +221,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       );
       // Retreat and reverse were both due; nowhere to go opens a rout instead.
       const attackApplyState = createAttackApplyStateWithRetreatAndReverse(
-        unitWithPlacement,
+        unitWithPlacement.unit,
         // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
         legalRetreatsOf(unitWithPlacement, [
           enemyCuttingOffRetreat(unitWithPlacement),

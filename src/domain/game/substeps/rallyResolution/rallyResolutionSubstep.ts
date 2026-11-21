@@ -27,12 +27,12 @@ export interface RallyResolutionState {
   rallyResolved: boolean;
   /** Units that lost support after the rally. */
   unitsLostSupport: UnitInstance[] | 'pending';
-  /** The rout discard penalty state (if units were routed). */
-  // TODO(misleading): stays 'pending' when the support check routs nobody
-  // (applyUnitsLostSupportAfterRally), so 'pending' means both "not yet" and
-  // "never"; every other substep says the second with 'bypassed'. Settled by
-  // 'bypassed', or by saying `unitsLostSupport` is what tells them apart.
-  routState: RoutState | 'pending';
+  /**
+   * The rout the support check costs: `'pending'` until the check is made,
+   * `'bypassed'` when every unit kept its support and nothing routs, or the
+   * open {@link RoutState}.
+   */
+  routState: RoutState | 'pending' | 'bypassed';
   /** Whether the rally resolution substep is complete. */
   completed: boolean;
 }
@@ -47,8 +47,10 @@ const _rallyResolutionStateSchemaObject = z
     rallyResolved: z.boolean(),
     /** Units that lost support after the rally. */
     unitsLostSupport: z.array(unitInstanceSchema).or(z.literal('pending')),
-    /** The rout discard penalty state (if units were routed). */
-    routState: routStateSchema.or(z.literal('pending')),
+    /** The rout the support check costs. */
+    routState: routStateSchema
+      .or(z.literal('pending'))
+      .or(z.literal('bypassed')),
     /** Whether the rally resolution substep is complete. */
     completed: z.boolean(),
   })
@@ -64,7 +66,7 @@ export const rallyResolutionStateSchema: z.ZodObject<{
   playerRallied: z.ZodBoolean;
   rallyResolved: z.ZodBoolean;
   unitsLostSupport: z.ZodType<UnitInstance[] | 'pending'>;
-  routState: z.ZodType<RoutState | 'pending'>;
+  routState: z.ZodType<RoutState | 'pending' | 'bypassed'>;
   completed: z.ZodType<boolean>;
 }> = _rallyResolutionStateSchemaObject;
 

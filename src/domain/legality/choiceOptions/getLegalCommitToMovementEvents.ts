@@ -22,7 +22,7 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
   }
 
   if (crs.commitment.commitmentType === 'pending') {
-    return crs.movingUnit.unit.playerSide;
+    return crs.movingUnit.playerSide;
   }
 
   if (crs.engagementState === 'pending') {
@@ -35,7 +35,7 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
     engagement.engagementType === 'front' &&
     getFrontEngagementStage(engagement) === 'defenderCommitting'
   ) {
-    return getOtherPlayer(crs.engagementState.engagingUnit.playerSide);
+    return getOtherPlayer(crs.movingUnit.playerSide);
   }
 
   throw new Error('No movement commitment is owed');

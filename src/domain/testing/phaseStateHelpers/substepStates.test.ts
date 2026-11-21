@@ -21,10 +21,10 @@ describe('createRetreatState function', () => {
   it('records the unit and the paths it is offered, with no rout due', () => {
     // A lone unit on E-5 facing north, open ground behind it.
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
-    const state = createRetreatState(unit, legalRetreatsOf(unit));
+    const state = createRetreatState(unit.unit, legalRetreatsOf(unit));
 
     expect(state.substepType).toBe('retreat');
-    expect(state.retreatingUnit).toBe(unit);
+    expect(state.retreatingUnit).toBe(unit.unit);
     // It can fall straight back one space, and nothing smaller.
     expect(state.legalRetreatPaths).toStrictEqual([['step']]);
     // One legal retreat is not a choice: it is carried out as it stands.
@@ -38,7 +38,7 @@ describe('createRetreatState function', () => {
     // An enemy right behind the unit, facing it, cuts its retreat (§9.1.5).
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createRetreatState(
-      unit,
+      unit.unit,
       legalRetreatsOf(unit, [enemyCuttingOffRetreat(unit)]),
     );
 

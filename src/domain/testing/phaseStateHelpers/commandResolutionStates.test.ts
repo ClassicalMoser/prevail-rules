@@ -15,7 +15,7 @@ describe('createMovementResolutionState function', () => {
     const resolution = createMovementResolutionState(state);
     expect(resolution.commandResolutionType).toBe('movement');
     expect(resolution.substepType).toBe('commandResolution');
-    expect(resolution.movingUnit.placement.coordinate).toBe('E-5');
+    expect(resolution.movingUnit.playerSide).toBe('black');
     expect(resolution.commitment.commitmentType).toBe('completed');
     expect(resolution.completed).toBe(false);
   });

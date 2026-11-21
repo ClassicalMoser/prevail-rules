@@ -42,13 +42,14 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
 
   // Uncovered units always open a rout. The discard debt (possibly zero) is
   // filled by resolveRout; a zero penalty closes that substep without a choice.
-  const routState: RoutState | 'pending' =
+  // With every unit still supported, nothing routs.
+  const routState: RoutState | 'bypassed' =
     unitsToRout.length > 0
       ? createOpenedRoutState(
           player,
           unitsToRout.map((u) => u.unit),
         )
-      : 'pending';
+      : 'bypassed';
 
   const updatedRallyState = {
     ...rallyState,

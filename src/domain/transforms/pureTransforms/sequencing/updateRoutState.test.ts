@@ -76,8 +76,8 @@ describe('updateRoutState function', () => {
     const melee = createMeleeResolutionState(
       stateWithUnits,
       routingPlayer === 'white'
-        ? { secondPlayerAttackApplyState: attackApply }
-        : { firstPlayerAttackApplyState: attackApply },
+        ? { attackOnSecondPlayerApplyState: attackApply }
+        : { attackOnFirstPlayerApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,
@@ -186,7 +186,7 @@ describe('updateRoutState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.secondPlayerAttackApplyState,
+      melee.attackOnSecondPlayerApplyState,
       'white apply',
     );
     expect(
@@ -214,7 +214,7 @@ describe('updateRoutState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.firstPlayerAttackApplyState,
+      melee.attackOnFirstPlayerApplyState,
       'black apply',
     );
     expect(
@@ -257,7 +257,10 @@ describe('updateRoutState function', () => {
       phase.firstPlayerRallyResolutionState,
       'rally',
     );
-    expect(throwIfPending(rally.routState, 'rout').numberToDiscard).toBe(2);
+    expect(
+      throwIfBypassed(throwIfPending(rally.routState, 'rout'), 'rout')
+        .numberToDiscard,
+    ).toBe(2);
     expect(phase.step).toBe('firstPlayerResolveRally');
     expect(rally.completed).toBe(false);
   });
@@ -303,7 +306,10 @@ describe('updateRoutState function', () => {
     );
     // The rout is recorded as settled, and the rally around it is still open.
     expect(rally.completed).toBe(false);
-    expect(throwIfPending(rally.routState, 'rout').completed).toBe(true);
+    expect(
+      throwIfBypassed(throwIfPending(rally.routState, 'rout'), 'rout')
+        .completed,
+    ).toBe(true);
   });
 
   it('given when no rout state in attack apply, throws', () => {
@@ -365,8 +371,8 @@ describe('updateRoutState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRout(blackUnit),
-      secondPlayerAttackApplyState:
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(blackUnit),
+      attackOnSecondPlayerApplyState:
         createAttackApplyStateWithNothingDue(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
@@ -389,9 +395,9 @@ describe('updateRoutState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      firstPlayerAttackApplyState:
+      attackOnFirstPlayerApplyState:
         createAttackApplyStateWithNothingDue(blackUnit),
-      secondPlayerAttackApplyState: createAttackApplyStateWithRout(whiteUnit),
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRout(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,

@@ -56,7 +56,7 @@ describe('applyResolveRetreatEvent function', () => {
 
     // Create attack apply state with retreat
     const attackApplyState = createAttackApplyStateWithRetreat(
-      unitWithPlacement,
+      unitWithPlacement.unit,
       legalRetreatsOf(unitWithPlacement),
     );
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
@@ -100,14 +100,14 @@ describe('applyResolveRetreatEvent function', () => {
 
     // Create attack apply state with retreat for the retreating player
     const attackApplyState = createAttackApplyStateWithRetreat(
-      retreatingUnitWithPlacement,
+      retreatingUnitWithPlacement.unit,
       legalRetreatsOf(retreatingUnitWithPlacement),
     );
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
-        ? { secondPlayerAttackApplyState: attackApplyState }
-        : { firstPlayerAttackApplyState: attackApplyState },
+        ? { attackOnSecondPlayerApplyState: attackApplyState }
+        : { attackOnFirstPlayerApplyState: attackApplyState },
     );
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,
@@ -125,7 +125,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, state);
@@ -139,7 +139,7 @@ describe('applyResolveRetreatEvent function', () => {
       expect(finalSpace?.unitPresence.presenceType).toBe('single');
       if (finalSpace?.unitPresence.presenceType === 'single') {
         expect(finalSpace.unitPresence.unit).toStrictEqual(
-          retreatState.retreatingUnit.unit,
+          retreatState.retreatingUnit,
         );
         expect(finalSpace.unitPresence.facing).toBe('north');
       }
@@ -153,7 +153,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, state);
@@ -177,7 +177,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, stateWithOtherUnit);
@@ -200,7 +200,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, state);
@@ -223,7 +223,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, state);
@@ -253,7 +253,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, state);
@@ -279,7 +279,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const newState = applyResolveRetreatEvent(event, state);
@@ -303,7 +303,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: Array.from({ length: 40 }, () => 'step' as const),
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       // The procedure offers only retreats on the board, so this is a fault.
@@ -324,7 +324,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       applyResolveRetreatEvent(event, state);
@@ -356,7 +356,7 @@ describe('applyResolveRetreatEvent function', () => {
                 defendingUnitRetreats: true,
                 // Open ground behind: the one retreat, taken at once.
                 retreatState: createRetreatState(
-                  placement,
+                  placement.unit,
                   legalRetreatsOf(placement),
                   { chosenRetreatPath: stepBack },
                 ),
@@ -370,7 +370,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventType: 'gameEffect',
         path: ['step'],
-        unit: retreatState.retreatingUnit.unit,
+        unit: retreatState.retreatingUnit,
       };
 
       const next = applyResolveRetreatEvent(event, withEngagement);

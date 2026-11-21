@@ -28,6 +28,7 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
       updateFrontEngagementResolutionState(state, {
         defendingUnitRetreats: false,
         retreatPaths: [],
+        retreatState: 'bypassed',
       }),
     );
     return stands;

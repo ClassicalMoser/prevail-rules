@@ -32,10 +32,13 @@ describe('findRoutOwingDiscard function', () => {
     });
     const owed = createRoutState('black', blackUnit, { numberToDiscard: 2 });
     const melee = createMeleeResolutionState(empty, {
-      secondPlayerAttackApplyState: createAttackApplyStateWithRout(blackUnit, {
-        routState: owed,
-      }),
-      firstPlayerAttackApplyState: paid,
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRout(
+        blackUnit,
+        {
+          routState: owed,
+        },
+      ),
+      attackOnFirstPlayerApplyState: paid,
     });
     const state = updatePhaseState(
       empty,
@@ -55,7 +58,7 @@ describe('findRoutOwingDiscard function', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRout(unit, {
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(unit, {
         routState: createRoutState('white', unit),
       }),
     });

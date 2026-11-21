@@ -8,8 +8,11 @@ import { getExpectedReverseEvent } from './getExpectedReverseEvent';
 describe('getExpectedReverseEvent function', () => {
   const unitPlacement = createUnitWithPlacement();
 
-  it('given resolve reverse when the final position has not been determined yet', () => {
+  it('given resolve reverse when the unit has not turned yet', () => {
+    // The reverse is due and the unit has not turned.
     const reverseState = createReverseState(unitPlacement.unit);
+
+    // The turn is the engine's to make.
 
     expect(getExpectedReverseEvent(reverseState)).toStrictEqual({
       actionType: 'gameEffect',
@@ -20,27 +23,10 @@ describe('getExpectedReverseEvent function', () => {
   it('given when the reverse is already complete, throws', () => {
     const reverseState = createReverseState(unitPlacement.unit, {
       completed: true,
-      finalPosition: {
-        coordinate: 'E-4',
-        facing: 'south',
-      },
     });
 
     expect(() => getExpectedReverseEvent(reverseState)).toThrow(
       'Reverse state is already complete',
-    );
-  });
-
-  it('given when the final position is already set but the state is incomplete, throws', () => {
-    const reverseState = createReverseState(unitPlacement.unit, {
-      finalPosition: {
-        coordinate: 'E-4',
-        facing: 'south',
-      },
-    });
-
-    expect(() => getExpectedReverseEvent(reverseState)).toThrow(
-      'Reverse state has final position but not marked as completed',
     );
   });
 });

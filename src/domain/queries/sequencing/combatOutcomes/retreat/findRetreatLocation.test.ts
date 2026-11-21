@@ -66,10 +66,13 @@ describe('findRetreatLocation function', () => {
   it('returns the white retreat on a ranged attack, held by the attack', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
+    const retreat = createRetreatState(
+      defender.unit,
+      legalRetreatsOf(defender),
+    );
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(
-        defender,
+        defender.unit,
         legalRetreatsOf(defender),
         {
           retreatState: retreat,
@@ -88,10 +91,10 @@ describe('findRetreatLocation function', () => {
   it('returns the white retreat on a melee, held by its side of the melee', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
-    const retreat = createRetreatState(white, legalRetreatsOf(white));
+    const retreat = createRetreatState(white.unit, legalRetreatsOf(white));
     const melee = createMeleeResolutionState(empty, {
-      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(
-        white,
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
         legalRetreatsOf(white),
         {
           retreatState: retreat,
@@ -117,7 +120,10 @@ describe('findRetreatLocation function', () => {
   it('returns the retreat nested on a front engagement, held by the engagement', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
+    const retreat = createRetreatState(
+      defender.unit,
+      legalRetreatsOf(defender),
+    );
     const resolution = createMovementResolutionState(empty, {
       engagementState: createFrontEngagementState({
         defendingUnitRetreats: true,
@@ -135,10 +141,13 @@ describe('findRetreatLocation function', () => {
   it('answers undefined when the retreat belongs to the other player', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
-    const retreat = createRetreatState(defender, legalRetreatsOf(defender));
+    const retreat = createRetreatState(
+      defender.unit,
+      legalRetreatsOf(defender),
+    );
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(
-        defender,
+        defender.unit,
         legalRetreatsOf(defender),
         {
           retreatState: retreat,

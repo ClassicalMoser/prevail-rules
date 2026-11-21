@@ -13,11 +13,11 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
 export function getNextMeleeReverseState(state: GameState): ReverseState {
   const meleeState = getMeleeResolutionState(state);
   // An attack that reached no threshold leaves reverseState 'bypassed', so
-  // that side has nothing to reverse. A finalPosition of 'pending' means the
-  // facing has not been chosen yet.
+  // that side has nothing to reverse. One not yet completed has still to
+  // turn.
   for (const apply of getMeleeAppliesInResolutionOrder(meleeState)) {
     const reverse = apply.reverseState;
-    if (isOpenSubstep(reverse) && reverse.finalPosition === 'pending') {
+    if (isOpenSubstep(reverse) && !reverse.completed) {
       return reverse;
     }
   }

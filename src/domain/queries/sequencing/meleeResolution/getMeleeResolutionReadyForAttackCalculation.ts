@@ -20,8 +20,8 @@ export function getMeleeResolutionReadyForAttackCalculation<
   }
   // And only before either attack-apply has been opened.
   if (
-    meleeState.firstPlayerAttackApplyState !== 'pending' ||
-    meleeState.secondPlayerAttackApplyState !== 'pending'
+    meleeState.attackOnFirstPlayerApplyState !== 'pending' ||
+    meleeState.attackOnSecondPlayerApplyState !== 'pending'
   ) {
     throw new Error('Attack apply states already exist');
   }

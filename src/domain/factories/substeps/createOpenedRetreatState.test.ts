@@ -15,7 +15,7 @@ describe('createOpenedRetreatState function', () => {
   });
 
   it('carries out the only retreat as it stands, and bypasses the rout', () => {
-    const only = createOpenedRetreatState(unit, [['step']]);
+    const only = createOpenedRetreatState(unit.unit, [['step']]);
 
     expect(only.chosenRetreatPath).toStrictEqual(['step']);
     expect(only.routState).toBe('bypassed');
@@ -23,7 +23,7 @@ describe('createOpenedRetreatState function', () => {
   });
 
   it('leaves the choice to the owner when there are several retreats, and bypasses the rout', () => {
-    const several = createOpenedRetreatState(unit, [
+    const several = createOpenedRetreatState(unit.unit, [
       ['step'],
       ['turnLeft', 'step'],
     ]);
@@ -33,7 +33,7 @@ describe('createOpenedRetreatState function', () => {
   });
 
   it('leaves the rout pending when there is nowhere to fall back to', () => {
-    const nowhere = createOpenedRetreatState(unit, []);
+    const nowhere = createOpenedRetreatState(unit.unit, []);
 
     expect(nowhere.chosenRetreatPath).toBe('pending');
     expect(nowhere.routState).toBe('pending');

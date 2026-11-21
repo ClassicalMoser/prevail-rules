@@ -1,4 +1,4 @@
-import type { UnitWithPlacement } from '@entities';
+import type { UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameEffectType } from '@events';
 import {
   createAttackApplyState as createPendingAttackApply,
@@ -47,6 +47,9 @@ import {
 import { createTestUnit, createUnitByStat } from './unitHelpers';
 import { replaceBoard } from './replaceBoard';
 import { withLostCommander } from './withLostCommander';
+
+/** Where the engaging moves below end: the defender's space, E-5. */
+const engagedSpace: UnitPlacement = { coordinate: 'E-5', facing: 'north' };
 
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
 export const procedureRegistryStateFactories: Record<
@@ -246,7 +249,7 @@ export const procedureRegistryStateFactories: Record<
     // chosen to fall back; its retreat is not open yet.
     const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        coordinate: createFrontEngagementState().targetPlacement.coordinate,
+        coordinate: engagedSpace.coordinate,
         facing: 'south',
       },
       unit: createTestUnit('white'),
@@ -263,7 +266,7 @@ export const procedureRegistryStateFactories: Record<
     );
     const movement = createMovementResolutionState(withBoard, {
       engagementState: front,
-      targetPlacement: front.targetPlacement,
+      targetPlacement: engagedSpace,
     });
     return updatePhaseState(
       withBoard,
@@ -277,14 +280,10 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 4);
-    const front = createFrontEngagementState();
-    const engagementState = {
-      ...front,
-      engagingUnit: createUnitByStat('black', 'speed', 2),
-    };
+    const engagementState = createFrontEngagementState();
     const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        coordinate: engagementState.targetPlacement.coordinate,
+        coordinate: engagedSpace.coordinate,
         facing: 'south',
       },
       unit: defender,
@@ -295,7 +294,8 @@ export const procedureRegistryStateFactories: Record<
     );
     const movement = createMovementResolutionState(withBoard, {
       engagementState,
-      targetPlacement: engagementState.targetPlacement,
+      movingUnit: createUnitByStat('black', 'speed', 2),
+      targetPlacement: engagedSpace,
     });
     return updatePhaseState(
       withBoard,
@@ -312,7 +312,7 @@ export const procedureRegistryStateFactories: Record<
     const flank = createFlankEngagementState();
     const defenderPlacement: UnitWithPlacement = {
       placement: {
-        coordinate: flank.targetPlacement.coordinate,
+        coordinate: engagedSpace.coordinate,
         facing: 'east',
       },
       unit: defender,
@@ -323,7 +323,7 @@ export const procedureRegistryStateFactories: Record<
     );
     const movement = createMovementResolutionState(withBoard, {
       engagementState: flank,
-      targetPlacement: flank.targetPlacement,
+      targetPlacement: engagedSpace,
     });
     return updatePhaseState(
       withBoard,
@@ -435,10 +435,10 @@ export const procedureRegistryStateFactories: Record<
     // straight back to F-5 (§9.1.3), and that path is already chosen.
     const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
     const attackApply = createAttackApplyStateWithRetreat(
-      unitWithPlacement,
+      retreatingUnit,
       legalRetreatPaths,
       {
-        retreatState: createRetreatState(unitWithPlacement, legalRetreatPaths, {
+        retreatState: createRetreatState(retreatingUnit, legalRetreatPaths, {
           chosenRetreatPath: legalRetreatPaths[0],
         }),
       },
@@ -535,13 +535,7 @@ export const procedureRegistryStateFactories: Record<
       }),
     );
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'east',
-        },
-        unit: createTestUnit('black'),
-      },
+      movingUnit: createTestUnit('black'),
       targetPlacement: {
         coordinate: 'E-6',
         facing: 'north',
@@ -576,7 +570,7 @@ export const procedureRegistryStateFactories: Record<
     );
     const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
     const attackApply = createAttackApplyStateWithRetreat(
-      unitWithPlacement,
+      retreatingUnit,
       legalRetreatPaths,
     );
     const ranged = createRangedAttackResolutionState(withBoard, {

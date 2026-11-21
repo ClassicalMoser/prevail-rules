@@ -33,8 +33,8 @@ describe('applyResolveFlankEngagementEvent function', () => {
     const withBoard = replaceBoard(state, boardState);
     const movement = createMovementResolutionState(withBoard, {
       engagementState: flank,
-      movingUnit: start,
-      targetPlacement: flank.targetPlacement,
+      movingUnit: attacker,
+      targetPlacement: { coordinate: 'E-5', facing: 'north' },
     });
     const full: GameState = updatePhaseState(
       withBoard,
@@ -60,7 +60,7 @@ describe('applyResolveFlankEngagementEvent function', () => {
     expect(next.boardState.board['F-5']?.unitPresence).toStrictEqual({
       presenceType: 'none',
     });
-    // The movement records Black where it now stands.
+    // The engagement is over: the defender has turned.
     const phase = next.currentRoundState.currentPhaseState;
     if (phase === 'none' || phase.phase !== 'issueCommands') {
       throw new Error('Expected Issue Commands');
@@ -72,11 +72,6 @@ describe('applyResolveFlankEngagementEvent function', () => {
     if (resolution.commandResolutionType !== 'movement') {
       throw new Error('Expected a Move order');
     }
-    expect(resolution.movingUnit).toStrictEqual({
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: attacker,
-    });
-    // And the engagement is over: the defender has turned.
     const engagement = throwIfPending(resolution.engagementState, 'engagement');
     expect(engagement.completed).toBe(true);
     expect(engagement.engagementResolutionState).toStrictEqual({
