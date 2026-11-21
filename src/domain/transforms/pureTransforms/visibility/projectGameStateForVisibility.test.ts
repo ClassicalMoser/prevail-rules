@@ -1,5 +1,6 @@
 import { tempCommandCards } from '@sampleValues';
 import type { AuthoritativeGameState } from '@game';
+import { gameStateSchema } from '@game';
 
 import { projectGameStateForVisibility } from './projectGameStateForVisibility';
 
@@ -107,5 +108,48 @@ describe('projectGameStateForVisibility function', () => {
     ]);
     // The board is never hidden.
     expect(projected.boardState).toBe(state.boardState);
+  });
+});
+
+/**
+ * A projected state says which view it is, and holds the cards that view may
+ * read. The game state schema fixes the two together, so a state cannot
+ * claim to be one view while carrying another's cards.
+ */
+describe('a projected game state, read back by the game state schema', () => {
+  it('is a game state in every view, and says which', () => {
+    // The server's record, projected for itself, each seat and a spectator.
+    const state = authoritativeState();
+
+    for (const view of [
+      'authoritative',
+      'whiteSeen',
+      'blackSeen',
+      'spectator',
+    ] as const) {
+      const projected = projectGameStateForVisibility(state, view);
+
+      // Each projection is a game state, tagged with its own view.
+      expect(gameStateSchema.safeParse(projected).success).toBe(true);
+      expect(projected.visibility).toBe(view);
+    }
+  });
+
+  it('is refused when it claims a seat’s view but holds the full record’s cards', () => {
+    // The full record, tagged as white's seat: both hands are in view.
+    const state = authoritativeState();
+
+    // Refused: the tag and the cards must name the same view.
+    expect(
+      gameStateSchema.safeParse({ ...state, visibility: 'whiteSeen' }).success,
+    ).toBe(false);
+  });
+
+  it('is refused without its view tag', () => {
+    // The full record with its tag taken off.
+    const { visibility: _visibility, ...untagged } = authoritativeState();
+
+    // Refused: without the tag there is no telling which view it is.
+    expect(gameStateSchema.safeParse(untagged).success).toBe(false);
   });
 });

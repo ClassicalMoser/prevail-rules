@@ -1,6 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import type { Game, WhiteSeenProjectedGame } from '@game';
+import { projectedGameSchema, whiteSeenProjectedGameSchema } from '@game';
 import { blackMiniStarterArmy, whiteMiniStarterArmy } from '@sampleValues';
 
 import { createInitialGameState } from '@factories';
@@ -153,5 +154,53 @@ describe('projectGameForVisibility function', () => {
 
     // And it is white's game at run time too.
     expect(white.visibility).toBe('whiteSeen');
+  });
+});
+
+/**
+ * A projected game says which view it is, and both its states are that view,
+ * so a game sent to one seat cannot be read as another's.
+ */
+describe('a projected game, read back by the projected game schema', () => {
+  it('is a game a client can read, in every view', () => {
+    for (const view of [
+      'authoritative',
+      'whiteSeen',
+      'blackSeen',
+      'spectator',
+    ] as const) {
+      // Each viewer is sent the game in its own view.
+      const projected = projectGameForVisibility(
+        gameWithBothCardsChosen(),
+        view,
+      );
+
+      // Whatever the view, what it is sent is a game a client can read.
+      expect(projectedGameSchema.safeParse(projected).success).toBe(true);
+    }
+  });
+
+  it("is refused as white's game when it is black's", () => {
+    // The game as black's seat sees it, black's own hand in view.
+    const blackSeen = projectGameForVisibility(
+      gameWithBothCardsChosen(),
+      'blackSeen',
+    );
+
+    // White's seat must not accept it, or it would read black's hand (§1.4).
+    expect(whiteSeenProjectedGameSchema.safeParse(blackSeen).success).toBe(
+      false,
+    );
+  });
+
+  it('is refused when it still carries an army', () => {
+    // White's game with black's army put back in.
+    const withArmy = {
+      ...projectGameForVisibility(gameWithBothCardsChosen(), 'whiteSeen'),
+      blackArmy: blackMiniStarterArmy,
+    };
+
+    // Refused: an army lists its side's hand, and hands are secret (§1.4).
+    expect(projectedGameSchema.safeParse(withArmy).success).toBe(false);
   });
 });
