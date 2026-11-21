@@ -16,8 +16,8 @@ export const CHOOSE_MOVING_UNIT_CHOICE_TYPE = 'chooseMovingUnit' as const;
  * `getLegalMoveUnits` enumerates the legal options, and
  * `applyChooseMovingUnitEvent` applies the choice.
  */
-// Kept apart from ChooseShooterEvent on purpose: the same fields, but a move
-// follows rather than a shot.
+// Kept apart from ChooseShooterEvent on purpose: the same fields, but
+// context and application are distinct.
 export interface ChooseMovingUnitEvent {
   /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -26,8 +26,8 @@ export interface ChooseMovingUnitEvent {
   /** The player carrying out the order. */
   player: PlayerSide;
   /**
-   * The unit that moves next, named by who it is. Where it stands is the
-   * board's to say, and is read there when the choice is checked and applied.
+   * The unit that moves next, named by who it is. Where it stands belongs to the board,
+   * and is read there when the choice is checked and applied.
    */
   unit: UnitInstance;
 }

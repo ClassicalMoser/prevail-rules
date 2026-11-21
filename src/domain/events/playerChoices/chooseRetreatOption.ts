@@ -23,8 +23,8 @@ export interface ChooseRetreatOptionEvent {
   player: PlayerSide;
   /**
    * The retreat chosen, named by its path (§9.1.3). Where it ends is read
-   * from the path, as a move's is; a commander in the unit's space always
-   * goes with it (§9.1.8), so there is nothing else to say.
+   * from the path, the same way move's is; a commander in the unit's space always
+   * goes with it (§9.1.8), so there is nothing else to convey.
    */
   path: MoveDelta[];
 }

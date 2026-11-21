@@ -16,8 +16,8 @@ export const CHOOSE_SHOOTER_CHOICE_TYPE = 'chooseShooter' as const;
  * `getLegalRangedAttackers` enumerates the legal options, and
  * `applyChooseShooterEvent` applies the choice.
  */
-// Kept apart from ChooseMovingUnitEvent on purpose: the same fields, but a
-// shot follows rather than a move.
+// Kept apart from ChooseMovingUnitEvent on purpose: the same fields, but
+// the context and application methods differ.
 export interface ChooseShooterEvent {
   /** A player choice, not a game effect. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
