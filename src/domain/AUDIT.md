@@ -30,18 +30,11 @@ Audit in this order (dependencies flow downward):
 
 - [x] `ruleValues/` — closed 2026-11-07; reopened 2026-11-12, changed since the read; closed again 2026-11-13
   - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
-  - Changed 2026-11-20, for the next read: `gameEffectTypes` no longer lists `completeIssuingCommands`, removed with the issuing loop.
-  - Arrived 2026-11-20, for the next read: `playerChoiceTypes` — the list of player-choice names, moved from `events/playerChoices/` to sit beside `gameEffectTypes` (author). Its schema, `playerChoiceTypeSchema`, is built in `events/playerChoices/playerChoice.ts`, as the effect-type schema is in `gameEffect.ts`.
   - [x] Arrived after the read: `commitmentModifiers`
-  - Arrived and read 2026-11-20: `boardSizes`, `boardLabels`, `boardCoordinates`, `boardLayouts` (moved from `entities/board/`, with each size now stated by its depth and frontage), and `gameModes` (moved from `entities/gameModes/`, its entry schema removed)
 
 ### `entities/` (`@entities`)
 
 - [x] `entities/` — conventions pass (README, declaration order, enum `AssertExact` trim, army composition → `@legality`); reopened 2026-11-12, changed since the read; closed again 2026-11-13
-  - Arrived after the read: `attackResult/`, `unitLocation/moveDelta`; `board/groundCover` (scaffold, replacing `terrainTypes` and `waterCover`)
-  - Removed after the read: `line/` (nothing used it; lines are `LegalLine` in `@legality`)
-  - Arrived 2026-11-20, for the next read: `commandAllocation/` — how a player spends the command on their card in play: `UnitsAllocation`, `LinesAllocation`, and their union `CommandAllocation`, with schemas. It replaces the `order/` folder of the same day (`Order` and its selections), at the author's request; the barrel lists it after cards.
-  - Moved out 2026-11-20: the board vocabulary (`board/smallBoard/`, `standardBoard/`, `largeBoard/`, `boardCoordinates`) and `gameModes/` to `@ruleValues`, re-exported from the barrels; read. Arrived and read: `board/gridPosition`
   - [x] `army/`
   - [x] `attackResult/`
   - [x] `attackType/`
@@ -57,20 +50,6 @@ Audit in this order (dependencies flow downward):
 ### `events/` (`@events`)
 
 - [x] `events/` — reopened 2026-11-12, changed since the read
-  - Scouted again 2026-11-13: every choice and effect says when it comes, its rule, and who writes and reads it. No marks left.
-  - Scanned again 2026-11-20: every name in the comments resolves; every choice names the enumerator that offers it and every effect its own generator and apply, in matching folders; every § cited points at the rule it describes. Six marks from before still hold. Four new marks: `setupUnit.ts` (file name, and §3.5.4 cited for §3.5.1/§3.5.3), `resolveFlankEngagement.ts` ("beside" for "in" the defender's space), `completeUnitMovement.ts` (only a front engagement waits).
-  - Changed 2026-11-20, for the next read: a front engagement sets the engaging unit down in the defender's space at `startEngagement`, as a rear one does; `startEngagement` records `engagingSpeed`, sampled where the move began, and the front engagement compares against it. `completeUnitMovement` sets nobody down; its mark is settled by the change.
-  - Settled 2026-11-20: `resolveFlankEngagement.ts` now says the attacker is set down in the defender's space; its mark is gone.
-  - Settled 2026-11-20: `resolveMelee` names each result for the unit that takes it, `attackResultOnWhiteUnit` and `attackResultOnBlackUnit`; its mark is gone.
-  - Settled 2026-11-20: `gameEffects/index.ts` links the `applyEffects` README for the design notes and no longer points at another module's header; a document for fuller context is fine (author).
-  - Settled 2026-11-20: the four commit events stay separate on purpose (author): calculation, context and application differ. `commitmentChoices.ts` says so; its mark is gone.
-  - Settled 2026-11-20: the player-choice list moved to `@ruleValues` (`playerChoiceTypes`), beside the game-effect list; the stale circular-init reason and its mark went with the old file.
-  - Settled 2026-11-20: `setupUnit.ts` is renamed `setupUnits.ts` (author), and cites §3.5.1 for the army and §3.5.3 for the general; both marks are gone.
-  - Changed 2026-11-20, for the next read: a declined commitment is `committedCard: 'none'`, the existing `'none'` sentinel, not `null` (the issuing stop that also took `'none'` went with the issuing loop, below). Card state's empty slots keep `null`.
-  - Changed 2026-11-20, for the next read: issuing is one choice, `issueCommands` (`issueCommands.ts`), carrying the whole `CommandAllocation` of the card in play's command; the units of a units order or the lines of a lines order are offered a part at a time (`getLegalUnitsToOrder`, `getLegalLinesToOrder`) and checked the same way. The `issueCommand` loop, its `'none'` stop and the `completeIssuingCommands` effect are gone; `completeMoveCommandersPhase` carries nothing.
-  - Arrived after the read, among others: `roundEnd`, `openRetreatFromEngagement`, `completeRangedAttack`, `chooseMovingUnit`, `chooseShooter`, `commitToRangedDefense`
-  - Changed after the read, for the next one: `ProjectedEvent` and its schema in `eventType.ts`; events carry no number, order is the place in the round; a rout discard carries its full cards.
-  - Changed 2026-11-20, for the next read: events name units by who they are, not where they stand. `chooseMovingUnit.unit`, `chooseShooter.unit`, `performRangedAttack.targetUnit` and `supportingUnits` are `UnitInstance`; `startEngagement.defenderWithPlacement` is `defendingUnit`; `moveCommander.from` is gone. Where each stands is read from the game state's index.
   - [x] `expectedEvent/`
   - [x] `gameEffects/`
   - [x] `playerChoices/`
@@ -79,8 +58,6 @@ Audit in this order (dependencies flow downward):
 ### `game/` (`@game`)
 
 - [ ] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
-  - Changed after the read, for the next one: a game state is four named visibility variants over a shared base, not a type argument (`gameState/`); round state is split into authoritative and seen (`roundState/`); a `Game` holds the authoritative state only.
-  - Arrived 2026-11-20, for the next read: `gameState/gameStateIndex` — every state view carries `index`, where every unit and commander is by name, kept by the writers and checked by `refineGameStateIndex`. Its finders, writers and refine live in `@queries/gameStateIndex`, `@transforms` and `@legality/game`.
   - [ ] `cardState/`
   - [ ] `commitment/`
   - [ ] `game/`
@@ -98,7 +75,6 @@ Audit in this order (dependencies flow downward):
 
 - [ ] `sampleValues/` — closed 2026-11-08; reopened 2026-11-12, changed since the read
   - [ ] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
-  - Arrived after the read: `cardsAtInitiative`, `standardStarterArmy`
 
 ### `factories/` (`@factories`)
 
