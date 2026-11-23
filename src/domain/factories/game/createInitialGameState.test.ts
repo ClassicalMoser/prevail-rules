@@ -106,6 +106,9 @@ describe('createInitialGameState function', () => {
 
   it('rejects a mode outside the catalog', () => {
     // Intentional invalid mode so the exhaustive default stays aligned at runtime.
+    // TODO(misleading): there is no exhaustive default; `createEmptyGameState`
+    // checks the name against the mode catalog with `Object.hasOwn`. Settled
+    // by saying that.
     const gameMode = 'skirmish' as never;
 
     expect(() =>

@@ -3,7 +3,8 @@ import { getUnitByStatValue } from '@testing';
 import { createUnitInstance } from './createUnitInstance';
 
 /**
- * CreateUnitInstance: Creates a unit instance with the specified properties.
+ * A unit is the side that fields it, its type, and its number among that
+ * side's units of the type; the factory holds exactly those three.
  */
 describe('createUnitInstance function', () => {
   it('carries the side, unit type and instance number it is given', () => {

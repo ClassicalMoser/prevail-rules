@@ -52,6 +52,10 @@ export function createInitialGameState(options: {
     unitsInReserve[createUnitIndexKey(unit)] = 'reserved';
   }
 
+  // TODO(composition): this card state is built by hand, as `createCardState`
+  // with `createOwnedCardState({ inHand })` for each side would build it.
+  // Compared: the same three keys, the same empty piles, nothing else set.
+  // Settled by composing those two factories here.
   return {
     ...emptyGameState,
     cardState: {

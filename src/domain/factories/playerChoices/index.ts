@@ -1,4 +1,4 @@
-// A assignUnitSupport event with its fixed types filled in.
+// An assignUnitSupport event with its fixed types filled in.
 export { createAssignUnitSupportEvent } from './createAssignUnitSupportEvent';
 
 // A chooseCard event with its fixed types filled in.
@@ -32,6 +32,8 @@ export { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEve
 export { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseEvent';
 
 // A issueCommand event with its fixed types filled in.
+// TODO(misleading): the event is `issueCommands`, plural. Settled by
+// correcting the name (and "A" to "An").
 export { createIssueCommandsEvent } from './createIssueCommandsEvent';
 
 // A moveCommander event with its fixed types filled in.

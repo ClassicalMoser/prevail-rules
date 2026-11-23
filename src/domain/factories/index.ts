@@ -11,6 +11,8 @@ export { createEmptyLargeBoard } from './board';
 export { createEmptyBoard } from './board';
 
 // Blank game for a mode: mode-sized board, empty piles, initiative black.
+// TODO(misleading): says initiative black, but `createEmptyGameState` gives
+// white the initiative (§3.3.2). Settled by correcting this line.
 export { createEmptyGameState } from './game';
 
 // New game from both armies: empty shell, dealt hands, reserved instances.
@@ -46,11 +48,17 @@ export { createSetupUnitsEvent } from './playerChoices';
 export { createUnitPlacement } from './unitLocation';
 
 // Unit instance from side, unit type, and instance number.
-export { createUnitIndexKey, createUnitInstance } from './unit';
+export { createUnitInstance } from './unit';
+
+// A unit's key in the game state's index: side, type id and number.
+export { createUnitIndexKey } from './unit';
 
 // The attack-apply an attack leaves behind, with each outcome due or bypassed.
+export { createAttackApplyState } from './substeps';
+
+// Each other substep as it opens: nothing yet chosen or resolved, owing what
+// the rules say is owed.
 export {
-  createAttackApplyState,
   createOpenedEngagementState,
   createOpenedFlankEngagementResolutionState,
   createOpenedFrontEngagementResolutionState,

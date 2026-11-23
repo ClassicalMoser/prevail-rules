@@ -4,6 +4,11 @@ import { coordinateLayoutMap } from '@entities';
 /**
  * Creates an empty board space with default values.
  * All spaces start as plain terrain, elevation 0, no water, no units.
+ *
+ * TODO(misleading): a board space has no water field; what this sets is open
+ * ground cover, difficulty 1, not blocking, and no commanders. The same "water"
+ * appears in `BoardSpace`'s own header in `@entities`. Settled by naming the
+ * fields set here, once water is decided for the space.
  */
 function createEmptyBoardSpace(): BoardSpace {
   return {

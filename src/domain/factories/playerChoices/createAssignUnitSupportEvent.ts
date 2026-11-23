@@ -3,7 +3,7 @@ import type { AssignUnitSupportEvent, UnitSupportAssignment } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**
- * A assignUnitSupport event.
+ * An assignUnitSupport event.
  *
  * `eventType` and `choiceType` are fixed by the event's own type and cannot
  * vary, so they are filled in here. Everything that can vary is required: a
