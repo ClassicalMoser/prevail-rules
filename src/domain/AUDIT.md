@@ -73,8 +73,8 @@ Audit in this order (dependencies flow downward):
 
 ### `sampleValues/` (`@sampleValues`)
 
-- [ ] `sampleValues/` — closed 2026-11-08; reopened 2026-11-12, changed since the read
-  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
+- [x] `sampleValues/` — closed 2026-11-08; reopened 2026-11-12, changed since the read; read again before the substeps commit
+  - [x] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
 
 ### `factories/` (`@factories`)
 
@@ -84,6 +84,8 @@ Audit in this order (dependencies flow downward):
     ```
     after the read
     ```
+  - [ ] `playerChoices/` — one factory per player choice, fixed types filled in
+  - [ ] `substeps/` — the attack apply, and each substep as it opens
   - [ ] `unit/`
   - [ ] `unitLocation/` — new: `createUnitPlacement`
 
