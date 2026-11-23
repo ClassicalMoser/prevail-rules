@@ -8,6 +8,9 @@ import type { BoundaryConfig } from 'eslint-plugin-import-boundaries';
  * - allowImportsFrom: Boundaries that can be imported from (value imports)
  * - allowTypeImportsFrom: Boundaries that can be imported as types (type-only imports)
  *
+ * Listed in dependency order, and each allow list in the same order: a
+ * boundary imports only from those above it, so the list reads as the DAG.
+ *
  * @type {BoundaryConfig[]}
  */
 export const boundaries: BoundaryConfig[] = [
@@ -48,6 +51,16 @@ export const boundaries: BoundaryConfig[] = [
     // Game state and phase schemas. Depends on entities and events only.
   },
   {
+    alias: '@sampleValues',
+    allowTypeImportsFrom: ['@entities'],
+    dir: 'domain/sampleValues',
+    identifier: '@sampleValues',
+    // Stand-in catalogs. Type imports only from @entities — same posture as
+    // @ruleValues. Production never imports this layer; @testing helpers and
+    // specs may (test files do not enforce layer edges). It has no other
+    // outgoing edge, so it cannot put a layer in a cycle.
+  },
+  {
     alias: '@factories',
     allowImportsFrom: [
       '@utils',
@@ -73,6 +86,21 @@ export const boundaries: BoundaryConfig[] = [
     dir: 'domain/queries',
     identifier: '@queries',
     // Pure reads: geometry, state walking, stats, sequencing getters.
+  },
+  {
+    alias: '@legality',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@factories',
+      '@queries',
+    ],
+    dir: 'domain/legality',
+    identifier: '@legality',
+    // Legal option enumeration and movement rule predicates.
   },
   {
     alias: '@expected',
@@ -108,7 +136,7 @@ export const boundaries: BoundaryConfig[] = [
     // Game-effect event generators from game state; some draw at random.
   },
   {
-    alias: '@legality',
+    alias: '@transforms',
     allowImportsFrom: [
       '@utils',
       '@ruleValues',
@@ -117,10 +145,12 @@ export const boundaries: BoundaryConfig[] = [
       '@game',
       '@factories',
       '@queries',
+      // Apply may re-filter remaining actors after a command completes.
+      '@legality',
     ],
-    dir: 'domain/legality',
-    identifier: '@legality',
-    // Legal option enumeration and movement rule predicates.
+    dir: 'domain/transforms',
+    identifier: '@transforms',
+    // State transition functions for applying events to game state.
   },
   {
     alias: '@validation',
@@ -129,9 +159,9 @@ export const boundaries: BoundaryConfig[] = [
       '@ruleValues',
       '@entities',
       '@events',
-      '@queries',
       '@game',
       '@factories',
+      '@queries',
       '@expected',
       '@legality',
     ],
@@ -140,21 +170,25 @@ export const boundaries: BoundaryConfig[] = [
     // Pure validation; answers with a ValidationResult and never throws.
   },
   {
-    alias: '@transforms',
+    alias: '@testing',
     allowImportsFrom: [
       '@utils',
       '@ruleValues',
       '@entities',
       '@events',
       '@game',
-      '@queries',
+      '@sampleValues',
       '@factories',
-      // Apply may re-filter remaining actors after a command completes.
+      '@queries',
       '@legality',
+      '@expected',
+      '@procedures',
+      '@transforms',
+      '@validation',
     ],
-    dir: 'domain/transforms',
-    identifier: '@transforms',
-    // State transition functions for applying events to game state.
+    dir: 'domain/testing',
+    identifier: '@testing',
+    // May depend on all layers. May only be used in tests.
   },
   {
     alias: '@application',
@@ -164,8 +198,8 @@ export const boundaries: BoundaryConfig[] = [
       '@entities',
       '@events',
       '@game',
-      '@queries',
       '@factories',
+      '@queries',
       '@expected',
       '@procedures',
       '@transforms',
@@ -187,48 +221,17 @@ export const boundaries: BoundaryConfig[] = [
       '@queries',
       '@legality',
       '@expected',
-      '@validation',
       // The harness that plays bots against each other runs the engines
       // itself: procedures for the game's effects, transforms to apply events
       // and to project each seat's view. The choosing algorithm uses
       // transforms only to imagine a board, never to change the game.
       '@procedures',
       '@transforms',
+      '@validation',
     ],
     dir: 'bot',
     identifier: '@bot',
     // A player that chooses from what the rules offer, and a harness to watch
     // it play. Nothing imports it.
-  },
-  {
-    alias: '@sampleValues',
-    allowTypeImportsFrom: ['@entities'],
-    dir: 'domain/sampleValues',
-    identifier: '@sampleValues',
-    // Stand-in catalogs. Type imports only from @entities — same posture as
-    // @ruleValues. Production never imports this layer; @testing helpers and
-    // specs may (test files do not enforce layer edges). It has no other
-    // outgoing edge, so it cannot put a layer in a cycle.
-  },
-  {
-    alias: '@testing',
-    allowImportsFrom: [
-      '@entities',
-      '@queries',
-      '@expected',
-      '@legality',
-      '@ruleValues',
-      '@events',
-      '@utils',
-      '@validation',
-      '@game',
-      '@sampleValues',
-      '@transforms',
-      '@factories',
-      '@procedures',
-    ],
-    dir: 'domain/testing',
-    identifier: '@testing',
-    // May depend on all layers. May only be used in tests.
   },
 ];
