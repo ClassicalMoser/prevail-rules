@@ -1,4 +1,4 @@
-import { createUnitWithPlacement } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { createOpenedRetreatState } from './createOpenedRetreatState';
 
@@ -8,14 +8,11 @@ import { createOpenedRetreatState } from './createOpenedRetreatState';
  * means the unit routs instead (§9.1.6).
  */
 describe('createOpenedRetreatState function', () => {
-  const unit = createUnitWithPlacement({
-    coordinate: 'E-5',
-    facing: 'south',
-    playerSide: 'white',
-  });
+  // The retreat holds the unit by who it is; the paths are worked out elsewhere.
+  const unit = createTestUnit('white');
 
   it('carries out the only retreat as it stands, and bypasses the rout', () => {
-    const only = createOpenedRetreatState(unit.unit, [['step']]);
+    const only = createOpenedRetreatState(unit, [['step']]);
 
     expect(only.chosenRetreatPath).toStrictEqual(['step']);
     expect(only.routState).toBe('bypassed');
@@ -23,7 +20,7 @@ describe('createOpenedRetreatState function', () => {
   });
 
   it('leaves the choice to the owner when there are several retreats, and bypasses the rout', () => {
-    const several = createOpenedRetreatState(unit.unit, [
+    const several = createOpenedRetreatState(unit, [
       ['step'],
       ['turnLeft', 'step'],
     ]);
@@ -33,7 +30,7 @@ describe('createOpenedRetreatState function', () => {
   });
 
   it('leaves the rout pending when there is nowhere to fall back to', () => {
-    const nowhere = createOpenedRetreatState(unit.unit, []);
+    const nowhere = createOpenedRetreatState(unit, []);
 
     expect(nowhere.chosenRetreatPath).toBe('pending');
     expect(nowhere.routState).toBe('pending');

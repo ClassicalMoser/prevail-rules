@@ -1,17 +1,18 @@
-import { createUnitWithPlacement } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { createPerformRangedAttackEvent } from './createPerformRangedAttackEvent';
 
 describe('createPerformRangedAttackEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
     expect.hasAssertions();
-    const supportingUnits = [createUnitWithPlacement().unit];
-    const targetUnit = createUnitWithPlacement({ coordinate: 'E-5' });
+    // Units are named by who they are; where they stand is the board's to say.
+    const supportingUnits = [createTestUnit('white')];
+    const targetUnit = createTestUnit('black');
 
     const event = createPerformRangedAttackEvent({
       player: 'white',
       supportingUnits,
-      targetUnit: targetUnit.unit,
+      targetUnit,
     });
 
     expect(event).toStrictEqual({
@@ -19,7 +20,7 @@ describe('createPerformRangedAttackEvent function', () => {
       eventType: 'playerChoice',
       player: 'white',
       supportingUnits,
-      targetUnit: targetUnit.unit,
+      targetUnit,
     });
   });
 });
