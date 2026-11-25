@@ -120,55 +120,60 @@ function routInCurrentContext(
       return undefined;
     }
 
-    if (commandResolution.commandResolutionType === 'movement') {
-      const engagement = commandResolution.engagementState;
-      // The move has not stepped into an enemy, so nobody is engaged.
-      if (isPending(engagement)) {
-        return undefined;
-      }
-      const resolution = engagement.engagementResolutionState;
-      // Engaging from the rear routs the defender outright. Engaging from the
-      // front routs nobody.
-      if (resolution.engagementType === 'rear') {
-        const rearRout = {
-          routSlot: resolution.routState,
-          source: 'rearEngagementMovement' as const,
-        };
-        // The defender caught from behind (§6.3.3).
-        return rearRout;
-      }
-      if (resolution.engagementType === 'front') {
-        // A defender met head-on is offered a retreat only if it has
-        // somewhere to go (§6.3.2), so its retreat never falls into a rout.
-        // One here means the state was built wrong.
-        const held = routOnRetreat(resolution.retreatState);
-        if (held !== undefined && isOpenSubstep(held.routSlot)) {
-          throw new Error(
-            'A front engagement’s retreat holds a rout, which cannot happen: a defender with nowhere to fall back to stands (§6.3.2)',
-          );
+    // Named now, so a fault below can say which kind it met.
+    const { commandResolutionType } = commandResolution;
+    switch (commandResolution.commandResolutionType) {
+      case 'movement': {
+        const engagement = commandResolution.engagementState;
+        // The move has not stepped into an enemy, so nobody is engaged.
+        if (isPending(engagement)) {
+          return undefined;
         }
-        // The defender stood or gave ground, and neither routs it.
+        const resolution = engagement.engagementResolutionState;
+        // Engaging from the rear routs the defender outright. Engaging from the
+        // front routs nobody.
+        if (resolution.engagementType === 'rear') {
+          const rearRout = {
+            routSlot: resolution.routState,
+            source: 'rearEngagementMovement' as const,
+          };
+          // The defender caught from behind (§6.3.3).
+          return rearRout;
+        }
+        if (resolution.engagementType === 'front') {
+          // A defender met head-on is offered a retreat only if it has
+          // somewhere to go (§6.3.2), so its retreat never falls into a rout.
+          // One here means the state was built wrong.
+          const held = routOnRetreat(resolution.retreatState);
+          if (held !== undefined && isOpenSubstep(held.routSlot)) {
+            throw new Error(
+              'A front engagement’s retreat holds a rout, which cannot happen: a defender with nowhere to fall back to stands (§6.3.2)',
+            );
+          }
+          // The defender stood or gave ground, and neither routs it.
+          return undefined;
+        }
+        // A flank engagement turns the defender and routs nobody.
         return undefined;
       }
-      // A flank engagement turns the defender and routs nobody.
-      return undefined;
-    }
-
-    if (commandResolution.commandResolutionType === 'rangedAttack') {
-      const apply = commandResolution.attackApplyState;
-      // The shot is not yet measured, so it has broken nobody.
-      if (isPending(apply)) {
-        return undefined;
+      case 'rangedAttack': {
+        const apply = commandResolution.attackApplyState;
+        // The shot is not yet measured, so it has broken nobody.
+        if (isPending(apply)) {
+          return undefined;
+        }
+        // The shot's own rout, or the one its retreat fell into.
+        return routOnAttackApply(apply, 'rangedAttack');
       }
-      // The shot's own rout, or the one its retreat fell into.
-      return routOnAttackApply(apply, 'rangedAttack');
+      // An order is a move or a shot, and the compiler checks it; any other
+      // order is a fault in the state.
+      default: {
+        const _exhaustive: never = commandResolution;
+        throw new Error(
+          `Unknown command resolution type: ${String(commandResolutionType)}`,
+        );
+      }
     }
-
-    // TODO(composition): unreachable, since a command resolution is a movement
-    // or a ranged attack and both return above. Settled by an exhaustive
-    // `never` default, as in `getAttackApplyAwaitingOpen`.
-    // No other command reaches a defender.
-    return undefined;
   }
 
   if (phaseState.phase === 'resolveMelee') {

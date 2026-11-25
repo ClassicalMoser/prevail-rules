@@ -347,4 +347,14 @@ describe('findRoutLocation function', () => {
       findRoutLocation(createGameStateResolvingCommand(resolution), 'black'),
     ).toThrow('A front engagement’s retreat holds a rout');
   });
+
+  it('throws on an order of a kind the rules do not name', () => {
+    // An order is a move or a shot; the type forbids any other, so the spec
+    // forces one through to reach the fault.
+    const charge = { commandResolutionType: 'charge' } as never;
+
+    expect(() =>
+      findRoutLocation(createGameStateResolvingCommand(charge), 'white'),
+    ).toThrow('Unknown command resolution type: charge');
+  });
 });
