@@ -134,7 +134,7 @@ Walk folders in IDE order (alphabetical).
 
 ### `procedures/` (`@procedures`)
 
-- [ ] `procedures/`
+- [ ] `procedures/` — scout complete 2026-11-25 (awaiting human read)
   - [ ] `cards/`
   - [ ] `sequencing/`
   - [ ] `defenseResult/`
