@@ -21,7 +21,7 @@ describe('applyGameOverEvent function', () => {
 
     expect(newState.winner).toBe('white');
     expect(newState).not.toBe(state);
-    expect(state.winner).toBeUndefined();
+    expect(state.winner).toBe('pending');
   });
 
   it('does not change phase or initiative', () => {

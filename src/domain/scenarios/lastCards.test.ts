@@ -61,7 +61,7 @@ describe('both players playing their last card in Phase 1', () => {
 
     // Choosing is simultaneous: black's face-down card is not yet in play,
     // so black has not lost, and white is still to choose.
-    expect(state.winner).toBeUndefined();
+    expect(state.winner).toBe('pending');
     expect(next).toMatchObject({
       choiceType: 'chooseCard',
       playerSource: 'white',

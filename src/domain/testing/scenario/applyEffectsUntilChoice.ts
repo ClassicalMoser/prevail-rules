@@ -1,6 +1,7 @@
 import type { ExpectedEventInfo } from '@events';
 import type { AuthoritativeGameState } from '@game';
 import type { RandomSource } from '@utils';
+import { isResolved } from '@utils';
 import { getExpectedEvent } from '@expected';
 import { generateEventFromProcedure } from '@procedures';
 import { applyEvent } from '@transforms';
@@ -28,7 +29,7 @@ export function applyEffectsUntilChoice(state: AuthoritativeGameState): {
   let current = state;
   for (;;) {
     // A finished game expects nothing more.
-    if (current.winner !== undefined) {
+    if (isResolved(current.winner)) {
       const over = { next: 'gameOver' as const, state: current };
       return over;
     }

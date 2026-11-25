@@ -1,5 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
+import { isResolved } from '@utils';
 import {
   getCurrentPhaseState,
   findGameOverWinner,
@@ -32,7 +33,7 @@ export function findExpectedEvent(
   state: GameState,
 ): ExpectedEventInfo | undefined {
   // A finished game expects nothing: nobody is owed a choice and no effect is due.
-  if (state.winner !== undefined) {
+  if (isResolved(state.winner)) {
     return undefined;
   }
 

@@ -35,10 +35,10 @@ export interface AuthoritativeGameState {
    */
   index: GameStateIndex;
   /**
-   * Set by `gameOver` apply. Absent while the game is ongoing. Every
+   * Set by `gameOver` apply; `'pending'` while the game is ongoing. Every
    * ending names a winner — there is no draw in this game (§11.3).
    */
-  winner?: PlayerSide;
+  winner: PlayerSide | 'pending';
   /** The round in progress. */
   currentRoundState: RoundState;
   /** The cards this view may read. */
@@ -53,7 +53,9 @@ const _authoritativeGameStateSchemaObject: z.ZodObject<{
   lostCommanders: z.ZodArray<typeof playerSideSchema>;
   reservedUnits: z.ZodArray<typeof unitInstanceSchema>;
   routedUnits: z.ZodArray<typeof unitInstanceSchema>;
-  winner: z.ZodOptional<typeof playerSideSchema>;
+  winner: z.ZodUnion<
+    readonly [typeof playerSideSchema, z.ZodLiteral<'pending'>]
+  >;
   cardState: typeof authoritativeCardStateSchema;
   visibility: z.ZodLiteral<'authoritative'>;
 }> = z
@@ -67,7 +69,7 @@ const _authoritativeGameStateSchemaObject: z.ZodObject<{
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),
     visibility: z.literal('authoritative'),
-    winner: playerSideSchema.optional(),
+    winner: z.union([playerSideSchema, z.literal('pending')]),
   })
   .strict();
 

@@ -35,6 +35,8 @@ function shell(board: Board): AuthoritativeGameState {
     lostCommanders: [],
     reservedUnits: [],
     routedUnits: [],
+    // Nobody has won: the game has not begun.
+    winner: 'pending',
     // The full record: both hands in view, as `cardState` above.
     visibility: 'authoritative',
   };
