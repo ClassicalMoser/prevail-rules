@@ -37,6 +37,8 @@ export function validateLegalPlayerChoice(
   event: PlayerChoiceEvent,
   state: GameState,
 ): ValidationResult {
+  // Named now, so a fault below can say which type it met.
+  const { choiceType } = event;
   switch (event.choiceType) {
     case 'assignUnitSupport': {
       // After a rally, every unit takes a place under the unit support the hand
@@ -148,16 +150,10 @@ export function validateLegalPlayerChoice(
     }
     default: {
       // Every choice type has a case above, so the type leaves nothing here.
-      // TODO(wrong): this returns the unhandled event itself as though it were
-      // a ValidationResult, where every other exhaustive default in the
-      // domain throws (`applyPlayerChoiceEvent`, `procedureRegistry`). A
-      // choice type added without a case would reach a caller as an object
-      // with no `result`, which reads as a refusal with no reason. Settled by
-      // throwing `Unknown player choice type`, which `validatePlayerChoice`
-      // turns into a refusal; a spec forcing an unknown choice through with
-      // `as never` would then pin it.
+      // A choice of no type the rules name is a fault, refused by name;
+      // `validatePlayerChoice` turns the throw into a refusal.
       const _exhaustive: never = event;
-      return _exhaustive;
+      throw new Error(`Unknown player choice type: ${String(choiceType)}`);
     }
   }
 }
