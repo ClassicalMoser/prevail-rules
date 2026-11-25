@@ -4,10 +4,13 @@ import { getUnitByTrait } from '@testing';
 import { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 
 /**
- * UnitTypeMatchesRestrictions: a unit type against a trait filter, a unit-type
- * filter, or neither.
+ * A command or round effect carries at most one filter on who it reaches: a
+ * list of traits the unit must all have, or a list of types it must be one
+ * of (§4.3.4). Inspiration range is asked elsewhere, so every case here
+ * prints a range that would not matter.
  */
 describe('unitTypeMatchesRestrictions function', () => {
+  // A formation unit from the catalog, with its own type id.
   const unitWithFormation = getUnitByTrait('formation');
 
   it('matches any unit when there is no trait or unit-type filter', () => {
@@ -22,6 +25,7 @@ describe('unitTypeMatchesRestrictions function', () => {
   });
 
   it('matches a unit that has every required trait', () => {
+    // A formation order reaches a formation unit.
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 1,
       restrictionType: 'trait',
@@ -34,11 +38,14 @@ describe('unitTypeMatchesRestrictions function', () => {
   });
 
   it('rejects a unit that lacks a required trait', () => {
+    // A cavalry order does not reach foot.
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 1,
       restrictionType: 'trait',
       traitRestrictions: ['cavalry'],
     };
+    // The catalog row must not be cavalry, or the case proves nothing.
+    expect(unitWithFormation.traits).not.toContain('cavalry');
 
     expect(unitTypeMatchesRestrictions(unitWithFormation, restrictions)).toBe(
       false,
@@ -58,6 +65,7 @@ describe('unitTypeMatchesRestrictions function', () => {
   });
 
   it('rejects a unit whose type is not listed', () => {
+    // An id no catalog row carries.
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 1,
       restrictionType: 'unitType',

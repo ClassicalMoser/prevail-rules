@@ -34,6 +34,7 @@ function supportAt(
 
 describe('getMeleeSupportValue function', () => {
   it('returns 0 when there are no adjacent units', () => {
+    // A fighter alone on E-5, with no friend beside it.
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
 
@@ -67,6 +68,7 @@ describe('getMeleeSupportValue function', () => {
   it('adds 2 when an orthogonally adjacent friendly unit directly faces the unit', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-6 is east of E-5 and faces west, straight at it.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'north'),
       placed(supportUnit, 'E-6', 'west'),
@@ -78,6 +80,7 @@ describe('getMeleeSupportValue function', () => {
   it('adds 2 when a diagonally adjacent friendly unit directly faces the unit', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // D-6 is northeast of E-5 and faces southwest, straight at it.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'north'),
       placed(supportUnit, 'D-6', 'southWest'),
@@ -89,6 +92,7 @@ describe('getMeleeSupportValue function', () => {
   it('adds 2 when an orthogonally adjacent friendly unit indirectly faces the unit', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-6 faces northwest: E-5 is 45° off its facing, still a front space.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'north'),
       placed(supportUnit, 'E-6', 'northWest'),
@@ -99,6 +103,7 @@ describe('getMeleeSupportValue function', () => {
   it('adds 2 when a diagonally adjacent friendly unit indirectly faces the unit', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // D-6 faces west: E-5, to its southwest, is 45° off, still a front space.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'north'),
       placed(supportUnit, 'D-6', 'west'),
@@ -142,6 +147,7 @@ describe('getMeleeSupportValue function', () => {
   it('adds nothing when the friendly unit faces indirectly away from the unit', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-6 faces northeast: E-5, to its west, is in its back spaces.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'north'),
       placed(supportUnit, 'E-6', 'northEast'),
@@ -152,6 +158,7 @@ describe('getMeleeSupportValue function', () => {
   it('adds nothing when the friendly unit faces directly away from the unit', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-6 faces east, directly away from E-5.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'north'),
       placed(supportUnit, 'E-6', 'east'),
@@ -172,6 +179,22 @@ describe('getMeleeSupportValue function', () => {
       placed(blockingEnemy2, 'E-6', 'south'),
     ]);
     expect(supportAt(board, 'E-5')).toBe(0);
+  });
+
+  it('still counts a diagonal friend when an enemy holds only one corner between them', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const cornerEnemy = createTestUnit('white', { instanceNumber: 1 });
+    // D-6 is northeast of E-5 and faces it. One enemy, on D-5, holds one of
+    // the two corners; the way is shut only when both are held (§7.3.1).
+    const board = createBoardWithUnits([
+      placed(primaryUnit, 'E-5', 'north'),
+      placed(supportUnit, 'D-6', 'southWest'),
+      placed(cornerEnemy, 'D-5', 'south'),
+    ]);
+
+    // The fighter lies in the friend's front spaces: +2.
+    expect(supportAt(board, 'E-5')).toBe(2);
   });
 
   it('only counts support from friendly units that are not engaged', () => {
@@ -225,6 +248,8 @@ describe('getMeleeSupportValue function', () => {
   it('adds 2 from a friendly facing the unit at a corner', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // In the board's corner, where most neighbours are off the board, A-2
+    // still faces A-1.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'A-1', 'north'),
       placed(supportUnit, 'A-2', 'west'),
@@ -236,6 +261,8 @@ describe('getMeleeSupportValue function', () => {
   it('adds 2 from a friendly facing the unit when the unit faces that friend', () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // The two face each other: the friend stands in the fighter's front
+    // spaces, which are not behind it, and faces the fighter.
     const board = createBoardWithUnits([
       placed(primaryUnit, 'E-5', 'east'),
       placed(supportUnit, 'E-6', 'west'),

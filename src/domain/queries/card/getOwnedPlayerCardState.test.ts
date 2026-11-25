@@ -1,105 +1,79 @@
-import type { CardState, OwnedCardState } from '@game';
-import { createTestCard } from '@testing';
-import { toHiddenCardState } from '@transforms';
+import type { CardState } from '@game';
+import {
+  createCardState,
+  createEmptyGameState,
+  createOwnedCardState,
+} from '@factories';
+import { createTestCard, updateCardState } from '@testing';
+import { projectGameStateForVisibility } from '@transforms';
 
 import { getOwnedPlayerCardState } from './getOwnedPlayerCardState';
 
-import { createEmptyGameState } from '@factories';
-
-function secretPiles(): OwnedCardState {
-  return {
-    awaitingPlay: createTestCard(),
-    burnt: [],
-    discarded: [],
-    inHand: [createTestCard()],
-    inPlay: createTestCard(),
-    played: [],
-  };
-}
-
 /**
- * GetOwnedPlayerCardState: owned slice via visibility discriminant (no casts).
+ * A caller that insists on a hand, such as one about to take a card from it,
+ * gets it where this view can see it and a fault where it cannot. Hands are
+ * secret (§1.4): each seat sees its own, a spectator neither.
  */
 describe('getOwnedPlayerCardState function', () => {
-  const whiteSeen = () => {
-    const white = secretPiles();
-    return {
-      black: toHiddenCardState(secretPiles()),
-      visibility: 'whiteSeen' as const,
-      white,
-    };
-  };
+  // Each side holds one card in hand and has another waiting face down.
+  const game = updateCardState(
+    createEmptyGameState('standard'),
+    createCardState({
+      black: createOwnedCardState({
+        awaitingPlay: createTestCard(),
+        inHand: [createTestCard()],
+      }),
+      white: createOwnedCardState({
+        awaitingPlay: createTestCard(),
+        inHand: [createTestCard()],
+      }),
+    }),
+  );
 
-  const blackSeen = () => {
-    const black = secretPiles();
-    return {
-      black,
-      visibility: 'blackSeen' as const,
-      white: toHiddenCardState(secretPiles()),
-    };
-  };
+  it('gives both hands from the full record', () => {
+    const { cardState } = game;
 
-  it('authoritative visibility owns both players', () => {
-    const { cardState } = createEmptyGameState('standard');
     expect(getOwnedPlayerCardState(cardState, 'black')).toBe(cardState.black);
     expect(getOwnedPlayerCardState(cardState, 'white')).toBe(cardState.white);
   });
 
-  it('white is owned when white is seen', () => {
-    const cardState = whiteSeen();
-    const owned = getOwnedPlayerCardState(cardState, 'white');
-
-    expect(owned).toBe(cardState.white);
-    expect(owned.inHand).toStrictEqual(cardState.white.inHand);
-    expect(owned.inHand).not.toContain('hidden');
-    expect(cardState.black.inHand).toStrictEqual(['hidden']);
-    expect(cardState.black.awaitingPlay).toBe('hidden');
-  });
-
-  it('black is not owned when white is seen', () => {
-    expect(() => getOwnedPlayerCardState(whiteSeen(), 'black')).toThrow(
+  it("gives each seat its own hand and throws for the opponent's", () => {
+    // White's seat holds its own cards; Black's are face down to it.
+    const whiteSeen = projectGameStateForVisibility(game, 'whiteSeen');
+    expect(getOwnedPlayerCardState(whiteSeen.cardState, 'white')).toBe(
+      game.cardState.white,
+    );
+    expect(() => getOwnedPlayerCardState(whiteSeen.cardState, 'black')).toThrow(
       'Player black is not owned under whiteSeen visibility',
     );
-  });
 
-  it('black is owned when black is seen', () => {
-    const cardState = blackSeen();
-    const owned = getOwnedPlayerCardState(cardState, 'black');
-
-    expect(owned).toBe(cardState.black);
-    expect(owned.inHand).toStrictEqual(cardState.black.inHand);
-    expect(owned.inHand).not.toContain('hidden');
-    expect(cardState.white.inHand).toStrictEqual(['hidden']);
-    expect(cardState.white.awaitingPlay).toBe('hidden');
-  });
-
-  it('neither player is owned for a spectator', () => {
-    const seen = {
-      black: toHiddenCardState(secretPiles()),
-      visibility: 'spectator' as const,
-      white: toHiddenCardState(secretPiles()),
-    };
-
-    expect(() => getOwnedPlayerCardState(seen, 'black')).toThrow(
-      'Player black is not owned under spectator visibility',
+    // And the same from Black's side of the table.
+    const blackSeen = projectGameStateForVisibility(game, 'blackSeen');
+    expect(getOwnedPlayerCardState(blackSeen.cardState, 'black')).toBe(
+      game.cardState.black,
     );
-    expect(() => getOwnedPlayerCardState(seen, 'white')).toThrow(
-      'Player white is not owned under spectator visibility',
-    );
-  });
-
-  it('white is not owned when black is seen', () => {
-    expect(() => getOwnedPlayerCardState(blackSeen(), 'white')).toThrow(
+    expect(() => getOwnedPlayerCardState(blackSeen.cardState, 'white')).toThrow(
       'Player white is not owned under blackSeen visibility',
     );
   });
 
-  it('an unknown visibility is rejected', () => {
-    const { cardState } = createEmptyGameState('standard');
+  it('throws for either hand at a spectator view', () => {
+    // A spectator owns neither hand.
+    const { cardState } = projectGameStateForVisibility(game, 'spectator');
+
+    expect(() => getOwnedPlayerCardState(cardState, 'black')).toThrow(
+      'Player black is not owned under spectator visibility',
+    );
+    expect(() => getOwnedPlayerCardState(cardState, 'white')).toThrow(
+      'Player white is not owned under spectator visibility',
+    );
+  });
+
+  it('throws for a visibility the game does not know', () => {
     expect(() =>
       getOwnedPlayerCardState(
         // Intentionally bad type cast to test error path
-        { ...cardState, visibility: 'nobody' } as unknown as CardState,
+        { ...game.cardState, visibility: 'nobody' } as unknown as CardState,
         'white',
       ),
     ).toThrow('Invalid visibility: nobody');

@@ -6,6 +6,10 @@ import { findNeighbourSide } from './findNeighbourSide';
  * A unit's eight neighbours sort into front, flank and back (§2.3.3). The
  * unit in every case stands on E-5 facing north.
  */
+// TODO(misleading): the three groups are §2.3.2, not §2.3.3 (the region
+// behind a unit), and the unit in the diagonal case faces north-east, not
+// north. Settle both in the header above.
+
 describe('findNeighbourSide function', () => {
   const board = createEmptyStandardBoard();
 

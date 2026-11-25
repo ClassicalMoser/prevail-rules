@@ -5,24 +5,27 @@ import { getTurnedFacing } from './getTurnedFacing';
  */
 describe('getTurnedFacing function', () => {
   it('a left turn is 45° counterclockwise', () => {
+    // From north, a left turn wraps back round the compass to north-west.
     expect(getTurnedFacing('north', 'turnLeft')).toBe('northWest');
   });
 
   it('a right turn is 45° clockwise', () => {
+    // From north, a right turn faces north-east.
     expect(getTurnedFacing('north', 'turnRight')).toBe('northEast');
   });
 
   it('an about-turn faces the other way', () => {
+    // Half way round the compass, from north-east to south-west.
     expect(getTurnedFacing('northEast', 'turnAbout')).toBe('southWest');
   });
 
   it('turning wraps round the compass', () => {
     // From northWest, a right turn comes back round to north.
     expect(getTurnedFacing('northWest', 'turnRight')).toBe('north');
-    expect(getTurnedFacing('north', 'turnLeft')).toBe('northWest');
   });
 
   it('two left turns are the 90° wheel that costs two Flexibility', () => {
+    // North to north-west, then on to west: a quarter turn in two.
     const once = getTurnedFacing('north', 'turnLeft');
 
     expect(getTurnedFacing(once, 'turnLeft')).toBe('west');

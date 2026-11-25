@@ -1,33 +1,28 @@
 import { createTestUnit } from '@testing';
 
 import { arrayWithoutUnit } from './arrayWithoutUnit';
-import { hasUnitInArray } from './hasUnitInArray';
 
 /**
- * ArrayWithoutUnit: copy of the array without one unit (matched by value).
+ * A list less one unit, matched by who it is: a unit leaves the units still
+ * to act once it has moved or shot, and the reserve once it deploys.
  */
 describe('arrayWithoutUnit function', () => {
-  it('returns a new array without a unit that is present', () => {
+  it('leaves out the unit a separate copy names, and keeps the rest', () => {
+    // Black's first unit and a white one still to act.
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const other = createTestUnit('white');
-    const array = [unit, other];
-    const result = arrayWithoutUnit(array, unit);
-    expect(result).toHaveLength(1);
-    expect(hasUnitInArray(result, other)).toBe(true);
-    expect(hasUnitInArray(result, unit)).toBe(false);
+    // The black unit as an event names it.
+    const copy = createTestUnit('black', { instanceNumber: 1 });
+
+    expect(arrayWithoutUnit([unit, other], copy)).toStrictEqual([other]);
   });
 
-  it('removes a member that matches by value under a different reference', () => {
-    const unit = createTestUnit('black', { instanceNumber: 1 });
-    const array = [unit];
-    const sameValue = createTestUnit('black', { instanceNumber: 1 });
-    const result = arrayWithoutUnit(array, sameValue);
-    expect(result).toHaveLength(0);
-  });
+  it('leaves the list as it was when the unit is not in it', () => {
+    // Only Black's unit is listed; White's is asked to leave.
+    const unit = createTestUnit('black');
 
-  it('leaves the length unchanged when the unit is not in the array', () => {
-    const array = [createTestUnit('black')];
-    const result = arrayWithoutUnit(array, createTestUnit('white'));
-    expect(result).toHaveLength(1);
+    expect(arrayWithoutUnit([unit], createTestUnit('white'))).toStrictEqual([
+      unit,
+    ]);
   });
 });

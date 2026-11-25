@@ -11,6 +11,7 @@ import { createEmptyGameState } from '@factories';
  */
 describe('getCardInPlay function', () => {
   it('reads the card a player has in play', () => {
+    // Black's card has been revealed and lies face up in play.
     const card = createTestCard();
     const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
@@ -18,11 +19,13 @@ describe('getCardInPlay function', () => {
       black: { ...base.cardState.black, inPlay: card },
     });
 
+    // Both readers give that card: the insisting one and its total twin.
     expect(getCardInPlay(state.cardState, 'black')).toBe(card);
     expect(findCardInPlay(state.cardState, 'black')).toBe(card);
   });
 
   it('throws before the cards are revealed, where a caller that insists has made a mistake', () => {
+    // A new game: no card has been revealed yet.
     const state = createEmptyGameState('standard');
 
     // The total twin answers that there is no card yet.

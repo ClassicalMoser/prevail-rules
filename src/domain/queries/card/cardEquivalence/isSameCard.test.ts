@@ -4,6 +4,7 @@ import { isSameCard } from './isSameCard';
 
 describe('isSameCard function', () => {
   it('holds for two copies of one card written out separately', () => {
+    // The same card, sent over the wire and read back as a new object.
     const card = createTestCard();
 
     expect(isSameCard(card, structuredClone(card))).toBe(true);
@@ -17,6 +18,7 @@ describe('isSameCard function', () => {
   });
 
   it('fails for two different cards', () => {
+    // Two cards of one army, each with its own id.
     const first = createTestCard();
     const second = createTestCard();
 

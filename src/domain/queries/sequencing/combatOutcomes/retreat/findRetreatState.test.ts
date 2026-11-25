@@ -1,19 +1,19 @@
-import type { UnitWithPlacement } from '@entities';
 import type { CommandResolutionState, GameState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createRetreatState,
-  createTestUnit,
+  createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { findRetreatState } from './findRetreatState';
 
+/** Issue-commands phase resolving the command this test built. */
 function issueCommands(resolution: CommandResolutionState): GameState {
   const empty = createEmptyGameState('standard');
   return updatePhaseState(
@@ -23,20 +23,12 @@ function issueCommands(resolution: CommandResolutionState): GameState {
     }),
   );
 }
-function placed(
-  player: 'white' | 'black',
-  facing: UnitWithPlacement['placement']['facing'],
-): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const placement = createUnitPlacement('E-5', facing);
-  const standing = { placement, unit };
-  return standing;
-}
 
 describe('findRetreatState function', () => {
   it('returns the retreat without the parent holding it', () => {
+    // A shot drove White's unit back.
     const empty = createEmptyGameState('standard');
-    const defender = placed('white', 'north');
+    const defender = createUnitWithPlacement({ playerSide: 'white' });
     const retreat = createRetreatState(
       defender.unit,
       legalRetreatsOf(defender),

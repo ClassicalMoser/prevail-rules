@@ -6,12 +6,14 @@ import { getMoveCommandersStepAfter } from './getMoveCommandersStepAfter';
  */
 describe('getMoveCommandersStepAfter function', () => {
   it("passes the first player's turn to the second player", () => {
+    // The second commander moves after the first.
     expect(getMoveCommandersStepAfter('moveFirstCommander')).toBe(
       'moveSecondCommander',
     );
   });
 
   it("ends the phase after the second player's turn", () => {
+    // Both commanders have had their turn.
     expect(getMoveCommandersStepAfter('moveSecondCommander')).toBe('complete');
   });
 

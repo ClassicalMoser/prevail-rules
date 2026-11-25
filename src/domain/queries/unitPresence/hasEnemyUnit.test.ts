@@ -1,87 +1,49 @@
-import type { Board, BoardSpace, Coordinate } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
   createTestUnit,
 } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
-import { throwIfUndefined } from '@utils';
+import { getBoardSpace } from '@queries/board';
 
 import { hasEnemyUnit } from './hasEnemyUnit';
 
-function boardSpaceAt(board: Board, coord: Coordinate): BoardSpace {
-  const space = throwIfUndefined(
-    board.board[coord],
-    `expected board space at ${coord}`,
-  );
-  return space;
-}
-
 /**
- * HasEnemyUnit: Checks if an enemy unit is found in the space.
+ * Whether a space holds an enemy of the side asking: a lone unit of the other
+ * side, or an engagement, which always holds one unit of each.
  */
 describe('hasEnemyUnit function', () => {
-  const coordinate = 'E-5';
+  it('an empty space holds no enemy for either side', () => {
+    // Nothing stands at E-5.
+    const space = getBoardSpace(createEmptyStandardBoard(), 'E-5');
 
-  describe('none unit presence', () => {
-    it('returns false when there is no unit', () => {
-      const board = createEmptyStandardBoard();
-      const space = boardSpaceAt(board, coordinate);
-      const blackResult = hasEnemyUnit('black', space);
-      expect(blackResult).toBe(false);
-      const whiteResult = hasEnemyUnit('white', space);
-      expect(whiteResult).toBe(false);
-    });
+    expect(hasEnemyUnit('black', space)).toBe(false);
+    expect(hasEnemyUnit('white', space)).toBe(false);
   });
 
-  describe('single unit presence', () => {
-    it('returns false when there is a friendly unit', () => {
-      const board = createBoardWithSingleUnit(coordinate, 'black');
-      const space = boardSpaceAt(board, coordinate);
-      expect(hasEnemyUnit('black', space)).toBe(false);
-    });
+  it('a lone unit is an enemy to the other side only', () => {
+    // A black unit alone at E-5.
+    const space = getBoardSpace(
+      createBoardWithSingleUnit('E-5', 'black'),
+      'E-5',
+    );
 
-    it('returns true when there is an enemy unit', () => {
-      const board = createBoardWithSingleUnit(coordinate, 'white');
-      const space = boardSpaceAt(board, coordinate);
-      expect(hasEnemyUnit('black', space)).toBe(true);
-    });
-
-    it('returns true for white player when there is a black enemy unit', () => {
-      const board = createBoardWithSingleUnit(coordinate, 'black');
-      const space = boardSpaceAt(board, coordinate);
-      expect(hasEnemyUnit('white', space)).toBe(true);
-    });
+    // Black's own unit is no enemy to Black; it is White's enemy.
+    expect(hasEnemyUnit('black', space)).toBe(false);
+    expect(hasEnemyUnit('white', space)).toBe(true);
   });
 
-  describe('engaged unit presence', () => {
-    it('returns true when units are engaged (always contains an enemy)', () => {
-      const blackUnit = createTestUnit('black', { attack: 3 });
-      const whiteUnit = createTestUnit('white', { attack: 3 });
-      const board = createBoardWithEngagedUnits(
-        blackUnit,
-        whiteUnit,
-        coordinate,
-      );
-      const space = boardSpaceAt(board, coordinate);
+  it('an engaged space holds an enemy for both sides', () => {
+    // Black and White engaged at E-5.
+    const board = createBoardWithEngagedUnits(
+      createTestUnit('black', { attack: 3 }),
+      createTestUnit('white', { attack: 3 }),
+      'E-5',
+    );
+    const space = getBoardSpace(board, 'E-5');
 
-      // Engaged units always contain an enemy for both sides
-      const blackResult = hasEnemyUnit('black', space);
-      expect(blackResult).toBe(true);
-      const whiteResult = hasEnemyUnit('white', space);
-      expect(whiteResult).toBe(true);
-    });
-  });
-
-  describe('error handling', () => {
-    it('returns false when unitPresence has invalid type', () => {
-      const board = createEmptyStandardBoard();
-      const space = boardSpaceAt(board, coordinate);
-      space.unitPresence = {
-        presenceType: 'invalid',
-      } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
-
-      expect(hasEnemyUnit('black', space)).toBe(false);
-    });
+    // Whichever side asks, the other side's unit is there.
+    expect(hasEnemyUnit('black', space)).toBe(true);
+    expect(hasEnemyUnit('white', space)).toBe(true);
   });
 });

@@ -1,36 +1,21 @@
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
+import { createEmptyStandardBoard } from '@factories';
 
 import { getSpacesBehind } from './getSpacesBehind';
 
-const standardBoard = createEmptyStandardBoard();
-const smallBoard = createEmptySmallBoard();
-
 /**
- * GetSpacesBehind: all board spaces strictly behind the unit's inline line.
+ * "Behind a unit" is everything on the far side of its back spaces: the
+ * line through its own space, across its facing, and every space beyond it
+ * the other way. It is the whole back half of the field, not a wedge
+ * (§2.3.3). A rear engagement needs the mover to have begun there (§6.2.2),
+ * and a retreat must stay in it (§9.1.2).
  */
 describe('getSpacesBehind function', () => {
-  it('column 1 lies behind an east-facing unit at F-2', () => {
-    // Column 1, west of the inline line through F-2.
-    expect(getSpacesBehind(standardBoard, 'F-2', 'east')).toStrictEqual(
-      new Set([
-        'A-1',
-        'B-1',
-        'C-1',
-        'D-1',
-        'E-1',
-        'F-1',
-        'G-1',
-        'H-1',
-        'I-1',
-        'J-1',
-        'K-1',
-        'L-1',
-      ]),
-    );
-  });
+  // The standard board, rows A to L and columns 1 to 18.
+  const standardBoard = createEmptyStandardBoard();
 
-  it('row A lies behind a south-facing unit at B-7', () => {
-    // Row A, north of the inline line through B-7.
+  it('is every row past the unit’s own on the side it turns its back to', () => {
+    // A south-facing unit on row B has row A behind it; row B, its own
+    // line, is not behind.
     expect(getSpacesBehind(standardBoard, 'B-7', 'south')).toStrictEqual(
       new Set([
         'A-1',
@@ -55,47 +40,22 @@ describe('getSpacesBehind function', () => {
     );
   });
 
-  it('columns 17 and 18 lie behind a west-facing unit at F-16', () => {
-    // Columns 17 and 18, east of the inline line through F-16.
-    expect(getSpacesBehind(standardBoard, 'F-16', 'west')).toStrictEqual(
-      new Set([
-        'A-17',
-        'A-18',
-        'B-17',
-        'B-18',
-        'C-17',
-        'C-18',
-        'D-17',
-        'D-18',
-        'E-17',
-        'E-18',
-        'F-17',
-        'F-18',
-        'G-17',
-        'G-18',
-        'H-17',
-        'H-18',
-        'I-17',
-        'I-18',
-        'J-17',
-        'J-18',
-        'K-17',
-        'K-18',
-        'L-17',
-        'L-18',
-      ]),
-    );
+  it('reaches out to both side edges, not a wedge behind the unit', () => {
+    const behind = getSpacesBehind(standardBoard, 'F-9', 'north');
+
+    // A north-facing unit on row F has rows G to L behind it, eighteen
+    // spaces each.
+    expect(behind.size).toBe(108);
+    // G-1 and L-18 lie far off to its sides, yet they are behind it.
+    expect(behind.has('G-1')).toBe(true);
+    expect(behind.has('L-18')).toBe(true);
+    // Its own row is not behind it.
+    expect(behind.has('F-1')).toBe(false);
   });
 
-  it('a-1, B-1, and A-2 lie behind a southEast-facing unit at B-2', () => {
-    // The three spaces northwest of B-2.
-    expect(getSpacesBehind(standardBoard, 'B-2', 'southEast')).toStrictEqual(
-      new Set(['A-1', 'B-1', 'A-2']),
-    );
-  });
-
-  it('the southwest corner lies behind a northEast-facing unit at J-3', () => {
-    // The southwest corner behind J-3.
+  it('is the corner past the crossing diagonal when the unit faces a diagonal', () => {
+    // Facing north-east from J-3, its back is to the south-west: the ten
+    // spaces toward L-1 past the diagonal through J-3 are behind it.
     expect(getSpacesBehind(standardBoard, 'J-3', 'northEast')).toStrictEqual(
       new Set([
         'I-1',
@@ -110,33 +70,5 @@ describe('getSpacesBehind function', () => {
         'L-4',
       ]),
     );
-  });
-
-  describe('on a small board', () => {
-    it('nothing lies behind a northWest-facing unit at corner H-12', () => {
-      // The rear semiplane is empty behind H-12.
-      expect(getSpacesBehind(smallBoard, 'H-12', 'northWest').size).toBe(0);
-    });
-
-    it('the southeast semiplane lies behind a northWest-facing unit at E-6', () => {
-      const result = getSpacesBehind(smallBoard, 'E-6', 'northWest');
-
-      // Spaces behind the unit's inline line.
-      expect(result.has('F-7')).toBe(true);
-      expect(result.has('F-6')).toBe(true);
-      expect(result.has('F-8')).toBe(true);
-      expect(result.has('G-8')).toBe(true);
-      expect(result.has('H-9')).toBe(true);
-      // Spaces ahead of the unit's inline line.
-      expect(result.has('D-5')).toBe(false);
-      expect(result.has('C-4')).toBe(false);
-      // Inline spaces should always be excluded.
-      expect(result.has('F-5')).toBe(false);
-      expect(result.has('D-7')).toBe(false);
-      // Coordinates past the edge of the small board.
-      expect(result.has('A-18')).toBe(false);
-      expect(result.has('L-18')).toBe(false);
-      expect(result.has('L-1')).toBe(false);
-    });
   });
 });

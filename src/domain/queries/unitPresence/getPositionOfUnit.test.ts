@@ -1,6 +1,4 @@
-import type { Coordinate } from '@entities';
 import {
-  createBoardWithEngagedUnits,
   createBoardWithUnits,
   createGameStateWithBoard,
   createTestUnit,
@@ -11,157 +9,29 @@ import { createEmptyStandardBoard } from '@factories';
 import { getPositionOfUnit } from './getPositionOfUnit';
 
 /**
- * GetPositionOfUnit: coordinate and facing for a unit instance on the board, if present.
+ * A caller that names a unit to act on it needs it on the board. Where it
+ * stands is `findPositionOfUnit`'s to work out; this only insists it is there.
  */
 describe('getPositionOfUnit function', () => {
-  describe('single unit presence', () => {
-    it('returns the coordinate and facing of a single unit', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: Coordinate = 'E-5';
-      const facing = 'north';
-      const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
+  it('gives the space a unit stands on and the way it faces', () => {
+    // A black unit at E-5 facing south-east.
+    const unit = createTestUnit('black', { attack: 3 });
+    const board = createBoardWithUnits([placed(unit, 'E-5', 'southEast')]);
 
-      const placement = getPositionOfUnit(
-        createGameStateWithBoard(board),
-        unit,
-      );
-
-      expect(placement.coordinate).toBe(coordinate);
-      expect(placement.facing).toBe(facing);
-    });
-
-    it('returns the facing the unit was placed with', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: Coordinate = 'E-5';
-      const facing = 'southEast';
-      const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
-
-      const placement = getPositionOfUnit(
-        createGameStateWithBoard(board),
-        unit,
-      );
-
-      expect(placement.coordinate).toBe(coordinate);
-      expect(placement.facing).toBe(facing);
-    });
-
-    it('returns the coordinate the unit was placed on', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: Coordinate = 'A-1';
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-
-      const placement = getPositionOfUnit(
-        createGameStateWithBoard(board),
-        unit,
-      );
-
-      expect(placement.coordinate).toBe(coordinate);
-    });
+    // Both halves of where it stands.
+    expect(
+      getPositionOfUnit(createGameStateWithBoard(board), unit),
+    ).toStrictEqual({ coordinate: 'E-5', facing: 'southEast' });
   });
 
-  describe('engaged unit presence', () => {
-    it('returns the primary facing for the primary unit', () => {
-      const primaryUnit = createTestUnit('black', { attack: 3 });
-      const secondaryUnit = createTestUnit('white', { attack: 3 });
-      const coordinate: Coordinate = 'E-5';
-      const primaryFacing = 'north';
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        primaryFacing,
-      );
+  it('throws when the unit is not on the board', () => {
+    // An empty board: the named unit has routed, or was never placed.
+    const unit = createTestUnit('black', { attack: 3 });
+    const board = createEmptyStandardBoard();
 
-      const placement = getPositionOfUnit(
-        createGameStateWithBoard(board),
-        primaryUnit,
-      );
-
-      expect(placement.coordinate).toBe(coordinate);
-      expect(placement.facing).toBe(primaryFacing);
-    });
-
-    it('returns the opposite facing for the secondary unit', () => {
-      const primaryUnit = createTestUnit('white', { attack: 3 });
-      const secondaryUnit = createTestUnit('black', { attack: 3 });
-      const coordinate: Coordinate = 'E-5';
-      const primaryFacing = 'north';
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        primaryFacing,
-      );
-
-      const placement = getPositionOfUnit(
-        createGameStateWithBoard(board),
-        secondaryUnit,
-      );
-
-      expect(placement.coordinate).toBe(coordinate);
-      // Secondary unit faces opposite primary
-      expect(placement.facing).toBe('south');
-    });
-
-    it('throws when the searched unit matches neither engaged unit', () => {
-      const primaryUnit = createTestUnit('black', { attack: 3 });
-      const secondaryUnit = createTestUnit('white', { attack: 3 });
-      const coordinate: Coordinate = 'E-5';
-      const primaryFacing = 'north';
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        primaryFacing,
-      );
-
-      expect(() => {
-        getPositionOfUnit(
-          createGameStateWithBoard(board),
-          createTestUnit('black', { attack: 2 }),
-        );
-      }).toThrow(new Error('Unit not found on board'));
-    });
-  });
-
-  describe('unit not found', () => {
-    it('throws when unit is not on board', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const board = createEmptyStandardBoard();
-
-      expect(() => {
-        getPositionOfUnit(createGameStateWithBoard(board), unit);
-      }).toThrow(new Error('Unit not found on board'));
-    });
-
-    it('throws when a same-side unit with a different instance number is the one on the board', () => {
-      const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
-      const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const board = createBoardWithUnits([placed(unit2, 'E-5', 'north')]);
-
-      expect(() => {
-        getPositionOfUnit(createGameStateWithBoard(board), unit1);
-      }).toThrow(new Error('Unit not found on board'));
-    });
-  });
-
-  describe('value-based comparison', () => {
-    it('returns the placement when a different object has the same side, type, and instance number', () => {
-      const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
-      const board = createBoardWithUnits([placed(unit1, 'E-5', 'north')]);
-
-      // Create a new unit instance with same properties (different reference)
-      const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
-      expect(unit1).not.toBe(unit2); // Different references
-
-      const placement = getPositionOfUnit(
-        createGameStateWithBoard(board),
-        unit2,
-      );
-
-      // Should find it by value comparison
-      expect(placement.coordinate).toBe('E-5');
-      expect(placement.facing).toBe('north');
-    });
+    // A unit named to act must be there, so its absence is a fault.
+    expect(() =>
+      getPositionOfUnit(createGameStateWithBoard(board), unit),
+    ).toThrow(new Error('Unit not found on board'));
   });
 });

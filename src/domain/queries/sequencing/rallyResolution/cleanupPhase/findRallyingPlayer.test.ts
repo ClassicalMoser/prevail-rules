@@ -1,19 +1,8 @@
-import type { CleanupPhaseStep, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import { createCleanupPhaseState } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRallyingPlayer } from './findRallyingPlayer';
-
-/** Cleanup on this step, with black holding initiative. */
-function cleanupOn(step: CleanupPhaseStep): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    'black',
-  );
-  const state = updatePhaseState(empty, createCleanupPhaseState({ step }));
-  return state;
-}
 
 /**
  * The first player chooses whether to rally and carries it out, then the
@@ -21,26 +10,57 @@ function cleanupOn(step: CleanupPhaseStep): GameState {
  * both rallies, and completing the round after.
  */
 describe('findRallyingPlayer function', () => {
+  // Black holds the initiative, so black rallies first (§10.3.1).
+  const blackFirst = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
+
   it('names the first player on both of the first player’s rally steps', () => {
-    expect(findRallyingPlayer(cleanupOn('firstPlayerChooseRally'))).toBe(
-      'black',
+    // Black chooses, then black carries the rally out.
+    const choosing = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    expect(findRallyingPlayer(cleanupOn('firstPlayerResolveRally'))).toBe(
-      'black',
+    const resolving = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
+
+    // Both steps are black's.
+    expect(findRallyingPlayer(choosing)).toBe('black');
+    expect(findRallyingPlayer(resolving)).toBe('black');
   });
 
   it('names the second player on both of the second player’s rally steps', () => {
-    expect(findRallyingPlayer(cleanupOn('secondPlayerChooseRally'))).toBe(
-      'white',
+    // White chooses, then white carries the rally out.
+    const choosing = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'secondPlayerChooseRally' }),
     );
-    expect(findRallyingPlayer(cleanupOn('secondPlayerResolveRally'))).toBe(
-      'white',
+    const resolving = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'secondPlayerResolveRally' }),
     );
+
+    // Both steps are white's.
+    expect(findRallyingPlayer(choosing)).toBe('white');
+    expect(findRallyingPlayer(resolving)).toBe('white');
   });
 
   it('names nobody before the rallies or after them', () => {
-    expect(findRallyingPlayer(cleanupOn('cardsLeavePlay'))).toBeUndefined();
-    expect(findRallyingPlayer(cleanupOn('complete'))).toBeUndefined();
+    // The cards leave play before either rally, and the round ends after both.
+    const cardsLeaving = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
+    );
+    const complete = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'complete' }),
+    );
+
+    // Neither step belongs to a rally, and that is an ordinary answer.
+    expect(findRallyingPlayer(cardsLeaving)).toBeUndefined();
+    expect(findRallyingPlayer(complete)).toBeUndefined();
   });
 });

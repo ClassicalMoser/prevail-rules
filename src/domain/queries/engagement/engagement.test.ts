@@ -19,32 +19,34 @@ import {
 import { createEmptyGameState } from '@factories';
 
 /**
- * Movement engagement: the slice on the current movement, narrowed to front, flank, or rear.
+ * A Move order being carried out, its unit having walked into an enemy with
+ * this engagement, or not yet having met anyone (`'pending'`).
  */
-function gameWithMovementEngagement(
-  engagementState: EngagementState | 'pending',
-): GameState {
-  const state = createEmptyGameState('standard');
-  return updatePhaseState(
-    state,
-    createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state, {
+function movingWith(engagementState: EngagementState | 'pending'): GameState {
+  const empty = createEmptyGameState('standard');
+  const state = updatePhaseState(
+    empty,
+    createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: createMovementResolutionState(empty, {
         engagementState,
       }),
     }),
   );
+  return state;
 }
 
 describe('getEngagementStateFromMovement function', () => {
   it('returns the engagement on the movement', () => {
+    // The moving unit has walked into an enemy.
     const engagement = createFrontEngagementState();
-    const state = gameWithMovementEngagement(engagement);
+    const state = movingWith(engagement);
 
     expect(getEngagementStateFromMovement(state)).toBe(engagement);
   });
 
   it('throws when the movement has no engagement', () => {
-    const state = gameWithMovementEngagement('pending');
+    // The unit is moving, but has met nobody yet.
+    const state = movingWith('pending');
 
     expect(() => getEngagementStateFromMovement(state)).toThrow(
       'No engagement state found in movement resolution',
@@ -52,6 +54,7 @@ describe('getEngagementStateFromMovement function', () => {
   });
 
   it('throws when the command is not a movement', () => {
+    // A Shoot order: nobody walks into anyone.
     const state = createEmptyGameState('standard');
     const stateInPhase = updatePhaseState(
       state,
@@ -68,18 +71,21 @@ describe('getEngagementStateFromMovement function', () => {
 
 describe('getFlankEngagementStateFromMovement function', () => {
   it('returns the flank engagement on the movement', () => {
+    // The mover came at the defender across its facing.
     const engagement = createFlankEngagementState();
-    const state = gameWithMovementEngagement(engagement);
+    const state = movingWith(engagement);
 
     const result = getFlankEngagementStateFromMovement(state);
 
+    // The same resolution comes back, now known to be a flank one.
     expect(result.engagementResolutionState).toBe(
       engagement.engagementResolutionState,
     );
   });
 
   it('throws when the engagement is not flank', () => {
-    const state = gameWithMovementEngagement(createFrontEngagementState());
+    // A head-on engagement asked for as a flank one.
+    const state = movingWith(createFrontEngagementState());
 
     expect(() => getFlankEngagementStateFromMovement(state)).toThrow(
       'Engagement type is not flank',
@@ -89,18 +95,21 @@ describe('getFlankEngagementStateFromMovement function', () => {
 
 describe('getFrontEngagementStateFromMovement function', () => {
   it('returns the front engagement on the movement', () => {
+    // The mover squared up to the defender as it closed.
     const engagement = createFrontEngagementState();
-    const state = gameWithMovementEngagement(engagement);
+    const state = movingWith(engagement);
 
     const result = getFrontEngagementStateFromMovement(state);
 
+    // The same resolution comes back, now known to be a front one.
     expect(result.engagementResolutionState).toBe(
       engagement.engagementResolutionState,
     );
   });
 
   it('throws when the engagement is not front', () => {
-    const state = gameWithMovementEngagement(createFlankEngagementState());
+    // A flank engagement asked for as a front one.
+    const state = movingWith(createFlankEngagementState());
 
     expect(() => getFrontEngagementStateFromMovement(state)).toThrow(
       'Engagement type is not front',
@@ -110,18 +119,21 @@ describe('getFrontEngagementStateFromMovement function', () => {
 
 describe('getRearEngagementStateFromMovement function', () => {
   it('returns the rear engagement on the movement', () => {
+    // The mover came from behind the defender.
     const engagement = createRearEngagementState();
-    const state = gameWithMovementEngagement(engagement);
+    const state = movingWith(engagement);
 
     const result = getRearEngagementStateFromMovement(state);
 
+    // The same resolution comes back, now known to be a rear one.
     expect(result.engagementResolutionState).toBe(
       engagement.engagementResolutionState,
     );
   });
 
   it('throws when the engagement is not rear', () => {
-    const state = gameWithMovementEngagement(createFrontEngagementState());
+    // A head-on engagement asked for as a rear one.
+    const state = movingWith(createFrontEngagementState());
 
     expect(() => getRearEngagementStateFromMovement(state)).toThrow(
       'Engagement type is not rear',

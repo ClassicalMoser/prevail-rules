@@ -31,18 +31,21 @@ function withHands(
 
 describe('findWinnerFromEmptyHands function', () => {
   it('continues when both hands have cards', () => {
+    // One card each: both armies still have the will to fight.
     const state = withHands([createTestCard()], [createTestCard()]);
 
     expect(findWinnerFromEmptyHands(state)).toBeUndefined();
   });
 
   it('black wins when the white hand is empty', () => {
+    // White holds nothing; Black still holds a card.
     const state = withHands([], [createTestCard()]);
 
     expect(findWinnerFromEmptyHands(state)).toBe('black');
   });
 
   it('white wins when the black hand is empty', () => {
+    // Black holds nothing; White still holds a card.
     const state = withHands([createTestCard()], []);
 
     expect(findWinnerFromEmptyHands(state)).toBe('white');
@@ -67,6 +70,8 @@ describe('findWinnerFromEmptyHands function', () => {
   });
 
   it('a card in the played pile does not fill the hand', () => {
+    // Black's only card has been played; cards outside the hand do not
+    // count (§11.1).
     const state = withHands([createTestCard()], [], [createTestCard()]);
 
     expect(findWinnerFromEmptyHands(state)).toBe('white');

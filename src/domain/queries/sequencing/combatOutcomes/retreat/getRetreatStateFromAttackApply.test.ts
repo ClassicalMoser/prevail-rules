@@ -1,29 +1,18 @@
-import type { UnitWithPlacement } from '@entities';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createRetreatState,
   createTestUnit,
+  createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
 
-import { createUnitPlacement } from '@factories';
-
 import { getRetreatStateFromAttackApply } from './getRetreatStateFromAttackApply';
-
-function placed(
-  player: 'white' | 'black',
-  facing: UnitWithPlacement['placement']['facing'],
-): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const placement = createUnitPlacement('E-5', facing);
-  const standing = { placement, unit };
-  return standing;
-}
 
 describe('getRetreatStateFromAttackApply function', () => {
   it('returns the retreat on the attack apply', () => {
-    const unit = placed('black', 'north');
+    // The attack drove Black's unit back and its retreat is open.
+    const unit = createUnitWithPlacement({ playerSide: 'black' });
     const retreat = createRetreatState(unit.unit, legalRetreatsOf(unit));
     const apply = createAttackApplyStateWithRetreat(
       unit.unit,

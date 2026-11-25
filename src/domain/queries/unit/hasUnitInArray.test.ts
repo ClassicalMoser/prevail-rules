@@ -3,33 +3,32 @@ import { createTestUnit } from '@testing';
 import { hasUnitInArray } from './hasUnitInArray';
 
 /**
- * HasUnitInArray: membership test for UnitInstance in an array using value equality (not reference identity).
+ * Whether a list holds a unit, by who it is: the units already commanded this
+ * round, for one, which an order may not name again (§4.3.6).
  */
 describe('hasUnitInArray function', () => {
-  it('returns true when the array contains the same instance', () => {
-    const unit = createTestUnit('black', { instanceNumber: 1 });
+  it('finds a separate copy of a unit among others', () => {
+    // Black's first unit, listed beside White's and Black's second.
+    const listed = createTestUnit('black', { instanceNumber: 1 });
     const array = [
       createTestUnit('white'),
-      unit,
+      listed,
       createTestUnit('black', { instanceNumber: 2 }),
     ];
-    expect(hasUnitInArray(array, unit)).toBe(true);
+    // The same unit, as an event would carry it.
+    const copy = createTestUnit('black', { instanceNumber: 1 });
+
+    expect(hasUnitInArray(array, copy)).toBe(true);
   });
 
-  it('returns true when an array member equals the argument by value', () => {
-    const array = [createTestUnit('black', { instanceNumber: 1 })];
-    const sameValue = createTestUnit('black', { instanceNumber: 1 });
-    expect(hasUnitInArray(array, sameValue)).toBe(true);
-  });
-
-  it('returns false when no member matches', () => {
+  it('fails for a unit not listed, and for an empty list', () => {
+    // Black's second copy, when only the first is listed.
     const array = [createTestUnit('black', { instanceNumber: 1 })];
     expect(
       hasUnitInArray(array, createTestUnit('black', { instanceNumber: 2 })),
     ).toBe(false);
-  });
 
-  it('returns false for an empty array', () => {
+    // Nobody commanded yet.
     expect(hasUnitInArray([], createTestUnit('black'))).toBe(false);
   });
 });

@@ -2,35 +2,33 @@ import { createEmptyStandardBoard } from '@factories';
 
 import { getDiagonallyAdjacentSpaces } from './getDiagonallyAdjacentSpaces';
 
-const standardBoard = createEmptyStandardBoard();
-
 /**
- * GetDiagonallyAdjacentSpaces: up to four diagonally adjacent coordinates (no orthogonals).
+ * The spaces touching a space only at a corner: up to four, one along each
+ * diagonal. Melee support from one of these is lent only across an open
+ * diagonal (§7.3.1).
  */
 describe('getDiagonallyAdjacentSpaces function', () => {
-  it('an interior space has four diagonal neighbors', () => {
+  // The standard board, rows A to L and columns 1 to 18.
+  const standardBoard = createEmptyStandardBoard();
+
+  it('is the four corner neighbours of a space in mid-board', () => {
+    // E-5's four diagonals, and none of its straight neighbours.
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'E-5')).toStrictEqual(
       new Set(['D-4', 'D-6', 'F-4', 'F-6']),
     );
   });
 
-  it('an edge space has two diagonal neighbors', () => {
+  it('is two beside an edge', () => {
+    // A-5 has nothing to the north-west or north-east.
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'A-5')).toStrictEqual(
       new Set(['B-4', 'B-6']),
     );
   });
 
-  it('a corner has one diagonal neighbor', () => {
+  it('is one in a corner', () => {
+    // L-18's only diagonal on the board is north-west.
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'L-18')).toStrictEqual(
       new Set(['K-17']),
     );
-  });
-
-  it("an interior space's diagonal neighbors exclude the orthogonals", () => {
-    const result = getDiagonallyAdjacentSpaces(standardBoard, 'E-5');
-    expect(result.has('D-5')).toBe(false);
-    expect(result.has('E-4')).toBe(false);
-    expect(result.has('E-6')).toBe(false);
-    expect(result.has('F-5')).toBe(false);
   });
 });

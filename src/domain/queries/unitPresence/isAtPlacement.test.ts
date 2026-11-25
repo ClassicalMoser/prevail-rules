@@ -1,346 +1,117 @@
-import type { PlayerSide, Board, Coordinate, UnitInstance } from '@entities';
+import type { Coordinate } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-  getUnitByStatValue,
+  createTestUnit,
   placed,
 } from '@testing';
-import { createEmptyStandardBoard, createUnitInstance } from '@factories';
+import { createEmptyStandardBoard } from '@factories';
 
 import { isAtPlacement } from './isAtPlacement';
 
 /**
- * IsAtPlacement: Determines whether a unit is at a specific placement on the board.
+ * Whether a unit stands where a caller says: its side's unit on that space,
+ * facing that way, and the very unit named. A retreat is worked out from where
+ * the unit stands, so `getLegalRetreats` asks this first.
  */
 describe('isAtPlacement function', () => {
-  const standardBoard: Board = createEmptyStandardBoard();
-  const coordinate: Coordinate = 'E-5';
+  it('throws, naming the coordinate, when the placement is not on the board', () => {
+    const unit = createTestUnit('black');
+    const invalidCoordinate = 'Z-99' as Coordinate;
+    const unitWithPlacement = placed(unit, invalidCoordinate, 'north');
 
-  // Use stat-based lookups instead of names to avoid brittleness
-  const flexibility1UnitType = getUnitByStatValue('flexibility', 1);
-  const flexibility2UnitType = getUnitByStatValue('flexibility', 2);
+    // A placement names where the unit is said to stand, so a space that does
+    // not exist is a fault in the placement, not a unit that is elsewhere.
+    expect(() =>
+      isAtPlacement(createEmptyStandardBoard(), unitWithPlacement),
+    ).toThrow('Coordinate Z-99 does not exist on standard board.');
+  });
 
-  // Helper function to create a unit instance
-  const createUnit = (
-    playerSide: PlayerSide,
-    unitType = flexibility1UnitType,
-    instanceNumber = 1,
-  ): UnitInstance => createUnitInstance(playerSide, unitType, instanceNumber);
+  it('accepts a unit standing on the named space, facing the named way', () => {
+    // Black's unit at E-5 facing north; the caller names a separately built
+    // copy, as an event does, so it is matched by who it is.
+    const onBoard = createTestUnit('black', { instanceNumber: 1 });
+    const named = createTestUnit('black', { instanceNumber: 1 });
+    const board = createBoardWithUnits([placed(onBoard, 'E-5', 'north')]);
 
-  describe('invalid inputs', () => {
-    it('throws, naming the coordinate, when the placement is not on the board', () => {
-      const unit = createUnit('black');
-      const invalidCoordinate = 'Z-99' as Coordinate;
-      const unitWithPlacement = placed(unit, invalidCoordinate, 'north');
-
-      // A placement names where the unit is said to stand, so a space that does
-      // not exist is a fault in the placement, not a unit that is elsewhere.
-      expect(() => isAtPlacement(standardBoard, unitWithPlacement)).toThrow(
-        'Coordinate Z-99 does not exist on standard board.',
-      );
+    expect(isAtPlacement(board, placed(named, 'E-5', 'north'))).toStrictEqual({
+      result: true,
     });
   });
 
-  describe('empty space', () => {
-    it('returns false for an empty space with no unit presence', () => {
-      const unit = createUnit('black');
-      const unitWithPlacement = placed(unit, coordinate, 'north');
+  it('refuses when no unit of that side stands on the space', () => {
+    // E-5 is empty on one board and holds a white unit on the other.
+    const unit = createTestUnit('black');
+    const withEnemy = createBoardWithUnits([
+      placed(createTestUnit('white'), 'E-5', 'north'),
+    ]);
 
-      const { result } = isAtPlacement(standardBoard, unitWithPlacement);
-      expect(result).toBe(false);
+    // Either way, black has no unit there.
+    const refusal = {
+      errorReason: 'No friendly unit at coordinate',
+      result: false,
+    };
+
+    // The empty space.
+    expect(
+      isAtPlacement(createEmptyStandardBoard(), placed(unit, 'E-5', 'north')),
+    ).toStrictEqual(refusal);
+
+    // The space with only an enemy in it.
+    expect(
+      isAtPlacement(withEnemy, placed(unit, 'E-5', 'north')),
+    ).toStrictEqual(refusal);
+  });
+
+  it('refuses when the unit faces another way than named', () => {
+    // The unit faces north; the caller says south.
+    const unit = createTestUnit('black');
+    const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
+
+    // Facing is half of where a unit stands (§2.3).
+    expect(isAtPlacement(board, placed(unit, 'E-5', 'south'))).toStrictEqual({
+      errorReason: 'Declared facing does not match facing of unit present',
+      result: false,
     });
   });
 
-  describe('single friendly unit', () => {
-    it('returns true when unit matches exactly', () => {
-      const unit = createUnit('black');
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-      const unitWithPlacement = placed(unit, coordinate, 'north');
+  it('refuses when another unit of that side stands there', () => {
+    // Black's first unit of the type is at E-5; the caller names its second.
+    const onBoard = createTestUnit('black', { instanceNumber: 1 });
+    const named = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([placed(onBoard, 'E-5', 'north')]);
 
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(true);
-    });
-
-    it('returns false when facing does not match', () => {
-      const unit = createUnit('black');
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-      const unitWithPlacement = placed(unit, coordinate, 'south');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when playerSide does not match', () => {
-      const unit = createUnit('black');
-      const differentPlayerUnit = createUnit('white');
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-      const unitWithPlacement = placed(
-        differentPlayerUnit,
-        coordinate,
-        'north',
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when unitType does not match', () => {
-      const unit = createUnit('black', flexibility1UnitType);
-      const differentTypeUnit = createUnit('black', flexibility2UnitType);
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-      const unitWithPlacement = placed(differentTypeUnit, coordinate, 'north');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when instanceNumber does not match', () => {
-      const unit = createUnit('black', flexibility1UnitType, 1);
-      const differentInstanceUnit = createUnit(
-        'black',
-        flexibility1UnitType,
-        2,
-      );
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-      const unitWithPlacement = placed(
-        differentInstanceUnit,
-        coordinate,
-        'north',
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns true when unit matches by value (different object reference)', () => {
-      const unit = createUnit('black', flexibility1UnitType, 1);
-      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
-      // Create a new unit instance with the same properties
-      const sameUnit = createUnit('black', flexibility1UnitType, 1);
-      const unitWithPlacement = placed(sameUnit, coordinate, 'north');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(true);
+    expect(isAtPlacement(board, placed(named, 'E-5', 'north'))).toStrictEqual({
+      errorReason: 'Unit is not at the placement',
+      result: false,
     });
   });
 
-  describe('single enemy unit', () => {
-    it('returns false when unit at coordinate is an enemy', () => {
-      const enemyUnit = createUnit('white');
-      const friendlyUnit = createUnit('black');
-      const board = createBoardWithUnits([
-        placed(enemyUnit, coordinate, 'north'),
-      ]);
-      const unitWithPlacement = placed(friendlyUnit, coordinate, 'north');
+  it('accepts either unit of an engaged space at the facing it holds there', () => {
+    // Black stands at E-5 facing north-east; White walked into it and faces
+    // south-west, the two facing one another.
+    const black = createTestUnit('black');
+    const white = createTestUnit('white');
+    const board = createBoardWithEngagedUnits(black, white, 'E-5', 'northEast');
 
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
+    const blackAsHeld = placed(black, 'E-5', 'northEast');
+    const whiteAsHeld = placed(white, 'E-5', 'southWest');
+
+    // Each, named facing the way it holds the space, is where it is said to be.
+    expect(isAtPlacement(board, blackAsHeld).result).toBe(true);
+    expect(isAtPlacement(board, whiteAsHeld).result).toBe(true);
   });
 
-  describe('engaged units - primary unit is friendly', () => {
-    it('returns true when primary unit matches exactly', () => {
-      const primaryUnit = createUnit('black');
-      const secondaryUnit = createUnit('white');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(primaryUnit, coordinate, 'north');
+  it('refuses the secondary of an engaged space named at the primary’s facing', () => {
+    // White stands at E-5 facing north; Black walked into it and faces south.
+    const white = createTestUnit('white');
+    const black = createTestUnit('black');
+    const board = createBoardWithEngagedUnits(white, black, 'E-5', 'north');
 
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(true);
-    });
-
-    it('returns false when primary unit facing does not match', () => {
-      const primaryUnit = createUnit('black');
-      const secondaryUnit = createUnit('white');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(primaryUnit, coordinate, 'south');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when primary unit playerSide does not match', () => {
-      const primaryUnit = createUnit('black');
-      const secondaryUnit = createUnit('white');
-      const differentPlayerUnit = createUnit('white');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(
-        differentPlayerUnit,
-        coordinate,
-        'north',
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when primary unit unitType does not match', () => {
-      const primaryUnit = createUnit('black', flexibility1UnitType);
-      const secondaryUnit = createUnit('white');
-      const differentTypeUnit = createUnit('black', flexibility2UnitType);
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(differentTypeUnit, coordinate, 'north');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when primary unit instanceNumber does not match', () => {
-      const primaryUnit = createUnit('black', flexibility1UnitType, 1);
-      const secondaryUnit = createUnit('white');
-      const differentInstanceUnit = createUnit(
-        'black',
-        flexibility1UnitType,
-        2,
-      );
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(
-        differentInstanceUnit,
-        coordinate,
-        'north',
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('engaged units - secondary unit is friendly', () => {
-    it('returns true when secondary unit matches exactly', () => {
-      const primaryUnit = createUnit('white');
-      const secondaryUnit = createUnit('black');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      // Secondary unit facing is opposite of primary facing
-      const unitWithPlacement = placed(
-        secondaryUnit,
-        coordinate,
-        'south', // Opposite of "north"
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(true);
-    });
-
-    it('returns false when secondary unit facing does not match', () => {
-      const primaryUnit = createUnit('white');
-      const secondaryUnit = createUnit('black');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      // Wrong facing (should be "south" which is opposite of "north")
-      const unitWithPlacement = placed(secondaryUnit, coordinate, 'north');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when secondary unit playerSide does not match', () => {
-      const primaryUnit = createUnit('white');
-      const secondaryUnit = createUnit('black');
-      const differentPlayerUnit = createUnit('white');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(
-        differentPlayerUnit,
-        coordinate,
-        'south',
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when secondary unit unitType does not match', () => {
-      const primaryUnit = createUnit('white');
-      const secondaryUnit = createUnit('black', flexibility1UnitType);
-      const differentTypeUnit = createUnit('black', flexibility2UnitType);
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(differentTypeUnit, coordinate, 'south');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when secondary unit instanceNumber does not match', () => {
-      const primaryUnit = createUnit('white');
-      const secondaryUnit = createUnit('black', flexibility1UnitType, 1);
-      const differentInstanceUnit = createUnit(
-        'black',
-        flexibility1UnitType,
-        2,
-      );
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
-      const unitWithPlacement = placed(
-        differentInstanceUnit,
-        coordinate,
-        'south',
-      );
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(false);
-    });
-
-    it('returns true when secondary unit matches by value with diagonal facing', () => {
-      const primaryUnit = createUnit('white');
-      const secondaryUnit = createUnit('black');
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        coordinate,
-        'northEast',
-      );
-      // Secondary unit facing is opposite of primary facing ("northEast" -> "southWest")
-      const unitWithPlacement = placed(secondaryUnit, coordinate, 'southWest');
-
-      const { result } = isAtPlacement(board, unitWithPlacement);
-      expect(result).toBe(true);
+    // Naming Black facing north is the wrong way round.
+    expect(isAtPlacement(board, placed(black, 'E-5', 'north'))).toStrictEqual({
+      errorReason: 'Declared facing does not match facing of unit present',
+      result: false,
     });
   });
 });

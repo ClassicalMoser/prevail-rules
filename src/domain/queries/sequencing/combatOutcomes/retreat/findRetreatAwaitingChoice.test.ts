@@ -1,17 +1,18 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { MoveDelta } from '@entities';
 import type { GameState, MeleeResolutionState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
-  createTestUnit,
+  createUnitWithPlacement,
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRetreatAwaitingChoice } from './findRetreatAwaitingChoice';
 
+/** Resolve-melee phase holding the melee this test built. */
 function resolveMelee(
   melee: MeleeResolutionState,
   initiative: 'white' | 'black',
@@ -28,23 +29,15 @@ function resolveMelee(
   );
 }
 
-function placed(
-  player: 'white' | 'black',
-  facing: UnitWithPlacement['placement']['facing'],
-): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const standing = { placement: createUnitPlacement('E-5', facing), unit };
-  return standing;
-}
-
 describe('findRetreatAwaitingChoice function', () => {
   // Two equally small ways back. The selection does not judge them, only that
   // the owner has a choice among them still to make.
   const twoWaysBack: MoveDelta[][] = [['step'], ['step', 'step']];
 
   it('returns the retreat whose owner has not yet chosen among several ways back', () => {
+    // White's unit was driven back and has two equally small ways to go.
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
     const retreat = createRetreatState(white.unit, twoWaysBack);
     const melee = createMeleeResolutionState(empty, {
       attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
@@ -60,8 +53,9 @@ describe('findRetreatAwaitingChoice function', () => {
   });
 
   it('answers undefined once the owner has chosen', () => {
+    // White picked the first of its two ways back.
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
     const chosen = createRetreatState(white.unit, twoWaysBack, {
       chosenRetreatPath: ['step'],
     });
@@ -79,10 +73,31 @@ describe('findRetreatAwaitingChoice function', () => {
     ).toBeUndefined();
   });
 
-  it('asks after the second player’s unit first, since it suffers first (§7.5.6)', () => {
+  it('answers undefined for a retreat with nowhere to go', () => {
+    // White's unit has no legal way back, so it routs instead (§9.1.6) and
+    // has nothing to choose among.
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
-    const black = placed('black', 'south');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
+    const melee = createMeleeResolutionState(empty, {
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
+        [],
+      ),
+    });
+
+    expect(
+      findRetreatAwaitingChoice(resolveMelee(melee, 'white')),
+    ).toBeUndefined();
+  });
+
+  it('asks after the second player’s unit first, since it suffers first (§7.5.6)', () => {
+    // Both units were driven back and both owners have a choice to make.
+    const empty = createEmptyGameState('standard');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
+    const black = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'black',
+    });
     const whiteRetreat = createRetreatState(white.unit, twoWaysBack);
     const blackRetreat = createRetreatState(black.unit, twoWaysBack);
     const melee = createMeleeResolutionState(empty, {

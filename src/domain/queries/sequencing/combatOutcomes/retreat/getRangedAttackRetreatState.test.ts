@@ -1,6 +1,5 @@
-import type { UnitWithPlacement } from '@entities';
 import type { CommandResolutionState, GameState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
@@ -8,12 +7,14 @@ import {
   createRangedAttackResolutionState,
   createRetreatState,
   createTestUnit,
+  createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { getRangedAttackRetreatState } from './getRangedAttackRetreatState';
 
+/** Issue-commands phase resolving the command this test built. */
 function issueCommands(resolution: CommandResolutionState): GameState {
   const empty = createEmptyGameState('standard');
   return updatePhaseState(
@@ -23,20 +24,12 @@ function issueCommands(resolution: CommandResolutionState): GameState {
     }),
   );
 }
-function placed(
-  player: 'white' | 'black',
-  facing: UnitWithPlacement['placement']['facing'],
-): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const placement = createUnitPlacement('E-5', facing);
-  const standing = { placement, unit };
-  return standing;
-}
 
 describe('getRangedAttackRetreatState function', () => {
   it('returns the retreat on the ranged attack apply', () => {
+    // The shot drove White's unit back.
     const empty = createEmptyGameState('standard');
-    const defender = placed('white', 'north');
+    const defender = createUnitWithPlacement({ playerSide: 'white' });
     const retreat = createRetreatState(
       defender.unit,
       legalRetreatsOf(defender),
@@ -57,6 +50,7 @@ describe('getRangedAttackRetreatState function', () => {
   });
 
   it('throws when the ranged attack apply is still pending', () => {
+    // The shot is aimed but not yet measured.
     const empty = createEmptyGameState('standard');
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: 'pending',
@@ -69,6 +63,7 @@ describe('getRangedAttackRetreatState function', () => {
   });
 
   it('throws when the retreat is due and has not been opened', () => {
+    // The shot reached the Retreat, and nothing has opened the step yet.
     const empty = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
     const resolution = createRangedAttackResolutionState(empty, {

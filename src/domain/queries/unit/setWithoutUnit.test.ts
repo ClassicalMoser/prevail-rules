@@ -1,33 +1,30 @@
 import { createTestUnit } from '@testing';
 
-import { hasUnitInSet } from './hasUnitInSet';
 import { setWithoutUnit } from './setWithoutUnit';
 
 /**
- * SetWithoutUnit: copy of the set without one unit (matched by value).
+ * A set less one unit, matched by who it is rather than by the object the
+ * set holds.
  */
 describe('setWithoutUnit function', () => {
-  it('returns a new set without a unit that is present', () => {
+  it('leaves out the unit a separate copy names, and keeps the rest', () => {
+    // Black's first unit and a white one.
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const other = createTestUnit('white');
-    const set = new Set([unit, other]);
-    const result = setWithoutUnit(set, unit);
-    expect(result.size).toBe(1);
-    expect(hasUnitInSet(result, other)).toBe(true);
-    expect(hasUnitInSet(result, unit)).toBe(false);
+    // The black unit as an event names it.
+    const copy = createTestUnit('black', { instanceNumber: 1 });
+
+    expect(setWithoutUnit(new Set([unit, other]), copy)).toStrictEqual(
+      new Set([other]),
+    );
   });
 
-  it('removes a member that matches by value under a different reference', () => {
-    const unit = createTestUnit('black', { instanceNumber: 1 });
-    const set = new Set([unit]);
-    const sameValue = createTestUnit('black', { instanceNumber: 1 });
-    const result = setWithoutUnit(set, sameValue);
-    expect(result.size).toBe(0);
-  });
+  it('leaves the set as it was when the unit is not in it', () => {
+    // Only Black's unit is held; White's is asked to leave.
+    const unit = createTestUnit('black');
 
-  it('leaves the size unchanged when the unit is not in the set', () => {
-    const set = new Set([createTestUnit('black')]);
-    const result = setWithoutUnit(set, createTestUnit('white'));
-    expect(result.size).toBe(1);
+    expect(
+      setWithoutUnit(new Set([unit]), createTestUnit('white')),
+    ).toStrictEqual(new Set([unit]));
   });
 });

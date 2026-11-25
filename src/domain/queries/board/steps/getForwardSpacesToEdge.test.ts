@@ -2,13 +2,17 @@ import { createEmptyStandardBoard } from '@factories';
 
 import { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
 
-const standardBoard = createEmptyStandardBoard();
-
 /**
- * GetForwardSpacesToEdge: all coordinates from a start along a facing until the board edge (exclusive of start).
+ * Every space in a straight run from a space to the board edge, the start
+ * left out. A line is looked for along such a run (§4.3.5), and the
+ * half-planes ahead and behind are filled out with it (§2.3.3).
  */
 describe('getForwardSpacesToEdge function', () => {
-  it('column to L-1 when facing south from A-1', () => {
+  // The standard board, rows A to L and columns 1 to 18.
+  const standardBoard = createEmptyStandardBoard();
+
+  it('runs straight down a column to the far edge', () => {
+    // South from A-1, every space of column 1 after it, to row L.
     expect(getForwardSpacesToEdge(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set([
         'B-1',
@@ -26,49 +30,24 @@ describe('getForwardSpacesToEdge function', () => {
     );
   });
 
-  it('e-6 through E-18 when facing east from E-5', () => {
-    expect(getForwardSpacesToEdge(standardBoard, 'E-5', 'east')).toStrictEqual(
-      new Set([
-        'E-6',
-        'E-7',
-        'E-8',
-        'E-9',
-        'E-10',
-        'E-11',
-        'E-12',
-        'E-13',
-        'E-14',
-        'E-15',
-        'E-16',
-        'E-17',
-        'E-18',
-      ]),
-    );
-  });
-
-  it('diagonal to A-9 when facing northEast from E-5', () => {
+  it('runs along a diagonal until it meets a row edge', () => {
+    // North-east from E-5 reaches row A, at A-9, long before column 18.
     expect(
       getForwardSpacesToEdge(standardBoard, 'E-5', 'northEast'),
     ).toStrictEqual(new Set(['D-6', 'C-7', 'B-8', 'A-9']));
   });
 
-  it('diagonal to L-12 when facing southEast from E-5', () => {
+  it('runs along a diagonal until it meets a column edge', () => {
+    // North-east from E-15 reaches column 18, at B-18, before row A.
     expect(
-      getForwardSpacesToEdge(standardBoard, 'E-5', 'southEast'),
-    ).toStrictEqual(
-      new Set(['F-6', 'G-7', 'H-8', 'I-9', 'J-10', 'K-11', 'L-12']),
+      getForwardSpacesToEdge(standardBoard, 'E-15', 'northEast'),
+    ).toStrictEqual(new Set(['D-16', 'C-17', 'B-18']));
+  });
+
+  it('is empty from a space already at the edge it faces', () => {
+    // Nothing lies north of row A.
+    expect(getForwardSpacesToEdge(standardBoard, 'A-1', 'north')).toStrictEqual(
+      new Set(),
     );
-  });
-
-  it('diagonal to L-4 when facing southWest from G-9', () => {
-    expect(
-      getForwardSpacesToEdge(standardBoard, 'G-9', 'southWest'),
-    ).toStrictEqual(new Set(['H-8', 'I-7', 'J-6', 'K-5', 'L-4']));
-  });
-
-  it('diagonal to A-3 when facing northWest from G-9', () => {
-    expect(
-      getForwardSpacesToEdge(standardBoard, 'G-9', 'northWest'),
-    ).toStrictEqual(new Set(['F-8', 'E-7', 'D-6', 'C-5', 'B-4', 'A-3']));
   });
 });

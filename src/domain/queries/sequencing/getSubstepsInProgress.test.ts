@@ -1,10 +1,18 @@
-import type { CommandResolutionState, GameState } from '@game';
+import type {
+  CleanupPhaseState,
+  CommandResolutionState,
+  EngagementResolutionState,
+  GameState,
+  MeleeResolutionState,
+} from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRetreatAndReverse,
+  createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
+  createCleanupPhaseState,
   createCleanupPhaseStateWithRallyRout,
   createFlankEngagementState,
   createFrontEngagementState,
@@ -12,6 +20,7 @@ import {
   createMeleeResolutionState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
+  createRallyResolutionState,
   createRangedAttackResolutionState,
   createRearEngagementState,
   createResolveMeleePhaseState,
@@ -34,13 +43,43 @@ function issueCommands(resolution: CommandResolutionState): GameState {
   return issuing;
 }
 
+/** Phase 4, fighting the melee this test built. */
+function resolveMelee(melee: MeleeResolutionState): GameState {
+  const empty = createEmptyGameState('standard');
+  const phaseState = createResolveMeleePhaseState(empty, {
+    currentMeleeResolutionState: melee,
+  });
+  const fighting = updatePhaseState(empty, phaseState);
+  return fighting;
+}
+
+/** Phase 5, on the cleanup this test built. */
+function cleanup(phaseState: CleanupPhaseState): GameState {
+  const empty = createEmptyGameState('standard');
+  const cleaningUp = updatePhaseState(empty, phaseState);
+  return cleaningUp;
+}
+
 /** Where play stands inside a step, outermost first, like breadcrumbs. */
 describe('getSubstepsInProgress function', () => {
   it('is empty while cards are played, with nothing being resolved', () => {
+    // Phase 1 has no orders, melees or rallies to be inside.
     const empty = createEmptyGameState('standard');
     const playing = updatePhaseState(empty, createPlayCardsPhaseState());
 
+    // So the trail is empty.
     expect(getSubstepsInProgress(playing)).toStrictEqual([]);
+  });
+
+  it('stands at a Move order that has reached no enemy', () => {
+    const empty = createEmptyGameState('standard');
+    // The unit is still moving; no engagement has started.
+    const move = createMovementResolutionState(empty, {
+      engagementState: 'pending',
+    });
+
+    // The order is all there is to follow.
+    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([move]);
   });
 
   it('follows a Move order into the flank engagement it started', () => {
@@ -51,6 +90,23 @@ describe('getSubstepsInProgress function', () => {
       engagementState: engagement,
     });
 
+    // The trail ends at the engagement.
+    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
+      move,
+      engagement,
+    ]);
+  });
+
+  it('stands at a front engagement while its defender decides whether to fall back', () => {
+    const empty = createEmptyGameState('standard');
+    // Engaged from the front, the defender has not yet chosen to stand or
+    // give ground, so no retreat has opened (§6.3.2).
+    const engagement = createFrontEngagementState();
+    const move = createMovementResolutionState(empty, {
+      engagementState: engagement,
+    });
+
+    // The trail ends at the engagement, with no retreat beneath it.
     expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
       move,
       engagement,
@@ -70,6 +126,7 @@ describe('getSubstepsInProgress function', () => {
       engagementState: engagement,
     });
 
+    // The order, the engagement, then the retreat being made.
     expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
       move,
       engagement,
@@ -85,6 +142,7 @@ describe('getSubstepsInProgress function', () => {
       engagementState: engagement,
     });
 
+    // The order, the engagement, then the rout it forced.
     expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
       move,
       engagement,
@@ -92,8 +150,57 @@ describe('getSubstepsInProgress function', () => {
     ]);
   });
 
+  it('throws on an engagement of a kind the rules do not name', () => {
+    const empty = createEmptyGameState('standard');
+    // Only front, flank and rear engagements exist (§6.3); the type forbids
+    // any other, so the spec forces one through to reach the fault.
+    const siege = {
+      engagementType: 'siege',
+    } as unknown as EngagementResolutionState;
+    const engagement = createFlankEngagementState();
+    const move = createMovementResolutionState(empty, {
+      engagementState: { ...engagement, engagementResolutionState: siege },
+    });
+
+    // The state is at fault, and the reader says so rather than guess.
+    expect(() => getSubstepsInProgress(issueCommands(move))).toThrow(
+      'Unknown engagement type',
+    );
+  });
+
+  it('stands at a Shoot order whose attack is not yet resolved', () => {
+    const empty = createEmptyGameState('standard');
+    // The shooter has aimed, but no attack value has been counted yet.
+    const shot = createRangedAttackResolutionState(empty, {
+      attackApplyState: 'pending',
+    });
+
+    // The order is all there is to follow.
+    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([shot]);
+  });
+
+  it('follows a Shoot order into the reverse its attack forced', () => {
+    const empty = createEmptyGameState('standard');
+    // The shot reached the target's Reverse and nothing higher, so it turns
+    // about (§9.2).
+    const defender = createTestUnit('white', { attack: 2 });
+    const apply = createAttackApplyStateWithReverse(defender);
+    const shot = createRangedAttackResolutionState(empty, {
+      attackApplyState: apply,
+      defendingUnit: defender,
+    });
+
+    // The order, its attack, then the unit turning about.
+    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
+      shot,
+      apply,
+      apply.reverseState,
+    ]);
+  });
+
   it('follows a Shoot order into the rout its attack reached', () => {
     const empty = createEmptyGameState('standard');
+    // The shot reached the target's Rout and nothing below it.
     const defender = createTestUnit('white', { attack: 2 });
     const rout = createRoutState('white', defender);
     const apply = createAttackApplyStateWithRout(defender, {
@@ -104,6 +211,7 @@ describe('getSubstepsInProgress function', () => {
       defendingUnit: defender,
     });
 
+    // The order, its attack, then the rout its owner pays for.
     expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
       shot,
       apply,
@@ -125,6 +233,7 @@ describe('getSubstepsInProgress function', () => {
       defendingUnit: defender.unit,
     });
 
+    // The rout sits under the retreat it took the place of.
     expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
       shot,
       apply,
@@ -150,6 +259,7 @@ describe('getSubstepsInProgress function', () => {
       defendingUnit: defender.unit,
     });
 
+    // The finished retreat is gone; the attack waits for its reverse to open.
     expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
       shot,
       apply,
@@ -166,6 +276,7 @@ describe('getSubstepsInProgress function', () => {
       defendingUnit: defender,
     });
 
+    // The attack being closed ends the trail.
     expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
       shot,
       apply,
@@ -173,10 +284,25 @@ describe('getSubstepsInProgress function', () => {
   });
 
   it('is empty once the order is carried out', () => {
+    // The unit has finished moving; the next order is not yet begun.
     const empty = createEmptyGameState('standard');
     const move = createMovementResolutionState(empty, { completed: true });
 
+    // A finished order is not followed.
     expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([]);
+  });
+
+  it('stands at a melee whose blows are not yet counted', () => {
+    const empty = createEmptyGameState('standard');
+    // Both players are still committing (§7.2.2), so neither unit has an
+    // attack to carry out.
+    const melee = createMeleeResolutionState(empty, {
+      attackOnFirstPlayerApplyState: 'pending',
+      attackOnSecondPlayerApplyState: 'pending',
+    });
+
+    // The melee is all there is to follow.
+    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([melee]);
   });
 
   it("follows a melee to the second player's unit's retreat first", () => {
@@ -190,14 +316,9 @@ describe('getSubstepsInProgress function', () => {
       attackOnFirstPlayerApplyState: whiteApply,
       attackOnSecondPlayerApplyState: blackApply,
     });
-    const fighting = updatePhaseState(
-      empty,
-      createResolveMeleePhaseState(empty, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
 
-    expect(getSubstepsInProgress(fighting)).toStrictEqual([
+    // Black's retreat is the one under way, not white's.
+    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([
       melee,
       blackApply,
       blackApply.retreatState,
@@ -224,18 +345,80 @@ describe('getSubstepsInProgress function', () => {
       attackOnFirstPlayerApplyState: whiteApply,
       attackOnSecondPlayerApplyState: blackApply,
     });
-    const fighting = updatePhaseState(
-      empty,
-      createResolveMeleePhaseState(empty, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
 
-    expect(getSubstepsInProgress(fighting)).toStrictEqual([
+    // White's retreat is under way, ahead of black's reverse.
+    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([
       melee,
       whiteApply,
       whiteApply.retreatState,
     ]);
+  });
+
+  it("closes the second player's unit's attack first once every result is carried out", () => {
+    // White holds the initiative, so black's unit took the first blow and its
+    // attack is closed first (§7.5.6). Neither blow reached a threshold.
+    const empty = createEmptyGameState('standard');
+    const whiteApply = createAttackApplyStateWithNothingDue(
+      createTestUnit('white'),
+    );
+    const blackApply = createAttackApplyStateWithNothingDue(
+      createTestUnit('black'),
+    );
+    const melee = createMeleeResolutionState(empty, {
+      attackOnFirstPlayerApplyState: whiteApply,
+      attackOnSecondPlayerApplyState: blackApply,
+    });
+
+    // Black's attack is the one being closed.
+    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([
+      melee,
+      blackApply,
+    ]);
+  });
+
+  it('is empty once the melee is fought', () => {
+    const empty = createEmptyGameState('standard');
+    // Both attacks are carried out and closed; the next space is not yet chosen.
+    const melee = createMeleeResolutionState(empty, { completed: true });
+
+    // A finished melee is not followed.
+    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([]);
+  });
+
+  it("is empty while this round's cards leave play", () => {
+    // The step before any rally belongs to no player's rally (§4.5.1).
+    const phaseState = createCleanupPhaseState({ step: 'cardsLeavePlay' });
+
+    // Nothing is being resolved.
+    expect(getSubstepsInProgress(cleanup(phaseState))).toStrictEqual([]);
+  });
+
+  it('is empty while the first player chooses whether to rally', () => {
+    // No rally has begun until the player chooses one (§10.3.1).
+    const phaseState = createCleanupPhaseState({
+      step: 'firstPlayerChooseRally',
+    });
+
+    // Nothing is being resolved yet.
+    expect(getSubstepsInProgress(cleanup(phaseState))).toStrictEqual([]);
+  });
+
+  it('is empty once the rally is finished', () => {
+    // The cards are back and every unit kept its support, so nothing is left
+    // of the rally to carry out.
+    const rally = createRallyResolutionState({
+      completed: true,
+      playerRallied: true,
+      rallyResolved: true,
+      unitsLostSupport: [],
+    });
+    const phaseState = createCleanupPhaseState({
+      firstPlayerRallyResolutionState: rally,
+      step: 'firstPlayerResolveRally',
+    });
+
+    // A finished rally is not followed.
+    expect(getSubstepsInProgress(cleanup(phaseState))).toStrictEqual([]);
   });
 
   it('follows a rally into the rout it costs', () => {
@@ -243,9 +426,12 @@ describe('getSubstepsInProgress function', () => {
     // A unit lost its support when the cards went back to hand (§10.3).
     const rout = createRoutState('white', createTestUnit('white'));
     const phaseState = createCleanupPhaseStateWithRallyRout(empty, rout);
-    const cleanup = updatePhaseState(empty, phaseState);
     const rally = phaseState.firstPlayerRallyResolutionState;
 
-    expect(getSubstepsInProgress(cleanup)).toStrictEqual([rally, rout]);
+    // The rally, then the rout its player pays for.
+    expect(getSubstepsInProgress(cleanup(phaseState))).toStrictEqual([
+      rally,
+      rout,
+    ]);
   });
 });

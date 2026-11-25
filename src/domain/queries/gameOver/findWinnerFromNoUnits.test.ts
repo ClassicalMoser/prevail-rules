@@ -5,6 +5,7 @@ import {
   createTestUnit,
   createUnitWithPlacement,
   replaceBoard,
+  withReservedUnits,
 } from '@testing';
 import { addUnitToBoard } from '@transforms';
 
@@ -30,6 +31,7 @@ function withUnitOnBoard(
 
 describe('findWinnerFromNoUnits function', () => {
   it('continues while both armies have a unit on the board', () => {
+    // One white unit and one black unit on the field.
     const base = createEmptyGameState('standard');
     const withWhite = withUnitOnBoard(base, 'white', 'E-5');
     const state = withUnitOnBoard(withWhite, 'black', 'E-6');
@@ -38,6 +40,7 @@ describe('findWinnerFromNoUnits function', () => {
   });
 
   it('black wins when the white army is destroyed', () => {
+    // Only a black unit stands; White has none on the board or in reserve.
     const base = createEmptyGameState('standard');
     const state = withUnitOnBoard(base, 'black', 'E-6');
 
@@ -45,6 +48,7 @@ describe('findWinnerFromNoUnits function', () => {
   });
 
   it('white wins when the black army is destroyed', () => {
+    // Only a white unit stands; Black has none on the board or in reserve.
     const base = createEmptyGameState('standard');
     const state = withUnitOnBoard(base, 'white', 'E-5');
 
@@ -75,7 +79,22 @@ describe('findWinnerFromNoUnits function', () => {
     expect(findWinnerFromNoUnits(state)).toBeUndefined();
   });
 
+  it('an army waiting to deploy is not destroyed while the other stands on the board', () => {
+    // Midway through setup: White has deployed one unit, Black's still waits
+    // in reserve.
+    const whiteDeployed = withUnitOnBoard(
+      createEmptyGameState('standard'),
+      'white',
+      'E-5',
+    );
+    const state = withReservedUnits(whiteDeployed, [createTestUnit('black')]);
+
+    // Black has not been fielded yet, so it has not lost.
+    expect(findWinnerFromNoUnits(state)).toBeUndefined();
+  });
+
   it('a board with no armies at all is a game not yet begun, not a loss', () => {
+    // No unit anywhere, for either side.
     const state = createEmptyGameState('standard');
 
     expect(findWinnerFromNoUnits(state)).toBeUndefined();

@@ -9,31 +9,38 @@ import { findRallyResolutionState } from './findRallyResolutionState';
  * first (§10.3), and the slots are named for that order.
  */
 describe('findRallyResolutionState function', () => {
+  // Black holds the initiative, so black rallies first (§10.3.1).
+  const blackFirst = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
+
   it('reads each player’s own rally, by the order they rally in', () => {
-    // White holds initiative, so white's rally is the first and black's the
-    // second.
-    const whiteRally = createRallyResolutionState({ playerRallied: true });
-    const blackRally = createRallyResolutionState({ playerRallied: false });
+    // Black chose to rally, and white, second, chose not to.
+    const blackRally = createRallyResolutionState({ playerRallied: true });
+    const whiteRally = createRallyResolutionState({ playerRallied: false });
     const state = updatePhaseState(
-      updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
+      blackFirst,
       createCleanupPhaseState({
-        firstPlayerRallyResolutionState: whiteRally,
-        secondPlayerRallyResolutionState: blackRally,
+        firstPlayerRallyResolutionState: blackRally,
+        secondPlayerRallyResolutionState: whiteRally,
         step: 'secondPlayerResolveRally',
       }),
     );
 
-    expect(findRallyResolutionState(state, 'white')).toBe(whiteRally);
+    // Black's is the first rally, and white's the second.
     expect(findRallyResolutionState(state, 'black')).toBe(blackRally);
+    expect(findRallyResolutionState(state, 'white')).toBe(whiteRally);
   });
 
   it('answers that a rally has not begun before its player has chosen', () => {
-    // Black holds initiative and has not yet chosen whether to rally.
+    // Black has not yet chosen whether to rally.
     const state = updatePhaseState(
-      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      blackFirst,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
 
+    // No rally to read, and that is an ordinary answer.
     expect(findRallyResolutionState(state, 'black')).toBeUndefined();
   });
 });

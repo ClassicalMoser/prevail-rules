@@ -41,16 +41,19 @@ describe('getFrontEngagementStage function', () => {
   }
 
   it('waits on the defender’s commitment first', () => {
+    // An engagement just opened: the defender has neither committed nor refused.
     expect(stageOf({})).toBe('defenderCommitting');
   });
 
   it('then works out whether the defender can fall back', () => {
+    // The card is in; its retreats are not yet worked out.
     expect(stageOf({ defensiveCommitment: committed })).toBe(
       'retreatBeingWorkedOut',
     );
   });
 
   it('leaves a defender with nowhere to go standing', () => {
+    // No retreat to make, so it is not offered the choice (§6.3.2).
     expect(
       stageOf({
         retreatPaths: [],
@@ -60,6 +63,7 @@ describe('getFrontEngagementStage function', () => {
   });
 
   it('asks a defender that can fall back whether it will', () => {
+    // One way back, and the choice not yet made.
     expect(
       stageOf({
         retreatPaths: [['step']],
@@ -69,6 +73,7 @@ describe('getFrontEngagementStage function', () => {
   });
 
   it('records a defender that chose to stand', () => {
+    // It could fall back and chose to fight in Phase 4 instead.
     expect(
       stageOf({
         retreatPaths: [['step']],
@@ -79,18 +84,37 @@ describe('getFrontEngagementStage function', () => {
   });
 
   it('opens, carries out and finishes the retreat a defender accepts', () => {
+    // The defender committed, could fall back, and chose to.
     const accepted: Partial<FrontEngagementResolutionState> = {
       retreatPaths: [['step']],
       defendingUnitRetreats: true,
       defensiveCommitment: committed,
     };
 
+    // Chosen, and the retreat not yet opened.
     expect(stageOf(accepted)).toBe('retreatOpening');
+
+    // Opened, and the unit still on its way back.
     expect(stageOf({ ...accepted, retreatState: retreat(false) })).toBe(
       'retreating',
     );
+
+    // Back where it fell to: the engagement ends with no melee.
     expect(stageOf({ ...accepted, retreatState: retreat(true) })).toBe(
       'retreated',
     );
+  });
+
+  it('throws for a defender that chose to fall back but has its retreat bypassed', () => {
+    // A defender that chose to fall back always has its retreat opened; a
+    // bypassed one means whatever recorded the choice wrote it wrong.
+    expect(() =>
+      stageOf({
+        retreatPaths: [['step']],
+        defendingUnitRetreats: true,
+        defensiveCommitment: committed,
+        retreatState: 'bypassed',
+      }),
+    ).toThrow('A defender that falls back has its retreat bypassed');
   });
 });

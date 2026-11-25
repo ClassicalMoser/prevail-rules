@@ -7,10 +7,12 @@ import { isDiagonalFacing } from './isDiagonalFacing';
  */
 describe('isDiagonalFacing function', () => {
   it('northEast is a diagonal facing', () => {
+    // Toward a corner of the space.
     expect(isDiagonalFacing('northEast')).toBe(true);
   });
 
   it('north is not a diagonal facing', () => {
+    // Toward a side of the space.
     expect(isDiagonalFacing('north')).toBe(false);
   });
 

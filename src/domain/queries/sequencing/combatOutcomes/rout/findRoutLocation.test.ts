@@ -1,28 +1,35 @@
-import type { UnitWithPlacement } from '@entities';
 import type { CommandResolutionState, GameState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
+  createFlankEngagementState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
+  createMeleeResolutionState,
   createMovementResolutionState,
+  createPlayCardsPhaseState,
   createRallyResolutionState,
   createRangedAttackResolutionState,
   createRearEngagementState,
+  createResolveMeleePhaseState,
   createRetreatState,
   createRoutState,
   createTestUnit,
+  createUnitWithPlacement,
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRoutLocation } from './findRoutLocation';
 
 /** Issue-commands phase resolving the command this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
+function issueCommands(
+  resolution: CommandResolutionState | 'pending',
+): GameState {
   const empty = createEmptyGameState('standard');
   const phaseState = createIssueCommandsPhaseState(empty, {
     currentCommandResolutionState: resolution,
@@ -32,7 +39,28 @@ function issueCommands(resolution: CommandResolutionState): GameState {
 }
 
 describe('findRoutLocation function', () => {
+  it('answers undefined before the round has a phase', () => {
+    // Setup has no phase yet, and the endgame check asks on every state.
+    expect(
+      findRoutLocation(createEmptyGameState('standard'), 'white'),
+    ).toBeUndefined();
+  });
+
+  it('answers undefined in a phase that routs nobody', () => {
+    // Playing cards moves no units and so routs none.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(empty, createPlayCardsPhaseState());
+
+    expect(findRoutLocation(state, 'white')).toBeUndefined();
+  });
+
+  it('answers undefined between commands', () => {
+    // No command is being carried out, so nothing has broken anyone.
+    expect(findRoutLocation(issueCommands('pending'), 'white')).toBeUndefined();
+  });
+
   it('names the ranged attack that routed the defender', () => {
+    // The shot reached White's unit's Rout.
     const empty = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
     const rout = createRoutState('white', defender);
@@ -49,7 +77,58 @@ describe('findRoutLocation function', () => {
     });
   });
 
+  it('answers undefined when the rout belongs to the other player', () => {
+    const empty = createEmptyGameState('standard');
+    // One rout, and it is White's to pay for.
+    const defender = createTestUnit('white', { attack: 2 });
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithRout(defender),
+      defendingUnit: defender,
+    });
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'black'),
+    ).toBeUndefined();
+  });
+
+  it('answers undefined while the shot is not yet measured', () => {
+    // The shot is aimed but its apply is not written.
+    const empty = createEmptyGameState('standard');
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: 'pending',
+    });
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'white'),
+    ).toBeUndefined();
+  });
+
+  it('answers undefined when the shot routed nobody', () => {
+    // The shot reached no threshold, so its rout slot is bypassed.
+    const empty = createEmptyGameState('standard');
+    const defender = createTestUnit('white', { attack: 2 });
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithNothingDue(defender),
+      defendingUnit: defender,
+    });
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'white'),
+    ).toBeUndefined();
+  });
+
+  it('answers undefined when a movement has engaged nobody', () => {
+    // A move into an empty space breaks nobody.
+    const empty = createEmptyGameState('standard');
+    const resolution = createMovementResolutionState(empty);
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'white'),
+    ).toBeUndefined();
+  });
+
   it('names the rear engagement that routed the defender', () => {
+    // Engaging White's unit from behind routs it outright (§6.3.3).
     const empty = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(empty, {
       engagementState: createRearEngagementState(),
@@ -60,7 +139,118 @@ describe('findRoutLocation function', () => {
     );
   });
 
+  it('answers undefined in a flank engagement', () => {
+    // A defender caught in the flank is turned, not routed (§6.3.4).
+    const empty = createEmptyGameState('standard');
+    const resolution = createMovementResolutionState(empty, {
+      engagementState: createFlankEngagementState(),
+    });
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'white'),
+    ).toBeUndefined();
+  });
+
+  it('answers undefined while a front-engaged defender has not yet chosen', () => {
+    // The engagement has just begun, so no retreat is open on it.
+    const empty = createEmptyGameState('standard');
+    const resolution = createMovementResolutionState(empty, {
+      engagementState: createFrontEngagementState(),
+    });
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'white'),
+    ).toBeUndefined();
+  });
+
+  it('answers undefined when a front-engaged defender gives ground', () => {
+    // White's defender has somewhere to go, so its retreat holds no rout.
+    const empty = createEmptyGameState('standard');
+    const defender = createUnitWithPlacement({ playerSide: 'white' });
+    const resolution = createMovementResolutionState(empty, {
+      engagementState: createFrontEngagementState({
+        defendingUnitRetreats: true,
+        retreatState: createRetreatState(
+          defender.unit,
+          legalRetreatsOf(defender),
+        ),
+      }),
+    });
+
+    expect(
+      findRoutLocation(issueCommands(resolution), 'white'),
+    ).toBeUndefined();
+  });
+
+  it('answers each side of a melee about its own rout', () => {
+    // Both units strike at once, so a melee can hold a rout for each side.
+    // Initiative decides which resolves first and not which rout is whose.
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
+    const blackDefender = createTestUnit('black', { attack: 2 });
+    const whiteDefender = createTestUnit('white', { attack: 2 });
+    const blackRout = createRoutState('black', blackDefender);
+    const whiteRout = createRoutState('white', whiteDefender);
+    const melee = createMeleeResolutionState(empty, {
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(
+        blackDefender,
+        { routState: blackRout },
+      ),
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRout(
+        whiteDefender,
+        { routState: whiteRout },
+      ),
+    });
+    const state = updatePhaseState(
+      empty,
+      createResolveMeleePhaseState(empty, {
+        currentMeleeResolutionState: melee,
+      }),
+    );
+
+    // Each player is answered from the slot holding their own unit.
+    expect(findRoutLocation(state, 'black')).toStrictEqual({
+      routState: blackRout,
+      source: 'melee',
+    });
+    expect(findRoutLocation(state, 'white')).toStrictEqual({
+      routState: whiteRout,
+      source: 'melee',
+    });
+  });
+
+  it('answers undefined between engagements', () => {
+    // No melee is being fought, so nobody is routing from one.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      empty,
+      createResolveMeleePhaseState(empty, {
+        currentMeleeResolutionState: 'pending',
+      }),
+    );
+
+    expect(findRoutLocation(state, 'white')).toBeUndefined();
+  });
+
+  it('answers undefined while the blow on this side is not yet measured', () => {
+    // White holds the initiative; Black's blow on White's unit is not written.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      empty,
+      createResolveMeleePhaseState(empty, {
+        currentMeleeResolutionState: createMeleeResolutionState(empty, {
+          attackOnFirstPlayerApplyState: 'pending',
+        }),
+      }),
+    );
+
+    expect(findRoutLocation(state, 'white')).toBeUndefined();
+  });
+
   it('names the rally that routed the unsupported units', () => {
+    // White rallied first, and its support check left a unit without a place.
     const empty = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const rout = createRoutState('white', unit);
@@ -100,15 +290,24 @@ describe('findRoutLocation function', () => {
     expect(findRoutLocation(state, 'black')).toBeUndefined();
   });
 
+  it('answers undefined while the rallying player has not yet chosen', () => {
+    // White, the first player, is deciding whether to rally, so no rally has
+    // been made and nothing has routed from one.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      empty,
+      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
+    );
+
+    expect(findRoutLocation(state, 'white')).toBeUndefined();
+  });
+
   it('names the retreat when the defender had nowhere to go', () => {
     // The rout is nested on the retreat, so it is resolved against the retreat
     // and not against the attack that forced it.
     const empty = createEmptyGameState('standard');
-    const defender = createTestUnit('black', { attack: 2 });
-    const standing: UnitWithPlacement = {
-      placement: createUnitPlacement('E-5', 'north'),
-      unit: defender,
-    };
+    const standing = createUnitWithPlacement({ playerSide: 'black' });
+    const defender = standing.unit;
     const nested = createRoutState('black', defender);
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: createAttackApplyStateWithRetreat(
@@ -138,11 +337,8 @@ describe('findRoutLocation function', () => {
     // go (§6.3.2), so it never falls into a rout from that retreat. Finding
     // one means the state was built wrong.
     const empty = createEmptyGameState('standard');
-    const defender = createTestUnit('black', { attack: 2 });
-    const standing: UnitWithPlacement = {
-      placement: createUnitPlacement('E-5', 'north'),
-      unit: defender,
-    };
+    const standing = createUnitWithPlacement({ playerSide: 'black' });
+    const defender = standing.unit;
     const resolution = createMovementResolutionState(empty, {
       engagementState: createFrontEngagementState({
         retreatState: createRetreatState(

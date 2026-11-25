@@ -1,90 +1,79 @@
-import type { Coordinate } from '@entities';
-import {
-  createBoardWithSingleUnit,
-  createBoardWithUnits,
-  createTestUnit,
-  placed,
-} from '@testing';
 import { createEmptyStandardBoard } from '@factories';
+import { createBoardWithUnits, createTestUnit, placed } from '@testing';
 
 import { diagonalIsClear } from './diagonalIsClear';
 
+/**
+ * A diagonal is blocked when enemy units stand in both of the orthogonal
+ * spaces that flank it; one enemy does not block it (§2.4.4). This is the
+ * question support and commanders ask. Friends never shut it: that stricter
+ * test is the mover's alone (§5.4.5).
+ *
+ * Every case asks of the diagonal from E-5 north-east to D-6, which passes
+ * between D-5 and E-6, with Black asking.
+ */
 describe('diagonalIsClear function', () => {
-  const coordinate: Coordinate = 'E-5';
-  const board = createEmptyStandardBoard();
+  // Two white units and two black ones, to stand in the corner spaces.
+  const firstWhite = createTestUnit('white');
+  const secondWhite = createTestUnit('white', { instanceNumber: 2 });
+  const firstBlack = createTestUnit('black');
+  const secondBlack = createTestUnit('black', { instanceNumber: 2 });
 
-  it('an orthogonal neighbor is rejected', () => {
-    expect(() => diagonalIsClear('black', board, coordinate, 'E-6')).toThrow(
+  it('is clear when nothing stands beside it', () => {
+    // An empty board.
+    const board = createEmptyStandardBoard();
+
+    // With both corner spaces empty, nothing blocks the diagonal.
+    expect(diagonalIsClear('black', board, 'E-5', 'D-6')).toBe(true);
+  });
+
+  it('stays clear with an enemy in only one of the two corner spaces', () => {
+    // A white unit at D-5; E-6 is empty.
+    const board = createBoardWithUnits([placed(firstWhite, 'D-5', 'north')]);
+
+    // One enemy is not enough to shut the diagonal.
+    expect(diagonalIsClear('black', board, 'E-5', 'D-6')).toBe(true);
+  });
+
+  it('is blocked with enemies in both corner spaces', () => {
+    // White units at D-5 and E-6.
+    const board = createBoardWithUnits([
+      placed(firstWhite, 'D-5', 'north'),
+      placed(secondWhite, 'E-6', 'north'),
+    ]);
+
+    // Enemies on both sides close the diagonal to Black.
+    expect(diagonalIsClear('black', board, 'E-5', 'D-6')).toBe(false);
+  });
+
+  it('stays clear with friends in both corner spaces', () => {
+    // Black's own units at D-5 and E-6.
+    const board = createBoardWithUnits([
+      placed(firstBlack, 'D-5', 'north'),
+      placed(secondBlack, 'E-6', 'north'),
+    ]);
+
+    // A wall of one's own troops never cuts off support or a commander.
+    expect(diagonalIsClear('black', board, 'E-5', 'D-6')).toBe(true);
+  });
+
+  it('stays clear with a friend in one corner space and an enemy in the other', () => {
+    // A black unit at D-5, a white one at E-6.
+    const board = createBoardWithUnits([
+      placed(firstBlack, 'D-5', 'north'),
+      placed(firstWhite, 'E-6', 'north'),
+    ]);
+
+    // Only one of the two is an enemy, so the diagonal is open.
+    expect(diagonalIsClear('black', board, 'E-5', 'D-6')).toBe(true);
+  });
+
+  it('refuses a target that is not a diagonal neighbour', () => {
+    const board = createEmptyStandardBoard();
+
+    // E-6 is beside E-5, not diagonal to it: there is no corner to block.
+    expect(() => diagonalIsClear('black', board, 'E-5', 'E-6')).toThrow(
       'Target space E-6 is not diagonally adjacent to E-5',
-    );
-  });
-
-  it('a non-adjacent target is rejected', () => {
-    // Test at edge of board where one adjacent space might be undefined
-    expect(() => diagonalIsClear('black', board, coordinate, 'A-1')).toThrow(
-      'Target space A-1 is not diagonally adjacent to E-5',
-    );
-  });
-
-  it('is clear when no enemy stands between the spaces', () => {
-    expect(diagonalIsClear('black', board, coordinate, 'D-4')).toBe(true);
-  });
-
-  it('stays clear when only one intervening space holds an enemy', () => {
-    // NorthEast at E-5 has adjacent orthogonal spaces: D-5 (north) and E-6 (east)
-    // Place enemy at D-5 only - need more than one enemy to block
-    const boardWithEnemy = createBoardWithSingleUnit('D-5', 'white');
-    expect(diagonalIsClear('black', boardWithEnemy, coordinate, 'D-4')).toBe(
-      true,
-    );
-  });
-
-  it('is blocked when enemies occupy both intervening spaces', () => {
-    // NorthEast at E-5 has adjacent orthogonal spaces: D-5 (north) and E-6 (east)
-    const boardWithEnemies = createBoardWithUnits([
-      placed(createTestUnit('white', { attack: 3 }), 'D-5', 'north'),
-      placed(
-        createTestUnit('white', { attack: 3, instanceNumber: 2 }),
-        'E-6',
-        'north',
-      ),
-    ]);
-    expect(diagonalIsClear('black', boardWithEnemies, coordinate, 'D-6')).toBe(
-      false,
-    );
-  });
-
-  it('is clear on a different diagonal when only one intervening space holds an enemy', () => {
-    // SouthWest at E-5 has adjacent orthogonal spaces: F-5 (south) and E-4 (west)
-    const boardWithEnemies = createBoardWithUnits([
-      placed(createTestUnit('white', { attack: 3 }), 'F-5', 'north'),
-    ]);
-    expect(diagonalIsClear('black', boardWithEnemies, coordinate, 'F-4')).toBe(
-      true,
-    );
-  });
-
-  it('stays clear when friendlies occupy both intervening spaces', () => {
-    const boardWithFriendlies = createBoardWithUnits([
-      placed(createTestUnit('black', { attack: 3 }), 'D-5', 'north'),
-      placed(
-        createTestUnit('black', { attack: 3, instanceNumber: 2 }),
-        'E-6',
-        'north',
-      ),
-    ]);
-    expect(
-      diagonalIsClear('black', boardWithFriendlies, coordinate, 'D-6'),
-    ).toBe(true);
-  });
-
-  it('stays clear when one intervening space is friendly and the other is an enemy', () => {
-    const boardWithMixed = createBoardWithUnits([
-      placed(createTestUnit('black', { attack: 3 }), 'D-5', 'north'),
-      placed(createTestUnit('white', { attack: 3 }), 'E-6', 'north'),
-    ]);
-    expect(diagonalIsClear('black', boardWithMixed, coordinate, 'D-6')).toBe(
-      true,
     );
   });
 });

@@ -1,62 +1,31 @@
-import type { Board, Coordinate } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
+import { createEmptySmallBoard } from '@factories';
 
 import { getBoardSpace } from './getBoardSpace';
 
-const standardBoard: Board = createEmptyStandardBoard();
-const smallBoard: Board = createEmptySmallBoard();
+// A board with a unit on it is built through `addUnitToBoard`, which reads
+// the space through this subject, so the self-proof check keeps these cases
+// to a board fresh from its factory.
 
 /**
- * GetBoardSpace: looks up the tile record at a coordinate; throws if the coordinate is missing from the board
- * map or not a valid coordinate for that board shape.
+ * The space at a coordinate: its ground, its corners, and who stands on it.
+ * Every space of the board's size is there, so asking for one the board does
+ * not have is a fault.
  */
 describe('getBoardSpace function', () => {
-  describe('standard board', () => {
-    it('the space at E-5 has terrain, elevation, and unit presence', () => {
-      const space = getBoardSpace(standardBoard, 'E-5');
-      expect(space).toBeDefined();
-      expect(space.groundCover).toBeDefined();
-      expect(space.elevation).toBeDefined();
-      expect(space.unitPresence).toBeDefined();
-    });
+  it('is an empty space on a board nobody has deployed to', () => {
+    // A small board fresh from its factory.
+    const board = createEmptySmallBoard();
 
-    it('a-1 is a defined space', () => {
-      const space = getBoardSpace(standardBoard, 'A-1');
-      expect(space).toBeDefined();
-    });
-
-    it('l-18 is a defined space', () => {
-      const space = getBoardSpace(standardBoard, 'L-18');
-      expect(space).toBeDefined();
-    });
-
-    it('a coordinate off the standard board is rejected', () => {
-      expect(() => {
-        // Intentionally bad type cast to test error path
-        getBoardSpace(standardBoard, 'Y-55' as Coordinate);
-      }).toThrow(
-        new Error('Coordinate Y-55 does not exist on standard board.'),
-      );
+    // E-5 is there, and no unit stands on it.
+    expect(getBoardSpace(board, 'E-5').unitPresence).toStrictEqual({
+      presenceType: 'none',
     });
   });
 
-  describe('small board', () => {
-    it('the space at E-5 has terrain, elevation, and unit presence', () => {
-      const space = getBoardSpace(smallBoard, 'E-5');
-      expect(space).toBeDefined();
-      expect(space.terrainDifficulty).toBeDefined();
-      expect(space.elevation).toBeDefined();
-      expect(space.unitPresence).toBeDefined();
-    });
-
-    it('a-1 is a defined space', () => {
-      const space = getBoardSpace(smallBoard, 'A-1');
-      expect(space).toBeDefined();
-    });
-
-    it('h-12 is a defined space', () => {
-      const space = getBoardSpace(smallBoard, 'H-12');
-      expect(space).toBeDefined();
-    });
+  it('refuses a space only a larger board has', () => {
+    // The small board ends at row H; I-1 is a space of the standard board.
+    expect(() => getBoardSpace(createEmptySmallBoard(), 'I-1')).toThrow(
+      new Error('Coordinate I-1 does not exist on small board.'),
+    );
   });
 });

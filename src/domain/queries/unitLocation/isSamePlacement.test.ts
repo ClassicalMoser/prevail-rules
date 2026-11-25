@@ -5,6 +5,7 @@ import { isSamePlacement } from './isSamePlacement';
  */
 describe('isSamePlacement function', () => {
   it('the same space facing the same way is the same placement', () => {
+    // E-5 facing north, both times.
     expect(
       isSamePlacement(
         { coordinate: 'E-5', facing: 'north' },
@@ -24,6 +25,7 @@ describe('isSamePlacement function', () => {
   });
 
   it('the same facing on another space is a different placement', () => {
+    // E-5 and D-5 are different spaces, though both face north.
     expect(
       isSamePlacement(
         { coordinate: 'E-5', facing: 'north' },

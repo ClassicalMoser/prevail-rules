@@ -1,38 +1,24 @@
-import { tempCommandCards } from '@sampleValues';
-import type { Modifier } from '@entities';
 import { createTestCard } from '@testing';
 
 import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 
 /**
- * ModifiersFromCompletedCommitment: only a completed commitment yields the committed card's modifiers;
- * pending or declined yield nothing.
+ * A committed card gives +1 to every stat it names (§8.2). A commitment not
+ * yet decided, or declined, puts no card down and gives nothing.
  */
 describe('modifiersFromCompletedCommitment function', () => {
   it('a pending commitment has no modifiers', () => {
+    // The player has not yet chosen whether to commit.
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'pending' }),
     ).toBeUndefined();
   });
 
   it('a declined commitment has no modifiers', () => {
+    // Commitment is always optional (§8.3); declining lends nothing.
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'declined' }),
     ).toBeUndefined();
-  });
-
-  it('a completed commitment yields its card modifiers', () => {
-    const card = tempCommandCards[0];
-    const expected: Modifier[] = card.modifiers.map((type) => ({
-      type,
-      value: 1,
-    }));
-    expect(
-      modifiersFromCompletedCommitment({
-        card,
-        commitmentType: 'completed',
-      }),
-    ).toStrictEqual(expected);
   });
 
   it('a card naming two stats gives +1 to both (§8.2)', () => {

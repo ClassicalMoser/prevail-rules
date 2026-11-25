@@ -70,6 +70,8 @@ function gameOverState(options: {
 
 describe('findGameOverWinner function', () => {
   it('continues when both hands have cards', () => {
+    // One card each, nothing routing, and no army destroyed: neither board
+    // holds a unit, which is a game not yet begun rather than a loss.
     const state = gameOverState({
       blackHand: [createTestCard()],
       whiteHand: [createTestCard()],
@@ -89,6 +91,8 @@ describe('findGameOverWinner function', () => {
   });
 
   it('black wins on an empty white hand before black pays a rout of 99', () => {
+    // Black could never pay 99 cards, but White's hand gave out first, and
+    // the empty hand is asked about first (§11.1).
     const state = gameOverState({
       blackHand: [createTestCard()],
       rout: { numberToDiscard: 99, player: 'black' },
@@ -115,6 +119,7 @@ describe('findGameOverWinner function', () => {
   });
 
   it('black wins when white cannot pay a rout of 2', () => {
+    // Both hands hold a card, so only the rout decides it (§11.2).
     const state = gameOverState({
       blackHand: [createTestCard()],
       rout: { numberToDiscard: 2, player: 'white' },

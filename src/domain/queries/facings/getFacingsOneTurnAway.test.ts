@@ -6,21 +6,17 @@ import { getFacingsOneTurnAway } from './getFacingsOneTurnAway';
  */
 describe('getFacingsOneTurnAway function', () => {
   it('an orthogonal facing turns to its two neighbours or about', () => {
+    // From north: north-west, north-east, or about to south. East and west,
+    // the 90° wheel, are not among them.
     expect(getFacingsOneTurnAway('north')).toStrictEqual(
       new Set(['northWest', 'northEast', 'south']),
     );
   });
 
   it('a diagonal facing turns to its two neighbours or about', () => {
+    // From south-west: south, west, or about to north-east.
     expect(getFacingsOneTurnAway('southWest')).toStrictEqual(
       new Set(['south', 'west', 'northEast']),
     );
-  });
-
-  it('a 90-degree wheel is not reachable in one turn', () => {
-    const targets = getFacingsOneTurnAway('north');
-
-    expect(targets.has('east')).toBe(false);
-    expect(targets.has('west')).toBe(false);
   });
 });

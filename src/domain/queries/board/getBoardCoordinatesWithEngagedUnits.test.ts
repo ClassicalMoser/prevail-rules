@@ -1,58 +1,49 @@
+import { createEmptyGameState } from '@factories';
 import {
   createGameStateWithEngagedUnits,
   createTestUnit,
   placed,
 } from '@testing';
-
-import { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
 import { addUnitToBoard } from '@transforms';
 
-import { createEmptyGameState } from '@factories';
+import { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
+
 /**
- * GetBoardCoordinatesWithEngagedUnits: set of coordinates where the space has an engagement (two units).
+ * Every space where two enemy units stand engaged. Each of these fights in
+ * Phase 4 (§4.4.1); a lone unit is not a fight.
  */
 describe('getBoardCoordinatesWithEngagedUnits function', () => {
-  it('the board has no engagements', () => {
+  it('is no space on a board with no engagement', () => {
+    // A new standard game, nobody on the board.
     const state = createEmptyGameState('standard');
-    expect(getBoardCoordinatesWithEngagedUnits(state.boardState).size).toBe(0);
+
+    const engagements = getBoardCoordinatesWithEngagedUnits(state.boardState);
+
+    // There is nothing to fight.
+    expect(engagements).toStrictEqual(new Set());
   });
 
-  it('the one engaged space is included', () => {
-    const black = createTestUnit('black', { attack: 3 });
-    const white = createTestUnit('white', { attack: 3 });
-    const state = createGameStateWithEngagedUnits(black, white, 'E-5');
-
-    const coords = getBoardCoordinatesWithEngagedUnits(state.boardState);
-
-    expect(coords.size).toBe(1);
-    expect(coords.has('E-5')).toBe(true);
-  });
-
-  it('unengaged units are excluded', () => {
-    const engagedBlack = createTestUnit('black', { attack: 3 });
-    const engagedWhite = createTestUnit('white', { attack: 3 });
-    const unengagedBlack = createTestUnit('black', { attack: 3 });
-    const unengagedWhite = createTestUnit('white', { attack: 3 });
-    const state = createGameStateWithEngagedUnits(
-      engagedBlack,
-      engagedWhite,
+  it('is the engaged space alone, leaving out units standing on their own', () => {
+    // A black and a white unit engaged on E-5.
+    const engaged = createGameStateWithEngagedUnits(
+      createTestUnit('black'),
+      createTestUnit('white'),
       'E-5',
     );
-
-    // Add unengaged units to the board
-    const boardWithUnengagedBlack = addUnitToBoard(
-      state.boardState,
-      placed(unengagedBlack, 'E-6', 'north'),
+    // A black unit alone on E-6, beside the fight, and a white one alone on
+    // E-8.
+    const withBlack = addUnitToBoard(
+      engaged.boardState,
+      placed(createTestUnit('black', { instanceNumber: 2 }), 'E-6', 'north'),
     );
-    const boardWithUnengagedWhite = addUnitToBoard(
-      boardWithUnengagedBlack,
-      placed(unengagedWhite, 'E-8', 'north'),
+    const board = addUnitToBoard(
+      withBlack,
+      placed(createTestUnit('white', { instanceNumber: 2 }), 'E-8', 'north'),
     );
 
-    // Get the coordinates with engaged units
-    const coords = getBoardCoordinatesWithEngagedUnits(boardWithUnengagedWhite);
+    const engagements = getBoardCoordinatesWithEngagedUnits(board);
 
-    expect(coords.size).toBe(1);
-    expect(coords.has('E-5')).toBe(true);
+    // Only E-5 holds a fight.
+    expect(engagements).toStrictEqual(new Set(['E-5']));
   });
 });

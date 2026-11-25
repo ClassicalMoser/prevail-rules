@@ -6,102 +6,76 @@ import {
   replaceBoard,
 } from '@testing';
 import { createEmptyGameState } from '@factories';
-
-import { throwIfUndefined } from '@utils';
+import { addUnitToBoard } from '@transforms';
 
 import { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
+
 /**
- * GetPlayerUnitsOnBoard: set of unit instances for a player present on the board (including engaged).
+ * The units a side has on the board, engaged or not: the units the support
+ * check must find a place for after a rally (§10.4.4), and the ones whose
+ * loss ends the game (§11.4).
  */
 describe('getPlayerUnitsOnBoard function', () => {
-  it('returns the white units on the board', () => {
-    const unit1 = createTestUnit('white', { attack: 3 });
-    const unit2 = createTestUnit('white', { attack: 3 });
-    const unit3 = createTestUnit('black', { attack: 3 });
-
+  it("gives one side's units and none of the other's", () => {
+    // Two white units and a black one, each alone in its space.
+    const white1 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+    const white2 = createTestUnit('white', { attack: 3, instanceNumber: 2 });
+    const black = createTestUnit('black', { attack: 3 });
     const state = replaceBoard(
       createEmptyGameState('standard'),
       createBoardWithUnits([
-        placed(unit1, 'E-5', 'north'),
-        placed(unit2, 'F-5', 'south'),
-        placed(unit3, 'G-5', 'east'),
+        placed(white1, 'E-5', 'north'),
+        placed(white2, 'F-5', 'south'),
+        placed(black, 'G-5', 'east'),
       ]),
     );
 
-    const whiteUnits = getPlayerUnitsOnBoard(state, 'white');
-
-    expect(whiteUnits.size).toBe(2);
-    const whiteUnitsArray = [...whiteUnits];
-    expect(whiteUnitsArray).toContain(unit1);
-    expect(whiteUnitsArray).toContain(unit2);
-    expect(whiteUnitsArray).not.toContain(unit3);
+    // White's two, and not Black's.
+    expect(getPlayerUnitsOnBoard(state, 'white')).toStrictEqual(
+      new Set([white1, white2]),
+    );
   });
 
-  it('returns an empty set when the asked side has no unit on the board', () => {
-    const unit = createTestUnit('white', { attack: 3 });
-
+  it('gives an empty set for a side with no unit on the board', () => {
+    // Only White has a unit standing.
     const state = replaceBoard(
       createEmptyGameState('standard'),
-      createBoardWithUnits([placed(unit, 'E-5', 'north')]),
+      createBoardWithUnits([
+        placed(createTestUnit('white', { attack: 3 }), 'E-5', 'north'),
+      ]),
     );
 
-    const blackUnits = getPlayerUnitsOnBoard(state, 'black');
-
-    expect(blackUnits.size).toBe(0);
+    expect(getPlayerUnitsOnBoard(state, 'black').size).toBe(0);
   });
 
-  it('returns the engaged primary and a single unit of the same side', () => {
-    const blackUnit = createTestUnit('black', { attack: 3 });
-    const whiteUnit = createTestUnit('white', { attack: 3 });
-    const supportUnit = createTestUnit('black', { attack: 3 });
+  it('counts a unit locked in an engagement, on either side of it', () => {
+    // Black has walked into White on E-5; another black unit stands alone
+    // beside the fight on F-5.
+    const blackEngaged = createTestUnit('black', {
+      attack: 3,
+      instanceNumber: 1,
+    });
+    const whiteEngaged = createTestUnit('white', { attack: 3 });
+    const blackAlone = createTestUnit('black', {
+      attack: 3,
+      instanceNumber: 2,
+    });
     const engaged = createBoardWithEngagedUnits(
-      blackUnit,
-      whiteUnit,
+      blackEngaged,
+      whiteEngaged,
       'E-5',
       'north',
     );
-    // F-5 is a single black unit beside the engagement.
-    // No factory places an engagement and a single unit on one board.
-    const spaceAtF5 = throwIfUndefined(
-      engaged.board['F-5'],
-      'expected board space at F-5',
-    );
-    const board = {
-      ...engaged,
-      board: {
-        ...engaged.board,
-        'F-5': {
-          ...spaceAtF5,
-          unitPresence: {
-            facing: 'south' as const,
-            presenceType: 'single' as const,
-            unit: supportUnit,
-          },
-        },
-      },
-    };
+    const board = addUnitToBoard(engaged, placed(blackAlone, 'F-5', 'south'));
     const state = replaceBoard(createEmptyGameState('standard'), board);
 
-    const blackUnits = getPlayerUnitsOnBoard(state, 'black');
-
-    expect(blackUnits.size).toBe(2);
-    expect(blackUnits).toContain(blackUnit);
-    expect(blackUnits).toContain(supportUnit);
-    expect(blackUnits).not.toContain(whiteUnit);
-  });
-
-  it('returns the engaged secondary when that unit is the asked side', () => {
-    const blackUnit = createTestUnit('black', { attack: 3 });
-    const whiteUnit = createTestUnit('white', { attack: 3 });
-    const state = replaceBoard(
-      createEmptyGameState('standard'),
-      createBoardWithEngagedUnits(blackUnit, whiteUnit, 'E-5', 'north'),
+    // Black's engaged unit and its lone one …
+    expect(getPlayerUnitsOnBoard(state, 'black')).toStrictEqual(
+      new Set([blackEngaged, blackAlone]),
     );
-
-    const whiteUnits = getPlayerUnitsOnBoard(state, 'white');
-
-    expect(whiteUnits.size).toBe(1);
-    expect(whiteUnits).toContain(whiteUnit);
-    expect(whiteUnits).not.toContain(blackUnit);
+    // … and White's engaged unit, though it is not the one that moved in.
+    expect(getPlayerUnitsOnBoard(state, 'white')).toStrictEqual(
+      new Set([whiteEngaged]),
+    );
   });
 });

@@ -2,6 +2,7 @@ import { createAttackApplyState, createEmptyGameState } from '@factories';
 import {
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
+  createPlayCardsPhaseState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
@@ -27,6 +28,7 @@ describe('getAttackApplyStateOfPlayer function', () => {
       createEmptyGameState('standard'),
       'black',
     );
+    // Black shoots at White's unit, and the shot leaves one apply.
     const target = createTestUnit('white', { attack: 2 });
     const apply = createAttackApplyState(target, nothingReached);
     const state = updatePhaseState(
@@ -42,7 +44,9 @@ describe('getAttackApplyStateOfPlayer function', () => {
       }),
     );
 
+    // A shot is one way (§7.4.4), so either player is answered with it.
     expect(getAttackApplyStateOfPlayer(state, 'white')).toBe(apply);
+    expect(getAttackApplyStateOfPlayer(state, 'black')).toBe(apply);
   });
 
   it('reads the apply on a player’s own side of a melee', () => {
@@ -50,6 +54,7 @@ describe('getAttackApplyStateOfPlayer function', () => {
       createEmptyGameState('standard'),
       'black',
     );
+    // Both units strike at once, so each has an apply of its own.
     const white = createTestUnit('white', { attack: 2 });
     const black = createTestUnit('black', { attack: 2 });
     const whiteApply = createAttackApplyState(white, nothingReached);
@@ -65,11 +70,23 @@ describe('getAttackApplyStateOfPlayer function', () => {
       }),
     );
 
+    // Each player is answered with the apply on their own unit.
     expect(getAttackApplyStateOfPlayer(state, 'black')).toBe(blackApply);
     expect(getAttackApplyStateOfPlayer(state, 'white')).toBe(whiteApply);
   });
 
-  it('throws where no attack is being resolved', () => {
+  it('throws in a phase that resolves no attack', () => {
+    // Playing cards carries out no attack's results.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(empty, createPlayCardsPhaseState());
+
+    expect(() => getAttackApplyStateOfPlayer(state, 'white')).toThrow(
+      'Attack apply state not available in phase: playCards',
+    );
+  });
+
+  it('throws before the round has a phase', () => {
+    // Setup has no phase, and so no attack.
     expect(() =>
       getAttackApplyStateOfPlayer(
         updateCurrentInitiative(createEmptyGameState('standard'), 'black'),

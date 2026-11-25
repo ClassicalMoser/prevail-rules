@@ -41,6 +41,7 @@ function boardWithOccupant(unit: UnitInstance, facing: UnitFacing) {
  */
 describe('canJoinLine function', () => {
   it('a friendly unit facing the line way joins', () => {
+    // A black unit at E-5 facing north, the way the line faces.
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const board = boardWithOccupant(unit, lineFacing);
 
@@ -58,6 +59,7 @@ describe('canJoinLine function', () => {
   });
 
   it('a friendly unit facing the opposite way joins', () => {
+    // Facing south: a rank that has about-faced is still a rank (§4.3.5).
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const board = boardWithOccupant(unit, oppositeFacing);
 
@@ -125,6 +127,7 @@ describe('canJoinLine function', () => {
   });
 
   it('a unit already commanded this round does not join', () => {
+    // A black unit at E-5 facing the line's way.
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const board = boardWithOccupant(unit, lineFacing);
 
@@ -143,6 +146,7 @@ describe('canJoinLine function', () => {
   });
 
   it('an empty space does not join', () => {
+    // Nothing stands at E-5: a gap breaks the line.
     const board = createBoardWithUnits([]);
 
     const joined = canJoinLine(
@@ -159,6 +163,7 @@ describe('canJoinLine function', () => {
   });
 
   it('an enemy at the space does not join', () => {
+    // A white unit at E-5 cannot stand in black's line.
     const enemy = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const board = boardWithOccupant(enemy, lineFacing);
 
@@ -176,6 +181,7 @@ describe('canJoinLine function', () => {
   });
 
   it('a friendly unit facing neither way does not join', () => {
+    // Facing east, across the line's facing: not in this rank.
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const board = boardWithOccupant(unit, 'east');
 

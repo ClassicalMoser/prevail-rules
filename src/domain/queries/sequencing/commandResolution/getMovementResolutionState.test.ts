@@ -3,34 +3,35 @@ import {
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
-  createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { getMovementResolutionState } from './getMovementResolutionState';
 
+/** A caller that knows a Move order is under way reads it here. */
 describe('getMovementResolutionState function', () => {
-  it('returns the movement resolution', () => {
+  it('returns the movement being carried out', () => {
+    // Phase 3, with a Move order under way.
     const empty = createEmptyGameState('standard');
-    const resolution = createMovementResolutionState(empty, {
-      movingUnit: createTestUnit('black', { attack: 2 }),
-    });
+    const resolution = createMovementResolutionState(empty);
     const phase = createIssueCommandsPhaseState(empty, {
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);
 
+    // The move this test opened.
     expect(getMovementResolutionState(state)).toBe(resolution);
   });
 
-  it('throws when the command resolution is a ranged attack', () => {
+  it('throws when the order under way is a shot', () => {
+    // Phase 3, with a Shoot order under way instead.
     const empty = createEmptyGameState('standard');
-    const resolution = createRangedAttackResolutionState(empty);
     const phase = createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: resolution,
+      currentCommandResolutionState: createRangedAttackResolutionState(empty),
     });
     const state = updatePhaseState(empty, phase);
 
+    // Asking for a move during a shot is out of turn.
     expect(() => getMovementResolutionState(state)).toThrow(
       'Current command resolution is not a movement',
     );

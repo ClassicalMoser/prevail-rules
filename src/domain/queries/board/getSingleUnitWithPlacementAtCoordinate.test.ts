@@ -1,40 +1,54 @@
-import { createBoardWithSingleUnit, createTestUnit, placed } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
+import {
+  createBoardWithEngagedUnits,
+  createBoardWithUnits,
+  createTestUnit,
+  placed,
+} from '@testing';
 
 import { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlacementAtCoordinate';
-import { addUnitToBoard } from '@transforms';
 
 /**
- * GetSingleUnitWithPlacementAtCoordinate: unit + placement when presence is exactly one unit; throws otherwise.
+ * The lone unit on a space, with where it stands and the way it faces. An
+ * engagement begins only on a space a single enemy holds (§6.1.1), so its
+ * defender is read this way, and any other space here is a fault.
  */
 describe('getSingleUnitWithPlacementAtCoordinate function', () => {
-  it('one unit on a space is found, including its placement', () => {
-    const board = createBoardWithSingleUnit('E-5', 'white', {
-      facing: 'south',
+  it('is the lone unit on the space, with the way it faces', () => {
+    // A white unit stands alone on E-5, facing south.
+    const unit = createTestUnit('white');
+    const board = createBoardWithUnits([placed(unit, 'E-5', 'south')]);
+
+    const defender = getSingleUnitWithPlacementAtCoordinate(board, 'E-5');
+
+    // That unit, on E-5, facing south.
+    expect(defender).toStrictEqual({
+      placement: { coordinate: 'E-5', facing: 'south' },
+      unit,
     });
-    const u = getSingleUnitWithPlacementAtCoordinate(board, 'E-5');
-    expect(u.placement.coordinate).toBe('E-5');
-    expect(u.placement.facing).toBe('south');
-    expect(u.unit.playerSide).toBe('white');
   });
 
-  it('an empty space is rejected', () => {
+  it('refuses an empty space', () => {
+    // Nobody stands on E-5.
     const board = createEmptyStandardBoard();
+
+    // There is no defender to read.
     expect(() => getSingleUnitWithPlacementAtCoordinate(board, 'E-5')).toThrow(
       'Expected exactly one unit at coordinate',
     );
   });
 
-  it('multiple units on a space are rejected', () => {
-    const board = createBoardWithSingleUnit('E-5', 'white', {
-      facing: 'south',
-    });
-    const boardWithMultipleUnits = addUnitToBoard(
-      board,
-      placed(createTestUnit('black', { attack: 3 }), 'E-5', 'north'),
+  it('refuses a space already engaged', () => {
+    // A white unit and a black one engaged on E-5.
+    const board = createBoardWithEngagedUnits(
+      createTestUnit('white'),
+      createTestUnit('black'),
+      'E-5',
     );
-    expect(() =>
-      getSingleUnitWithPlacementAtCoordinate(boardWithMultipleUnits, 'E-5'),
-    ).toThrow('Expected exactly one unit at coordinate');
+
+    // An engaged space holds two units, not one defender.
+    expect(() => getSingleUnitWithPlacementAtCoordinate(board, 'E-5')).toThrow(
+      'Expected exactly one unit at coordinate',
+    );
   });
 });

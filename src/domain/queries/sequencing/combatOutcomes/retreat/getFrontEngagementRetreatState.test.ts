@@ -1,13 +1,12 @@
-import type { UnitWithPlacement } from '@entities';
 import type { EngagementState, GameState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRearEngagementState,
   createRetreatState,
-  createTestUnit,
+  createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -30,17 +29,10 @@ function stateEngaging(
   return engaging;
 }
 
-/** The defender standing in the space the moving unit advances into. */
-function defender(): UnitWithPlacement {
-  const unit = createTestUnit('white', { attack: 2 });
-  const placement = createUnitPlacement('E-5', 'north');
-  const standing = { placement, unit };
-  return standing;
-}
-
 describe('getFrontEngagementRetreatState function', () => {
   it('returns the retreat opened when the defender gave ground', () => {
-    const defendingUnit = defender();
+    // White's unit stands in the space the moving unit advances into.
+    const defendingUnit = createUnitWithPlacement({ playerSide: 'white' });
     // A front engagement the defender yields to opens a retreat for that unit.
     const retreat = createRetreatState(
       defendingUnit.unit,
@@ -61,6 +53,21 @@ describe('getFrontEngagementRetreatState function', () => {
 
     expect(() => getFrontEngagementRetreatState(state)).toThrow(
       'No retreat state found in front engagement',
+    );
+  });
+
+  it('throws when the defender stood', () => {
+    // The defender chose not to give ground, so the engagement opened no
+    // retreat and the two will fight in Phase 4 (§6.3.2).
+    const state = stateEngaging(
+      createFrontEngagementState({
+        defendingUnitRetreats: false,
+        retreatState: 'bypassed',
+      }),
+    );
+
+    expect(() => getFrontEngagementRetreatState(state)).toThrow(
+      'The defender stood; no retreat in front engagement',
     );
   });
 

@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
@@ -8,82 +7,41 @@ import {
 import { getBoardCoordinates } from './getBoardCoordinates';
 
 /**
- * GetBoardCoordinates: flat list of every coordinate key on the board (standard 12×18; small 8×12).
+ * Every space of a board's size (§2.1.3), listed row by row from the north
+ * edge, each row from the west edge. That order means nothing in the game;
+ * it is the board order `listInBoardOrder` writes sets down in.
  */
 describe('getBoardCoordinates function', () => {
-  describe('standard board', () => {
-    it('lists exactly 216 coordinates', () => {
-      const board: Board = createEmptyStandardBoard();
-      const coordinates = getBoardCoordinates(board);
+  it('lists the 96 spaces of the small board, 8 deep by 12 wide', () => {
+    const coordinates = getBoardCoordinates(createEmptySmallBoard());
 
-      expect(coordinates.length).toBeGreaterThan(0);
-      expect(coordinates).toHaveLength(216);
-    });
-
-    it('includes the standard corners A-1, A-18, L-1, and L-18', () => {
-      const board: Board = createEmptyStandardBoard();
-      const coordinates = getBoardCoordinates(board);
-
-      expect(coordinates).toContain('A-1');
-      expect(coordinates).toContain('A-18');
-      expect(coordinates).toContain('L-1');
-      expect(coordinates).toContain('L-18');
-    });
-
-    it('includes interior spaces such as E-5 and F-9', () => {
-      const board: Board = createEmptyStandardBoard();
-      const coordinates = getBoardCoordinates(board);
-
-      expect(coordinates).toContain('E-5');
-      expect(coordinates).toContain('F-9');
-    });
+    // Eight rows of twelve.
+    expect(coordinates).toHaveLength(96);
+    // From the north-west corner to the south-east one.
+    expect(coordinates[0]).toBe('A-1');
+    expect(coordinates[95]).toBe('H-12');
   });
 
-  describe('small board', () => {
-    it('lists exactly 96 coordinates', () => {
-      const board: Board = createEmptySmallBoard();
-      const coordinates = getBoardCoordinates(board);
+  it('lists the 216 spaces of the standard board, 12 deep by 18 wide', () => {
+    const coordinates = getBoardCoordinates(createEmptyStandardBoard());
 
-      expect(coordinates.length).toBeGreaterThan(0);
-      expect(coordinates).toHaveLength(96);
-    });
-
-    it('includes the small-board corners A-1, A-12, H-1, and H-12', () => {
-      const board: Board = createEmptySmallBoard();
-      const coordinates = getBoardCoordinates(board);
-
-      expect(coordinates).toContain('A-1');
-      expect(coordinates).toContain('A-12');
-      expect(coordinates).toContain('H-1');
-      expect(coordinates).toContain('H-12');
-    });
+    // Twelve rows of eighteen.
+    expect(coordinates).toHaveLength(216);
+    // Row A runs from A-1 to A-18, and row B starts straight after it.
+    expect(coordinates[0]).toBe('A-1');
+    expect(coordinates[17]).toBe('A-18');
+    expect(coordinates[18]).toBe('B-1');
+    // The south-east corner comes last.
+    expect(coordinates[215]).toBe('L-18');
   });
 
-  describe('large board', () => {
-    it('lists exactly 864 coordinates', () => {
-      const board: Board = createEmptyLargeBoard();
-      const coordinates = getBoardCoordinates(board);
+  it('lists the 864 spaces of the large board, 24 deep by 36 wide', () => {
+    const coordinates = getBoardCoordinates(createEmptyLargeBoard());
 
-      expect(coordinates.length).toBeGreaterThan(0);
-      expect(coordinates).toHaveLength(864);
-    });
-
-    it('includes the large-board corners A-1, A-36, X-1, and X-36', () => {
-      const board: Board = createEmptyLargeBoard();
-      const coordinates = getBoardCoordinates(board);
-
-      expect(coordinates).toContain('A-1');
-      expect(coordinates).toContain('A-36');
-      expect(coordinates).toContain('X-1');
-      expect(coordinates).toContain('X-36');
-    });
-
-    it('includes interior spaces such as M-5 and N-24', () => {
-      const board: Board = createEmptyLargeBoard();
-      const coordinates = getBoardCoordinates(board);
-
-      expect(coordinates).toContain('M-5');
-      expect(coordinates).toContain('N-24');
-    });
+    // Twenty-four rows of thirty-six.
+    expect(coordinates).toHaveLength(864);
+    // From the north-west corner to the south-east one.
+    expect(coordinates[0]).toBe('A-1');
+    expect(coordinates[863]).toBe('X-36');
   });
 });

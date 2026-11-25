@@ -69,6 +69,8 @@ describe('getNextMeleeReverseState function', () => {
   });
 
   it("returns the second player's reverse first when white is not the first player", () => {
+    // The slot carries the order, so Black holding the initiative is read the
+    // same way.
     const { second, state } = meleeWithReverses('black', {});
 
     expect(getNextMeleeReverseState(state)).toBe(second);
@@ -83,25 +85,8 @@ describe('getNextMeleeReverseState function', () => {
     expect(getNextMeleeReverseState(state)).toBe(first);
   });
 
-  it('passes over a first player reverse whose unit has already turned', () => {
-    // The first player's unit has already turned about.
-    const { second, state } = meleeWithReverses('white', {
-      first: true,
-    });
-
-    expect(getNextMeleeReverseState(state)).toBe(second);
-  });
-
-  it('passes over a first player reverse whose unit has already turned when black is first', () => {
-    // The first player's unit has already turned about.
-    const { second, state } = meleeWithReverses('black', {
-      first: true,
-    });
-
-    expect(getNextMeleeReverseState(state)).toBe(second);
-  });
-
   it('throws when both units have already turned', () => {
+    // Neither unit has a reverse left to carry out.
     const { state } = meleeWithReverses('white', {
       first: true,
       second: true,

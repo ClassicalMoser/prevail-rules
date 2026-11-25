@@ -8,8 +8,13 @@ import {
 
 import { getUnitWithPlacementOnBoard } from './getUnitWithPlacementOnBoard';
 
+/**
+ * An event names a unit by who it is; what it is, and where it stands, is
+ * what the board holds.
+ */
 describe('getUnitWithPlacementOnBoard function', () => {
   it('returns the unit the board holds, with where it stands', () => {
+    // A black unit alone at E-5, facing north.
     const unit = createTestUnit('black', { attack: 3 });
     const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
 
@@ -47,6 +52,7 @@ describe('getUnitWithPlacementOnBoard function', () => {
   });
 
   it('returns the secondary unit of an engagement facing opposite the primary', () => {
+    // White stands at E-5 facing north; Black has walked into it.
     const primary = createTestUnit('white', { attack: 3 });
     const secondary = createTestUnit('black', { attack: 3 });
     const board = createBoardWithEngagedUnits(
@@ -69,6 +75,7 @@ describe('getUnitWithPlacementOnBoard function', () => {
   });
 
   it('throws when the unit is not on the board', () => {
+    // An empty board: a unit named to act must be there.
     const unit = createTestUnit('black', { attack: 3 });
     const board = createBoardWithUnits([]);
 

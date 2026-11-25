@@ -7,24 +7,29 @@ import {
 import { hasNoUnit } from './hasNoUnit';
 
 /**
- * HasNoUnit: type guard — unit presence is empty (none).
+ * A space holds nothing, one unit, or two enemies engaged in it (§2.2.1).
+ * `hasNoUnit` answers for the empty space alone.
  */
 describe('hasNoUnit function', () => {
-  it('given none unit presence, returns true', () => {
-    const unitPresence = createNoneUnitPresence();
-    expect(hasNoUnit(unitPresence)).toBe(true);
+  it('an empty space has no unit', () => {
+    // An empty space.
+    expect(hasNoUnit(createNoneUnitPresence())).toBe(true);
   });
 
-  it('given single unit presence, returns false', () => {
+  it('a space with a lone unit is not empty', () => {
+    // A black unit standing alone, facing north.
     const unit = createTestUnit('black', { attack: 3 });
-    const unitPresence = createSingleUnitPresence(unit, 'north');
-    expect(hasNoUnit(unitPresence)).toBe(false);
+    const alone = createSingleUnitPresence(unit, 'north');
+
+    expect(hasNoUnit(alone)).toBe(false);
   });
 
-  it('given engaged unit presence, returns false', () => {
-    const unit1 = createTestUnit('black', { attack: 3 });
-    const unit2 = createTestUnit('white', { attack: 3 });
-    const unitPresence = createEngagedUnitPresence(unit1, 'north', unit2);
-    expect(hasNoUnit(unitPresence)).toBe(false);
+  it('an engaged space is not empty', () => {
+    // Black facing north, and the white unit that walked into it.
+    const black = createTestUnit('black', { attack: 3 });
+    const white = createTestUnit('white', { attack: 3 });
+    const engaged = createEngagedUnitPresence(black, 'north', white);
+
+    expect(hasNoUnit(engaged)).toBe(false);
   });
 });

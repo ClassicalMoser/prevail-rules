@@ -8,35 +8,38 @@ import { updatePhaseState } from '@transforms';
 
 import { findMovementResolutionState } from './findMovementResolutionState';
 
+/** A Move order is one of the two kinds of order a card gives (§4.3.1). */
 describe('findMovementResolutionState function', () => {
   it('returns the movement being carried out', () => {
+    // Phase 3, with a Move order under way.
     const empty = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(empty);
-    const state = updatePhaseState(
-      empty,
-      createIssueCommandsPhaseState(empty, {
-        currentCommandResolutionState: resolution,
-      }),
-    );
+    const phase = createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: resolution,
+    });
+    const state = updatePhaseState(empty, phase);
 
+    // The move this test opened.
     expect(findMovementResolutionState(state)).toBe(resolution);
   });
 
   it('answers undefined when the order in progress is a shot', () => {
+    // Phase 3, with a Shoot order under way instead.
     const empty = createEmptyGameState('standard');
-    const state = updatePhaseState(
-      empty,
-      createIssueCommandsPhaseState(empty, {
-        currentCommandResolutionState: createRangedAttackResolutionState(empty),
-      }),
-    );
+    const phase = createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: createRangedAttackResolutionState(empty),
+    });
+    const state = updatePhaseState(empty, phase);
 
+    // No unit is moving.
     expect(findMovementResolutionState(state)).toBeUndefined();
   });
 
   it('answers undefined when no order is under way', () => {
-    expect(
-      findMovementResolutionState(createEmptyGameState('standard')),
-    ).toBeUndefined();
+    // Before the round has a phase, no order can be under way.
+    const state = createEmptyGameState('standard');
+
+    // No unit is moving.
+    expect(findMovementResolutionState(state)).toBeUndefined();
   });
 });

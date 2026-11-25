@@ -9,30 +9,34 @@ import { getMeleeAppliesInResolutionOrder } from './getMeleeAppliesInResolutionO
  */
 describe('getMeleeAppliesInResolutionOrder function', () => {
   it("the second player's unit comes first, then the first player's", () => {
+    // White holds the initiative, as an empty game starts, so white's unit is
+    // the first player's. Neither blow reached a threshold; only the order
+    // matters here.
     const state = createEmptyGameState('standard');
-    // Black holds initiative here, so black's unit is the first player's.
-    const black = createAttackApplyState(createTestUnit('black'), {
-      unitRetreated: false,
-      unitReversed: false,
-      unitRouted: false,
-    });
     const white = createAttackApplyState(createTestUnit('white'), {
       unitRetreated: false,
       unitReversed: false,
       unitRouted: false,
     });
+    const black = createAttackApplyState(createTestUnit('black'), {
+      unitRetreated: false,
+      unitReversed: false,
+      unitRouted: false,
+    });
     const melee = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState: black,
-      attackOnSecondPlayerApplyState: white,
+      attackOnFirstPlayerApplyState: white,
+      attackOnSecondPlayerApplyState: black,
     });
 
-    const inOrder = getMeleeAppliesInResolutionOrder(melee);
-
-    // White's unit, the second player's, is hit first by black's attack.
-    expect(inOrder).toStrictEqual([white, black]);
+    // Black's unit, the second player's, takes white's blow first.
+    expect(getMeleeAppliesInResolutionOrder(melee)).toStrictEqual([
+      black,
+      white,
+    ]);
   });
 
   it('an apply not yet written is left out', () => {
+    // The blows have not been counted, so neither unit has results yet.
     const state = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(state, {
       attackOnFirstPlayerApplyState: 'pending',

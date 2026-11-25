@@ -1,29 +1,22 @@
-import type { UnitWithPlacement } from '@entities';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
   createRetreatState,
-  createTestUnit,
+  createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { getRetreatState } from './getRetreatState';
 
-function placed(player: 'white' | 'black'): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const placement = createUnitPlacement('E-5', 'north');
-  const standing = { placement, unit };
-  return standing;
-}
-
 describe('getRetreatState function', () => {
   it('returns the retreat that player is making', () => {
+    // A shot drove White's unit back.
     const empty = createEmptyGameState('standard');
-    const defender = placed('white');
+    const defender = createUnitWithPlacement({ playerSide: 'white' });
     const retreat = createRetreatState(
       defender.unit,
       legalRetreatsOf(defender),

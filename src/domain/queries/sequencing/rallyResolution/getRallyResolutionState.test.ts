@@ -1,59 +1,57 @@
-import type { GameState, RallyResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import { createCleanupPhaseState, createRallyResolutionState } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getRallyResolutionState } from './getRallyResolutionState';
 
-function withCleanup(
-  step:
-    | 'firstPlayerChooseRally'
-    | 'firstPlayerResolveRally'
-    | 'secondPlayerResolveRally'
-    | 'cardsLeavePlay',
-  buckets: {
-    first?: RallyResolutionState | 'pending';
-    second?: RallyResolutionState | 'pending';
-  },
-  initiative: 'white' | 'black' = 'white',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createCleanupPhaseState({
-      firstPlayerRallyResolutionState: buckets.first ?? 'pending',
-      secondPlayerRallyResolutionState: buckets.second ?? 'pending',
-      step,
-    }),
-  );
-}
-
-/**
- * A player reads the rally slot for their seat in initiative order.
- */
+/** A caller that knows a player's rally has begun reads it here. */
 describe('getRallyResolutionState function', () => {
-  it('returns the first player rally slice', () => {
+  // Black holds the initiative, so black rallies first (§10.3.1).
+  const blackFirst = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
+
+  it('returns the first player’s rally', () => {
+    // Black has chosen to rally.
     const rally = createRallyResolutionState({ playerRallied: true });
-    const state = withCleanup('firstPlayerChooseRally', { first: rally });
+    const state = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: rally,
+        step: 'firstPlayerResolveRally',
+      }),
+    );
 
-    expect(getRallyResolutionState(state, 'white')).toBe(rally);
-  });
-
-  it('returns the second player rally slice', () => {
-    const rally = createRallyResolutionState({ playerRallied: true });
-    const state = withCleanup('firstPlayerChooseRally', { second: rally });
-
+    // Black's rally is the first.
     expect(getRallyResolutionState(state, 'black')).toBe(rally);
   });
 
-  it('throws when the first player rally is still pending', () => {
-    const state = withCleanup('firstPlayerChooseRally', { first: 'pending' });
+  it('returns the second player’s rally', () => {
+    // White, second, has chosen to rally.
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({
+        secondPlayerRallyResolutionState: rally,
+        step: 'secondPlayerResolveRally',
+      }),
+    );
 
-    expect(() => getRallyResolutionState(state, 'white')).toThrow(
-      'No white rally resolution state found',
+    // White's rally is the second.
+    expect(getRallyResolutionState(state, 'white')).toBe(rally);
+  });
+
+  it('throws before the player has chosen whether to rally', () => {
+    // Black is still choosing.
+    const state = updatePhaseState(
+      blackFirst,
+      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
+    );
+
+    // There is no rally to insist on; the message names the player.
+    expect(() => getRallyResolutionState(state, 'black')).toThrow(
+      'No black rally resolution state found',
     );
   });
 });

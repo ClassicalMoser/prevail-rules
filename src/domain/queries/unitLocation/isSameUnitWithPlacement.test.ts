@@ -15,6 +15,7 @@ describe('isSameUnitWithPlacement function', () => {
   const otherUnit = createTestUnit('black', { instanceNumber: 2 });
 
   it('the same unit placed the same way matches', () => {
+    // Two copies of one unit, both at E-5 facing north.
     expect(
       isSameUnitWithPlacement(
         placed(unit, 'E-5', 'north'),
@@ -24,6 +25,7 @@ describe('isSameUnitWithPlacement function', () => {
   });
 
   it('the same unit facing another way does not match', () => {
+    // The same unit on E-5, but facing south: a stale or forged choice.
     expect(
       isSameUnitWithPlacement(
         placed(unit, 'E-5', 'north'),
@@ -33,6 +35,7 @@ describe('isSameUnitWithPlacement function', () => {
   });
 
   it('another unit on the same placement does not match', () => {
+    // Black's second unit of the type is not its first.
     expect(
       isSameUnitWithPlacement(
         placed(unit, 'E-5', 'north'),

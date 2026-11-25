@@ -1,23 +1,34 @@
-import { createGameStateWithBoard } from '@testing';
-import { addCommanderToBoard } from '@transforms';
-import { createEmptyStandardBoard } from '@factories';
+import { createEmptyGameState } from '@factories';
+import { deployCommander } from '@transforms';
 
 import { findCommanderSpace } from './findCommanderSpace';
 
 /**
- * GetCommanderSpace: looks up which board coordinate holds a player's commander, if any.
+ * Where a side's commander stands, read from the game's index. A commander
+ * not yet placed at setup, or lost with a routing unit of its own (§4.2.8),
+ * stands nowhere, and that is an ordinary answer.
  */
 describe('findCommanderSpace function', () => {
-  it('finds the space where the commander stands', () => {
-    let board = createEmptyStandardBoard();
-    board = addCommanderToBoard(board, 'white', 'E-5');
-    const space = findCommanderSpace('white', createGameStateWithBoard(board));
-    expect(space).toBe('E-5');
+  it('is the space the commander was placed on', () => {
+    // White's commander deploys on E-5.
+    const newGame = createEmptyGameState('standard');
+    const state = deployCommander(newGame, 'white', 'E-5');
+
+    // It stands there.
+    expect(findCommanderSpace('white', state)).toBe('E-5');
   });
 
-  it('there is no commander space when the commander is off the board', () => {
-    const board = createEmptyStandardBoard();
-    const space = findCommanderSpace('white', createGameStateWithBoard(board));
-    expect(space).toBeUndefined();
+  it('is nowhere for a commander not yet placed', () => {
+    // A new game, before setup places anyone.
+    const state = createEmptyGameState('standard');
+
+    // White's commander is still waiting in reserve.
+    expect(findCommanderSpace('white', state)).toBeUndefined();
   });
+
+  // TODO(composition): no case pins the fallen commander, so the 'lost'
+  // check could be dropped unnoticed. `withLostCommander` falls through
+  // `defeatCommander`, which asks `getCommanderSpace` and so this subject,
+  // and the self-proof check refuses it. Settle with a fixture that files a
+  // lost commander without asking where it stood.
 });

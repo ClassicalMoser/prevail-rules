@@ -27,6 +27,7 @@ const unrestricted: Restrictions = {
  */
 describe('getLineSegmentContainingUnit function', () => {
   it('a lone unit is a segment of one', () => {
+    // E-5 has no neighbour on either flank.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5'],
     });
@@ -42,6 +43,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('two units facing north, side by side, are one segment', () => {
+    // Facing north, E-6 lies on E-5's right flank.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5', 'E-6'],
     });
@@ -57,6 +59,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('units on both sides keep left-to-right order', () => {
+    // E-4 on the left of E-5, E-6 on its right.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-4', 'E-5', 'E-6'],
     });
@@ -72,6 +75,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('two units facing opposite ways stay in the segment', () => {
+    // A rank that has about-faced is still a rank (§4.3.5).
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const board = createBoardWithUnits([
@@ -91,6 +95,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('an empty space ends the segment', () => {
+    // E-7 is empty, so E-8 beyond it is not in the rank.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5', 'E-6', 'E-8'],
     });
@@ -106,6 +111,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('an enemy ends the segment', () => {
+    // A white unit at E-7 breaks the black rank; E-8 beyond it is not in it.
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const enemy = createTestUnit('white', { attack: 3, instanceNumber: 1 });
@@ -129,6 +135,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('a unit facing east ends a segment of units facing north', () => {
+    // E-7 faces across the rank's facing, so it does not stand in that rank.
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const turned = createTestUnit('black', { attack: 3, instanceNumber: 3 });
@@ -272,22 +279,9 @@ describe('getLineSegmentContainingUnit function', () => {
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
   });
 
-  it('a unit on the north edge, facing north, is a segment of one', () => {
-    const { board, unitAt } = createBoardWithFacingRow({
-      coordinates: ['A-5'],
-    });
-
-    const segment = getLineSegmentContainingUnit(
-      board,
-      unitAt('A-5'),
-      unrestricted,
-      [],
-    );
-
-    expect(coordinatesOfSegment(segment)).toStrictEqual(['A-5']);
-  });
-
   it('two units facing east, one rank apart, are one segment', () => {
+    // Facing east, a unit's flanks are north and south, so the rank runs down
+    // the board from E-5 to F-5.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5', 'F-5'],
       facing: 'east',
@@ -304,6 +298,7 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('two units facing north-east, one step north-west apart, are one segment', () => {
+    // Facing north-east, the left flank lies north-west, so D-4 is beside E-5.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['D-4', 'E-5'],
       facing: 'northEast',
@@ -320,6 +315,8 @@ describe('getLineSegmentContainingUnit function', () => {
   });
 
   it('a row of ten is still one uncapped segment', () => {
+    // A line is any run of up to eight of the rank; the rank itself is not
+    // capped, so a line order can choose which eight.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: [
         'E-1',

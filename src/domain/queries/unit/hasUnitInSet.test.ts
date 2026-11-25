@@ -3,33 +3,31 @@ import { createTestUnit } from '@testing';
 import { hasUnitInSet } from './hasUnitInSet';
 
 /**
- * HasUnitInSet: membership test for UnitInstance in a Set using value equality (not reference identity).
+ * Whether a set holds a unit, by who it is rather than by the object the set
+ * holds.
  */
 describe('hasUnitInSet function', () => {
-  it('returns true when the set contains the same instance', () => {
-    const unit = createTestUnit('black', { instanceNumber: 1 });
+  it('finds a separate copy of a unit among others', () => {
+    // Black's first unit, held beside White's and Black's second.
+    const held = createTestUnit('black', { instanceNumber: 1 });
     const set = new Set([
       createTestUnit('white'),
-      unit,
+      held,
       createTestUnit('black', { instanceNumber: 2 }),
     ]);
-    expect(hasUnitInSet(set, unit)).toBe(true);
+    // The same unit, as an event would carry it.
+    const copy = createTestUnit('black', { instanceNumber: 1 });
+
+    expect(hasUnitInSet(set, copy)).toBe(true);
   });
 
-  it('returns true when a set member equals the argument by value', () => {
-    const set = new Set([createTestUnit('black', { instanceNumber: 1 })]);
-    const sameValue = createTestUnit('black', { instanceNumber: 1 });
-    expect(hasUnitInSet(set, sameValue)).toBe(true);
-  });
-
-  it('returns false when no member matches', () => {
+  it('fails for a unit not held, and for an empty set', () => {
+    // Black's second copy, when only the first is held.
     const set = new Set([createTestUnit('black', { instanceNumber: 1 })]);
     expect(
       hasUnitInSet(set, createTestUnit('black', { instanceNumber: 2 })),
     ).toBe(false);
-  });
 
-  it('returns false for an empty set', () => {
     expect(hasUnitInSet(new Set(), createTestUnit('black'))).toBe(false);
   });
 });

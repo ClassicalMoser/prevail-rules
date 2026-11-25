@@ -1,6 +1,6 @@
-import type { MoveDelta, UnitWithPlacement } from '@entities';
+import type { MoveDelta } from '@entities';
 import type { GameState, MeleeResolutionState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
@@ -8,13 +8,14 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
-  createTestUnit,
+  createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRetreatAwaitingMove } from './findRetreatAwaitingMove';
 
+/** Resolve-melee phase holding the melee this test built. */
 function resolveMelee(
   melee: MeleeResolutionState,
   initiative: 'white' | 'black' = 'white',
@@ -30,15 +31,6 @@ function resolveMelee(
     }),
   );
 }
-function placed(
-  player: 'white' | 'black',
-  facing: UnitWithPlacement['placement']['facing'],
-): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const placement = createUnitPlacement('E-5', facing);
-  const standing = { placement, unit };
-  return standing;
-}
 
 describe('findRetreatAwaitingMove function', () => {
   // A retreat already chosen: one step straight back. Which retreat it is does
@@ -46,8 +38,9 @@ describe('findRetreatAwaitingMove function', () => {
   const chosen: MoveDelta[] = ['step'];
 
   it('returns the first player retreat whose retreat is chosen', () => {
+    // White, the first player, has its way back settled and not yet taken.
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
     const retreat = createRetreatState(white.unit, legalRetreatsOf(white), {
       chosenRetreatPath: chosen,
     });
@@ -68,10 +61,16 @@ describe('findRetreatAwaitingMove function', () => {
     });
   });
 
-  it('returns the second player retreat when the first retreat is still unchosen', () => {
+  it('asks after the second player’s unit first when both ways back are settled', () => {
+    // Each unit has one way straight back, taken as the retreat opened, and
+    // neither has fallen back yet. White holds the initiative, so Black's unit
+    // suffers first (§7.5.6).
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
-    const black = placed('black', 'south');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
+    const black = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'black',
+    });
     const retreat = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: chosen,
     });
@@ -98,8 +97,11 @@ describe('findRetreatAwaitingMove function', () => {
 
   it('answers undefined when neither retreat has been chosen', () => {
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
-    const black = placed('black', 'south');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
+    const black = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'black',
+    });
     const melee = createMeleeResolutionState(empty, {
       attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
         white.unit,
@@ -121,7 +123,10 @@ describe('findRetreatAwaitingMove function', () => {
     // The slot carries the order, so black holding the initiative is read the
     // same way white holding it is.
     const empty = createEmptyGameState('standard');
-    const black = placed('black', 'south');
+    const black = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'black',
+    });
     const retreat = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: chosen,
     });
@@ -146,8 +151,11 @@ describe('findRetreatAwaitingMove function', () => {
     // The second player's unit fell back first (§7.5.6) and still holds its
     // finished retreat; the first player's is the one now due.
     const empty = createEmptyGameState('standard');
-    const white = placed('white', 'north');
-    const black = placed('black', 'south');
+    const white = createUnitWithPlacement({ playerSide: 'white' });
+    const black = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'black',
+    });
     const done = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: chosen,
       completed: true,
@@ -179,7 +187,10 @@ describe('findRetreatAwaitingMove function', () => {
     // Outside a melee only one unit is falling back, and the parent comes
     // back with it.
     const empty = createEmptyGameState('standard');
-    const defender = placed('black', 'south');
+    const defender = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'black',
+    });
     const retreat = createRetreatState(
       defender.unit,
       legalRetreatsOf(defender),

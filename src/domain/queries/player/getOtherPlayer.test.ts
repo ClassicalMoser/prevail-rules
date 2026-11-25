@@ -2,19 +2,15 @@ import type { PlayerSide } from '@entities';
 
 import { getOtherPlayer } from './getOtherPlayer';
 
-/**
- * GetOtherPlayer: maps black ↔ white for two-player sides; throws on unknown side.
- */
 describe('getOtherPlayer function', () => {
-  it('given black, returns white', () => {
+  it('pairs each side with the side across the board', () => {
+    // Black's opponent is White …
     expect(getOtherPlayer('black')).toBe('white');
-  });
-
-  it('given white, returns black', () => {
+    // … and White's is Black.
     expect(getOtherPlayer('white')).toBe('black');
   });
 
-  it('given invalid player side, throws', () => {
+  it('throws for a value that is not a side', () => {
     // 'invalid' is not a side, so the cast is what reaches the rejection.
     expect(() => getOtherPlayer('invalid' as PlayerSide)).toThrow(
       'Invalid player side: invalid',

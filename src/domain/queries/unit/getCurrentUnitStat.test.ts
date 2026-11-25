@@ -59,17 +59,10 @@ function withInPlay(
 }
 
 /**
- * Records that this unit was commanded this round.
- */
-function withCommandedUnit(
-  state: StandardState,
-  unit: UnitInstance,
-): StandardState {
-  return addUnitsToCommandedUnits(state, [unit]);
-}
-
-/**
- * GetCurrentUnitStat: effective stat with base unit type, round effects, command modifiers, and extra modifiers.
+ * A unit's current stat is its printed value plus every modifier that reaches
+ * it: its own card's round effect where its restrictions allow (§4.3.7), the
+ * command's modifiers if it was ordered (§4.3.8), and a committed card passed
+ * in (§8) — floored once at zero (§7.1.4).
  */
 describe('getCurrentUnitStat function', () => {
   describe('base stat without modifiers', () => {
@@ -100,20 +93,6 @@ describe('getCurrentUnitStat function', () => {
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
       expect(result).toBe(3);
-    });
-
-    it('returns the base attack when the only round modifier is speed', () => {
-      const unit = createTestUnit('white', { attack: 2 });
-      let gameState = stateWithUnit(unit);
-      gameState = withInPlay(
-        gameState,
-        'white',
-        createTestCard({
-          roundEffectModifiers: [{ type: 'speed', value: 1 }],
-        }),
-      );
-
-      expect(getCurrentUnitStat(unit, 'attack', gameState)).toBe(2);
     });
   });
 
@@ -210,6 +189,24 @@ describe('getCurrentUnitStat function', () => {
       expect(result).toBe(3);
     });
 
+    it("takes nothing from the opponent's round effect", () => {
+      const unit = createTestUnit('black', { attack: 3 });
+      let gameState = stateWithUnit(unit);
+      // White's card in play gives +2 Attack to every unit, unrestricted; a
+      // round effect applies to its own player's units only (§4.3.7).
+      gameState = withInPlay(
+        gameState,
+        'white',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 2 }],
+          roundEffectRestrictions: { inspirationRangeRestriction: -1 },
+        }),
+      );
+
+      // Black's unit fights at its printed Attack.
+      expect(getCurrentUnitStat(unit, 'attack', gameState)).toBe(3);
+    });
+
     it('adds a defense round modifier to reverse', () => {
       const unit = createTestUnit('black', { reverse: 3 });
       let gameState = stateWithUnit(unit);
@@ -281,23 +278,6 @@ describe('getCurrentUnitStat function', () => {
   });
 
   describe('round effect with unit restrictions', () => {
-    it('adds the attack round modifier when both restriction lists are empty', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      let gameState = stateWithUnit(unit);
-      gameState = withInPlay(
-        gameState,
-        'black',
-        createTestCard({
-          roundEffectModifiers: [{ type: 'attack', value: 1 }],
-          // -1: no inspiration range; the fixture default is a tight 0.
-          roundEffectRestrictions: { inspirationRangeRestriction: -1 },
-        }),
-      );
-
-      const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(4);
-    });
-
     it('leaves the base attack when the unit type is not in the restriction list', () => {
       const unit = createTestUnit('black', { attack: 3 });
       let gameState = stateWithUnit(unit);
@@ -319,7 +299,8 @@ describe('getCurrentUnitStat function', () => {
     it('leaves the base attack when the unit was commanded and no card is in play', () => {
       const unit = createTestUnit('black', { attack: 3 });
       let gameState = stateWithUnit(unit);
-      gameState = withCommandedUnit(gameState, unit);
+      // The unit took an order this round (§4.3.8).
+      gameState = addUnitsToCommandedUnits(gameState, [unit]);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
 
@@ -338,7 +319,8 @@ describe('getCurrentUnitStat function', () => {
         },
       };
       let gameState = stateWithUnit(unit);
-      gameState = withCommandedUnit(gameState, unit);
+      // The unit took an order this round (§4.3.8).
+      gameState = addUnitsToCommandedUnits(gameState, [unit]);
       gameState = withInPlay(gameState, 'black', inPlay);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
@@ -349,7 +331,8 @@ describe('getCurrentUnitStat function', () => {
     it('adds the command modifier when the unit was commanded', () => {
       const unit = createTestUnit('black', { attack: 3 });
       let gameState = stateWithUnit(unit);
-      gameState = withCommandedUnit(gameState, unit);
+      // The unit took an order this round (§4.3.8).
+      gameState = addUnitsToCommandedUnits(gameState, [unit]);
       gameState = withInPlay(
         gameState,
         'black',
@@ -385,7 +368,8 @@ describe('getCurrentUnitStat function', () => {
     it('leaves the base attack when the command modifier is for speed', () => {
       const unit = createTestUnit('black', { attack: 3 });
       let gameState = stateWithUnit(unit);
-      gameState = withCommandedUnit(gameState, unit);
+      // The unit took an order this round (§4.3.8).
+      gameState = addUnitsToCommandedUnits(gameState, [unit]);
       gameState = withInPlay(
         gameState,
         'black',
@@ -438,7 +422,8 @@ describe('getCurrentUnitStat function', () => {
     it('adds the round modifier and the command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       let gameState = stateWithUnit(unit);
-      gameState = withCommandedUnit(gameState, unit);
+      // The unit took an order this round (§4.3.8).
+      gameState = addUnitsToCommandedUnits(gameState, [unit]);
       gameState = withInPlay(
         gameState,
         'black',

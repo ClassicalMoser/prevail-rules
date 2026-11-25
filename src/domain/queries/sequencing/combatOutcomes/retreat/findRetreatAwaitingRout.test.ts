@@ -1,13 +1,12 @@
-import type { UnitWithPlacement } from '@entities';
 import type { GameState, MeleeResolutionState } from '@game';
-import { createEmptyGameState, createUnitPlacement } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
   createRoutState,
-  createTestUnit,
+  createUnitWithPlacement,
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
@@ -15,6 +14,7 @@ import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRetreatAwaitingRout } from './findRetreatAwaitingRout';
 
+/** Resolve-melee phase holding the melee this test built. */
 function resolveMelee(
   melee: MeleeResolutionState,
   initiative: 'white' | 'black',
@@ -30,15 +30,6 @@ function resolveMelee(
     }),
   );
 }
-function placed(
-  player: 'white' | 'black',
-  facing: UnitWithPlacement['placement']['facing'],
-): UnitWithPlacement {
-  const unit = createTestUnit(player, { attack: 2 });
-  const placement = createUnitPlacement('E-5', facing);
-  const standing = { placement, unit };
-  return standing;
-}
 
 describe('findRetreatAwaitingRout function', () => {
   it('names the first player when the retreat with nowhere to go is theirs', () => {
@@ -46,8 +37,11 @@ describe('findRetreatAwaitingRout function', () => {
     // retreat; the first player's unit has its line of withdrawal cut. The
     // finished retreat must not be mistaken for the one that routs.
     const empty = createEmptyGameState('standard');
-    const black = placed('black', 'north');
-    const white = placed('white', 'south');
+    const black = createUnitWithPlacement({ playerSide: 'black' });
+    const white = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'white',
+    });
     const fellBack = createRetreatState(white.unit, legalRetreatsOf(white), {
       chosenRetreatPath: ['step'],
       completed: true,
@@ -81,8 +75,11 @@ describe('findRetreatAwaitingRout function', () => {
     // its line of withdrawal cut. The second player's unit suffers first
     // (§7.5.6), and its retreat is the one still waiting.
     const empty = createEmptyGameState('standard');
-    const black = placed('black', 'north');
-    const white = placed('white', 'south');
+    const black = createUnitWithPlacement({ playerSide: 'black' });
+    const white = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'white',
+    });
     const fellBack = createRetreatState(black.unit, legalRetreatsOf(black), {
       chosenRetreatPath: ['step'],
       completed: true,
@@ -111,11 +108,49 @@ describe('findRetreatAwaitingRout function', () => {
     });
   });
 
+  it('names the second player first when both retreats have nowhere to go', () => {
+    // Both units have their line of withdrawal cut. The second player's unit
+    // suffers first (§7.5.6), so its rout is the one to open first.
+    const empty = createEmptyGameState('standard');
+    const black = createUnitWithPlacement({ playerSide: 'black' });
+    const white = createUnitWithPlacement({
+      facing: 'south',
+      playerSide: 'white',
+    });
+    const blackCutOff = createRetreatState(
+      black.unit,
+      legalRetreatsOf(black, [enemyCuttingOffRetreat(black)]),
+    );
+    const whiteCutOff = createRetreatState(
+      white.unit,
+      legalRetreatsOf(white, [enemyCuttingOffRetreat(white)]),
+    );
+    const melee = createMeleeResolutionState(empty, {
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(
+        black.unit,
+        legalRetreatsOf(black),
+        { retreatState: blackCutOff },
+      ),
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        white.unit,
+        legalRetreatsOf(white),
+        { retreatState: whiteCutOff },
+      ),
+    });
+    // Black holds the initiative, so White's unit is the second player's.
+    const state = resolveMelee(melee, 'black');
+
+    expect(findRetreatAwaitingRout(state)).toStrictEqual({
+      retreatState: whiteCutOff,
+      source: 'melee',
+    });
+  });
+
   it('answers undefined once the rout has opened on the retreat', () => {
     // The rout the retreat fell into is already open, so nothing is left for
     // `triggerRoutFromRetreat` to do.
     const empty = createEmptyGameState('standard');
-    const black = placed('black', 'north');
+    const black = createUnitWithPlacement({ playerSide: 'black' });
     const routing = createRetreatState(
       black.unit,
       legalRetreatsOf(black, [enemyCuttingOffRetreat(black)]),
@@ -136,7 +171,7 @@ describe('findRetreatAwaitingRout function', () => {
   it('answers undefined for a retreat that has somewhere to go', () => {
     // An open line of withdrawal is a retreat to make, not a rout.
     const empty = createEmptyGameState('standard');
-    const black = placed('black', 'north');
+    const black = createUnitWithPlacement({ playerSide: 'black' });
     const open = createRetreatState(black.unit, legalRetreatsOf(black));
     const melee = createMeleeResolutionState(empty, {
       attackOnFirstPlayerApplyState: createAttackApplyStateWithRetreat(

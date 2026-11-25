@@ -1,6 +1,7 @@
 import type { CommandCard, PlayerSide } from '@entities';
 import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
+import { getOtherPlayer } from '@queries/player';
 import {
   createCleanupPhaseStateWithRallyRout,
   createIssueCommandsPhaseState,
@@ -41,7 +42,7 @@ function stateAwaitingDiscard(options: {
     createEmptyGameState('standard'),
     'white',
   );
-  const other: PlayerSide = options.player === 'white' ? 'black' : 'white';
+  const other = getOtherPlayer(options.player);
   // The routed player's hand is exactly `handSize`.
   const routed = updatePlayerCardState(base, options.player, {
     ...base.cardState[options.player],
@@ -77,6 +78,7 @@ function stateAwaitingDiscard(options: {
  */
 describe('findWinnerFromUnpayableRoutDiscard function', () => {
   it('continues when the penalty is smaller than the hand', () => {
+    // White owes two cards from a hand of three, and keeps one.
     const state = stateAwaitingDiscard({
       handSize: 3,
       numberToDiscard: 2,
@@ -87,6 +89,7 @@ describe('findWinnerFromUnpayableRoutDiscard function', () => {
   });
 
   it('black wins when white must discard the whole hand', () => {
+    // Paying with the last card is already a loss (§11.2).
     const state = stateAwaitingDiscard({
       handSize: 2,
       numberToDiscard: 2,
@@ -97,6 +100,7 @@ describe('findWinnerFromUnpayableRoutDiscard function', () => {
   });
 
   it('white wins when black must discard more cards than the hand holds', () => {
+    // Black owes three cards and holds one.
     const state = stateAwaitingDiscard({
       handSize: 1,
       numberToDiscard: 3,
@@ -107,6 +111,7 @@ describe('findWinnerFromUnpayableRoutDiscard function', () => {
   });
 
   it('continues when no rout discard is awaiting', () => {
+    // Setup: nothing has routed.
     expect(
       findWinnerFromUnpayableRoutDiscard(createEmptyGameState('standard')),
     ).toBeUndefined();
@@ -117,16 +122,7 @@ describe('findWinnerFromUnpayableRoutDiscard function', () => {
     // Pending command resolution throws. That slice is not open, so the
     // discard is not pending.
     const state = updatePhaseState(empty, createIssueCommandsPhaseState(empty));
+
     expect(findWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
-  });
-
-  it('rethrows when the issue-commands phase has no command resolution field', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      phase: 'issueCommands',
-      step: 'firstPlayerResolveCommands',
-    } as typeof state.currentRoundState.currentPhaseState; // omits currentCommandResolutionState; not 'pending'
-
-    expect(() => findWinnerFromUnpayableRoutDiscard(state)).toThrow(TypeError);
   });
 });

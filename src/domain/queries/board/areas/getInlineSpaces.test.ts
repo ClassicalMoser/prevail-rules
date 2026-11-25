@@ -2,13 +2,17 @@ import { createEmptyStandardBoard } from '@factories';
 
 import { getInlineSpaces } from './getInlineSpaces';
 
-const standardBoard = createEmptyStandardBoard();
-
 /**
- * GetInlineSpaces: full line through the coordinate along the facing axis (both directions), clipped to board.
+ * The line through a unit's own space across its facing, run out to the
+ * board edge on both sides, the space itself included. The half-planes ahead
+ * and behind (§2.3.3) begin past this line.
  */
 describe('getInlineSpaces function', () => {
-  it('row A is the inline line through A-1 facing south', () => {
+  // The standard board, rows A to L and columns 1 to 18.
+  const standardBoard = createEmptyStandardBoard();
+
+  it('is the unit’s whole row when it faces along a column', () => {
+    // Facing south from A-1, the line across that facing is row A, end to end.
     expect(getInlineSpaces(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set([
         'A-1',
@@ -33,26 +37,9 @@ describe('getInlineSpaces function', () => {
     );
   });
 
-  it('column 5 is the inline line through E-5 facing east', () => {
-    expect(getInlineSpaces(standardBoard, 'E-5', 'east')).toStrictEqual(
-      new Set([
-        'A-5',
-        'B-5',
-        'C-5',
-        'D-5',
-        'E-5',
-        'F-5',
-        'G-5',
-        'H-5',
-        'I-5',
-        'J-5',
-        'K-5',
-        'L-5',
-      ]),
-    );
-  });
-
-  it('the main diagonal through E-5 is the inline line facing northEast', () => {
+  it('is the crossing diagonal when the unit faces a diagonal', () => {
+    // Facing north-east from E-5, the line runs north-west to A-1 and
+    // south-east to L-12, square across the facing.
     expect(getInlineSpaces(standardBoard, 'E-5', 'northEast')).toStrictEqual(
       new Set([
         'A-1',
@@ -71,13 +58,9 @@ describe('getInlineSpaces function', () => {
     );
   });
 
-  it('the anti-diagonal through E-5 is the inline line facing southEast', () => {
-    expect(getInlineSpaces(standardBoard, 'E-5', 'southEast')).toStrictEqual(
-      new Set(['A-9', 'B-8', 'C-7', 'D-6', 'E-5', 'F-4', 'G-3', 'H-2', 'I-1']),
-    );
-  });
-
-  it('a-1 is its own inline line when facing northWest', () => {
+  it('is the unit’s space alone in a corner both ends of the line leave', () => {
+    // Facing north-west from A-1, the line would run south-west and
+    // north-east, and both leave the board at once.
     expect(getInlineSpaces(standardBoard, 'A-1', 'northWest')).toStrictEqual(
       new Set(['A-1']),
     );

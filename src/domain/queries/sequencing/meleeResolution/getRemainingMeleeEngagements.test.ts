@@ -4,19 +4,17 @@ import { createResolveMeleePhaseState } from '@testing';
 
 import { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
 
-/**
- * The coordinates still waiting for melee on a resolve-melee phase.
- */
+/** Every engaged space fights in Phase 4, one at a time (§4.4.1, §4.4.2). */
 describe('getRemainingMeleeEngagements function', () => {
-  it('returns the remaining engagements on the phase', () => {
+  it('returns the spaces still waiting to fight', () => {
+    // Two engaged spaces have not yet been fought this phase.
     const remaining: Coordinate[] = ['E-5', 'E-6'];
     const phase = createResolveMeleePhaseState(
       createEmptyGameState('standard'),
-      {
-        remainingEngagements: remaining,
-      },
+      { remainingEngagements: remaining },
     );
 
-    expect(getRemainingMeleeEngagements(phase)).toBe(remaining);
+    // The same spaces the phase holds, for the first player to choose among.
+    expect(getRemainingMeleeEngagements(phase)).toStrictEqual(['E-5', 'E-6']);
   });
 });

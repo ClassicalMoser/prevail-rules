@@ -17,12 +17,14 @@ describe('getMeleeCommitmentForPlayer function', () => {
   });
 
   it('gives the side with initiative the commitment made first', () => {
+    // Black's own answer is the refusal.
     expect(getMeleeCommitmentForPlayer(state, melee, 'black')).toStrictEqual({
       commitmentType: 'declined',
     });
   });
 
   it('gives the other side the commitment made second', () => {
+    // White's own answer is still to come.
     expect(getMeleeCommitmentForPlayer(state, melee, 'white')).toStrictEqual({
       commitmentType: 'pending',
     });
