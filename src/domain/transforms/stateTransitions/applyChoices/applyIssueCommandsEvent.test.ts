@@ -5,7 +5,9 @@ import { ISSUE_COMMANDS_PHASE } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
   createBoardWithFacingRow,
+  createBoardWithUnits,
   createTestUnit,
+  placed,
   replaceBoard,
   updateCardState,
 } from '@testing';
@@ -100,6 +102,38 @@ describe('applyIssueCommandsEvent function', () => {
       unitAt('E-1').unit,
       unitAt('E-4').unit,
     ]);
+  });
+
+  it('orders the unit the board holds, not the copy the order names', () => {
+    // Black's archer stands at E-5 with Range 2.
+    const archer = createTestUnit('black', { range: 2 });
+    const state = replaceBoard(
+      issuingOn('firstPlayerIssueCommands'),
+      createBoardWithUnits([placed(archer, 'E-5', 'north')]),
+    );
+
+    // The order names the same unit, who it is, but claims Range 9.
+    const claimed = {
+      ...archer,
+      unitType: {
+        ...archer.unitType,
+        stats: { ...archer.unitType.stats, range: 9 },
+      },
+    };
+    const issued = applyIssueCommandsEvent(
+      createIssueCommandsEvent({
+        allocation: { allocationType: 'units', units: [claimed] },
+        player: 'black',
+      }),
+      state,
+    );
+
+    // The unit ordered, and left to carry out its order, is the board's:
+    // a Shoot order would read its reach from there.
+    expect(issued.currentRoundState.commandedUnits).toStrictEqual([archer]);
+    expect(
+      getIssueCommandsPhaseState(issued).remainingUnitsFirstPlayer,
+    ).toStrictEqual([archer]);
   });
 
   it('moves the second player on to carrying out their own orders', () => {
