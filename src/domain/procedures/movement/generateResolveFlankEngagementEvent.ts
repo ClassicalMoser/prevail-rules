@@ -23,11 +23,17 @@ export function generateResolveFlankEngagementEvent(
   state: GameState,
 ): ResolveFlankEngagementEvent {
   // Only a flank engagement turns its defender.
+  // A front defender may fall back instead, and a rear one routs (§6.3.2,
+  // §6.3.3); asked during either, or with no engagement, the getter throws.
   getFlankEngagementStateFromMovement(state);
 
+  // The defender's new facing is directly opposite the engaging unit's
+  // (§6.3.4), which the movement records, so nothing is recorded here.
   const event: ResolveFlankEngagementEvent = {
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
+
+  // The defender is turned, for the transform to set the two down engaged.
   return event;
 }

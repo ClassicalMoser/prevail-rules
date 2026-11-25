@@ -2,6 +2,7 @@ import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
 import { findRetreatAwaitingMove, getCurrentPhaseState } from '@queries';
+import { throwIfPending, throwIfUndefined } from '@utils';
 
 /**
  * Carries out a retreat already decided (§9.1): the path it takes was the
@@ -31,23 +32,33 @@ export function generateResolveRetreatEvent(
     );
   }
 
-  const location = findRetreatAwaitingMove(state);
-  if (location === undefined) {
-    throw new Error(
-      phaseState.phase === 'resolveMelee'
-        ? 'No chosen retreat found in melee resolution'
-        : 'No retreat has been chosen yet',
-    );
-  }
+  // The retreat to carry out next: the one whose way back is settled and
+  // whose unit has not yet taken it. In a melee the second player's unit falls
+  // back first, since the first player's blow lands first (§7.5.6).
+  const awaitingMove = findRetreatAwaitingMove(state);
+
+  // None settled means the owner has still to choose among equally small
+  // retreats (§9.1.3), or nobody is retreating at all, so the effect is not
+  // owed.
+  const noRetreatSettled =
+    phaseState.phase === 'resolveMelee'
+      ? 'No chosen retreat found in melee resolution'
+      : 'No retreat has been chosen yet';
+  const location = throwIfUndefined(awaitingMove, noRetreatSettled);
   const retreatState = location.retreatState;
 
   // The retreat to carry out was chosen, or was the only one. The selection
   // answers only with a settled path; this says so to the type as well.
-  const path = retreatState.chosenRetreatPath;
-  if (path === 'pending') {
-    throw new Error('No retreat has been chosen yet');
-  }
+  // Nothing reaches the throw: `findRetreatAwaitingMove` passes over a
+  // retreat whose path is still pending.
+  const path = throwIfPending(
+    retreatState.chosenRetreatPath,
+    'No retreat has been chosen yet',
+  );
 
+  // The unit is named by the retreat's own copy of it, and the path is all
+  // the apply needs to find where it lands; a commander standing with it
+  // goes along (§9.1.8).
   const gameEffectEvent: ResolveRetreatEvent = {
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
@@ -55,5 +66,6 @@ export function generateResolveRetreatEvent(
     unit: retreatState.retreatingUnit,
   };
 
+  // The retreat to carry out: this unit falls back along this path.
   return gameEffectEvent;
 }

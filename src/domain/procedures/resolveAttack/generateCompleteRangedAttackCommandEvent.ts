@@ -13,8 +13,15 @@ import {
  * @returns A complete CompleteRangedAttackCommandEvent
  */
 export function generateCompleteRangedAttackCommandEvent(): CompleteRangedAttackCommandEvent {
-  return {
+  // Every unit of the Shoot order has shot, or none left has a target at its
+  // own Range and so is skipped (§4.3.11 step 1). The expected engine decided
+  // that from the board; the units skipped are the ones still listed in the
+  // phase, so the event records nothing.
+  const event: CompleteRangedAttackCommandEvent = {
     effectType: COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
+
+  // The end of the order, for the transform to finish this player's orders.
+  return event;
 }

@@ -34,5 +34,8 @@ export function generateTriggerRoutFromRetreatEvent(
     effectType: TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
+
+  // The rout that takes the retreat's place, carried out at the retreat's
+  // own turn rather than later with the routs (§7.5.6).
   return event;
 }

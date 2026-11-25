@@ -10,17 +10,20 @@ Folder names mirror **`applyEffects/`** and **`events/gameEffects/`** so the sam
 ## Entry points
 
 - **`procedureRegistry.ts`** — `generateEventFromProcedure(state, effectType)` dispatches to the right `generate*` function. This is the usual integration surface.
+  - TODO(misleading): the signature is now `generateEventFromProcedure(state, effectType, random)`; the `RandomSource` is passed through to the rally burn, the one procedure that draws.
 - **`index.ts`** — Public package surface: `generateEventFromProcedure` and `generateStartEngagementEvent` (cross-boundary consumers). Topic subfolder barrels still re-export every `generate*` for the registry and colocated tests; prefer the package barrel or the registry over deep imports from outside this package.
+  - TODO(misleading): the only importer of `generateStartEngagementEvent` outside this package is a spec, `applyMoveUnitEvent.test.ts`; no production code crosses the boundary for it.
 
 ## Domain helpers (outside this folder)
 
 - **`modifiersFromCompletedCommitment`** — in **`@queries`** (`queries/modifiersFromCompletedCommitment.ts`). Used by `resolveAttack` and `movement` generators when passing optional card modifiers into stat queries.
+  - TODO(misleading): the module now lives at `queries/card/modifiersFromCompletedCommitment.ts`.
 
 ## Folder layout
 
 | Folder                               | Generators                                                                                                                              |
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`cards/`](./cards/)                 | discard / reveal played cards, initiative, rally                                                                                        |
+| [`cards/`](./cards/)                 | discard / reveal played cards, initiative, rally, game over                                                                             |
 | [`sequencing/`](./sequencing/)       | phase-completion effects (cleanup, issue commands, move commanders, play cards, resolve melee **phase**)                                |
 | [`defenseResult/`](./defenseResult/) | retreat, reverse, rout, trigger rout from retreat                                                                                       |
 | [`movement/`](./movement/)           | complete unit movement, engagements (start, flank, engage-retreat option)                                                               |
@@ -33,6 +36,7 @@ Each subfolder has a small `index.ts` barrel. Co-locate each `generate*` with it
 - **How to write one:** [`STYLE.md`](../../../STYLE.md).
 - Every **`generate*.ts`** has a colocated **`generate*.test.ts`** (happy paths + important throws where applicable).
 - **`procedureRegistry.test.ts`** — smoke dispatch for state-independent effect types via `generateEventFromProcedure`.
+  - TODO(misleading): it now dispatches every game effect type, each from a state built for it by `procedureRegistryStateFactories` in `@testing`, and checks the event is the effect asked for.
 - Same Vitest coverage rules as the rest of `src/domain` ([`vitest.config.ts`](../../../vitest.config.ts) `include` / `exclude`).
 
 ## Related queries

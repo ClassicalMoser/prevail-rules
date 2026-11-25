@@ -16,9 +16,12 @@ import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
  * @param random - The source of the draw that picks the burnt card
  * @returns A complete ResolveRallyEvent with the selected card
  * @throws Error if player has no played cards to burn
+ * @throws Error if cleanup is not on a resolve-rally step
  *
  * @example
  * ```typescript
+ * // TODO(misleading): the call below omits the `random` argument the
+ * // signature requires; settle by passing a source, as `generateEventFromProcedure` does.
  * // Generate event with random selection
  * const event = generateResolveRallyEvent(state);
  *
@@ -33,6 +36,13 @@ export function generateResolveRallyEvent(
   random: RandomSource,
 ): ResolveRallyEvent {
   // Only a resolve step burns a card; choosing to rally burns nothing yet.
+  // TODO(composition): this step test repeats the one in
+  // `getCurrentRallyResolutionState`, with a different message, and does not
+  // check what the apply's `getRallyResolutionStateAwaitingBurn` checks (the
+  // player chose to rally, and has not burnt yet). ENGINES.md has the
+  // procedure and the apply read the slot through the same query. Settle by
+  // asking `getRallyResolutionStateAwaitingBurn` here; that adds throws and
+  // changes this message, so it is a behaviour change for the author.
   const phaseState = getCleanupPhaseState(state);
   if (
     phaseState.step !== 'firstPlayerResolveRally' &&
@@ -42,10 +52,21 @@ export function generateResolveRallyEvent(
       `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
     );
   }
+
+  // The first player rallies first, then the second (§10.3.1); the step says
+  // whose rally this is.
   const rallyingPlayer = getRallyingPlayer(state);
 
+  // The burn comes from the rallying player's played pile (§10.3.2). Played
+  // cards lie face up, so every view of the game holds them.
+  // TODO(composition): the played pile is read off the card state by hand,
+  // here and in `getLegalChooseRallyEvent`. Settle with a `@queries` reader
+  // both ask.
   const playedCards = state.cardState[rallyingPlayer].played;
 
+  // There is always something to burn: this round's card went to the played
+  // pile at the start of Cleanup (§10.3.3). An empty pile is a fault in the
+  // state, not a rally with nothing to lose.
   if (playedCards.length === 0) {
     throw new Error(
       `Player ${rallyingPlayer} has no played cards to burn for rally`,
@@ -53,13 +74,23 @@ export function generateResolveRallyEvent(
   }
 
   // The draw belongs to the caller: a fixed source replays the same burn.
-  const index = Math.floor(random.nextFloat() * playedCards.length);
+  // The burnt card is drawn at random, by design (§10.3.2): each played card
+  // has an equal share of the draw, which lies in [0, 1).
+  const draw = random.nextFloat();
+  const index = Math.floor(draw * playedCards.length);
   const cardToBurn = playedCards[index];
 
-  return {
+  // The burnt card is the state's own copy, and it goes on the event: the
+  // draw is not repeated on replay, and the apply burns this card and returns
+  // every other played and discarded card to hand.
+  const resolveRally: ResolveRallyEvent = {
     burntCard: cardToBurn,
     effectType: RESOLVE_RALLY_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     player: rallyingPlayer,
   };
+
+  // The effect that carries out this player's rally, before their support
+  // check (§10.4).
+  return resolveRally;
 }

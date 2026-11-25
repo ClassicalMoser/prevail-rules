@@ -19,13 +19,30 @@ import { getBoardCoordinatesWithEngagedUnits } from '@queries';
 export function generateCompleteIssueCommandsPhaseEvent(
   state: GameState,
 ): CompleteIssueCommandsPhaseEvent {
+  // TODO(composition): the expected engine asks for this effect only once both
+  // players' orders are carried out (Issue Commands on its `complete` step),
+  // but asked anywhere else this still answers, against the rule in
+  // `DESIGN.md` that a function asked outside its gate throws.
+  // `generateCompleteMoveCommandersPhaseEvent` insists on its phase. Settle
+  // by reading the phase through `getIssueCommandsPhaseState` and refusing
+  // any step but `complete`, or by saying why this one need not.
+
+  // Every engaged space fights in Phase 4, and no fight may be skipped
+  // (§4.4.1). Orders are over, so no engagement can begin or end before
+  // then: the spaces engaged now are the fights Phase 4 owes. The first
+  // player picks the order they are fought in (§4.4.2), so these are a set.
   const remainingEngagements: Set<Coordinate> =
     getBoardCoordinatesWithEngagedUnits(state.boardState);
 
+  // The event records the fights, so the apply starts Phase 4 with them and
+  // never scans the board itself. The query walks the board in board order,
+  // so the list comes out in that order, stable but meaning nothing.
   const event: CompleteIssueCommandsPhaseEvent = {
     effectType: COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
     remainingEngagements: [...remainingEngagements],
   };
+
+  // Phase 3 ends, carrying the fights Phase 4 owes.
   return event;
 }

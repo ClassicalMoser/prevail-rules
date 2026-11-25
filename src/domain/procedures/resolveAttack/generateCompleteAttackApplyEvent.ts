@@ -20,11 +20,20 @@ export function generateCompleteAttackApplyEvent(
   state: GameState,
 ): CompleteAttackApplyEvent {
   // An apply must be waiting to close, or the effect is not owed.
+  // Every result the attack reached has been carried out by now, retreat,
+  // then reverse, then rout (§7.5.2). The apply this closes is the one the
+  // transform will close, since both ask `getAttackApplyToClose`; its answer
+  // is not needed here, only that there is one.
   getAttackApplyToClose(state);
 
+  // Nothing to record: which apply closes is the state's to name, a shot's
+  // one or the next of a melee's two in the order the blows land (§7.5.6).
   const event: CompleteAttackApplyEvent = {
     effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
+
+  // The close, for the transform to mark that apply done; the expected engine
+  // then moves on to the melee's other apply, or ends the shot or the melee.
   return event;
 }

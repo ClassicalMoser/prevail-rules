@@ -13,9 +13,15 @@ import {
  * @returns The event
  */
 export function generateOpenRetreatFromEngagementEvent(): OpenRetreatFromEngagementEvent {
+  // The defender was the faster and had somewhere to go, and chose to fall
+  // back (§6.3.2 step 3). Its retreats were worked out by
+  // `generateResolveEngageRetreatOptionEvent` and are on the engagement, so
+  // the event records nothing.
   const event: OpenRetreatFromEngagementEvent = {
     effectType: OPEN_RETREAT_FROM_ENGAGEMENT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
+
+  // The retreat opens, for the defender's owner to choose among its retreats.
   return event;
 }

@@ -23,16 +23,28 @@ import { throwIfPending } from '@utils';
 export function generateStartEngagementEvent(
   state: GameState,
 ): StartEngagementEvent {
+  // The Move order being carried out; asked outside one, the getter throws.
   const movementResolutionState = getMovementResolutionState(state);
 
   // Get the engaging unit's facing from its target placement
   // An engagement is only started once the move into the enemy is written.
+  // The facing the move ends in is the engaging unit's final facing, the one
+  // the kind of engagement is read from (§6.3.1).
   const targetPlacement = throwIfPending(
     movementResolutionState.targetPlacement,
     'The move has not been written yet',
   );
   const engagingFacing = targetPlacement.facing;
 
+  // The defender is the unit already standing in the space the move ends in
+  // (§6.1.3), alone there, since nothing may enter an engaged space
+  // (§2.2.3). The engaging unit has not been set down yet.
+  // TODO(misleading): the header's `@throws` says "no enemy unit at target",
+  // but the getter throws only when the space does not hold exactly one
+  // unit; a lone friendly unit there would be taken as the defender. The
+  // expected engine asks only when the space holds an enemy
+  // (`getExpectedMovementResolutionEvent`). Settle by saying "no lone unit
+  // at target", or by checking the unit is the other side's.
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
     targetPlacement.coordinate,
@@ -54,20 +66,34 @@ export function generateStartEngagementEvent(
   // its own committed card counted (§5.1.4, §4.3.10). It still stands on
   // that space now; once the engagement starts it stands in the defender's,
   // so this is the moment to read it.
+  // Everything that makes up its current Speed counts (§5.1.1): a round
+  // effect if its range reached that starting space, the modifiers of the
+  // order it was given, and the card committed before the move, which helps
+  // the mover's own Speed only (§8.4.1).
+  const engagingCommitmentModifiers = modifiersFromCompletedCommitment(
+    movementResolutionState.commitment,
+  );
   const engagingSpeed = getCurrentUnitStat(
     movementResolutionState.movingUnit,
     'speed',
     state,
-    modifiersFromCompletedCommitment(movementResolutionState.commitment),
+    engagingCommitmentModifiers,
   );
 
   // The defender is named by who it is: it stands in the space the move
   // ends in, which the movement records, and faces as the board says.
-  return {
+  // The kind of engagement and the engaging unit's Speed are what this
+  // procedure measured, so the event carries them; the apply opens the
+  // engagement from them.
+  const event: StartEngagementEvent = {
     defendingUnit: defenderWithPlacement.unit,
     engagingSpeed,
     effectType: START_ENGAGEMENT_EFFECT_TYPE,
     engagementType,
     eventType: GAME_EFFECT_EVENT_TYPE,
   };
+
+  // The engagement begins, for the transform to set it up at once (§4.3.10
+  // step 4).
+  return event;
 }
