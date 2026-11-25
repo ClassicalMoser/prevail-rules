@@ -5,7 +5,7 @@ import { RANGED_DEFENSE_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToRangedDefenseEvent } from '@factories';
 import { findRangedAttackResolutionState } from '@queries';
 import { isPending } from '@utils';
-import { getCommitmentOffers } from './commitment';
+import { getCommitmentOffers } from './getCommitmentOffers';
 
 /**
  * The target's owner, while its commitment is owed: the shooter has

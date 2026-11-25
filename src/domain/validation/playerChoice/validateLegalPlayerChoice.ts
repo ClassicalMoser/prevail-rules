@@ -1,24 +1,29 @@
 import type { ValidationResult } from '@utils';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
-import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
+import { isValidAssignUnitSupportEvent } from './assignUnitSupport';
+import {
+  isValidChooseRetreatOptionEvent,
+  isValidChooseWhetherToRetreatEvent,
+} from './retreat';
+import {
+  isValidCommitToMeleeEvent,
+  isValidCommitToMovementEvent,
+  isValidCommitToRangedAttackEvent,
+  isValidCommitToRangedDefenseEvent,
+} from './commitment';
+import { isValidIssueCommandsEvent } from './issueCommands';
+import { isValidChooseMovingUnitEvent, isValidMoveUnitEvent } from './moveUnit';
+import {
+  isValidChooseShooterEvent,
+  isValidPerformRangedAttackEvent,
+} from './performRangedAttack';
+import { isValidSetupUnitsEvent } from './setupUnits';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
 import { isValidChooseMeleeResolutionEvent } from './isValidMeleeResolutionEvent';
-import { isValidChooseRetreatOptionEvent } from './isValidChooseRetreatOptionEvent';
-import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetreatEvent';
-import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
-import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
-import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
-import { isValidCommitToRangedDefenseEvent } from './isValidCommitToRangedDefenseEvent';
-import { isValidIssueCommandsEvent } from './isValidIssueCommandsEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
-import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
-import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
-import { isValidChooseShooterEvent } from './isValidChooseShooterEvent';
-import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
-import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 
 /**
  * Validates that a player choice event is legal under the rules by checking

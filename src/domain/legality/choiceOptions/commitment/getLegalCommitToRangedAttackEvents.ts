@@ -4,7 +4,7 @@ import type { GameState } from '@game';
 import { RANGED_ATTACK_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToRangedAttackEvent } from '@factories';
 import { findRangedAttackResolutionState } from '@queries';
-import { getCommitmentOffers } from './commitment';
+import { getCommitmentOffers } from './getCommitmentOffers';
 
 /**
  * The shooting player, while the shooter's commitment is owed: a ranged

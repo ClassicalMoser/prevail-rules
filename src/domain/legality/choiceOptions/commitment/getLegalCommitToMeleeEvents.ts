@@ -7,7 +7,7 @@ import {
   findMeleeResolutionState,
   findPlayerOwingMeleeCommitment,
 } from '@queries';
-import { getCommitmentOffers } from './commitment';
+import { getCommitmentOffers } from './getCommitmentOffers';
 
 /**
  * The player whose melee commitment is owed. The first player commits

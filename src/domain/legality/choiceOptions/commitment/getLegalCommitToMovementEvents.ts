@@ -9,7 +9,7 @@ import {
   getFrontEngagementStage,
   getOtherPlayer,
 } from '@queries';
-import { getCommitmentOffers } from './commitment';
+import { getCommitmentOffers } from './getCommitmentOffers';
 
 /**
  * Player whose commit-to-movement is pending: either the moving unit (CRS
