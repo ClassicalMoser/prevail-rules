@@ -169,6 +169,8 @@ function fromEngagement(slot: EngagementState | 'pending'): SubstepState[] {
 
   // What the engagement opens depends on which side of the defender it struck.
   const resolution = slot.engagementResolutionState;
+  // Named now, so a fault below can say which kind it met.
+  const { engagementType } = resolution;
   switch (resolution.engagementType) {
     // From the front, the defender may give ground.
     case 'front': {
@@ -185,7 +187,7 @@ function fromEngagement(slot: EngagementState | 'pending'): SubstepState[] {
     // An engagement of no kind the rules name is a fault in the state.
     default: {
       const _exhaustive: never = resolution;
-      throw new Error(`Unknown engagement type: ${String(_exhaustive)}`);
+      throw new Error(`Unknown engagement type: ${String(engagementType)}`);
     }
   }
 }
