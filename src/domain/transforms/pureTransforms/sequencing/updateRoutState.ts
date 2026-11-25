@@ -1,4 +1,5 @@
 import type { GameState, RoutState } from '@game';
+import type { RoutLocation } from '@queries';
 import {
   findRoutLocation,
   getCurrentPhaseState,
@@ -10,6 +11,19 @@ import { updateAttackApplyState } from './updateAttackApplyState';
 import { updateRallyResolutionState } from './updateRallyResolutionState';
 import { updateRearEngagementResolutionState } from './updateRearEngagementResolutionState';
 import { updateRetreatRoutState } from './updateRetreatRoutState';
+
+/**
+ * The rout written into the apply of the attack that routed the player's unit,
+ * which holds the rout of the unit it broke.
+ */
+function writeToAttackApply<S extends GameState>(
+  state: S,
+  routState: RoutState,
+): S {
+  const apply = getAttackApplyStateOfPlayer(state, routState.player);
+  const applied = updateAttackApplyState(state, { ...apply, routState });
+  return applied;
+}
 
 /**
  * Creates a new game state with the rout state updated. It writes the rout
@@ -45,47 +59,34 @@ export function updateRoutState<S extends GameState>(
     );
   }
 
-  switch (location.source) {
-    case 'retreat': {
-      // Written through the retreat, whichever attack the retreat belongs to.
-      const written = updateRetreatRoutState(state, routState);
-      // The retreat, holding the rout of a unit with nowhere to go (§9.1.6).
-      return written;
-    }
-    case 'rearEngagementMovement': {
-      // A defender caught from behind routs on the spot (§6.3.3).
-      const written = updateRearEngagementResolutionState(state, {
-        routState,
-      });
-      // The rear engagement, holding the defender's rout.
-      return written;
-    }
-    case 'rangedAttack':
-    case 'melee': {
-      // The apply of the attack that routed this player's unit.
-      const apply = getAttackApplyStateOfPlayer(state, routState.player);
-      const written = updateAttackApplyState(state, { ...apply, routState });
-      // The attack's results, holding the rout of the unit it broke.
-      return written;
-    }
-    case 'rally': {
-      // The rally on this cleanup step, whose support check left these
-      // units without a place (§10.4.6).
+  // Where to write it, keyed by where it sits. The source is
+  // `findRoutLocation`'s own answer, not an argument, so the type demands a
+  // writer for every source and a source left out fails to compile.
+  const writeBySource: Record<RoutLocation['source'], () => S> = {
+    // Written through the retreat, whichever attack the retreat belongs to:
+    // the retreat holds the rout of a unit with nowhere to go (§9.1.6).
+    retreat: () => updateRetreatRoutState(state, routState),
+    // A defender caught from behind routs on the spot (§6.3.3); the rear
+    // engagement holds its rout.
+    rearEngagementMovement: () =>
+      updateRearEngagementResolutionState(state, { routState }),
+    // The apply of the attack that routed this player's unit holds the rout
+    // of the unit it broke.
+    rangedAttack: () => writeToAttackApply(state, routState),
+    melee: () => writeToAttackApply(state, routState),
+    // The rally on this cleanup step, whose support check left these units
+    // without a place (§10.4.6), holds the rout of every unit it could not
+    // hold.
+    rally: () => {
       const rallyingPlayer = getRallyingPlayer(state);
       const rallyState = getCurrentRallyResolutionState(state);
       const written = updateRallyResolutionState(state, rallyingPlayer, {
         ...rallyState,
         routState,
       });
-      // The rally, holding the rout of every unit it could not hold.
       return written;
-    }
-    default: {
-      // TODO(composition): unreachable, so no spec has a case for it, as in
-      // `settleRout`: `findRoutLocation` answers only the five sources above.
-      // Exhaustiveness check for TypeScript
-      const _exhaustive: never = location.source;
-      throw new Error(`Unknown rout source: ${String(_exhaustive)}`);
-    }
-  }
+    },
+  };
+  const written = writeBySource[location.source]();
+  return written;
 }

@@ -1,5 +1,6 @@
 import type { PlayerSide } from '@entities';
 import type { GameState, RoutState } from '@game';
+import type { RoutLocation } from '@queries';
 import {
   findRoutLocation,
   getCurrentRallyResolutionState,
@@ -108,38 +109,21 @@ export function settleRout<S extends GameState>(
     return written;
   }
 
-  switch (location.source) {
-    case 'retreat': {
-      // The unit that could not retreat has left the battle.
-      const retreatClosed = closeRetreat(written, routState.player);
-      return retreatClosed;
-    }
-    case 'rearEngagementMovement': {
-      // Caught from behind, the defender routed and nothing else happens.
-      const engagementClosed = closeRearEngagement(written);
-      return engagementClosed;
-    }
-    case 'rally': {
-      // The support check's routs are paid together, once (§10.4.7).
-      const rallyClosed = closeRally(written);
-      return rallyClosed;
-    }
-    case 'rangedAttack':
-    case 'melee': {
-      // The attack's apply closes in `completeAttackApply`, after every
-      // result due on it is carried out.
-      return written;
-    }
-    default: {
-      // TODO(composition): unreachable, so no spec has a case for it.
-      // `findRoutLocation` answers only the five sources above, each a fixed
-      // literal, and nothing a spec passes in can add a sixth. Settled by
-      // deciding whether a switch over a query's own answer keeps the house
-      // exhaustive default (as here and in `updateRoutState`) or ends with
-      // the cases, which the type already proves total.
-      // Exhaustiveness check for TypeScript
-      const _exhaustive: never = location.source;
-      throw new Error(`Unknown rout source: ${String(_exhaustive)}`);
-    }
-  }
+  // What closes once the rout is paid, keyed by where it sits. The source is
+  // `findRoutLocation`'s own answer, not an argument, so the type demands a
+  // closer for every source and a source left out fails to compile.
+  const closeBySource: Record<RoutLocation['source'], () => S> = {
+    // The unit that could not retreat has left the battle.
+    retreat: () => closeRetreat(written, routState.player),
+    // Caught from behind, the defender routed and nothing else happens.
+    rearEngagementMovement: () => closeRearEngagement(written),
+    // The support check's routs are paid together, once (§10.4.7).
+    rally: () => closeRally(written),
+    // The attack's apply closes in `completeAttackApply`, after every result
+    // due on it is carried out.
+    rangedAttack: () => written,
+    melee: () => written,
+  };
+  const settled = closeBySource[location.source]();
+  return settled;
 }
