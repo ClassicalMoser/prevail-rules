@@ -3,6 +3,7 @@ import { PLAY_CARDS_PHASE } from '@game';
 import {
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
+  createGameStateResolvingCommand,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -157,22 +158,16 @@ describe('generateResolveRoutEvent function', () => {
 
   it('throws when the command being resolved holds no rout', () => {
     // Where a rout can sit is the query's answer, so a command that holds none
-    // leaves this procedure with no penalty to work out.
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    state.cardState.black.inPlay = createTestCard();
-    const full = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: {
-          commandResolutionType: 'melee',
-        } as never,
-      }),
+    // leaves this procedure with no penalty to work out. Here a Move is under
+    // way whose unit has walked into nobody.
+    const empty = createEmptyGameState('standard');
+    const state = createGameStateResolvingCommand(
+      createMovementResolutionState(empty),
+      empty,
     );
 
-    expect(() => generateResolveRoutEvent(full)).toThrow(
+    // Nobody is routing, so there is no penalty to count.
+    expect(() => generateResolveRoutEvent(state)).toThrow(
       'No rout is awaiting its penalty',
     );
   });
