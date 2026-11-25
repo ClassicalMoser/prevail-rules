@@ -144,11 +144,10 @@ describe('getLegalChooseCardOptions function', () => {
       cardState: { ...state.cardState, visibility: 'unknown' },
     } as never;
 
-    // Today it fails only by accident, iterating the card state it was handed;
-    // see the TODO(wrong) in `pendingOwnedPlayers`. The fix there names the
-    // visibility, and this message changes with it.
+    // Refused where the visibility is read, naming it, as every reader of a
+    // card state's visibility does.
     expect(() => getLegalChooseCardOptions(unknownView)).toThrow(
-      'is not iterable',
+      'Invalid visibility: unknown',
     );
   });
 
