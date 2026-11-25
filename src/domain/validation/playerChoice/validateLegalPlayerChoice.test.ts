@@ -607,4 +607,18 @@ describe('validateLegalPlayerChoice function', () => {
       result: true,
     });
   });
+
+  it('throws on a choice of no type the rules name', () => {
+    // The type forbids it, so the spec forces it through: a choice type with
+    // no rule to judge it is a fault in the caller, refused by name. Above
+    // this router, validatePlayerChoice turns the throw into a refusal.
+    const event = {
+      choiceType: 'surrender',
+      player: 'white',
+    } as never;
+
+    expect(() =>
+      validateLegalPlayerChoice(event, createPlayableGame([])),
+    ).toThrow('Unknown player choice type: surrender');
+  });
 });
