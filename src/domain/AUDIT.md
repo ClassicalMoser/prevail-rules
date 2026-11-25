@@ -118,7 +118,7 @@ Walk folders in IDE order (alphabetical).
 
 ### `legality/` (`@legality`)
 
-- [ ] `legality/`
+- [ ] `legality/` — scout complete 2026-11-25 (awaiting human read)
   - [ ] `army/`
   - [ ] `board/`
   - [ ] `choiceOptions/`
