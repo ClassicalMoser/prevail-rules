@@ -19,6 +19,12 @@ export function chooseCard(
   owned: OwnedCardState,
   card: CommandCard,
 ): OwnedCardState {
+  // A player lays down one card a round (§4.1.1); a second choice would bury
+  // the first and lose it from every pile.
+  if (owned.awaitingPlay !== null) {
+    throw new Error('Player already has a card awaiting play');
+  }
+
   // Only a card in hand can be played (§10.1.1); naming another is a fault in
   // the choice, which validation should have refused.
   const { inHand } = owned;
@@ -32,10 +38,6 @@ export function chooseCard(
   const newHand = inHand.filter((c) => !isSameCard(c, card));
 
   // The hand's own copy lies face down until both are revealed (§4.1.2).
-  // TODO(wrong): a card already awaiting play is overwritten and lost from
-  // every pile, where `chooseHiddenCard` throws 'Hidden player already has a
-  // card awaiting play'. Validation should never let a player choose twice,
-  // so this would hide that fault. Settle by throwing here too.
   const chosen: OwnedCardState = {
     ...owned,
     awaitingPlay: cardInHand,
