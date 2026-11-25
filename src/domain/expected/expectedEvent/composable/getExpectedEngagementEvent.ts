@@ -1,6 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { EngagementState } from '@game';
+import type { FrontEngagementStage } from '@queries';
 import { getFrontEngagementStage, getOtherPlayer } from '@queries';
 import { throwIfBypassed, throwIfPending } from '@utils';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
@@ -77,8 +78,11 @@ export function getExpectedEngagementEvent(
   // and has somewhere to go (§6.3.2); otherwise the two fight in Phase 4.
   if (engagementType === 'front') {
     const stage = getFrontEngagementStage(resolutionState);
-    switch (stage) {
-      case 'defenderCommitting': {
+    // What each stage expects, keyed by stage: the stage is the query's own
+    // answer, not an argument, so the type demands a reader for every stage
+    // and a stage left out fails to compile.
+    const byStage: Record<FrontEngagementStage, () => ExpectedEventInfo> = {
+      defenderCommitting: () => {
         // The defender may commit a card for the fight first (§6.3.2).
         // TODO(misleading): the card is not for the fight. §6.3.2 step 1 and
         // §8.4 have the defender commit for Speed or Flexibility, which counts
@@ -90,8 +94,8 @@ export function getExpectedEngagementEvent(
           playerSource: defendingPlayer,
         };
         return defenderCommits;
-      }
-      case 'retreatBeingWorkedOut': {
+      },
+      retreatBeingWorkedOut: () => {
         // The defender may fall back only if its Speed is strictly greater
         // than the engaging unit's, and only where it has a retreat to make
         // (§6.3.2 step 2). Comparing the two and finding its retreats is the
@@ -101,8 +105,8 @@ export function getExpectedEngagementEvent(
           effectType: 'resolveEngageRetreatOption',
         };
         return workOutRetreats;
-      }
-      case 'noRetreat': {
+      },
+      noRetreat: () => {
         // A defender with nowhere to fall back to is not offered the choice
         // (§6.3.2). The effect that found no retreats closes the engagement in
         // the same write (`applyResolveEngageRetreatOptionEvent`), so an open
@@ -112,8 +116,8 @@ export function getExpectedEngagementEvent(
         // Settle by a message saying the engagement with no retreat was not
         // closed, as the `'defenderStands'` and `'retreated'` cases do.
         throw new Error('Defending unit cannot retreat');
-      }
-      case 'defenderDeciding': {
+      },
+      defenderDeciding: () => {
         // A defender that may fall back chooses whether to (§6.3.2 step 3).
         const defenderDecides: ExpectedEventInfo = {
           actionType: 'playerChoice',
@@ -121,15 +125,15 @@ export function getExpectedEngagementEvent(
           playerSource: defendingPlayer,
         };
         return defenderDecides;
-      }
-      case 'defenderStands': {
+      },
+      defenderStands: () => {
         // The transform that recorded the choice should have closed the
         // engagement.
         throw new Error(
           'Front engagement resolution complete but not marked as completed',
         );
-      }
-      case 'retreatOpening': {
+      },
+      retreatOpening: () => {
         // An accepted retreat opens first, with the retreats worked out by
         // its procedure, then drives chooseRetreatOption / resolveRetreat.
         const openRetreat: ExpectedEventInfo = {
@@ -137,8 +141,8 @@ export function getExpectedEngagementEvent(
           effectType: 'openRetreatFromEngagement',
         };
         return openRetreat;
-      }
-      case 'retreating': {
+      },
+      retreating: () => {
         // The defender falls back as any retreating unit does (§9.1). The
         // engagement ends once it has, and no melee is fought (§6.3.2 step 3).
         // TODO(composition): both guards below are unreachable.
@@ -157,21 +161,16 @@ export function getExpectedEngagementEvent(
         );
         const retreatDue = getExpectedRetreatEvent(retreatState);
         return retreatDue;
-      }
-      case 'retreated': {
+      },
+      retreated: () => {
         // applyResolveRetreat should have marked the engagement complete.
         throw new Error(
           'Front engagement retreat completed but engagement not marked as completed',
         );
-      }
-      default: {
-        // Unreachable: the stage is `getFrontEngagementStage`'s own answer,
-        // never an argument, so no spec can pass a value outside the union.
-        // The `never` makes a new stage fail the typecheck here.
-        const _exhaustive: never = stage;
-        throw new Error(`Invalid front engagement stage: ${_exhaustive}`);
-      }
-    }
+      },
+    };
+    const expected = byStage[stage]();
+    return expected;
   }
 
   // Every kind of engagement is handled above (§6.3.1); a value outside the
