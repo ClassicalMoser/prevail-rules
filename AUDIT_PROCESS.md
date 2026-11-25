@@ -116,6 +116,23 @@ give no reading that carries.
 A spec the author can assess at a glance is the goal, and it is also how the author
 checks the pass's own work cheaply.
 
+A scope with specs gets three checks:
+
+- **Coverage.** Lines, functions and branches reach 100% (`pnpm test:coverage`).
+  A gap gets a case, or a mark saying why the line cannot be reached.
+- **Mutation.** Coverage says a line ran, not that a case would notice it
+  changing. Read the scope in the nightly CI mutation report; never run
+  mutation locally, since it takes hours. A surviving mutant gets a case, or a
+  mark saying why it is equivalent.
+- **Redundancy and vacuity.** A case that would pass whatever the code did is
+  dropped. A case that repeats another is merged or dropped. Reading decides
+  both; the mutation report is proof to read with, and a case that alone kills
+  a mutant is not a repeat. The aim is good tests, not a mutation score.
+- **Construction.** Each case makes plain which rule the code enforces, and its
+  setup reads as simply as the fact it builds.
+
+Rewriting a spec to meet these is in scope, and the pass has wide leeway to do it.
+
 The never-overwrite rule still holds. A spec that reads as authored — a title that
 states a real fact, a comment explaining why a case exists, a deliberate value —
 gets marked, not rewritten. List any case dropped or merged.
