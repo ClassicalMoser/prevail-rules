@@ -23,6 +23,9 @@ export function addEngagingUnitToBoard(
   const presence = space.unitPresence;
 
   // Only a lone enemy can be engaged.
+  // An engagement begins where a unit ends a step in a space held by a single
+  // enemy unit (§6.1.1); an empty space, a friend's, or an engaged space
+  // (§2.2.3) has no one to engage.
   if (
     !hasSingleUnit(presence) ||
     isFriendlyUnit(presence.unit, engaging.unit.playerSide)
@@ -44,5 +47,7 @@ export function addEngagingUnitToBoard(
       [coordinate]: { ...space, unitPresence: engaged },
     },
   };
+
+  // The board with the pair engaged in that space, every other space as it was.
   return withPair;
 }

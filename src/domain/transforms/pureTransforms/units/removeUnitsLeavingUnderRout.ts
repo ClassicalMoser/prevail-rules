@@ -14,11 +14,14 @@ import { routUnit } from './routUnit';
  * @param state - The current game state
  * @param units - The units leaving under this rout
  * @returns A new game state with those units off the board and in `routedUnits`
+ * @throws {Error} If a unit is not on the board, as when it has already routed
  */
 export function removeUnitsLeavingUnderRout<S extends GameState>(
   state: S,
   units: readonly UnitInstance[],
 ): S {
+  // One unit after another, each written onto the state the one before it
+  // left, so every write keeps the board and the index in step.
   let next = state;
   for (const unit of units) {
     // The unit's space is read now: once it routs, it stands nowhere.
@@ -28,5 +31,7 @@ export function removeUnitsLeavingUnderRout<S extends GameState>(
     // The unit itself routs.
     next = routUnit(next, unit);
   }
+
+  // The game with every unit of this rout gone, its Morale still to be paid.
   return next;
 }

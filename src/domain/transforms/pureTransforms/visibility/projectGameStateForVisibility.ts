@@ -45,6 +45,8 @@ export function projectGameStateForVisibility(
       return spectator;
     }
     default: {
+      // The four views are every view there is; a value outside them is a
+      // caller's fault, named in the message.
       const _exhaustive: never = visibility;
       throw new Error(`Invalid visibility: ${_exhaustive}`);
     }

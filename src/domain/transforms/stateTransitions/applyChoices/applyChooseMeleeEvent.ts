@@ -15,5 +15,8 @@ export function applyChooseMeleeEvent<S extends GameState>(
 ): S {
   // Fight the chosen engagement next (§4.4.2).
   const opened = openMeleeResolution(state, event.space);
+
+  // The chosen space no longer waits, and its melee opens with both
+  // commitments owed, the first player's first (§7.2.2).
   return opened;
 }

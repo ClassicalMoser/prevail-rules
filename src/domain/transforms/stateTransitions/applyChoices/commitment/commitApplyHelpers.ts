@@ -1,6 +1,7 @@
 import type { CommandCard, PlayerSide } from '@entities';
 import type { Commitment, GameState } from '@game';
 import { getTopDiscardedCard } from '@queries';
+import { isNone } from '@utils';
 import {
   discardCardsFromHand,
   discardShownCardFromHiddenHand,
@@ -25,8 +26,10 @@ export function commitmentFromCommittedCard(
   committedCard: CommandCard | 'none',
 ): Commitment {
   // A refusal spends no card and declines the commitment.
-  if (committedCard === 'none') {
+  if (isNone(committedCard)) {
     const declined: Commitment = { commitmentType: 'declined' };
+
+    // The moment goes on without a bonus.
     return declined;
   }
 
@@ -35,6 +38,9 @@ export function commitmentFromCommittedCard(
     card: getTopDiscardedCard(discarded, player),
     commitmentType: 'completed',
   };
+
+  // Worth +1 to each stat the card names, read where the commitment is used
+  // (§8.2).
   return completed;
 }
 
@@ -52,13 +58,20 @@ export function applyCommitCardDiscard<S extends GameState>(
   player: PlayerSide,
   committedCard: CommandCard | 'none',
 ): S {
-  if (committedCard === 'none') {
+  // Commitment is always optional (§8.3): a refusal leaves the hand as it was.
+  if (isNone(committedCard)) {
     return state;
   }
 
+  // The card leaves the hand for the discard pile, where it waits for the
+  // next rally (§8.1). Where the hand is in view the hand's own copy is the
+  // one moved; where it is hidden the shown card is the only copy there is.
   const committed = updatePlayerCards(state, player, {
     hidden: (hidden) => discardShownCardFromHiddenHand(hidden, committedCard),
     owned: (owned) => discardCardsFromHand(owned, [committedCard.id]),
   });
+
+  // The hand is one card smaller, and that card is on top of the discard pile
+  // for `commitmentFromCommittedCard` to read.
   return committed;
 }

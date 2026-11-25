@@ -26,12 +26,18 @@ export function moveCommanderOnBoard<S extends GameState>(
   // Where it stands now; it must be on the board to move.
   const from = getCommanderSpace(side, state);
 
-  // Off its space, onto the new one, and filed there.
+  // Off its space; another side's commander there stays.
   const lifted = removeCommanderFromBoard(state.boardState, from, side);
+
+  // Onto the new one, and filed there. Where it may go is the caller's to
+  // have settled: a Phase 2 move by legality (§4.2), a ride or a retreat by
+  // the unit it goes with (§4.3.10, §9.1.8).
   const written: S = {
     ...state,
     boardState: addCommanderToBoard(lifted, side, to),
     index: fileCommanderInIndex(state.index, side, to),
   };
+
+  // The state with the commander at its new space.
   return written;
 }

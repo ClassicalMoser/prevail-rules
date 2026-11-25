@@ -20,10 +20,15 @@ export function applySkipLostCommanderMoveEvent<S extends GameState>(
   state: S,
 ): S {
   // The turn passes on with nothing moved.
+  // The turn being passed over is whichever the phase is on; the board and
+  // the lost commander's record stay as they are.
   const { step } = getMoveCommandersPhaseState(state);
-  const passed = updateMoveCommandersStep(
-    state,
-    getMoveCommandersStepAfter(step),
-  );
+
+  // The same step a move would have led to: the second player's turn, or the
+  // end of the phase (§4.2.1).
+  const next = getMoveCommandersStepAfter(step);
+  const passed = updateMoveCommandersStep(state, next);
+
+  // The turn passed on.
   return passed;
 }

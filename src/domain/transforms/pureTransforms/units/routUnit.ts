@@ -33,5 +33,7 @@ export function routUnit<S extends GameState>(state: S, unit: UnitInstance): S {
     index: fileUnitInIndex(state.index, held.unit, 'routed'),
     routedUnits: [...state.routedUnits, held.unit],
   };
+
+  // The game with the unit gone from the battle for good (§9.3.1).
   return written;
 }

@@ -23,6 +23,7 @@ export function applyCommitToRangedDefenseEvent<S extends GameState>(
   event: CommitToRangedDefenseEvent,
   state: S,
 ): S {
+  // The shot being carried out, aimed at the target whose owner commits.
   const shot = getRangedAttackResolutionState(state);
 
   // A committed card is spent from the hand until the next rally (§8.1).
@@ -42,5 +43,8 @@ export function applyCommitToRangedDefenseEvent<S extends GameState>(
     ),
   };
   const committed = updateCommandResolutionState(stateWithCards, defended);
+
+  // Both sides have had their say, and the attack is resolved next (§4.3.11
+  // step 6).
   return committed;
 }

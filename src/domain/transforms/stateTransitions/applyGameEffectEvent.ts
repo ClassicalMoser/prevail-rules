@@ -41,11 +41,25 @@ import {
  * Routes game effect events to their corresponding apply functions.
  * Generic over the game-state **object** (`S extends GameState`): same
  * visibility member out as in — once every leaf is also `<S extends GameState>`.
+ * TODO(misleading): every apply below is already generic over `S`, so "once"
+ * reads as a condition still to be met. Settle by rewording to say the
+ * visibility carries through because every apply is generic.
+ *
+ * An effect is what the game owes rather than what a player chose: a
+ * procedure built it from this same state, so it is trusted and carried out
+ * as it stands. `applyEvent` is the one caller.
+ *
+ * @param event - The effect the game owed, as its procedure built it
+ * @param state - The game it was built from, under any visibility
+ * @returns The game with that effect carried out, under the same visibility
+ * @throws Error when the effect is of no kind the game knows
  */
 export function applyGameEffectEvent<S extends GameState>(
   event: GameEffectEvent,
   state: S,
 ): S {
+  // Each kind of effect has one rule that carries it out, and the effect's
+  // own kind picks it.
   switch (event.effectType) {
     case 'completeAttackApply': {
       return applyCompleteAttackApplyEvent(event, state);
@@ -78,6 +92,8 @@ export function applyGameEffectEvent<S extends GameState>(
       return applyCompleteRangedAttackCommandEvent(event, state);
     }
     case 'completeResolveMeleePhase': {
+      // Every engagement has been fought; the effect carries nothing, so its
+      // rule needs only the state.
       return applyCompleteResolveMeleePhaseEvent(state);
     }
     case 'completeUnitMovement': {
@@ -138,6 +154,8 @@ export function applyGameEffectEvent<S extends GameState>(
       return applyTriggerRoutFromRetreatEvent(event, state);
     }
     default: {
+      // Adding a kind of effect without routing it fails to compile here;
+      // only an effect forged past its type reaches the throw.
       const _exhaustive: never = event;
       throw new Error(
         'Unreachable: unhandled game effect event (effectType not in switch)',

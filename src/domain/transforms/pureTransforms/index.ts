@@ -1,32 +1,37 @@
 // One unit's or one commander's entry in the index, overwritten: shared
 // steps of the piece writers.
 export { fileCommanderInIndex, fileUnitInIndex } from './gameStateIndex';
+// Cards: one step of a card's way through a round, for a hand in view and
+// for one held face down, and the writers that put the result back.
 export {
-  burnCardFromPlayed,
-  burnHiddenCardFromPlayed,
   chooseCard,
   chooseHiddenCard,
-  discardCardsFromHand,
-  discardShownCardFromHiddenHand,
-  moveBothInPlayToPlayed,
-  moveCardToPlayed,
-  replaceCardState,
-  replaceHiddenPlayerCardState,
-  updatePlayerCards,
-  replaceOwnedPlayerCardState,
-  returnCardsToHand,
-  returnHiddenCardsToHand,
-  revealBothAwaitingCards,
   revealCard,
   revealHiddenCard,
+  revealBothAwaitingCards,
+  discardCardsFromHand,
+  discardShownCardFromHiddenHand,
+  moveCardToPlayed,
+  moveBothInPlayToPlayed,
+  burnCardFromPlayed,
+  burnHiddenCardFromPlayed,
+  returnCardsToHand,
+  returnHiddenCardsToHand,
   toHiddenCardState,
+  replaceOwnedPlayerCardState,
+  replaceHiddenPlayerCardState,
+  replaceCardState,
+  updatePlayerCards,
   updatePlayerCardState,
 } from './cards';
+// What one viewer may see of the game, its events and its state.
 export {
   projectEventForVisibility,
   projectGameForVisibility,
   projectGameStateForVisibility,
 } from './visibility';
+// Commanders: placed, moved, carried with a unit and defeated, with the
+// board and the index kept in step.
 export {
   addCommanderToBoard,
   carryRidingCommander,
@@ -36,6 +41,8 @@ export {
   moveCommanderOnBoard,
   removeCommanderFromBoard,
 } from './commanders';
+// Where the game is in its sequence: each phase step and each substep
+// opened, written and closed.
 export {
   updateAttackApplyState,
   updateCommandResolutionState,
@@ -64,6 +71,7 @@ export {
   beginResolvingCommands,
   finishResolvingCommands,
 } from './sequencing';
+// The game state's top-level slots: phase, round, initiative and winner.
 export {
   addCompletedPhase,
   markPhaseAsComplete,
@@ -72,6 +80,8 @@ export {
   updateRoundState,
   updateWinner,
 } from './state';
+// Units: placed, moved, engaged and routed, with the board and the index
+// kept in step.
 export {
   addUnitsToCommandedUnits,
   addUnitToBoard,

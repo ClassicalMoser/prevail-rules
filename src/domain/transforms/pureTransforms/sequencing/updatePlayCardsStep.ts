@@ -14,7 +14,14 @@ export function updatePlayCardsStep<S extends GameState>(
   state: S,
   step: PlayCardsPhaseStep,
 ): S {
+  // Cards are played only in Phase 1; asked elsewhere, this throws.
   const phaseState = getPlayCardsPhaseState(state);
+
+  // Both players choose face down, then the cards are turned over together
+  // and initiative assigned (§4.1.1–§4.1.3); the caller names the step that
+  // follows.
   const updated = updatePhaseState(state, { ...phaseState, step });
+
+  // Phase 1 on that step.
   return updated;
 }

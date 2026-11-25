@@ -18,6 +18,12 @@ import {
  * each shoots once.
  *
  * Event is assumed pre-validated (the unit is one the order may shoot with next).
+ *
+ * @param event - The player naming the unit to shoot next
+ * @param state - The game, in Phase 3, with no unit's move or shot under way
+ * @returns The game with that unit's shot under way
+ * @throws Error when the named unit is not on the board, or another unit's
+ * move or shot is still under way
  */
 export function applyChooseShooterEvent<S extends GameState>(
   event: ChooseShooterEvent,
@@ -34,21 +40,38 @@ export function applyChooseShooterEvent<S extends GameState>(
   // The shot opens with the shooter's commitment owed and nothing yet aimed:
   // its owner may commit a card first, and a Range card reaches further
   // when the target is chosen (§4.3.11 step 2).
+  // TODO(composition): the opened shot is written out here, as the opened
+  // move is in `applyChooseMovingUnitEvent`, where every other substep is
+  // built as it opens by a factory in `factories/substeps`. Settled by a
+  // `createOpenedRangedAttackResolutionState(attackingUnit)` beside them.
   const shot: RangedAttackResolutionState = {
+    // The blow is measured only once the target has committed or declined.
     attackApplyState: 'pending',
     attackingCommitment: { commitmentType: 'pending' },
     attackingUnit: shooter,
     commandResolutionType: 'rangedAttack',
     completed: false,
+    // The target answers with its own commitment once it is named (step 5).
     defendingCommitment: { commitmentType: 'pending' },
     defendingUnit: 'pending',
     substepType: 'commandResolution',
+    // Supporters are named with the target (step 4).
     supportingUnits: 'pending',
   };
 
-  const opened = openCommandResolution(
-    updateRemainingUnitsForPlayer(state, event.player, stillToAct),
-    shot,
+  // The shooter is struck off the order's list first, so that it cannot be
+  // named again or named as a supporter later (§4.3.6, §7.3.4).
+  const struckOff = updateRemainingUnitsForPlayer(
+    state,
+    event.player,
+    stillToAct,
   );
+
+  // Shots are carried out one at a time, each finished before the next
+  // begins (§4.3.9); `openCommandResolution` refuses a second while one is
+  // under way.
+  const opened = openCommandResolution(struckOff, shot);
+
+  // The game, waiting on the shooter's commitment.
   return opened;
 }

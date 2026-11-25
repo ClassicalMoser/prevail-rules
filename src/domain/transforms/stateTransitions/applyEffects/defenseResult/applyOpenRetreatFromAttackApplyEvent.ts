@@ -25,14 +25,24 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
 
   // The defender falls back. The procedure worked out the legal retreats
   // from where it stands; they are written as given.
+  // The factory settles what follows from them: a lone retreat is carried
+  // out as it stands, a tie waits for the owner's choice (§9.1.3), and none
+  // at all leaves a rout due in the retreat's place (§9.1.6).
   const retreatState = createOpenedRetreatState(
     apply.defendingUnit,
     event.retreatPaths,
   );
 
+  // The retreat takes the apply's retreat slot. The reverse and rout slots
+  // are left as the attack measured them: they come later in the order
+  // (§7.5.2), and open on their own turns.
   const nextApply = {
     ...apply,
     retreatState,
   };
-  return updateAttackApplyState(state, nextApply);
+
+  // The game with the retreat open, ready for its path to be chosen or
+  // taken, or for the rout that takes its place.
+  const opened = updateAttackApplyState(state, nextApply);
+  return opened;
 }

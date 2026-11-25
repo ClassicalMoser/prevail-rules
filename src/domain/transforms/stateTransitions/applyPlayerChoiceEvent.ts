@@ -32,16 +32,30 @@ import {
  * (enforced inside card-touching applies via getOwned/getHidden helpers).
  * {@link applyChooseCardEvent} also accepts a projected opponent chooseCard
  * (`card: 'hidden'`). Commits keep the real card.
+ *
+ * A choice reaches here once `validatePlayerChoice` has accepted it, or as a
+ * seat's view of a choice the record already holds; the rule for that kind of
+ * choice carries it out without asking again whether it was legal.
+ * `applyEvent` is the one caller.
+ *
+ * @param event - The choice a player made, or its projection for a seat
+ * @param state - The game the choice was made in, under any visibility
+ * @returns The game with that choice carried out, under the same visibility
+ * @throws Error when the choice is of no kind the game knows
  */
 export function applyPlayerChoiceEvent<S extends GameState>(
   event: PlayerChoiceEvent | ProjectedPlayerChoiceEvent,
   state: S,
 ): S {
+  // Each kind of choice has one rule that carries it out, and the choice's
+  // own kind picks it.
   switch (event.choiceType) {
     case 'assignUnitSupport': {
       return applyAssignUnitSupportEvent(event, state);
     }
     case 'chooseCard': {
+      // The one choice a seat may fold in projected: the opponent's card is
+      // laid face down, so the seat sees only that one was chosen (§4.1.1).
       return applyChooseCardEvent(event, state);
     }
     case 'chooseMeleeResolution': {
@@ -93,7 +107,11 @@ export function applyPlayerChoiceEvent<S extends GameState>(
       return applySetupUnitsEvent(event, state);
     }
     default: {
+      // Adding a kind of choice without routing it fails to compile here.
       const _exhaustive: never = event;
+
+      // Only a choice forged past its type reaches here; the refusal names
+      // the kind it claimed.
       throw new Error(
         `Unknown player choice event type: ${(_exhaustive as PlayerChoiceEvent).choiceType}`,
       );

@@ -16,7 +16,13 @@ export function updateFlankEngagementResolutionState<S extends GameState>(
   state: S,
   changes: Partial<FlankEngagementResolutionState>,
 ): S {
+  // The flank engagement the move walked into; a front or rear one here is
+  // a fault in the caller, and this throws.
   const engagementState = getFlankEngagementStateFromMovement(state);
+
+  // A flanked defender is turned to face the engaging unit and may not fall
+  // back (§6.3.4); only what the caller changes is replaced, and the rest of
+  // the engagement is kept.
   const updated = updateEngagementStateInMovement(state, {
     ...engagementState,
     engagementResolutionState: {
@@ -24,5 +30,7 @@ export function updateFlankEngagementResolutionState<S extends GameState>(
       ...changes,
     },
   });
+
+  // The move, holding the flank engagement as it now stands.
   return updated;
 }

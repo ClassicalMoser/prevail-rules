@@ -14,10 +14,17 @@ import { updateRoundState } from './updateRoundState';
  * const newState = addCompletedPhase(state, currentPhaseState);
  * ```
  */
+// TODO(misleading): the header calls `completedPhases` a set; it is a list,
+// in the order the phases ended. Settle by "list".
+// TODO(composition): nothing in this repository reads `completedPhases`; it is
+// written by the phase-completion applies and cleared at `roundEnd`. Settle by
+// naming its reader (a client's round history?) or dropping the record.
 export function addCompletedPhase<S extends GameState>(
   state: S,
   completedPhase: PhaseState,
 ): S {
+  // The phases run in a fixed order (§4), so the one just ended goes after
+  // those before it.
   const newCompletedPhases = [...state.currentRoundState.completedPhases];
   newCompletedPhases.push(completedPhase);
 
@@ -27,5 +34,6 @@ export function addCompletedPhase<S extends GameState>(
     completedPhases: newCompletedPhases,
   });
 
+  // The state with the phase recorded among those ended this round.
   return newState;
 }

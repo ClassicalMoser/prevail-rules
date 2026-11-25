@@ -23,6 +23,7 @@ export function applyCommitToRangedAttackEvent<S extends GameState>(
   event: CommitToRangedAttackEvent,
   state: S,
 ): S {
+  // The shot being carried out, its shooter named and its target not yet.
   const shot = getRangedAttackResolutionState(state);
 
   // A committed card is spent from the hand until the next rally (§8.1).
@@ -42,5 +43,7 @@ export function applyCommitToRangedAttackEvent<S extends GameState>(
     ),
   };
   const committed = updateCommandResolutionState(stateWithCards, committedShot);
+
+  // The target is chosen next, within the arc the committed Range reaches.
   return committed;
 }

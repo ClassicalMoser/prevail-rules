@@ -35,6 +35,8 @@ export function updateRoutState<S extends GameState>(
 ): S {
   // The rout is written back to the parent that already holds it open.
   const location = findRoutLocation(state, routState.player);
+  // A rout belongs to the player who pays for it, and this writer only
+  // carries an opened one forward: opening it is the parent's own writer's.
   if (location === undefined) {
     // Say where it was asked, since that is usually what went wrong.
     const { phase } = getCurrentPhaseState(state);
@@ -46,28 +48,41 @@ export function updateRoutState<S extends GameState>(
   switch (location.source) {
     case 'retreat': {
       // Written through the retreat, whichever attack the retreat belongs to.
-      return updateRetreatRoutState(state, routState);
+      const written = updateRetreatRoutState(state, routState);
+      // The retreat, holding the rout of a unit with nowhere to go (§9.1.6).
+      return written;
     }
     case 'rearEngagementMovement': {
-      return updateRearEngagementResolutionState(state, { routState });
+      // A defender caught from behind routs on the spot (§6.3.3).
+      const written = updateRearEngagementResolutionState(state, {
+        routState,
+      });
+      // The rear engagement, holding the defender's rout.
+      return written;
     }
     case 'rangedAttack':
     case 'melee': {
       // The apply of the attack that routed this player's unit.
       const apply = getAttackApplyStateOfPlayer(state, routState.player);
       const written = updateAttackApplyState(state, { ...apply, routState });
+      // The attack's results, holding the rout of the unit it broke.
       return written;
     }
     case 'rally': {
+      // The rally on this cleanup step, whose support check left these
+      // units without a place (§10.4.6).
       const rallyingPlayer = getRallyingPlayer(state);
       const rallyState = getCurrentRallyResolutionState(state);
       const written = updateRallyResolutionState(state, rallyingPlayer, {
         ...rallyState,
         routState,
       });
+      // The rally, holding the rout of every unit it could not hold.
       return written;
     }
     default: {
+      // TODO(composition): unreachable, so no spec has a case for it, as in
+      // `settleRout`: `findRoutLocation` answers only the five sources above.
       // Exhaustiveness check for TypeScript
       const _exhaustive: never = location.source;
       throw new Error(`Unknown rout source: ${String(_exhaustive)}`);

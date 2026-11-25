@@ -26,11 +26,19 @@ export function applyChooseRallyEvent<S extends GameState>(
   // The rallying player's rally begins with the choice, and the step moves
   // on to resolving it, or past it when the player declines (§10.3).
   const nextStep = getNextStepForChooseRally(state, performRally);
-  const withRally = updateRallyResolutionState(
-    state,
-    getRallyingPlayer(state),
-    createOpenedRallyResolutionState(performRally),
-  );
+
+  // The rally is recorded for the player whose choice the step is on, the
+  // first player before the second (§10.3.6), not for the event's player:
+  // validation has already checked that the two agree.
+  const rallyingPlayer = getRallyingPlayer(state);
+
+  // Nothing is burnt or returned yet. A player who declines keeps the record
+  // of declining, so nobody checks their units' support (§10.3.4).
+  const opened = createOpenedRallyResolutionState(performRally);
+  const withRally = updateRallyResolutionState(state, rallyingPlayer, opened);
+
+  // Cleanup moves to that rally's resolution, or on to the next choice or the
+  // end of the round when the player declines.
   const newGameState = updateCleanupStep(withRally, nextStep);
   return newGameState;
 }

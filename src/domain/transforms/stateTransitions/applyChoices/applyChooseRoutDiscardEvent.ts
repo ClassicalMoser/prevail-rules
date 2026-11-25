@@ -35,20 +35,27 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
 
   // The cards leave the hand as the seat holds them: shown where it can see
   // the hand, counted where it cannot (§4.1.2).
+  // The Morale is paid in cards the owner chooses freely from the hand, and
+  // they go to the discard pile until the next rally (§9.3.2, §10.2).
   const cardIds = event.cards.map((card) => card.id);
-  let next = updatePlayerCards(state, event.player, {
+  const paid = updatePlayerCards(state, event.player, {
     hidden: (hidden) =>
       event.cards.reduce(discardShownCardFromHiddenHand, hidden),
     owned: (owned) => discardCardsFromHand(owned, cardIds),
   });
 
+  // The debt is chosen and paid, so the rout is over. A debt the hand could
+  // not survive (§11.2) ended the game before this choice was asked for
+  // (`findWinnerFromUnpayableRoutDiscard`), so this one always leaves a hand.
   const completedRout = {
     ...routState,
     cardsChosen: true,
     completed: true,
   };
   // Paying settles the rout, and whatever it held open closes with it.
-  next = settleRout(next, completedRout);
+  const settled = settleRout(paid, completedRout);
 
-  return next;
+  // A retreat that fell into the rout, a rear engagement, or a rally is closed;
+  // a rout from a shot or a melee waits on its attack's own close.
+  return settled;
 }

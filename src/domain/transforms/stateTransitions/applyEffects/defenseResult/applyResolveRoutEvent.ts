@@ -15,6 +15,7 @@ import { settleRout } from '@transforms/pureTransforms';
  * @param event - The resolve rout event to apply
  * @param state - The current game state
  * @returns A new game state with the rout penalty set
+ * @throws Error when the player on the event is not routing
  */
 export function applyResolveRoutEvent<S extends GameState>(
   event: ResolveRoutEvent,
@@ -24,6 +25,10 @@ export function applyResolveRoutEvent<S extends GameState>(
   const currentRoutState = getRoutState(state, event.player);
 
   // A zero penalty has nothing to choose, so the rout finishes here.
+  // Morale 0 costs nothing (§9.3.2): no cards are owed, so none are chosen.
+  // A penalty above zero leaves the rout waiting for its owner to choose
+  // the cards, and the endgame check reads the count to see whether they can
+  // pay (§11.2).
   const closesWithoutDiscard = event.penalty === 0;
   const newRoutState: RoutState = {
     ...currentRoutState,
@@ -35,5 +40,7 @@ export function applyResolveRoutEvent<S extends GameState>(
   // A zero penalty settles the rout here, and whatever it held open closes
   // as paying a discard would (§6.3.3).
   const settled = settleRout(state, newRoutState);
+
+  // The game with the Morale owed written on the rout, or the rout settled.
   return settled;
 }

@@ -14,5 +14,12 @@ export function applyGameOverEvent<S extends GameState>(
   event: GameOverEvent,
   state: S,
 ): S {
-  return updateWinner(state, event.winner);
+  // The procedure has already found the side that prevailed: the other
+  // side's hand gave out, or it owed a rout it could not pay for, or it has
+  // no units left (§11.1, §11.2, §11.4). Recording it is all that is left to
+  // do; nothing else moves, since the battle is over.
+  const finished = updateWinner(state, event.winner);
+
+  // The finished game; the expected engine asks for nothing more from it.
+  return finished;
 }

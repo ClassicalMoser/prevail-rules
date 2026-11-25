@@ -16,6 +16,8 @@ Each subfolder has a small `index.ts` barrel; the **only** supported entry for t
 | [`movement/`](./movement/)           | Complete unit movement, start engagement, flank engagement, engage-retreat option                    |
 | [`resolveAttack/`](./resolveAttack/) | Resolve melee / ranged attack, complete attack-apply and related command-resolution completes        |
 
+`cards/applyUnitsLostSupportAfterRally` is not an effect apply: its one caller is the player choice `applyAssignUnitSupportEvent`, which imports it past the `cards/` barrel. A mark in the file says where it might go instead.
+
 **Procedures** use the same subfolder names under [`procedures/`](../../../procedures/README.md) (`generate*` ↔ `apply*`). **Event types** use the same names under [`events/gameEffects/`](../../../events/gameEffects/).
 
 Co-locate each handler with its `*.test.ts` in the same folder.

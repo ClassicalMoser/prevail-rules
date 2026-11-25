@@ -25,5 +25,8 @@ export function applyCompleteMovementCommandEvent<S extends GameState>(
 
   // No unit is left to move, so the player's orders are finished.
   const finished = finishResolvingCommands(cleared);
+
+  // The issue-commands step that follows: the second player's issuing, or
+  // the phase complete.
   return finished;
 }

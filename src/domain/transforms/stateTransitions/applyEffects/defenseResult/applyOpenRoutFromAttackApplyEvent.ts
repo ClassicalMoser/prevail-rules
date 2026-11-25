@@ -25,6 +25,8 @@ export function applyOpenRoutFromAttackApplyEvent<S extends GameState>(
   const apply = getAttackApplyAwaitingOpen(state, 'rout');
 
   // The defender leaves under rout; discard count is filled by resolveRout.
+  // Its owner is the one who pays its Morale (§9.3.2), and in a melee each
+  // owner pays for their own unit (§9.3.3).
   const routState = createOpenedRoutState(apply.defendingUnit.playerSide, [
     apply.defendingUnit,
   ]);
@@ -33,6 +35,15 @@ export function applyOpenRoutFromAttackApplyEvent<S extends GameState>(
   // have already been carried out, and stay as they were.
   const nextApply = { ...apply, routState };
   const withRoutOpen = updateAttackApplyState(state, nextApply);
+
   // The unit leaves when the rout opens, not when the discard is paid.
-  return removeUnitsLeavingUnderRout(withRoutOpen, routState.unitsToRout);
+  // A routed unit is removed from the battle for good (§9.3.1), and its own
+  // commander standing with it falls too (§4.2.8).
+  const routed = removeUnitsLeavingUnderRout(
+    withRoutOpen,
+    routState.unitsToRout,
+  );
+
+  // The game with the unit gone and its Morale still to be counted.
+  return routed;
 }

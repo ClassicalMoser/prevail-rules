@@ -35,4 +35,6 @@ export { applyChooseMeleeEvent } from './applyChooseMeleeEvent';
 export { applyChooseRoutDiscardEvent } from './applyChooseRoutDiscardEvent';
 // Cleanup: whether to rally (§10.3), and the support it lends (§10.4).
 export { applyChooseRallyEvent } from './applyChooseRallyEvent';
+// After a rally, each unit given its place in the hand's support, and the
+// rest routed (§10.4.4).
 export { applyAssignUnitSupportEvent } from './assignUnitSupport';

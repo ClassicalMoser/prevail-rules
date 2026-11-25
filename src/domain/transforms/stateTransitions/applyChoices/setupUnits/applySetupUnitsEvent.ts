@@ -21,12 +21,18 @@ export function applySetupUnitsEvent<S extends GameState>(
   const { commanderCoordinate, player, unitPlacements } = event;
 
   // Each unit deploys in turn: out of reserve and onto its space at once.
+  // The player places the whole army at once, one unit to a space, each facing
+  // the way chosen (§3.5.1); validation checked the spaces lie in the zone.
   let deployed = state;
   for (const unitPlacement of unitPlacements) {
     deployed = deployUnit(deployed, unitPlacement);
   }
 
-  // Then the commander takes its place.
+  // Then the commander takes its place, anywhere in the zone; it may share a
+  // space with one of its own units (§3.5.3).
   const withCommander = deployCommander(deployed, player, commanderCoordinate);
+
+  // The army stands on the board; the other side deploys next, or round 0
+  // ends with its `roundEnd`.
   return withCommander;
 }

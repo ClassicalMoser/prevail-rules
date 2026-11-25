@@ -17,9 +17,13 @@ export function fileCommanderInIndex(
   side: PlayerSide,
   entry: CommanderIndexEntry,
 ): GameStateIndex {
+  // Only this side's entry changes, so the other commander and every unit
+  // are found where they were.
   const filed: GameStateIndex = {
     ...index,
     commanders: { ...index.commanders, [side]: entry },
   };
+
+  // The index with the commander filed where it now is.
   return filed;
 }

@@ -25,17 +25,26 @@ export function applyCompletePlayCardsPhaseEvent<S extends GameState>(
   state: S,
 ): S {
   // Safe type broadening: No spatial information on PlayCardsPhaseState
+  // TODO(misleading): nothing is broadened, and no phase state carries
+  // spatial information now. The line insists the game is playing cards, and
+  // throws otherwise. Settle by rewording.
   const phaseState = getPlayCardsPhaseState(state);
 
   // Add the completed phase to the set of completed phases
+  // Both cards are in play and initiative is decided, so Phase 1 is done.
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 
   // The first player moves their commander first (§4.2.1). A fallen
   // commander's turn is passed over by its own effect.
+  // TODO(composition): this opening of Phase 2 is written out by hand here
+  // and again by `createMoveCommandersPhaseState` in `@testing`. Settle by a
+  // factory for each phase's opening that both call.
   const newPhaseState: MoveCommandersPhaseState = {
     phase: MOVE_COMMANDERS_PHASE,
     step: 'moveFirstCommander',
   };
 
-  return updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  // Phase 1 recorded as done, and the commanders to move.
+  const moving = updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  return moving;
 }

@@ -13,6 +13,10 @@ import { clearCommandResolution } from '@transforms/pureTransforms';
  * keeps its place: a later shot may give it a target.
  *
  * Mirrors `applyCompleteUnitMovementEvent` for a move.
+ *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields
+ * @param state - The game state, with a shot whose results are all carried out
+ * @returns A new game state with no shot under way, on the same step
  */
 export function applyCompleteRangedAttackEvent<S extends GameState>(
   _event: CompleteRangedAttackEvent,
@@ -21,5 +25,7 @@ export function applyCompleteRangedAttackEvent<S extends GameState>(
   // The shooter's part of the order that was under way is done.
   const cleared = clearCommandResolution(state);
 
+  // The same step, with the units still to act kept, for the next shooter
+  // or the order's end.
   return cleared;
 }

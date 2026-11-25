@@ -28,7 +28,9 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
   _event: ResolveFlankEngagementEvent,
   state: S,
 ): S {
+  // The move whose unit walked into the defender's flank.
   const movementState = getMovementResolutionState(state);
+
   // The engagement opened from a move already written into the enemy.
   const targetPlacement = throwIfPending(
     movementState.targetPlacement,
@@ -38,15 +40,25 @@ export function applyResolveFlankEngagementEvent<S extends GameState>(
   // The attacker leaves the space it waited on and joins the defender, which
   // is dragged round to face it (§6.3.4). A commander riding with it arrives
   // too (§4.3.10).
+  const joined = moveUnitIntoEngagement(
+    state,
+    movementState.movingUnit,
+    targetPlacement,
+  );
   const engaged = carryRidingCommander(
-    moveUnitIntoEngagement(state, movementState.movingUnit, targetPlacement),
+    joined,
     movementState,
     targetPlacement.coordinate,
   );
 
   // The engagement is done: the defender has turned.
-  const turned = completeEngagementInMovement(
-    updateFlankEngagementResolutionState(engaged, { defenderRotated: true }),
-  );
+  // It may not retreat, and nothing else waits on it (§6.3.4), so the
+  // engagement closes in the same write and the move can finish.
+  const rotated = updateFlankEngagementResolutionState(engaged, {
+    defenderRotated: true,
+  });
+  const turned = completeEngagementInMovement(rotated);
+
+  // The two engaged in the defender's space, to fight in Phase 4.
   return turned;
 }

@@ -17,5 +17,8 @@ export function applyCompleteMeleeResolutionEvent<S extends GameState>(
 ): S {
   // The melee is finished; the next may be chosen (§4.4.2).
   const cleared = clearMeleeResolution(state);
+
+  // Phase 4 with no melee under way: the first player picks the next
+  // engagement, or the phase completes when none remain (§4.4.2).
   return cleared;
 }

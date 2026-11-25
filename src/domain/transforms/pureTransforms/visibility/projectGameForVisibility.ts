@@ -78,6 +78,8 @@ export function projectGameForVisibility(
         visibility,
         whitePlayer,
       };
+
+      // The game as the server keeps it, with the opening state beside it.
       return authoritative;
     }
     case 'whiteSeen': {
@@ -94,6 +96,8 @@ export function projectGameForVisibility(
         visibility,
         whitePlayer,
       };
+
+      // The game as white's seat may read it.
       return whiteSeen;
     }
     case 'blackSeen': {
@@ -110,6 +114,8 @@ export function projectGameForVisibility(
         visibility,
         whitePlayer,
       };
+
+      // The game as black's seat may read it.
       return blackSeen;
     }
     case 'spectator': {
@@ -126,9 +132,13 @@ export function projectGameForVisibility(
         visibility,
         whitePlayer,
       };
+
+      // The game as a spectator may read it.
       return spectator;
     }
     default: {
+      // The four views are every view there is; a value outside them is a
+      // caller's fault, named in the message.
       const _exhaustive: never = visibility;
       throw new Error(`Invalid visibility: ${_exhaustive}`);
     }

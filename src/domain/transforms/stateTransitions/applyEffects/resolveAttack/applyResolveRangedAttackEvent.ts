@@ -20,9 +20,13 @@ export function applyResolveRangedAttackEvent<S extends GameState>(
   event: ResolveRangedAttackEvent,
   state: S,
 ): S {
+  // The shot under way, with its shooter, target and commitments recorded.
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   // The shot's target is the one it was aimed at.
+  // The expected engine asks for this effect only once the shooter has
+  // named its target (§4.3.11 step 3), so an unaimed shot is a fault in the
+  // sequence.
   const defendingUnit = throwIfPending(
     rangedAttackState.defendingUnit,
     'The shot has not been aimed yet',
@@ -34,9 +38,12 @@ export function applyResolveRangedAttackEvent<S extends GameState>(
     event.attackResult,
   );
 
-  const resolved = updateCommandResolutionState(state, {
-    ...rangedAttackState,
-    attackApplyState,
-  });
+  // A shot is one way (§7.4.4): only the target takes results, so the shot
+  // has one apply.
+  const withApply = { ...rangedAttackState, attackApplyState };
+  const resolved = updateCommandResolutionState(state, withApply);
+
+  // The shot, with the target's results waiting to be carried out in order
+  // (§7.5.2).
   return resolved;
 }

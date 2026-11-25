@@ -15,7 +15,13 @@ export function updateRearEngagementResolutionState<S extends GameState>(
   state: S,
   changes: Partial<RearEngagementResolutionState>,
 ): S {
+  // The rear engagement the move walked into; a front or flank one here is
+  // a fault in the caller, and this throws.
   const engagementState = getRearEngagementStateFromMovement(state);
+
+  // A defender caught from behind routs at once (§6.3.3); the rout and
+  // whether it is done are what change. Only what the caller changes is
+  // replaced.
   const updated = updateEngagementStateInMovement(state, {
     ...engagementState,
     engagementResolutionState: {
@@ -23,5 +29,7 @@ export function updateRearEngagementResolutionState<S extends GameState>(
       ...changes,
     },
   });
+
+  // The move, holding the rear engagement as it now stands.
   return updated;
 }

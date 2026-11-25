@@ -32,5 +32,7 @@ export function deployUnit<S extends GameState>(
     index: fileUnitInIndex(state.index, unit, placement.coordinate),
     reservedUnits: arrayWithoutUnit(state.reservedUnits, unit),
   };
+
+  // The game with the unit standing where it deployed.
   return written;
 }

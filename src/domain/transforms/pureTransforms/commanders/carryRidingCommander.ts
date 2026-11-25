@@ -22,16 +22,25 @@ export function carryRidingCommander<S extends GameState>(
   movement: MovementResolutionState,
   landing: Coordinate,
 ): S {
-  // A commander who did not ride stays where it is.
+  // A commander who did not ride stays where it is: otherwise a commander
+  // moves only in Phase 2 (§4.3.10).
+  // TODO(wrong): `'pending'` (the move not yet written) is read as staying
+  // behind, so a fault in the caller passes silently. Every caller passes a
+  // written move. Settle by `throwIfPending(movement.moveCommander, ...)`
+  // before the test, as `targetPlacement` is narrowed at those callers.
   if (movement.moveCommander !== true) {
+    // Nothing changes.
     return state;
   }
 
-  // It goes with the unit to where the unit landed.
+  // It goes with the unit to where the unit landed, the mover's own
+  // commander and no other.
   const carried = moveCommanderOnBoard(
     state,
     movement.movingUnit.playerSide,
     landing,
   );
+
+  // The state with the commander standing with its unit.
   return carried;
 }

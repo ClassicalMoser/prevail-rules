@@ -19,9 +19,17 @@ export function fileUnitInIndex(
   unit: UnitInstance,
   entry: UnitIndexEntry,
 ): GameStateIndex {
+  // A unit is filed under its identity, the same key every reader looks it
+  // up by.
+  const key = createUnitIndexKey(unit);
+
+  // Only that unit's entry changes, so every other unit and both commanders
+  // are found where they were.
   const filed: GameStateIndex = {
     ...index,
-    units: { ...index.units, [createUnitIndexKey(unit)]: entry },
+    units: { ...index.units, [key]: entry },
   };
+
+  // The index with the unit filed where it now is.
   return filed;
 }

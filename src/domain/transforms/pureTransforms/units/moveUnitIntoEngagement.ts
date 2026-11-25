@@ -41,5 +41,8 @@ export function moveUnitIntoEngagement<S extends GameState>(
     boardState: engaged,
     index: fileUnitInIndex(state.index, held.unit, to.coordinate),
   };
+
+  // The game with the two engaged, to be fought in Phase 4 unless the
+  // defender may and does fall back (§6.3.2).
   return written;
 }

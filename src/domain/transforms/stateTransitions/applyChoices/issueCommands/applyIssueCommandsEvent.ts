@@ -36,8 +36,14 @@ export function applyIssueCommandsEvent<S extends GameState>(
     (unit) => getUnitWithPlacementOnBoard(state, unit).unit,
   );
 
-  // They are ordered for the round, and carried out next.
+  // They are ordered for the round, and none can be ordered again this round
+  // (§4.3.6); a command's modifiers reach only these units (§4.3.8).
   const ordered = addUnitsToCommandedUnits(state, units);
+
+  // The player issues every order before carrying any out (§4.3), so they move
+  // straight on to resolving them, one unit at a time (§4.3.9).
   const resolving = beginResolvingCommands(ordered);
+
+  // The player's resolve step, with the units they ordered left to act.
   return resolving;
 }

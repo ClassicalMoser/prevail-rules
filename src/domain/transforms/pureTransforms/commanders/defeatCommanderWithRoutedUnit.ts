@@ -25,11 +25,21 @@ export function defeatCommanderWithRoutedUnit<S extends GameState>(
   const side = routing.unit.playerSide;
   const { coordinate } = routing.placement;
   const space = getBoardSpace(state.boardState, coordinate);
+
+  // Only a commander standing with its own routing unit falls; one anywhere
+  // else is untouched.
+  // TODO(composition): "does this side's commander stand on this space" is
+  // asked by hand here and in `applyResolveRetreatEvent`,
+  // `getLegalCommanderMoves` and `isValidMoveUnitEvent`, each reading
+  // `space.commanders`. Settle by one `@queries` reader they all call.
   if (!space.commanders.includes(side)) {
+    // Nothing changes.
     return state;
   }
 
   // It falls with the unit: off the board, and recorded as lost.
   const defeated = defeatCommander(state, side);
+
+  // The state with its commander gone with the unit.
   return defeated;
 }

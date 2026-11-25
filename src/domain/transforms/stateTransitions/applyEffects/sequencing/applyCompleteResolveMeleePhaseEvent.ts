@@ -28,9 +28,13 @@ import {
 export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
   state: S,
 ): S {
+  // Every engagement has been fought (§4.4.2), and the phase ends only
+  // while the game is in it.
   const phaseState: ResolveMeleePhaseState = getResolveMeleePhaseState(state);
 
   // Mark the current phase as complete
+  // Phase 4 has one working step, so it is marked done here rather than by
+  // the last melee.
   const completedPhase: ResolveMeleePhaseState =
     markPhaseAsComplete(phaseState);
 
@@ -38,6 +42,11 @@ export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
   const stateWithCompletedPhase = addCompletedPhase(state, completedPhase);
 
   // Create the new cleanup phase state
+  // Cleanup opens with this round's cards leaving play (§4.5.1); neither
+  // player has chosen whether to rally yet.
+  // TODO(composition): this opening of Cleanup is written out by hand here
+  // and again by `createCleanupPhaseState` in `@testing`. Settle by a factory
+  // for each phase's opening that both call.
   const newPhaseState: CleanupPhaseState = {
     firstPlayerRallyResolutionState: 'pending',
     phase: CLEANUP_PHASE,
@@ -45,5 +54,7 @@ export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
     step: 'cardsLeavePlay',
   };
 
-  return updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  // Phase 4 recorded as done, and Cleanup under way.
+  const cleaningUp = updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  return cleaningUp;
 }

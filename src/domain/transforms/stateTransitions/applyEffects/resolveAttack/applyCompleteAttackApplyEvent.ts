@@ -19,7 +19,17 @@ export function applyCompleteAttackApplyEvent<S extends GameState>(
   _event: CompleteAttackApplyEvent,
   state: S,
 ): S {
+  // The apply whose results have all been carried out: a shot's one, or in
+  // a melee the second player's unit's before the first player's, since the
+  // first player's blow lands first (§7.5.6).
   const apply = getAttackApplyToClose(state);
-  const closed = updateAttackApplyState(state, { ...apply, completed: true });
+
+  // Closing it says this unit's results are finished; nothing else on it
+  // changes.
+  const closedApply = { ...apply, completed: true };
+  const closed = updateAttackApplyState(state, closedApply);
+
+  // The shot or melee, with one more apply closed: the sequencer then asks
+  // for the other melee apply's close, or for the shot or melee to finish.
   return closed;
 }

@@ -19,10 +19,17 @@ export function updateRallyResolutionState<S extends GameState>(
   player: PlayerSide,
   rallyState: RallyResolutionState,
 ): S {
+  // Rallies happen only in cleanup (§4.5.2); asked elsewhere, this throws.
   const phaseState = getCleanupPhaseState(state);
+
+  // The first player decides and finishes their rally before the second
+  // (§10.3.6), so the player holding the initiative fills the first slot and
+  // the other player the second.
   const written = hasInitiative(state, player)
     ? { ...phaseState, firstPlayerRallyResolutionState: rallyState }
     : { ...phaseState, secondPlayerRallyResolutionState: rallyState };
   const updated = updatePhaseState(state, written);
+
+  // Cleanup with that player's rally as it now stands.
   return updated;
 }

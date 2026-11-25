@@ -26,9 +26,16 @@ export function applyOpenReverseFromAttackApplyEvent<S extends GameState>(
   // The reverse holds the unit by identity; position is read when it resolves.
   const reverseState = createOpenedReverseState(apply.defendingUnit);
 
+  // The reverse takes the apply's reverse slot. A retreat before it has
+  // already been carried out (§7.5.4), and a rout after it opens on its own
+  // turn (§7.5.3); both slots stay as they are.
   const nextApply = {
     ...apply,
     reverseState,
   };
-  return updateAttackApplyState(state, nextApply);
+
+  // The game with the reverse open. Whether the unit then turns about is
+  // judged when it resolves, since a unit still engaged does not (§7.5.5).
+  const opened = updateAttackApplyState(state, nextApply);
+  return opened;
 }

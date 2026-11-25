@@ -48,14 +48,24 @@ export function applyEvent<S extends GameState>(
   let newState: S;
 
   if (event.eventType === 'playerChoice') {
+    // A choice a player made: validation has already accepted it, or it is a
+    // seat's view of the opponent's face-down card (§4.1.1), and the rule for
+    // that kind of choice carries it out.
     newState = applyPlayerChoiceEvent(event, state);
   } else if (event.eventType === 'gameEffect') {
+    // An effect the game owed: a procedure built it from this same state, and
+    // the rule for that kind of effect carries it out.
     newState = applyGameEffectEvent(event, state);
   } else {
     // Adding an event kind without routing it fails to compile here.
     const _exhaustive: never = event;
+
+    // Only an event forged past its type reaches here; the refusal names the
+    // kind it claimed, so the fault can be traced to whoever wrote it.
     throw new Error(`Unknown event type: ${(_exhaustive as Event).eventType}`);
   }
 
+  // The next state, with the event's rule carried out; the state passed in
+  // is untouched, so the stream can be replayed from any point.
   return newState;
 }

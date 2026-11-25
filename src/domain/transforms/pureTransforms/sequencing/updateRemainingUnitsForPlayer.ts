@@ -17,10 +17,18 @@ export function updateRemainingUnitsForPlayer<S extends GameState>(
   player: PlayerSide,
   units: readonly UnitInstance[],
 ): S {
+  // Orders are only carried out in Phase 3; asked elsewhere, this throws.
   const phaseState = getIssueCommandsPhaseState(state);
+
+  // The first player carries out their orders before the second issues any
+  // (§4.3), so the player holding the initiative keeps the first list and
+  // the other player the second. Each unit acts once (§4.3.6), so the list
+  // shrinks as units finish, and empties when the player is done.
   const written = hasInitiative(state, player)
     ? { ...phaseState, remainingUnitsFirstPlayer: [...units] }
     : { ...phaseState, remainingUnitsSecondPlayer: [...units] };
   const updated = updatePhaseState(state, written);
+
+  // Phase 3 with that player's units still to act.
   return updated;
 }

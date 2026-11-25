@@ -14,7 +14,15 @@ export function updateCleanupStep<S extends GameState>(
   state: S,
   step: CleanupPhaseStep,
 ): S {
+  // Cleanup runs in a fixed order: cards leave play, then each player in
+  // turn chooses whether to rally and carries it out (§4.5). Asked outside
+  // cleanup, this throws.
   const phaseState = getCleanupPhaseState(state);
+
+  // The step the caller has worked out comes next; the rallies already
+  // written are kept.
   const updated = updatePhaseState(state, { ...phaseState, step });
+
+  // Cleanup on that step.
   return updated;
 }

@@ -24,12 +24,15 @@ export function defeatCommander<S extends GameState>(
   // Where it stands; it must be on the board to fall.
   const at = getCommanderSpace(side, state);
 
-  // Off the board, among the lost, and filed as lost.
+  // Off the board, among the lost, and filed as lost. It does not come back:
+  // from now on its side's inspiration ranges reach nothing (§4.2.8).
   const written: S = {
     ...state,
     boardState: removeCommanderFromBoard(state.boardState, at, side),
     index: fileCommanderInIndex(state.index, side, 'lost'),
     lostCommanders: [...state.lostCommanders, side],
   };
+
+  // The state with that side's commander gone for good.
   return written;
 }

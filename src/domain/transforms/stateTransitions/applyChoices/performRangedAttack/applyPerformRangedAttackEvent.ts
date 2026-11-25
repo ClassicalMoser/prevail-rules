@@ -26,11 +26,14 @@ import {
  * @param event - The perform ranged attack event to apply
  * @param state - The current game state
  * @returns A new game state with the shot aimed
+ * @throws Error when no shot is under way, or the target or a supporter is
+ * not on the board
  */
 export function applyPerformRangedAttackEvent<S extends GameState>(
   event: PerformRangedAttackEvent,
   state: S,
 ): S {
+  // The shot under way, opened when its shooter was named.
   const shot = getRangedAttackResolutionState(state);
   const attackingPlayer = event.player;
   // The event names the target and the supporters by who they are; the units
@@ -59,9 +62,17 @@ export function applyPerformRangedAttackEvent<S extends GameState>(
     supportingUnits,
   };
 
-  const newGameState = updateCommandResolutionState(
-    updateRemainingUnitsForPlayer(state, attackingPlayer, newRemainingAttacker),
-    aimed,
+  // The supporters are struck off the order's list, so none is named to
+  // shoot later this round.
+  const shotsSpent = updateRemainingUnitsForPlayer(
+    state,
+    attackingPlayer,
+    newRemainingAttacker,
   );
+
+  // The aimed shot replaces the unaimed one.
+  const newGameState = updateCommandResolutionState(shotsSpent, aimed);
+
+  // The game, waiting on the target's commitment (§4.3.11 step 5).
   return newGameState;
 }

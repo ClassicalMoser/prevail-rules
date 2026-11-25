@@ -16,7 +16,13 @@ export function updateFrontEngagementResolutionState<S extends GameState>(
   state: S,
   changes: Partial<FrontEngagementResolutionState>,
 ): S {
+  // The front engagement the move walked into; a flank or rear one here is
+  // a fault in the caller, and this throws.
   const engagementState = getFrontEngagementStateFromMovement(state);
+
+  // A front defender settles in parts, each written as it happens: its
+  // commitment, whether it may and does fall back, and the retreat itself
+  // (§6.3.2). Only what the caller changes is replaced.
   const updated = updateEngagementStateInMovement(state, {
     ...engagementState,
     engagementResolutionState: {
@@ -24,5 +30,7 @@ export function updateFrontEngagementResolutionState<S extends GameState>(
       ...changes,
     },
   });
+
+  // The move, holding the front engagement as it now stands.
   return updated;
 }

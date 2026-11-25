@@ -24,11 +24,14 @@ export function deployCommander<S extends GameState>(
     throw new Error(`The ${side} commander has already been placed`);
   }
 
-  // Placed on its space, and filed there.
+  // Placed on its space, and filed there. It may share the space with one of
+  // its own units (§3.5.3).
   const written: S = {
     ...state,
     boardState: addCommanderToBoard(state.boardState, side, coordinate),
     index: fileCommanderInIndex(state.index, side, coordinate),
   };
+
+  // The state with the commander standing on the board.
   return written;
 }

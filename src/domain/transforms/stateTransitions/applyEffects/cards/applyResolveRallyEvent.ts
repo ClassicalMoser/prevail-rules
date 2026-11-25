@@ -21,11 +21,23 @@ import {
  * Works for the owned slice and for the opponent's hidden slice on a seat view.
  * On a hidden slice the burnt card stays public; cards returned to hand become
  * `'hidden'` placeholders.
+ *
+ * The burnt card is a random draw (§10.3.2), so the procedure made it and the
+ * event carries it; the apply never draws.
+ *
+ * @param event - The rallying player, and the played card the draw burnt
+ * @param state - The game in Cleanup, on that player's rally before the burn
+ * @returns The game with the card burnt, the rest back in hand, and the
+ * support check owed
+ * @throws Error when it is not that player's rally, they declined to rally,
+ * the rally was already resolved, or the card is not on their played pile
  */
 export function applyResolveRallyEvent<S extends GameState>(
   event: ResolveRallyEvent,
   state: S,
 ): S {
+  // The rally this burn belongs to: the player chose to rally, and nothing
+  // has been burnt yet. A rally burns once (§10.3.2).
   const { player, burntCard } = event;
   const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
 
@@ -38,18 +50,27 @@ export function applyResolveRallyEvent<S extends GameState>(
     owned: (owned) => returnCardsToHand(burnCardFromPlayed(owned, burntCard)),
   });
 
+  // With every card back in hand, the player owes the support check at
+  // once (§10.3.2, §10.4.1); the rally stays open on this step until it is
+  // made.
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
     // Still pending — populated by applyAssignUnitSupportEvent, not here.
     unitsLostSupport: 'pending',
+    // Whether anyone routs is the support check's to say.
     routState: 'pending',
   };
 
+  // The rally written back in its player's slot, first or second by who
+  // holds the initiative (§10.3.1).
   const resolved = updateRallyResolutionState(
     stateWithCards,
     player,
     updatedRallyResolutionState,
   );
+
+  // The cards are back, and the player is to assign their units to the
+  // places those cards hold (§10.4.4).
   return resolved;
 }

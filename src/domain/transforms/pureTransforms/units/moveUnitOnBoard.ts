@@ -15,6 +15,14 @@ import { removeUnitFromBoard } from './removeUnitFromBoard';
  *
  * The board and the unit's entry in the index change in the same write.
  *
+ * TODO(misleading): "a turn to face a flank attack" names no caller. The
+ * defender of a flank engagement is turned as the attacker joins it, by
+ * `moveUnitIntoEngagement` (§6.3.4). The callers are a move onto open ground
+ * (`applyMoveUnitEvent`), a retreat, a reverse, and a rear engagement's
+ * attacker stepping into the space its routed defender left
+ * (`applyStartEngagementEvent`). Settled by naming those in place of the
+ * flank turn.
+ *
  * @param state - The game, with the unit on the board
  * @param unit - Who the unit is; it must be on the board
  * @param to - Where it is set down: the space and the way it faces
@@ -40,5 +48,7 @@ export function moveUnitOnBoard<S extends GameState>(
     boardState: moved,
     index: fileUnitInIndex(state.index, held.unit, to.coordinate),
   };
+
+  // The game with the unit standing at its new placement.
   return written;
 }

@@ -12,8 +12,14 @@ export function updateWinner<S extends GameState>(
   state: S,
   winner: PlayerSide,
 ): S {
-  return {
+  // The battle is over and this side has prevailed. Why it ended (an empty
+  // hand, a cost the loser could not survive, no units left) is the
+  // caller's to have decided (§11).
+  const withWinner: S = {
     ...state,
     winner,
   };
+
+  // The state with the winner named.
+  return withWinner;
 }

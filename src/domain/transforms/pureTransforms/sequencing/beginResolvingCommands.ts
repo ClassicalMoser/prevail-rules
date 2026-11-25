@@ -15,13 +15,20 @@ import { updateRemainingUnitsForPlayer } from './updateRemainingUnitsForPlayer';
  * @returns The game state on their resolve step
  */
 export function beginResolvingCommands<S extends GameState>(state: S): S {
+  // The player whose issuing step this is, and the resolve step that is
+  // theirs next: a player carries out their own orders before the other
+  // issues any (§4.3).
   const player = getCommandingPlayer(state);
   const resolveStep = getResolveStepAfterIssuing(state);
-  const toAct = updateRemainingUnitsForPlayer(
-    state,
-    player,
-    getCommandedUnitsForPlayer(state, player),
-  );
+
+  // Every unit this player ordered this round is one still to act. A unit is
+  // ordered only once a round (§4.3.6), so the round's list is exactly the
+  // orders this player has just issued.
+  const ordered = getCommandedUnitsForPlayer(state, player);
+  const toAct = updateRemainingUnitsForPlayer(state, player, ordered);
+
+  // The player moves on to carrying those orders out, one unit at a time
+  // (§4.3.9).
   const resolving = updateIssueCommandsStep(toAct, resolveStep);
   return resolving;
 }

@@ -19,7 +19,11 @@ import { updateRoutState } from './updateRoutState';
  * paid: the unit has left the battle (§9.1.6).
  */
 function closeRetreat<S extends GameState>(state: S, player: PlayerSide): S {
+  // The retreat the routing unit could not make, holding the rout just paid.
   const retreat = getRetreatState(state, player);
+
+  // The rout took the retreat's place (§7.5.6), so the retreat is done. The
+  // attack's apply around it stays open for `completeAttackApply`.
   const closed = updateRetreatState(state, { ...retreat, completed: true });
   return closed;
 }
@@ -29,9 +33,13 @@ function closeRetreat<S extends GameState>(state: S, player: PlayerSide): S {
  * rout is paid the engagement is over, and the move can finish.
  */
 function closeRearEngagement<S extends GameState>(state: S): S {
+  // The rout was all the rear engagement asked for, so its resolution is done.
   const resolved = updateRearEngagementResolutionState(state, {
     completed: true,
   });
+
+  // And so is the engagement itself; the engaging unit stays where it stands
+  // (§6.3.3), and its move can be finished.
   const closed = completeEngagementInMovement(resolved);
   return closed;
 }
@@ -41,13 +49,21 @@ function closeRearEngagement<S extends GameState>(state: S): S {
  * cleanup moves on to the next player's rally, or past the rallies.
  */
 function closeRally<S extends GameState>(state: S): S {
+  // The rally the cleanup step is on, whose support check routed these units.
   const rallyingPlayer = getRallyingPlayer(state);
   const rally = getCurrentRallyResolutionState(state);
+
+  // Paying for the units it could not hold is the last part of a rally
+  // (§10.4.7), so the rally is over.
   const closed = updateRallyResolutionState(state, rallyingPlayer, {
     ...rally,
     completed: true,
   });
-  const advanced = updateCleanupStep(closed, getNextStepForResolveRally(state));
+
+  // The first player finishes their rally before the second chooses whether
+  // to rally (§10.3.6); after the second, cleanup is done.
+  const nextStep = getNextStepForResolveRally(state);
+  const advanced = updateCleanupStep(closed, nextStep);
   return advanced;
 }
 
@@ -78,30 +94,49 @@ export function settleRout<S extends GameState>(
 ): S {
   // Where the rout sits decides what it was holding open.
   const location = findRoutLocation(state, routState.player);
+  // A rout belongs to the player who pays for it; one named for a player who
+  // is not routing is a fault in the event that carried it.
   if (location === undefined) {
     throw new Error(`No rout to settle for ${routState.player}`);
   }
 
+  // The rout is written where it sits, settled or not.
   const written = updateRoutState(state, routState);
+
+  // A rout still owing its cards holds its parent open until they are paid.
   if (!routState.completed) {
     return written;
   }
 
   switch (location.source) {
     case 'retreat': {
-      return closeRetreat(written, routState.player);
+      // The unit that could not retreat has left the battle.
+      const retreatClosed = closeRetreat(written, routState.player);
+      return retreatClosed;
     }
     case 'rearEngagementMovement': {
-      return closeRearEngagement(written);
+      // Caught from behind, the defender routed and nothing else happens.
+      const engagementClosed = closeRearEngagement(written);
+      return engagementClosed;
     }
     case 'rally': {
-      return closeRally(written);
+      // The support check's routs are paid together, once (§10.4.7).
+      const rallyClosed = closeRally(written);
+      return rallyClosed;
     }
     case 'rangedAttack':
     case 'melee': {
+      // The attack's apply closes in `completeAttackApply`, after every
+      // result due on it is carried out.
       return written;
     }
     default: {
+      // TODO(composition): unreachable, so no spec has a case for it.
+      // `findRoutLocation` answers only the five sources above, each a fixed
+      // literal, and nothing a spec passes in can add a sixth. Settled by
+      // deciding whether a switch over a query's own answer keeps the house
+      // exhaustive default (as here and in `updateRoutState`) or ends with
+      // the cases, which the type already proves total.
       // Exhaustiveness check for TypeScript
       const _exhaustive: never = location.source;
       throw new Error(`Unknown rout source: ${String(_exhaustive)}`);

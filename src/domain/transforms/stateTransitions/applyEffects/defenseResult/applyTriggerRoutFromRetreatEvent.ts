@@ -26,13 +26,19 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
   _event: TriggerRoutFromRetreatEvent,
   state: S,
 ): S {
+  // The retreat with nowhere to go (§9.1.5): its unit must retreat and
+  // cannot, so it routs instead (§9.1.6). In a melee that is the unit whose
+  // retreat comes first in the order (§7.5.6).
   const { retreatState } = getRetreatAwaitingRout(state);
   const retreatingPlayer = retreatState.retreatingUnit.playerSide;
 
+  // The unit routs, and its owner pays its Morale (§9.3.2). The retreat's own
+  // copy of the unit is the one that leaves.
   const routState = createOpenedRoutState(retreatingPlayer, [
     retreatState.retreatingUnit,
   ]);
 
+  // The rout is written inside the retreat it replaces.
   const withNestedRout = updateRetreatRoutState(state, routState);
 
   // The retreat stays open (it holds this nested rout). A unit routing off the
@@ -43,10 +49,19 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
     reverseState: 'bypassed' as const,
     routState: 'bypassed' as const,
   };
-  const withReverseBypassed = updateAttackApplyState(withNestedRout, nextApply);
+  const withLaterStagesBypassed = updateAttackApplyState(
+    withNestedRout,
+    nextApply,
+  );
+
   // The unit leaves when the rout opens, not when the discard is paid.
-  return removeUnitsLeavingUnderRout(
-    withReverseBypassed,
+  // It routs in combat, so its own commander standing with it falls too
+  // (§4.2.8).
+  const routed = removeUnitsLeavingUnderRout(
+    withLaterStagesBypassed,
     routState.unitsToRout,
   );
+
+  // The game with the unit gone and its Morale still to be counted.
+  return routed;
 }
