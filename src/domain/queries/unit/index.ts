@@ -34,6 +34,9 @@ export { getRawUnitStat } from './getRawUnitStat';
 // Whether a unit fits a support grant.
 export { unitMatchesSupport } from './unitMatchesSupport';
 
+// A unit as the reserve holds it, before it deploys.
+export { getReservedUnit } from './getReservedUnit';
+
 // Units of one side currently on the board.
 export { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
 

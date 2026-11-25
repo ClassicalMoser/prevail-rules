@@ -210,6 +210,7 @@ export {
   findUnitIndex,
   getCurrentUnitStat,
   getRawUnitStat,
+  getReservedUnit,
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   canBeOrdered,
