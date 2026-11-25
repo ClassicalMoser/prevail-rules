@@ -1,8 +1,7 @@
 /**
- * Initial game state deals both armies onto the empty shell for that mode.
- * Board size follows the same catalog as createEmptyGameState. Instance numbers
- * start at 1 per unit type. Command cards are copied into each hand.
- * A value outside GameModeName is rejected before any units are reserved.
+ * A new game: both armies in reserve, one instance per unit numbered from 1
+ * within its type, and each army's command cards dealt into its own hand, on
+ * the empty game of the mode.
  */
 
 import type { Army } from '@entities';
@@ -72,29 +71,9 @@ describe('createInitialGameState function', () => {
     expect(state.cardState.white.inHand).not.toBe(armyWithCards.commandCards);
   });
 
-  // Each mode builds the empty shell for that board size, then deals the same armies.
-  it('uses the small board for tutorial', () => {
-    const state = createInitialGameState({
-      blackArmy,
-      gameMode: 'tutorial',
-      whiteArmy,
-    });
-
-    expect(state.boardState.boardType).toBe('small');
-    expect(state.reservedUnits).toHaveLength(3);
-  });
-
-  it('uses the standard board for standard', () => {
-    const state = createInitialGameState({
-      blackArmy,
-      gameMode: 'standard',
-      whiteArmy,
-    });
-
-    expect(state.boardState.boardType).toBe('standard');
-  });
-
-  it('uses the large board for epic', () => {
+  it('opens on the board of the mode it is given', () => {
+    // The mode passes straight to the empty game, whose spec covers each
+    // mode's board and the refusal of an unknown one; epic shows it arrives.
     const state = createInitialGameState({
       blackArmy,
       gameMode: 'epic',
@@ -102,21 +81,5 @@ describe('createInitialGameState function', () => {
     });
 
     expect(state.boardState.boardType).toBe('large');
-  });
-
-  it('rejects a mode outside the catalog', () => {
-    // Intentional invalid mode so the exhaustive default stays aligned at runtime.
-    // TODO(misleading): there is no exhaustive default; `createEmptyGameState`
-    // checks the name against the mode catalog with `Object.hasOwn`. Settled
-    // by saying that.
-    const gameMode = 'skirmish' as never;
-
-    expect(() =>
-      createInitialGameState({
-        blackArmy,
-        gameMode,
-        whiteArmy,
-      }),
-    ).toThrow('Unknown gameMode: skirmish');
   });
 });

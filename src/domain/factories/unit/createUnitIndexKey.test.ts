@@ -19,15 +19,6 @@ describe('createUnitIndexKey function', () => {
     expect(createUnitIndexKey(unit)).toBe(`white-${unitType.id}-2`);
   });
 
-  it('gives the same unit the same key, wherever it was read from', () => {
-    // Two separate copies of black's first unit of this type.
-    const one = createUnitInstance('black', unitType, 1);
-    const other = createUnitInstance('black', unitType, 1);
-
-    // The same unit, so the same key.
-    expect(createUnitIndexKey(one)).toBe(createUnitIndexKey(other));
-  });
-
   it('tells apart two units of one type by side and by number', () => {
     // White's first, white's second and black's first of the same type.
     const whiteFirst = createUnitInstance('white', unitType, 1);

@@ -2,8 +2,6 @@ import { createChooseWhetherToRetreatEvent } from './createChooseWhetherToRetrea
 
 describe('createChooseWhetherToRetreatEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
-    expect.hasAssertions();
-
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       player: 'white',

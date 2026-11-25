@@ -3,8 +3,6 @@ import { createOwnedCardState } from './createOwnedCardState';
 
 describe('createOwnedCardState function', () => {
   it('leaves every pile empty when no pile is named', () => {
-    expect.hasAssertions();
-
     const piles = createOwnedCardState();
 
     expect(piles).toStrictEqual({
@@ -18,7 +16,6 @@ describe('createOwnedCardState function', () => {
   });
 
   it('sets the named pile and leaves the other five empty', () => {
-    expect.hasAssertions();
     const card = tempCommandCards[0];
 
     const piles = createOwnedCardState({ burnt: [card] });
@@ -34,7 +31,6 @@ describe('createOwnedCardState function', () => {
   });
 
   it('sets several named piles at once', () => {
-    expect.hasAssertions();
     const held = tempCommandCards[0];
     const spent = tempCommandCards[1];
 

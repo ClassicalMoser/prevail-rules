@@ -54,10 +54,8 @@ describe('createEmptyGameState function', () => {
   });
 
   it('rejects a mode outside the catalog', () => {
-    // Intentional invalid mode so the exhaustive default stays aligned at runtime.
-    // TODO(misleading): there is no exhaustive default; `createEmptyGameState`
-    // checks the name against the mode catalog with `Object.hasOwn`. Settled
-    // by saying that.
+    // A mode name enters a game here, so one the catalog lacks is refused
+    // here. The type forbids it, so the spec has to force it through.
     const mode = 'skirmish' as never;
 
     expect(() => createEmptyGameState(mode)).toThrow(

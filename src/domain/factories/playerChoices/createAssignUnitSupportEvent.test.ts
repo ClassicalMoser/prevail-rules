@@ -5,7 +5,6 @@ import { createAssignUnitSupportEvent } from './createAssignUnitSupportEvent';
 
 describe('createAssignUnitSupportEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
-    expect.hasAssertions();
     const assignments: UnitSupportAssignment[] = [
       {
         unitSupport: { count: 1, supportType: 'generic' },

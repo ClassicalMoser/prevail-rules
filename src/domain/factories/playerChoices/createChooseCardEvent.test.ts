@@ -3,7 +3,6 @@ import { createChooseCardEvent } from './createChooseCardEvent';
 
 describe('createChooseCardEvent function', () => {
   it('fills in the event and choice types and keeps the rest', () => {
-    expect.hasAssertions();
     const card = tempCommandCards[0];
 
     const event = createChooseCardEvent({

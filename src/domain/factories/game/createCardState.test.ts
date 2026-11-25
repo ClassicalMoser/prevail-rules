@@ -15,8 +15,6 @@ const emptyPiles = {
 
 describe('createCardState function', () => {
   it('is authoritative with both sides empty when given no piles', () => {
-    expect.hasAssertions();
-
     const cardState = createCardState();
 
     expect(cardState).toStrictEqual({
@@ -27,7 +25,6 @@ describe('createCardState function', () => {
   });
 
   it('sets each side from the piles named for it', () => {
-    expect.hasAssertions();
     const blackCard = tempCommandCards[0];
     const whiteCard = tempCommandCards[1];
 
@@ -44,7 +41,6 @@ describe('createCardState function', () => {
   });
 
   it('leaves white empty when only black is given', () => {
-    expect.hasAssertions();
     const card = tempCommandCards[0];
 
     const cardState = createCardState({

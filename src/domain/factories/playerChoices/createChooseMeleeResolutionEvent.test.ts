@@ -2,8 +2,6 @@ import { createChooseMeleeResolutionEvent } from './createChooseMeleeResolutionE
 
 describe('createChooseMeleeResolutionEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
-    expect.hasAssertions();
-
     const event = createChooseMeleeResolutionEvent({
       player: 'white',
       space: 'E-5',

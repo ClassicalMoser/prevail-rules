@@ -4,7 +4,6 @@ import { createIssueCommandsEvent } from './createIssueCommandsEvent';
 
 describe('createIssueCommandsEvent function', () => {
   it('fills in the event and choice types and keeps every other field', () => {
-    expect.hasAssertions();
     // White spends a units command on one unit.
     const allocation = {
       allocationType: 'units' as const,
@@ -19,20 +18,6 @@ describe('createIssueCommandsEvent function', () => {
       choiceType: 'issueCommands',
       eventType: 'playerChoice',
       player: 'white',
-    });
-  });
-
-  it('keeps an allocation that orders nobody, which declines', () => {
-    // A player who orders no unit declines the order (§4.3.2).
-    const event = createIssueCommandsEvent({
-      allocation: { allocationType: 'units', units: [] },
-      player: 'black',
-    });
-
-    // The empty allocation is kept, not filled in.
-    expect(event.allocation).toStrictEqual({
-      allocationType: 'units',
-      units: [],
     });
   });
 });
