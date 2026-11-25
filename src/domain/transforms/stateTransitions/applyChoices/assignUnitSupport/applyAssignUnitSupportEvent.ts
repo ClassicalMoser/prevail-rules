@@ -2,7 +2,7 @@ import type { UnitInstance } from '@entities';
 import type { AssignUnitSupportEvent } from '@events';
 import type { GameState } from '@game';
 import { getPlayerUnitsOnBoard, hasUnitInArray } from '@queries';
-import { applyUnitsLostSupportAfterRally } from '../applyEffects/cards/applyUnitsLostSupportAfterRally';
+import { applyUnitsLostSupportAfterRally } from '@transforms/stateTransitions/applyEffects/cards/applyUnitsLostSupportAfterRally';
 
 /**
  * Applies an AssignUnitSupportEvent:

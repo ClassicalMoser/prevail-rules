@@ -18,7 +18,7 @@ import {
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms/pureTransforms';
-import { applyCompleteUnitMovementEvent } from '../applyEffects/movement/applyCompleteUnitMovementEvent';
+import { applyCompleteUnitMovementEvent } from '@transforms/stateTransitions/applyEffects/movement/applyCompleteUnitMovementEvent';
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
 import { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
