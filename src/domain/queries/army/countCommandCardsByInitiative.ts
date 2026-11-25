@@ -15,19 +15,15 @@ import { LEGAL_INITIATIVES } from '@ruleValues';
 export function countCommandCardsByInitiative(
   army: Army,
 ): Record<number, number> {
-  // Start every legal value at zero: a value with no card is a count of
-  // nothing, and the spread rule reads it as such.
+  // For each initiative a card may show, how many of the army's cards show
+  // it; a value no card shows is a count of nothing, which the spread rule
+  // reads as such.
   const counts: Record<number, number> = Object.fromEntries(
-    LEGAL_INITIATIVES.map((initiative) => [initiative, 0]),
+    LEGAL_INITIATIVES.map((initiative) => [
+      initiative,
+      army.commandCards.filter((card) => card.initiative === initiative).length,
+    ]),
   );
-
-  // Each card counts once toward the initiative it shows. The fallback to
-  // zero is never taken for a card the card schema accepts, whose initiative
-  // is always one of the values started above; it is there because a
-  // `Record<number, number>` cannot promise the key is present.
-  for (const card of army.commandCards) {
-    counts[card.initiative] = (counts[card.initiative] ?? 0) + 1;
-  }
 
   // One count per initiative value, ready to compare with the mode's spread.
   return counts;
