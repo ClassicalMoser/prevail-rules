@@ -29,8 +29,8 @@ export type CommanderIndexEntry = Coordinate | 'reserved' | 'lost';
  * Where every piece in the game is, by name.
  *
  * The board, the reserve, the routed units and the lost commanders already
- * say where everything is, and they stay the record. To find one unit from
- * them is to search the whole board, and play asks where a unit or a
+ * say where everything is, and they are the authoritative record. However, it
+ * is inefficient to search the whole board, and play asks where a unit or a
  * commander stands constantly: every inspiration range, every stat read in a
  * move. The index answers that by name instead.
  *

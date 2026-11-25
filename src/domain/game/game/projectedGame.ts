@@ -33,12 +33,8 @@ import {
  *
  * The board is sent whole: every view reads it in full, since all information
  * on the board is open (§1.4). Hidden stands (§3.6) are not built yet; when
- * they are, the opening state and the board will need hiding per view too.
- *
- * TODO(misleading): the board is not all that would need hiding. The state's
- * `index` names every unit's space, and `reservedUnits` lists the army, in
- * every view; either would tell a seat what a stand is. Settled by naming
- * them here, with the board, when stands are designed.
+ * they are, whatever mechanism is used to relate reserved units to their stands
+ * will need to be hidden as well.
  */
 export type ProjectedGame =
   | AuthoritativeProjectedGame

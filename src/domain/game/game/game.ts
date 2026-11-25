@@ -16,10 +16,7 @@ import { authoritativeGameStateSchema } from '@game/gameState';
  * seat may read, and the opening state, events and current state in that view.
  *
  * Board size lives on `gameState.boardState.boardType` and must agree with
- * the size required by `gameMode` (enforced by Zod).
- * TODO(misleading): {@link gameSchema} itself does not check this; the check is
- * `refineGameModeBoardSize` in `@legality`, a refine applied on top of it.
- * Settled by saying where the check lives.
+ * the size required by `gameMode`, checked in `@legality`.
  *
  * Mode army composition limits live in `@legality` (`refineGameArmyComposition`).
  */

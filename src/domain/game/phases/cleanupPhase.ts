@@ -5,17 +5,21 @@ import { rallyResolutionStateSchema } from '@game/substeps';
 import { z } from 'zod';
 
 /** Iterable list of valid steps in the cleanup phase. */
-// TODO(misleading): the two resolve-rally steps say "one gameEffect", but each
-// is a loop: getExpectedRallyResolutionEvent asks for resolveRally, the unit
-// support assignment, and any rout that follows, in turn. Settled by
-// describing the loop.
 export const cleanupPhaseSteps = [
-  'discardPlayedCards', // Expect one gameEffect: move in-play cards to the played pile
-  'firstPlayerChooseRally', // Expect one player choice: initiative player's choose rally
-  'firstPlayerResolveRally', // Expect one gameEffect: resolve rally (includes unit support)
-  'secondPlayerChooseRally', // Expect one player choice: non-initiative player's choose rally
-  'secondPlayerResolveRally', // Expect one gameEffect: resolve rally (includes unit support)
-  'complete', // Expect one gameEffect: advance round and reset to play cards phase
+  // This round's card leaves play for the played pile (§4.5.1).
+  'discardPlayedCards',
+  // The first player chooses whether to rally (§10.3.1).
+  'firstPlayerChooseRally',
+  // Their rally, if they chose one: the burn, the cards taken back, then the
+  // support check and any rout it causes, all before the second player
+  // decides (§10.3.6). Skipped by a player who declines.
+  'firstPlayerResolveRally',
+  // Then the second player chooses whether to rally.
+  'secondPlayerChooseRally',
+  // Their rally, resolved the same way.
+  'secondPlayerResolveRally',
+  // The round ends, and the next begins with cards being played.
+  'complete',
 ] as const;
 
 /** The type of a step in the cleanup phase. */

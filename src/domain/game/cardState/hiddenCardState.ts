@@ -4,10 +4,11 @@ import type { AssertExact } from '@utils';
 import { commandCardSchema, hiddenCardSchema } from '@entities';
 import { z } from 'zod';
 
-// TODO(misleading): "the opposing player's cards" is one use; a spectator's
-// view holds both sides' cards this way. Settled by a header that says whose
-// hand is face down, not whose side it is.
-/** The state of the opposing player's cards. */
+/**
+ * The state of cards that belong to someone other than whoever holds this
+ * state: the opponent's, in a seat's view, or both sides', in a spectator's.
+ * The hand and the chosen card are face down; the rest is face up.
+ */
 export interface HiddenCardState {
   /** The cards in the player's hand, face down: how many, not which (§1.4). */
   inHand: HiddenCard[];
@@ -36,7 +37,7 @@ const _hiddenCardStateSchemaObject = z
 
 type HiddenCardStateSchemaType = z.infer<typeof _hiddenCardStateSchemaObject>;
 
-/** The schema for the opposing player's card piles. */
+/** The schema for card piles that belong to someone other than the holder. */
 export const hiddenCardStateSchema: z.ZodType<HiddenCardState> =
   _hiddenCardStateSchemaObject;
 
