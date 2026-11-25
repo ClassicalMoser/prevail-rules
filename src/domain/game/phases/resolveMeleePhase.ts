@@ -51,8 +51,12 @@ type ResolveMeleePhaseStateSchemaType = z.infer<
 >;
 
 /** The schema for the state of the resolve melee phase. */
-export const resolveMeleePhaseStateSchema: z.ZodType<ResolveMeleePhaseState> =
-  _resolveMeleePhaseStateSchemaObject;
+export const resolveMeleePhaseStateSchema: z.ZodObject<{
+  phase: z.ZodLiteral<'resolveMelee'>;
+  step: z.ZodType<ResolveMeleePhaseStep>;
+  currentMeleeResolutionState: z.ZodType<MeleeResolutionState | 'pending'>;
+  remainingEngagements: z.ZodArray<z.ZodType<Coordinate>>;
+}> = _resolveMeleePhaseStateSchemaObject;
 
 const _assertExactResolveMeleePhaseState: AssertExact<
   ResolveMeleePhaseState,

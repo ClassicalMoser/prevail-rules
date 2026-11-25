@@ -55,18 +55,21 @@ export type PhaseState =
   | ResolveMeleePhaseState
   | CleanupPhaseState;
 
-// TODO(composition): every other union in @game is a z.discriminatedUnion
-// with an AssertExact against its type; this one, though the comment above
-// calls it discriminated on `phase`, is a plain z.union with no assert.
-// Settled by building it the same way, or by saying why it cannot be.
-/** The schema for the state of a phase of a round. */
-export const phaseStateSchema: z.ZodType<PhaseState> = z.union([
+const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
   playCardsPhaseStateSchema,
   moveCommandersPhaseStateSchema,
   issueCommandsPhaseStateSchema,
   resolveMeleePhaseStateSchema,
   cleanupPhaseStateSchema,
 ]);
+
+type PhaseStateSchemaType = z.infer<typeof _phaseStateSchemaObject>;
+
+/** The schema for the state of a phase of a round. */
+export const phaseStateSchema: z.ZodType<PhaseState> = _phaseStateSchemaObject;
+
+const _assertExactPhaseState: AssertExact<PhaseState, PhaseStateSchemaType> =
+  true;
 
 /** Every phase the list names has a phase state, and no other. */
 const _assertPhasesMatchStates: AssertExact<Phase, PhaseState['phase']> = true;

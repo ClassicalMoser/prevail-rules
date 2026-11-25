@@ -63,8 +63,13 @@ type IssueCommandsPhaseStateSchemaType = z.infer<
 >;
 
 /** The schema for the state of the issue commands phase. */
-export const issueCommandsPhaseStateSchema: z.ZodType<IssueCommandsPhaseState> =
-  _issueCommandsPhaseStateSchemaObject;
+export const issueCommandsPhaseStateSchema: z.ZodObject<{
+  phase: z.ZodLiteral<'issueCommands'>;
+  step: z.ZodType<IssueCommandsPhaseStep>;
+  remainingUnitsFirstPlayer: z.ZodArray<z.ZodType<UnitInstance>>;
+  remainingUnitsSecondPlayer: z.ZodArray<z.ZodType<UnitInstance>>;
+  currentCommandResolutionState: z.ZodType<CommandResolutionState | 'pending'>;
+}> = _issueCommandsPhaseStateSchemaObject;
 
 const _assertExactIssueCommandsPhaseState: AssertExact<
   IssueCommandsPhaseState,
