@@ -32,6 +32,29 @@ describe('deployUnit function', () => {
     expect(deployed.index.units[createUnitIndexKey(unit)]).toBe('L-5');
   });
 
+  it('places the unit the reserve holds when it is named with other stats than it has', () => {
+    // The reserve holds White's unit with Attack 3. A client names the same
+    // unit (same side, type and number) claiming Attack 99.
+    const claimed = {
+      ...unit,
+      unitType: {
+        ...unit.unitType,
+        stats: { ...unit.unitType.stats, attack: 99 },
+      },
+    };
+
+    const deployed = deployUnit(waiting, placed(claimed, 'L-5', 'north'));
+
+    // Who it is came from the name; what it is came from the army that was
+    // brought, so the unit on L-5 still has Attack 3.
+    const presence = deployed.boardState.board['L-5']?.unitPresence;
+    expect(presence).toStrictEqual({
+      facing: 'north',
+      presenceType: 'single',
+      unit,
+    });
+  });
+
   it('throws for a unit not in reserve', () => {
     // Another white unit of the same type, never in reserve.
     const stranger = createTestUnit('white', { attack: 3, instanceNumber: 2 });
