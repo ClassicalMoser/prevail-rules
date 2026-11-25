@@ -27,7 +27,7 @@ export { coordinateLayoutMap } from '@ruleValues';
 /** A size's layout, and the map of them, from `@ruleValues`. */
 export type { CoordinateLayout, CoordinateLayoutMap } from '@ruleValues';
 
-/** Schema for one board cell (terrain, elevation, water, occupancy). */
+/** Schema for one board cell (cover, difficulty, sight, elevation, occupancy). */
 export { boardSpaceSchema } from './boardSpace';
 /** One cell of the board. */
 export type { BoardSpace } from './boardSpace';

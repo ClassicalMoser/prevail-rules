@@ -1,9 +1,9 @@
 /**
- * One cell of the board: terrain, elevation, water, and who occupies it.
+ * One cell of the board: cover, difficulty, elevation, and who occupies it.
  *
  * Coordinates key spaces on `Board.board`; this type is the value at
- * each key. Ground cover (`TerrainType`), corner heights
- * ({@link Elevation}), and edge water (`WaterCover`) are separate so
+ * each key. Ground cover ({@link GroundCover}), its difficulty, whether it
+ * blocks sight, and corner heights ({@link Elevation}) are separate so
  * queries can reason about each independently. Occupancy is
  * {@link UnitPresence} (none / single / engaged) plus a list of commander
  * sides currently on the space.
@@ -25,10 +25,13 @@ import { groundCoverSchema } from './groundCover';
  * A space of the game board.
  *
  * Field roles:
- * - `terrainType` — ground cover (plain, forest, …); not elevation or water
+ * - `groundCover` — what covers the ground (open, wood, marsh, …)
  * - `elevation` — height at each of the four corners (-1 to +1)
+ * - `terrainDifficulty` — the Flexibility a unit needs to cross it unimpeded
+ * - `blocking` — whether it blocks line of sight
  * - `unitPresence` — empty, one unit, or two engaged units
- * - `commanders` — player sides whose commanders occupy this space (may be empty)
+ * - `commanders` — player sides whose commanders stand here (may be empty);
+ *   a commander does not occupy the space (§2.2.2)
  */
 export interface BoardSpace {
   /**
@@ -93,8 +96,8 @@ type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;
 
 /**
  * Zod schema for a board space.
- * Strict object: unknown keys fail. Nested schemas supply defaults where the
- * rules allow (e.g. elevation 0, water false, terrain plain).
+ * Strict object: unknown keys fail. Every field is required; nothing is
+ * filled in by default.
  */
 export const boardSpaceSchema: z.ZodType<BoardSpace> = _boardSpaceSchemaObject;
 
