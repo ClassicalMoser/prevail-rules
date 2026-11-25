@@ -63,4 +63,16 @@ describe('discardCardsFromHand function', () => {
       'Card already-played is not in the hand',
     );
   });
+
+  it('throws when a card is named twice', () => {
+    // A card is in one place at a time; naming it twice would put it on the
+    // discard pile twice while it leaves the hand once.
+    const named = createTestCard();
+    const kept = createTestCard();
+    const owned = createOwnedCardState({ inHand: [named, kept] });
+
+    expect(() => discardCardsFromHand(owned, [named.id, named.id])).toThrow(
+      `Card ${named.id} is named more than once`,
+    );
+  });
 });
