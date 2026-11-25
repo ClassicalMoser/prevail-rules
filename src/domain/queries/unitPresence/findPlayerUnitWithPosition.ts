@@ -1,9 +1,5 @@
-import type {
-  Board,
-  Coordinate,
-  PlayerSide,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getBoardSpace } from '../board/getBoardSpace';
 import { getOppositeFacing } from '@queries/facings';
 import { isFriendlyUnit } from '../unit/isFriendlyUnit';

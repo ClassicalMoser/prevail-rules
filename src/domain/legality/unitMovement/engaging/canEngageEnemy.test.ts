@@ -1,4 +1,4 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { createGameState } from '@testing';
 
 import { canEngageEnemy } from './canEngageEnemy';

@@ -86,7 +86,7 @@ To narrow a presence, use `hasNoUnit`, `hasSingleUnit` and `hasEngagedUnits` in 
 coordinateLayoutMap[board.boardType]; // depth, frontage and spaces of that size
 ```
 
-The board's vocabulary is declared in `@ruleValues` and re-exported here: the sizes, the row letters and column numbers, `Coordinate` and its schema, and each size's depth, frontage and spaces (§2.1.3). Every size labels from the north-west corner, so the sizes nest, and a space's row and column are the same on every board it is on: one table in `@queries`, `positionByCoordinate`, serves all three.
+The board's vocabulary is declared in `@ruleValues`, and read from there: the sizes, the row letters and column numbers, `Coordinate` and its schema, and each size's depth, frontage and spaces (§2.1.3). Every size labels from the north-west corner, so the sizes nest, and a space's row and column are the same on every board it is on: one table in `@queries`, `positionByCoordinate`, serves all three.
 
 `Coordinate` is the union across all sizes (extensionally the large set). Completeness is enforced by `refineBoardLayout` in `@legality` and geometry helpers, not by per-size TypeScript types.
 
@@ -102,11 +102,11 @@ Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) constrain
 
 | Area            | Notes                                                                           |
 | --------------- | ------------------------------------------------------------------------------- |
-| Board           | `Board`, `BoardSpace`, `Coordinate`, layouts                                    |
+| Board           | `Board`, `BoardSpace`; `Coordinate` and layouts are in `@ruleValues`            |
 | Units           | `UnitType` / `UnitInstance`, facing, placement, `UnitPresence`                  |
 | Cards           | `CommandCard`, `Command`, modifiers / restrictions / support                    |
 | Army            | `Army` / `UnitCount` (shape + uniqueness only; mode composition in `@legality`) |
-| Players / modes | `Player`, `PlayerSide`; game modes are in `@ruleValues`, re-exported here       |
+| Players / modes | `Player`, `PlayerSide`; game modes are in `@ruleValues`, read from there        |
 | Shared values   | `AttackType`, `AttackResult`, `EngagementType`, …                               |
 
 **Not here:** `Game` / `GameState` / `CardState` / phases (`@game`); `ValidationResult` (`@utils`); army mode limits (`@legality`).

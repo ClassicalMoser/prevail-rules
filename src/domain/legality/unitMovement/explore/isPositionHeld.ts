@@ -1,4 +1,5 @@
-import type { Coordinate, UnitFacing } from '@entities';
+import type { UnitFacing } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { MoveState } from './moveState';
 import { createUnitPlacement } from '@factories';
 import { isSamePlacement } from '@queries';

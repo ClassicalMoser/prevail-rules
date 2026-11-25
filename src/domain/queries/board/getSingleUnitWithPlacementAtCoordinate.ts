@@ -1,4 +1,5 @@
-import type { Board, Coordinate, UnitWithPlacement } from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getBoardSpace } from './getBoardSpace';
 import { hasSingleUnit } from '@queries/unitPresence';
 

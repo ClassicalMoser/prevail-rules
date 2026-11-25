@@ -1,4 +1,4 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { createTestUnit, placed } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 import { throwIfUndefined } from '@utils';

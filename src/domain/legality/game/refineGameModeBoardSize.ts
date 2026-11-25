@@ -1,6 +1,6 @@
-import type { BoardType, GameModeName } from '@entities';
+import type { BoardType, GameModeName } from '@ruleValues';
 
-import { boardSizeByGameMode } from '@entities';
+import { boardSizeByGameMode } from '@ruleValues';
 import type { z } from 'zod';
 
 /**

@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { getBoardSpace } from '@queries';
 import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';

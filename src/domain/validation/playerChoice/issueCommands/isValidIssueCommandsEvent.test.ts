@@ -1,4 +1,5 @@
-import type { Command, Coordinate } from '@entities';
+import type { Command } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { createEmptyGameState, createIssueCommandsEvent } from '@factories';
 import { PLAY_CARDS_PHASE } from '@game';

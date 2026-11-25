@@ -1,6 +1,6 @@
 import type { Game } from '@game';
 import type { GameStorage, RunnerResponse } from '@application/ports';
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import { parseLegalGameForMode, storageFailure } from '@application/utils';
 
 /**

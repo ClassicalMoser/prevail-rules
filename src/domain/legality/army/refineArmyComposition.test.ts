@@ -1,4 +1,5 @@
-import type { Army, GameModeName } from '@entities';
+import type { Army } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import { armySchema } from '@entities';
 import { createTestCard, getUnitByTrait } from '@testing';
 import { z } from 'zod';

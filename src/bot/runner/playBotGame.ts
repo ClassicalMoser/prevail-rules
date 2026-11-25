@@ -1,4 +1,5 @@
-import type { Army, GameModeName, PlayerSide } from '@entities';
+import type { Army, PlayerSide } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { Event } from '@events';
 import type { RandomSource } from '@utils';
 import type { AuthoritativeGameState, GameState } from '@game';

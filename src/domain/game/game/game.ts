@@ -1,9 +1,11 @@
-import type { Army, GameModeName } from '@entities';
+import type { Army } from '@entities';
+import { gameModeNameSchema } from '@ruleValues';
+import type { GameModeName } from '@ruleValues';
 import type { Event } from '@events';
 import type { AssertExact } from '@utils';
 import type { AuthoritativeGameState } from '@game/gameState';
 
-import { armySchema, gameModeNameSchema } from '@entities';
+import { armySchema } from '@entities';
 import { eventSchema } from '@events';
 import { z } from 'zod';
 import { authoritativeGameStateSchema } from '@game/gameState';

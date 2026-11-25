@@ -3,7 +3,7 @@ import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { applyEvent } from '@transforms';
 import { recordEvent } from '@application/composable';
 import type { GameEffectEvent, PlayerChoiceEvent } from '@events';
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 
 export async function processEvent<S extends GameState>(
   gameId: string,

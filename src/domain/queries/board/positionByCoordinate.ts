@@ -17,7 +17,8 @@
  * `findGridPosition`, `getGridPosition`, `findCoordinateAtPosition`,
  * `positionByCoordinate`) to a word that is not "position".
  */
-import type { Coordinate, GridPosition } from '@entities';
+import type { GridPosition } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { boardColumnNumbers, boardRowLetters } from '@ruleValues';
 
 /** Each space's row and column, the same on every board it is on. */

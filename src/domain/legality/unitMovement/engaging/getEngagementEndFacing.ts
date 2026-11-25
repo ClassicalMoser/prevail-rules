@@ -1,4 +1,5 @@
-import type { Board, Coordinate, MoveTurn, UnitFacing } from '@entities';
+import type { Board, MoveTurn, UnitFacing } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import {
   getBoardSpace,
   findNeighbourSide,

@@ -1,8 +1,8 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
 import type { AttackApplyState } from '../combatOutcomes';
-import { coordinateSchema } from '@entities';
+import { coordinateSchema } from '@ruleValues';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
 import { MELEE_RESOLUTION_SUBSTEP_TYPE } from '../substepType';

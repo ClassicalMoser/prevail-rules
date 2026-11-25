@@ -1,4 +1,5 @@
-import type { Army, GameModeName } from '@entities';
+import type { Army } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { z } from 'zod';
 import { refineArmyComposition } from '../army/refineArmyComposition';
 import { refineArmyRules } from '../army/refineArmyRules';

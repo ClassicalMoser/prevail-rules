@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide, UnitPlacement } from '@entities';
+import type { PlayerSide, UnitPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 
 /**

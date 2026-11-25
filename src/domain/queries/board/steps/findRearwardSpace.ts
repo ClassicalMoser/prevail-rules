@@ -1,4 +1,5 @@
-import type { Board, Coordinate, UnitFacing } from '@entities';
+import type { Board, UnitFacing } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getOppositeFacing } from '@queries/facings';
 import { findForwardSpace } from './findForwardSpace';
 

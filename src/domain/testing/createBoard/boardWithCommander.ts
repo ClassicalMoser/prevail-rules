@@ -1,4 +1,5 @@
-import type { PlayerSide, Board, Coordinate } from '@entities';
+import type { PlayerSide, Board } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { addCommanderToBoard } from '@transforms';
 import { createEmptyStandardBoard } from '@factories';
 

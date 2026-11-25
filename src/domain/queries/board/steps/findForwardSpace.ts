@@ -1,6 +1,7 @@
-import type { Board, UnitFacing, Coordinate } from '@entities';
-import { coordinateLayoutMap, unitFacings } from '@entities';
-import { boardRowLetters } from '@ruleValues';
+import type { Board, UnitFacing } from '@entities';
+import type { Coordinate } from '@ruleValues';
+import { unitFacings } from '@entities';
+import { boardRowLetters, coordinateLayoutMap } from '@ruleValues';
 import { getColumnDelta, getRowDelta } from '../deltas';
 import { findCoordinateAtPosition } from '../findCoordinateAtPosition';
 import { findGridPosition } from '../findGridPosition';

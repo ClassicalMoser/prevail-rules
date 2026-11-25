@@ -1,4 +1,5 @@
-import type { Board, Coordinate, PlayerSide } from '@entities';
+import type { Board, PlayerSide } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getBoardSpace } from '@queries';
 
 export function addCommanderToBoard(

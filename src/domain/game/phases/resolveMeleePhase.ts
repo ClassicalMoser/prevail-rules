@@ -1,8 +1,8 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { MeleeResolutionState } from '@game/substeps';
 import type { AssertExact } from '@utils';
 
-import { coordinateSchema } from '@entities';
+import { coordinateSchema } from '@ruleValues';
 import { meleeResolutionStateSchema } from '@game/substeps';
 import { z } from 'zod';
 

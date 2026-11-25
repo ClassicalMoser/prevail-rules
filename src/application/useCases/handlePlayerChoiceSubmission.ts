@@ -1,7 +1,7 @@
 import type { PlayerChoiceEvent } from '@events';
 import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { advanceEffects, processPlayerChoice } from '@application/process';
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 
 export async function handlePlayerChoiceSubmission(
   gameId: string,

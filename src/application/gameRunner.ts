@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState, GameStateVisibility, ProjectedGame } from '@game';
 import type { EnginePorts, RunnerResponse } from './ports';

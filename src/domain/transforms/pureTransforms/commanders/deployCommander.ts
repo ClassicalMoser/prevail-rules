@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { fileCommanderInIndex } from '../gameStateIndex/fileCommanderInIndex';
 import { addCommanderToBoard } from './addCommanderToBoard';

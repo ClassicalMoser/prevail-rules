@@ -1,8 +1,8 @@
-import type { Coordinate } from '@entities/board';
+import type { Coordinate } from '@ruleValues';
 import type { UnitFacing } from './unitFacing';
 import type { AssertExact } from '@utils';
 
-import { coordinateSchema } from '@entities/board';
+import { coordinateSchema } from '@ruleValues';
 import { unitFacingSchema } from './unitFacing';
 import { z } from 'zod';
 

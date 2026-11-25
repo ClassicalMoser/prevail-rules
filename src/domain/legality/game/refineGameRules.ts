@@ -1,4 +1,5 @@
-import type { Army, Board, GameModeName } from '@entities';
+import type { Army, Board } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { AuthoritativeGameState, Game } from '@game';
 
 import { authoritativeGameStateSchema, gameSchema } from '@game';

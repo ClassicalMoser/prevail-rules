@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide, UnitInstance } from '@entities';
+import type { PlayerSide, UnitInstance } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { getBoardSpace, hasNoUnit, isFriendlyUnit } from '@queries';
 

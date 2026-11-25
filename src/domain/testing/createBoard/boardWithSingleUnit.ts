@@ -1,10 +1,5 @@
-import type {
-  PlayerSide,
-  Board,
-  Coordinate,
-  UnitFacing,
-  UnitType,
-} from '@entities';
+import type { PlayerSide, Board, UnitFacing, UnitType } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getUnitByStatValue } from '@testing/getUnitByStatValue';
 import { createUnitInstance } from '@factories';
 import { createBoardWithUnits } from './boardWithUnits';

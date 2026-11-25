@@ -1,35 +1,10 @@
-// Game modes, declared in `@ruleValues` and re-exported beside the game's
-// other vocabulary.
-export {
-  boardSizeByGameMode,
-  gameModeNameSchema,
-  gameModeNames,
-} from '@ruleValues';
-export type { GameModeName } from '@ruleValues';
-
 // Players
 export { playerSchema, playerSideSchema, playerSides } from './player';
 export type { Player, PlayerSide } from './player';
 
 // Board
-export {
-  allCoordinates,
-  boardSchema,
-  boardSpaceSchema,
-  boardType,
-  boardTypeEnum,
-  coordinateLayoutMap,
-  coordinateSchema,
-} from './board';
-export type {
-  Board,
-  BoardSpace,
-  BoardType,
-  Coordinate,
-  CoordinateLayout,
-  CoordinateLayoutMap,
-  GridPosition,
-} from './board';
+export { boardSchema, boardSpaceSchema } from './board';
+export type { Board, BoardSpace, GridPosition } from './board';
 
 // Units
 export {

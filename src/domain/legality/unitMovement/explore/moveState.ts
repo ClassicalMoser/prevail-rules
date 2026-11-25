@@ -1,9 +1,5 @@
-import type {
-  Coordinate,
-  MoveDelta,
-  UnitFacing,
-  UnitPlacement,
-} from '@entities';
+import type { MoveDelta, UnitFacing, UnitPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 
 /**
  * One point in a move in progress. A move is a run of steps and turns

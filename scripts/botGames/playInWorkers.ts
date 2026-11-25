@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { BotGameRecord } from '@bot';
 import { once } from 'node:events';
 import { setTimeout as delay } from 'node:timers/promises';

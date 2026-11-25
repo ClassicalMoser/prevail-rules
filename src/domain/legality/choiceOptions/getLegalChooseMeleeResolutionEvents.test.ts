@@ -1,4 +1,4 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import {

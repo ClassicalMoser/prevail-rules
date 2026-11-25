@@ -1,9 +1,5 @@
-import type {
-  Board,
-  Coordinate,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import type { BotTemperament } from '@bot/temperament';
 import type { BattlefieldSurvey } from './battlefieldSurvey';

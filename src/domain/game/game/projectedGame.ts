@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { Event, ProjectedEvent } from '@events';
 import type { AssertExact } from '@utils';
 import type {
@@ -8,7 +8,7 @@ import type {
   WhiteSeenGameState,
 } from '@game/gameState';
 
-import { gameModeNameSchema } from '@entities';
+import { gameModeNameSchema } from '@ruleValues';
 import { eventSchema, projectedEventSchema } from '@events';
 import { z } from 'zod';
 import {

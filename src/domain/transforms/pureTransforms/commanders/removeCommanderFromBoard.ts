@@ -1,4 +1,5 @@
-import type { Board, Coordinate, BoardSpace, PlayerSide } from '@entities';
+import type { Board, BoardSpace, PlayerSide } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getBoardSpace } from '@queries';
 /* Pure transform to remove a commander from the board immutably with no side effects. */
 export function removeCommanderFromBoard(

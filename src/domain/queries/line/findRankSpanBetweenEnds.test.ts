@@ -1,4 +1,5 @@
-import type { Coordinate, Restrictions } from '@entities';
+import type { Restrictions } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import {
   createBoardWithFacingRow,
   createGameStateWithBoard,

@@ -1,4 +1,4 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,

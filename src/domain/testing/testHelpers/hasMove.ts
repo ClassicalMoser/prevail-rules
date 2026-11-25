@@ -1,4 +1,5 @@
-import type { Coordinate, UnitFacing, UnitPlacement } from '@entities';
+import type { UnitFacing, UnitPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 
 /**
  * Whether a set of legal moves includes one ending on a coordinate (and,

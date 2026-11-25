@@ -1,4 +1,5 @@
-import type { Board, Coordinate, GridPosition } from '@entities';
+import type { Board, GridPosition } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { findGridPosition } from './findGridPosition';
 
 /**

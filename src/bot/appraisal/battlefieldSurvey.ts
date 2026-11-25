@@ -1,9 +1,5 @@
-import type {
-  Coordinate,
-  PlayerSide,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { PlayerSide, UnitInstance, UnitWithPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import {
   findCommanderSpace,

@@ -1,4 +1,5 @@
-import type { Coordinate, UnitWithPlacement } from '@entities';
+import type { UnitWithPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 
 /**
  * Coordinates of units in a contiguous segment, in segment order.

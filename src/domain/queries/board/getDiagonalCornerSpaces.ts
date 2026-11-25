@@ -1,4 +1,5 @@
-import type { Board, Coordinate } from '@entities';
+import type { Board } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { throwIfUndefined } from '@utils';
 import { findCoordinateAtPosition } from './findCoordinateAtPosition';
 import { getGridPosition } from './getGridPosition';

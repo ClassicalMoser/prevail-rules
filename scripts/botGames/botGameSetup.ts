@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { BotGameSetup } from '@bot';
 import { defaultBotTemperament } from '@bot';
 import {

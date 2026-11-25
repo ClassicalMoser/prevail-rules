@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { findCommanderSpace } from './findCommanderSpace';
 

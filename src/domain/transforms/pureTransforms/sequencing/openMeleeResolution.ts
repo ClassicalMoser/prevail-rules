@@ -1,4 +1,4 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { GameState } from '@game';
 import { createOpenedMeleeResolutionState } from '@factories';
 import { getResolveMeleePhaseState } from '@queries';

@@ -1,4 +1,5 @@
-import type { Board, BoardSpace, Coordinate } from '@entities';
+import type { Board, BoardSpace } from '@entities';
+import type { Coordinate } from '@ruleValues';
 
 /**
  * Gets the board space at the given coordinate.

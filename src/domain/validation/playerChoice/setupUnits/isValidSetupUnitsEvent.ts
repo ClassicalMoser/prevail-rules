@@ -1,4 +1,5 @@
-import type { Coordinate, UnitInstance } from '@entities';
+import type { UnitInstance } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { ValidationResult } from '@utils';
 import type { SetupUnitsEvent } from '@events';
 import type { GameState } from '@game';

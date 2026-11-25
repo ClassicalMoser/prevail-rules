@@ -1,4 +1,4 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { MoveCommanderEvent } from '@events';
 import type { BotContext } from './botContext';
 import { getCardInPlay, getSpacesApart } from '@queries';

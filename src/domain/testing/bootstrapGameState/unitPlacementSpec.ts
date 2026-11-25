@@ -1,10 +1,10 @@
 import type {
   PlayerSide,
-  Coordinate,
   UnitFacing,
   UnitType,
   UnitWithPlacement,
 } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**

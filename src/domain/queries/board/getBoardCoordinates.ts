@@ -1,5 +1,6 @@
-import type { Board, Coordinate } from '@entities';
-import { coordinateLayoutMap } from '@entities';
+import type { Board } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
+import type { Coordinate } from '@ruleValues';
 
 /**
  * Gets all coordinates for a board in a type-safe way.

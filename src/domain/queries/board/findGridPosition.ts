@@ -1,5 +1,6 @@
-import type { Board, Coordinate, GridPosition } from '@entities';
-import { coordinateLayoutMap } from '@entities';
+import type { Board, GridPosition } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
+import type { Coordinate } from '@ruleValues';
 import { positionByCoordinate } from './positionByCoordinate';
 
 /**

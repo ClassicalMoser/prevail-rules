@@ -1,7 +1,9 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import { coordinateSchema } from '@ruleValues';
+import type { Coordinate } from '@ruleValues';
 import type { AssertExact } from '@utils';
 
-import { coordinateSchema, playerSides } from '@entities';
+import { playerSides } from '@entities';
 import { z } from 'zod';
 
 /**

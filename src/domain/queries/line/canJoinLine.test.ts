@@ -1,9 +1,4 @@
-import type {
-  Coordinate,
-  Restrictions,
-  UnitFacing,
-  UnitInstance,
-} from '@entities';
+import type { Restrictions, UnitFacing, UnitInstance } from '@entities';
 import { getOppositeFacing } from '@queries/facings';
 import {
   createBoardWithEngagedUnits,
@@ -12,7 +7,7 @@ import {
   getUnitByTrait,
   placed,
 } from '@testing';
-import type { Trait } from '@ruleValues';
+import type { Trait, Coordinate } from '@ruleValues';
 
 import { canJoinLine } from './canJoinLine';
 

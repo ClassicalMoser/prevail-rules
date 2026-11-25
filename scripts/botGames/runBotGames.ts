@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { BotGamesSummary } from '@bot';
 import { summarizeBotGames } from '@bot';
 import { availableParallelism } from 'node:os';

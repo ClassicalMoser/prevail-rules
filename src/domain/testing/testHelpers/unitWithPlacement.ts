@@ -1,10 +1,10 @@
 import type {
-  Coordinate,
   UnitFacing,
   UnitInstance,
   UnitType,
   UnitWithPlacement,
 } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { createUnitPlacement } from '@factories';
 import { createTestUnit } from '@testing/unitHelpers';
 

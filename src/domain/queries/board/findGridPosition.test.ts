@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import { coordinateLayoutMap } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,

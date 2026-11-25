@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { getGame } from '@application/composable';
 import { advanceEffects } from '@application/process';

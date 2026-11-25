@@ -1,5 +1,6 @@
-import type { Board, Coordinate, PlayerSide } from '@entities';
-import { coordinateLayoutMap } from '@entities';
+import type { Board, PlayerSide } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
+import type { Coordinate } from '@ruleValues';
 import { findCoordinateAtPosition } from '@queries';
 import { throwIfUndefined } from '@utils';
 

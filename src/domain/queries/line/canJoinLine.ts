@@ -1,12 +1,12 @@
 import type {
   Board,
-  Coordinate,
   PlayerSide,
   Restrictions,
   UnitFacing,
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { canBeOrdered } from '@queries/unit';
 import { findPlayerUnitWithPosition } from '@queries/unitPresence';
 

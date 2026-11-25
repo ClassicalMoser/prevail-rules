@@ -4,7 +4,7 @@ import type { EnginePorts, RunnerResponse } from '@application/ports';
 import { generateEventFromProcedure } from '@procedures';
 import { findExpectedEvent } from '@expected';
 import { processEvent } from './processEvent';
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 
 /**
  * Advances the game state up to the next player choice.

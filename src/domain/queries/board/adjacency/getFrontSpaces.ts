@@ -1,4 +1,5 @@
-import type { Board, Coordinate, UnitFacing } from '@entities';
+import type { Board, UnitFacing } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getAdjacentFacings } from '@queries/facings';
 import { getSpacesInDirections } from './getSpacesInDirections';
 

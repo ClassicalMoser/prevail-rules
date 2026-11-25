@@ -7,7 +7,7 @@ import type {
   RunnerResponse,
 } from '@application/ports';
 import { storageFailure } from '@application/utils';
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import { notifySubscribers } from './notifySubscribers';
 
 /**

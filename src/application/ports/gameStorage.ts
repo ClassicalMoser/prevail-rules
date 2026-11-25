@@ -1,7 +1,7 @@
 import type { Event } from '@events';
 import type { Game, GameState } from '@game';
 import type { PortResponse } from './portResponse';
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 
 /**
  * Persistence for full game records and current {@link GameState}.

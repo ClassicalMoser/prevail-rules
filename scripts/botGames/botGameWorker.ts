@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import { playBotGame } from '@bot';
 import { parentPort } from 'node:worker_threads';
 import { createBotGameSetup } from './botGameSetup';

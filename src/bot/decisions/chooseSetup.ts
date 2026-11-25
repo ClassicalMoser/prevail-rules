@@ -1,8 +1,9 @@
-import type { Coordinate, UnitFacing, UnitInstance } from '@entities';
+import type { UnitFacing, UnitInstance } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
 import type { SetupUnitsEvent } from '@events';
 import type { LegalSetupUnits } from '@legality';
 import type { BotContext } from './botContext';
-import { coordinateLayoutMap } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { getGridPosition } from '@queries';
 
 /** A unit at least this fast is cavalry, for setup: it belongs on a wing. */

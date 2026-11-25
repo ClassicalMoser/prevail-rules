@@ -1,6 +1,8 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import { coordinateSchema } from '@ruleValues';
+import type { Coordinate } from '@ruleValues';
 import type { AssertExact } from '@utils';
-import { coordinateSchema, playerSideSchema } from '@entities';
+import { playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 

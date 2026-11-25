@@ -6,12 +6,8 @@ export {
   unitCountSchema,
   attackTypes,
   attackTypeSchema,
-  coordinateSchema,
   boardSchema,
   boardSpaceSchema,
-  boardType,
-  boardTypeEnum,
-  coordinateLayoutMap,
 } from '@entities';
 export {
   armyCompositionByMode,
@@ -57,14 +53,7 @@ export {
   restrictionsSchema,
   roundEffectSchema,
 } from '@entities';
-export {
-  engagementType,
-  engagementTypeSchema,
-  boardSizeByGameMode,
-  gameModeNames,
-  gameModeNameSchema,
-} from '@entities';
-export type { GameModeName } from '@entities';
+export { engagementType, engagementTypeSchema } from '@entities';
 export { playerSchema, playerSides, playerSideSchema } from '@entities';
 export { diagonalFacings, orthogonalFacings, unitFacings } from '@entities';
 export {
@@ -93,9 +82,6 @@ export type {
   AttackType,
   Board,
   BoardSpace,
-  BoardType,
-  CoordinateLayout,
-  CoordinateLayoutMap,
   GridPosition,
   UnitCount,
 } from '@entities';
@@ -112,7 +98,6 @@ export type {
   Restrictions,
   RestrictionType,
   RoundEffect,
-  Coordinate,
   GenericUnitSupport,
   TraitUnitSupport,
   UnitTypeUnitSupport,
@@ -693,7 +678,15 @@ export {
   getPositionOfUnit,
   getUnitWithPlacementOnBoard,
 } from '@queries';
-export type { StatModifier, Trait } from '@ruleValues';
+export type {
+  StatModifier,
+  Trait,
+  GameModeName,
+  BoardType,
+  CoordinateLayout,
+  CoordinateLayoutMap,
+  Coordinate,
+} from '@ruleValues';
 export {
   COMMANDER_MOVE_DISTANCE,
   LEGAL_INITIATIVES,
@@ -720,6 +713,13 @@ export {
   statModifierSchema,
   traits,
   traitSchema,
+  coordinateSchema,
+  boardType,
+  boardTypeEnum,
+  coordinateLayoutMap,
+  boardSizeByGameMode,
+  gameModeNames,
+  gameModeNameSchema,
 } from '@ruleValues';
 export {
   createEmptyGameState,

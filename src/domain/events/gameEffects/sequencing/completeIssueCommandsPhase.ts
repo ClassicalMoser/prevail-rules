@@ -1,6 +1,6 @@
-import type { Coordinate } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { AssertExact } from '@utils';
-import { coordinateSchema } from '@entities';
+import { coordinateSchema } from '@ruleValues';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 

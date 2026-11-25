@@ -1,12 +1,12 @@
 import type {
   Board,
   PlayerSide,
-  Coordinate,
   UnitFacing,
   UnitInstance,
   UnitType,
   UnitWithPlacement,
 } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { AuthoritativeGameState } from '@game';
 
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';

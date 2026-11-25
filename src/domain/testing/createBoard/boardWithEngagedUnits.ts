@@ -1,4 +1,5 @@
-import type { Board, Coordinate, UnitFacing, UnitInstance } from '@entities';
+import type { Board, UnitFacing, UnitInstance } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import { createEmptyStandardBoard } from '@factories';
 import { getOppositeFacing } from '@queries';
 import { addUnitToBoard } from '@transforms';
