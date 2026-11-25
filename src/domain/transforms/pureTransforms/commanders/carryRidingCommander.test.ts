@@ -32,7 +32,7 @@ describe('carryRidingCommander function', () => {
   );
 
   /** The movement as declared: the unit is bound for C-5, rider or not. */
-  function movement(moveCommander: boolean) {
+  function movement(moveCommander: boolean | 'pending') {
     const resolution = createMovementResolutionState(
       createEmptyGameState('standard'),
       {
@@ -63,5 +63,14 @@ describe('carryRidingCommander function', () => {
     // Nothing moves: the commander only goes in Phase 2 (§4.3.10). The very
     // same state comes back.
     expect(carried).toBe(state);
+  });
+
+  it('throws for a move whose rider has not been decided', () => {
+    // Whether the commander rides is written with the move (§4.3.10); a move
+    // not yet written cannot be carried out, so it is a fault in the caller,
+    // not a commander staying behind.
+    expect(() =>
+      carryRidingCommander(state, movement('pending'), 'C-5'),
+    ).toThrow('The move has not been written yet');
   });
 });
