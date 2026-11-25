@@ -162,9 +162,9 @@ describe('getSubstepsInProgress function', () => {
       engagementState: { ...engagement, engagementResolutionState: siege },
     });
 
-    // The state is at fault, and the reader says so rather than guess.
+    // The state is at fault, and the reader says so, naming the kind it met.
     expect(() => getSubstepsInProgress(issueCommands(move))).toThrow(
-      'Unknown engagement type',
+      'Unknown engagement type: siege',
     );
   });
 
