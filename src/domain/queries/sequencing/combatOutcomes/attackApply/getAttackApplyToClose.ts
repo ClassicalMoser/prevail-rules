@@ -5,6 +5,9 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
 import { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClose';
 import { getRangedAttackApplyState } from './getRangedAttackApplyState';
 
+// TODO(composition): picks the melee slot by resolution order, which follows
+// the initiative, rather than reading which slot is due. Settled by deciding
+// whether order is a fair way to name the slot.
 /**
  * The attack apply that `completeAttackApply` closes next: the ranged attack's
  * one apply, or, in a melee, the first not yet closed in the order the attacks

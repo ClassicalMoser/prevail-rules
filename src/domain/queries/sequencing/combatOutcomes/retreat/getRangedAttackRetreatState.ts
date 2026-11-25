@@ -3,6 +3,8 @@ import { throwIfBypassed } from '@utils';
 import { getRangedAttackApplyState } from '../attackApply/getRangedAttackApplyState';
 import { getRetreatStateFromAttackApply } from './getRetreatStateFromAttackApply';
 
+// TODO(composition): no production caller. Settled by deleting it or naming
+// the caller it waits for, as for the rout getters in `rout/`.
 /**
  * Gets the retreat state from a ranged attack resolution.
  * Navigates: RangedAttackResolutionState -> AttackApplyState -> RetreatState

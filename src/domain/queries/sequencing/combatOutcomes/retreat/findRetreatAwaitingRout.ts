@@ -4,6 +4,9 @@ import { getOtherPlayer } from '@queries/player';
 import type { RetreatLocation } from './findRetreatLocation';
 import { findRetreatLocation } from './findRetreatLocation';
 
+// TODO(composition): finds its slot by "no legal retreat path" rather than
+// by a record of which retreat is awaiting its rout. Settled by deciding
+// whether that condition is a fair way to name the slot.
 /**
  * The retreat with nowhere to go whose rout has not opened yet, with the
  * parent holding it.

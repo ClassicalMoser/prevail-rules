@@ -8,6 +8,8 @@ import {
   hasSingleUnit,
 } from '@queries';
 
+// TODO(misleading): answers `undefined` when there is nothing to engage, so
+// by the find/get rule it is a `find`. Settled by renaming it.
 /**
  * The facing an engaging move ends on, and what the ending costs beyond the
  * step. A front approach ends **squared up, head on** — facing directly

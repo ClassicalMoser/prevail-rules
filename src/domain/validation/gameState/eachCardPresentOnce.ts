@@ -4,6 +4,8 @@ import type { FailValidationResult, ValidationResult } from '@utils';
 import { failFromFault } from '@utils';
 import { isSameCard } from '@queries';
 
+// TODO(composition): no caller. Meant for an integrity check not yet built;
+// settled by wiring it where a game is loaded, or deleting it.
 export function eachCardPresentOnce(
   blackStartingHand: Set<CommandCard>,
   whiteStartingHand: Set<CommandCard>,

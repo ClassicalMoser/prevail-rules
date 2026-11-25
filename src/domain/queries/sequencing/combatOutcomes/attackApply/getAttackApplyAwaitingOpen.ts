@@ -28,6 +28,9 @@ function isAwaitingOpen(
   }
 }
 
+// TODO(composition): picks the melee slot by resolution order, which follows
+// the initiative, rather than reading which slot is due. Settled by deciding
+// whether order is a fair way to name the slot.
 /**
  * The attack apply whose retreat, reverse or rout opens next: the one
  * `open*FromAttackApply` is owed for.

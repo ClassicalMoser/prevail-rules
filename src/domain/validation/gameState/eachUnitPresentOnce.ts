@@ -10,6 +10,8 @@ import {
   isSameUnitInstance,
 } from '@queries';
 
+// TODO(composition): not run where a game is loaded. Meant for an integrity
+// check not yet built; settled by wiring it there, or saying why not.
 export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
   blackArmy: Set<UnitCount>,
