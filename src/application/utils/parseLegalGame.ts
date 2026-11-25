@@ -1,7 +1,7 @@
 import type { GameModeName } from '@entities';
 import type { Game } from '@game';
 import type { RunnerResponse } from '@application/ports';
-import { legalGameSchema } from '@validation';
+import { legalGameSchema } from '@legality';
 import { z } from 'zod';
 
 /**

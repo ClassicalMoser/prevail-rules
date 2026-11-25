@@ -145,7 +145,6 @@ Walk folders in IDE order (alphabetical).
 ### `validation/` (`@validation`)
 
 - [ ] `validation/` — scout complete 2026-11-25 (awaiting human read); one catch per entry point, through `failFromFault`; per-choice validators throw
-  - [ ] `game/`
   - [ ] `gameState/`
   - [ ] `playerChoice/`
 

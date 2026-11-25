@@ -200,6 +200,8 @@ export const boundaries: BoundaryConfig[] = [
       '@game',
       '@factories',
       '@queries',
+      // A game read from outside is checked against the game rules.
+      '@legality',
       '@expected',
       '@procedures',
       '@validation',

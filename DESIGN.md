@@ -34,7 +34,7 @@ Schema-first declaration order is in [`src/domain/entities/README.md`](./src/dom
 
 Each package is one layer. Who may import whom is [`boundaries.ts`](./boundaries.ts). What each layer is for is [`LAYERS.md`](./LAYERS.md). The four engines are [`src/domain/ENGINES.md`](./src/domain/ENGINES.md).
 
-Application composes those engines and does not contain rules. It does not import `@legality`.
+Application composes those engines and does not contain rules. Where it needs a rule, as when a game read from outside is checked against the game rules, it imports the layer that owns it. No layer re-exports another's modules to route around `boundaries.ts`; if an import is needed, the boundary is what changes.
 
 ### Who reads and who writes
 
