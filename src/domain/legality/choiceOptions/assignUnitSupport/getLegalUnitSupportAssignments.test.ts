@@ -194,12 +194,15 @@ describe('getUnitSupportLabel function', () => {
     );
   });
 
-  it('hands back a unit support of no kind the rules name, unlabelled', () => {
+  it('refuses a unit support of no kind the rules name', () => {
     // No card carries such a support; the cast forces one past the type to
-    // reach the exhaustive default, marked TODO(wrong) in the subject.
+    // reach the exhaustive default.
     const unknownKind = { count: 1, supportType: 'banner' } as never;
 
-    expect(getUnitSupportLabel(unknownKind)).toBe(unknownKind);
+    // Refused by name, as every other reader of a support's kind refuses it.
+    expect(() => getUnitSupportLabel(unknownKind)).toThrow(
+      'Unknown unit support type: banner',
+    );
   });
 });
 
