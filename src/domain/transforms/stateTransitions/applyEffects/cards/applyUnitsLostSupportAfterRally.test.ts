@@ -140,8 +140,10 @@ describe('applyUnitsLostSupportAfterRally function', () => {
       [],
     );
 
-    // Nobody lost a place, so nothing routs.
+    // Nobody lost a place, so nothing routs, and with nothing to pay the
+    // rally is over, closed as `settleRout` closes one that routed units.
     expect(getRallyResolutionState(next, 'white')).toMatchObject({
+      completed: true,
       routState: 'bypassed',
       unitsLostSupport: [],
     });
