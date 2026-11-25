@@ -15,6 +15,8 @@ export function unitTypeMatchesRestrictions(
   unitType: UnitType,
   restrictions: Restrictions,
 ): boolean {
+  // Named now, so a fault below can say which kind it met.
+  const { restrictionType } = restrictions;
   switch (restrictions.restrictionType) {
     case 'none': {
       // An order or round effect printed without a filter reaches any type.
@@ -35,11 +37,11 @@ export function unitTypeMatchesRestrictions(
       const matched = matchesUnitRequirements(unitType, noTraits, unitTypeIds);
       return matched;
     }
+    // Every restriction type is handled above, and the compiler checks it;
+    // a restriction of no kind the rules name is a fault in the card.
     default: {
-      // Never reached: every restriction type is handled above, and the
-      // compiler checks it. No case can run this line.
-      const unreachable: never = restrictions;
-      return unreachable;
+      const _exhaustive: never = restrictions;
+      throw new Error(`Unknown restriction type: ${String(restrictionType)}`);
     }
   }
 }

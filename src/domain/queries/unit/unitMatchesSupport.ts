@@ -15,6 +15,8 @@ export function unitMatchesSupport(
   unit: UnitInstance,
   support: UnitSupport,
 ): boolean {
+  // Named now, so a fault below can say which kind it met.
+  const { supportType } = support;
   switch (support.supportType) {
     case 'generic': {
       // A generic place holds any unit at all (§10.4.2).
@@ -29,11 +31,11 @@ export function unitMatchesSupport(
       // A unit-type place holds that one unit type.
       return unit.unitType.id === support.unitTypeId;
     }
+    // Every kind of unit support is handled above, and the compiler checks
+    // it; a support of no kind the rules name is a fault in the card.
     default: {
-      // Never reached: every kind of unit support is handled above, and the
-      // compiler checks it. No case can run this line.
       const _exhaustive: never = support;
-      return _exhaustive;
+      throw new Error(`Unknown unit support type: ${String(supportType)}`);
     }
   }
 }

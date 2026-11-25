@@ -33,6 +33,8 @@ export function areRestrictionsEqual(
     return false;
   }
 
+  // Named now, so a fault below can say which kind it met.
+  const { restrictionType } = restrictions1;
   switch (restrictions1.restrictionType) {
     case 'none': {
       // With no filter and the same range, the two reach the same units.
@@ -63,11 +65,11 @@ export function areRestrictionsEqual(
       );
       return sameUnits;
     }
+    // Every restriction type is handled above, and the compiler checks it;
+    // a restriction of no kind the rules name is a fault in the card.
     default: {
-      // Never reached: every restriction type is handled above, and the
-      // compiler checks it.
-      const unreachable: never = restrictions1;
-      return unreachable;
+      const _exhaustive: never = restrictions1;
+      throw new Error(`Unknown restriction type: ${String(restrictionType)}`);
     }
   }
 }

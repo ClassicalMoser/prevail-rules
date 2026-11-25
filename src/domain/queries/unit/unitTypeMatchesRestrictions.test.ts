@@ -76,4 +76,18 @@ describe('unitTypeMatchesRestrictions function', () => {
       false,
     );
   });
+
+  it('throws on a restriction of a kind the rules do not name', () => {
+    // Only no filter, a trait filter and a unit-type filter exist; the type
+    // forbids any other, so the spec forces one through to reach the fault.
+    const unknown = {
+      inspirationRangeRestriction: 0,
+      restrictionType: 'tribal',
+    } as never;
+    const unitType = getUnitByTrait('formation');
+
+    expect(() => unitTypeMatchesRestrictions(unitType, unknown)).toThrow(
+      'Unknown restriction type: tribal',
+    );
+  });
 });

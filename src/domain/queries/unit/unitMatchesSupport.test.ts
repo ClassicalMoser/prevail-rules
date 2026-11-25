@@ -66,4 +66,14 @@ describe('unitMatchesSupport function', () => {
     };
     expect(unitMatchesSupport(unit, otherType)).toBe(false);
   });
+
+  it('throws on a support of a kind the rules do not name', () => {
+    // Only generic, trait and unit-type support exist; the type forbids any
+    // other, so the spec forces one through to reach the fault.
+    const unknown = { count: 1, supportType: 'tribal' } as never;
+
+    expect(() => unitMatchesSupport(createTestUnit('white'), unknown)).toThrow(
+      'Unknown unit support type: tribal',
+    );
+  });
 });

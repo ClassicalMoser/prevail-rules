@@ -14,6 +14,8 @@ export function isSameUnitSupportKind(
   support1: UnitSupport,
   support2: UnitSupport,
 ): boolean {
+  // Named now, so a fault below can say which kind it met.
+  const { supportType } = support1;
   switch (support1.supportType) {
     case 'generic': {
       // Generic support holds any unit at all, so every generic card stacks.
@@ -34,11 +36,11 @@ export function isSameUnitSupportKind(
         support1.unitTypeId === support2.unitTypeId;
       return same;
     }
+    // Every kind of unit support is handled above, and the compiler checks
+    // it; a support of no kind the rules name is a fault in the card.
     default: {
-      // Never reached: every kind of unit support is handled above, and the
-      // compiler checks it. No case can run this line.
-      const unreachable: never = support1;
-      return unreachable;
+      const _exhaustive: never = support1;
+      throw new Error(`Unknown unit support type: ${String(supportType)}`);
     }
   }
 }

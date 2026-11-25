@@ -186,4 +186,18 @@ describe('areRestrictionsEqual function', () => {
       expect(areRestrictionsEqual(restrictions1, restrictions2)).toBe(false);
     });
   });
+
+  it('throws on a restriction of a kind the rules do not name', () => {
+    // Only no filter, a trait filter and a unit-type filter exist; the type
+    // forbids any other, so the spec forces the same unknown kind through on
+    // both sides to get past the comparison of kinds.
+    const unknown = {
+      inspirationRangeRestriction: 0,
+      restrictionType: 'tribal',
+    } as never;
+
+    expect(() => areRestrictionsEqual(unknown, unknown)).toThrow(
+      'Unknown restriction type: tribal',
+    );
+  });
 });
