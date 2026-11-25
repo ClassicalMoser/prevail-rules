@@ -1,5 +1,6 @@
 import type { Coordinate } from '@ruleValues';
 import type { GameState, MovementResolutionState } from '@game';
+import { throwIfPending } from '@utils';
 import { moveCommanderOnBoard } from './moveCommanderOnBoard';
 
 /**
@@ -22,13 +23,16 @@ export function carryRidingCommander<S extends GameState>(
   movement: MovementResolutionState,
   landing: Coordinate,
 ): S {
+  // Whether the commander rides is written with the move; a move not yet
+  // written is a fault in the caller, not a commander staying behind.
+  const rides = throwIfPending(
+    movement.moveCommander,
+    'The move has not been written yet',
+  );
+
   // A commander who did not ride stays where it is: otherwise a commander
   // moves only in Phase 2 (§4.3.10).
-  // TODO(wrong): `'pending'` (the move not yet written) is read as staying
-  // behind, so a fault in the caller passes silently. Every caller passes a
-  // written move. Settle by `throwIfPending(movement.moveCommander, ...)`
-  // before the test, as `targetPlacement` is narrowed at those callers.
-  if (movement.moveCommander !== true) {
+  if (!rides) {
     // Nothing changes.
     return state;
   }
