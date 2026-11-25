@@ -150,7 +150,7 @@ Walk folders in IDE order (alphabetical).
 
 ### `transforms/` (`@transforms`)
 
-- [ ] `transforms/`
+- [ ] `transforms/` — scout complete 2026-11-25 (awaiting human read)
   - [ ] `pureTransforms/`
   - [ ] `stateTransitions/`
 
