@@ -80,10 +80,7 @@ Audit in this order (dependencies flow downward):
 
 - [ ] `factories/` — scout complete 2026-11-08 (awaiting human read)
   - [ ] `board/` — split to one empty-board export per file
-  - [ ] `game/` — reopened: `createOwnedCardState` and `createCardState` arrived
-    ```
-    after the read
-    ```
+  - [ ] `game/`
   - [ ] `playerChoices/` — one factory per player choice, fixed types filled in
   - [ ] `substeps/` — the attack apply, and each substep as it opens
   - [ ] `unit/`
@@ -96,6 +93,7 @@ Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `card
 Walk folders in IDE order (alphabetical).
 
 - [ ] `queries/` — scout (adversarial review) 2026-11-08; marks in place, awaiting human read
+  - [ ] `army/`
   - [ ] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
   - [ ] `board/` — spaces, `diagonalIsClear`, `findCommanderSpace`; `getSpacesApart` and `getGridPosition` arrived after the scout, and `unit/unitMatchesInspirationRange` was rewritten on them
     - [ ] `adjacency/`
@@ -105,21 +103,26 @@ Walk folders in IDE order (alphabetical).
   - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
   - [ ] `facings/`
   - [ ] `gameOver/` — empty hand, unpayable rout discard, then the composed check
+  - [ ] `gameStateIndex/`
   - [ ] `line/` — `canJoinLine` (who qualifies) and `getLineSegmentContainingUnit` (the unbroken rank); windows of up to eight are chosen by the ends in `@legality` (S18)
   - [ ] `player/` — `getOtherPlayer`, `hasInitiative`
   - [ ] `sequencing/` — current phase, step, initiative, event stream
     - [ ] `combatOutcomes/`
     - [ ] `commandResolution/`
     - [ ] `meleeResolution/`
+    - [ ] `phases/`
     - [ ] `rallyResolution/`
   - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
+  - [ ] `unitLocation/`
   - [ ] `unitPresence/` — position, enemy in the space, at a placement
 
 ### `legality/` (`@legality`)
 
 - [ ] `legality/`
   - [ ] `army/`
+  - [ ] `board/`
   - [ ] `choiceOptions/`
+  - [ ] `combatOutcomes/`
   - [ ] `commanderMovement/`
   - [ ] `game/`
   - [ ] `unitMovement/` — turning, path, terrain (2026-10-12 notes)
@@ -158,6 +161,7 @@ Walk folders in IDE order (alphabetical).
   - [ ] `bootstrapGameState/`
   - [ ] `createBoard/`
   - [ ] `phaseStateHelpers/`
+  - [ ] `scenario/`
   - [ ] `testHelpers/`
   - [ ] Root helpers (`createEmptyGameState`, `unitHelpers`, …)
 
@@ -169,6 +173,7 @@ Import boundary: application may use `@validation` (and domain barrels), not `@l
 
 - [ ] `src/application/`
   - [ ] `composable/`
+  - [ ] `infra/`
   - [ ] `ports/`
   - [ ] `process/`
   - [ ] `useCases/`
@@ -180,6 +185,7 @@ Import boundary: application may use `@validation` (and domain barrels), not `@l
 
 Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vitest.config.ts`).
 
+- [ ] `src/domain/scenarios/`
 - [ ] Full suite green (`pnpm test` / `npm test`)
 - [ ] Coverage skim (`pnpm test:coverage`) — note thin modules; no need to update percentage tables here
 - [ ] Spot-check colocated tests for packages audited in this pass (especially after type / barrel moves)
