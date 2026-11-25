@@ -63,7 +63,7 @@ Two practices get it written, and both apply to every change:
 
 A test asserts that the code enforces a rule of the game. Write it so that the rule, and the code holding to it, are obvious.
 
-A test should be almost as easy to read as its name. The `it` title states the fact. Build that fact with a few factories, transforms, and fixtures. What remains in the body must be clear: the values this test chose, a comment on each step saying what it writes, and the assertion the title names. Setup that cannot be that clear belongs in one of those three. A stand-in value needs a comment saying why it is enough. Do not start a title with "given" or "should". A whole game played through belongs to the bot harness, not the suite.
+A test should be almost as easy to read as its name. The `it` title states the fact. Build that fact with a few factories, transforms, and fixtures. What remains in the body must be clear: the values this test chose, a comment on each step saying what it writes, and the assertion the title names. Setup that cannot be that clear belongs in one of those three. A stand-in value needs a comment saying why it is enough. Setup need not be a state play could reach, but it is plausible and never blatantly illegal: a card in one place, a unit on one space, no identifier used twice. Do not start a title with "given" or "should". A whole game played through belongs to the bot harness, not the suite.
 
 The `describe` title is a string, the function name plus the word "function": `'getCurrentPhaseState function'`. Do not pass the function. Vitest would use `function.name` as the title, and `vitest/valid-title` rejects a name that is not a string.
 
