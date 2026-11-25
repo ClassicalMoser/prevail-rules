@@ -1,4 +1,5 @@
 import type { CommandResolutionState, GameState, PhaseState } from '@game';
+import { isPending } from '@utils';
 import { getCurrentPhaseState } from '../phases/getCurrentPhaseState';
 
 /**
@@ -12,6 +13,7 @@ import { getCurrentPhaseState } from '../phases/getCurrentPhaseState';
 export function getCurrentCommandResolutionState(
   state: GameState,
 ): CommandResolutionState {
+  // Before the round begins there is no phase at all, and that throws too.
   const phaseState: PhaseState = getCurrentPhaseState(state);
   // A movement or a ranged attack lives on this phase. Any other phase throws.
   if (phaseState.phase !== 'issueCommands') {
@@ -19,8 +21,10 @@ export function getCurrentCommandResolutionState(
   }
   const commandResolutionState = phaseState.currentCommandResolutionState;
   // `'pending'` means no command has opened yet.
-  if (commandResolutionState === 'pending') {
+  if (isPending(commandResolutionState)) {
     throw new Error('No current command resolution state');
   }
+
+  // The Move or Shoot being carried out.
   return commandResolutionState;
 }

@@ -1,4 +1,5 @@
 import type { AttackApplyState, GameState } from '@game';
+import { isPending } from '@utils';
 import type { AttackApplyStage } from './attackApplyStages';
 import { getCurrentPhaseState } from '@queries/sequencing/phases/getCurrentPhaseState';
 import { getMeleeAppliesInResolutionOrder } from '@queries/sequencing/meleeResolution/getMeleeAppliesInResolutionOrder';
@@ -10,15 +11,21 @@ function isAwaitingOpen(
   apply: AttackApplyState,
   stage: AttackApplyStage,
 ): boolean {
+  // Each stage has its own slot on the apply. `'pending'` there means the
+  // attack reached that threshold and nothing has opened the step yet;
+  // `'bypassed'` or an open substep means there is nothing left to open.
   switch (stage) {
     case 'retreat': {
-      return apply.retreatState === 'pending';
+      // The unit was driven back and its ways back are not yet worked out.
+      return isPending(apply.retreatState);
     }
     case 'reverse': {
-      return apply.reverseState === 'pending';
+      // The unit was shaken and its reverse is not yet written.
+      return isPending(apply.reverseState);
     }
     case 'rout': {
-      return apply.routState === 'pending';
+      // The unit broke and its rout is not yet written.
+      return isPending(apply.routState);
     }
     default: {
       // Exhaustiveness check for TypeScript
@@ -55,9 +62,12 @@ export function getAttackApplyAwaitingOpen(
   // A shot has one apply.
   if (phaseState.phase === 'issueCommands') {
     const apply = getRangedAttackApplyState(state);
+    // The sequencer asks only when the stage is due, so a slot already open
+    // or bypassed means it asked out of turn.
     if (!isAwaitingOpen(apply, stage)) {
       throw new Error(`The ${stage} is not pending on the ranged attack apply`);
     }
+    // The target's apply is the only one this shot has.
     return apply;
   }
 
@@ -69,12 +79,15 @@ export function getAttackApplyAwaitingOpen(
     const apply = appliesInOrder.find((candidate) =>
       isAwaitingOpen(candidate, stage),
     );
+    // Neither unit is owed this stage, so the sequencer asked out of turn.
     if (apply === undefined) {
       throw new Error(`No pending ${stage} on either melee attack apply`);
     }
+    // The unit that suffers first among those still owed this stage.
     return apply;
   }
 
+  // Only a shot and a melee carry out an attack's results.
   throw new Error(
     `Attack-apply ${stage} open not expected in phase: ${phaseState.phase}`,
   );

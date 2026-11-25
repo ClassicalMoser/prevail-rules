@@ -7,6 +7,7 @@ import type {
   RoutState,
   SubstepState,
 } from '@game';
+import { isActive, isPending } from '@utils';
 import type { AttackApplyStage } from './combatOutcomes/attackApply/attackApplyStages';
 import { attackApplyStages } from './combatOutcomes/attackApply/attackApplyStages';
 import { findNextMeleeAttackApplyToClose } from './combatOutcomes/attackApply/findNextMeleeAttackApplyToClose';
@@ -21,11 +22,15 @@ import { findRallyResolutionState } from './rallyResolution/findRallyResolutionS
 function isUnderWay<T extends { completed: boolean }>(
   slot: T | 'pending' | 'bypassed',
 ): slot is T {
+  // Written, not skipped by the rules, and not yet finished: still being
+  // carried out, so it belongs on the trail.
   return isOpenSubstep(slot) && !slot.completed;
 }
 
 /** Units routed, and the cards their player owes for them. */
 function fromRout(slot: RoutState | 'pending' | 'bypassed'): SubstepState[] {
+  // A rout opens nothing beneath it, so the trail ends here while its player
+  // still owes the discard, and loses it once the discard is paid.
   return isUnderWay(slot) ? [slot] : [];
 }
 
@@ -33,6 +38,8 @@ function fromRout(slot: RoutState | 'pending' | 'bypassed'): SubstepState[] {
 function fromReverse(
   slot: ReverseState | 'pending' | 'bypassed',
 ): SubstepState[] {
+  // A reverse opens nothing beneath it either: the trail ends at the unit
+  // turning about, and loses it once the unit has turned.
   return isUnderWay(slot) ? [slot] : [];
 }
 
@@ -40,9 +47,13 @@ function fromReverse(
 function fromRetreat(
   slot: RetreatState | 'pending' | 'bypassed',
 ): SubstepState[] {
+  // A retreat not yet opened, skipped, or already made adds nothing.
   if (!isUnderWay(slot)) {
     return [];
   }
+
+  // The retreat is under way, with the rout it turned into beneath it when
+  // the unit had nowhere to fall back to.
   return [slot, ...fromRout(slot.routState)];
 }
 
@@ -55,12 +66,18 @@ function fromDueStage<T extends { completed: boolean }>(
   slot: T | 'pending' | 'bypassed',
   within: (open: T) => SubstepState[],
 ): SubstepState[] | undefined {
-  if (slot === 'pending') {
+  // The attack met this stage's threshold and the stage has yet to open: play
+  // stops at this attack, with nothing under it yet.
+  if (isPending(slot)) {
     return [];
   }
+
+  // The stage is open: play stops here, with the result being carried out.
   if (isUnderWay(slot)) {
     return within(slot);
   }
+
+  // The threshold was never met, or the stage is done: look further on.
   return undefined;
 }
 
@@ -73,15 +90,20 @@ function fromAttackApplyStage(
   stage: AttackApplyStage,
 ): SubstepState[] | undefined {
   switch (stage) {
+    // The unit falls back, and may rout on the spot if it cannot.
     case 'retreat': {
       return fromDueStage(apply.retreatState, fromRetreat);
     }
+    // The unit turns about.
     case 'reverse': {
       return fromDueStage(apply.reverseState, fromReverse);
     }
+    // The unit leaves the field, and its player owes the cards.
     case 'rout': {
       return fromDueStage(apply.routState, fromRout);
     }
+    // Unreachable: `attackApplyStages` lists only the three stages above, and
+    // this helper is fed from it alone, so no case can cover this line.
     default: {
       const _exhaustive: never = stage;
       throw new Error(`Unknown attack apply stage: ${String(_exhaustive)}`);
@@ -105,6 +127,8 @@ function fromAttackApplies(
   applies: AttackApplyState[],
   closing: AttackApplyState | undefined,
 ): SubstepState[] {
+  // Stage by stage, and within a stage unit by unit, the first result still
+  // due or still open is where play stands.
   for (const stage of attackApplyStages) {
     for (const apply of applies) {
       const within = fromAttackApplyStage(apply, stage);
@@ -113,14 +137,21 @@ function fromAttackApplies(
       }
     }
   }
+
+  // Every result is carried out: play stands at the attack being closed, or
+  // nowhere inside the attacks when none is left to close.
   return closing === undefined ? [] : [closing];
 }
 
 /** A Shoot order's one attack, and the results it is carrying out. */
 function fromRangedAttack(slot: AttackApplyState | 'pending'): SubstepState[] {
+  // Before the shot is resolved there is no attack to follow, and once its
+  // results are closed there is none either.
   if (!isUnderWay(slot)) {
     return [];
   }
+
+  // A shot has one attack, so it is both the one to walk and the one to close.
   return fromAttackApplies([slot], slot);
 }
 
@@ -130,20 +161,28 @@ function fromRangedAttack(slot: AttackApplyState | 'pending'): SubstepState[] {
  * engagement only turns the defender, and opens nothing further (§6.3.4).
  */
 function fromEngagement(slot: EngagementState | 'pending'): SubstepState[] {
+  // A Move that has not reached an enemy, or whose engagement is settled,
+  // adds nothing below the order.
   if (!isUnderWay(slot)) {
     return [];
   }
+
+  // What the engagement opens depends on which side of the defender it struck.
   const resolution = slot.engagementResolutionState;
   switch (resolution.engagementType) {
+    // From the front, the defender may give ground.
     case 'front': {
       return [slot, ...fromRetreat(resolution.retreatState)];
     }
+    // From behind, the defender routs.
     case 'rear': {
       return [slot, ...fromRout(resolution.routState)];
     }
+    // From the flank, the defender only turns, and the trail ends here.
     case 'flank': {
       return [slot];
     }
+    // An engagement of no kind the rules name is a fault in the state.
     default: {
       const _exhaustive: never = resolution;
       throw new Error(`Unknown engagement type: ${String(_exhaustive)}`);
@@ -179,26 +218,33 @@ export function getSubstepsInProgress(state: GameState): SubstepState[] {
       command.commandResolutionType === 'movement'
         ? fromEngagement(command.engagementState)
         : fromRangedAttack(command.attackApplyState);
+    // The order, then whatever it has opened.
     return [command, ...within];
   }
 
   // Phase 4: a melee being fought in one space (§4.4).
   const melee = findMeleeResolutionState(state);
   if (melee !== undefined && !melee.completed) {
+    // Its two attacks are walked in the order their results take effect, and
+    // closed in that order once every stage is done.
     const applies = getMeleeAppliesInResolutionOrder(melee);
     const closing = findNextMeleeAttackApplyToClose(melee);
+    // The melee, then the attack being carried out and its result.
     return [melee, ...fromAttackApplies(applies, closing)];
   }
 
   // Cleanup: a player's rally, and the rout it may cost them (§10.3).
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (phaseState !== 'none' && phaseState.phase === 'cleanup') {
+  if (isActive(phaseState) && phaseState.phase === 'cleanup') {
+    // Only a choose or resolve step belongs to a player's rally, and a rally
+    // is there to follow only once that player has chosen to rally.
     const rallyingPlayer = findRallyingPlayer(state);
     const rally =
       rallyingPlayer === undefined
         ? undefined
         : findRallyResolutionState(state, rallyingPlayer);
     if (rally !== undefined && !rally.completed) {
+      // The rally, then the rout of the units it left without support.
       return [rally, ...fromRout(rally.routState)];
     }
   }

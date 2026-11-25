@@ -1,4 +1,5 @@
 import type { CommandResolutionState, GameState } from '@game';
+import { isNone, isPending } from '@utils';
 
 /**
  * The command resolution in progress, or `undefined` when none is. A caller
@@ -16,13 +17,17 @@ export function findCurrentCommandResolutionState(
 ): CommandResolutionState | undefined {
   const phaseState = state.currentRoundState.currentPhaseState;
   // An order is carried out only in Phase 3.
-  if (phaseState === 'none' || phaseState.phase !== 'issueCommands') {
+  if (isNone(phaseState) || phaseState.phase !== 'issueCommands') {
+    // Before the round begins, or in any other phase: no order to carry out.
     return undefined;
   }
   // `'pending'` means no unit of the order has been named yet.
   const resolution = phaseState.currentCommandResolutionState;
-  if (resolution === 'pending') {
+  if (isPending(resolution)) {
+    // Between orders, or before the first: nothing is being carried out.
     return undefined;
   }
+
+  // A Move or a Shoot being carried out.
   return resolution;
 }

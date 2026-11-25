@@ -1,4 +1,5 @@
 import type { GameState, MeleeResolutionState } from '@game';
+import { isNone, isPending } from '@utils';
 
 /**
  * Gets the melee resolution state from the resolve melee phase.
@@ -13,11 +14,20 @@ export function getMeleeResolutionState<S extends GameState>(
 ): MeleeResolutionState {
   const phaseState = state.currentRoundState.currentPhaseState;
   // `'none'` and any other phase are both "not resolve melee".
-  if (phaseState === 'none' || phaseState.phase !== 'resolveMelee') {
+  // TODO(composition): repeats the descent in `findMeleeResolutionState`
+  // rather than insisting on it, and on `'none'` throws its own message where
+  // `getCurrentCommandResolutionState` lets `getCurrentPhaseState` throw. Settle
+  // one shape for the twin getters, keeping each message as specific.
+  if (isNone(phaseState) || phaseState.phase !== 'resolveMelee') {
     throw new Error('Not in resolveMelee phase');
   }
-  if (phaseState.currentMeleeResolutionState === 'pending') {
+
+  // Between melees the first player has still to choose the next space, so
+  // there is no melee to read.
+  if (isPending(phaseState.currentMeleeResolutionState)) {
     throw new Error('No current melee resolution state');
   }
+
+  // The melee being fought.
   return phaseState.currentMeleeResolutionState;
 }

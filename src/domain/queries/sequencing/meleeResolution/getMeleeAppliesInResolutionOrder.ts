@@ -1,4 +1,5 @@
 import type { AttackApplyState, MeleeResolutionState } from '@game';
+import { isResolved } from '@utils';
 
 /**
  * The two units' attack applies in the order their results take effect.
@@ -18,9 +19,13 @@ import type { AttackApplyState, MeleeResolutionState } from '@game';
 export function getMeleeAppliesInResolutionOrder(
   meleeState: MeleeResolutionState,
 ): AttackApplyState[] {
+  // The second player's unit suffers first, so its apply leads; an apply not
+  // yet written has no results to carry out and is left out.
   const written = [
     meleeState.attackOnSecondPlayerApplyState,
     meleeState.attackOnFirstPlayerApplyState,
-  ].filter((apply) => apply !== 'pending');
+  ].filter((apply) => isResolved(apply));
+
+  // The written applies, in the order their results take effect.
   return written;
 }

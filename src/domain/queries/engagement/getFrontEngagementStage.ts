@@ -1,5 +1,5 @@
 import type { FrontEngagementResolutionState } from '@game';
-import { throwIfBypassed } from '@utils';
+import { isPending, throwIfBypassed } from '@utils';
 
 /**
  * Where a front engagement stands (§6.3). The defender first commits a card
@@ -36,31 +36,46 @@ export type FrontEngagementStage =
 export function getFrontEngagementStage(
   resolution: FrontEngagementResolutionState,
 ): FrontEngagementStage {
+  // The defender may commit a card before anything else (§6.3.2, step 1).
   if (resolution.defensiveCommitment.commitmentType === 'pending') {
     return 'defenderCommitting';
   }
-  if (resolution.retreatPaths === 'pending') {
+
+  // Its Speed against the mover's, and the retreats it could make, are still
+  // to be worked out (§6.3.2, step 2).
+  if (isPending(resolution.retreatPaths)) {
     return 'retreatBeingWorkedOut';
   }
+
   // No path to fall back along: the defender stands (§6.3.2).
   if (resolution.retreatPaths.length === 0) {
     return 'noRetreat';
   }
-  if (resolution.defendingUnitRetreats === 'pending') {
+
+  // It may fall back, and the choice is the defender's to make.
+  if (isPending(resolution.defendingUnitRetreats)) {
     return 'defenderDeciding';
   }
+
+  // It chose to stay locked in, to fight in Phase 4 (§6.3.2, step 4).
   if (!resolution.defendingUnitRetreats) {
     return 'defenderStands';
   }
-  if (resolution.retreatState === 'pending') {
+
+  // It chose to fall back, and the retreat has not been opened yet.
+  if (isPending(resolution.retreatState)) {
     return 'retreatOpening';
   }
+
   // A defender that chose to fall back has its retreat bypassed only by a
   // fault in whatever recorded the choice.
   const retreat = throwIfBypassed(
     resolution.retreatState,
     'A defender that falls back has its retreat bypassed',
   );
+
+  // The retreat is under way, or done; once done the engagement ends with no
+  // melee (§6.3.2, step 3).
   const stage: FrontEngagementStage = retreat.completed
     ? 'retreated'
     : 'retreating';

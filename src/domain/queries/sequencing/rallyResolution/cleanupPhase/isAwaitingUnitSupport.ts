@@ -1,4 +1,5 @@
 import type { RallyResolutionState } from '@game';
+import { isPending } from '@utils';
 
 /**
  * Whether a rally is at the point where its player assigns unit support: the
@@ -15,7 +16,11 @@ import type { RallyResolutionState } from '@game';
 export function isAwaitingUnitSupport(
   rallyState: RallyResolutionState,
 ): boolean {
+  // The cards are back in hand, so the check can be made, and it has not
+  // been made yet.
   const awaiting =
-    rallyState.rallyResolved && rallyState.unitsLostSupport === 'pending';
+    rallyState.rallyResolved && isPending(rallyState.unitsLostSupport);
+
+  // Whether this is the moment to assign support.
   return awaiting;
 }

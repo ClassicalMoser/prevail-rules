@@ -1,4 +1,5 @@
 import type { GameState, MeleeResolutionState } from '@game';
+import { isResolved } from '@utils';
 import { getMeleeResolutionState } from './getMeleeResolutionState';
 
 /**
@@ -10,7 +11,9 @@ import { getMeleeResolutionState } from './getMeleeResolutionState';
 export function getMeleeResolutionReadyForAttackCalculation<
   S extends GameState,
 >(state: S): MeleeResolutionState {
+  // The melee being fought; asking outside one throws there.
   const meleeState = getMeleeResolutionState(state);
+
   // Attack values are calculated only after both players have committed.
   if (meleeState.firstPlayerCommitment.commitmentType === 'pending') {
     throw new Error('First player commitment is still pending');
@@ -20,10 +23,12 @@ export function getMeleeResolutionReadyForAttackCalculation<
   }
   // And only before either attack-apply has been opened.
   if (
-    meleeState.attackOnFirstPlayerApplyState !== 'pending' ||
-    meleeState.attackOnSecondPlayerApplyState !== 'pending'
+    isResolved(meleeState.attackOnFirstPlayerApplyState) ||
+    isResolved(meleeState.attackOnSecondPlayerApplyState)
   ) {
     throw new Error('Attack apply states already exist');
   }
+
+  // The melee, with both cards known and the blows still to be counted.
   return meleeState;
 }

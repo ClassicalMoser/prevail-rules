@@ -1,4 +1,5 @@
 import type { GameState, MeleeResolutionState } from '@game';
+import { isNone, isPending } from '@utils';
 
 /**
  * The melee being fought, or `undefined` when none is. The order of the
@@ -13,12 +14,17 @@ export function findMeleeResolutionState(
   state: GameState,
 ): MeleeResolutionState | undefined {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'resolveMelee') {
+  // Melees are fought only in Phase 4.
+  if (isNone(phaseState) || phaseState.phase !== 'resolveMelee') {
     return undefined;
   }
+
+  // Between melees the first player has still to choose the next space.
   const melee = phaseState.currentMeleeResolutionState;
-  if (melee === 'pending') {
+  if (isPending(melee)) {
     return undefined;
   }
+
+  // The melee being fought in the chosen space.
   return melee;
 }

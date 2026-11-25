@@ -1,8 +1,13 @@
 import type { GameState } from '@game';
+import { isPending } from '@utils';
 import { getOtherPlayer } from '@queries/player';
 import type { RetreatLocation } from './findRetreatLocation';
 import { findRetreatLocation } from './findRetreatLocation';
 
+// TODO(composition): the second-player-first order of players is written
+// out here, in findRetreatAwaitingMove and in
+// findRetreatAwaitingRout; getMeleeAppliesInResolutionOrder holds the same order
+// by slot. Settled by one query for the players in the order their units suffer.
 /**
  * The retreat whose owner has more than a single way back to choose among,
  * with the parent holding it.
@@ -28,14 +33,19 @@ export function findRetreatAwaitingChoice(
   const firstPlayer = state.currentInitiative;
   for (const player of [getOtherPlayer(firstPlayer), firstPlayer]) {
     const location = findRetreatLocation(state, player);
+    // Still falling back, no way back chosen yet, and somewhere to go: a unit
+    // with no legal retreat routs instead (§9.1.6) and has nothing to choose.
+    // A single legal path is taken as the retreat opens, so it never waits here.
     if (
       location !== undefined &&
       !location.retreatState.completed &&
-      location.retreatState.chosenRetreatPath === 'pending' &&
+      isPending(location.retreatState.chosenRetreatPath) &&
       location.retreatState.legalRetreatPaths.length > 0
     ) {
+      // The first unit in that order whose owner still has to choose.
       return location;
     }
   }
+  // Nobody is choosing a way back.
   return undefined;
 }
