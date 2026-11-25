@@ -11,7 +11,7 @@ This audit requires the human read on every directory. The read is by file, not 
 Audit in this order (dependencies flow downward):
 
 1. Declarations: `utils` → `ruleValues` → `entities` → `events` → `game` → `sampleValues` / `factories`
-2. Read / write engines: `queries` → `legality` → `expected` → `procedures` → `transforms` → `validation`
+2. Read / write engines: `queries` → `legality` → `expected` → `procedures` → `validation` → `transforms`
 3. Support: `testing`
 4. Above domain: `application/`
 5. Suite: full `*.test.ts` run + coverage skim
@@ -142,18 +142,18 @@ Walk folders in IDE order (alphabetical).
   - [ ] `resolveAttack/`
   - [ ] Root modules (`procedureRegistry`, …)
 
-### `transforms/` (`@transforms`)
-
-- [ ] `transforms/`
-  - [ ] `pureTransforms/`
-  - [ ] `stateTransitions/`
-
 ### `validation/` (`@validation`)
 
 - [ ] `validation/` — one catch per entry point, through `failFromFault`; per-choice validators throw
   - [ ] `game/`
   - [ ] `gameState/`
   - [ ] `playerChoice/`
+
+### `transforms/` (`@transforms`)
+
+- [ ] `transforms/`
+  - [ ] `pureTransforms/`
+  - [ ] `stateTransitions/`
 
 ### `testing/` (`@testing`)
 

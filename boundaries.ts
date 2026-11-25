@@ -136,23 +136,6 @@ export const boundaries: BoundaryConfig[] = [
     // Game-effect event generators from game state; some draw at random.
   },
   {
-    alias: '@transforms',
-    allowImportsFrom: [
-      '@utils',
-      '@ruleValues',
-      '@entities',
-      '@events',
-      '@game',
-      '@factories',
-      '@queries',
-      // Apply may re-filter remaining actors after a command completes.
-      '@legality',
-    ],
-    dir: 'domain/transforms',
-    identifier: '@transforms',
-    // State transition functions for applying events to game state.
-  },
-  {
     alias: '@validation',
     allowImportsFrom: [
       '@utils',
@@ -170,6 +153,23 @@ export const boundaries: BoundaryConfig[] = [
     // Pure validation; answers with a ValidationResult and never throws.
   },
   {
+    alias: '@transforms',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@factories',
+      '@queries',
+      // Apply may re-filter remaining actors after a command completes.
+      '@legality',
+    ],
+    dir: 'domain/transforms',
+    identifier: '@transforms',
+    // State transition functions for applying events to game state.
+  },
+  {
     alias: '@testing',
     allowImportsFrom: [
       '@utils',
@@ -183,8 +183,8 @@ export const boundaries: BoundaryConfig[] = [
       '@legality',
       '@expected',
       '@procedures',
-      '@transforms',
       '@validation',
+      '@transforms',
     ],
     dir: 'domain/testing',
     identifier: '@testing',
@@ -202,8 +202,8 @@ export const boundaries: BoundaryConfig[] = [
       '@queries',
       '@expected',
       '@procedures',
-      '@transforms',
       '@validation',
+      '@transforms',
     ],
     dir: 'application',
     identifier: '@application',
@@ -226,8 +226,8 @@ export const boundaries: BoundaryConfig[] = [
       // and to project each seat's view. The choosing algorithm uses
       // transforms only to imagine a board, never to change the game.
       '@procedures',
-      '@transforms',
       '@validation',
+      '@transforms',
     ],
     dir: 'bot',
     identifier: '@bot',
