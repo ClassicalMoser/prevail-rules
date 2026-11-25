@@ -1,35 +1,16 @@
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createRoutState,
   createUnitWithPlacement,
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
-import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRetreatAwaitingRout } from './findRetreatAwaitingRout';
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(
-  melee: MeleeResolutionState,
-  initiative: 'white' | 'black',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createResolveMeleePhaseState(empty, {
-      currentMeleeResolutionState: melee,
-    }),
-  );
-}
 
 describe('findRetreatAwaitingRout function', () => {
   it('names the first player when the retreat with nowhere to go is theirs', () => {
@@ -62,7 +43,7 @@ describe('findRetreatAwaitingRout function', () => {
         { retreatState: fellBack },
       ),
     });
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(findRetreatAwaitingRout(state)).toStrictEqual({
       retreatState: cutOff,
@@ -100,7 +81,7 @@ describe('findRetreatAwaitingRout function', () => {
         { retreatState: cutOff },
       ),
     });
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(findRetreatAwaitingRout(state)).toStrictEqual({
       retreatState: cutOff,
@@ -138,7 +119,7 @@ describe('findRetreatAwaitingRout function', () => {
       ),
     });
     // Black holds the initiative, so White's unit is the second player's.
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(findRetreatAwaitingRout(state)).toStrictEqual({
       retreatState: whiteCutOff,
@@ -163,7 +144,7 @@ describe('findRetreatAwaitingRout function', () => {
         { retreatState: routing },
       ),
     });
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(findRetreatAwaitingRout(state)).toBeUndefined();
   });
@@ -180,7 +161,7 @@ describe('findRetreatAwaitingRout function', () => {
         { retreatState: open },
       ),
     });
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(findRetreatAwaitingRout(state)).toBeUndefined();
   });

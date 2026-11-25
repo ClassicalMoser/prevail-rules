@@ -2,19 +2,15 @@ import type { CommandCard, PlayerSide } from '@entities';
 import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
 import {
-  createCleanupPhaseStateWithRallyRout,
-  createRoutState,
   createTestCard,
-  createTestUnit,
   createUnitWithPlacement,
   replaceBoard,
+  withRoutOwing,
 } from '@testing';
 import {
   addUnitToBoard,
   updateCurrentInitiative,
-  updatePhaseState,
   updatePlayerCardState,
-  updateRoutState,
 } from '@transforms';
 
 import { findGameOverWinner } from './findGameOverWinner';
@@ -25,8 +21,6 @@ import { findGameOverWinner } from './findGameOverWinner';
  * holder of initiative (§11.3), and otherwise the game continues. There is
  * no draw.
  *
- * The cleanup factory only opens a rout slot. `updateRoutState` will not
- * create one from `'pending'`, so the penalty is written through that transform.
  */
 function gameOverState(options: {
   blackHand: CommandCard[];
@@ -51,21 +45,13 @@ function gameOverState(options: {
   if (options.rout === undefined) {
     return withHands;
   }
-  const cleanup = updatePhaseState(
+  // A rout owing its discard, on the routing player's rally.
+  const owing = withRoutOwing(
     withHands,
-    createCleanupPhaseStateWithRallyRout(
-      withHands,
-      createRoutState(options.rout.player, createTestUnit(options.rout.player)),
-    ),
+    options.rout.player,
+    options.rout.numberToDiscard,
   );
-  const next = updateRoutState(
-    cleanup,
-    createRoutState(options.rout.player, createTestUnit(options.rout.player), {
-      cardsChosen: false,
-      numberToDiscard: options.rout.numberToDiscard,
-    }),
-  );
-  return next;
+  return owing;
 }
 
 describe('findGameOverWinner function', () => {

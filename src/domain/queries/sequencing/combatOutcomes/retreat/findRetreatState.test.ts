@@ -1,28 +1,15 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createRetreatState,
   createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { findRetreatState } from './findRetreatState';
-
-/** Issue-commands phase resolving the command this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  return updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: resolution,
-    }),
-  );
-}
 
 describe('findRetreatState function', () => {
   it('returns the retreat without the parent holding it', () => {
@@ -41,7 +28,7 @@ describe('findRetreatState function', () => {
       ),
       defendingUnit: defender.unit,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(findRetreatState(state, 'white')).toBe(retreat);
   });
@@ -49,7 +36,9 @@ describe('findRetreatState function', () => {
   it('answers undefined when the player is not retreating', () => {
     // A move that opened no engagement forces no retreat, which is ordinary.
     const empty = createEmptyGameState('standard');
-    const state = issueCommands(createMovementResolutionState(empty));
+    const state = createGameStateResolvingCommand(
+      createMovementResolutionState(empty),
+    );
 
     expect(findRetreatState(state, 'white')).toBeUndefined();
   });

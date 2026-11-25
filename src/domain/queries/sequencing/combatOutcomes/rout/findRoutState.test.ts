@@ -1,26 +1,14 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createRangedAttackResolutionState,
   createRoutState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { findRoutState } from './findRoutState';
-
-/** Issue-commands phase resolving the command this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  const phaseState = createIssueCommandsPhaseState(empty, {
-    currentCommandResolutionState: resolution,
-  });
-  const issuing = updatePhaseState(empty, phaseState);
-  return issuing;
-}
 
 /**
  * The rout `findRoutLocation` finds, without the parent holding it. Where the
@@ -40,7 +28,9 @@ describe('findRoutState function', () => {
     });
 
     // The rout itself, with no parent beside it.
-    expect(findRoutState(issueCommands(resolution), 'white')).toBe(rout);
+    expect(
+      findRoutState(createGameStateResolvingCommand(resolution), 'white'),
+    ).toBe(rout);
   });
 
   it('answers undefined when the attack routed nobody', () => {
@@ -52,6 +42,8 @@ describe('findRoutState function', () => {
       defendingUnit: defender,
     });
 
-    expect(findRoutState(issueCommands(resolution), 'white')).toBeUndefined();
+    expect(
+      findRoutState(createGameStateResolvingCommand(resolution), 'white'),
+    ).toBeUndefined();
   });
 });

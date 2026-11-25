@@ -1,36 +1,18 @@
 import type { MoveDelta } from '@entities';
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
+  createGameStateResolvingMelee,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
-import { updateCurrentInitiative, updatePhaseState } from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { findRetreatAwaitingMove } from './findRetreatAwaitingMove';
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(
-  melee: MeleeResolutionState,
-  initiative: 'white' | 'black' = 'white',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createResolveMeleePhaseState(empty, {
-      currentMeleeResolutionState: melee,
-    }),
-  );
-}
 
 describe('findRetreatAwaitingMove function', () => {
   // A retreat already chosen: one step straight back. Which retreat it is does
@@ -53,7 +35,7 @@ describe('findRetreatAwaitingMove function', () => {
         },
       ),
     });
-    const state = resolveMelee(melee, 'white');
+    const state = createGameStateResolvingMelee(melee, 'white');
 
     expect(findRetreatAwaitingMove(state)).toStrictEqual({
       retreatState: retreat,
@@ -87,7 +69,7 @@ describe('findRetreatAwaitingMove function', () => {
         },
       ),
     });
-    const state = resolveMelee(melee, 'white');
+    const state = createGameStateResolvingMelee(melee, 'white');
 
     expect(findRetreatAwaitingMove(state)).toStrictEqual({
       retreatState: retreat,
@@ -112,7 +94,7 @@ describe('findRetreatAwaitingMove function', () => {
         [['step'], ['turnLeft', 'step']],
       ),
     });
-    const state = resolveMelee(melee, 'white');
+    const state = createGameStateResolvingMelee(melee, 'white');
 
     // Each owner has two ways back and still has a choice to make, so no move
     // is due yet.
@@ -139,7 +121,7 @@ describe('findRetreatAwaitingMove function', () => {
         },
       ),
     });
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(findRetreatAwaitingMove(state)).toStrictEqual({
       retreatState: retreat,
@@ -175,7 +157,7 @@ describe('findRetreatAwaitingMove function', () => {
         { retreatState: done },
       ),
     });
-    const state = resolveMelee(melee, 'white');
+    const state = createGameStateResolvingMelee(melee, 'white');
 
     expect(findRetreatAwaitingMove(state)).toStrictEqual({
       retreatState: due,

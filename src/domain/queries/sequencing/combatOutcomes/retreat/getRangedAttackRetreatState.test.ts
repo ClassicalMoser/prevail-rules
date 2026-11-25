@@ -1,29 +1,16 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createRangedAttackResolutionState,
   createRetreatState,
   createTestUnit,
   createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { getRangedAttackRetreatState } from './getRangedAttackRetreatState';
-
-/** Issue-commands phase resolving the command this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  return updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: resolution,
-    }),
-  );
-}
 
 describe('getRangedAttackRetreatState function', () => {
   it('returns the retreat on the ranged attack apply', () => {
@@ -44,7 +31,7 @@ describe('getRangedAttackRetreatState function', () => {
       ),
       defendingUnit: defender.unit,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(getRangedAttackRetreatState(state)).toBe(retreat);
   });
@@ -55,7 +42,7 @@ describe('getRangedAttackRetreatState function', () => {
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: 'pending',
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(() => getRangedAttackRetreatState(state)).toThrow(
       'No attack apply state found in ranged attack resolution',
@@ -72,7 +59,7 @@ describe('getRangedAttackRetreatState function', () => {
       }),
       defendingUnit: defender,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(() => getRangedAttackRetreatState(state)).toThrow(
       'The retreat on this attack apply has not been opened yet',
@@ -88,7 +75,7 @@ describe('getRangedAttackRetreatState function', () => {
       attackApplyState: createAttackApplyStateWithNothingDue(defender),
       defendingUnit: defender,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(() => getRangedAttackRetreatState(state)).toThrow(
       'The ranged attack applied no retreat',

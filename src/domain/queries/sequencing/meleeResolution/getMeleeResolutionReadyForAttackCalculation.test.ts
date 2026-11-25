@@ -1,26 +1,12 @@
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { getMeleeResolutionReadyForAttackCalculation } from './getMeleeResolutionReadyForAttackCalculation';
-
-/** Phase 4, fighting the melee this test built. */
-function resolveMelee(
-  empty: GameState,
-  melee: MeleeResolutionState,
-): GameState {
-  const phase = createResolveMeleePhaseState(empty, {
-    currentMeleeResolutionState: melee,
-  });
-  const fighting = updatePhaseState(empty, phase);
-  return fighting;
-}
 
 /**
  * Both attack values are counted once both players have committed or refused,
@@ -32,7 +18,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
     // Both commitments are made, and both applies are still to be written.
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty);
-    const state = resolveMelee(empty, melee);
+    const state = createGameStateResolvingMelee(melee);
 
     // The melee is ready for its attack values.
     expect(getMeleeResolutionReadyForAttackCalculation(state)).toBe(melee);
@@ -44,7 +30,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
     const melee = createMeleeResolutionState(empty, {
       firstPlayerCommitment: { commitmentType: 'pending' },
     });
-    const state = resolveMelee(empty, melee);
+    const state = createGameStateResolvingMelee(melee);
 
     // Counting now would skip white's card.
     expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
@@ -58,7 +44,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
     const melee = createMeleeResolutionState(empty, {
       secondPlayerCommitment: { commitmentType: 'pending' },
     });
-    const state = resolveMelee(empty, melee);
+    const state = createGameStateResolvingMelee(melee);
 
     // Counting now would skip black's card.
     expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
@@ -74,7 +60,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
         createTestUnit('white'),
       ),
     });
-    const state = resolveMelee(empty, melee);
+    const state = createGameStateResolvingMelee(melee);
 
     // The attack values were counted already, and are not counted twice.
     expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
@@ -90,7 +76,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
         createTestUnit('black'),
       ),
     });
-    const state = resolveMelee(empty, melee);
+    const state = createGameStateResolvingMelee(melee);
 
     // The attack values were counted already, and are not counted twice.
     expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(

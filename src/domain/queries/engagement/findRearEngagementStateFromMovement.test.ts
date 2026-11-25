@@ -1,32 +1,12 @@
-import type { EngagementState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
-  createMovementResolutionState,
+  createGameStateMovingInto,
   createRearEngagementState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { findRearEngagementStateFromMovement } from './findRearEngagementStateFromMovement';
-
-/**
- * A Move order being carried out, its unit having walked into an enemy with
- * this engagement, or not yet having met anyone (`'pending'`).
- */
-function movingWith(engagementState: EngagementState | 'pending'): GameState {
-  const empty = createEmptyGameState('standard');
-  const state = updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: createMovementResolutionState(empty, {
-        engagementState,
-      }),
-    }),
-  );
-  return state;
-}
 
 /** A unit engaged from the rear routs outright (§6.3.3). */
 describe('findRearEngagementStateFromMovement function', () => {
@@ -35,7 +15,9 @@ describe('findRearEngagementStateFromMovement function', () => {
     const engagement = createRearEngagementState();
 
     expect(
-      findRearEngagementStateFromMovement(movingWith(engagement)),
+      findRearEngagementStateFromMovement(
+        createGameStateMovingInto(engagement),
+      ),
     ).toStrictEqual(engagement);
   });
 
@@ -43,12 +25,12 @@ describe('findRearEngagementStateFromMovement function', () => {
     // Met head on or from the side, the defender does not rout on the spot.
     expect(
       findRearEngagementStateFromMovement(
-        movingWith(createFrontEngagementState()),
+        createGameStateMovingInto(createFrontEngagementState()),
       ),
     ).toBeUndefined();
     expect(
       findRearEngagementStateFromMovement(
-        movingWith(createFlankEngagementState()),
+        createGameStateMovingInto(createFlankEngagementState()),
       ),
     ).toBeUndefined();
   });
@@ -56,7 +38,7 @@ describe('findRearEngagementStateFromMovement function', () => {
   it('answers undefined when the movement has reached no engagement', () => {
     // The unit is moving, but has not stepped into an enemy.
     expect(
-      findRearEngagementStateFromMovement(movingWith('pending')),
+      findRearEngagementStateFromMovement(createGameStateMovingInto('pending')),
     ).toBeUndefined();
   });
 

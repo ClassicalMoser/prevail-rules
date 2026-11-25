@@ -1,29 +1,15 @@
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithReverse,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createReverseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+import { updateCurrentInitiative } from '@transforms';
 
 import { getMeleeReverseState } from './getMeleeReverseState';
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(melee: MeleeResolutionState): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    'black',
-  );
-  const phaseState = createResolveMeleePhaseState(empty, {
-    currentMeleeResolutionState: melee,
-  });
-  const resolving = updatePhaseState(empty, phaseState);
-  return resolving;
-}
 
 describe('getMeleeReverseState function', () => {
   it('returns the reverse opened on that side of the melee', () => {
@@ -42,7 +28,7 @@ describe('getMeleeReverseState function', () => {
         },
       ),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(getMeleeReverseState(state, 'black')).toBe(reverse);
   });
@@ -55,7 +41,7 @@ describe('getMeleeReverseState function', () => {
     const melee = createMeleeResolutionState(empty, {
       attackOnFirstPlayerApplyState: 'pending',
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(() => getMeleeReverseState(state, 'black')).toThrow(
       'No attack apply on black found in melee resolution',
@@ -73,7 +59,7 @@ describe('getMeleeReverseState function', () => {
       attackOnFirstPlayerApplyState:
         createAttackApplyStateWithNothingDue(defender),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(() => getMeleeReverseState(state, 'black')).toThrow(
       'The melee attack on black applied no reverse',

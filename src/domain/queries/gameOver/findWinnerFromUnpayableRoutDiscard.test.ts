@@ -3,17 +3,14 @@ import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
 import { getOtherPlayer } from '@queries/player';
 import {
-  createCleanupPhaseStateWithRallyRout,
   createIssueCommandsPhaseState,
-  createRoutState,
   createTestCard,
-  createTestUnit,
+  withRoutOwing,
 } from '@testing';
 import {
   updateCurrentInitiative,
   updatePhaseState,
   updatePlayerCardState,
-  updateRoutState,
 } from '@transforms';
 
 import { findWinnerFromUnpayableRoutDiscard } from './findWinnerFromUnpayableRoutDiscard';
@@ -28,8 +25,6 @@ function cards(count: number): CommandCard[] {
  * Cleanup, with `player` about to choose a rout discard of `numberToDiscard`
  * cards from a hand of `handSize`.
  *
- * The cleanup factory only opens a rout slot. `updateRoutState` will not
- * create one from `'pending'`, so the penalty is written through that transform.
  * The other hand stays non-empty so this suite is not also an empty-hand loss.
  */
 function stateAwaitingDiscard(options: {
@@ -53,23 +48,13 @@ function stateAwaitingDiscard(options: {
     ...routed.cardState[other],
     inHand: [createTestCard()],
   });
-  // Rally is already accepted. The rout slot has to exist before it can be replaced.
-  const cleanup = updatePhaseState(
+  // The rally is accepted, and its rout owes the penalty this case is about.
+  const owing = withRoutOwing(
     withHands,
-    createCleanupPhaseStateWithRallyRout(
-      withHands,
-      createRoutState(options.player, createTestUnit(options.player)),
-    ),
+    options.player,
+    options.numberToDiscard,
   );
-  // Cards are not chosen yet, and the penalty is the one this case is about.
-  const next = updateRoutState(
-    cleanup,
-    createRoutState(options.player, createTestUnit(options.player), {
-      cardsChosen: false,
-      numberToDiscard: options.numberToDiscard,
-    }),
-  );
-  return next;
+  return owing;
 }
 
 /**

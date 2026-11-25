@@ -1,26 +1,14 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithReverse,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createRangedAttackResolutionState,
   createReverseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { getRangedAttackReverseState } from './getRangedAttackReverseState';
-
-/** Issue-commands phase resolving the ranged attack this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  const phaseState = createIssueCommandsPhaseState(empty, {
-    currentCommandResolutionState: resolution,
-  });
-  const issuing = updatePhaseState(empty, phaseState);
-  return issuing;
-}
 
 describe('getRangedAttackReverseState function', () => {
   it('returns the reverse opened on the ranged attack', () => {
@@ -34,7 +22,7 @@ describe('getRangedAttackReverseState function', () => {
       }),
       defendingUnit: defender,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(getRangedAttackReverseState(state)).toBe(reverse);
   });
@@ -44,7 +32,7 @@ describe('getRangedAttackReverseState function', () => {
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: 'pending',
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(() => getRangedAttackReverseState(state)).toThrow(
       'No attack apply state found in ranged attack resolution',
@@ -59,7 +47,7 @@ describe('getRangedAttackReverseState function', () => {
       attackApplyState: createAttackApplyStateWithNothingDue(defender),
       defendingUnit: defender,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(() => getRangedAttackReverseState(state)).toThrow(
       'The ranged attack applied no reverse',

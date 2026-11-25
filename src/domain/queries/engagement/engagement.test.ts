@@ -1,9 +1,8 @@
-import type { EngagementState, GameState } from '@game';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
+  createGameStateMovingInto,
   createIssueCommandsPhaseState,
-  createMovementResolutionState,
   createRangedAttackResolutionState,
   createRearEngagementState,
 } from '@testing';
@@ -18,35 +17,18 @@ import {
 
 import { createEmptyGameState } from '@factories';
 
-/**
- * A Move order being carried out, its unit having walked into an enemy with
- * this engagement, or not yet having met anyone (`'pending'`).
- */
-function movingWith(engagementState: EngagementState | 'pending'): GameState {
-  const empty = createEmptyGameState('standard');
-  const state = updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: createMovementResolutionState(empty, {
-        engagementState,
-      }),
-    }),
-  );
-  return state;
-}
-
 describe('getEngagementStateFromMovement function', () => {
   it('returns the engagement on the movement', () => {
     // The moving unit has walked into an enemy.
     const engagement = createFrontEngagementState();
-    const state = movingWith(engagement);
+    const state = createGameStateMovingInto(engagement);
 
     expect(getEngagementStateFromMovement(state)).toBe(engagement);
   });
 
   it('throws when the movement has no engagement', () => {
     // The unit is moving, but has met nobody yet.
-    const state = movingWith('pending');
+    const state = createGameStateMovingInto('pending');
 
     expect(() => getEngagementStateFromMovement(state)).toThrow(
       'No engagement state found in movement resolution',
@@ -73,7 +55,7 @@ describe('getFlankEngagementStateFromMovement function', () => {
   it('returns the flank engagement on the movement', () => {
     // The mover came at the defender across its facing.
     const engagement = createFlankEngagementState();
-    const state = movingWith(engagement);
+    const state = createGameStateMovingInto(engagement);
 
     const result = getFlankEngagementStateFromMovement(state);
 
@@ -85,7 +67,7 @@ describe('getFlankEngagementStateFromMovement function', () => {
 
   it('throws when the engagement is not flank', () => {
     // A head-on engagement asked for as a flank one.
-    const state = movingWith(createFrontEngagementState());
+    const state = createGameStateMovingInto(createFrontEngagementState());
 
     expect(() => getFlankEngagementStateFromMovement(state)).toThrow(
       'Engagement type is not flank',
@@ -97,7 +79,7 @@ describe('getFrontEngagementStateFromMovement function', () => {
   it('returns the front engagement on the movement', () => {
     // The mover squared up to the defender as it closed.
     const engagement = createFrontEngagementState();
-    const state = movingWith(engagement);
+    const state = createGameStateMovingInto(engagement);
 
     const result = getFrontEngagementStateFromMovement(state);
 
@@ -109,7 +91,7 @@ describe('getFrontEngagementStateFromMovement function', () => {
 
   it('throws when the engagement is not front', () => {
     // A flank engagement asked for as a front one.
-    const state = movingWith(createFlankEngagementState());
+    const state = createGameStateMovingInto(createFlankEngagementState());
 
     expect(() => getFrontEngagementStateFromMovement(state)).toThrow(
       'Engagement type is not front',
@@ -121,7 +103,7 @@ describe('getRearEngagementStateFromMovement function', () => {
   it('returns the rear engagement on the movement', () => {
     // The mover came from behind the defender.
     const engagement = createRearEngagementState();
-    const state = movingWith(engagement);
+    const state = createGameStateMovingInto(engagement);
 
     const result = getRearEngagementStateFromMovement(state);
 
@@ -133,7 +115,7 @@ describe('getRearEngagementStateFromMovement function', () => {
 
   it('throws when the engagement is not rear', () => {
     // A head-on engagement asked for as a rear one.
-    const state = movingWith(createFrontEngagementState());
+    const state = createGameStateMovingInto(createFrontEngagementState());
 
     expect(() => getRearEngagementStateFromMovement(state)).toThrow(
       'Engagement type is not rear',

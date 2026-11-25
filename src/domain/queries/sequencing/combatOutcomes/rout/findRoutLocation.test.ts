@@ -1,4 +1,3 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
@@ -7,7 +6,7 @@ import {
   createCleanupPhaseState,
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMeleeResolutionState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
@@ -25,18 +24,6 @@ import {
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRoutLocation } from './findRoutLocation';
-
-/** Issue-commands phase resolving the command this test built. */
-function issueCommands(
-  resolution: CommandResolutionState | 'pending',
-): GameState {
-  const empty = createEmptyGameState('standard');
-  const phaseState = createIssueCommandsPhaseState(empty, {
-    currentCommandResolutionState: resolution,
-  });
-  const issuing = updatePhaseState(empty, phaseState);
-  return issuing;
-}
 
 describe('findRoutLocation function', () => {
   it('answers undefined before the round has a phase', () => {
@@ -56,7 +43,9 @@ describe('findRoutLocation function', () => {
 
   it('answers undefined between commands', () => {
     // No command is being carried out, so nothing has broken anyone.
-    expect(findRoutLocation(issueCommands('pending'), 'white')).toBeUndefined();
+    expect(
+      findRoutLocation(createGameStateResolvingCommand('pending'), 'white'),
+    ).toBeUndefined();
   });
 
   it('names the ranged attack that routed the defender', () => {
@@ -71,7 +60,9 @@ describe('findRoutLocation function', () => {
       defendingUnit: defender,
     });
 
-    expect(findRoutLocation(issueCommands(resolution), 'white')).toStrictEqual({
+    expect(
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
+    ).toStrictEqual({
       routState: rout,
       source: 'rangedAttack',
     });
@@ -87,7 +78,7 @@ describe('findRoutLocation function', () => {
     });
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'black'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'black'),
     ).toBeUndefined();
   });
 
@@ -99,7 +90,7 @@ describe('findRoutLocation function', () => {
     });
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'white'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
     ).toBeUndefined();
   });
 
@@ -113,7 +104,7 @@ describe('findRoutLocation function', () => {
     });
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'white'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
     ).toBeUndefined();
   });
 
@@ -123,7 +114,7 @@ describe('findRoutLocation function', () => {
     const resolution = createMovementResolutionState(empty);
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'white'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
     ).toBeUndefined();
   });
 
@@ -134,9 +125,10 @@ describe('findRoutLocation function', () => {
       engagementState: createRearEngagementState(),
     });
 
-    expect(findRoutLocation(issueCommands(resolution), 'white')?.source).toBe(
-      'rearEngagementMovement',
-    );
+    expect(
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white')
+        ?.source,
+    ).toBe('rearEngagementMovement');
   });
 
   it('answers undefined in a flank engagement', () => {
@@ -147,7 +139,7 @@ describe('findRoutLocation function', () => {
     });
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'white'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
     ).toBeUndefined();
   });
 
@@ -159,7 +151,7 @@ describe('findRoutLocation function', () => {
     });
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'white'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
     ).toBeUndefined();
   });
 
@@ -178,7 +170,7 @@ describe('findRoutLocation function', () => {
     });
 
     expect(
-      findRoutLocation(issueCommands(resolution), 'white'),
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'white'),
     ).toBeUndefined();
   });
 
@@ -326,7 +318,9 @@ describe('findRoutLocation function', () => {
       defendingUnit: defender,
     });
 
-    expect(findRoutLocation(issueCommands(resolution), 'black')).toStrictEqual({
+    expect(
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'black'),
+    ).toStrictEqual({
       routState: nested,
       source: 'retreat',
     });
@@ -349,8 +343,8 @@ describe('findRoutLocation function', () => {
       }),
     });
 
-    expect(() => findRoutLocation(issueCommands(resolution), 'black')).toThrow(
-      'A front engagement’s retreat holds a rout',
-    );
+    expect(() =>
+      findRoutLocation(createGameStateResolvingCommand(resolution), 'black'),
+    ).toThrow('A front engagement’s retreat holds a rout');
   });
 });

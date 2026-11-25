@@ -1,9 +1,8 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createRetreatState,
@@ -11,20 +10,8 @@ import {
   enemyCuttingOffRetreat,
   legalRetreatsOf,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { getRetreatAwaitingRout } from './getRetreatAwaitingRout';
-
-/** Issue-commands phase resolving the command this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  return updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: resolution,
-    }),
-  );
-}
 
 /**
  * A retreat with nowhere to go turns into a rout (§9.1.6); asking for the one
@@ -40,7 +27,7 @@ describe('getRetreatAwaitingRout function', () => {
       defender.unit,
       legalRetreatsOf(defender, [enemyCuttingOffRetreat(defender)]),
     );
-    const state = issueCommands(
+    const state = createGameStateResolvingCommand(
       createRangedAttackResolutionState(empty, {
         attackApplyState: createAttackApplyStateWithRetreat(
           defender.unit,
@@ -63,7 +50,7 @@ describe('getRetreatAwaitingRout function', () => {
     // a state no game reaches.
     const empty = createEmptyGameState('standard');
     const defender = createUnitWithPlacement({ playerSide: 'white' });
-    const state = issueCommands(
+    const state = createGameStateResolvingCommand(
       createMovementResolutionState(empty, {
         engagementState: createFrontEngagementState({
           defendingUnitRetreats: true,

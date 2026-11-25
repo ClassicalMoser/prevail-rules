@@ -1,29 +1,15 @@
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createRoutState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+import { updateCurrentInitiative } from '@transforms';
 
 import { getMeleeRoutState } from './getMeleeRoutState';
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(melee: MeleeResolutionState): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    'black',
-  );
-  const phaseState = createResolveMeleePhaseState(empty, {
-    currentMeleeResolutionState: melee,
-  });
-  const resolving = updatePhaseState(empty, phaseState);
-  return resolving;
-}
 
 describe('getMeleeRoutState function', () => {
   it('returns the rout opened on that side of the melee', () => {
@@ -39,7 +25,7 @@ describe('getMeleeRoutState function', () => {
         routState: rout,
       }),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(getMeleeRoutState(state, 'white')).toBe(rout);
   });
@@ -52,7 +38,7 @@ describe('getMeleeRoutState function', () => {
     const melee = createMeleeResolutionState(empty, {
       attackOnSecondPlayerApplyState: 'pending',
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(() => getMeleeRoutState(state, 'white')).toThrow(
       'No attack apply on white found in melee resolution',
@@ -70,7 +56,7 @@ describe('getMeleeRoutState function', () => {
       attackOnSecondPlayerApplyState:
         createAttackApplyStateWithNothingDue(defender),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     expect(() => getMeleeRoutState(state, 'white')).toThrow(
       'The melee attack on white applied no rout',

@@ -1,32 +1,12 @@
-import type { EngagementState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
-  createMovementResolutionState,
+  createGameStateMovingInto,
   createRearEngagementState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { findFrontEngagementStateFromMovement } from './findFrontEngagementStateFromMovement';
-
-/**
- * A Move order being carried out, its unit having walked into an enemy with
- * this engagement, or not yet having met anyone (`'pending'`).
- */
-function movingWith(engagementState: EngagementState | 'pending'): GameState {
-  const empty = createEmptyGameState('standard');
-  const state = updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: createMovementResolutionState(empty, {
-        engagementState,
-      }),
-    }),
-  );
-  return state;
-}
 
 /**
  * A defender met head on may be offered a retreat (§6.3.2), so the legal
@@ -38,7 +18,9 @@ describe('findFrontEngagementStateFromMovement function', () => {
     const engagement = createFrontEngagementState();
 
     expect(
-      findFrontEngagementStateFromMovement(movingWith(engagement)),
+      findFrontEngagementStateFromMovement(
+        createGameStateMovingInto(engagement),
+      ),
     ).toStrictEqual(engagement);
   });
 
@@ -47,12 +29,12 @@ describe('findFrontEngagementStateFromMovement function', () => {
     // from the rear routs. Neither is a front engagement.
     expect(
       findFrontEngagementStateFromMovement(
-        movingWith(createFlankEngagementState()),
+        createGameStateMovingInto(createFlankEngagementState()),
       ),
     ).toBeUndefined();
     expect(
       findFrontEngagementStateFromMovement(
-        movingWith(createRearEngagementState()),
+        createGameStateMovingInto(createRearEngagementState()),
       ),
     ).toBeUndefined();
   });
@@ -60,7 +42,9 @@ describe('findFrontEngagementStateFromMovement function', () => {
   it('answers undefined when the movement has reached no engagement', () => {
     // The unit is moving, but has not stepped into an enemy.
     expect(
-      findFrontEngagementStateFromMovement(movingWith('pending')),
+      findFrontEngagementStateFromMovement(
+        createGameStateMovingInto('pending'),
+      ),
     ).toBeUndefined();
   });
 

@@ -1,21 +1,15 @@
-import type { PlayerSide } from '@entities';
-import type {
-  CommandResolutionState,
-  GameState,
-  MeleeResolutionState,
-} from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createUnitWithPlacement,
   legalRetreatsOf,
@@ -23,36 +17,6 @@ import {
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRetreatLocation } from './findRetreatLocation';
-
-/** Issue-commands phase resolving the command this test built. */
-function issueCommands(
-  resolution: CommandResolutionState | 'pending',
-): GameState {
-  const empty = createEmptyGameState('standard');
-  return updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: resolution,
-    }),
-  );
-}
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(
-  melee: MeleeResolutionState | 'pending',
-  initiative: PlayerSide = 'white',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createResolveMeleePhaseState(empty, {
-      currentMeleeResolutionState: melee,
-    }),
-  );
-}
 
 describe('findRetreatLocation function', () => {
   it('answers undefined before the round has a phase', () => {
@@ -72,7 +36,7 @@ describe('findRetreatLocation function', () => {
 
   it('answers undefined between commands', () => {
     // No command is being carried out, so nothing has forced a retreat.
-    const state = issueCommands('pending');
+    const state = createGameStateResolvingCommand('pending');
 
     expect(findRetreatLocation(state, 'white')).toBeUndefined();
   });
@@ -93,7 +57,7 @@ describe('findRetreatLocation function', () => {
       ),
       defendingUnit: defender.unit,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(findRetreatLocation(state, 'white')).toStrictEqual({
       retreatState: retreat,
@@ -112,7 +76,7 @@ describe('findRetreatLocation function', () => {
       ),
       defendingUnit: defender.unit,
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     // The defender of a ranged attack may be either side's unit, so black is
     // entitled to ask and entitled to a no.
@@ -122,7 +86,7 @@ describe('findRetreatLocation function', () => {
   it('answers undefined while the shot is not yet measured', () => {
     // The shot has been aimed but its apply is not written.
     const empty = createEmptyGameState('standard');
-    const state = issueCommands(
+    const state = createGameStateResolvingCommand(
       createRangedAttackResolutionState(empty, { attackApplyState: 'pending' }),
     );
 
@@ -133,7 +97,7 @@ describe('findRetreatLocation function', () => {
     // The shot reached nothing, so its retreat slot is bypassed.
     const empty = createEmptyGameState('standard');
     const defender = createUnitWithPlacement({ playerSide: 'white' });
-    const state = issueCommands(
+    const state = createGameStateResolvingCommand(
       createRangedAttackResolutionState(empty, {
         attackApplyState: createAttackApplyStateWithNothingDue(defender.unit),
         defendingUnit: defender.unit,
@@ -146,7 +110,9 @@ describe('findRetreatLocation function', () => {
   it('answers undefined when a movement has engaged nobody', () => {
     const empty = createEmptyGameState('standard');
     // A move that opened no engagement forces no retreat, which is ordinary.
-    const state = issueCommands(createMovementResolutionState(empty));
+    const state = createGameStateResolvingCommand(
+      createMovementResolutionState(empty),
+    );
 
     expect(findRetreatLocation(state, 'white')).toBeUndefined();
   });
@@ -165,7 +131,7 @@ describe('findRetreatLocation function', () => {
         retreatState: retreat,
       }),
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     expect(findRetreatLocation(state, 'white')).toStrictEqual({
       retreatState: retreat,
@@ -186,7 +152,7 @@ describe('findRetreatLocation function', () => {
         ),
       }),
     });
-    const state = issueCommands(resolution);
+    const state = createGameStateResolvingCommand(resolution);
 
     // Only the defender falls back from a front engagement (§6.3.2).
     expect(findRetreatLocation(state, 'black')).toBeUndefined();
@@ -195,7 +161,7 @@ describe('findRetreatLocation function', () => {
   it('answers undefined while a front-engaged defender has not yet chosen', () => {
     // The engagement has just begun, and its retreat slot is still pending.
     const empty = createEmptyGameState('standard');
-    const state = issueCommands(
+    const state = createGameStateResolvingCommand(
       createMovementResolutionState(empty, {
         engagementState: createFrontEngagementState(),
       }),
@@ -207,7 +173,7 @@ describe('findRetreatLocation function', () => {
   it('answers undefined in a flank engagement', () => {
     // A defender caught in the flank is turned and may not fall back (§6.3.4).
     const empty = createEmptyGameState('standard');
-    const state = issueCommands(
+    const state = createGameStateResolvingCommand(
       createMovementResolutionState(empty, {
         engagementState: createFlankEngagementState(),
       }),
@@ -242,7 +208,7 @@ describe('findRetreatLocation function', () => {
         { retreatState: whiteRetreat },
       ),
     });
-    const state = resolveMelee(melee, 'black');
+    const state = createGameStateResolvingMelee(melee, 'black');
 
     // Each player is answered from the slot holding their own unit.
     expect(findRetreatLocation(state, 'black')).toStrictEqual({
@@ -257,7 +223,7 @@ describe('findRetreatLocation function', () => {
 
   it('answers undefined between engagements', () => {
     // No melee is being fought, so nobody is falling back from one.
-    const state = resolveMelee('pending');
+    const state = createGameStateResolvingMelee('pending');
 
     expect(findRetreatLocation(state, 'white')).toBeUndefined();
   });
@@ -271,7 +237,7 @@ describe('findRetreatLocation function', () => {
         white.unit,
       ),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee);
 
     expect(findRetreatLocation(state, 'white')).toBeUndefined();
   });

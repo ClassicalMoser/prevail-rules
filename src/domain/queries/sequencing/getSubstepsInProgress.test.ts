@@ -1,9 +1,7 @@
 import type {
   CleanupPhaseState,
-  CommandResolutionState,
   EngagementResolutionState,
   GameState,
-  MeleeResolutionState,
 } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
@@ -16,14 +14,14 @@ import {
   createCleanupPhaseStateWithRallyRout,
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
   createRallyResolutionState,
   createRangedAttackResolutionState,
   createRearEngagementState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createRoutState,
   createTestUnit,
@@ -32,26 +30,6 @@ import {
 import { updatePhaseState } from '@transforms';
 
 import { getSubstepsInProgress } from './getSubstepsInProgress';
-
-/** Phase 3, carrying out the order this test built. */
-function issueCommands(resolution: CommandResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  const phaseState = createIssueCommandsPhaseState(empty, {
-    currentCommandResolutionState: resolution,
-  });
-  const issuing = updatePhaseState(empty, phaseState);
-  return issuing;
-}
-
-/** Phase 4, fighting the melee this test built. */
-function resolveMelee(melee: MeleeResolutionState): GameState {
-  const empty = createEmptyGameState('standard');
-  const phaseState = createResolveMeleePhaseState(empty, {
-    currentMeleeResolutionState: melee,
-  });
-  const fighting = updatePhaseState(empty, phaseState);
-  return fighting;
-}
 
 /** Phase 5, on the cleanup this test built. */
 function cleanup(phaseState: CleanupPhaseState): GameState {
@@ -79,7 +57,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The order is all there is to follow.
-    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([move]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toStrictEqual([move]);
   });
 
   it('follows a Move order into the flank engagement it started', () => {
@@ -91,10 +71,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The trail ends at the engagement.
-    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
-      move,
-      engagement,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toStrictEqual([move, engagement]);
   });
 
   it('stands at a front engagement while its defender decides whether to fall back', () => {
@@ -107,10 +86,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The trail ends at the engagement, with no retreat beneath it.
-    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
-      move,
-      engagement,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toStrictEqual([move, engagement]);
   });
 
   it('follows a front engagement into the retreat its defender chose', () => {
@@ -127,11 +105,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The order, the engagement, then the retreat being made.
-    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
-      move,
-      engagement,
-      retreat,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toStrictEqual([move, engagement, retreat]);
   });
 
   it('follows a rear engagement into the rout it forces', () => {
@@ -143,7 +119,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The order, the engagement, then the rout it forced.
-    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toStrictEqual([
       move,
       engagement,
       engagement.engagementResolutionState.routState,
@@ -163,9 +141,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The state is at fault, and the reader says so, naming the kind it met.
-    expect(() => getSubstepsInProgress(issueCommands(move))).toThrow(
-      'Unknown engagement type: siege',
-    );
+    expect(() =>
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toThrow('Unknown engagement type: siege');
   });
 
   it('stands at a Shoot order whose attack is not yet resolved', () => {
@@ -176,7 +154,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The order is all there is to follow.
-    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([shot]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(shot)),
+    ).toStrictEqual([shot]);
   });
 
   it('follows a Shoot order into the reverse its attack forced', () => {
@@ -191,11 +171,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The order, its attack, then the unit turning about.
-    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
-      shot,
-      apply,
-      apply.reverseState,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(shot)),
+    ).toStrictEqual([shot, apply, apply.reverseState]);
   });
 
   it('follows a Shoot order into the rout its attack reached', () => {
@@ -212,11 +190,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The order, its attack, then the rout its owner pays for.
-    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
-      shot,
-      apply,
-      rout,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(shot)),
+    ).toStrictEqual([shot, apply, rout]);
   });
 
   it('follows a retreat with nowhere to go into the rout it ends in', () => {
@@ -234,12 +210,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The rout sits under the retreat it took the place of.
-    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
-      shot,
-      apply,
-      retreat,
-      rout,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(shot)),
+    ).toStrictEqual([shot, apply, retreat, rout]);
   });
 
   it('drops a finished retreat, leaving its attack while the reverse is still to open', () => {
@@ -260,10 +233,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The finished retreat is gone; the attack waits for its reverse to open.
-    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
-      shot,
-      apply,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(shot)),
+    ).toStrictEqual([shot, apply]);
   });
 
   it('stops at an attack that only waits to be closed', () => {
@@ -277,10 +249,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The attack being closed ends the trail.
-    expect(getSubstepsInProgress(issueCommands(shot))).toStrictEqual([
-      shot,
-      apply,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(shot)),
+    ).toStrictEqual([shot, apply]);
   });
 
   it('is empty once the order is carried out', () => {
@@ -289,7 +260,9 @@ describe('getSubstepsInProgress function', () => {
     const move = createMovementResolutionState(empty, { completed: true });
 
     // A finished order is not followed.
-    expect(getSubstepsInProgress(issueCommands(move))).toStrictEqual([]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingCommand(move)),
+    ).toStrictEqual([]);
   });
 
   it('stands at a melee whose blows are not yet counted', () => {
@@ -302,7 +275,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // The melee is all there is to follow.
-    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([melee]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingMelee(melee)),
+    ).toStrictEqual([melee]);
   });
 
   it("follows a melee to the second player's unit's retreat first", () => {
@@ -318,11 +293,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // Black's retreat is the one under way, not white's.
-    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([
-      melee,
-      blackApply,
-      blackApply.retreatState,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingMelee(melee)),
+    ).toStrictEqual([melee, blackApply, blackApply.retreatState]);
   });
 
   it("finishes both units' retreats before either reverses", () => {
@@ -347,11 +320,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // White's retreat is under way, ahead of black's reverse.
-    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([
-      melee,
-      whiteApply,
-      whiteApply.retreatState,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingMelee(melee)),
+    ).toStrictEqual([melee, whiteApply, whiteApply.retreatState]);
   });
 
   it("closes the second player's unit's attack first once every result is carried out", () => {
@@ -370,10 +341,9 @@ describe('getSubstepsInProgress function', () => {
     });
 
     // Black's attack is the one being closed.
-    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([
-      melee,
-      blackApply,
-    ]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingMelee(melee)),
+    ).toStrictEqual([melee, blackApply]);
   });
 
   it('is empty once the melee is fought', () => {
@@ -382,7 +352,9 @@ describe('getSubstepsInProgress function', () => {
     const melee = createMeleeResolutionState(empty, { completed: true });
 
     // A finished melee is not followed.
-    expect(getSubstepsInProgress(resolveMelee(melee))).toStrictEqual([]);
+    expect(
+      getSubstepsInProgress(createGameStateResolvingMelee(melee)),
+    ).toStrictEqual([]);
   });
 
   it("is empty while this round's cards leave play", () => {

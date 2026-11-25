@@ -1,33 +1,14 @@
 import type { MoveDelta } from '@entities';
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithRetreat,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createUnitWithPlacement,
 } from '@testing';
-import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { findRetreatAwaitingChoice } from './findRetreatAwaitingChoice';
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(
-  melee: MeleeResolutionState,
-  initiative: 'white' | 'black',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createResolveMeleePhaseState(empty, {
-      currentMeleeResolutionState: melee,
-    }),
-  );
-}
 
 describe('findRetreatAwaitingChoice function', () => {
   // Two equally small ways back. The selection does not judge them, only that
@@ -48,7 +29,7 @@ describe('findRetreatAwaitingChoice function', () => {
     });
 
     expect(
-      findRetreatAwaitingChoice(resolveMelee(melee, 'white')),
+      findRetreatAwaitingChoice(createGameStateResolvingMelee(melee, 'white')),
     ).toStrictEqual({ retreatState: retreat, source: 'melee' });
   });
 
@@ -69,7 +50,7 @@ describe('findRetreatAwaitingChoice function', () => {
 
     // The way back is settled, so nothing is waiting on a choice.
     expect(
-      findRetreatAwaitingChoice(resolveMelee(melee, 'white')),
+      findRetreatAwaitingChoice(createGameStateResolvingMelee(melee, 'white')),
     ).toBeUndefined();
   });
 
@@ -86,7 +67,7 @@ describe('findRetreatAwaitingChoice function', () => {
     });
 
     expect(
-      findRetreatAwaitingChoice(resolveMelee(melee, 'white')),
+      findRetreatAwaitingChoice(createGameStateResolvingMelee(melee, 'white')),
     ).toBeUndefined();
   });
 
@@ -116,7 +97,7 @@ describe('findRetreatAwaitingChoice function', () => {
     // White holds initiative and is the first player; black's unit is asked
     // after first.
     expect(
-      findRetreatAwaitingChoice(resolveMelee(melee, 'white')),
+      findRetreatAwaitingChoice(createGameStateResolvingMelee(melee, 'white')),
     ).toStrictEqual({ retreatState: blackRetreat, source: 'melee' });
   });
 });

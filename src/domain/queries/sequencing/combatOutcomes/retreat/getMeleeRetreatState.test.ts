@@ -1,34 +1,15 @@
-import type { GameState, MeleeResolutionState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createRetreatState,
   createUnitWithPlacement,
   legalRetreatsOf,
 } from '@testing';
-import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getMeleeRetreatState } from './getMeleeRetreatState';
-
-/** Resolve-melee phase holding the melee this test built. */
-function resolveMelee(
-  melee: MeleeResolutionState,
-  initiative: 'white' | 'black' = 'white',
-): GameState {
-  const empty = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    initiative,
-  );
-  return updatePhaseState(
-    empty,
-    createResolveMeleePhaseState(empty, {
-      currentMeleeResolutionState: melee,
-    }),
-  );
-}
 
 describe('getMeleeRetreatState function', () => {
   it('returns the white retreat', () => {
@@ -45,7 +26,7 @@ describe('getMeleeRetreatState function', () => {
         },
       ),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee);
 
     expect(getMeleeRetreatState(state, 'white')).toBe(retreat);
   });
@@ -67,7 +48,7 @@ describe('getMeleeRetreatState function', () => {
         },
       ),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee);
 
     expect(getMeleeRetreatState(state, 'black')).toBe(retreat);
   });
@@ -81,7 +62,7 @@ describe('getMeleeRetreatState function', () => {
         white.unit,
       ),
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee);
 
     expect(() => getMeleeRetreatState(state, 'white')).toThrow(
       'The melee attack on white applied no retreat',
@@ -94,7 +75,7 @@ describe('getMeleeRetreatState function', () => {
     const melee = createMeleeResolutionState(empty, {
       attackOnFirstPlayerApplyState: 'pending',
     });
-    const state = resolveMelee(melee);
+    const state = createGameStateResolvingMelee(melee);
 
     expect(() => getMeleeRetreatState(state, 'white')).toThrow(
       'No attack apply on white found in melee resolution',
