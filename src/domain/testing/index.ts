@@ -22,6 +22,9 @@ export {
   createCleanupPhaseStateWithRallyRout,
   createFlankEngagementState,
   createFrontEngagementState,
+  createGameStateMovingInto,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMoveCommandersPhaseState,
@@ -69,3 +72,5 @@ export { replaceBoard } from './replaceBoard';
 export { withLostCommander } from './withLostCommander';
 // A game state with these units waiting in reserve, filed there.
 export { withReservedUnits } from './withReservedUnits';
+// A game on a player's rally, with a rout owing a known discard.
+export { withRoutOwing } from './withRoutOwing';

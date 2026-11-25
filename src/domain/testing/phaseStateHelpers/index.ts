@@ -16,6 +16,11 @@ export {
   createRearEngagementState,
 } from './engagementStates';
 export {
+  createGameStateMovingInto,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
+} from './gameStatesInPhase';
+export {
   createCleanupPhaseState,
   createCleanupPhaseStateWithRallyRout,
   createIssueCommandsPhaseState,
