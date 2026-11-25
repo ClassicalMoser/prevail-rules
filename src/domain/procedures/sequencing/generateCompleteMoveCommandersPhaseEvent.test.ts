@@ -1,5 +1,8 @@
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { createEmptyGameState } from '@factories';
+import {
+  createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
+} from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
@@ -12,10 +15,10 @@ import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMove
 describe('generateCompleteMoveCommandersPhaseEvent function', () => {
   it('ends Move Commanders with an effect that carries nothing', () => {
     // Both commanders have moved; the phase is complete.
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: MOVE_COMMANDERS_PHASE,
-      step: 'complete',
-    });
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState({ step: 'complete' }),
+    );
 
     // The effect names only itself.
     expect(generateCompleteMoveCommandersPhaseEvent(state)).toStrictEqual({
@@ -26,10 +29,10 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
 
   it('throws outside Move Commanders, since only that phase ends here', () => {
     // The round is still playing cards.
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'chooseCards' }),
+    );
 
     // Asked to end a phase the round is not in, it refuses.
     expect(() => generateCompleteMoveCommandersPhaseEvent(state)).toThrow(

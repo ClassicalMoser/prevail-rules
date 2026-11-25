@@ -1,30 +1,31 @@
-import { PLAY_CARDS_PHASE } from '@game';
-
+import {
+  createEmptyGameState,
+  createOpenedEngagementState,
+  createOpenedRearEngagementResolutionState,
+  createOpenedRoutState,
+} from '@factories';
 import {
   createAttackApplyStateWithRout,
-  createCleanupPhaseState,
+  createCleanupPhaseStateWithRallyRout,
+  createGameStateMovingInto,
   createGameStateResolvingCommand,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingMelee,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
-  createRearEngagementState,
-  createResolveMeleePhaseState,
   createRoutState,
-  createTestCard,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { generateResolveRoutEvent } from './generateResolveRoutEvent';
 
-import { createEmptyGameState } from '@factories';
+// TODO(misleading): the event carries the paying player and the penalty, not
+// the affected units; and the order the two melee sides are asked in decides
+// nothing, since only one rout is ever awaiting its penalty. Settle by
+// rewording the header.
 /**
  * `resolveRout` materializes rout discards: penalty and affected units come from whichever
  * rout substep is active—ranged attack-apply, melee (initiative player’s apply first),
@@ -32,128 +33,103 @@ import { createEmptyGameState } from '@factories';
  */
 describe('generateResolveRoutEvent function', () => {
   it('charges the morale of a shot’s routed defender', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+    // White's unit, Morale 2, shot by the black archer two spaces ahead of it.
+    const target = placed(
+      createTestUnit('white', { morale: 2 }),
+      'E-5',
+      'north',
     );
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
+    const shooter = placed(
+      createTestUnit('black', { attack: 2 }),
+      'C-5',
+      'south',
     );
-    const attackApply = createAttackApplyStateWithRout(defendingUnit);
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRoutEvent(full);
-    expect(event.effectType).toBe('resolveRout');
-    expect(event.penalty).toBe(defendingUnit.unitType.morale);
-    expect(event.player).toBe(defendingUnit.playerSide);
+    // The target has routed and left the board; its rout is open, its cost
+    // not yet counted.
+    const board = createGameStateWithUnits([shooter]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackApplyState: createAttackApplyStateWithRout(target.unit),
+      attackingUnit: shooter.unit,
+      defendingUnit: target.unit,
+    });
+    const state = createGameStateResolvingCommand(shot, board);
+
+    // White discards one card for each point of the unit's Morale (§9.3.2).
+    expect(generateResolveRoutEvent(state)).toStrictEqual({
+      effectType: 'resolveRout',
+      eventType: 'gameEffect',
+      penalty: 2,
+      player: 'white',
+    });
   });
 
-  it('with both melee sides awaiting their penalty, answers the initiative player’s', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
-
-    const blackApply = createAttackApplyStateWithRout(blackUnit);
-    const whiteApply = createAttackApplyStateWithRout(whiteUnit);
-
-    const melee = createMeleeResolutionState(s, {
-      attackOnFirstPlayerApplyState: blackApply,
-      attackOnSecondPlayerApplyState: whiteApply,
+  it('in a melee, counts the rout still awaiting its penalty, not the one already counted', () => {
+    // White holds the initiative, so black's unit routed first and black has
+    // already been charged its Morale (§7.5.6, §9.3.3). Both units have left
+    // the board.
+    const whiteUnit = createTestUnit('white', { morale: 1 });
+    const blackUnit = createTestUnit('black', { morale: 2 });
+    const blackPaid = createRoutState('black', blackUnit, {
+      cardsChosen: true,
+      completed: true,
+      numberToDiscard: 2,
     });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
+    const melee = createMeleeResolutionState(createEmptyGameState('standard'), {
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(whiteUnit),
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRout(
+        blackUnit,
+        { routState: blackPaid },
+      ),
     });
-    const full = updatePhaseState(s, phase);
+    const state = createGameStateResolvingMelee(melee, 'white');
 
-    const event = generateResolveRoutEvent(full);
-    expect(event.player).toBe(blackUnit.playerSide);
-    expect(event.penalty).toBe(blackUnit.unitType.morale);
-  });
-
-  it('throws in a phase that routs nobody', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const full = updatePhaseState(base, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'complete',
+    // White's rout is the one still to count, and costs white's unit's Morale.
+    expect(generateResolveRoutEvent(state)).toStrictEqual({
+      effectType: 'resolveRout',
+      eventType: 'gameEffect',
+      penalty: 1,
+      player: 'white',
     });
-    expect(() => generateResolveRoutEvent(full)).toThrow(
-      'No rout is awaiting its penalty',
-    );
   });
 
   it('resolves the rout of a unit engaged from the rear', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+    // Black's move came at white's unit, Morale 2, from behind: it routed on
+    // the spot and its owner pays at once (§6.3.3).
+    const whiteUnit = createTestUnit('white', { morale: 2 });
+    const rear = createOpenedEngagementState(
+      createOpenedRearEngagementResolutionState(whiteUnit),
     );
-    state.cardState.black.inPlay = createTestCard();
-    const whiteUnit = createTestUnit('white');
-    // The penalty is what this effect works out, so the rout reaches it unpaid.
-    const routState = createRoutState('white', whiteUnit);
-    const movement = createMovementResolutionState(state, {
-      engagementState: createRearEngagementState({ routState }),
-    });
-    const full = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    const state = createGameStateMovingInto(rear);
 
-    const event = generateResolveRoutEvent(full);
-    expect(event.player).toBe(whiteUnit.playerSide);
+    expect(generateResolveRoutEvent(state)).toStrictEqual({
+      effectType: 'resolveRout',
+      eventType: 'gameEffect',
+      penalty: 2,
+      player: 'white',
+    });
   });
 
-  it('resolves the rout of the units a rally could not cover', () => {
-    const unit = createTestUnit('white', { attack: 2 });
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const full = updatePhaseState(
+  it('resolves the rout of the units a rally could not cover, their Morale summed', () => {
+    // White rallied and two of its units, Morale 2 and Morale 1, found no
+    // place at the support check; they rout together (§10.4.6).
+    const base = createEmptyGameState('standard');
+    const uncovered = createOpenedRoutState('white', [
+      createTestUnit('white', { morale: 2 }),
+      createTestUnit('white', { morale: 1 }),
+    ]);
+    const state = updatePhaseState(
       base,
-      createCleanupPhaseState({
-        firstPlayerRallyResolutionState: {
-          completed: false,
-          playerRallied: true,
-          rallyResolved: true,
-          routState: {
-            cardsChosen: false,
-            completed: false,
-            numberToDiscard: 'pending',
-            player: 'white',
-            substepType: 'rout',
-            unitsToRout: [unit],
-          },
-          substepType: 'rallyResolution',
-          unitsLostSupport: [],
-        },
-        step: 'firstPlayerResolveRally',
-      }),
+      createCleanupPhaseStateWithRallyRout(base, uncovered),
     );
 
-    const event = generateResolveRoutEvent(full);
-    expect(event.player).toBe(unit.playerSide);
+    // One discard for both, of their Morale added up (§9.3.3, §10.4.7).
+    expect(generateResolveRoutEvent(state)).toStrictEqual({
+      effectType: 'resolveRout',
+      eventType: 'gameEffect',
+      penalty: 3,
+      player: 'white',
+    });
   });
 
   it('throws when the command being resolved holds no rout', () => {

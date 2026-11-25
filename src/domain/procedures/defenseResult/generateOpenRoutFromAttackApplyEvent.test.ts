@@ -1,89 +1,56 @@
-import type { GameState } from '@game';
+import type { AttackResult } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
 import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { generateOpenRoutFromAttackApplyEvent } from './generateOpenRoutFromAttackApplyEvent';
 
+// TODO(misleading): "in melee the defending player is named" no longer holds;
+// the event carries nothing, and the apply asks the state which unit's rout
+// opens. Settle by rewording the header.
 /**
  * An attack that routed leaves the rout slot pending until this opener runs.
  * Context is ranged vs melee; in melee the defending player is named.
  */
 describe('generateOpenRoutFromAttackApplyEvent function', () => {
-  function stateWithRangedPendingRout(): GameState {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApply = createAttackApplyState(defendingUnit, {
-      unitRetreated: true,
-      unitReversed: true,
-      unitRouted: true,
-    });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
-  }
+  // A blow that reached Rout and nothing lower, so the rout is the one
+  // result left to open.
+  const routOnly: AttackResult = {
+    unitRetreated: false,
+    unitReversed: false,
+    unitRouted: true,
+  };
 
-  function stateWithMeleePendingRout(
-    defendingPlayer: 'white' | 'black',
-  ): GameState {
-    // The other side holds initiative, so the defender is the second player,
-    // whose unit suffers first (§7.5.6).
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      defendingPlayer === 'white' ? 'black' : 'white',
+  it("names the effect for a shot's rout waiting to open, and carries nothing", () => {
+    // White's unit on E-5, shot by the black archer two spaces ahead of it.
+    const target = placed(
+      createTestUnit('white', { attack: 2 }),
+      'E-5',
+      'north',
     );
-    const defendingUnit = createTestUnit(defendingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(
-      defendingPlayer === 'white' ? 'black' : 'white',
-      { attack: 2 },
+    const shooter = placed(
+      createTestUnit('black', { attack: 2 }),
+      'C-5',
+      'south',
     );
-    const defendingWp = placed(defendingUnit, 'E-5', 'north');
-    const otherWp = placed(otherUnit, 'E-5', 'south');
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, defendingWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, otherWp));
-    const attackApply = createAttackApplyState(defendingUnit, {
-      unitRetreated: true,
-      unitReversed: true,
-      unitRouted: true,
+    const board = createGameStateWithUnits([target, shooter]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackApplyState: createAttackApplyState(target.unit, routOnly),
+      attackingUnit: shooter.unit,
+      defendingUnit: target.unit,
     });
-    // The defender's apply is the second player's, and it resolves first.
-    const melee = createMeleeResolutionState(s, {
-      attackOnSecondPlayerApplyState: attackApply,
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    return updatePhaseState(s, phase);
-  }
+    const state = createGameStateResolvingCommand(shot, board);
 
-  it('a ranged apply with a pending rout names the ranged context', () => {
-    const event = generateOpenRoutFromAttackApplyEvent(
-      stateWithRangedPendingRout(),
-    );
-    expect(event.effectType).toBe('openRoutFromAttackApply');
+    const event = generateOpenRoutFromAttackApplyEvent(state);
     // Which apply it opens on is the state's to name, not the event's.
     expect(event).toStrictEqual({
       effectType: 'openRoutFromAttackApply',
@@ -92,13 +59,48 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
   });
 
   it('names the effect for a melee rout waiting to open, and carries nothing', () => {
-    const event = generateOpenRoutFromAttackApplyEvent(
-      stateWithMeleePendingRout('black'),
+    // White holds the initiative, as a new game starts, so black's unit is
+    // the second player's, whose unit suffers first (§7.5.6).
+    const white = placed(
+      createTestUnit('white', { attack: 2 }),
+      'E-5',
+      'north',
     );
-    expect(event.effectType).toBe('openRoutFromAttackApply');
+    const black = placed(
+      createTestUnit('black', { attack: 2 }),
+      'E-5',
+      'south',
+    );
+    const board = createGameStateWithUnits([white, black]);
+
+    // The defender's apply is the second player's, and it resolves first.
+    // Black's blow reached none of white's thresholds.
+    const melee = createMeleeResolutionState(board, {
+      attackOnFirstPlayerApplyState: createAttackApplyState(white.unit, {
+        unitRetreated: false,
+        unitReversed: false,
+        unitRouted: false,
+      }),
+      attackOnSecondPlayerApplyState: createAttackApplyState(
+        black.unit,
+        routOnly,
+      ),
+    });
+    const fighting = updatePhaseState(
+      board,
+      createResolveMeleePhaseState(board, {
+        currentMeleeResolutionState: melee,
+      }),
+    );
+
+    expect(generateOpenRoutFromAttackApplyEvent(fighting)).toStrictEqual({
+      effectType: 'openRoutFromAttackApply',
+      eventType: 'gameEffect',
+    });
   });
 
   it('throws when the phase is not holding an attack apply', () => {
+    // Playing cards resolves no attack, so no rout can be waiting to open.
     const full = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',

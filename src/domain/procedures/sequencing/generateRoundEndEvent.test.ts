@@ -1,24 +1,27 @@
-import type { GameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createCleanupPhaseState } from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { generateRoundEndEvent } from './generateRoundEndEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
  * End of cleanup: advance round and return to play-cards phase. Emitted event is a fixed
  * `roundEnd` tag only — round/phase mutation happens in apply. Deliberately
  * does not branch on current `state` in the generator.
  */
 describe('generateRoundEndEvent function', () => {
-  it('given any game state, emits gameEffect with effectType roundEnd', () => {
-    const state: GameState = createEmptyGameState('standard');
-    const event = generateRoundEndEvent(state);
-    expect(event.eventType).toBe('gameEffect');
-    expect(event.effectType).toBe('roundEnd');
-  });
+  it('ends the round with an effect that carries nothing', () => {
+    // Both players have rallied or declined; Cleanup is complete.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createCleanupPhaseState({ step: 'complete' }),
+    );
 
-  it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateRoundEndEvent(createEmptyGameState('standard'));
-    const b = generateRoundEndEvent(createEmptyGameState('standard'));
-    expect(a).toStrictEqual(b);
+    // Nothing carries into the next round but what is on the table (§1.5);
+    // the effect names only itself.
+    expect(generateRoundEndEvent(state)).toStrictEqual({
+      effectType: 'roundEnd',
+      eventType: 'gameEffect',
+    });
   });
 });

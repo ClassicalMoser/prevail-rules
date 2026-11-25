@@ -1,12 +1,12 @@
-import { tempCommandCards } from '@sampleValues';
-import type { CommandCard } from '@entities';
-import type { GameState } from '@game';
-
-import { PLAY_CARDS_PHASE } from '@game';
-import { updateCardState } from '@testing';
-
-import { updatePhaseState } from '@transforms';
+import type { PlayerSide } from '@entities';
+import type { AuthoritativeGameState } from '@game';
 import { createEmptyGameState } from '@factories';
+import { createPlayCardsPhaseState, createTestCard } from '@testing';
+import {
+  updateCurrentInitiative,
+  updatePhaseState,
+  updatePlayerCardState,
+} from '@transforms';
 
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 
@@ -16,193 +16,117 @@ import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent
  */
 describe('generateResolveInitiativeEvent function', () => {
   /**
-   * Both `inPlay` set to the given cards, awaitingPlay cleared, phase step assignInitiative,
-   * then `currentInitiative` stamped (defaults black).
+   * Phase 1 just after the reveal (§4.1.2): each side has a card in play with
+   * the given initiative value, and `holder` held the initiative going in.
    */
-  function createGameStateInAssignInitiativeStep(
-    whiteCard: CommandCard,
-    blackCard: CommandCard,
-    currentInitiative: 'black' | 'white' = 'black',
-  ): GameState {
-    const state = createEmptyGameState('standard');
+  function revealed(
+    whiteInitiative: number,
+    blackInitiative: number,
+    holder: PlayerSide,
+  ): AuthoritativeGameState {
+    // The play cards phase, on the step that settles the initiative.
+    const assigning = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'assignInitiative' }),
+    );
 
-    const stateWithCards = updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        awaitingPlay: null,
-        inPlay: blackCard,
-      },
-      white: {
-        ...state.cardState.white,
-        awaitingPlay: null,
-        inPlay: whiteCard,
-      },
+    // Each side's revealed card, a different card on each side.
+    const whiteRevealed = updatePlayerCardState(assigning, 'white', {
+      ...assigning.cardState.white,
+      inPlay: createTestCard({ initiative: whiteInitiative }),
+    });
+    const bothRevealed = updatePlayerCardState(whiteRevealed, 'black', {
+      ...whiteRevealed.cardState.black,
+      inPlay: createTestCard({ initiative: blackInitiative }),
     });
 
-    const stateWithPhase = updatePhaseState(stateWithCards, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'assignInitiative',
-    });
-
-    const stateWithInitiative = {
-      ...stateWithPhase,
-      currentInitiative,
-    };
-
-    return stateWithInitiative;
+    // Who held the initiative going into the round, for a tie.
+    const state = updateCurrentInitiative(bothRevealed, holder);
+    return state;
   }
 
   describe('winner selection', () => {
-    it('given white inPlay lower initiative than black, resolveInitiative.player is white', () => {
-      expect.hasAssertions();
-      // Sample deck must contain distinct initiative values (1 vs 2).
-      const whiteCard = tempCommandCards.find(
-        (card: CommandCard) => card.initiative === 1,
-      );
-      const blackCard = tempCommandCards.find(
-        (card: CommandCard) => card.initiative === 2,
-      );
+    it('gives the initiative to White when White revealed the lower value', () => {
+      // White's 1 against Black's 2, with Black holding the initiative.
+      const state = revealed(1, 2, 'black');
 
-      if (!whiteCard || !blackCard) {
-        throw new Error(
-          'Could not find cards with different initiative values',
-        );
-      }
-
-      const state = createGameStateInAssignInitiativeStep(
-        whiteCard,
-        blackCard,
-        'black',
-      );
-
-      const event = generateResolveInitiativeEvent(state);
-
-      expect(event.player).toBe('white');
-      expect(event.eventType).toBe('gameEffect');
-      expect(event.effectType).toBe('resolveInitiative');
+      // The lower value takes it from the holder (§4.1.3).
+      expect(generateResolveInitiativeEvent(state)).toStrictEqual({
+        effectType: 'resolveInitiative',
+        eventType: 'gameEffect',
+        player: 'white',
+      });
     });
 
-    it('given black inPlay lower initiative than white, resolveInitiative.player is black', () => {
-      expect.hasAssertions();
-      const whiteCard = tempCommandCards.find(
-        (card: CommandCard) => card.initiative === 2,
-      );
-      const blackCard = tempCommandCards.find(
-        (card: CommandCard) => card.initiative === 1,
-      );
+    it('gives the initiative to Black when Black revealed the lower value', () => {
+      // White's 2 against Black's 1, with White holding the initiative.
+      const state = revealed(2, 1, 'white');
 
-      if (!whiteCard || !blackCard) {
-        throw new Error(
-          'Could not find cards with different initiative values',
-        );
-      }
-
-      const state = createGameStateInAssignInitiativeStep(
-        whiteCard,
-        blackCard,
-        'white',
-      );
-
-      const event = generateResolveInitiativeEvent(state);
-
-      expect(event.player).toBe('black');
-      expect(event.eventType).toBe('gameEffect');
-      expect(event.effectType).toBe('resolveInitiative');
+      // The lower value takes it from the holder (§4.1.3).
+      expect(generateResolveInitiativeEvent(state)).toStrictEqual({
+        effectType: 'resolveInitiative',
+        eventType: 'gameEffect',
+        player: 'black',
+      });
     });
 
-    it('given identical initiative on both inPlay cards, keeps currentInitiative player', () => {
-      expect.hasAssertions();
-      const card = tempCommandCards[0];
-
-      // Tie break: still black when currentInitiative is black
-      const stateWithBlack = createGameStateInAssignInitiativeStep(
-        card,
-        card,
-        'black',
-      );
-      const eventWithBlack = generateResolveInitiativeEvent(stateWithBlack);
-      expect(eventWithBlack.player).toBe('black');
-
-      // Tie break: white when currentInitiative is white
-      const stateWithWhite = createGameStateInAssignInitiativeStep(
-        card,
-        card,
-        'white',
-      );
-      const eventWithWhite = generateResolveInitiativeEvent(stateWithWhite);
-      expect(eventWithWhite.player).toBe('white');
+    it('leaves the initiative with whoever held it when the values tie', () => {
+      // Both sides revealed a 3.
+      // On a tie the initiative stays where it was (§4.1.4), whichever side
+      // that is.
+      expect(
+        generateResolveInitiativeEvent(revealed(3, 3, 'black')).player,
+      ).toBe('black');
+      expect(
+        generateResolveInitiativeEvent(revealed(3, 3, 'white')).player,
+      ).toBe('white');
     });
   });
 
   describe('preconditions', () => {
-    it('given playCards but wrong step, throws assignInitiative guard', () => {
-      expect.hasAssertions();
-      const state = createEmptyGameState('standard');
-      const stateWithWrongStep = updatePhaseState(state, {
-        phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
-      });
+    it('throws while the players are still choosing their cards', () => {
+      // Phase 1 before the reveal: nothing is face up to compare.
+      const state = updatePhaseState(
+        createEmptyGameState('standard'),
+        createPlayCardsPhaseState({ step: 'chooseCards' }),
+      );
 
-      expect(() => generateResolveInitiativeEvent(stateWithWrongStep)).toThrow(
+      // Initiative is settled only on its own step.
+      expect(() => generateResolveInitiativeEvent(state)).toThrow(
         'Play cards phase is not on assignInitiative step',
       );
     });
 
-    it('given white inPlay null at assignInitiative, throws', () => {
-      expect.hasAssertions();
-      const blackCard = tempCommandCards[0];
-      const state = createEmptyGameState('standard');
-
-      const stateWithCards = updateCardState(state, {
-        ...state.cardState,
-        black: {
-          ...state.cardState.black,
-          awaitingPlay: null,
-          inPlay: blackCard,
-        },
-        white: {
-          ...state.cardState.white,
-          awaitingPlay: null,
-          inPlay: null,
-        },
+    it('throws when White has no card in play to compare', () => {
+      // Only Black's card is in play; the reveal would have put both there.
+      const assigning = updatePhaseState(
+        createEmptyGameState('standard'),
+        createPlayCardsPhaseState({ step: 'assignInitiative' }),
+      );
+      const state = updatePlayerCardState(assigning, 'black', {
+        ...assigning.cardState.black,
+        inPlay: createTestCard(),
       });
 
-      const stateWithPhase = updatePhaseState(stateWithCards, {
-        phase: PLAY_CARDS_PHASE,
-        step: 'assignInitiative',
-      });
-
-      expect(() => generateResolveInitiativeEvent(stateWithPhase)).toThrow(
+      // The missing side is named.
+      expect(() => generateResolveInitiativeEvent(state)).toThrow(
         'white has no card in play',
       );
     });
 
-    it('given black inPlay null at assignInitiative, throws', () => {
-      expect.hasAssertions();
-      const whiteCard = tempCommandCards[0];
-      const state = createEmptyGameState('standard');
-
-      const stateWithCards = updateCardState(state, {
-        ...state.cardState,
-        black: {
-          ...state.cardState.black,
-          awaitingPlay: null,
-          inPlay: null,
-        },
-        white: {
-          ...state.cardState.white,
-          awaitingPlay: null,
-          inPlay: whiteCard,
-        },
+    it('throws when Black has no card in play to compare', () => {
+      // Only White's card is in play; the reveal would have put both there.
+      const assigning = updatePhaseState(
+        createEmptyGameState('standard'),
+        createPlayCardsPhaseState({ step: 'assignInitiative' }),
+      );
+      const state = updatePlayerCardState(assigning, 'white', {
+        ...assigning.cardState.white,
+        inPlay: createTestCard(),
       });
 
-      const stateWithPhase = updatePhaseState(stateWithCards, {
-        phase: PLAY_CARDS_PHASE,
-        step: 'assignInitiative',
-      });
-
-      expect(() => generateResolveInitiativeEvent(stateWithPhase)).toThrow(
+      // The missing side is named.
+      expect(() => generateResolveInitiativeEvent(state)).toThrow(
         'black has no card in play',
       );
     });

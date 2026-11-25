@@ -1,64 +1,85 @@
-import type { GameState, IssueCommandsPhaseState } from '@game';
-import { ISSUE_COMMANDS_PHASE } from '@game';
-
-import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
+import { createEmptyGameState } from '@factories';
+import {
+  createBoardWithEngagedUnits,
+  createGameStateWithEngagedUnits,
+  createIssueCommandsPhaseState,
+  createTestUnit,
+  placed,
+  replaceBoard,
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
-import { updatePhaseState } from '@transforms';
 
-import { createEmptyGameState } from '@factories';
 /**
  * Issue-commands phase is done: emit `completeIssueCommandsPhase` with `remainingEngagements`
  * — a set of board coordinates that still hold engaged units (from live board scan).
  */
 describe('generateCompleteIssueCommandsPhaseEvent function', () => {
-  /** Puts `state` in ISSUE_COMMANDS_PHASE step `complete` with empty command queues. */
-  function stateInIssueCommandsComplete(
-    state = createEmptyGameState('standard'),
-  ): GameState {
-    const initialPhaseState: IssueCommandsPhaseState = {
-      currentCommandResolutionState: 'pending',
-      phase: ISSUE_COMMANDS_PHASE,
-      remainingUnitsFirstPlayer: [],
-      remainingUnitsSecondPlayer: [],
-      step: 'complete',
-    };
-    return updatePhaseState(state, initialPhaseState);
-  }
-
-  it('given engaged pair at E-5 and phase complete, remainingEngagements contains E-5', () => {
-    const black = createTestUnit('black', { attack: 3 });
-    const white = createTestUnit('white', { attack: 3 });
-    const base = createGameStateWithEngagedUnits(black, white, 'E-5');
-    const stateWithPhase = stateInIssueCommandsComplete(base);
-
-    const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase);
-
-    expect(event.eventType).toBe('gameEffect');
-    expect(event.effectType).toBe('completeIssueCommandsPhase');
-    expect(event.remainingEngagements).toContain('E-5');
-  });
-
-  it('given empty board and phase complete, remainingEngagements is empty', () => {
-    const stateWithPhase = stateInIssueCommandsComplete();
-
-    const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase);
-
-    expect(event.remainingEngagements).toHaveLength(0);
-  });
-
-  it('given same phase shell, engaged vs empty board yields different remainingEngagements', () => {
-    const empty = stateInIssueCommandsComplete();
-    const black = createTestUnit('black', { attack: 3 });
-    const white = createTestUnit('white', { attack: 3 });
-    const engaged = stateInIssueCommandsComplete(
-      createGameStateWithEngagedUnits(black, white, 'E-5'),
+  it('records an engaged space as a fight Phase 4 owes', () => {
+    // A black unit and a white unit stand engaged on E-5, and both players'
+    // orders are carried out.
+    const engaged = createGameStateWithEngagedUnits(
+      createTestUnit('black'),
+      createTestUnit('white'),
+      'E-5',
+    );
+    const state = updatePhaseState(
+      engaged,
+      createIssueCommandsPhaseState(engaged, { step: 'complete' }),
     );
 
-    const eventEmpty = generateCompleteIssueCommandsPhaseEvent(empty);
-    const eventEngaged = generateCompleteIssueCommandsPhaseEvent(engaged);
+    // E-5 is the one fight still to come (§4.4.1).
+    expect(generateCompleteIssueCommandsPhaseEvent(state)).toStrictEqual({
+      effectType: 'completeIssueCommandsPhase',
+      eventType: 'gameEffect',
+      remainingEngagements: ['E-5'],
+    });
+  });
 
-    expect(eventEmpty.remainingEngagements).toHaveLength(0);
-    expect(eventEngaged.remainingEngagements).toContain('E-5');
+  it('records no fight when no space is engaged, so Phase 4 ends at once', () => {
+    // An empty board, and both players' orders carried out.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      empty,
+      createIssueCommandsPhaseState(empty, { step: 'complete' }),
+    );
+
+    // Nothing to fight (§4.4.4).
+    expect(
+      generateCompleteIssueCommandsPhaseEvent(state).remainingEngagements,
+    ).toStrictEqual([]);
+  });
+
+  it('records every engaged space in board order, and no unit standing alone', () => {
+    // Two engagements, on E-5 and C-3, and a lone white unit on G-7 that
+    // fights no one. Each side's second unit is its instance 2.
+    const firstFight = createBoardWithEngagedUnits(
+      createTestUnit('black'),
+      createTestUnit('white'),
+      'E-5',
+    );
+    const secondFight = addUnitToBoard(
+      addUnitToBoard(
+        firstFight,
+        placed(createTestUnit('black', { instanceNumber: 2 }), 'C-3', 'north'),
+      ),
+      placed(createTestUnit('white', { instanceNumber: 2 }), 'C-3', 'south'),
+    );
+    const withLoneUnit = addUnitToBoard(
+      secondFight,
+      placed(createTestUnit('white', { instanceNumber: 3 }), 'G-7', 'south'),
+    );
+    const board = replaceBoard(createEmptyGameState('standard'), withLoneUnit);
+    const state = updatePhaseState(
+      board,
+      createIssueCommandsPhaseState(board, { step: 'complete' }),
+    );
+
+    // Both fights are owed; the lone unit is not one. The northern row comes
+    // first in board order, though the order means nothing.
+    expect(
+      generateCompleteIssueCommandsPhaseEvent(state).remainingEngagements,
+    ).toStrictEqual(['C-3', 'E-5']);
   });
 });

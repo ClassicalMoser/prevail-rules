@@ -6,9 +6,12 @@ import { generateCompleteMeleeResolutionEvent } from './generateCompleteMeleeRes
  * no inputs from `state` in the procedure body.
  */
 describe('generateCompleteMeleeResolutionEvent function', () => {
-  it('given any game state, emits gameEffect with effectType completeMeleeResolution', () => {
-    const event = generateCompleteMeleeResolutionEvent();
-    expect(event.eventType).toBe('gameEffect');
-    expect(event.effectType).toBe('completeMeleeResolution');
+  it('names the effect that ends one melee, and carries nothing', () => {
+    // Whether the two units still stand locked is on the board (§7.2.3), so
+    // the event records nothing of the fight.
+    expect(generateCompleteMeleeResolutionEvent()).toStrictEqual({
+      effectType: 'completeMeleeResolution',
+      eventType: 'gameEffect',
+    });
   });
 });

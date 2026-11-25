@@ -1,10 +1,7 @@
-import { createEmptyGameState } from '@factories';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
-  createGameStateResolvingCommand,
-  createMovementResolutionState,
-  createTestCard,
+  createGameStateMovingInto,
 } from '@testing';
 
 import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
@@ -12,37 +9,24 @@ import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngag
 /** A defender engaged from the flank is turned to face its attacker (§6.3.4). */
 describe('generateResolveFlankEngagementEvent function', () => {
   it('carries nothing, since the movement and the board hold the attacker and the defender', () => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const flank = createFlankEngagementState();
-    const movement = createMovementResolutionState(state, {
-      engagementState: flank,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-    });
+    // A move has engaged its defender from the flank.
+    const state = createGameStateMovingInto(createFlankEngagementState());
 
-    expect(
-      generateResolveFlankEngagementEvent(
-        createGameStateResolvingCommand(movement, state),
-      ),
-    ).toStrictEqual({
+    // The defender's new facing follows from the attacker's, which the
+    // movement records; the effect names only itself.
+    expect(generateResolveFlankEngagementEvent(state)).toStrictEqual({
       effectType: 'resolveFlankEngagement',
       eventType: 'gameEffect',
     });
   });
 
   it('refuses a front engagement, whose defender is not turned', () => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const front = createFrontEngagementState();
-    const movement = createMovementResolutionState(state, {
-      engagementState: front,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-    });
+    // A move has engaged its defender head-on instead.
+    const state = createGameStateMovingInto(createFrontEngagementState());
 
-    expect(() =>
-      generateResolveFlankEngagementEvent(
-        createGameStateResolvingCommand(movement, state),
-      ),
-    ).toThrow('Engagement type is not flank');
+    // A front defender may fall back rather than be turned (§6.3.2).
+    expect(() => generateResolveFlankEngagementEvent(state)).toThrow(
+      'Engagement type is not flank',
+    );
   });
 });

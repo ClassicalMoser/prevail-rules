@@ -1,8 +1,7 @@
 import type { UnitFacing } from '@entities';
-import type { GameState } from '@game';
-import type { StatModifier } from '@ruleValues';
+import type { Commitment, GameState } from '@game';
 import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
@@ -10,7 +9,7 @@ import {
   placed,
   replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import { addUnitToBoard } from '@transforms';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 
@@ -21,108 +20,118 @@ import { createEmptyGameState, createUnitPlacement } from '@factories';
  * Geometry here: engager at E-5 facing east, defender at E-6 (adjacent east); facings vary per case.
  */
 describe('generateStartEngagementEvent function', () => {
-  /** IssueCommands + movement targeting E-6; black.inPlay satisfies movement factory commitment.card. */
+  // The white defender standing on E-6.
+  const defender = createTestUnit('white');
+
+  /**
+   * A black mover on E-5, facing east, whose move one step east into the
+   * defender on E-6 is written. Which of the defender's sides it comes from
+   * is the defender's facing. The mover's Speed and the card it committed
+   * are the case's to choose; by default it is Speed 2 and declined.
+   */
   function stateEnteringDefenderAt(options: {
     defenderFacing: UnitFacing;
-    engagingFacing: UnitFacing;
     moverSpeed?: number;
-    moverCardModifiers?: StatModifier[];
-  }): {
-    full: GameState;
-    defender: ReturnType<typeof createTestUnit>;
-  } {
-    const state = createEmptyGameState('standard');
-    // The mover's committed card is black's card in play.
-    state.cardState.black.inPlay = createTestCard({
-      modifiers: options.moverCardModifiers ?? [],
-    });
-    const defender = createTestUnit('white');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(
-        state.boardState,
-        placed(defender, 'E-6', options.defenderFacing),
-      ),
+    moverCommitment?: Commitment;
+  }): GameState {
+    // The mover still stands where its move began; the defender stands on
+    // E-6, facing as the case says.
+    const mover = createUnitByStat('black', 'speed', options.moverSpeed ?? 2);
+    const empty = createEmptyGameState('standard');
+    const board = addUnitToBoard(
+      addUnitToBoard(empty.boardState, placed(mover, 'E-5', 'east')),
+      placed(defender, 'E-6', options.defenderFacing),
     );
+    const withBoard = replaceBoard(empty, board);
+
+    // The move into E-6 is written, with the card the mover committed.
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: createUnitByStat('black', 'speed', options.moverSpeed ?? 2),
-      targetPlacement: createUnitPlacement('E-6', options.engagingFacing),
+      commitment: options.moverCommitment ?? { commitmentType: 'declined' },
+      movingUnit: mover,
+      targetPlacement: createUnitPlacement('E-6', 'east'),
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: movement,
-    });
-    const full = updatePhaseState(withBoard, phase);
-    return { defender, full };
+    const state = createGameStateResolvingCommand(movement, withBoard);
+    return state;
   }
 
-  it('given movement into E-6, names the defender standing there by who it is', () => {
-    const { full, defender } = stateEnteringDefenderAt({
-      defenderFacing: 'south',
-      engagingFacing: 'north',
-    });
+  it('names the defender by who it is, and meets it head-on as a front engagement', () => {
+    // The mover steps east into a defender facing west.
+    const state = stateEnteringDefenderAt({ defenderFacing: 'west' });
 
-    const event = generateStartEngagementEvent(full);
-    // The defender is named; where it stands and faces is the board's to say.
-    expect(event.defendingUnit).toBe(defender);
-    expect(['rear', 'flank', 'front']).toContain(event.engagementType);
+    // The defender is named; where it stands and faces is the board's to
+    // say. Facing each other is a front engagement (§6.3.1), and the mover's
+    // Speed 2 is recorded.
+    expect(generateStartEngagementEvent(state)).toStrictEqual({
+      defendingUnit: defender,
+      effectType: 'startEngagement',
+      engagementType: 'front',
+      engagingSpeed: 2,
+      eventType: 'gameEffect',
+    });
   });
 
-  it('given defender north and engaging north into rear arc, engagementType is rear', () => {
-    const { full } = stateEnteringDefenderAt({
-      defenderFacing: 'north',
-      engagingFacing: 'north',
-    });
-    expect(generateStartEngagementEvent(full).engagementType).toBe('rear');
+  it('is a rear engagement when the mover faces the way the defender does', () => {
+    // Both face east: the mover came from behind (§6.3.1).
+    const state = stateEnteringDefenderAt({ defenderFacing: 'east' });
+    expect(generateStartEngagementEvent(state).engagementType).toBe('rear');
   });
 
-  it('given defender south and engaging east (orthogonal), engagementType is flank', () => {
-    const { full } = stateEnteringDefenderAt({
-      defenderFacing: 'south',
-      engagingFacing: 'east',
-    });
-    expect(generateStartEngagementEvent(full).engagementType).toBe('flank');
+  it('is a flank engagement when the mover faces across the defender', () => {
+    // The mover faces east across a defender facing south: 90° off (§6.3.1).
+    const state = stateEnteringDefenderAt({ defenderFacing: 'south' });
+    expect(generateStartEngagementEvent(state).engagementType).toBe('flank');
   });
 
-  it('given defender south and engaging north (head-on), engagementType is front', () => {
-    const { full } = stateEnteringDefenderAt({
-      defenderFacing: 'south',
-      engagingFacing: 'north',
-    });
-    expect(generateStartEngagementEvent(full).engagementType).toBe('front');
-  });
-
-  it('given diagonal defender facing with engaging south, throws classification error', () => {
-    const { full } = stateEnteringDefenderAt({
-      defenderFacing: 'northEast',
-      engagingFacing: 'south',
-    });
-    expect(() => generateStartEngagementEvent(full)).toThrow(
-      'Unable to determine engagement type. Engaging facing: south, Defending facing: northEast',
+  it('throws for facings 45° off head-on, which a front approach never ends in', () => {
+    // East against north-west: neither rear, flank nor front. E-5 is one of
+    // that defender's front spaces, and a move closing from the front
+    // squares up (§6.2.3), so it would have ended facing south-east.
+    const state = stateEnteringDefenderAt({ defenderFacing: 'northWest' });
+    expect(() => generateStartEngagementEvent(state)).toThrow(
+      'Unable to determine engagement type. Engaging facing: east, Defending facing: northWest',
     );
   });
 
   it('records the engaging unit’s Speed, sampled where its move began', () => {
     // A black mover of Speed 3, no card counted, enters white head-on.
-    const { full } = stateEnteringDefenderAt({
+    const state = stateEnteringDefenderAt({
       defenderFacing: 'west',
-      engagingFacing: 'east',
       moverSpeed: 3,
     });
 
     // Its Speed as it stood on E-5, before the engagement sets it down.
-    expect(generateStartEngagementEvent(full).engagingSpeed).toBe(3);
+    expect(generateStartEngagementEvent(state).engagingSpeed).toBe(3);
   });
 
   it('counts the card the mover committed in the Speed it records', () => {
     // The same mover committed a card for +1 Speed before it moved (§4.3.10).
-    const { full } = stateEnteringDefenderAt({
+    const state = stateEnteringDefenderAt({
       defenderFacing: 'west',
-      engagingFacing: 'east',
-      moverCardModifiers: ['speed'],
+      moverCommitment: {
+        card: createTestCard({ modifiers: ['speed'] }),
+        commitmentType: 'completed',
+      },
       moverSpeed: 3,
     });
 
     // The card counts toward the mover's own Speed, and only its own.
-    expect(generateStartEngagementEvent(full).engagingSpeed).toBe(4);
+    expect(generateStartEngagementEvent(state).engagingSpeed).toBe(4);
+  });
+
+  it('throws while the move is not yet written, before anyone is engaged', () => {
+    // The mover is named and its card settled, but its path is not written.
+    const empty = createEmptyGameState('standard');
+    const state = createGameStateResolvingCommand(
+      createMovementResolutionState(empty, {
+        commitment: { commitmentType: 'declined' },
+        targetPlacement: 'pending',
+      }),
+      empty,
+    );
+
+    // An engagement starts only from a move into an enemy (§6.1.1).
+    expect(() => generateStartEngagementEvent(state)).toThrow(
+      new Error('The move has not been written yet'),
+    );
   });
 });

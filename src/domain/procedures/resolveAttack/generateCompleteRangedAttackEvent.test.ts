@@ -6,6 +6,8 @@ import { generateCompleteRangedAttackEvent } from './generateCompleteRangedAttac
  */
 describe('generateCompleteRangedAttackEvent function', () => {
   it('names the effect that ends one shot', () => {
+    // Who may shoot next is asked when the next shooter is chosen, so the
+    // event records nothing.
     expect(generateCompleteRangedAttackEvent()).toStrictEqual({
       effectType: 'completeRangedAttack',
       eventType: 'gameEffect',

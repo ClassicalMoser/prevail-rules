@@ -1,4 +1,3 @@
-import type { GameState } from '@game';
 import type { GameEffectType } from '@events';
 import { gameEffects } from '@events';
 import type { RandomSource } from '@utils';
@@ -16,19 +15,21 @@ describe('generateEventFromProcedure function', () => {
   const anyDraw: RandomSource = { nextFloat: () => 0 };
 
   it.each([...gameEffects])(
-    'given factory state for %s, returns gameEffect with matching effectType',
+    'hands %s to the procedure that builds that effect',
     (effectType) => {
-      expect.hasAssertions();
+      // A state on the step where the game owes this effect.
       const state = procedureRegistryStateFactories[effectType]();
+
+      // The event built is the effect asked for: each type reaches its own
+      // procedure, not a neighbour's.
       const event = generateEventFromProcedure(state, effectType, anyDraw);
       expect(event.eventType).toBe('gameEffect');
       expect(event.effectType).toBe(effectType);
     },
   );
 
-  it('given effectType not in registry, throws naming the non-existent key', () => {
-    expect.hasAssertions();
-    const state: GameState = createEmptyGameState('standard');
+  it('throws naming an effect type that has no procedure', () => {
+    const state = createEmptyGameState('standard');
     // Deliberate use of unsafe cast to GameEffectType to test the error message
     expect(() =>
       generateEventFromProcedure(

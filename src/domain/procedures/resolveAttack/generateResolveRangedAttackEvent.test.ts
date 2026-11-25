@@ -1,139 +1,162 @@
-import type { GameState } from '@game';
+import type { GameState, RangedAttackResolutionState } from '@game';
 import {
   createAttackApplyStateWithNothingDue,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createRangedAttackResolutionState,
   createTestCard,
   createTestUnit,
-  getUnitByStatValue,
-  getUnitByTrait,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
-import { createEmptyGameState } from '@factories';
-/** Phalanx spearmen: default `inPlay` (+1 attack) keeps strike below retreat. */
-const spearmenType = getUnitByTrait('formation', 'phalanx');
-/** Low retreat so a cavalry strike forces the defender back. */
-const lowRetreatType = getUnitByStatValue('retreat', 1);
-/** Cavalry attacker for that low-retreat case. */
-const cavalryType = getUnitByTrait('cavalry');
+/** Black's skirmisher (Attack 2, Range 2), the shooter. */
+const skirmisher = createTestUnit('black', { attack: 2, range: 2 });
+
+/** White's cavalry (Retreat 3, Reverse 5, Rout 7), the target. */
+const cavalry = createTestUnit('white', {
+  attack: 4,
+  retreat: 3,
+  reverse: 5,
+  rout: 7,
+});
+
+/**
+ * Black's skirmisher on C-5 facing south, with White's cavalry two spaces
+ * ahead on E-5, inside its forward arc at Range 2 (§2.4.3), in the middle of
+ * this shot. The shot is as far along as `progress` says; by default both
+ * players have declined to commit and the target is named with no supporters.
+ *
+ * @param progress - The parts of the shot the case sets
+ * @returns The game, carrying out that shot
+ */
+function shootingCavalry(
+  progress: Partial<RangedAttackResolutionState>,
+): GameState {
+  // The shooter and its target where they stand.
+  const board = createGameStateWithUnits([
+    placed(skirmisher, 'C-5', 'south'),
+    placed(cavalry, 'E-5', 'north'),
+  ]);
+
+  // The shot, as far as play has written it.
+  const shot = createRangedAttackResolutionState(board, {
+    attackingCommitment: { commitmentType: 'declined' },
+    attackingUnit: skirmisher,
+    defendingCommitment: { commitmentType: 'declined' },
+    defendingUnit: cavalry,
+    supportingUnits: [],
+    ...progress,
+  });
+
+  // Phase 3, Black carrying out that Shoot order.
+  const shooting = createGameStateResolvingCommand(shot, board);
+  return shooting;
+}
 
 /**
  * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
  * settled, and there must be no attack-apply substep yet. Outcome exposes rout/retreat/reverse
  * flags; where a retreat may go is worked out when that retreat opens.
  */
+// TODO(misleading): "roll" — the game has no dice; a shot is measured, its
+// attack value set against the target's thresholds (§7.4.3, §7.5.1). Settle
+// by saying "measure".
 describe('generateResolveRangedAttackEvent function', () => {
-  /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
-  function rangedResolutionGameState(): GameState {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { unitType: spearmenType });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackingUnit: createTestUnit('black', { unitType: spearmenType }),
-      defendingUnit,
+  it('records what the shot reached against its target, and nothing else', () => {
+    // A second skirmisher, ordered by the same Shoot and able to make the same
+    // shot from C-6, supports it (§7.3.4).
+    const supporter = createTestUnit('black', {
+      attack: 2,
+      instanceNumber: 2,
+      range: 2,
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
+    const board = createGameStateWithUnits([
+      placed(skirmisher, 'C-5', 'south'),
+      placed(supporter, 'C-6', 'south'),
+      placed(cavalry, 'E-5', 'north'),
+    ]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackingCommitment: { commitmentType: 'declined' },
+      attackingUnit: skirmisher,
+      defendingCommitment: { commitmentType: 'declined' },
+      defendingUnit: cavalry,
+      supportingUnits: [supporter],
     });
-    return updatePhaseState(withBoard, phase);
-  }
+    const state = createGameStateResolvingCommand(shot, board);
 
-  it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { unitType: lowRetreatType });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackingUnit: createTestUnit('black', { unitType: cavalryType }),
-      defendingUnit,
+    // 2 + 1 = 3 meets the cavalry's Retreat and nothing more. The target is
+    // the one the shot holds, so the event does not name it.
+    expect(generateResolveRangedAttackEvent(state)).toStrictEqual({
+      attackResult: {
+        unitRetreated: true,
+        unitReversed: false,
+        unitRouted: false,
+      },
+      effectType: 'resolveRangedAttack',
+      eventType: 'gameEffect',
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    const full = updatePhaseState(withBoard, phase);
-    const event = generateResolveRangedAttackEvent(full);
-    expect(event.attackResult.unitRetreated).toBe(true);
   });
 
-  it('given spearmen mirror below retreat threshold, retreated is false', () => {
-    const full = rangedResolutionGameState();
-    const event = generateResolveRangedAttackEvent(full);
-    expect(event.effectType).toBe('resolveRangedAttack');
-    expect(event.attackResult.unitRetreated).toBe(false);
-  });
-
-  it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      defendingCommitment: { commitmentType: 'pending' },
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
-      'Defending commitment is still pending',
-    );
-  });
-
-  it('given attacking commitment pending on ranged CRS, throws attacking commitment guard', () => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
+  it('refuses to measure a shot before the shooter has committed or declined (§4.3.11 step 2)', () => {
+    // The shooter's commitment window is still open.
+    const state = shootingCavalry({
       attackingCommitment: { commitmentType: 'pending' },
-      defendingUnit,
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
+
+    // The shooter commits before it aims, so nothing can be measured yet.
+    expect(() => generateResolveRangedAttackEvent(state)).toThrow(
       'Attacking commitment is still pending',
     );
   });
 
-  it('given ranged CRS already holding attackApplyState, throws attack apply already exists', () => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
+  it("refuses to measure a shot before the target's owner has committed or declined (§4.3.11 step 5)", () => {
+    // The target is named; its owner has not answered.
+    const state = shootingCavalry({
+      defendingCommitment: { commitmentType: 'pending' },
+    });
+
+    // A Defence card would raise the thresholds this shot is measured against.
+    expect(() => generateResolveRangedAttackEvent(state)).toThrow(
+      'Defending commitment is still pending',
     );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: createAttackApplyStateWithNothingDue(defendingUnit),
-      defendingUnit,
+  });
+
+  it('measures a shot only once', () => {
+    // The shot's result is already written: it reached nothing.
+    const state = shootingCavalry({
+      attackApplyState: createAttackApplyStateWithNothingDue(cavalry),
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
+
+    // A second measure would replace the result being carried out.
+    expect(() => generateResolveRangedAttackEvent(state)).toThrow(
       'Attack apply state already exists',
+    );
+  });
+
+  it('refuses to measure a shot with no target named', () => {
+    // Play names the target before the target's owner commits, so this state,
+    // with both commitments made and no target, is forged to reach the guard.
+    const state = shootingCavalry({
+      defendingUnit: 'pending',
+      supportingUnits: 'pending',
+    });
+
+    // Without a target there are no thresholds to measure against.
+    expect(() => generateResolveRangedAttackEvent(state)).toThrow(
+      'The target of the shot has not been named',
+    );
+  });
+
+  it('refuses to measure a shot whose supporters are not named', () => {
+    // Play names the supporters with the target, in one choice, so a named
+    // target without them is forged to reach the guard.
+    const state = shootingCavalry({ supportingUnits: 'pending' });
+
+    // Each supporter adds to the shot, so it cannot be counted without them.
+    expect(() => generateResolveRangedAttackEvent(state)).toThrow(
+      'The supporters of the shot have not been named',
     );
   });
 
@@ -148,20 +171,38 @@ describe('generateResolveRangedAttackEvent function', () => {
       shooterCard?: ('attack' | 'defense')[];
       targetCard?: ('attack' | 'defense')[];
     }): GameState {
-      const state = createEmptyGameState('standard');
-      const target = createTestUnit('white', { unitType: cavalryType });
-      const withBoard = replaceBoard(
-        state,
-        addUnitToBoard(state.boardState, placed(target, 'E-5', 'north')),
-      );
+      // The stand-in catalog has no unit with Attack 4 and any Range, so this
+      // shooter could not be ordered to shoot (§4.3.11 step 1). The measure
+      // of a shot does not read Range, and Attack 4 is what these cases need.
+      const shooter = createTestUnit('black', {
+        attack: 4,
+        retreat: 3,
+        reverse: 5,
+        rout: 7,
+      });
       const supporters = Array.from(
         { length: extras.supporters ?? 0 },
         (_, i) =>
           createTestUnit('black', {
+            attack: 4,
             instanceNumber: i + 2,
-            unitType: cavalryType,
+            retreat: 3,
+            reverse: 5,
+            rout: 7,
           }),
       );
+
+      // The shooter on C-5 and its supporters beside it to the east, all
+      // facing the target on E-5.
+      const board = createGameStateWithUnits([
+        placed(shooter, 'C-5', 'south'),
+        ...supporters.map((supporter, i) =>
+          placed(supporter, i === 0 ? 'C-6' : 'C-4', 'south'),
+        ),
+        placed(cavalry, 'E-5', 'north'),
+      ]);
+
+      // A card committed naming these stats, or a refusal.
       const commitment = (modifiers?: ('attack' | 'defense')[]) =>
         modifiers === undefined
           ? { commitmentType: 'declined' as const }
@@ -169,19 +210,15 @@ describe('generateResolveRangedAttackEvent function', () => {
               card: createTestCard({ modifiers }),
               commitmentType: 'completed' as const,
             };
-      const ranged = createRangedAttackResolutionState(withBoard, {
+      const ranged = createRangedAttackResolutionState(board, {
         attackingCommitment: commitment(extras.shooterCard),
-        attackingUnit: createTestUnit('black', { unitType: cavalryType }),
+        attackingUnit: shooter,
         defendingCommitment: commitment(extras.targetCard),
-        defendingUnit: target,
+        defendingUnit: cavalry,
         supportingUnits: supporters,
       });
-      return updatePhaseState(
-        withBoard,
-        createIssueCommandsPhaseState(withBoard, {
-          currentCommandResolutionState: ranged,
-        }),
-      );
+      const shooting = createGameStateResolvingCommand(ranged, board);
+      return shooting;
     }
 
     it('a lone shot of 4 reaches the target’s Retreat but not its Reverse', () => {
@@ -205,6 +242,7 @@ describe('generateResolveRangedAttackEvent function', () => {
         cavalryShot({ shooterCard: ['attack'] }),
       );
 
+      // 4 + 1 = 5 meets the target's Reverse of 5.
       expect(event.attackResult.unitReversed).toBe(true);
     });
 

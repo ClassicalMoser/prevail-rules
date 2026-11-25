@@ -1,190 +1,164 @@
-import type { CommandCard } from '@entities';
-import type { GameState } from '@game';
+import type { CommandCard, PlayerSide } from '@entities';
+import type { AuthoritativeGameState, CleanupPhaseStep } from '@game';
 import type { RandomSource } from '@utils';
-import { PLAY_CARDS_PHASE } from '@game';
-
 import {
-  createCleanupPhaseState,
-  createTestCard,
-  updateCardState,
-} from '@testing';
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+  createEmptyGameState,
+  createOpenedRallyResolutionState,
+} from '@factories';
+import { createCleanupPhaseState, createTestCard } from '@testing';
+import {
+  updateCurrentInitiative,
+  updatePhaseState,
+  updatePlayerCardState,
+} from '@transforms';
 
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
-
-import { createEmptyGameState } from '@factories';
 
 /**
  * Cleanup: resolve rally burns one played command card. Procedure picks a card from the
  * acting player’s `played` pile (non-deterministic); player comes from resolve-rally step + initiative.
  */
 describe('generateResolveRallyEvent function', () => {
-  // Where it matters, these cases hold one played card, so any draw burns
-  // it; the rest throw before drawing. Draw the first.
-  const anyDraw: RandomSource = { nextFloat: () => 0 };
-
-  /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
-  function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const playedCard = createTestCard();
-    const withPlayed = updateCardState(base, {
-      ...base.cardState,
-      [played]: {
-        ...base.cardState[played],
-        played: [playedCard],
-      },
-    });
-    return updatePhaseState(
-      withPlayed,
-      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
-    );
-  }
-
-  it('uses initiative player on firstPlayerResolveRally and burns from their played pile', () => {
-    const full = cleanupResolveRallyState('black');
-    const event = generateResolveRallyEvent(full, anyDraw);
-    expect(event.effectType).toBe('resolveRally');
-    expect(event.player).toBe('black');
-    expect(full.cardState.black.played).toContain(event.burntCard);
-  });
-
-  it('uses non-initiative player on secondPlayerResolveRally', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const playedCard = createTestCard();
-    const withPlayed = updateCardState(base, {
-      ...base.cardState,
-      black: {
-        ...base.cardState.black,
-        played: [playedCard],
-      },
-    });
-    const full = updatePhaseState(
-      withPlayed,
-      createCleanupPhaseState({ step: 'secondPlayerResolveRally' }),
-    );
-    const event = generateResolveRallyEvent(full, anyDraw);
-    expect(event.player).toBe('black');
-    expect(full.cardState.black.played).toContain(event.burntCard);
-  });
-
-  it('uses white as first player when initiative is white on firstPlayerResolveRally', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const playedCard = createTestCard();
-    const withPlayed = updateCardState(base, {
-      ...base.cardState,
-      white: {
-        ...base.cardState.white,
-        played: [playedCard],
-      },
-    });
-    const full = updatePhaseState(
-      withPlayed,
-      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
-    );
-    const event = generateResolveRallyEvent(full, anyDraw);
-    expect(event.player).toBe('white');
-    expect(full.cardState.white.played).toContain(event.burntCard);
-  });
-
   /** A source that always draws `value`, so the burn index is fixed. */
   function fixedRandom(value: number): RandomSource {
     return { nextFloat: () => value };
   }
 
-  /** Three distinguishable cards in black's played pile, on resolve-rally. */
-  function cleanupWithThreePlayed(): {
-    first: CommandCard;
-    full: GameState;
-    third: CommandCard;
-  } {
+  /**
+   * Cleanup on the first player's rally, which they chose to make and have
+   * not yet carried out (§10.3.2). `holder` holds the initiative, so is the
+   * first player; each side's played pile is as given.
+   */
+  function firstPlayerRallying(
+    holder: PlayerSide,
+    played: Record<PlayerSide, CommandCard[]>,
+  ): AuthoritativeGameState {
+    // The first player chose to rally, and the burn is owed.
+    const rallying = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), holder),
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: createOpenedRallyResolutionState(true),
+        step: 'firstPlayerResolveRally',
+      }),
+    );
+
+    // Each side's played pile, from earlier rounds and this one.
+    const whitePlayed = updatePlayerCardState(rallying, 'white', {
+      ...rallying.cardState.white,
+      played: played.white,
+    });
+    const state = updatePlayerCardState(whitePlayed, 'black', {
+      ...whitePlayed.cardState.black,
+      played: played.black,
+    });
+    return state;
+  }
+
+  it('burns from the first player’s played pile on the first player’s rally', () => {
+    // Black holds the initiative, so rallies first; both piles hold a card.
+    const blackCard = createTestCard();
+    const state = firstPlayerRallying('black', {
+      black: [blackCard],
+      white: [createTestCard()],
+    });
+
+    // The rallying player's own card is burnt, and the event names them.
+    expect(generateResolveRallyEvent(state, fixedRandom(0))).toStrictEqual({
+      burntCard: blackCard,
+      effectType: 'resolveRally',
+      eventType: 'gameEffect',
+      player: 'black',
+    });
+  });
+
+  it('burns from White’s pile when White holds the initiative and rallies first', () => {
+    // White holds the initiative this time, so White rallies first.
+    const whiteCard = createTestCard();
+    const state = firstPlayerRallying('white', {
+      black: [createTestCard()],
+      white: [whiteCard],
+    });
+
+    // White's card is burnt, not Black's.
+    const event = generateResolveRallyEvent(state, fixedRandom(0));
+    expect(event.player).toBe('white');
+    expect(event.burntCard).toBe(whiteCard);
+  });
+
+  it('burns from the second player’s pile on the second player’s rally', () => {
+    // White holds the initiative and has finished its rally; Black, the
+    // second player, chose to rally too.
+    const blackCard = createTestCard();
+    const rallying = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: {
+          ...createOpenedRallyResolutionState(false),
+          completed: true,
+        },
+        secondPlayerRallyResolutionState:
+          createOpenedRallyResolutionState(true),
+        step: 'secondPlayerResolveRally',
+      }),
+    );
+    const state = updatePlayerCardState(rallying, 'black', {
+      ...rallying.cardState.black,
+      played: [blackCard],
+    });
+
+    // The second player rallies after the first (§10.3.6): Black's card burns.
+    const event = generateResolveRallyEvent(state, fixedRandom(0));
+    expect(event.player).toBe('black');
+    expect(event.burntCard).toBe(blackCard);
+  });
+
+  it('gives each played card an equal share of the draw', () => {
+    // Three cards in Black's played pile, in the order they were played.
     const first = createTestCard();
     const second = createTestCard();
     const third = createTestCard();
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const withPlayed = updateCardState(base, {
-      ...base.cardState,
-      black: {
-        ...base.cardState.black,
-        played: [first, second, third],
-      },
+    const state = firstPlayerRallying('black', {
+      black: [first, second, third],
+      white: [],
     });
-    const full = updatePhaseState(
-      withPlayed,
-      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
+
+    // The burn is random by design (§10.3.2). The draw lies in [0, 1), and
+    // each third of it burns one card: the bottom, the middle and the top.
+    expect(generateResolveRallyEvent(state, fixedRandom(0)).burntCard).toBe(
+      first,
     );
-    return { first, full, third };
-  }
-
-  it('burns the first played card when the source draws zero', () => {
-    const { first, full } = cleanupWithThreePlayed();
-    const event = generateResolveRallyEvent(full, fixedRandom(0));
-    expect(event.burntCard.id).toBe(first.id);
-  });
-
-  it('burns the last played card when the source draws near one', () => {
-    const { full, third } = cleanupWithThreePlayed();
-    const event = generateResolveRallyEvent(full, fixedRandom(0.99));
-    expect(event.burntCard.id).toBe(third.id);
-  });
-
-  it('burns the same card twice from one fixed source', () => {
-    const { full } = cleanupWithThreePlayed();
-    const first = generateResolveRallyEvent(full, fixedRandom(0.5));
-    const second = generateResolveRallyEvent(full, fixedRandom(0.5));
-    expect(second.burntCard.id).toBe(first.burntCard.id);
+    expect(generateResolveRallyEvent(state, fixedRandom(0.5)).burntCard).toBe(
+      second,
+    );
+    expect(generateResolveRallyEvent(state, fixedRandom(0.99)).burntCard).toBe(
+      third,
+    );
   });
 
   it('throws when the acting player has an empty played pile', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const full = updatePhaseState(
-      base,
-      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
-    );
-    expect(() => generateResolveRallyEvent(full, anyDraw)).toThrow(
+    // Black rallies first with nothing played, which Cleanup never allows:
+    // this round's card reaches the played pile before any rally (§10.3.3).
+    const state = firstPlayerRallying('black', { black: [], white: [] });
+
+    // The rallying player is named.
+    expect(() => generateResolveRallyEvent(state, fixedRandom(0))).toThrow(
       'Player black has no played cards to burn for rally',
     );
   });
 
-  it('throws when cleanup is still on a chooseRally step', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+  it.each<CleanupPhaseStep>([
+    'firstPlayerChooseRally',
+    'secondPlayerChooseRally',
+  ])('throws when cleanup is still on %s', (step) => {
+    // The player is still deciding whether to rally, so nothing burns yet.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createCleanupPhaseState({ step }),
     );
-    const full = updatePhaseState(
-      base,
-      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
-    );
-    expect(() => generateResolveRallyEvent(full, anyDraw)).toThrow(
-      'Cleanup phase is not on a resolveRally step: firstPlayerChooseRally',
-    );
-  });
 
-  it('throws when not in cleanup phase', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const full = updatePhaseState(base, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'complete',
-    });
-    expect(() => generateResolveRallyEvent(full, anyDraw)).toThrow(
-      'Expected cleanup phase, got playCards',
+    // The step is named.
+    expect(() => generateResolveRallyEvent(state, fixedRandom(0))).toThrow(
+      `Cleanup phase is not on a resolveRally step: ${step}`,
     );
   });
 });

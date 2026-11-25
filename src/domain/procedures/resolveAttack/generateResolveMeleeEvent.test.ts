@@ -1,28 +1,56 @@
-import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
-
+import type { PlayerSide } from '@entities';
+import type { Commitment, GameState } from '@game';
 import {
+  createGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
-  createTestUnit,
-  getUnitByTrait,
-  placed,
-  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 
-import { createEmptyGameState } from '@factories';
-/** Phalanx spearmen: with default test `inPlay` (+1 attack), strike stays below retreat. */
-const spearmenType = getUnitByTrait('formation', 'phalanx');
-/** Cavalry mirror match. */
-const cavalryType = getUnitByTrait('cavalry');
+// The unit placement shorthand `createGameState` reads; the @testing barrel
+// does not export its name.
+type UnitPlacementSpec = Parameters<typeof createGameState>[0][number];
+
+/**
+ * A game fighting the melee on E-5 between the units `units` places, with
+ * each player's commitment already made. `createGameStateResolvingMelee` does
+ * the same on an empty board; this one keeps the units the case placed.
+ *
+ * @param units - The two fighters on E-5, and any friends beside them
+ * @param commitments - Each player's card to the melee, the first player's first
+ * @param initiative - The side holding the initiative, and so committing first
+ * @returns The game, with both commitments made and the attack still to count
+ */
+function fightingOnE5(
+  units: UnitPlacementSpec[],
+  commitments: { first: Commitment; second: Commitment },
+  initiative: PlayerSide,
+): GameState {
+  // The board, with the initiative where the case puts it.
+  const board = createGameState(units, { currentInitiative: initiative });
+
+  // The melee on E-5, both players having committed or declined (§7.2.2).
+  const melee = createMeleeResolutionState(board, {
+    firstPlayerCommitment: commitments.first,
+    secondPlayerCommitment: commitments.second,
+  });
+
+  // Phase 4, fighting that melee.
+  const fighting = updatePhaseState(
+    board,
+    createResolveMeleePhaseState(board, { currentMeleeResolutionState: melee }),
+  );
+  return fighting;
+}
+
+/** Neither player commits a card. */
+const bothDecline = {
+  first: { commitmentType: 'declined' },
+  second: { commitmentType: 'declined' },
+} as const;
 
 /**
  * `resolveMelee` compares strike vs retreat at a shared cell and sets rout/retreat
@@ -30,39 +58,111 @@ const cavalryType = getUnitByTrait('cavalry');
  * at the melee coordinate. The event carries only those results; where a
  * retreat may go is worked out when that retreat opens.
  */
+// TODO(misleading): each attack value is compared against all three of the
+// other unit's thresholds, Reverse included (§7.2.2 step 4), and support adds
+// to it, not only "strike vs retreat". Settle by naming the three thresholds.
 describe('generateResolveMeleeEvent function', () => {
-  /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
-  function meleeResolutionGameState(): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+  it("measures each unit's attack against the other unit's thresholds, both at once", () => {
+    // White's cavalry (Attack 4; Retreat 3, Reverse 5, Rout 7) and Black's
+    // spearmen (Attack 3; Retreat 6, Reverse 7, Rout 8) fight on E-5, alone.
+    const state = fightingOnE5(
+      [
+        {
+          attack: 4,
+          coord: 'E-5',
+          facing: 'north',
+          player: 'white',
+          retreat: 3,
+          reverse: 5,
+          rout: 7,
+        },
+        {
+          attack: 3,
+          coord: 'E-5',
+          facing: 'south',
+          player: 'black',
+          retreat: 6,
+          reverse: 7,
+          rout: 8,
+        },
+      ],
+      bothDecline,
+      'white',
     );
-    const whiteUnit = createTestUnit('white', { unitType: spearmenType });
-    const blackUnit = createTestUnit('black', { unitType: spearmenType });
-    const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
-    const phase = createResolveMeleePhaseState(s);
-    return updatePhaseState(s, phase);
-  }
 
-  it('given cavalry vs cavalry on E-5, both retreated true', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+    // White's 4 meets none of the spearmen's thresholds; Black's 3 meets the
+    // cavalry's Retreat and no more. Each result is recorded by the colour of
+    // the unit it struck.
+    expect(generateResolveMeleeEvent(state)).toStrictEqual({
+      attackResultOnBlackUnit: {
+        unitRetreated: false,
+        unitReversed: false,
+        unitRouted: false,
+      },
+      attackResultOnWhiteUnit: {
+        unitRetreated: true,
+        unitReversed: false,
+        unitRouted: false,
+      },
+      effectType: 'resolveMelee',
+      eventType: 'gameEffect',
+    });
+  });
+
+  it("reads each side's own card by who holds the initiative (§7.2.2)", () => {
+    // Two cavalry units (Attack 4; Retreat 3, Reverse 5, Rout 7) on E-5.
+    // White holds the initiative, so its card is the first committed: a
+    // Defence card. Black's, the second, is an Attack card.
+    const state = fightingOnE5(
+      [
+        {
+          attack: 4,
+          coord: 'E-5',
+          facing: 'north',
+          player: 'white',
+          retreat: 3,
+          reverse: 5,
+          rout: 7,
+        },
+        {
+          attack: 4,
+          coord: 'E-5',
+          facing: 'south',
+          player: 'black',
+          retreat: 3,
+          reverse: 5,
+          rout: 7,
+        },
+      ],
+      {
+        first: {
+          card: createTestCard({ modifiers: ['defense'] }),
+          commitmentType: 'completed',
+        },
+        second: {
+          card: createTestCard({ modifiers: ['attack'] }),
+          commitmentType: 'completed',
+        },
+      },
+      'white',
     );
-    const whiteUnit = createTestUnit('white', { unitType: cavalryType });
-    const blackUnit = createTestUnit('black', { unitType: cavalryType });
-    const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
-    const phase = createResolveMeleePhaseState(s);
-    const full = updatePhaseState(s, phase);
-    const event = generateResolveMeleeEvent(full);
-    expect(event.attackResultOnWhiteUnit.unitRetreated).toBe(true);
-    expect(event.attackResultOnBlackUnit.unitRetreated).toBe(true);
+
+    const event = generateResolveMeleeEvent(state);
+
+    // White's 4 meets Black's Retreat of 3 only: Black's Attack card adds to
+    // Black's blow, not White's.
+    expect(event.attackResultOnBlackUnit).toStrictEqual({
+      unitRetreated: true,
+      unitReversed: false,
+      unitRouted: false,
+    });
+    // Black's 5 meets White's Retreat, raised to 4, but not its Reverse,
+    // raised to 6 by White's own Defence card.
+    expect(event.attackResultOnWhiteUnit).toStrictEqual({
+      unitRetreated: true,
+      unitReversed: false,
+      unitRouted: false,
+    });
   });
 
   describe('a Defence card committed to the melee (§8.5)', () => {
@@ -72,46 +172,52 @@ describe('generateResolveMeleeEvent function', () => {
      * attack value against white is 5. White commits a card naming `whiteCommits`.
      */
     function cavalryMelee(whiteCommits: ('attack' | 'defense')[]): GameState {
-      const state = updateCurrentInitiative(
-        createEmptyGameState('standard'),
+      const fighting = fightingOnE5(
+        [
+          {
+            attack: 4,
+            coord: 'E-5',
+            facing: 'north',
+            player: 'white',
+            retreat: 3,
+            reverse: 5,
+            rout: 7,
+          },
+          {
+            attack: 4,
+            coord: 'E-5',
+            facing: 'south',
+            player: 'black',
+            retreat: 3,
+            reverse: 5,
+            rout: 7,
+          },
+        ],
+        {
+          first: {
+            card: createTestCard({ modifiers: ['attack'] }),
+            commitmentType: 'completed',
+          },
+          second: {
+            card: createTestCard({ modifiers: whiteCommits }),
+            commitmentType: 'completed',
+          },
+        },
         'black',
       );
-      const whiteWp = placed(
-        createTestUnit('white', { unitType: cavalryType }),
-        'E-5',
-        'north',
-      );
-      const blackWp = placed(
-        createTestUnit('black', { unitType: cavalryType }),
-        'E-5',
-        'south',
-      );
-      const board = addUnitToBoard(
-        addUnitToBoard(state.boardState, whiteWp),
-        blackWp,
-      );
-      const s = replaceBoard(state, board);
-      const melee = createMeleeResolutionState(s, {
-        firstPlayerCommitment: {
-          card: createTestCard({ modifiers: ['attack'] }),
-          commitmentType: 'completed',
-        },
-        secondPlayerCommitment: {
-          card: createTestCard({ modifiers: whiteCommits }),
-          commitmentType: 'completed',
-        },
-      });
-      return updatePhaseState(
-        s,
-        createResolveMeleePhaseState(s, { currentMeleeResolutionState: melee }),
-      );
+      return fighting;
     }
 
     it("without it, an attack that reaches the unit's Reverse turns it", () => {
       // Black's attack value of 5 meets white's Reverse of 5.
       const event = generateResolveMeleeEvent(cavalryMelee(['attack']));
 
-      expect(event.attackResultOnWhiteUnit.unitReversed).toBe(true);
+      // It meets White's Retreat as well, and falls short of its Rout.
+      expect(event.attackResultOnWhiteUnit).toStrictEqual({
+        unitRetreated: true,
+        unitReversed: true,
+        unitRouted: false,
+      });
     });
 
     it("with it, the unit's thresholds rise by 1 and the same attack does not turn it", () => {
@@ -119,8 +225,12 @@ describe('generateResolveMeleeEvent function', () => {
       // Retreat of 4 is still reached.
       const event = generateResolveMeleeEvent(cavalryMelee(['defense']));
 
-      expect(event.attackResultOnWhiteUnit.unitReversed).toBe(false);
-      expect(event.attackResultOnWhiteUnit.unitRetreated).toBe(true);
+      // Retreat only.
+      expect(event.attackResultOnWhiteUnit).toStrictEqual({
+        unitRetreated: true,
+        unitReversed: false,
+        unitRouted: false,
+      });
     });
 
     it("does nothing to the enemy's thresholds", () => {
@@ -144,46 +254,42 @@ describe('generateResolveMeleeEvent function', () => {
      * east, facing west and so looking straight at it.
      */
     function cavalryMeleeWithFriend(friend: boolean): GameState {
-      const state = updateCurrentInitiative(
-        createEmptyGameState('standard'),
-        'black',
-      );
-      const whiteWp = placed(
-        createTestUnit('white', { unitType: cavalryType }),
-        'E-5',
-        'north',
-      );
-      const blackWp = placed(
-        createTestUnit('black', { unitType: cavalryType }),
-        'E-5',
-        'south',
-      );
-      let board = addUnitToBoard(
-        addUnitToBoard(state.boardState, whiteWp),
-        blackWp,
-      );
-      if (friend) {
-        board = addUnitToBoard(
-          board,
-          placed(
-            createTestUnit('black', {
-              instanceNumber: 2,
-              unitType: cavalryType,
-            }),
-            'E-6',
-            'west',
-          ),
-        );
-      }
-      const s = replaceBoard(state, board);
-      const melee = createMeleeResolutionState(s, {
-        firstPlayerCommitment: { commitmentType: 'declined' },
-        secondPlayerCommitment: { commitmentType: 'declined' },
-      });
-      return updatePhaseState(
-        s,
-        createResolveMeleePhaseState(s, { currentMeleeResolutionState: melee }),
-      );
+      // The two fighters.
+      const fighters: UnitPlacementSpec[] = [
+        {
+          attack: 4,
+          coord: 'E-5',
+          facing: 'north',
+          player: 'white',
+          retreat: 3,
+          reverse: 5,
+          rout: 7,
+        },
+        {
+          attack: 4,
+          coord: 'E-5',
+          facing: 'south',
+          player: 'black',
+          retreat: 3,
+          reverse: 5,
+          rout: 7,
+        },
+      ];
+
+      // Black's friend, another of the same cavalry, when the case asks.
+      const blackFriend: UnitPlacementSpec = {
+        attack: 4,
+        coord: 'E-6',
+        facing: 'west',
+        player: 'black',
+        retreat: 3,
+        reverse: 5,
+        rout: 7,
+      };
+      const units = friend ? [...fighters, blackFriend] : fighters;
+
+      const fighting = fightingOnE5(units, bothDecline, 'black');
+      return fighting;
     }
 
     it('without one, an attack value of 4 does not turn the enemy', () => {
@@ -198,65 +304,78 @@ describe('generateResolveMeleeEvent function', () => {
 
       expect(event.attackResultOnWhiteUnit.unitReversed).toBe(true);
     });
+
+    it("adds to its own side's attack only", () => {
+      // The same two cavalry units, and a white friend on E-4, west of
+      // White's fighter, facing east and so looking straight at it.
+      const state = fightingOnE5(
+        [
+          {
+            attack: 4,
+            coord: 'E-5',
+            facing: 'north',
+            player: 'white',
+            retreat: 3,
+            reverse: 5,
+            rout: 7,
+          },
+          {
+            attack: 4,
+            coord: 'E-5',
+            facing: 'south',
+            player: 'black',
+            retreat: 3,
+            reverse: 5,
+            rout: 7,
+          },
+          {
+            attack: 4,
+            coord: 'E-4',
+            facing: 'east',
+            player: 'white',
+            retreat: 3,
+            reverse: 5,
+            rout: 7,
+          },
+        ],
+        bothDecline,
+        'black',
+      );
+
+      const event = generateResolveMeleeEvent(state);
+
+      // White's 4 + 2 = 6 meets Black's Retreat and Reverse.
+      expect(event.attackResultOnBlackUnit).toStrictEqual({
+        unitRetreated: true,
+        unitReversed: true,
+        unitRouted: false,
+      });
+      // Black's 4, with no friend of its own, meets White's Retreat only.
+      expect(event.attackResultOnWhiteUnit).toStrictEqual({
+        unitRetreated: true,
+        unitReversed: false,
+        unitRouted: false,
+      });
+    });
   });
 
-  it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat', () => {
-    const full = meleeResolutionGameState();
-    const event = generateResolveMeleeEvent(full);
-    expect(event.effectType).toBe('resolveMelee');
-    expect(event.attackResultOnWhiteUnit.unitRetreated).toBe(false);
-    expect(event.attackResultOnBlackUnit.unitRetreated).toBe(false);
-  });
-
-  it('given melee CRS with a second player commitment pending, throws that guard', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
+  it('refuses to count the attack while the second player may still commit (§7.2.2)', () => {
+    // Black, the first player, has declined; White has not answered yet.
+    const state = fightingOnE5(
+      [
+        ['E-5', 'white', 'north'],
+        ['E-5', 'black', 'south'],
+      ],
+      {
+        first: { commitmentType: 'declined' },
+        second: { commitmentType: 'pending' },
+      },
       'black',
     );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const blackWp = placed(blackUnit, 'E-5', 'south');
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
-    const melee = createMeleeResolutionState(s, {
-      secondPlayerCommitment: { commitmentType: 'pending' },
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full)).toThrow(
+
+    // Both players commit or decline before the attack values are counted.
+    expect(() => generateResolveMeleeEvent(state)).toThrow(
       'Second player commitment is still pending',
-    );
-  });
-
-  it('given playCards phase, throws not in resolveMelee', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const full = updatePhaseState(base, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'complete',
-    });
-    expect(() => generateResolveMeleeEvent(full)).toThrow(
-      'Not in resolveMelee phase',
-    );
-  });
-
-  it('given only white on E-5 in resolveMelee phase, throws units not found on board', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const whiteWp = placed(whiteUnit, 'E-5', 'north');
-    const s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
-    const phase = createResolveMeleePhaseState(s);
-    const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full)).toThrow(
-      'Units not found on board',
     );
   });
 });

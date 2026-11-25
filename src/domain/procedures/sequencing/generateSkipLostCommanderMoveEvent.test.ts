@@ -1,10 +1,9 @@
-import { createEmptyGameState } from '@factories';
-import { MOVE_COMMANDERS_PHASE } from '@game';
 import type { MoveCommandersPhaseStep } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createMoveCommandersPhaseState, withLostCommander } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { generateSkipLostCommanderMoveEvent } from './generateSkipLostCommanderMoveEvent';
-import { withLostCommander } from '@testing';
 
 /**
  * A fallen commander's Move Commanders turn is passed over (§4.2.8). Black
@@ -13,14 +12,17 @@ import { withLostCommander } from '@testing';
 describe('generateSkipLostCommanderMoveEvent function', () => {
   /** The given Move Commanders step, with Black holding the initiative. */
   function onStep(step: MoveCommandersPhaseStep) {
+    // Black took the initiative in Phase 1.
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'black',
     );
-    const state = updatePhaseState(base, {
-      phase: MOVE_COMMANDERS_PHASE,
-      step,
-    });
+
+    // Move Commanders, on the step the case names.
+    const state = updatePhaseState(
+      base,
+      createMoveCommandersPhaseState({ step }),
+    );
     return state;
   }
 
@@ -39,9 +41,11 @@ describe('generateSkipLostCommanderMoveEvent function', () => {
     // White's turn, and White's commander is lost.
     const state = withLostCommander(onStep('moveSecondCommander'), 'white');
 
-    expect(generateSkipLostCommanderMoveEvent(state).effectType).toBe(
-      'skipLostCommanderMove',
-    );
+    // The second player's turn passes the same way.
+    expect(generateSkipLostCommanderMoveEvent(state)).toStrictEqual({
+      effectType: 'skipLostCommanderMove',
+      eventType: 'gameEffect',
+    });
   });
 
   it('throws when the player whose turn it is still has their commander, where nothing asks', () => {
@@ -55,6 +59,7 @@ describe('generateSkipLostCommanderMoveEvent function', () => {
   });
 
   it('throws once the phase is complete, where no turn is left', () => {
+    // Both turns are taken, so no turn is left to pass.
     expect(() =>
       generateSkipLostCommanderMoveEvent(onStep('complete')),
     ).toThrow(new Error('Move Commanders is complete; no turn to pass over'));

@@ -1,93 +1,56 @@
-import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
-
+import { createEmptyGameState } from '@factories';
 import {
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  enemyCuttingOffRetreat,
   legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
-import { createEmptyGameState } from '@factories';
+// TODO(misleading): the event carries nothing, so no context or player is
+// explicit on it; the apply asks the state which retreat is waiting for its
+// rout. Settle by rewording the header.
 /**
  * When the defender cannot retreat legally, the engine emits `triggerRoutFromRetreat` so the
  * rout flow can start instead. Context is ranged vs melee; in melee the retreating player is
  * explicit when both sides could theoretically be in retreat substeps.
  */
 describe('generateTriggerRoutFromRetreatEvent function', () => {
-  function stateWithRangedRetreat(): GameState {
-    const state = createEmptyGameState('standard');
-    const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    // A black unit on F-5 facing the defender closes its way back, so it has no
-    // retreat and must rout instead (§9.1.5, §9.1.6).
-    const cutter = placed(createTestUnit('black'), 'F-5', 'north');
-    const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = replaceBoard(state, addUnitToBoard(withUnit, cutter));
-    const attackApply = createAttackApplyStateWithRetreat(
-      unitWithPlacement.unit,
-      legalRetreatsOf(unitWithPlacement, [cutter]),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit: retreatingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
-  }
-
-  function stateWithMeleeRetreat(
-    retreatingPlayer: 'white' | 'black',
-  ): GameState {
-    const state = createEmptyGameState('standard');
-    const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(
-      retreatingPlayer === 'white' ? 'black' : 'white',
-      {
-        attack: 2,
-      },
-    );
-    const retreatingWp = placed(retreatingUnit, 'E-5', 'north');
-    const otherWp = placed(otherUnit, 'E-5', 'south');
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, retreatingWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, otherWp));
-    // A third unit, an enemy of the retreating one, stands directly behind it
-    // facing it, so the retreating unit cannot fall back (§9.1.5).
-    const cutter = placed(
-      createTestUnit(retreatingPlayer === 'white' ? 'black' : 'white'),
-      'F-5',
-      'north',
-    );
-    s = replaceBoard(s, addUnitToBoard(s.boardState, cutter));
-    const attackApply = createAttackApplyStateWithRetreat(
-      retreatingWp.unit,
-      legalRetreatsOf(retreatingWp, [otherWp, cutter]),
-    );
-    const melee = createMeleeResolutionState(
-      s,
-      // Black holds the initiative by default here, so black resolves first.
-      retreatingPlayer === 'white'
-        ? { attackOnSecondPlayerApplyState: attackApply }
-        : { attackOnFirstPlayerApplyState: attackApply },
-    );
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    return updatePhaseState(s, phase);
-  }
+  // White's unit on E-5 facing north, and the black archer that shot at it
+  // from two spaces ahead.
+  const target = placed(createTestUnit('white', { attack: 2 }), 'E-5', 'north');
+  const shooter = placed(
+    createTestUnit('black', { attack: 2 }),
+    'C-5',
+    'south',
+  );
 
   it('names the effect for a ranged retreat with nowhere to go, and carries nothing', () => {
-    const event = generateTriggerRoutFromRetreatEvent(stateWithRangedRetreat());
+    // A black unit on F-5 facing the defender closes its way back, so it has no
+    // retreat and must rout instead (§9.1.5, §9.1.6).
+    const cutter = enemyCuttingOffRetreat(target);
+    const board = createGameStateWithUnits([target, shooter, cutter]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackApplyState: createAttackApplyStateWithRetreat(
+        target.unit,
+        legalRetreatsOf(target, [shooter, cutter]),
+      ),
+      attackingUnit: shooter.unit,
+      defendingUnit: target.unit,
+    });
+    const state = createGameStateResolvingCommand(shot, board);
+
+    const event = generateTriggerRoutFromRetreatEvent(state);
 
     // Which retreat it is, is the state's to say when the event is applied.
     expect(event).toStrictEqual({
@@ -97,11 +60,41 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
   });
 
   it('names the same effect for a melee retreat with nowhere to go', () => {
-    const event = generateTriggerRoutFromRetreatEvent(
-      stateWithMeleeRetreat('white'),
+    // White holds the initiative, so black's unit is the second player's and
+    // falls back first (§7.5.6).
+    const whiteWp = placed(
+      createTestUnit('white', { attack: 2 }),
+      'E-5',
+      'north',
+    );
+    const blackWp = placed(
+      createTestUnit('black', { attack: 2 }),
+      'E-5',
+      'south',
+    );
+    // A third unit, an enemy of the retreating one, stands directly behind it
+    // facing it, so the retreating unit cannot fall back (§9.1.5).
+    const cutter = enemyCuttingOffRetreat(blackWp);
+    const board = createGameStateWithUnits([whiteWp, blackWp, cutter]);
+
+    // White's blow drove black's unit back; black's reached nothing.
+    const melee = createMeleeResolutionState(board, {
+      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
+        whiteWp.unit,
+      ),
+      attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+        blackWp.unit,
+        legalRetreatsOf(blackWp, [whiteWp, cutter]),
+      ),
+    });
+    const fighting = updatePhaseState(
+      board,
+      createResolveMeleePhaseState(board, {
+        currentMeleeResolutionState: melee,
+      }),
     );
 
-    expect(event).toStrictEqual({
+    expect(generateTriggerRoutFromRetreatEvent(fighting)).toStrictEqual({
       effectType: 'triggerRoutFromRetreat',
       eventType: 'gameEffect',
     });
@@ -116,6 +109,25 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     });
     expect(() => generateTriggerRoutFromRetreatEvent(full)).toThrow(
       'Retreat rout not expected in phase: playCards',
+    );
+  });
+
+  it('throws for a retreat that has somewhere to go', () => {
+    // Open ground behind the target: it falls back and does not rout, so the
+    // effect is not owed (§9.1.6 applies only when no retreat exists).
+    const board = createGameStateWithUnits([target, shooter]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackApplyState: createAttackApplyStateWithRetreat(
+        target.unit,
+        legalRetreatsOf(target, [shooter]),
+      ),
+      attackingUnit: shooter.unit,
+      defendingUnit: target.unit,
+    });
+    const state = createGameStateResolvingCommand(shot, board);
+
+    expect(() => generateTriggerRoutFromRetreatEvent(state)).toThrow(
+      'No retreat with nowhere to go is waiting for its rout',
     );
   });
 });
