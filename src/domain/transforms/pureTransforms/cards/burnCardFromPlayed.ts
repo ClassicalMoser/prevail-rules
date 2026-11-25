@@ -23,7 +23,8 @@ export function burnCardFromPlayed(
   }
 
   const newPlayed = owned.played.filter((c) => !isSameCard(c, card));
-  const newBurnt = [...owned.burnt, card];
+  // The played pile's own copy goes to the burnt pile, as the card prints.
+  const newBurnt = [...owned.burnt, owned.played[cardIndex]];
 
   return {
     ...owned,

@@ -27,7 +27,8 @@ export function burnHiddenCardFromPlayed(
   const played = hidden.played.filter(
     (playedCard) => !isSameCard(playedCard, card),
   );
-  const burnt = [...hidden.burnt, card];
+  // The played pile is face up, so its own copy goes to the burnt pile.
+  const burnt = [...hidden.burnt, hidden.played[cardIndex]];
   const next: HiddenCardState = {
     ...hidden,
     burnt,
