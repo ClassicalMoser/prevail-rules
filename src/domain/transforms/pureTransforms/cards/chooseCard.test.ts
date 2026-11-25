@@ -46,4 +46,19 @@ describe('chooseCard function', () => {
       "Command card already-played not found in player's hand",
     );
   });
+
+  it('throws when a card is already waiting to be played', () => {
+    // Each player lays down one card a round (§4.1.1). A second choice
+    // would bury the first, losing it from every pile, so it is a fault.
+    const waiting = createTestCard();
+    const held = createTestCard();
+    const owned = createOwnedCardState({
+      awaitingPlay: waiting,
+      inHand: [held],
+    });
+
+    expect(() => chooseCard(owned, held)).toThrow(
+      'Player already has a card awaiting play',
+    );
+  });
 });
