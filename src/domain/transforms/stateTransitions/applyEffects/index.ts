@@ -1,5 +1,5 @@
 export {
-  applyDiscardPlayedCardsEvent,
+  applyCardsLeavePlayEvent,
   applyGameOverEvent,
   applyResolveInitiativeEvent,
   applyResolveRallyEvent,

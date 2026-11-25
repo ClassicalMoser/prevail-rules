@@ -15,10 +15,10 @@ import { applyCompleteResolveMeleePhaseEvent } from './applyCompleteResolveMelee
 import { createEmptyGameState } from '@factories';
 /**
  * After all melee hexes resolve, this closes `resolveMelee`, logs it completed, and opens
- * cleanup at `discardPlayedCards` (inPlay cards still present for that step).
+ * cleanup at `cardsLeavePlay` (inPlay cards still present for that step).
  */
 describe('applyCompleteResolveMeleePhaseEvent function', () => {
-  it('given resolveMelee phase with default melee slice, next phase cleanup.discardPlayedCards and melee in completed', () => {
+  it('given resolveMelee phase with default melee slice, next phase cleanup.cardsLeavePlay and melee in completed', () => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -42,7 +42,7 @@ describe('applyCompleteResolveMeleePhaseEvent function', () => {
     if (phase.phase !== 'cleanup') {
       throw new Error('cleanup');
     }
-    expect(phase.step).toBe('discardPlayedCards');
+    expect(phase.step).toBe('cardsLeavePlay');
     const completed = [...next.currentRoundState.completedPhases];
     expect(completed.some((p) => p.phase === RESOLVE_MELEE_PHASE)).toBe(true);
   });

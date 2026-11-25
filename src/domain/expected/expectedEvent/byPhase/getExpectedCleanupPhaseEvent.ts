@@ -19,10 +19,10 @@ export function getExpectedCleanupPhaseEvent(
   const phaseState = getCleanupPhaseState(state);
 
   switch (phaseState.step) {
-    case 'discardPlayedCards': {
+    case 'cardsLeavePlay': {
       return {
         actionType: 'gameEffect',
-        effectType: 'discardPlayedCards',
+        effectType: 'cardsLeavePlay',
       };
     }
 

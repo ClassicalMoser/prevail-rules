@@ -64,7 +64,7 @@ describe('createCleanupPhaseState function', () => {
     expect.hasAssertions();
     const state = createCleanupPhaseState();
     expect(state.phase).toBe('cleanup');
-    expect(state.step).toBe('discardPlayedCards');
+    expect(state.step).toBe('cardsLeavePlay');
     expect(state.firstPlayerRallyResolutionState).toBe('pending');
   });
 });

@@ -22,26 +22,26 @@ export type {
 // meets them: their literal discriminants, then their schemas, then their
 // types.
 
-// Cards: the reveal and the initiative it settles, discarding the played cards,
+// Cards: the reveal and the initiative it settles, the cards leaving play,
 // a rally, and the end of the game.
 export {
   REVEAL_CARDS_EFFECT_TYPE,
   RESOLVE_INITIATIVE_EFFECT_TYPE,
-  DISCARD_PLAYED_CARDS_EFFECT_TYPE,
+  CARDS_LEAVE_PLAY_EFFECT_TYPE,
   RESOLVE_RALLY_EFFECT_TYPE,
   GAME_OVER_EFFECT_TYPE,
 } from './gameEffects';
 export {
   revealCardsEventSchema,
   resolveInitiativeEventSchema,
-  discardPlayedCardsEventSchema,
+  cardsLeavePlayEventSchema,
   resolveRallyEventSchema,
   gameOverEventSchema,
 } from './gameEffects';
 export type {
   RevealCardsEvent,
   ResolveInitiativeEvent,
-  DiscardPlayedCardsEvent,
+  CardsLeavePlayEvent,
   ResolveRallyEvent,
   GameOverEvent,
 } from './gameEffects';

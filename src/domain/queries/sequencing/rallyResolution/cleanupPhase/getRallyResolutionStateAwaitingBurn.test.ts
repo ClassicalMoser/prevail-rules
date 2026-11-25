@@ -53,18 +53,18 @@ describe('getRallyResolutionStateAwaitingBurn function', () => {
     );
   });
 
-  it('throws when cleanup is discarding played cards', () => {
+  it('throws while this round’s cards leave play', () => {
     const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
     );
     const state = updatePhaseState(
       empty,
-      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
     );
 
     expect(() => getRallyResolutionStateAwaitingBurn(state, 'white')).toThrow(
-      'Cleanup phase is not on a resolveRally step: discardPlayedCards',
+      'Cleanup phase is not on a resolveRally step: cardsLeavePlay',
     );
   });
 });

@@ -1,6 +1,6 @@
 import type { GameState } from '@game';
 
-import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
+import { generateCardsLeavePlayEvent } from './generateCardsLeavePlayEvent';
 
 import { createEmptyGameState } from '@factories';
 /**
@@ -8,17 +8,17 @@ import { createEmptyGameState } from '@factories';
  * Payload is a fixed game effect only; handler clears played piles. Implementation ignores
  * `state` beyond the parameter shape — tests document that contract.
  */
-describe('generateDiscardPlayedCardsEvent function', () => {
-  it('given any game state, emits gameEffect with effectType discardPlayedCards', () => {
+describe('generateCardsLeavePlayEvent function', () => {
+  it('given any game state, emits gameEffect with effectType cardsLeavePlay', () => {
     const state: GameState = createEmptyGameState('standard');
-    const event = generateDiscardPlayedCardsEvent(state);
+    const event = generateCardsLeavePlayEvent(state);
     expect(event.eventType).toBe('gameEffect');
-    expect(event.effectType).toBe('discardPlayedCards');
+    expect(event.effectType).toBe('cardsLeavePlay');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateDiscardPlayedCardsEvent(createEmptyGameState('standard'));
-    const b = generateDiscardPlayedCardsEvent(createEmptyGameState('standard'));
+    const a = generateCardsLeavePlayEvent(createEmptyGameState('standard'));
+    const b = generateCardsLeavePlayEvent(createEmptyGameState('standard'));
     expect(a).toStrictEqual(b);
   });
 });

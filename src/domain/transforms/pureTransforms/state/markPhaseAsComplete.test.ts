@@ -25,7 +25,7 @@ describe('markPhaseAsComplete function', () => {
       firstPlayerRallyResolutionState: 'pending',
       phase: CLEANUP_PHASE,
       secondPlayerRallyResolutionState: 'pending',
-      step: 'discardPlayedCards',
+      step: 'cardsLeavePlay',
     };
 
     const completedPhase = markPhaseAsComplete(phaseState);

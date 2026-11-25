@@ -38,14 +38,14 @@ describe('getRallyingPlayer function', () => {
     }
   });
 
-  it('throws while the played cards are being discarded, before any rally', () => {
+  it('throws while this round’s cards leave play, before any rally', () => {
     const state = updatePhaseState(
       blackFirst,
-      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
     );
 
     expect(() => getRallyingPlayer(state)).toThrow(
-      'Cleanup phase is not on a rally step: discardPlayedCards',
+      'Cleanup phase is not on a rally step: cardsLeavePlay',
     );
   });
 });

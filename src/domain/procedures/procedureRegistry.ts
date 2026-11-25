@@ -2,7 +2,7 @@ import type { GameEffectEvent, GameEffectType } from '@events';
 import type { RandomSource } from '@utils';
 import type { AuthoritativeGameState } from '@game';
 import {
-  generateDiscardPlayedCardsEvent,
+  generateCardsLeavePlayEvent,
   generateGameOverEvent,
   generateResolveInitiativeEvent,
   generateResolveRallyEvent,
@@ -99,8 +99,8 @@ export function generateEventFromProcedure(
     case 'completeUnitMovement': {
       return generateCompleteUnitMovementEvent();
     }
-    case 'discardPlayedCards': {
-      return generateDiscardPlayedCardsEvent(state);
+    case 'cardsLeavePlay': {
+      return generateCardsLeavePlayEvent(state);
     }
     case 'gameOver': {
       return generateGameOverEvent(state);

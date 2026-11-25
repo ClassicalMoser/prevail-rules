@@ -1,4 +1,4 @@
-import type { DiscardPlayedCardsEvent, GameEffectEvent } from '@events';
+import type { CardsLeavePlayEvent, GameEffectEvent } from '@events';
 import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import { tempCommandCards } from '@sampleValues';
@@ -20,7 +20,7 @@ function cleanupWithCardsInPlay(): GameState {
   // Cleanup, at the step that puts them aside.
   const cleanup = updatePhaseState(
     withCards,
-    createCleanupPhaseState({ step: 'discardPlayedCards' }),
+    createCleanupPhaseState({ step: 'cardsLeavePlay' }),
   );
   return cleanup;
 }
@@ -31,8 +31,8 @@ function cleanupWithCardsInPlay(): GameState {
  */
 describe('applyGameEffectEvent function', () => {
   it('applies the end of a round: each card in play goes to its played pile', () => {
-    const event: DiscardPlayedCardsEvent = {
-      effectType: 'discardPlayedCards',
+    const event: CardsLeavePlayEvent = {
+      effectType: 'cardsLeavePlay',
       eventType: 'gameEffect',
     };
 

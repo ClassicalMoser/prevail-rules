@@ -1,4 +1,4 @@
-import type { DiscardPlayedCardsEvent } from '@events';
+import type { CardsLeavePlayEvent } from '@events';
 import type { GameState } from '@game';
 import {
   moveBothInPlayToPlayed,
@@ -7,7 +7,7 @@ import {
 } from '@transforms/pureTransforms';
 
 /**
- * Applies a DiscardPlayedCardsEvent to the game state.
+ * Applies a CardsLeavePlayEvent to the game state.
  * Moves both players' cards from inPlay to played pile.
  * Advances the cleanup phase step to `firstPlayerChooseRally`, preserving other cleanup
  * fields from the current phase state when present.
@@ -18,8 +18,8 @@ import {
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
  * log. Phase is narrowed via `getCleanupPhaseState` (throws if not `cleanup`).
  */
-export function applyDiscardPlayedCardsEvent<S extends GameState>(
-  _event: DiscardPlayedCardsEvent,
+export function applyCardsLeavePlayEvent<S extends GameState>(
+  _event: CardsLeavePlayEvent,
   state: S,
 ): S {
   // The played cards go to the played pile, and the rallies begin (§10.3).

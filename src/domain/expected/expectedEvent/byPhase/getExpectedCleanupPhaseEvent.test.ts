@@ -29,15 +29,15 @@ describe('getExpectedCleanupPhaseEvent function', () => {
     return state;
   }
 
-  it('given context, returns discardPlayedCards game effect', () => {
-    const state = createGameStateInCleanupStep('discardPlayedCards');
+  it('given context, returns cardsLeavePlay game effect', () => {
+    const state = createGameStateInCleanupStep('cardsLeavePlay');
 
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe('gameEffect');
     expect(
       expectedEvent.actionType === 'gameEffect' && expectedEvent.effectType,
-    ).toBe('discardPlayedCards');
+    ).toBe('cardsLeavePlay');
   });
 
   it('given context, returns first player choose rally', () => {
@@ -156,7 +156,7 @@ describe('getExpectedCleanupPhaseEvent function', () => {
   });
 
   it('given for invalid step, throws', () => {
-    const state = createGameStateInCleanupStep('discardPlayedCards');
+    const state = createGameStateInCleanupStep('cardsLeavePlay');
     const phaseState = state.currentRoundState.currentPhaseState;
     if (phaseState === 'none') {
       throw new Error('expected cleanup phase state');

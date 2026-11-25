@@ -141,7 +141,7 @@ export const procedureRegistryStateFactories: Record<
   completeUnitMovement: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
-  discardPlayedCards: (): AuthoritativeGameState =>
+  cardsLeavePlay: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
   gameOver: (): AuthoritativeGameState => {

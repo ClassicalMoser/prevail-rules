@@ -106,11 +106,11 @@ describe('applyChooseRallyEvent function', () => {
     ).toBe(false);
   });
 
-  it('given cleanup on discardPlayedCards, throws chooseRally step guard', () => {
+  it('given cleanup on cardsLeavePlay, throws chooseRally step guard', () => {
     const state = createEmptyGameState('standard');
     const phaseState = createCleanupPhaseState({
       phase: CLEANUP_PHASE,
-      step: 'discardPlayedCards',
+      step: 'cardsLeavePlay',
     });
     const stateInStep = updatePhaseState(state, phaseState);
     const event: ChooseRallyEvent = {
@@ -121,7 +121,7 @@ describe('applyChooseRallyEvent function', () => {
     };
 
     expect(() => applyChooseRallyEvent(event, stateInStep)).toThrow(
-      'Cleanup phase is not on a chooseRally step: discardPlayedCards',
+      'Cleanup phase is not on a chooseRally step: cardsLeavePlay',
     );
   });
 });

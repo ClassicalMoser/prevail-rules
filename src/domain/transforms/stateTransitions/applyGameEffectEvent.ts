@@ -17,7 +17,7 @@ import {
   applyCompleteRangedAttackEvent,
   applyCompleteResolveMeleePhaseEvent,
   applyCompleteUnitMovementEvent,
-  applyDiscardPlayedCardsEvent,
+  applyCardsLeavePlayEvent,
   applyGameOverEvent,
   applyOpenRetreatFromAttackApplyEvent,
   applyOpenReverseFromAttackApplyEvent,
@@ -83,8 +83,8 @@ export function applyGameEffectEvent<S extends GameState>(
     case 'completeUnitMovement': {
       return applyCompleteUnitMovementEvent(event, state);
     }
-    case 'discardPlayedCards': {
-      return applyDiscardPlayedCardsEvent(event, state);
+    case 'cardsLeavePlay': {
+      return applyCardsLeavePlayEvent(event, state);
     }
     case 'gameOver': {
       return applyGameOverEvent(event, state);

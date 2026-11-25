@@ -195,8 +195,8 @@ export {
 } from '@events';
 export {
   completeUnitMovementEventSchema,
-  DISCARD_PLAYED_CARDS_EFFECT_TYPE,
-  discardPlayedCardsEventSchema,
+  CARDS_LEAVE_PLAY_EFFECT_TYPE,
+  cardsLeavePlayEventSchema,
   GAME_OVER_EFFECT_TYPE,
   gameOverEventSchema,
   gameEffectEventSchema,
@@ -279,7 +279,7 @@ export type {
   CompleteRangedAttackEvent,
   CompleteResolveMeleePhaseEvent,
   CompleteUnitMovementEvent,
-  DiscardPlayedCardsEvent,
+  CardsLeavePlayEvent,
   Event,
   ProjectedEvent,
   EventType,

@@ -42,7 +42,7 @@ export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
     firstPlayerRallyResolutionState: 'pending',
     phase: CLEANUP_PHASE,
     secondPlayerRallyResolutionState: 'pending',
-    step: 'discardPlayedCards',
+    step: 'cardsLeavePlay',
   };
 
   return updatePhaseState(stateWithCompletedPhase, newPhaseState);

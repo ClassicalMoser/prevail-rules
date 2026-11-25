@@ -10,7 +10,7 @@ function withCleanup(
     | 'firstPlayerChooseRally'
     | 'firstPlayerResolveRally'
     | 'secondPlayerResolveRally'
-    | 'discardPlayedCards',
+    | 'cardsLeavePlay',
   buckets: {
     first?: RallyResolutionState | 'pending';
     second?: RallyResolutionState | 'pending';
@@ -67,8 +67,8 @@ describe('getCurrentRallyResolutionState function', () => {
     );
   });
 
-  it('throws when cleanup is discarding played cards', () => {
-    const state = withCleanup('discardPlayedCards', {});
+  it('throws while this round’s cards leave play', () => {
+    const state = withCleanup('cardsLeavePlay', {});
 
     expect(() => getCurrentRallyResolutionState(state)).toThrow(
       'Not in a resolveRally step',

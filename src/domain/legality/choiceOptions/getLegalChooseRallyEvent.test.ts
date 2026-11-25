@@ -103,7 +103,7 @@ describe('getLegalChooseRallyEvent function', () => {
   it('throws when cleanup step is not a choose-rally step', () => {
     const state = updatePhaseState(
       createEmptyGameState('standard'),
-      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
     );
 
     expect(() => getLegalChooseRallyEvent(state)).toThrow(

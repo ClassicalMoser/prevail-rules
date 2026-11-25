@@ -1,4 +1,4 @@
-export { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
+export { applyCardsLeavePlayEvent } from './applyCardsLeavePlayEvent';
 export { applyGameOverEvent } from './applyGameOverEvent';
 export { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
 export { applyResolveRallyEvent } from './applyResolveRallyEvent';

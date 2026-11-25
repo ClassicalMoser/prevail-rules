@@ -49,7 +49,7 @@ describe('processEvent function', () => {
     // Played cards are put aside at cleanup, and setup has no phase yet, so
     // the game cannot take this.
     const putAside: GameEffectEvent = {
-      effectType: 'discardPlayedCards',
+      effectType: 'cardsLeavePlay',
       eventType: 'gameEffect',
     };
     await expect(

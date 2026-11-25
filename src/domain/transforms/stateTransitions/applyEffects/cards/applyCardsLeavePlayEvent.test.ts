@@ -1,5 +1,5 @@
 import { throwIfNone } from '@utils';
-import type { DiscardPlayedCardsEvent } from '@events';
+import type { CardsLeavePlayEvent } from '@events';
 import type { GameState, WhiteSeenGameState } from '@game';
 import {
   createCleanupPhaseState,
@@ -8,20 +8,20 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
-import { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
+import { applyCardsLeavePlayEvent } from './applyCardsLeavePlayEvent';
 
 import { createEmptyGameState } from '@factories';
 /**
  * Cleanup opener: both `inPlay` command cards append to `played` piles, slots clear, and the
  * cleanup step advances to the first rally choice.
  */
-describe('applyDiscardPlayedCardsEvent function', () => {
+describe('applyCardsLeavePlayEvent function', () => {
   const event = {
-    effectType: 'discardPlayedCards' as const,
+    effectType: 'cardsLeavePlay' as const,
     eventType: 'gameEffect' as const,
-  } satisfies DiscardPlayedCardsEvent;
+  } satisfies CardsLeavePlayEvent;
 
-  it('given discardPlayedCards with both inPlay set, played lengths grow and step firstPlayerChooseRally', () => {
+  it('given cardsLeavePlay with both inPlay set, played lengths grow and step firstPlayerChooseRally', () => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -30,13 +30,13 @@ describe('applyDiscardPlayedCardsEvent function', () => {
     });
     const full: GameState = updatePhaseState(
       withCards,
-      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
     );
 
     const whitePlayedBefore = full.cardState.white.played.length;
     const blackPlayedBefore = full.cardState.black.played.length;
 
-    const next = applyDiscardPlayedCardsEvent(event, full);
+    const next = applyCardsLeavePlayEvent(event, full);
     const phase = throwIfNone(
       next.currentRoundState.currentPhaseState,
       'phase',
@@ -73,10 +73,10 @@ describe('applyDiscardPlayedCardsEvent function', () => {
           },
         },
       },
-      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
     );
 
-    const next = applyDiscardPlayedCardsEvent(event, whiteSeen);
+    const next = applyCardsLeavePlayEvent(event, whiteSeen);
 
     expect(next.cardState.visibility).toBe('whiteSeen');
     expect(next.cardState.white.inPlay).toBeNull();

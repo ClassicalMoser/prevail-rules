@@ -7,7 +7,7 @@ import { z } from 'zod';
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [
   // This round's card leaves play for the played pile (§4.5.1).
-  'discardPlayedCards',
+  'cardsLeavePlay',
   // The first player chooses whether to rally (§10.3.1).
   'firstPlayerChooseRally',
   // Their rally, if they chose one: the burn, the cards taken back, then the

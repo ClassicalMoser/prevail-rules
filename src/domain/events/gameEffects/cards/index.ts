@@ -1,7 +1,7 @@
 // In Cleanup, both cards in play go to the played piles.
-export { DISCARD_PLAYED_CARDS_EFFECT_TYPE } from './discardPlayedCards';
-export type { DiscardPlayedCardsEvent } from './discardPlayedCards';
-export { discardPlayedCardsEventSchema } from './discardPlayedCards';
+export { CARDS_LEAVE_PLAY_EFFECT_TYPE } from './cardsLeavePlay';
+export type { CardsLeavePlayEvent } from './cardsLeavePlay';
+export { cardsLeavePlayEventSchema } from './cardsLeavePlay';
 
 // Show both secretly chosen cards.
 export { REVEAL_CARDS_EFFECT_TYPE } from './revealCards';

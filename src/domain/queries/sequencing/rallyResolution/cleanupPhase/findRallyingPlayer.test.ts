@@ -17,7 +17,7 @@ function cleanupOn(step: CleanupPhaseStep): GameState {
 
 /**
  * The first player chooses whether to rally and carries it out, then the
- * second does the same (§10.3). Discarding the played cards comes before
+ * second does the same (§10.3). The cards leaving play comes before
  * both rallies, and completing the round after.
  */
 describe('findRallyingPlayer function', () => {
@@ -40,7 +40,7 @@ describe('findRallyingPlayer function', () => {
   });
 
   it('names nobody before the rallies or after them', () => {
-    expect(findRallyingPlayer(cleanupOn('discardPlayedCards'))).toBeUndefined();
+    expect(findRallyingPlayer(cleanupOn('cardsLeavePlay'))).toBeUndefined();
     expect(findRallyingPlayer(cleanupOn('complete'))).toBeUndefined();
   });
 });

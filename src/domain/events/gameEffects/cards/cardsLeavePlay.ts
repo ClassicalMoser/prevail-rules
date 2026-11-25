@@ -2,42 +2,42 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
-/** The literal discriminant for the discard played cards game effect. */
-export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
+/** The literal discriminant for the cards-leave-play game effect. */
+export const CARDS_LEAVE_PLAY_EFFECT_TYPE = 'cardsLeavePlay' as const;
 
 /**
  * The first step of Cleanup: both players' cards in play go to their played
  * piles (§4.5.1). A card stays there until its owner rallies.
  *
- * `generateDiscardPlayedCardsEvent` writes it, and `applyDiscardPlayedCardsEvent` applies it.
+ * `generateCardsLeavePlayEvent` writes it, and `applyCardsLeavePlayEvent` applies it.
  */
-export interface DiscardPlayedCardsEvent {
+export interface CardsLeavePlayEvent {
   /** A game effect, not a player choice. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** Which effect this is. Game effects are told apart by it. */
-  effectType: typeof DISCARD_PLAYED_CARDS_EFFECT_TYPE;
+  effectType: typeof CARDS_LEAVE_PLAY_EFFECT_TYPE;
 }
 
-const _discardPlayedCardsEventSchemaObject = z
+const _cardsLeavePlayEventSchemaObject = z
   .object({
     /** A game effect, not a player choice. */
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     /** Which effect this is. Game effects are told apart by it. */
-    effectType: z.literal(DISCARD_PLAYED_CARDS_EFFECT_TYPE),
+    effectType: z.literal(CARDS_LEAVE_PLAY_EFFECT_TYPE),
   })
   .strict();
 
-type DiscardPlayedCardsEventSchemaType = z.infer<
-  typeof _discardPlayedCardsEventSchemaObject
+type CardsLeavePlayEventSchemaType = z.infer<
+  typeof _cardsLeavePlayEventSchemaObject
 >;
 
-const _assertExactDiscardPlayedCardsEvent: AssertExact<
-  DiscardPlayedCardsEvent,
-  DiscardPlayedCardsEventSchemaType
+const _assertExactCardsLeavePlayEvent: AssertExact<
+  CardsLeavePlayEvent,
+  CardsLeavePlayEventSchemaType
 > = true;
 
-/** The schema for a discard played cards event. */
-export const discardPlayedCardsEventSchema: z.ZodObject<{
+/** The schema for a cards-leave-play event. */
+export const cardsLeavePlayEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'discardPlayedCards'>;
-}> = _discardPlayedCardsEventSchemaObject;
+  effectType: z.ZodLiteral<'cardsLeavePlay'>;
+}> = _cardsLeavePlayEventSchemaObject;

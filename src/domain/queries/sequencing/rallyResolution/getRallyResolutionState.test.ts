@@ -10,7 +10,7 @@ function withCleanup(
     | 'firstPlayerChooseRally'
     | 'firstPlayerResolveRally'
     | 'secondPlayerResolveRally'
-    | 'discardPlayedCards',
+    | 'cardsLeavePlay',
   buckets: {
     first?: RallyResolutionState | 'pending';
     second?: RallyResolutionState | 'pending';

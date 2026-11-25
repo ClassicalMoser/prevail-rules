@@ -402,7 +402,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
   it('throws when the cleanup step holds no rout', () => {
     const state = createEmptyGameState('standard');
     const phaseState = createCleanupPhaseState({
-      step: 'discardPlayedCards',
+      step: 'cardsLeavePlay',
     });
     const stateInCleanup = updatePhaseState(state, phaseState);
     const event: ChooseRoutDiscardEvent = {

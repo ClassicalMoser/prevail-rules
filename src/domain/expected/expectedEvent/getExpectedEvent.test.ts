@@ -125,7 +125,7 @@ describe('getExpectedEvent function', () => {
     // They go to the played pile first (§4.5.1).
     expect(getExpectedEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
-      effectType: 'discardPlayedCards',
+      effectType: 'cardsLeavePlay',
     });
   });
 

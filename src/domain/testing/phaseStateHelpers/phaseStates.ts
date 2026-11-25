@@ -88,7 +88,7 @@ export function createCleanupPhaseState(
     firstPlayerRallyResolutionState: 'pending',
     phase: 'cleanup' as const,
     secondPlayerRallyResolutionState: 'pending',
-    step: 'discardPlayedCards',
+    step: 'cardsLeavePlay',
     ...overrides,
   };
 }
