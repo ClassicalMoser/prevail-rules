@@ -10,35 +10,29 @@ import { getExpectedRallyResolutionEvent } from './getExpectedRallyResolutionEve
  * GetExpectedRallyResolutionEvent: next rally-resolution step as choice or effect from rally state.
  */
 describe('getExpectedRallyResolutionEvent function', () => {
-  it('given resolve rally when the rally has not yet been resolved', () => {
-    const rallyState = createRallyResolutionState();
+  // Black's unit, the one left without a place at the support check where a
+  // case needs one.
+  const uncovered = createTestUnit('black');
 
+  it('a rally first waits on the engine to burn a card and return the rest', () => {
+    // White chose to rally; nothing is burnt yet.
+    const rallyState = createRallyResolutionState({ playerRallied: true });
+
+    // The burnt card is drawn at random, so the engine draws it (§10.3.2).
     expect(getExpectedRallyResolutionEvent(rallyState, 'white')).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'resolveRally',
     });
   });
 
-  it('given resolve routs when the rally is resolved and support was lost', () => {
-    const unit = createTestUnit('black');
+  it('with the cards back in hand, the rallying player assigns unit support', () => {
+    // White's cards are back in hand, and no unit has a place yet.
     const rallyState = createRallyResolutionState({
+      playerRallied: true,
       rallyResolved: true,
-      routState: createRoutState('black', unit),
-      unitsLostSupport: [unit],
     });
 
-    expect(getExpectedRallyResolutionEvent(rallyState, 'black')).toStrictEqual({
-      actionType: 'gameEffect',
-      effectType: 'resolveRout',
-    });
-  });
-
-  it('given assign unit support when the rally is resolved and support not yet assigned', () => {
-    const rallyState = createRallyResolutionState({
-      rallyResolved: true,
-      unitsLostSupport: 'pending' as const,
-    });
-
+    // The rallying player fills the places their cards hold (§10.4.4).
     expect(getExpectedRallyResolutionEvent(rallyState, 'white')).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'assignUnitSupport',
@@ -46,23 +40,45 @@ describe('getExpectedRallyResolutionEvent function', () => {
     });
   });
 
-  it('given when support was lost but no rout state exists, throws', () => {
-    const unit = createTestUnit('black');
+  it('units left without a place rout, and their owner pays for them', () => {
+    // Black's support check left one unit uncovered, and its rout is open.
     const rallyState = createRallyResolutionState({
+      playerRallied: true,
       rallyResolved: true,
-      routState: 'pending' as const,
-      unitsLostSupport: [unit],
+      routState: createRoutState('black', uncovered),
+      unitsLostSupport: [uncovered],
     });
 
-    expect(() => getExpectedRallyResolutionEvent(rallyState, 'black')).toThrow(
-      'Rout state is required when units lost support',
-    );
+    // The open rout's own next step: its Morale counted first (§10.4.7).
+    expect(getExpectedRallyResolutionEvent(rallyState, 'black')).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRout',
+    });
   });
 
-  it('given when the rally is resolved but no units lost support and the state is incomplete, throws', () => {
+  it.each(['pending', 'bypassed'] as const)(
+    'throws when units lost support but the rout reads %s, since the support check opens it',
+    (routState) => {
+      // A unit was left uncovered, yet no rout was opened for it.
+      const rallyState = createRallyResolutionState({
+        playerRallied: true,
+        rallyResolved: true,
+        routState,
+        unitsLostSupport: [uncovered],
+      });
+
+      expect(() =>
+        getExpectedRallyResolutionEvent(rallyState, 'black'),
+      ).toThrow('Rout state is required when units lost support');
+    },
+  );
+
+  it('throws when every unit kept its place but cleanup has not moved on', () => {
+    // Nothing routs, so the support check should already have moved cleanup on.
     const rallyState = createRallyResolutionState({
+      playerRallied: true,
       rallyResolved: true,
-      routState: 'pending' as const,
+      routState: 'bypassed',
       unitsLostSupport: [],
     });
 
@@ -71,30 +87,36 @@ describe('getExpectedRallyResolutionEvent function', () => {
     );
   });
 
-  it('given when the rally is already complete, throws', () => {
+  it('throws when the routs are paid for but cleanup has not moved on', () => {
+    // The uncovered unit's rout is paid, which closes the rally.
     const rallyState = createRallyResolutionState({
-      completed: true,
-    });
-
-    expect(() => getExpectedRallyResolutionEvent(rallyState, 'white')).toThrow(
-      'Rally resolution state is already complete',
-    );
-  });
-
-  it('given when support was lost and rout is complete but rally is still incomplete, throws', () => {
-    const unit = createTestUnit('black');
-    const rallyState = createRallyResolutionState({
+      playerRallied: true,
       rallyResolved: true,
-      routState: createRoutState('black', unit, {
+      routState: createRoutState('black', uncovered, {
         cardsChosen: true,
         completed: true,
         numberToDiscard: 1,
       }),
-      unitsLostSupport: [unit],
+      unitsLostSupport: [uncovered],
     });
 
     expect(() => getExpectedRallyResolutionEvent(rallyState, 'black')).toThrow(
       'Rally resolution complete but step not advanced',
+    );
+  });
+
+  it('a finished rally has nothing left to ask for, so asking throws', () => {
+    // White's rally is over.
+    const rallyState = createRallyResolutionState({
+      completed: true,
+      playerRallied: true,
+      rallyResolved: true,
+      routState: 'bypassed',
+      unitsLostSupport: [],
+    });
+
+    expect(() => getExpectedRallyResolutionEvent(rallyState, 'white')).toThrow(
+      'Rally resolution state is already complete',
     );
   });
 });

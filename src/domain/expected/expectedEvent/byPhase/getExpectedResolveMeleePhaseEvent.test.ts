@@ -1,110 +1,112 @@
-import { updateCurrentInitiative } from '@transforms';
-import type { GameState, ResolveMeleePhaseStep } from '@game';
+import { createEmptyGameState } from '@factories';
 import {
+  createGameStateResolvingMelee,
+  createGameStateWithEngagedUnits,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
-  createTestCard,
+  createTestUnit,
 } from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getExpectedResolveMeleePhaseEvent } from './getExpectedResolveMeleePhaseEvent';
-import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 
-import { createEmptyGameState } from '@factories';
 /**
- * GetExpectedResolveMeleePhaseEvent: next event during resolve-melee phase.
+ * Phase 4 (§4.4): every engaged space fights, one at a time, in the order the
+ * first player chooses, each resolved completely before the next. With none
+ * left, the phase ends.
  */
 describe('getExpectedResolveMeleePhaseEvent function', () => {
-  function createGameStateInResolveMeleeStep(
-    step: ResolveMeleePhaseStep,
-    buildOverrides?: (
-      state: GameState,
-    ) => Parameters<typeof createResolveMeleePhaseState>[1],
-  ): GameState {
-    const state = updateCurrentInitiative(
+  it('finishes the melee under way before the next is chosen', () => {
+    // Black holds the initiative, and a melee is open with Black's commitment
+    // still owed.
+    const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'black',
     );
-    state.cardState.black.inPlay = createTestCard();
-    state.cardState.white.inPlay = createTestCard();
-    const overrides = buildOverrides?.(state);
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        step,
-        ...overrides,
-      },
-    );
-    return state;
-  }
+    const melee = createMeleeResolutionState(base, {
+      firstPlayerCommitment: { commitmentType: 'pending' },
+    });
+    const state = createGameStateResolvingMelee(melee, 'black');
 
-  it('given delegate to melee resolution when a melee is in progress', () => {
-    const state = createGameStateInResolveMeleeStep(
-      'resolveMelee',
-      (gameState) => ({
-        currentMeleeResolutionState: createMeleeResolutionState(gameState, {
-          firstPlayerCommitment: {
-            commitmentType: 'pending' as const,
-          },
-        }),
+    // The melee under way asks the first player to commit first (§7.2.2).
+    expect(getExpectedResolveMeleePhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'commitToMelee',
+      playerSource: 'black',
+    });
+  });
+
+  it('asks the player holding the initiative to choose the next melee', () => {
+    // Black holds the initiative; one engagement on E-5 waits to be fought,
+    // and none is under way.
+    const engaged = updateCurrentInitiative(
+      createGameStateWithEngagedUnits(
+        createTestUnit('black'),
+        createTestUnit('white'),
+      ),
+      'black',
+    );
+    const state = updatePhaseState(
+      engaged,
+      createResolveMeleePhaseState(engaged, {
+        currentMeleeResolutionState: 'pending',
+        remainingEngagements: ['E-5'],
       }),
     );
 
-    const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
-    expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe('black');
-    expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe(
-      'commitToMelee',
-    );
+    // The first player chooses which engagement to fight next (§4.4.2).
+    expect(getExpectedResolveMeleePhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'chooseMeleeResolution',
+      playerSource: 'black',
+    });
   });
 
-  it('given engagements remain, asks the initiative player to choose a melee resolution', () => {
-    const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
-      currentMeleeResolutionState: 'pending' as const,
-      remainingEngagements: ['E-5'] as const,
-    }));
-
-    const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
-    expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe('black');
-    expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe(
-      'chooseMeleeResolution',
+  it('ends the phase once no engagement is left to fight', () => {
+    // No melee is under way and none waits.
+    const base = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      base,
+      createResolveMeleePhaseState(base, {
+        currentMeleeResolutionState: 'pending',
+        remainingEngagements: [],
+      }),
     );
-  });
 
-  it('given no engagements remain, returns completeResolveMeleePhase', () => {
-    const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
-      currentMeleeResolutionState: 'pending' as const,
-      remainingEngagements: [] as const,
-    }));
-
+    // With no engagement the phase ends at once (§4.4.4).
     expect(getExpectedResolveMeleePhaseEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'completeResolveMeleePhase',
     });
   });
 
-  it('given context, returns completeResolveMeleePhase game effect', () => {
-    const state = createGameStateInResolveMeleeStep('complete');
-
-    const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('gameEffect');
-    expect((expectedEvent as ExpectedGameEffect).effectType).toBe(
-      'completeResolveMeleePhase',
+  it('ends the phase on its complete step', () => {
+    // Marked TODO(composition) in the subject: play never stands here.
+    const base = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      base,
+      createResolveMeleePhaseState(base, {
+        currentMeleeResolutionState: 'pending',
+        step: 'complete',
+      }),
     );
+
+    // The same effect as an empty queue.
+    expect(getExpectedResolveMeleePhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeResolveMeleePhase',
+    });
   });
 
-  it('given for invalid step, throws', () => {
-    const state = createGameStateInResolveMeleeStep('complete');
-    // Force an invalid resolve melee step to hit the default branch.
-    const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState === 'none') {
-      throw new Error('expected phase state');
-    }
-    phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
+  it('throws on a step Phase 4 does not have', () => {
+    // A step no phase state can hold, forced past the type.
+    const base = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      base,
+      createResolveMeleePhaseState(base, { step: 'invalidStep' as never }), // a step the type forbids
+    );
 
+    // The exhaustive default names the step it was given.
     expect(() => getExpectedResolveMeleePhaseEvent(state)).toThrow(
       'Invalid resolveMelee phase step: invalidStep',
     );

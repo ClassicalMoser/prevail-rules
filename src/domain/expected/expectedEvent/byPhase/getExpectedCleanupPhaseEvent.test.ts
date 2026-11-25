@@ -1,168 +1,147 @@
-import type { CleanupPhaseStep, GameState } from '@game';
-import { createCleanupPhaseState, createRallyResolutionState } from '@testing';
-import { createEmptyGameState } from '@factories';
+import {
+  createEmptyGameState,
+  createOpenedRallyResolutionState,
+} from '@factories';
+import { createCleanupPhaseState } from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getExpectedCleanupPhaseEvent } from './getExpectedCleanupPhaseEvent';
 
-import { updateCurrentInitiative } from '@transforms';
 /**
- * GetExpectedCleanupPhaseEvent: next cleanup-phase event from cleanup step and rally state.
+ * Phase 5 (§4.5): the cards in play go to the played piles, then the first
+ * player decides whether to rally and carries it out, then the second does
+ * the same, and the round ends. White holds the initiative, as a new game
+ * starts, unless a case says otherwise.
  */
 describe('getExpectedCleanupPhaseEvent function', () => {
-  function createGameStateInCleanupStep(
-    step: CleanupPhaseStep,
-    currentInitiative: 'black' | 'white' = 'black',
-  ): GameState {
-    const state = updateCurrentInitiative(
+  it('sends the cards in play to the played piles first', () => {
+    // Cleanup has just begun.
+    const state = updatePhaseState(
       createEmptyGameState('standard'),
-      currentInitiative,
+      createCleanupPhaseState({ step: 'cardsLeavePlay' }),
     );
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: createRallyResolutionState({
-        completed: false,
-      }),
-      secondPlayerRallyResolutionState: createRallyResolutionState({
-        completed: false,
-      }),
-      step,
+
+    // The cards leave play before anyone rallies (§4.5.1).
+    expect(getExpectedCleanupPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'cardsLeavePlay',
     });
-    return state;
-  }
-
-  it('given context, returns cardsLeavePlay game effect', () => {
-    const state = createGameStateInCleanupStep('cardsLeavePlay');
-
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('gameEffect');
-    expect(
-      expectedEvent.actionType === 'gameEffect' && expectedEvent.effectType,
-    ).toBe('cardsLeavePlay');
   });
 
-  it('given context, returns first player choose rally', () => {
-    const state = createGameStateInCleanupStep(
-      'firstPlayerChooseRally',
-      'white',
-    );
-
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
-    expect(
-      expectedEvent.actionType === 'playerChoice' && expectedEvent.playerSource,
-    ).toBe('white');
-    expect(
-      expectedEvent.actionType === 'playerChoice' && expectedEvent.choiceType,
-    ).toBe('chooseRally');
-  });
-
-  it('given context, returns second player choose rally', () => {
-    const state = createGameStateInCleanupStep(
-      'secondPlayerChooseRally',
-      'white',
-    );
-
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
-    expect(
-      expectedEvent.actionType === 'playerChoice' && expectedEvent.playerSource,
-    ).toBe('black');
-    expect(
-      expectedEvent.actionType === 'playerChoice' && expectedEvent.choiceType,
-    ).toBe('chooseRally');
-  });
-
-  it('given first player rally resolution, returns resolveRally game effect', () => {
-    const state = createGameStateInCleanupStep('firstPlayerResolveRally');
-
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('gameEffect');
-    expect(
-      expectedEvent.actionType === 'gameEffect' && expectedEvent.effectType,
-    ).toBe('resolveRally');
-  });
-
-  it('given first player rally resolved awaiting support, returns assignUnitSupport', () => {
-    const state = updateCurrentInitiative(
+  it('asks the player holding the initiative whether to rally first', () => {
+    // White holds the initiative, on the first rally choice.
+    const state = updatePhaseState(
       createEmptyGameState('standard'),
-      'white',
+      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: createRallyResolutionState({
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        unitsLostSupport: 'pending',
-      }),
-      step: 'firstPlayerResolveRally',
-    });
 
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent).toStrictEqual({
+    // White decides first (§4.5.2).
+    expect(getExpectedCleanupPhaseEvent(state)).toStrictEqual({
       actionType: 'playerChoice',
-      choiceType: 'assignUnitSupport',
+      choiceType: 'chooseRally',
       playerSource: 'white',
     });
   });
 
-  it('given when first player rally resolution state is missing, throws', () => {
-    const state = createGameStateInCleanupStep('firstPlayerResolveRally');
-    const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState !== 'none' && phaseState.phase === 'cleanup') {
-      phaseState.firstPlayerRallyResolutionState = 'pending';
-    }
+  it('asks the other player whether to rally second', () => {
+    // White holds the initiative and has finished its rally or declined.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: {
+          ...createOpenedRallyResolutionState(false),
+          completed: true,
+        },
+        step: 'secondPlayerChooseRally',
+      }),
+    );
 
+    // Black decides second (§4.5.3).
+    expect(getExpectedCleanupPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'chooseRally',
+      playerSource: 'black',
+    });
+  });
+
+  it("carries out the first player's rally, starting with the burn and return", () => {
+    // White has chosen to rally, and nothing of it is done yet.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: createOpenedRallyResolutionState(true),
+        step: 'firstPlayerResolveRally',
+      }),
+    );
+
+    // The burn and the return are an effect the game owes (§10.3.2).
+    expect(getExpectedCleanupPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRally',
+    });
+  });
+
+  it('asks the second player, rallying, to assign their unit support', () => {
+    // White has finished; Black rallied, and its cards are back in hand.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: {
+          ...createOpenedRallyResolutionState(false),
+          completed: true,
+        },
+        secondPlayerRallyResolutionState: {
+          ...createOpenedRallyResolutionState(true),
+          rallyResolved: true,
+        },
+        step: 'secondPlayerResolveRally',
+      }),
+    );
+
+    // Black's own rally owes its support check, which Black assigns (§10.4.4).
+    expect(getExpectedCleanupPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'assignUnitSupport',
+      playerSource: 'black',
+    });
+  });
+
+  it("throws when the rallying player's rally has not begun on its resolve step", () => {
+    // Black holds the initiative and is on its resolve step, but its rally
+    // was never opened.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
+    );
+
+    // The rally is read through the query that insists on it.
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
       'No black rally resolution state found',
     );
   });
 
-  it('given second player rally resolution, returns resolveRally game effect', () => {
-    const state = createGameStateInCleanupStep('secondPlayerResolveRally');
-
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('gameEffect');
-    expect(
-      expectedEvent.actionType === 'gameEffect' && expectedEvent.effectType,
-    ).toBe('resolveRally');
-  });
-
-  it('given when second player rally resolution state is missing, throws', () => {
-    const state = createGameStateInCleanupStep('secondPlayerResolveRally');
-    const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState !== 'none' && phaseState.phase === 'cleanup') {
-      phaseState.secondPlayerRallyResolutionState = 'pending';
-    }
-
-    expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
-      'No white rally resolution state found',
+  it('ends the round once both players have rallied or declined', () => {
+    // Both rallies are done.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createCleanupPhaseState({ step: 'complete' }),
     );
+
+    // The round ends, and the next begins at Phase 1 (§4.5.4).
+    expect(getExpectedCleanupPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'roundEnd',
+    });
   });
 
-  it('given context, returns roundEnd game effect', () => {
-    const state = createGameStateInCleanupStep('complete');
+  it('throws on a step Phase 5 does not have', () => {
+    // A step no phase state can hold, forced past the type.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createCleanupPhaseState({ step: 'invalidStep' as never }), // a step the type forbids
+    );
 
-    const expectedEvent = getExpectedCleanupPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('gameEffect');
-    expect(
-      expectedEvent.actionType === 'gameEffect' && expectedEvent.effectType,
-    ).toBe('roundEnd');
-  });
-
-  it('given for invalid step, throws', () => {
-    const state = createGameStateInCleanupStep('cardsLeavePlay');
-    const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState === 'none') {
-      throw new Error('expected cleanup phase state');
-    }
-    phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
-
+    // The exhaustive default names the step it was given.
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
       'Invalid cleanup phase step: invalidStep',
     );

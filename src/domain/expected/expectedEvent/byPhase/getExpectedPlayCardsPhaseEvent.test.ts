@@ -1,180 +1,146 @@
-import { tempCommandCards } from '@sampleValues';
-import type { AuthoritativeGameState } from '@game';
-
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { updateCardState } from '@testing';
-
-import { updatePhaseState } from '@transforms';
+import { createEmptyGameState } from '@factories';
+import {
+  createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
+  createTestCard,
+} from '@testing';
+import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
-import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 
-import { createEmptyGameState } from '@factories';
 /**
- * GetExpectedPlayCardsPhaseEvent: next event during play-cards phase from phase state.
+ * Phase 1 (§4.1): both players choose a card face down at the same time, the
+ * two are revealed together, and the lower initiative takes the initiative.
+ * Whoever has not yet chosen owes a card; the reveal, the initiative and the
+ * end of the phase are effects the game owes.
  */
 describe('getExpectedPlayCardsPhaseEvent function', () => {
-  /**
-   * Helper to create a game state in the playCards phase with a specific step
-   */
-  function createGameStateInPlayCardsStep(
-    step: 'chooseCards' | 'assignInitiative' | 'complete',
-  ): AuthoritativeGameState {
-    const state = createEmptyGameState('standard');
+  it('asks both players for a card at once while neither has chosen', () => {
+    // Both are choosing, and no card waits face down.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'chooseCards' }),
+    );
 
-    const stateWithPhase = updatePhaseState(state, {
-      phase: PLAY_CARDS_PHASE,
-      step,
-    });
-
-    return stateWithPhase;
-  }
-
-  describe('expected events by step', () => {
-    describe('chooseCards step', () => {
-      it('given no cards have been chosen, returns bothPlayers', () => {
-        const state = createGameStateInPlayCardsStep('chooseCards');
-        // Ensure no cards are awaiting play
-        const stateWithNoAwaitingCards = updateCardState(state, {
-          ...state.cardState,
-          black: { ...state.cardState.black, awaitingPlay: null },
-          white: { ...state.cardState.white, awaitingPlay: null },
-        });
-
-        const expectedEvent = getExpectedPlayCardsPhaseEvent(
-          stateWithNoAwaitingCards,
-        );
-
-        expect(expectedEvent.actionType).toBe('playerChoice');
-        expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe(
-          'bothPlayers',
-        );
-        expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe(
-          'chooseCard',
-        );
-      });
-
-      it('given black has already chosen, returns white player', () => {
-        const state = createGameStateInPlayCardsStep('chooseCards');
-        const stateWithBlackCard = updateCardState(state, {
-          ...state.cardState,
-          black: {
-            ...state.cardState.black,
-            awaitingPlay: tempCommandCards[0],
-          },
-        });
-
-        const expectedEvent =
-          getExpectedPlayCardsPhaseEvent(stateWithBlackCard);
-
-        expect(expectedEvent.actionType).toBe('playerChoice');
-        expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe(
-          'white',
-        );
-        expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe(
-          'chooseCard',
-        );
-      });
-
-      it('given white has already chosen, returns black player', () => {
-        const state = createGameStateInPlayCardsStep('chooseCards');
-        // Ensure black has no awaiting card
-        const stateWithWhiteCard = updateCardState(state, {
-          ...state.cardState,
-          black: { ...state.cardState.black, awaitingPlay: null },
-          white: {
-            ...state.cardState.white,
-            awaitingPlay: tempCommandCards[0],
-          },
-        });
-
-        const expectedEvent =
-          getExpectedPlayCardsPhaseEvent(stateWithWhiteCard);
-
-        expect(expectedEvent.actionType).toBe('playerChoice');
-        expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe(
-          'black',
-        );
-        expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe(
-          'chooseCard',
-        );
-      });
-    });
-
-    it('given both players have chosen, returns revealCards gameEffect', () => {
-      // Both cards are face down, still on the chooseCards step.
-      const state = createGameStateInPlayCardsStep('chooseCards');
-      const bothChosen = updateCardState(state, {
-        ...state.cardState,
-        black: { ...state.cardState.black, awaitingPlay: tempCommandCards[0] },
-        white: { ...state.cardState.white, awaitingPlay: tempCommandCards[1] },
-      });
-
-      // With both in, the cards are revealed together (§4.1.2).
-      const expectedEvent = getExpectedPlayCardsPhaseEvent(bothChosen);
-
-      expect(expectedEvent.actionType).toBe('gameEffect');
-      expect((expectedEvent as ExpectedGameEffect).effectType).toBe(
-        'revealCards',
-      );
-    });
-
-    it('given step is assignInitiative, returns resolveInitiative gameEffect', () => {
-      const state = createGameStateInPlayCardsStep('assignInitiative');
-
-      const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
-
-      expect(expectedEvent.actionType).toBe('gameEffect');
-      expect((expectedEvent as ExpectedGameEffect).effectType).toBe(
-        'resolveInitiative',
-      );
-    });
-
-    it('given step is complete, returns completePlayCardsPhase gameEffect', () => {
-      const state = createGameStateInPlayCardsStep('complete');
-
-      const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
-
-      expect(expectedEvent.actionType).toBe('gameEffect');
-      expect((expectedEvent as ExpectedGameEffect).effectType).toBe(
-        'completePlayCardsPhase',
-      );
+    // The choices are simultaneous (§4.1.1): both owe one.
+    expect(getExpectedPlayCardsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'chooseCard',
+      playerSource: 'bothPlayers',
     });
   });
 
-  describe('error cases', () => {
-    it('given if not in playCards phase, throws', () => {
-      const state = createEmptyGameState('standard');
-      // State has no phase state
-
-      expect(() => getExpectedPlayCardsPhaseEvent(state)).toThrow(
-        'No current phase state found',
-      );
+  it('asks only White once Black has chosen', () => {
+    // Black's card waits face down; White's does not.
+    const choosing = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'chooseCards' }),
+    );
+    const state = updatePlayerCardState(choosing, 'black', {
+      ...choosing.cardState.black,
+      awaitingPlay: createTestCard(),
     });
 
-    it('given if in wrong phase, throws', () => {
-      const state = createEmptyGameState('standard');
-      const stateWithWrongPhase = updatePhaseState(state, {
-        phase: MOVE_COMMANDERS_PHASE,
-        step: 'moveFirstCommander',
-      });
+    // Only White still owes a card.
+    expect(getExpectedPlayCardsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'chooseCard',
+      playerSource: 'white',
+    });
+  });
 
-      expect(() => getExpectedPlayCardsPhaseEvent(stateWithWrongPhase)).toThrow(
-        'Expected playCards phase',
-      );
+  it('asks only Black once White has chosen', () => {
+    // White's card waits face down; Black's does not.
+    const choosing = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'chooseCards' }),
+    );
+    const state = updatePlayerCardState(choosing, 'white', {
+      ...choosing.cardState.white,
+      awaitingPlay: createTestCard(),
     });
 
-    it('given for invalid step, throws', () => {
-      const state = createGameStateInPlayCardsStep('chooseCards');
-      const phaseState = state.currentRoundState.currentPhaseState;
-      if (phaseState === 'none') {
-        throw new Error('expected phase state');
-      }
-      phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
-
-      expect(() => getExpectedPlayCardsPhaseEvent(state)).toThrow(
-        'Invalid playCards phase step: invalidStep',
-      );
+    // Only Black still owes a card.
+    expect(getExpectedPlayCardsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'chooseCard',
+      playerSource: 'black',
     });
+  });
+
+  it('reveals both cards together once both have chosen', () => {
+    // Both cards wait face down, still on the choosing step.
+    const choosing = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'chooseCards' }),
+    );
+    const blackChosen = updatePlayerCardState(choosing, 'black', {
+      ...choosing.cardState.black,
+      awaitingPlay: createTestCard(),
+    });
+    const state = updatePlayerCardState(blackChosen, 'white', {
+      ...blackChosen.cardState.white,
+      awaitingPlay: createTestCard(),
+    });
+
+    // With both in, the cards are revealed together (§4.1.2).
+    expect(getExpectedPlayCardsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'revealCards',
+    });
+  });
+
+  it('settles the initiative once the cards are face up', () => {
+    // The cards have been revealed.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'assignInitiative' }),
+    );
+
+    // Lower initiative takes it, a tie staying put (§4.1.3, §4.1.4).
+    expect(getExpectedPlayCardsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveInitiative',
+    });
+  });
+
+  it('ends the phase once the initiative is settled', () => {
+    // The initiative has been assigned.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'complete' }),
+    );
+
+    // The commanders move next (§4.2).
+    expect(getExpectedPlayCardsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completePlayCardsPhase',
+    });
+  });
+
+  it('throws when asked in another phase', () => {
+    // The commanders are moving: Phase 1 is over.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState(),
+    );
+
+    // Only Phase 1 is read here.
+    expect(() => getExpectedPlayCardsPhaseEvent(state)).toThrow(
+      'Expected playCards phase',
+    );
+  });
+
+  it('throws on a step Phase 1 does not have', () => {
+    // A step no phase state can hold, forced past the type.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'invalidStep' as never }), // a step the type forbids
+    );
+
+    // The exhaustive default names the step it was given.
+    expect(() => getExpectedPlayCardsPhaseEvent(state)).toThrow(
+      'Invalid playCards phase step: invalidStep',
+    );
   });
 });

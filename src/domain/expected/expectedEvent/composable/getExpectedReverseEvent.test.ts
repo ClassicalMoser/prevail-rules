@@ -6,21 +6,23 @@ import { getExpectedReverseEvent } from './getExpectedReverseEvent';
  * GetExpectedReverseEvent: next reverse-resolution event from reverse substate.
  */
 describe('getExpectedReverseEvent function', () => {
+  // The unit the attack reversed: black, on E-5 facing north.
   const unitPlacement = createUnitWithPlacement();
 
-  it('given resolve reverse when the unit has not turned yet', () => {
+  it('an open reverse waits on the engine to turn the unit about', () => {
     // The reverse is due and the unit has not turned.
     const reverseState = createReverseState(unitPlacement.unit);
 
     // The turn is the engine's to make.
-
+    // Nobody chooses anything in a reverse (§9.2.1).
     expect(getExpectedReverseEvent(reverseState)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'resolveReverse',
     });
   });
 
-  it('given when the reverse is already complete, throws', () => {
+  it('a finished reverse has nothing left to ask for, so asking throws', () => {
+    // The unit has already turned.
     const reverseState = createReverseState(unitPlacement.unit, {
       completed: true,
     });

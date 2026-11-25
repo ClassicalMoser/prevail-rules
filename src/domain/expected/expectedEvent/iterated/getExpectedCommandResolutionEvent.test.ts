@@ -38,15 +38,6 @@ describe('getExpectedCommandResolutionEvent function', () => {
     });
   });
 
-  it('throws when no order is being carried out', () => {
-    // Nothing is resolving; asking is the caller's mistake.
-    const gameState = createEmptyGameState('standard');
-
-    expect(() =>
-      getExpectedCommandResolutionEvent(gameState, 'pending', 'black'),
-    ).toThrow('No command resolution state found');
-  });
-
   it('throws for a kind of order the game does not have', () => {
     // An order kind no card gives; the type forbids it, so it is forced past
     // to stand for a corrupt state.

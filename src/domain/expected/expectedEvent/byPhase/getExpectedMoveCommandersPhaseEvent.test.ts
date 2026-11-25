@@ -1,151 +1,136 @@
-import type { GameState } from '@game';
-
-import { MOVE_COMMANDERS_PHASE } from '@game';
-
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+import { createEmptyGameState } from '@factories';
+import { createMoveCommandersPhaseState, withLostCommander } from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
-import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 
-import { createEmptyGameState } from '@factories';
-import { withLostCommander } from '@testing';
 /**
- * GetExpectedMoveCommandersPhaseEvent: next event during move-commanders phase.
+ * Phase 2 (§4.2): the first player moves their commander, then the second.
+ * A player whose commander has fallen has nothing to move, and their turn is
+ * passed over (§4.2.8).
  */
 describe('getExpectedMoveCommandersPhaseEvent function', () => {
-  /**
-   * Helper to create a game state in the moveCommanders phase with a specific step
-   */
-  function createGameStateInMoveCommandersStep(
-    step: 'moveFirstCommander' | 'moveSecondCommander' | 'complete',
-    currentInitiative: 'black' | 'white' = 'black',
-  ): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      currentInitiative,
+  it('asks the player holding the initiative to move first', () => {
+    // Black holds the initiative, on the first turn.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createMoveCommandersPhaseState({ step: 'moveFirstCommander' }),
     );
 
-    const stateWithPhase = updatePhaseState(state, {
-      phase: MOVE_COMMANDERS_PHASE,
-      step,
-    });
-
-    return stateWithPhase;
-  }
-
-  describe('expected events by step', () => {
-    it('given step is moveFirstCommander, returns firstPlayer moveCommander', () => {
-      const state = createGameStateInMoveCommandersStep(
-        'moveFirstCommander',
-        'black',
-      );
-
-      const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
-
-      expect(expectedEvent.actionType).toBe('playerChoice');
-    });
-
-    it('given step is moveSecondCommander, returns secondPlayer moveCommander', () => {
-      const state = createGameStateInMoveCommandersStep(
-        'moveSecondCommander',
-        'black',
-      );
-
-      const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
-
-      expect(expectedEvent.actionType).toBe('playerChoice');
-    });
-
-    it("given the first player's commander has fallen, passes over their move", () => {
-      // Black holds the initiative, but its commander was defeated (§4.2.8).
-      const state = withLostCommander(
-        createGameStateInMoveCommandersStep('moveFirstCommander', 'black'),
-        'black',
-      );
-
-      // Black has nothing to move, so its turn is passed over.
-      expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
-        actionType: 'gameEffect',
-        effectType: 'skipLostCommanderMove',
-      });
-    });
-
-    it("given the second player's commander has fallen, passes over their move", () => {
-      // White moves second, and its commander was defeated (§4.2.8).
-      const state = withLostCommander(
-        createGameStateInMoveCommandersStep('moveSecondCommander', 'black'),
-        'white',
-      );
-
-      // White has nothing to move, so its turn is passed over.
-      expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
-        actionType: 'gameEffect',
-        effectType: 'skipLostCommanderMove',
-      });
-    });
-
-    it('given step is complete, returns completeMoveCommandersPhase gameEffect', () => {
-      const state = createGameStateInMoveCommandersStep('complete');
-
-      const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
-
-      expect(expectedEvent.actionType).toBe('gameEffect');
-      expect((expectedEvent as ExpectedGameEffect).effectType).toBe(
-        'completeMoveCommandersPhase',
-      );
-    });
-
-    it('given correctly identify first and second player based on initiative', () => {
-      // Test with white as initiative
-      const stateWithWhiteInitiative = createGameStateInMoveCommandersStep(
-        'moveFirstCommander',
-        'white',
-      );
-
-      const expectedEventWhite = getExpectedMoveCommandersPhaseEvent(
-        stateWithWhiteInitiative,
-      );
-
-      expect(expectedEventWhite.actionType).toBe('playerChoice');
-      expect((expectedEventWhite as ExpectedPlayerInput).playerSource).toBe(
-        'white',
-      );
-      expect((expectedEventWhite as ExpectedPlayerInput).choiceType).toBe(
-        'moveCommander',
-      );
-
-      // Test with black as initiative
-      const stateWithBlackInitiative = createGameStateInMoveCommandersStep(
-        'moveFirstCommander',
-        'black',
-      );
-
-      const expectedEventBlack = getExpectedMoveCommandersPhaseEvent(
-        stateWithBlackInitiative,
-      );
-
-      expect(expectedEventBlack.actionType).toBe('playerChoice');
-      expect((expectedEventBlack as ExpectedPlayerInput).playerSource).toBe(
-        'black',
-      );
-      expect((expectedEventBlack as ExpectedPlayerInput).choiceType).toBe(
-        'moveCommander',
-      );
+    // Black moves its commander first (§4.2.1).
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveCommander',
+      playerSource: 'black',
     });
   });
 
-  describe('error cases', () => {
-    it('given for invalid step, throws', () => {
-      const state = createGameStateInMoveCommandersStep('moveFirstCommander');
-      const phaseState = state.currentRoundState.currentPhaseState;
-      if (phaseState === 'none') {
-        throw new Error('expected phase state');
-      }
-      phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
+  it('follows the initiative, whichever side holds it', () => {
+    // White holds the initiative, on the first turn.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
+      createMoveCommandersPhaseState({ step: 'moveFirstCommander' }),
+    );
 
-      expect(() => getExpectedMoveCommandersPhaseEvent(state)).toThrow(
-        'Invalid moveCommanders phase step: invalidStep',
-      );
+    // White moves its commander first.
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveCommander',
+      playerSource: 'white',
     });
+  });
+
+  it('asks the other player to move second', () => {
+    // Black holds the initiative, on the second turn.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+      createMoveCommandersPhaseState({ step: 'moveSecondCommander' }),
+    );
+
+    // White moves its commander second.
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveCommander',
+      playerSource: 'white',
+    });
+  });
+
+  it("given the first player's commander has fallen, passes over their move", () => {
+    // Black holds the initiative, but its commander was defeated (§4.2.8).
+    const state = withLostCommander(
+      updatePhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        createMoveCommandersPhaseState({ step: 'moveFirstCommander' }),
+      ),
+      'black',
+    );
+
+    // Black has nothing to move, so its turn is passed over.
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'skipLostCommanderMove',
+    });
+  });
+
+  it("given the second player's commander has fallen, passes over their move", () => {
+    // White moves second, and its commander was defeated (§4.2.8).
+    const state = withLostCommander(
+      updatePhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        createMoveCommandersPhaseState({ step: 'moveSecondCommander' }),
+      ),
+      'white',
+    );
+
+    // White has nothing to move, so its turn is passed over.
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'skipLostCommanderMove',
+    });
+  });
+
+  it('asks a player whose commander stands to move, though the other has fallen', () => {
+    // Black holds the initiative and its commander stands; White's fell.
+    const state = withLostCommander(
+      updatePhaseState(
+        updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
+        createMoveCommandersPhaseState({ step: 'moveFirstCommander' }),
+      ),
+      'white',
+    );
+
+    // Only the player whose own commander fell is passed over.
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveCommander',
+      playerSource: 'black',
+    });
+  });
+
+  it('ends the phase once both turns are taken', () => {
+    // Both commanders have moved, or been passed over.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState({ step: 'complete' }),
+    );
+
+    // Orders are issued next (§4.3).
+    expect(getExpectedMoveCommandersPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeMoveCommandersPhase',
+    });
+  });
+
+  it('throws on a step Phase 2 does not have', () => {
+    // A step no phase state can hold, forced past the type.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState({ step: 'invalidStep' as never }), // a step the type forbids
+    );
+
+    // The exhaustive default names the step it was given.
+    expect(() => getExpectedMoveCommandersPhaseEvent(state)).toThrow(
+      'Invalid moveCommanders phase step: invalidStep',
+    );
   });
 });

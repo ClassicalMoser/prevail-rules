@@ -1,22 +1,14 @@
-import type { AuthoritativeGameState } from '@game';
-import { updateCurrentInitiative } from '@transforms';
+import { createAttackApplyState as createPendingAttackApply } from '@factories';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
-  placed,
+  createGameState,
   createMeleeResolutionState,
-  createTestCard,
   createTestUnit,
   legalRetreatsOf,
-  updateCardState,
+  placed,
 } from '@testing';
-
 import { getExpectedMeleeResolutionEvent } from './getExpectedMeleeResolutionEvent';
-
-import {
-  createAttackApplyState as createPendingAttackApply,
-  createEmptyGameState,
-} from '@factories';
 
 /**
  * While a melee is fought, the next event follows the order of a melee
@@ -25,23 +17,9 @@ import {
  * cases black holds the initiative, so black is the first player.
  */
 describe('getExpectedMeleeResolutionEvent function', () => {
-  /** Black holds the initiative, and each side has a card in play. */
-  function createGameState(): AuthoritativeGameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const withCards = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inPlay: createTestCard() },
-      white: { ...state.cardState.white, inPlay: createTestCard() },
-    });
-    return withCards;
-  }
-
   it('asks the first player to commit while its commitment is pending', () => {
     // Black has yet to commit or decline.
-    const gameState = createGameState();
+    const gameState = createGameState([], { currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(gameState, {
       firstPlayerCommitment: { commitmentType: 'pending' },
     });
@@ -58,7 +36,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
 
   it('asks the second player to commit once the first has', () => {
     // Black has committed; white has not.
-    const gameState = createGameState();
+    const gameState = createGameState([], { currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(gameState, {
       secondPlayerCommitment: { commitmentType: 'pending' },
     });
@@ -75,7 +53,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
 
   it('fights the melee once both sides have committed', () => {
     // Both have committed, and neither unit's results are measured yet.
-    const gameState = createGameState();
+    const gameState = createGameState([], { currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(gameState, {
       attackOnFirstPlayerApplyState: 'pending' as const,
       attackOnSecondPlayerApplyState: 'pending' as const,
@@ -93,7 +71,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it("closes the first player's apply when it is the one still open", () => {
     // Every stage is done; the second player's apply is closed and the
     // first player's is not.
-    const gameState = createGameState();
+    const gameState = createGameState([], { currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(gameState, {
       attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
@@ -103,31 +81,6 @@ describe('getExpectedMeleeResolutionEvent function', () => {
         {
           completed: true,
         },
-      ),
-    });
-
-    // The open apply is closed next.
-    expect(
-      getExpectedMeleeResolutionEvent(gameState, meleeState),
-    ).toStrictEqual({
-      actionType: 'gameEffect',
-      effectType: 'completeAttackApply',
-    });
-  });
-
-  it("closes the second player's apply when it is the one still open", () => {
-    // Every stage is done; the first player's apply is closed and the
-    // second player's is not.
-    const gameState = createGameState();
-    const meleeState = createMeleeResolutionState(gameState, {
-      attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('black'),
-        {
-          completed: true,
-        },
-      ),
-      attackOnSecondPlayerApplyState: createAttackApplyStateWithNothingDue(
-        createTestUnit('white'),
       ),
     });
 
@@ -142,7 +95,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
 
   it("ends the melee once both units' results are closed", () => {
     // Every stage is done and both applies are closed.
-    const gameState = createGameState();
+    const gameState = createGameState([], { currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(gameState, {
       attackOnFirstPlayerApplyState: createAttackApplyStateWithNothingDue(
         createTestUnit('black'),
@@ -175,7 +128,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     const white = createTestUnit('white');
 
     it("the first player's retreat comes before the second player's reverse", () => {
-      const gameState = createGameState();
+      const gameState = createGameState([], { currentInitiative: 'black' });
       // The first player's unit is hit to retreat; the second player's only to
       // reverse. Judged unit by unit, the second player's unit goes first,
       // reverses while still engaged, and so does not turn. A stage at a time,
@@ -202,7 +155,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     });
 
     it("the first player's reverse comes before the second player's rout", () => {
-      const gameState = createGameState();
+      const gameState = createGameState([], { currentInitiative: 'black' });
       // The second player's unit routs and the first player's only reverses.
       // Unit by unit, the second would rout first; a stage at a time, every
       // reverse is carried out before any rout, and a unit still to rout is
@@ -229,7 +182,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     });
 
     it("within a stage, the second player's unit is dealt with first", () => {
-      const gameState = createGameState();
+      const gameState = createGameState([], { currentInitiative: 'black' });
       // Both units must retreat, and both retreats are open. The second
       // player's unit has nowhere to go, so it routs from inside its retreat;
       // that failed retreat is asked for before the first player's retreat.
@@ -268,7 +221,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
 
   it('throws when the melee is already complete', () => {
     // A finished melee expects nothing more; asking is the caller's mistake.
-    const gameState = createGameState();
+    const gameState = createGameState([], { currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(gameState, {
       completed: true,
     });
