@@ -147,6 +147,27 @@ describe('applyStartEngagementEvent function', () => {
     });
   });
 
+  it("routs the board's own defender, however the event names it", () => {
+    // The event names White's unit by who it is, but carries a copy whose
+    // Morale was altered on the way. The rout opens with the unit the board
+    // holds, so a forged copy can neither enter the rout nor change the
+    // Morale its owner is asked for.
+    const forged = {
+      ...defender,
+      unitType: { ...defender.unitType, morale: defender.unitType.morale + 3 },
+    };
+    const event = { ...startEngagement('rear'), defendingUnit: forged };
+
+    const next = applyStartEngagementEvent(event, movingIntoEnemy('north'));
+
+    // The rout and the routed list both hold the board's copy.
+    const rear = getRearEngagementStateFromMovement(next);
+    expect(rear.engagementResolutionState.routState.unitsToRout).toStrictEqual([
+      defender,
+    ]);
+    expect(next.routedUnits).toStrictEqual([defender]);
+  });
+
   it('a rear engagement steps the attacker into the space its routed defender left', () => {
     // §6.3.3: the defender routs off the board at once, and the attacker
     // stands where it stood before its owner is asked for the Morale.
