@@ -33,11 +33,15 @@ The project is strict about both. Do not use a type assertion (`as`, `!`) or `@t
 
 An assertion is a narrowing the compiler cannot check: `as Foo`, `x!`, `as unknown as`. `as const`, a widening `as readonly …`, and a `never` in an exhaustive default define a type the compiler verifies; they are not assertions.
 
+No intersection types (`A & { … }`); declare the shape outright. Test a sentinel (`'pending'`, `'bypassed'`, `'none'`) with its guard in `@utils`, not by comparing the literal.
+
 ## Commentary
 
 Commentary is extensive. 25% comments inside a function body is not too much; JSDoc does not count toward it. The measure is comment lines inside bodies over code lines inside bodies: nothing outside a body is in either count, and blank lines are in neither. In a struct the lines inside the body are the JSDoc on each member, so those count; the block above a declaration does not, however long it is. `pnpm check:commentary` reports it per layer. It renders no verdict and gates nothing: a comment restating the code raises the number and makes the file worse, so whether commentary is any good is a judgment for the read, not a measure. Leave existing function commentary in place, including `@param` and `@returns`. JSDoc-style comments ahead of declarations are good for IDE readability, and every function and every struct has one. That is a separate requirement from the 25%, and neither one discharges the other. Keep a new header short: a few lines saying what the thing is and why it exists. Three paragraphs is not a better header. A shorter header is not a cleanup, so leave a long one alone. When a helper does several steps, comment each step: what it writes, and why a factory is still there.
 
 Where a step encodes a rule of the game, the comment names the rule. That is the line carrying the meaning, and a comment there that gives the operation instead — or the chain of states a lookup walks through — spends the line and loses it. Where no rule is at stake, the step still has an intended purpose and use, and that is what the comment says. A label naming the operation is not enough: it repeats what the reader can see and leaves out why the step is there and what the next one does with it. Every step has a reason; only some of those reasons are rules.
+
+For an event or a field, say where play recorded what it needs, and so what it does not have to carry. State a rule in words; a § number is only an index after it.
 
 A comment refers to code by name — a function, a type, a spec — so that a search finds it. It does not cite a commit hash or a line number; those break when the code moves. It may link a document for fuller context, but does not send the reader to another module's header comment.
 
@@ -53,11 +57,11 @@ Two practices get it written, and both apply to every change:
 
 **Write the comment before the code.** State the gameplay reason for a step first, then write or change the code so it matches that reason. Done the other way round the comment describes the code that was just written, which is how a line naming the call beneath it gets there. Done this way, a step with no reason to introduce does not get introduced, and a comment that stops matching its check shows up at once.
 
-**State the gameplay meaning before a file is done.** For each finished file, say which rule of the game each commented step serves — the rule, per step, in the game's terms, not a summary of the module. A step whose rule you cannot name gets a `TODO` saying what could not be stated. The same sentence repeated for every step, or the function's own name written back, means the commentary is not carrying meaning yet and the file is not finished.
+**State the gameplay meaning before a file is done.** For each finished file, say which rule of the game each commented step serves — the rule, per step, in the game's terms, not a summary of the module. A step whose rule you cannot name gets a `TODO` saying what could not be stated, so it is not assumed complete. The same sentence repeated for every step, or the function's own name written back, means the commentary is not carrying meaning yet and the file is not finished.
 
 ## Tests
 
-A test should be almost as easy to read as its name. The `it` title states the fact. Build that fact with a few factories, transforms, and fixtures. What remains in the body must be clear: the values this test chose, a comment on each step saying what it writes, and the assertion the title names. Setup that cannot be that clear belongs in one of those three. A stand-in value needs a comment saying why it is enough. Do not start a title with "given" or "should".
+A test should be almost as easy to read as its name. The `it` title states the fact. Build that fact with a few factories, transforms, and fixtures. What remains in the body must be clear: the values this test chose, a comment on each step saying what it writes, and the assertion the title names. Setup that cannot be that clear belongs in one of those three. A stand-in value needs a comment saying why it is enough. Do not start a title with "given" or "should". A whole game played through belongs to the bot harness, not the suite.
 
 The `describe` title is a string, the function name plus the word "function": `'getCurrentPhaseState function'`. Do not pass the function. Vitest would use `function.name` as the title, and `vitest/valid-title` rejects a name that is not a string.
 

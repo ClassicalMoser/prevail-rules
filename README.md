@@ -17,6 +17,7 @@ Prevail: Ancient Battles is a two-player tactical board game designed as a respo
 - **Unit Support System**: Cards in your hand grant limited support slots (by unit type, trait, or any unit). After you rally, you assign those slots to unit instances on the board; uncovered units rout. This models armies that need command structure to stay in the field, without a separate tracking system.
 - **Card-Based Command**: Every action requires committing a card. Cards provide both the command capability (what you can order) and the initiative value (when you act). This dual-purpose design eliminates separate command point systems.
 - **Commander Representation**: Commanders move on the board to provide "inspiration range" for issuing commands. Position your commanders strategically to extend your command reach, but risk them in the fighting. This creates meaningful tactical decisions without complex command radius rules or separate command phase mechanics.
+- **Doctrine Lives in the Cards**: A unit type says what a unit is. How an army fights, such as relieving its line or holding back a reserve, is in its cards, which already govern timing and command.
 - **Realistic Modeling**: Certain historical tactics and unit types which normally require additional rules overhead can be expressed more straightforwardly under this flexible system. The card system's restrictions and modifiers handle special cases naturally, keeping the core rules simple while allowing for historical authenticity.
 
 #### Historical Accuracy

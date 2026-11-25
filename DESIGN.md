@@ -9,6 +9,7 @@ Domain logic is pure functions:
 - No side effects (no I/O, no mutations)
 - Same input always produces the same output
 - Easy to test and reason about
+- No state in module scope. A table built once from constants is a constant; a cache of game state is not
 
 ## Immutability
 
@@ -60,6 +61,14 @@ Queries and validation are separate:
 
 See [`src/domain/validation/README.md`](./src/domain/validation/README.md).
 
+## Hidden information
+
+The engine hides only what players at a table could: hands and face-down cards, not armies. Every view holds both armies' units.
+
+## The game record
+
+A game is one document: its players, armies and mode, and one event stream from setup on. The stream is the record. The current state is a cache, so a game loads without a replay; anything else is a projection derived from the record. A game embeds the unit types and cards it was played with, and is versioned by the rules package version.
+
 ## Events
 
 State changes go through events:
@@ -71,6 +80,8 @@ What an event carries:
 
 - **One choice per decision.** Where a rule has a player decide several things in turn, each is its own player-choice event, in the rulebook's order. A couple of consecutive decisions by the same player that belong together may share one event (a shot's target and supporters; a move's path and the commander riding with it). A choice type does not serve two different moments or players.
 - **A unit is named by identity.** Where it stands, and its stats, are read from the board.
+- **Units and cards travel whole**, as queries return them. A transform takes the state's own copy before it uses or stores one, never the event's, except on a hidden hand, where the event's card is the only copy there is.
+- **Order means nothing.** A set sent as a list goes in board order (`listInBoardOrder`) only so that it is stable.
 - **An event carries what the state does not already hold**: what a procedure measured or decided (an attack's result, the retreats a unit may make, a Morale penalty, the facing a reverse leaves) or what a player chose. It does not repeat units, placements or locations the state holds, and it does not say which slot its effect writes to: the apply asks the state through a query, so the event and the state cannot disagree.
 - **An apply applies; it does not find facts.** It may read where the game is in its sequence, which slot its effect writes to, and what the state holds by identity: where a named unit stands, whether a commander shares its space. It carries out the fixed consequences of its event, as a rally returns every card but the burnt one, or as units given no place at the support check rout. It may branch on its event's contents and on which slot it writes. It does not answer a question a rule decides, such as what is legal or which units a line covers. Nor does it decide what comes next from a condition of the state, such as whether any units or orders are left, or whether both players have chosen. A rule's answer is on the event: a procedure writes it, or a player gives it and validation checks it. What comes next is the expected engine's to ask for, as its own effect where none exists yet.
 - **A choice too large to list whole** is offered a part at a time (`OpenChoice`), as [`ENGINES.md`](./src/domain/ENGINES.md) describes.
