@@ -24,14 +24,11 @@ describe('moveCardToPlayed function', () => {
     expect(result.played).toStrictEqual([earlier, thisRound]);
   });
 
-  it('returns the cards unchanged when no card is in play', () => {
-    // This case covers the soft guard marked TODO(wrong) in
-    // `moveCardToPlayed`; the fix replaces it with one asserting a throw.
+  it('throws when no card is in play', () => {
+    // Every round reveals a card for each player before Cleanup (§4.1.2),
+    // so a player with no card in play here is a fault, not a card to skip.
     const owned = createOwnedCardState({ inHand: [createTestCard()] });
 
-    const result = moveCardToPlayed(owned);
-
-    // The very same piles come back.
-    expect(result).toBe(owned);
+    expect(() => moveCardToPlayed(owned)).toThrow('Player has no card in play');
   });
 });
