@@ -1,26 +1,13 @@
-import type { CommandResolutionState, GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMovementResolutionState,
   createTestCard,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
 
 import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
-
-/** Phase 3, carrying out the Move order this test built. */
-function issueCommands(state: GameState, movement: CommandResolutionState) {
-  const issuing = updatePhaseState(
-    state,
-    createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: movement,
-    }),
-  );
-  return issuing;
-}
 
 /** A defender engaged from the flank is turned to face its attacker (§6.3.4). */
 describe('generateResolveFlankEngagementEvent function', () => {
@@ -34,7 +21,9 @@ describe('generateResolveFlankEngagementEvent function', () => {
     });
 
     expect(
-      generateResolveFlankEngagementEvent(issueCommands(state, movement)),
+      generateResolveFlankEngagementEvent(
+        createGameStateResolvingCommand(movement, state),
+      ),
     ).toStrictEqual({
       effectType: 'resolveFlankEngagement',
       eventType: 'gameEffect',
@@ -51,7 +40,9 @@ describe('generateResolveFlankEngagementEvent function', () => {
     });
 
     expect(() =>
-      generateResolveFlankEngagementEvent(issueCommands(state, movement)),
+      generateResolveFlankEngagementEvent(
+        createGameStateResolvingCommand(movement, state),
+      ),
     ).toThrow('Engagement type is not flank');
   });
 });
