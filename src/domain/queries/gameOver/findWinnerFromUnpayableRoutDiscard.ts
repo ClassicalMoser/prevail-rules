@@ -1,6 +1,6 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { isPending } from '@utils';
+import { throwIfPending } from '@utils';
 import { getOtherPlayer } from '@queries/player';
 import { findRoutOwingDiscard } from '../sequencing/combatOutcomes/rout/findRoutOwingDiscard';
 
@@ -23,16 +23,12 @@ export function findWinnerFromUnpayableRoutDiscard(
     return undefined;
   }
 
-  // The selection above already settled this; the guard is what narrows the count.
-  // TODO(composition): this line cannot be reached, as `findRoutOwingDiscard`
-  // answers only a rout whose penalty is known (`isAwaitingRoutDiscard`), so
-  // coverage and the nightly mutants stop here. It is also a soft second guard
-  // behind that gate. Settled by narrowing the find's return type, or by
-  // `throwIfPending`.
-  const penalty = routState.numberToDiscard;
-  if (isPending(penalty)) {
-    return undefined;
-  }
+  // `findRoutOwingDiscard` answers only a rout whose penalty is counted, so
+  // the count is known; this insists on it rather than guarding twice.
+  const penalty = throwIfPending(
+    routState.numberToDiscard,
+    'A rout owing its discard has its penalty counted',
+  );
 
   // Paying with the last card is already a loss, so the hand must hold more
   // cards than the penalty (§11.2). A smaller penalty is paid and play goes on.

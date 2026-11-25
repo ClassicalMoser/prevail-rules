@@ -1,5 +1,6 @@
 import type { GameState } from '@game';
 import type { Restrictions, UnitInstance, UnitWithPlacement } from '@entities';
+import { throwIfUndefined } from '@utils';
 import { findUnitIndex } from '@queries/unit';
 import { findPositionOfUnit } from '@queries/unitPresence';
 
@@ -51,14 +52,13 @@ export function findRankSpanBetweenEnds(
   );
   // Where each end stands in that rank. A second end outside it is beyond a
   // gap, an enemy, a unit that may not join, or not in this rank at all.
-  // TODO(composition): `oneIndex` is never `undefined`, as the rank always
-  // holds the unit it was drawn from (`getLineSegmentContainingUnit` starts
-  // from it), so that half of the test is unreachable and its mutant survives;
-  // `getLegalLines` treats the same lookup as a fault (`throwIfUndefined`).
-  // Settled by doing the same here.
-  const oneIndex = findUnitIndex(rank, oneEnd);
+  // The rank was drawn from the first end, so it always holds it.
+  const oneIndex = throwIfUndefined(
+    findUnitIndex(rank, oneEnd),
+    'A rank holds the unit it was drawn from',
+  );
   const otherIndex = findUnitIndex(rank, otherEnd);
-  if (oneIndex === undefined || otherIndex === undefined) {
+  if (otherIndex === undefined) {
     return undefined;
   }
 

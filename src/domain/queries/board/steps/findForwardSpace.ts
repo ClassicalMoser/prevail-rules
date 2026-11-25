@@ -1,6 +1,6 @@
 import type { Board, UnitFacing, Coordinate } from '@entities';
 import { coordinateLayoutMap, unitFacings } from '@entities';
-import { boardColumnNumbers, boardRowLetters } from '@ruleValues';
+import { boardRowLetters } from '@ruleValues';
 import { getColumnDelta, getRowDelta } from '../deltas';
 import { findCoordinateAtPosition } from '../findCoordinateAtPosition';
 import { findGridPosition } from '../findGridPosition';
@@ -23,30 +23,19 @@ function throwInvalidCoordinate(board: Board, coordinate: Coordinate): never {
   }
   const [inputRow = '', inputColumn = ''] = parts;
 
-  // A row or a column only a larger board has. A row is this board's if its
-  // letter is among the first `depth` row letters, and a column if its number
-  // is among the first `frontage` column numbers. The labels are read as
-  // plain strings, since the part being checked may be no label at all.
-  const { depth, frontage } = coordinateLayoutMap[board.boardType];
+  // A row only a larger board has. A row is this board's if its letter is
+  // among the first `depth` row letters. The labels are read as plain
+  // strings, since the part being checked may be no label at all.
+  const { depth } = coordinateLayoutMap[board.boardType];
   const rowLetters: readonly string[] = boardRowLetters;
   const row = rowLetters.indexOf(inputRow);
   if (row === -1 || row >= depth) {
     throw new Error(`Invalid row: ${inputRow}`);
   }
-  const columnNumbers: readonly string[] = boardColumnNumbers;
-  const column = columnNumbers.indexOf(inputColumn);
-  if (column === -1 || column >= frontage) {
-    throw new Error(`Invalid column: ${inputColumn}`);
-  }
 
-  // Both parts are this board's, so the layout lists the space; reaching here
-  // means the positions disagree with this size's rows and columns.
-  // TODO(composition): unreachable, and the one line no spec covers. The two
-  // checks above repeat `findGridPosition`'s, so with both parts this board's
-  // the step never got here; only `positionByCoordinate` and
-  // `coordinateLayoutMap` disagreeing could reach it. Settle by dropping it
-  // or by naming that disagreement as the fault.
-  throw new Error(`Invalid coordinate: ${coordinate}`);
+  // The board lacks the space and its row is this board's, so the column is
+  // the part of the name that is wrong.
+  throw new Error(`Invalid column: ${inputColumn}`);
 }
 
 /**
