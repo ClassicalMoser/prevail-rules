@@ -117,6 +117,23 @@ describe('refineArmyRules function', () => {
       },
     ]);
   });
+
+  it('rejects a card that names a stat twice in one list', () => {
+    // The army's one card may be committed for Attack, listed twice.
+    const army = {
+      commandCards: [createTestCard({ modifiers: ['attack', 'attack'] })],
+      units: [],
+    };
+
+    const result = armyRules.safeParse(army);
+
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'A card cannot name a stat twice in one list.',
+        path: ['commandCards', 0, 'modifiers', 1],
+      },
+    ]);
+  });
 });
 
 describe('legalArmySchema schema', () => {

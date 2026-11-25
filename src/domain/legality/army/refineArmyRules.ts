@@ -2,10 +2,12 @@ import type { Army } from '@entities';
 import { armySchema } from '@entities';
 import type { z } from 'zod';
 import { isWithinUnitTypeLimit } from './limits';
+import { refineCommandCardModifiers } from './refineCommandCardModifiers';
 
 /**
  * Adds Zod issues for the army rules that hold in every game mode: no unit
- * type fielded past its limit, and nothing listed twice.
+ * type fielded past its limit, nothing listed twice, and no card naming a
+ * stat twice in one list.
  *
  * Takes only the units and command cards, so a caller without an army id
  * (such as a draft being written) can run the same rules.
@@ -55,6 +57,15 @@ export function refineArmyRules(
       });
     }
     seenCommandCardIds.add(card.id);
+  }
+
+  // Each card raises a stat at most once in each of its lists.
+  for (const [index, card] of army.commandCards.entries()) {
+    refineCommandCardModifiers(card, ctx, [
+      ...pathPrefix,
+      'commandCards',
+      index,
+    ]);
   }
 }
 
