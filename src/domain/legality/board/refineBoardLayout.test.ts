@@ -8,7 +8,9 @@ import { refineBoardLayout } from './refineBoardLayout';
  * Accepts any shape, so each case reaches the layout check without the board
  * shape checks getting there first.
  */
-const boardLayout = z.custom<Board>().superRefine(refineBoardLayout);
+const boardLayout = z.custom<Board>().superRefine((board, ctx) => {
+  refineBoardLayout(board, ctx);
+});
 
 describe('refineBoardLayout function', () => {
   it('accepts a board with exactly the spaces its size lays out', () => {
@@ -58,11 +60,9 @@ describe('refineBoardLayout function', () => {
     const { 'H-12': _farCorner, ...withoutFarCorner } =
       createEmptySmallBoard().board;
     const board: Board = { board: withoutFarCorner, boardType: 'small' };
-    const inGame = z
-      .custom<Board>()
-      .superRefine((value, ctx) =>
-        refineBoardLayout(value, ctx, ['gameState', 'boardState']),
-      );
+    const inGame = z.custom<Board>().superRefine((value, ctx) => {
+      refineBoardLayout(value, ctx, ['gameState', 'boardState']);
+    });
 
     const result = inGame.safeParse(board);
 

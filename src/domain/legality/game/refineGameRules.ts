@@ -23,20 +23,25 @@ interface GameRulesInput {
  *
  * @param game - The mode, both armies and the board the game is played on
  * @param ctx - Where to add each issue
+ * @returns Whether the board is laid out as its size, so that later checks
+ * may look its spaces up
  */
 export function refineGameRules(
   game: GameRulesInput,
   ctx: z.RefinementCtx,
-): void {
+): boolean {
   // The game is played on the board size its mode calls for.
   refineGameModeBoardSize(game, ctx);
   // The field is whole: every space of its size, and none from another size.
-  refineBoardLayout(game.gameState.boardState, ctx, [
+  const laidOut = refineBoardLayout(game.gameState.boardState, ctx, [
     'gameState',
     'boardState',
   ]);
   // Each side brought an army it was allowed to bring to this mode.
   refineGameArmyComposition(game, ctx);
+
+  // Whether the board may be read space by space.
+  return laidOut;
 }
 
 /**
@@ -47,9 +52,13 @@ export function refineGameRules(
 export const legalGameSchema: z.ZodType<Game> = gameSchema.superRefine(
   (game, ctx) => {
     // The rules a whole game record must keep.
-    refineGameRules(game, ctx);
-    // The index of where every piece is says what the record says.
-    refineGameStateIndex(game.gameState, ctx, ['gameState']);
+    const laidOut = refineGameRules(game, ctx);
+    // The index of where every piece is says what the record says. It looks
+    // each piece's space up, so it waits for a board laid out as its size: a
+    // record read from outside is refused, never thrown on.
+    if (laidOut) {
+      refineGameStateIndex(game.gameState, ctx, ['gameState']);
+    }
   },
 );
 
@@ -66,16 +75,6 @@ export const legalGameSchema: z.ZodType<Game> = gameSchema.superRefine(
 export function legalGameStateSchema(
   gameMode: GameModeName,
 ): z.ZodType<AuthoritativeGameState> {
-  // TODO(wrong): a board with a hole throws here instead of being refused.
-  // `refineBoardLayout` adds the issue, but `refineGameStateIndex` runs next and
-  // `listPiecePlaces` asks `getBoardSpace` for the missing space, which throws
-  // out of `safeParse`; `legalGameSchema` does the same through
-  // `parseLegalGameForMode`, whose header promises a refusal, not a throw.
-  // Failing spec: `legalGameStateSchema('tutorial').safeParse` of an empty
-  // tutorial state whose board lacks H-12 returns the issue
-  // 'Missing coordinate H-12 for small board.' at ['boardState', 'board',
-  // 'H-12']. Fix: run the index check only when the board is whole.
-
   // TODO(composition): the first two checks repeat the board half of
   // `refineGameRules`, with paths for a bare state in place of a game's.
   // Settle whether one board refine, taking the mode and a path prefix,
@@ -88,9 +87,12 @@ export function legalGameStateSchema(
       'boardType',
     ]);
     // The field is whole: every space of its size, and none from another size.
-    refineBoardLayout(state.boardState, ctx, ['boardState']);
-    // The index of where every piece is says what the record says.
-    refineGameStateIndex(state, ctx);
+    const laidOut = refineBoardLayout(state.boardState, ctx, ['boardState']);
+    // The index of where every piece is says what the record says, once the
+    // board can be read space by space.
+    if (laidOut) {
+      refineGameStateIndex(state, ctx);
+    }
   });
 
   // A schema that refuses a state no game of this mode could be in.

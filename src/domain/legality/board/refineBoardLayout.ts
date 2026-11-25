@@ -15,12 +15,14 @@ import { coordinateLayoutMap } from '@entities';
  * @param ctx - Where to add each issue
  * @param pathPrefix - Where the board sits in a larger value, such as
  * `['gameState', 'boardState']` in a game, so each issue points at it.
+ * @returns Whether the board is laid out as its size, so that later checks
+ * may look its spaces up
  */
 export function refineBoardLayout(
   board: Board,
   ctx: z.RefinementCtx,
   pathPrefix: (string | number)[] = [],
-): void {
+): boolean {
   // The grid this board's size lays out, row by column.
   const expected = new Set<string>(
     coordinateLayoutMap[board.boardType].coordinates,
@@ -29,24 +31,26 @@ export function refineBoardLayout(
   const actual = new Set(Object.keys(board.board));
 
   // A space the grid has but the board lacks leaves a hole in the field.
-  for (const key of expected) {
-    if (!actual.has(key)) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `Missing coordinate ${key} for ${board.boardType} board.`,
-        path: [...pathPrefix, 'board', key],
-      });
-    }
+  const missing = [...expected].filter((key) => !actual.has(key));
+  for (const key of missing) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `Missing coordinate ${key} for ${board.boardType} board.`,
+      path: [...pathPrefix, 'board', key],
+    });
   }
 
   // A space the grid lacks belongs to a different board size.
-  for (const key of actual) {
-    if (!expected.has(key)) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `Unexpected coordinate ${key} for ${board.boardType} board.`,
-        path: [...pathPrefix, 'board', key],
-      });
-    }
+  const unexpected = [...actual].filter((key) => !expected.has(key));
+  for (const key of unexpected) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `Unexpected coordinate ${key} for ${board.boardType} board.`,
+      path: [...pathPrefix, 'board', key],
+    });
   }
+
+  // Laid out when nothing is missing and nothing is out of place.
+  const laidOut = missing.length === 0 && unexpected.length === 0;
+  return laidOut;
 }

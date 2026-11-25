@@ -56,7 +56,9 @@ const boardWithHole: Board = { board: withoutFarCorner, boardType: 'small' };
  */
 const gameRules = z
   .custom<Parameters<typeof refineGameRules>[0]>()
-  .superRefine(refineGameRules);
+  .superRefine((game, ctx) => {
+    refineGameRules(game, ctx);
+  });
 
 describe('refineGameRules function', () => {
   // Tutorial plays on the small board and has no composition limits.
@@ -159,7 +161,10 @@ describe('legalGameSchema schema', () => {
     // from outside is refused, never thrown on.
     const holed: Game = {
       ...game,
-      gameState: replaceBoard(game.gameState, boardWithHole),
+      // Spread rather than replaced, since rebuilding the index would itself
+      // look the missing space up; the index stays the game's own, which
+      // places no piece on the board.
+      gameState: { ...game.gameState, boardState: boardWithHole },
     };
 
     const result = legalGameSchema.safeParse(holed);
@@ -222,8 +227,6 @@ describe('legalGameStateSchema function', () => {
 
   it('refuses a space from another board size, at the state root', () => {
     // The small board with the large board's far corner, X-36, added.
-    // A hole would make the better case, but the index check throws on one:
-    // see the TODO(wrong) on `legalGameStateSchema`.
     const farLargeCorner = createEmptyLargeBoard().board['X-36'];
     const widened: Board = {
       board: { ...createEmptySmallBoard().board, 'X-36': farLargeCorner },
@@ -243,7 +246,11 @@ describe('legalGameStateSchema function', () => {
 
   it('refuses a board with a hole, at the state root, rather than throwing', () => {
     // The tutorial board lacks H-12; the index check must not look it up.
-    const state = replaceBoard(createEmptyGameState('tutorial'), boardWithHole);
+    // Spread in, since rebuilding the index would look it up itself.
+    const state = {
+      ...createEmptyGameState('tutorial'),
+      boardState: boardWithHole,
+    };
 
     const result = legalGameStateSchema('tutorial').safeParse(state);
 
