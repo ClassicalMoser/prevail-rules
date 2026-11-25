@@ -23,6 +23,37 @@ describe('isRetreatCutOff function', () => {
     expect(isRetreatCutOff(gameState.boardState, unit)).toBe(true);
   });
 
+  it('an enemy in a corner back space, facing the unit, cuts its retreat too', () => {
+    // F-6 is behind the black unit's right shoulder; facing north-west, the
+    // white unit there looks straight at it.
+    const gameState = createGameState([
+      ['E-5', 'black', 'north'],
+      ['F-6', 'white', 'northWest'],
+    ]);
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
+    );
+
+    expect(isRetreatCutOff(gameState.boardState, unit)).toBe(true);
+  });
+
+  it('an enemy behind that is locked in its own fight does not cut the retreat', () => {
+    // The white unit on F-5 faces the black unit, but is engaged with
+    // another black unit: only an unengaged enemy cuts the line (§9.1.5).
+    const gameState = createGameState([
+      ['E-5', 'black', 'north'],
+      ['F-5', 'white', 'north'],
+      ['F-5', 'black', 'south'],
+    ]);
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
+    );
+
+    expect(isRetreatCutOff(gameState.boardState, unit)).toBe(false);
+  });
+
   it('an enemy behind, looking away, has not closed the road', () => {
     // The same enemy, turned to face south, away from the black unit.
     const gameState = createGameState([

@@ -36,6 +36,7 @@ describe('getTurnOptions function', () => {
 
     const options = getTurnOptions(context, state);
 
+    // 45° either way, or 180° about, each for one point (§5.2.1).
     expect(options).toStrictEqual(
       new Set(['turnLeft', 'turnRight', 'turnAbout']),
     );
@@ -44,21 +45,21 @@ describe('getTurnOptions function', () => {
   it('a unit with no Flexibility left cannot turn', () => {
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
-    // Facing north again after turning left and back right, both points
-    // spent.
+    // Wheeled 90° to face west by two turns left, both points spent.
     const state: MoveState = {
       cameFrom: 'E-5',
       coordinate: 'E-5',
-      facing: 'north',
+      facing: 'west',
       // Only the position it stands in now: no earlier one bears on this case.
-      heldPositions: [{ coordinate: 'E-5', facing: 'north' }],
-      path: ['turnLeft', 'turnRight'],
+      heldPositions: [{ coordinate: 'E-5', facing: 'west' }],
+      path: ['turnLeft', 'turnLeft'],
       remainingFlexibility: 0,
       remainingSpeed: 2,
     };
 
     const options = getTurnOptions(context, state);
 
+    // Every turn costs a point (§5.2.1); with none left, none is offered.
     expect(options).toStrictEqual(new Set());
   });
 
@@ -79,6 +80,7 @@ describe('getTurnOptions function', () => {
 
     const options = getTurnOptions(context, state);
 
+    // Turning about is never part of a retreat (§9.1.4).
     expect(options).toStrictEqual(new Set(['turnLeft', 'turnRight']));
   });
 
@@ -99,6 +101,8 @@ describe('getTurnOptions function', () => {
 
     const options = getTurnOptions(context, state);
 
+    // Its 45° opening is spent: a second turn would wheel it 90° or swing
+    // it straight back, though a point of Flexibility is left.
     expect(options).toStrictEqual(new Set());
   });
 

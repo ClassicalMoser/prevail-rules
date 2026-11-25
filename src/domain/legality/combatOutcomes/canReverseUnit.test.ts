@@ -1,68 +1,59 @@
-import type { UnitWithPlacement } from '@entities';
 import { createEmptyGameState } from '@factories';
 import {
   createGameStateWithEngagedUnits,
+  createGameStateWithUnits,
   createReverseState,
   createTestUnit,
-  replaceBoard,
+  placed,
 } from '@testing';
-import { addUnitToBoard } from '@transforms';
 
 import { canReverseUnit } from './canReverseUnit';
 
 /**
  * A unit can reverse once it is alone on its hex. An engagement blocks it.
  * A unit that has left the board cannot be asked.
+ *
+ * TODO(misleading): the board is a grid of square spaces (§2.1.1), not hexes;
+ * "alone in its space" would say it.
  */
 describe('canReverseUnit function', () => {
-  it('returns true when the reversing unit is alone on its hex', () => {
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = {
-      coordinate: 'E-5',
-      facing: 'north',
-    } satisfies UnitWithPlacement['placement'];
+  it('lets a unit alone in its space reverse', () => {
+    // White's unit stands by itself at E-5: whatever fought it has gone.
+    const unit = createTestUnit('white');
+    const state = createGameStateWithUnits([placed(unit, 'E-5', 'north')]);
     const reverse = createReverseState(unit);
-    const empty = createEmptyGameState('standard');
-    const state = replaceBoard(
-      empty,
-      addUnitToBoard(empty.boardState, { placement, unit }),
-    );
 
+    // Nothing shares its space, so the reverse turns it (§7.5.5).
     expect(canReverseUnit(reverse, state)).toBe(true);
   });
 
-  it('returns false when the reversing unit is the primary of an engagement', () => {
-    const primary = createTestUnit('white', { attack: 2 });
-    const secondary = createTestUnit('black', { attack: 2 });
-    const state = createGameStateWithEngagedUnits(
-      primary,
-      secondary,
-      'E-5',
-      'north',
-    );
-    const reverse = createReverseState(primary);
+  it('keeps the primary unit of an engagement from reversing', () => {
+    // White engaged Black at E-5; both still stand there.
+    const white = createTestUnit('white');
+    const black = createTestUnit('black');
+    const state = createGameStateWithEngagedUnits(white, black, 'E-5', 'north');
+    const reverse = createReverseState(white);
 
+    // Still sharing a space with an enemy, it stays as it is (§7.5.5).
     expect(canReverseUnit(reverse, state)).toBe(false);
   });
 
-  it('returns false when the reversing unit is the secondary of an engagement', () => {
-    const primary = createTestUnit('white', { attack: 2 });
-    const secondary = createTestUnit('black', { attack: 2 });
-    const state = createGameStateWithEngagedUnits(
-      primary,
-      secondary,
-      'E-5',
-      'north',
-    );
-    const reverse = createReverseState(secondary);
+  it('keeps the secondary unit of an engagement from reversing', () => {
+    // The same engagement; this time the unit to reverse is Black's, the
+    // secondary.
+    const white = createTestUnit('white');
+    const black = createTestUnit('black');
+    const state = createGameStateWithEngagedUnits(white, black, 'E-5', 'north');
+    const reverse = createReverseState(black);
 
+    // Either unit of an engagement is held by it.
     expect(canReverseUnit(reverse, state)).toBe(false);
   });
 
   it('throws when the reversing unit has left the board', () => {
     // A unit routed on its way out of a retreat is no longer anywhere, so
     // there is no hex to judge and no answer to give.
-    const reverse = createReverseState(createTestUnit('white', { attack: 2 }));
+    const reverse = createReverseState(createTestUnit('white'));
 
     expect(() =>
       canReverseUnit(reverse, createEmptyGameState('standard')),

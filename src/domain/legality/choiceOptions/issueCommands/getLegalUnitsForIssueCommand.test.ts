@@ -1,90 +1,90 @@
-import { tempCommandCards } from '@sampleValues';
 import {
-  createBoardWithEngagedUnits,
+  createGameState,
+  createGameStateWithEngagedUnits,
+  createTestCommand,
   createTestUnit,
   createUnitWithPlacement,
-  replaceBoard,
 } from '@testing';
-
-import { addCommanderToBoard, addUnitToBoard } from '@transforms';
+import { addUnitsToCommandedUnits, deployCommander } from '@transforms';
 
 import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 
-import { createEmptyGameState } from '@factories';
 /**
- * GetLegalUnitsForIssueCommand: on-board units matching command restrictions.
+ * The units an order may name under its full restrictions (§4.3.4): the
+ * player's own units on the board, free of an engagement, not yet ordered
+ * this round, matching its traits and types, and within inspiration range.
  */
 describe('getLegalUnitsForIssueCommand function', () => {
-  const unrestrictedCommand = {
-    ...tempCommandCards[0].command,
+  /** An order for one unit with no inspiration limit or filter. */
+  const unrestrictedCommand = createTestCommand({
     number: 1,
-    restrictions: {
-      inspirationRangeRestriction: -1,
-      restrictionType: 'none' as const,
-    },
-  };
+    restrictions: { inspirationRangeRestriction: -1, restrictionType: 'none' },
+  });
 
   it('includes friendly units on board when unrestricted', () => {
-    const unit = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    let state = createEmptyGameState('standard');
-    state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
+    // One black unit on E-5.
+    const state = createGameState([['E-5', 'black']]);
 
+    // An order with no limits reaches it wherever it stands.
     expect(
       getLegalUnitsForIssueCommand(unrestrictedCommand, 'black', state),
-    ).toStrictEqual([unit]);
+    ).toStrictEqual([
+      createUnitWithPlacement({
+        coordinate: 'E-5',
+        facing: 'north',
+        playerSide: 'black',
+      }),
+    ]);
+  });
+
+  it('offers only the issuing player’s units', () => {
+    // A white unit on E-6 stands beside black's on E-5.
+    const state = createGameState([
+      ['E-5', 'black'],
+      ['E-6', 'white'],
+    ]);
+
+    // An order reaches only its own side's units (§4.3.4).
+    const units = getLegalUnitsForIssueCommand(
+      unrestrictedCommand,
+      'black',
+      state,
+    ).map((eligible) => eligible.placement.coordinate);
+    expect(units).toStrictEqual(['E-5']);
   });
 
   it('excludes units outside inspiration range', () => {
-    const near = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 1 },
+    // Black units on E-5, with the commander, and far off on A-1.
+    const rangedCommand = createTestCommand({
+      number: 1,
+      restrictions: { inspirationRangeRestriction: 1, restrictionType: 'none' },
     });
-    const far = createUnitWithPlacement({
-      coordinate: 'A-1',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2 },
-    });
-    const rangedCommand = {
-      ...unrestrictedCommand,
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none' as const,
-      },
-    };
-    let state = createEmptyGameState('standard');
-    let board = addUnitToBoard(state.boardState, near);
-    board = addUnitToBoard(board, far);
-    board = addCommanderToBoard(board, 'black', 'E-5');
-    state = replaceBoard(state, board);
+    const state = deployCommander(
+      createGameState([
+        ['E-5', 'black'],
+        ['A-1', 'black'],
+      ]),
+      'black',
+      'E-5',
+    );
 
-    expect(
-      getLegalUnitsForIssueCommand(rangedCommand, 'black', state),
-    ).toStrictEqual([near]);
+    // Only the unit within one space of the commander may be ordered.
+    const units = getLegalUnitsForIssueCommand(
+      rangedCommand,
+      'black',
+      state,
+    ).map((eligible) => eligible.placement.coordinate);
+    expect(units).toStrictEqual(['E-5']);
   });
 
   it('excludes units already commanded', () => {
-    const unit = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    let state = createEmptyGameState('standard');
-    state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
-    state = {
-      ...state,
-      currentRoundState: {
-        ...state.currentRoundState,
-        commandedUnits: [unit.unit],
-      },
-    };
+    // Black's one unit has had its order this round.
+    const placed = createGameState([['E-5', 'black']]);
+    const state = addUnitsToCommandedUnits(placed, [
+      createTestUnit('black', { instanceNumber: 1 }),
+    ]);
 
+    // One order per unit per round (§4.3.6).
     expect(
       getLegalUnitsForIssueCommand(unrestrictedCommand, 'black', state),
     ).toStrictEqual([]);
@@ -94,8 +94,7 @@ describe('getLegalUnitsForIssueCommand function', () => {
     const ours = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const theirs = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     // Our unit and an enemy stand in E-5, locked in a fight (§2.2.1).
-    const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
-    const state = replaceBoard(createEmptyGameState('standard'), board);
+    const state = createGameStateWithEngagedUnits(ours, theirs, 'E-5', 'north');
 
     // An engaged unit cannot be ordered (§4.3.4), so nobody is offered.
     expect(

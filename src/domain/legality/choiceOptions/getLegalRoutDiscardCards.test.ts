@@ -1,110 +1,102 @@
-import { tempCommandCards } from '@sampleValues';
-import type { AuthoritativeGameState, WhiteSeenGameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
+import type { CommandCard, PlayerSide } from '@entities';
+import type { AuthoritativeGameState, RoutState } from '@game';
+import { createEmptyGameState, createOwnedCardState } from '@factories';
 import {
-  createCleanupPhaseState,
-  createRallyResolutionState,
+  createCleanupPhaseStateWithRallyRout,
+  createPlayCardsPhaseState,
   createRoutState,
+  createTestCard,
   createTestUnit,
-  updateCardState,
+  withRoutOwing,
 } from '@testing';
-
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+import {
+  projectGameStateForVisibility,
+  updatePhaseState,
+  updatePlayerCardState,
+} from '@transforms';
 
 import { getLegalRoutDiscardCards } from './getLegalRoutDiscardCards';
 
-import { createEmptyGameState } from '@factories';
+// Stand-in cards, each in one hand only; which card does not matter here.
+const firstCard = createTestCard();
+const secondCard = createTestCard();
+const thirdCard = createTestCard();
+
+/** A new game with the given player holding the given hand. */
+function holding(
+  player: PlayerSide,
+  hand: CommandCard[],
+): AuthoritativeGameState {
+  const withHand = updatePlayerCardState(
+    createEmptyGameState('standard'),
+    player,
+    createOwnedCardState({ inHand: hand }),
+  );
+  return withHand;
+}
+
+/** Cleanup on the player's rally, with this rout open on it. */
+function onRallyWithRout(
+  state: AuthoritativeGameState,
+  rout: RoutState,
+): AuthoritativeGameState {
+  const cleanup = updatePhaseState(
+    state,
+    createCleanupPhaseStateWithRallyRout(state, rout),
+  );
+  return cleanup;
+}
+
 /**
  * GetLegalRoutDiscardCards: atomic eligible hand card IDs + required count when
  * cleanup resolveRally awaits a rout discard.
+ *
+ * A routed unit's owner discards cards equal to its Morale, chosen freely from
+ * their hand (§9.3.2). The offer names who pays, how many, and which cards
+ * this view can see to choose from.
  */
 describe('getLegalRoutDiscardCards function', () => {
-  function stateAwaitingDiscard(options: {
-    step: 'firstPlayerResolveRally' | 'secondPlayerResolveRally';
-    player: 'white' | 'black';
-    numberToDiscard: number;
-    handCardIndexes?: readonly number[];
-    cardsChosen?: boolean;
-    initiative?: 'white' | 'black';
-  }): AuthoritativeGameState {
-    const initiative = options.initiative ?? 'white';
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      initiative,
-    );
-    const unit = createTestUnit(options.player);
-    const handIndexes = options.handCardIndexes ?? [2, 3, 4];
-    const hand = handIndexes.map((i) => tempCommandCards[i]);
-    const withCards = updateCardState(base, {
-      ...base.cardState,
-      [options.player]: {
-        ...base.cardState[options.player],
-        awaitingPlay: null,
-        inHand: hand,
-        inPlay: null,
-      },
-    });
-    const rallyState = createRallyResolutionState({
-      playerRallied: true,
-      rallyResolved: true,
-      routState: createRoutState(options.player, unit, {
-        cardsChosen: options.cardsChosen ?? false,
-        numberToDiscard: options.numberToDiscard,
-      }),
-    });
-    return updatePhaseState(
-      withCards,
-      createCleanupPhaseState({
-        firstPlayerRallyResolutionState:
-          options.step === 'firstPlayerResolveRally' ? rallyState : 'pending',
-        secondPlayerRallyResolutionState:
-          options.step === 'secondPlayerResolveRally' ? rallyState : 'pending',
-        step: options.step,
-      }),
-    );
-  }
-
   it('returns eligible hand card IDs and the required discard count', () => {
-    const state = stateAwaitingDiscard({
-      numberToDiscard: 2,
-      player: 'white',
-      step: 'firstPlayerResolveRally',
-    });
+    // White's unit routed at its rally's support check and costs two cards.
+    const state = withRoutOwing(
+      holding('white', [firstCard, secondCard, thirdCard]),
+      'white',
+      2,
+    );
 
+    // Any of white's three cards may go.
     expect(getLegalRoutDiscardCards(state)).toStrictEqual({
-      cardIds: [
-        tempCommandCards[2].id,
-        tempCommandCards[3].id,
-        tempCommandCards[4].id,
-      ],
+      cardIds: [firstCard.id, secondCard.id, thirdCard.id],
       numberToDiscard: 2,
       player: 'white',
     });
   });
 
+  // TODO(misleading): the title says the card list is empty, but the case
+  // asserts every card in hand. Settled by retitling to what the code does (a
+  // zero penalty still lists the hand), or by deciding that a Morale-0 rout
+  // owes no discard choice at all (§9.3.2: "Morale 0 costs nothing").
   it('returns an empty card ID list when numberToDiscard is 0 but still reports the count', () => {
-    const state = stateAwaitingDiscard({
-      numberToDiscard: 0,
-      player: 'white',
-      step: 'firstPlayerResolveRally',
-    });
+    // A Morale-0 unit routed: it costs nothing.
+    const state = withRoutOwing(
+      holding('white', [firstCard, secondCard, thirdCard]),
+      'white',
+      0,
+    );
 
     expect(getLegalRoutDiscardCards(state)).toStrictEqual({
-      cardIds: [
-        tempCommandCards[2].id,
-        tempCommandCards[3].id,
-        tempCommandCards[4].id,
-      ],
+      cardIds: [firstCard.id, secondCard.id, thirdCard.id],
       numberToDiscard: 0,
       player: 'white',
     });
   });
 
   it('throws when no rout is awaiting a discard, where nothing asks', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    // The players are still choosing their cards.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
 
     expect(() => getLegalRoutDiscardCards(state)).toThrow(
       'No rout is awaiting a discard',
@@ -112,92 +104,70 @@ describe('getLegalRoutDiscardCards function', () => {
   });
 
   it('throws when the cards are already chosen, since the discard is no longer owed', () => {
-    const state = stateAwaitingDiscard({
-      cardsChosen: true,
-      numberToDiscard: 1,
-      player: 'white',
-      step: 'firstPlayerResolveRally',
-    });
+    // White has paid for its routed unit.
+    const routing = createTestUnit('white');
+    const state = onRallyWithRout(
+      holding('white', [firstCard]),
+      createRoutState('white', routing, {
+        cardsChosen: true,
+        numberToDiscard: 1,
+      }),
+    );
+
+    expect(() => getLegalRoutDiscardCards(state)).toThrow(
+      'No rout is awaiting a discard',
+    );
+  });
+
+  it('throws while the rout has not yet counted what it costs, since no discard is owed yet', () => {
+    // White's unit has routed, and its Morale is still to be counted.
+    const routing = createTestUnit('white');
+    const state = onRallyWithRout(
+      holding('white', [firstCard]),
+      createRoutState('white', routing),
+    );
+
+    // Not yet owed: the same refusal as no rout at all.
     expect(() => getLegalRoutDiscardCards(state)).toThrow(
       'No rout is awaiting a discard',
     );
   });
 
   it('still returns available cards when the hand is smaller than numberToDiscard', () => {
-    const state = stateAwaitingDiscard({
-      handCardIndexes: [2],
-      numberToDiscard: 2,
-      player: 'white',
-      step: 'firstPlayerResolveRally',
-    });
+    // White owes two cards and holds one; whether that loses is not asked here.
+    const state = withRoutOwing(holding('white', [firstCard]), 'white', 2);
+
     expect(getLegalRoutDiscardCards(state)).toStrictEqual({
-      cardIds: [tempCommandCards[2].id],
+      cardIds: [firstCard.id],
       numberToDiscard: 2,
       player: 'white',
     });
   });
 
   it('whiteSeen returns white hand atoms when white must discard', () => {
-    const authoritative = stateAwaitingDiscard({
-      numberToDiscard: 1,
-      player: 'white',
-      step: 'firstPlayerResolveRally',
-    });
-    const whiteSeen: WhiteSeenGameState = {
-      ...authoritative,
-      visibility: 'whiteSeen',
-      cardState: {
-        visibility: 'whiteSeen',
-        white: {
-          ...authoritative.cardState.white,
-          awaitingPlay: null,
-          inHand: [tempCommandCards[2], tempCommandCards[3]],
-        },
-        black: {
-          awaitingPlay: null,
-          burnt: [],
-          discarded: [],
-          inHand: ['hidden', 'hidden'],
-          inPlay: null,
-          played: [],
-        },
-      },
-    };
+    // White's seat sees its own hand.
+    const state = projectGameStateForVisibility(
+      withRoutOwing(holding('white', [firstCard, secondCard]), 'white', 1),
+      'whiteSeen',
+    );
 
-    expect(getLegalRoutDiscardCards(whiteSeen)).toStrictEqual({
-      cardIds: [tempCommandCards[2].id, tempCommandCards[3].id],
+    expect(getLegalRoutDiscardCards(state)).toStrictEqual({
+      cardIds: [firstCard.id, secondCard.id],
       numberToDiscard: 1,
       player: 'white',
     });
   });
 
   it("whiteSeen answers black's count with no cards when black must discard, since white cannot see black's hand", () => {
-    const authoritative = stateAwaitingDiscard({
-      initiative: 'white',
-      numberToDiscard: 1,
-      player: 'black',
-      step: 'secondPlayerResolveRally',
-    });
-    const whiteSeen: WhiteSeenGameState = {
-      ...authoritative,
-      visibility: 'whiteSeen',
-      cardState: {
-        visibility: 'whiteSeen',
-        white: authoritative.cardState.white,
-        black: {
-          awaitingPlay: null,
-          burnt: [],
-          discarded: [],
-          inHand: ['hidden'],
-          inPlay: null,
-          played: [],
-        },
-      },
-    };
+    // Black owes a card; white holds the initiative, so black rallies second.
+    const state = projectGameStateForVisibility(
+      withRoutOwing(holding('black', [firstCard]), 'black', 1),
+      'whiteSeen',
+    );
 
     // A hidden hand is an ordinary state for a seated client: white sees
     // that black must discard one card, and none to choose from.
-    expect(getLegalRoutDiscardCards(whiteSeen)).toStrictEqual({
+    expect(getLegalRoutDiscardCards(state)).toStrictEqual({
       cardIds: [],
       numberToDiscard: 1,
       player: 'black',

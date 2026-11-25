@@ -75,6 +75,18 @@ describe('findLegalMoveDeltas function', () => {
     });
   });
 
+  it('a step with no Speed left is not a legal start to a move', () => {
+    // Speed 2 covers two steps; a third has nothing to pay with (§5.1.2).
+    expect(
+      findLegalMoveDeltas(
+        openGround,
+        loneUnit,
+        ['step', 'step', 'step'],
+        'advance',
+      ),
+    ).toBeUndefined();
+  });
+
   it('a path that comes back to a position it held is not a legal start to a move', () => {
     // Left then right, or about twice, ends on E-5 facing north, where the
     // move began.
@@ -126,8 +138,53 @@ describe('findLegalMoveDeltas function', () => {
         findLegalMoveDeltas(gameState, unit, ['step', 'turnLeft'], 'advance'),
       ).toStrictEqual({ mayStop: true, next: [] });
     });
+
+    it('a turn the other way after the step is not a legal move', () => {
+      // Turning right would leave it 90° off head-on, an engagement the
+      // rules never make (§6.3.1).
+      expect(
+        findLegalMoveDeltas(gameState, unit, ['step', 'turnRight'], 'advance'),
+      ).toBeUndefined();
+    });
+  });
+
+  describe('facing a friend too stiff to pass', () => {
+    // A black unit on E-5 facing north, Speed 2 and Flexibility 2, with a
+    // friend of Flexibility 2 on D-5: 2 and 2 make less than the 6 needed to
+    // pass (§5.4.2), and a move may never end on a friend (§5.3).
+    const gameState = createGameState([
+      {
+        coord: 'E-5',
+        facing: 'north',
+        flexibility: 2,
+        player: 'black',
+        speed: 2,
+      },
+      { coord: 'D-5', facing: 'north', flexibility: 2, player: 'black' },
+    ]);
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
+    );
+
+    it('does not offer the step into the friend, only the turns', () => {
+      expect(findLegalMoveDeltas(gameState, unit, [], 'advance')).toStrictEqual(
+        {
+          mayStop: true,
+          next: ['turnLeft', 'turnRight', 'turnAbout'],
+        },
+      );
+    });
+
+    it('a step into the friend is not a legal start to a move', () => {
+      expect(
+        findLegalMoveDeltas(gameState, unit, ['step'], 'advance'),
+      ).toBeUndefined();
+    });
   });
   describe('a part that leads nowhere is not offered', () => {
+    // TODO(misleading): passing through a friend is §5.4.2, not §6.2.5,
+    // which does not exist. Settled by correcting the citation.
     // A black unit on E-5 facing north with two points of Speed, and friendly
     // units on D-5 and C-5 it may pass through (§6.2.5: a combined Flexibility
     // of 6). Stepping onto D-5 and then C-5 spends all its Speed on a friend's

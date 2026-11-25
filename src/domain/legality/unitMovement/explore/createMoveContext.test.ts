@@ -25,6 +25,7 @@ describe('createMoveContext function', () => {
 
     const context = createMoveContext(gameState, unit, 'advance');
 
+    // The whole move's allowances, read once where it begins (§5.1.4).
     expect(context.totalSpeed).toBe(3);
     expect(context.totalFlexibility).toBe(5);
   });
@@ -39,6 +40,8 @@ describe('createMoveContext function', () => {
 
     const context = createMoveContext(gameState, unit, 'retreat');
 
+    // Where it stood and how it faced: what the retreat region and the
+    // standing ending are measured from.
     expect(context.start).toStrictEqual({
       coordinate: 'E-5',
       facing: 'northEast',

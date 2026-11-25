@@ -1,5 +1,8 @@
 import type { AuthoritativeGameState } from '@game';
-import { createChooseShooterEvent } from '@factories';
+import {
+  createChooseShooterEvent,
+  createPerformRangedAttackEvent,
+} from '@factories';
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
   applyEffectsUntilChoice,
@@ -53,7 +56,7 @@ describe('getLegalShooterTargets function', () => {
 
     // Both white units are in reach: B-5 only through the card.
     expect(
-      legal?.targets.map((target) => target.placement.coordinate),
+      legal.targets.map((target) => target.placement.coordinate),
     ).toStrictEqual(['B-5', 'C-7']);
   });
 
@@ -70,10 +73,10 @@ describe('getLegalShooterTargets function', () => {
 
     // Only the unit two ranks out is in reach.
     expect(
-      legal?.targets.map((target) => target.placement.coordinate),
+      legal.targets.map((target) => target.placement.coordinate),
     ).toStrictEqual(['C-7']);
     // And the shooter it reports is black's unit, where it stands.
-    expect(legal?.shooter).toStrictEqual(shooter);
+    expect(legal.shooter).toStrictEqual(shooter);
   });
 
   it('throws when asked for targets before the shooter has committed or refused', () => {
@@ -99,6 +102,33 @@ describe('getLegalShooterTargets function', () => {
     // mistake.
     expect(() => getLegalShooterTargets(named)).toThrow(
       'The shooter has not yet committed or refused a card',
+    );
+  });
+
+  it('throws once the target is named, since a shot is aimed only once', () => {
+    const ready = blackShooting();
+    const shooter = getSingleUnitWithPlacementAtCoordinate(
+      ready.boardState,
+      'E-5',
+    );
+    const target = getSingleUnitWithPlacementAtCoordinate(
+      ready.boardState,
+      'C-7',
+    );
+    // Black names its unit, declines to commit, and aims at C-7.
+    const aiming = readyToAimShot(ready, shooter, 'none');
+    const aimed = applyEvent(
+      createPerformRangedAttackEvent({
+        player: 'black',
+        supportingUnits: [],
+        targetUnit: target.unit,
+      }),
+      aiming,
+    );
+
+    // The defender's commitment comes next, not another target (§4.3.11).
+    expect(() => getLegalShooterTargets(aimed)).toThrow(
+      "The shot's target is already named",
     );
   });
 });

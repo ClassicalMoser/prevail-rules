@@ -8,7 +8,7 @@ import { canEngageEnemy } from './canEngageEnemy';
  */
 describe('canEngageEnemy function', () => {
   describe('invalid destination', () => {
-    it('given destination has no unit, returns false', () => {
+    it('open ground holds no one to engage', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
@@ -18,10 +18,25 @@ describe('canEngageEnemy function', () => {
       );
     });
 
-    it('given destination has friendly unit, returns false', () => {
+    it('a friend is never engaged', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'black', speed: 2 },
+      ]);
+      const board = gameState.boardState;
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 0)).toBe(
+        false,
+      );
+    });
+
+    it('an enemy already engaged cannot be engaged again', () => {
+      // D-5 holds a white unit locked with a black one: nothing may enter
+      // until that fight is settled, so there is one attacker per defender
+      // (§2.2.3, §6.3 edge case).
+      const gameState = createGameState([
+        ['E-5', 'black', 'north'],
+        ['D-5', 'white', 'south'],
+        ['D-5', 'black', 'north'],
       ]);
       const board = gameState.boardState;
       expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 0)).toBe(
@@ -67,7 +82,7 @@ describe('canEngageEnemy function', () => {
   });
 
   describe('flank engagement', () => {
-    it('given approaching from flank, returns true', () => {
+    it('a flank approach is always allowed, even with no Flexibility left', () => {
       // Enemy at D-5 facing west, unit at E-5 facing north (flank - south side)
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
@@ -79,7 +94,7 @@ describe('canEngageEnemy function', () => {
   });
 
   describe('rear engagement', () => {
-    it('given approaching from rear and move started behind enemy, returns true', () => {
+    it('a rear approach is allowed when the move began behind the enemy', () => {
       // Enemy at D-5 facing north, unit starts at F-5 (behind), moves to E-5, then to D-5
       // E-5 is a rear space (back space) relative to D-5 facing north
       const gameState = createGameState([
@@ -91,7 +106,7 @@ describe('canEngageEnemy function', () => {
       expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'F-5', 0)).toBe(true);
     });
 
-    it('given approaching from rear but move started in front of enemy, returns false', () => {
+    it('a rear approach is refused when the move began in front of the enemy', () => {
       // Enemy at D-5 facing north, unit starts at C-5 (in front), moves around to E-5, then to D-5
       // Even though E-5 is a rear space, the move didn't start behind the enemy
       const gameState = createGameState([
@@ -100,12 +115,12 @@ describe('canEngageEnemy function', () => {
       ]);
       const board = gameState.boardState;
       // Move started at C-5 (in front of enemy), adjacent is E-5 (rear space), destination is D-5
-      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'C-6', 0)).toBe(
+      expect(canEngageEnemy('black', board, 'D-5', 'E-5', 'C-5', 0)).toBe(
         false,
       );
     });
 
-    it('given approaching from rear but move started at flank, returns false', () => {
+    it('a rear approach is refused when the move began on the enemy flank', () => {
       // Enemy at D-5 facing north, unit starts at D-4 (flank), moves to E-5, then to D-5
       // Even though E-5 is a rear space, the move didn't start behind the enemy
       const gameState = createGameState([
@@ -134,7 +149,8 @@ describe('canEngageEnemy function', () => {
       ).toThrow('Coordinate Z-99 does not exist on standard board.');
     });
 
-    it('given a non-adjacent coordinate, returns false', () => {
+    it('a step from a space that is not next to the enemy engages no one', () => {
+      // E-5 is nowhere near A-1, so no single step joins them.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'A-1', facing: 'north', player: 'white', speed: 2 },

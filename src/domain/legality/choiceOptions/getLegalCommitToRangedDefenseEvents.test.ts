@@ -1,13 +1,14 @@
-import { PLAY_CARDS_PHASE } from '@game';
+import type { CommandCard } from '@entities';
+import type { Commitment, GameState } from '@game';
+import { createEmptyGameState, createOwnedCardState } from '@factories';
 import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createPlayCardsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
-  createUnitWithPlacement,
-  updateCardState,
+  createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
-import { createEmptyGameState } from '@factories';
+import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 import { getLegalCommitToRangedDefenseEvents } from './getLegalCommitToRangedDefenseEvents';
 
@@ -32,30 +33,34 @@ const flexibilityAttackCard = createTestCard({
  * those of its stats, plus a refusal, offered to the target's owner only.
  */
 describe('getLegalCommitToRangedDefenseEvents function', () => {
-  /** Black shoots at a white unit; the shooter has refused to commit. */
+  /**
+   * Black shoots at a white unit; the shooter has refused to commit. The
+   * target's commitment is owed unless the case says otherwise.
+   */
   function shot(
-    whiteHand: ReturnType<typeof createTestCard>[],
+    whiteHand: CommandCard[],
     target: 'named' | 'pending',
-  ) {
-    const base = createEmptyGameState('standard');
-    const withCards = updateCardState(base, {
-      ...base.cardState,
-      white: { ...base.cardState.white, inHand: whiteHand },
-    });
+    answered?: Commitment,
+  ): GameState {
+    const defendingCommitment: Commitment = answered ?? {
+      commitmentType: 'pending',
+    };
+    // White, the target's owner, holds these cards.
+    const withHand = updatePlayerCardState(
+      createEmptyGameState('standard'),
+      'white',
+      createOwnedCardState({ inHand: whiteHand }),
+    );
     // Where the target stands is not read here.
-    const whiteUnit = createUnitWithPlacement({ playerSide: 'white' }).unit;
-    const ranged = createRangedAttackResolutionState(withCards, {
+    const whiteUnit = createTestUnit('white');
+    const ranged = createRangedAttackResolutionState(withHand, {
       attackingCommitment: { commitmentType: 'declined' },
-      defendingCommitment: { commitmentType: 'pending' },
+      defendingCommitment,
       defendingUnit: target === 'named' ? whiteUnit : 'pending',
       supportingUnits: target === 'named' ? [] : 'pending',
     });
-    return updatePhaseState(
-      withCards,
-      createIssueCommandsPhaseState(withCards, {
-        currentCommandResolutionState: ranged,
-      }),
-    );
+    const shooting = createGameStateResolvingCommand(ranged, withHand);
+    return shooting;
   }
 
   const refuseWhite = {
@@ -114,12 +119,22 @@ describe('getLegalCommitToRangedDefenseEvents function', () => {
     );
   });
 
+  it('throws once the target has answered, since it commits once', () => {
+    // White has already refused for its unit; the shot is resolved next.
+    const state = shot([defenceCard], 'named', { commitmentType: 'declined' });
+
+    // Being asked again is the caller's mistake.
+    expect(() => getLegalCommitToRangedDefenseEvents(state)).toThrow(
+      'The target has already committed or refused a card',
+    );
+  });
+
   it('throws outside a Shoot order, where nothing asks', () => {
     // Cards are being chosen, no shots taken.
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
 
     expect(() => getLegalCommitToRangedDefenseEvents(state)).toThrow(
       'No ranged attack is being carried out',

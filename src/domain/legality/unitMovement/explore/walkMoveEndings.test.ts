@@ -28,6 +28,7 @@ describe('walkMoveEndings function', () => {
   const context = createMoveContext(gameState, unit, 'advance');
 
   it('reports the ending where the unit stands, and each one reached from it', () => {
+    // Collect every ending, never asking the walk to stop.
     const endings: MoveResult[] = [];
     walkMoveEndings(context, getStartState(context), (ending) => {
       endings.push(ending);
@@ -41,11 +42,13 @@ describe('walkMoveEndings function', () => {
   });
 
   it('stops as soon as the caller says it has what it wanted', () => {
+    // Collect endings, asking the walk to stop at the first.
     const endings: MoveResult[] = [];
     walkMoveEndings(context, getStartState(context), (ending) => {
       endings.push(ending);
       return true;
     });
+    // The unit could stand, step or turn, but only one ending was reported.
     expect(endings).toHaveLength(1);
   });
 });

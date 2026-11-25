@@ -1,13 +1,5 @@
 import type { Coordinate } from '@entities';
-import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import {
-  createGameState,
-  createTestUnit,
-  placed,
-  replaceBoard,
-} from '@testing';
-import { addUnitToBoard } from '@transforms';
-import { createEmptyStandardBoard } from '@factories';
+import { createGameState } from '@testing';
 
 import { canMoveThrough } from './canMoveThrough';
 
@@ -16,7 +8,7 @@ import { canMoveThrough } from './canMoveThrough';
  */
 describe('canMoveThrough function', () => {
   describe('empty space', () => {
-    it('given the space has no unit, returns true', () => {
+    it('open ground is crossed freely', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
@@ -25,32 +17,19 @@ describe('canMoveThrough function', () => {
   });
 
   describe('engaged units', () => {
-    it('given the space has engaged units, returns false', () => {
-      let board = createEmptyStandardBoard();
-      // Add engaged units at D-5
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black'), 'D-5', 'north'),
-      );
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('white'), 'D-5', 'south'),
-      );
-      // Add unit attempting to move through
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black'), 'E-5', 'north'),
-      );
-      let gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+    it('an engaged space cannot be crossed', () => {
+      // D-5 holds a black unit locked with a white one (§2.2.3, §5.4.4).
+      const gameState = createGameState([
+        ['E-5', 'black', 'north'],
+        ['D-5', 'black', 'north'],
+        ['D-5', 'white', 'south'],
       ]);
-      gameState = replaceBoard(gameState, board);
       expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(false);
     });
   });
 
   describe('enemy units', () => {
-    it('given the space has an enemy unit, returns false', () => {
+    it('an enemy cannot be passed through', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
@@ -60,68 +39,24 @@ describe('canMoveThrough function', () => {
   });
 
   describe('friendly units', () => {
-    it('given combined flexibility meets threshold, returns true', () => {
-      const halfFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2);
+    // Two friends pass through each other when their Flexibility adds up to
+    // 6 or more (§5.4.2).
+    it('a friend may be passed through when the two Flexibilities make 6', () => {
+      // 3 and 3 make 6: the mover filters through.
       const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'north',
-          flexibility: halfFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'D-5',
-          facing: 'north',
-          flexibility: halfFlexibility,
-          player: 'black',
-        },
+        { coord: 'E-5', facing: 'north', flexibility: 3, player: 'black' },
+        { coord: 'D-5', facing: 'north', flexibility: 3, player: 'black' },
       ]);
-      expect(canMoveThrough('black', halfFlexibility, 'D-5', gameState)).toBe(
-        true,
-      );
+      expect(canMoveThrough('black', 3, 'D-5', gameState)).toBe(true);
     });
 
-    it('given combined flexibility exceeds threshold, returns true', () => {
-      const overHalfFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
+    it('a friend may not be passed through when the two Flexibilities make 5', () => {
+      // 3 and 2: one short.
       const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'north',
-          flexibility: overHalfFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'D-5',
-          facing: 'north',
-          flexibility: overHalfFlexibility,
-          player: 'black',
-        },
+        { coord: 'E-5', facing: 'north', flexibility: 3, player: 'black' },
+        { coord: 'D-5', facing: 'north', flexibility: 2, player: 'black' },
       ]);
-      expect(
-        canMoveThrough('black', overHalfFlexibility, 'D-5', gameState),
-      ).toBe(true);
-    });
-
-    it('given combined flexibility is below threshold, returns false', () => {
-      const underHalfFlexibility =
-        Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
-      const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'north',
-          flexibility: underHalfFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'D-5',
-          facing: 'north',
-          flexibility: underHalfFlexibility,
-          player: 'black',
-        },
-      ]);
-      expect(
-        canMoveThrough('black', underHalfFlexibility, 'D-5', gameState),
-      ).toBe(false);
+      expect(canMoveThrough('black', 3, 'D-5', gameState)).toBe(false);
     });
   });
 

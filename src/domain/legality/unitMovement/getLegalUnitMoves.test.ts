@@ -3,7 +3,6 @@ import {
   createGameState,
   createGameStateWithEngagedUnits,
   createTestUnit,
-  createUnitWithPlacement,
   hasMove,
   placed,
 } from '@testing';
@@ -16,7 +15,9 @@ import { getLegalUnitMoves } from './getLegalUnitMoves';
  */
 describe('getLegalUnitMoves function', () => {
   describe('basic functionality', () => {
-    it('given context, returns legal moves including starting position', () => {
+    it('standing where it is, facing as it was, is a legal move', () => {
+      // An ordered unit may move zero steps and zero turns, and still counts
+      // as commanded (§5.5 edge case).
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
@@ -24,6 +25,7 @@ describe('getLegalUnitMoves function', () => {
       );
 
       const moves = getLegalUnitMoves(unit, gameState);
+      // Its own space and facing is among the endings.
       expect(hasMove(moves, 'D-7', 'southEast')).toBe(true);
     });
 
@@ -43,6 +45,7 @@ describe('getLegalUnitMoves function', () => {
         { type: 'speed', value: 1 },
       ]);
 
+      // Two steps stop short of B-5; the card's third reaches it.
       expect(hasMove(uncommitted, 'B-5', 'north')).toBe(false);
       expect(hasMove(committed, 'B-5', 'north')).toBe(true);
     });
@@ -63,6 +66,7 @@ describe('getLegalUnitMoves function', () => {
           move.speedUsed === 1,
       );
 
+      // The path a player submits for that ending: one step.
       expect(stepAhead?.path).toStrictEqual(['step']);
     });
   });
@@ -86,6 +90,7 @@ describe('getLegalUnitMoves function', () => {
           move.placement.facing === 'south',
       );
 
+      // One way listed, the single turn about.
       expect(facingAbout.map((move) => move.path)).toStrictEqual([
         ['turnAbout'],
       ]);
@@ -114,18 +119,22 @@ describe('getLegalUnitMoves function', () => {
         ),
       );
 
+      // As many moves as distinct endings: none is listed twice.
       expect(moves).toHaveLength(endings.size);
     });
   });
 
   describe('error cases', () => {
-    it('given an error when unit is not present at starting position, throws', () => {
+    // An order names a unit free to move, where it stands; anything else is
+    // a question the expected engine never asks.
+    it('throws when the unit named is not the one on its space', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
         'D-7',
       );
 
+      // The same kind of unit, another instance number: not the one there.
       const differentUnit = {
         ...unit,
         unit: {
@@ -138,20 +147,7 @@ describe('getLegalUnitMoves function', () => {
       );
     });
 
-    it('given an error when no unit is specified at the coordinate, throws', () => {
-      const gameState = createGameState([]);
-      const unitWithPlacement = createUnitWithPlacement({
-        coordinate: 'D-7',
-        facing: 'southEast',
-        playerSide: 'black',
-      });
-
-      expect(() => getLegalUnitMoves(unitWithPlacement, gameState)).toThrow(
-        'No movable unit at starting position',
-      );
-    });
-
-    it('given an error when unit is not at the specified placement coordinate, throws', () => {
+    it('throws when no unit stands on the space the placement names', () => {
       const gameState = createGameState([['E-7', 'black', 'southEast']]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
@@ -172,7 +168,7 @@ describe('getLegalUnitMoves function', () => {
       ).toThrow('No movable unit at starting position');
     });
 
-    it('given an error when unit facing is different from specified facing, throws', () => {
+    it('throws when the unit faces another way than the placement says', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
@@ -193,7 +189,8 @@ describe('getLegalUnitMoves function', () => {
       );
     });
 
-    it('given an error when unit is engaged, throws', () => {
+    it('throws when the unit is locked in an engagement', () => {
+      // An engaged unit cannot be ordered (§4.3.4).
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white');
       const gameState = createGameStateWithEngagedUnits(

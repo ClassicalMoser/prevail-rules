@@ -54,6 +54,8 @@ describe('findEndingFrom function', () => {
       remainingFlexibility: 4,
       remainingSpeed: 1,
     };
+    // One step on, after a turn, ends on open ground: the move can be
+    // finished from here.
     expect(findEndingFrom(context, onFriend)).toBeDefined();
   });
 
@@ -70,6 +72,8 @@ describe('findEndingFrom function', () => {
       remainingFlexibility: 4,
       remainingSpeed: 0,
     };
+    // Turning on a friend's space still leaves it there, so no ending
+    // remains: a player led here could never finish the move.
     expect(findEndingFrom(context, stranded)).toBeUndefined();
   });
 });

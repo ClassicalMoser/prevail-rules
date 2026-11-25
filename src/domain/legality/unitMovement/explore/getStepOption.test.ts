@@ -34,6 +34,8 @@ describe('getStepOption function', () => {
 
     const option = getStepOption(context, state);
 
+    // One space straight ahead (§5.1.3), a point of Speed spent, open ground
+    // to go on from.
     expect(option).toStrictEqual({
       mayContinue: true,
       next: {
@@ -75,6 +77,7 @@ describe('getStepOption function', () => {
 
     const option = getStepOption(context, state);
 
+    // One space straight back, still facing north (§9.1.1).
     expect(option).toStrictEqual({
       mayContinue: true,
       next: {
@@ -116,6 +119,7 @@ describe('getStepOption function', () => {
 
     const option = getStepOption(context, state);
 
+    // Every step costs a point of Speed (§5.1.2).
     expect(option).toBeUndefined();
   });
 
@@ -142,6 +146,7 @@ describe('getStepOption function', () => {
 
     const option = getStepOption(context, state);
 
+    // There is no space ahead to step into.
     expect(option).toBeUndefined();
   });
 
@@ -172,6 +177,8 @@ describe('getStepOption function', () => {
 
     const option = getStepOption(context, state);
 
+    // The step is offered, since the move may end there as an engagement,
+    // but an enemy is never passed through (§5.4.3).
     expect(option).toStrictEqual({
       mayContinue: false,
       next: {
@@ -188,6 +195,48 @@ describe('getStepOption function', () => {
         remainingSpeed: 1,
       },
     });
+  });
+
+  it('a step back onto a position the move already held is refused', () => {
+    // A lone black unit that started on E-5 facing north, with two turns in
+    // it.
+    const gameState = createGameState([
+      {
+        coord: 'E-5',
+        facing: 'north',
+        flexibility: 2,
+        player: 'black',
+        speed: 2,
+      },
+    ]);
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      gameState.boardState,
+      'E-5',
+    );
+    // Build the context of an advance begun on E-5.
+    const context = createMoveContext(gameState, unit, 'advance');
+    // It turned about, stepped south to F-5, and turned about again: it now
+    // faces north on F-5, with its start straight ahead.
+    const state: MoveState = {
+      cameFrom: 'E-5',
+      coordinate: 'F-5',
+      facing: 'north',
+      heldPositions: [
+        { coordinate: 'E-5', facing: 'north' },
+        { coordinate: 'E-5', facing: 'south' },
+        { coordinate: 'F-5', facing: 'south' },
+        { coordinate: 'F-5', facing: 'north' },
+      ],
+      path: ['turnAbout', 'step', 'turnAbout'],
+      remainingFlexibility: 0,
+      remainingSpeed: 1,
+    };
+
+    const option = getStepOption(context, state);
+
+    // The step would stand it on E-5 facing north again, where it began
+    // (§5.2.4).
+    expect(option).toBeUndefined();
   });
 
   it('a diagonal step between two enemies on its corner spaces is refused', () => {
@@ -218,6 +267,7 @@ describe('getStepOption function', () => {
 
     const option = getStepOption(context, state);
 
+    // No slipping between two enemies standing corner to corner (§5.4.5).
     expect(option).toBeUndefined();
   });
 });

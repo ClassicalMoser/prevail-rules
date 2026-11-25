@@ -1,8 +1,12 @@
 import type { GameState } from '@game';
-import { createEmptyGameState, createUnitIndexKey } from '@factories';
+import { createUnitIndexKey } from '@factories';
 
-import { createUnitWithPlacement, replaceBoard } from '@testing';
-import { addCommanderToBoard, addUnitToBoard } from '@transforms';
+import {
+  createGameStateWithUnits,
+  createUnitWithPlacement,
+  replaceBoard,
+} from '@testing';
+import { deployCommander } from '@transforms';
 import { z } from 'zod';
 
 import { refineGameStateIndex } from './refineGameStateIndex';
@@ -26,13 +30,10 @@ describe('refineGameStateIndex function', () => {
     playerSide: 'white',
   });
   const key = createUnitIndexKey(standing.unit);
-  const kept = replaceBoard(
-    createEmptyGameState('standard'),
-    addCommanderToBoard(
-      addUnitToBoard(createEmptyGameState('standard').boardState, standing),
-      'white',
-      'E-6',
-    ),
+  const kept = deployCommander(
+    createGameStateWithUnits([standing]),
+    'white',
+    'E-6',
   );
 
   it('accepts a state whose index was kept by its writers', () => {
@@ -76,6 +77,21 @@ describe('refineGameStateIndex function', () => {
       {
         message: `The index puts unit ${ghost} at reserved, but the record has it nowhere.`,
         path: ['index', 'units', ghost],
+      },
+    ]);
+  });
+
+  it('refuses an index that leaves out a unit the record holds', () => {
+    // The board has the unit at E-5; the index has no entry for it.
+    const state = { ...kept, index: { ...kept.index, units: {} } };
+
+    const result = indexed.safeParse(state);
+
+    // The missing entry is the issue: the index puts the unit nowhere.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: `The index puts unit ${key} at nowhere, but the record has it at E-5.`,
+        path: ['index', 'units', key],
       },
     ]);
   });

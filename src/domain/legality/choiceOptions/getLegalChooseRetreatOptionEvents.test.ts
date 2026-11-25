@@ -1,6 +1,6 @@
 import type { MoveDelta } from '@entities';
-import { PLAY_CARDS_PHASE } from '@game';
 import {
+  createPlayCardsPhaseState,
   createAttackApplyStateWithRetreat,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
@@ -28,23 +28,34 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
   const optionB: MoveDelta[] = ['turnRight', 'step'];
 
   /**
-   * A shot has driven white's unit back from E-5, and it has two equally
-   * small retreats; `chosenRetreatPath` is its choice, if made.
+   * White's unit on E-5 facing north, with a black unit on F-5, its back to
+   * white's, barring the straight step back and leaving two equal ways round
+   * it (§9.1.3). Answers the board, the retreating unit, and its tied paths.
    */
-  function stateWithRangedRetreatOptions(
-    chosenRetreatPath: MoveDelta[] | 'pending' = 'pending',
-  ) {
+  function whiteBarredFromStepBack() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement = placed(unit, 'E-5', 'north');
-    // A black unit on F-5, its back to white's, bars the straight step back
-    // and leaves two equal ways round it (§9.1.3).
     const blocker = enemyBlockingStraightBack(placement);
     const withUnit = replaceBoard(
       state,
       addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
     );
     const tiedPaths = legalRetreatsOf(placement, [blocker]);
+    const barred = { placement, tiedPaths, withUnit };
+    return barred;
+  }
+
+  /**
+   * A shot has driven white's unit back from E-5, and it has two equally
+   * small retreats; `chosenRetreatPath` is its choice, if made.
+   */
+  function stateWithRangedRetreatOptions(
+    chosenRetreatPath: MoveDelta[] | 'pending' = 'pending',
+  ) {
+    // A black unit on F-5, its back to white's, bars the straight step back
+    // and leaves two equal ways round it (§9.1.3).
+    const { placement, tiedPaths, withUnit } = whiteBarredFromStepBack();
     const attackApply = createAttackApplyStateWithRetreat(
       placement.unit,
       tiedPaths,
@@ -93,27 +104,20 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
   });
 
   it('throws when no retreat is under way, where nothing asks', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    // The players are still choosing their cards.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
     expect(() => getLegalChooseRetreatOptionEvents(state)).toThrow(
       'No retreat is awaiting its owner’s choice of destination',
     );
   });
 
   it('returns one event per option for a front-engagement nested retreat', () => {
-    const state = createEmptyGameState('standard');
-    const unit = createTestUnit('white');
-    const placement = placed(unit, 'E-5', 'north');
     // A black unit on F-5, its back to white's, bars the straight step back
     // and leaves two equal ways round it (§9.1.3).
-    const blocker = enemyBlockingStraightBack(placement);
-    const withUnit = replaceBoard(
-      state,
-      addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
-    );
-    const tiedPaths = legalRetreatsOf(placement, [blocker]);
+    const { placement, tiedPaths, withUnit } = whiteBarredFromStepBack();
     const engagementState = updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {

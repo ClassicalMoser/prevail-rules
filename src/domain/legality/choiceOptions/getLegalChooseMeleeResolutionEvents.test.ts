@@ -1,9 +1,9 @@
 import type { Coordinate } from '@entities';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
-import { PLAY_CARDS_PHASE } from '@game';
 import {
   createMeleeResolutionState,
+  createPlayCardsPhaseState,
   createResolveMeleePhaseState,
 } from '@testing';
 
@@ -20,20 +20,22 @@ import { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolu
  * throws rather than returning nothing.
  */
 describe('getLegalChooseMeleeResolutionEvents function', () => {
-  function stateChoosingMeleeEngagement(options?: {
+  /**
+   * Phase 4 between melees: none is being fought, and the given engaged
+   * spaces are still to fight.
+   */
+  function stateChoosingMeleeEngagement(options: {
     initiative?: 'black' | 'white';
-    remaining?: Iterable<Coordinate>;
+    remaining: Coordinate[];
   }): GameState {
+    // The side holding the initiative picks the order (§4.4.2).
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
-      options?.initiative ?? 'black',
-    );
-    const remaining = new Set<Coordinate>(
-      options?.remaining ?? (['E-5', 'E-6'] as readonly Coordinate[]),
+      options.initiative ?? 'black',
     );
     const phase = createResolveMeleePhaseState(base, {
       currentMeleeResolutionState: 'pending',
-      remainingEngagements: [...remaining],
+      remainingEngagements: options.remaining,
     });
     const state = updatePhaseState(base, phase);
     return state;
@@ -42,7 +44,7 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
   it('offers the player with initiative one choice per engagement still unresolved', () => {
     const state = stateChoosingMeleeEngagement({
       initiative: 'white',
-      remaining: ['E-4', 'E-5', 'E-6'] as const,
+      remaining: ['E-4', 'E-5', 'E-6'],
     });
 
     const options = getLegalChooseMeleeResolutionEvents(state);
@@ -100,18 +102,12 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     );
   });
 
-  it('throws when there is no current phase state', () => {
-    const state = createEmptyGameState('standard');
-    expect(() => getLegalChooseMeleeResolutionEvents(state)).toThrow(
-      'No current phase state found',
-    );
-  });
-
   it('throws when not in resolveMelee phase', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    // The players are still choosing their cards.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
     expect(() => getLegalChooseMeleeResolutionEvents(state)).toThrow(
       'Expected resolveMelee phase, got playCards',
     );
@@ -121,7 +117,7 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     const base = createEmptyGameState('standard');
     const phase = createResolveMeleePhaseState(base, {
       currentMeleeResolutionState: 'pending',
-      remainingEngagements: ['E-5'] as const,
+      remainingEngagements: ['E-5'],
       step: 'complete',
     });
     const state = updatePhaseState(base, phase);

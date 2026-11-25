@@ -1,196 +1,219 @@
-import type { Army, CommandCard, UnitType } from '@entities';
+import type { Army, GameModeName } from '@entities';
 import { armySchema } from '@entities';
+import { createTestCard, getUnitByTrait } from '@testing';
+import { z } from 'zod';
 
-import { armyCompositionByMode } from './armyComposition';
-import { armySchemaForMode } from './refineArmyComposition';
-
-const baseUnitType = (overrides: Partial<UnitType> = {}): UnitType => ({
-  cost: 10,
-  id: '11111111-1111-4111-8111-111111111111',
-  imageUrl: null,
-  limit: 8,
-  morale: 1,
-  name: 'Test Unit',
-  stats: {
-    attack: 1,
-    flexibility: 1,
-    range: 0,
-    retreat: 1,
-    reverse: 0,
-    rout: 1,
-    speed: 1,
-  },
-  traits: ['formation'],
-  version: '1.0.0',
-  ...overrides,
-});
-
-const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): CommandCard => ({
-  command: {
-    modifiers: [],
-    number: 1,
-    restrictions: {
-      inspirationRangeRestriction: 1,
-      restrictionType: 'none',
-    },
-    size: 'units',
-    type: 'movement',
-  },
-  cost: 10,
-  id: `22222222-2222-4222-8222-2222222222${String(index).padStart(2, '0')}`,
-  initiative,
-  modifiers: ['attack'],
-  name: `Card ${initiative}-${index}`,
-  roundEffect: {
-    modifiers: [{ type: 'attack', value: 1 }],
-    restrictions: {
-      inspirationRangeRestriction: 1,
-      restrictionType: 'none',
-    },
-  },
-  unitSupport: { count: 1, supportType: 'generic' },
-  version: '1.0.0',
-});
-
-const balancedCommandCards = (): CommandCard[] =>
-  ([1, 2, 3, 4] as const).flatMap((initiative) =>
-    [0, 1, 2].map((copy) => baseCard(initiative, initiative * 10 + copy)),
-  );
+import {
+  armySchemaForMode,
+  refineArmyComposition,
+} from './refineArmyComposition';
 
 /**
- * Standard cap is 300 for units and command cards together.
- * Units: 4×10 + 4×10 = 80. Cards: 12×10 = 120. Total 200.
- * Morale: 4×4 + 4×1 = 20.
+ * Two cards at each initiative, ten points apiece: the spread Mini asks for
+ * (§3.1.7), for 80 of its 200 points.
  */
-const validStandardArmy = (): Army => ({
-  commandCards: balancedCommandCards(),
+const miniHand = [1, 1, 2, 2, 3, 3, 4, 4].map((initiative) =>
+  createTestCard({ cost: 10, initiative }),
+);
+
+/**
+ * A list that keeps every Mini limit (§3.1.3): one unit type, five copies at
+ * 20 points and 2 Morale each. 100 points of units and 80 of cards make 180
+ * of the 200; 10 Morale is the floor exactly.
+ */
+const legalMiniList: Army = {
+  commandCards: miniHand,
   id: '33333333-3333-4333-8333-333333333333',
-  name: 'Test Army',
+  name: 'Legal Mini list',
   units: [
     {
-      count: 4,
-      unitType: baseUnitType({ cost: 10, morale: 4 }),
-    },
-    {
-      count: 4,
-      unitType: baseUnitType({
-        cost: 10,
-        id: '44444444-4444-4444-8444-444444444444',
-        morale: 1,
-      }),
+      count: 5,
+      unitType: { ...getUnitByTrait('formation'), cost: 20, morale: 2 },
     },
   ],
-});
+};
+
+/**
+ * Accepts any shape, so each case reaches the mode's limits without the army
+ * shape checks or the army rules getting there first.
+ */
+function compositionIn(mode: GameModeName): z.ZodType<Army> {
+  const schema = z
+    .custom<Army>()
+    .superRefine((army, ctx) => refineArmyComposition(army, mode, ctx));
+  return schema;
+}
 
 /**
  * Mode composition refinements for army list-building (cost, morale, initiative).
  */
-describe('armySchemaForMode function', () => {
-  it('standard accepts a legal composition', () => {
-    expect(
-      armySchemaForMode('standard').parse(validStandardArmy()),
-    ).toStrictEqual(validStandardArmy());
+describe('refineArmyComposition function', () => {
+  it('raises nothing for a list that keeps every limit of its mode', () => {
+    const result = compositionIn('mini').safeParse(legalMiniList);
+
+    expect(result.success).toBe(true);
   });
 
-  it('standard rejects over-cost armies', () => {
-    const army = validStandardArmy();
-    army.units = [
-      {
-        count: 8,
-        unitType: baseUnitType({ cost: 30, morale: 2 }),
-      },
-    ];
-
-    const result = armySchemaForMode('standard').safeParse(army);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(
-        result.error.issues.some((issue) =>
-          issue.message.includes('cannot cost more than 300'),
-        ),
-      ).toBe(true);
-    }
-  });
-
-  it('standard rejects command card cost that crosses the shared cap', () => {
-    const army = validStandardArmy();
-    const units = [
-      {
-        count: 4,
-        unitType: baseUnitType({ cost: 45, morale: 5 }),
-      },
-    ];
-    const [firstCard, ...restCards] = balancedCommandCards();
-    const commandCards = [{ ...firstCard, cost: 11 }, ...restCards];
-    army.units = units;
-    army.commandCards = commandCards;
-
-    const result = armySchemaForMode('standard').safeParse(army);
-
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(
-        result.error.issues.some((issue) =>
-          issue.message.includes('cannot cost more than 300'),
-        ),
-      ).toBe(true);
-    }
-  });
-
-  it('standard rejects under-morale armies', () => {
-    const army = validStandardArmy();
-    army.units = [
-      {
+  it('refuses a fifth unit type in a Mini list', () => {
+    // Five types, one copy each at 20 points and 2 Morale: the cost and the
+    // Morale still keep to Mini, so variety is the only limit broken.
+    const fiveTypes: Army = {
+      ...legalMiniList,
+      units: (
+        ['formation', 'cavalry', 'javelin', 'beast', 'phalanx'] as const
+      ).map((trait) => ({
         count: 1,
-        unitType: baseUnitType({ cost: 10, morale: 0 }),
-      },
-    ];
-
-    expect(armySchemaForMode('standard').safeParse(army).success).toBe(false);
-  });
-
-  it('standard rejects unbalanced initiatives', () => {
-    const army = validStandardArmy();
-    army.commandCards = army.commandCards.map((card, index) =>
-      index === 0 ? { ...card, initiative: 2 } : card,
-    );
-
-    expect(armySchemaForMode('standard').safeParse(army).success).toBe(false);
-  });
-
-  it('mini rejects more distinct unit types than maxUnitTypeCount', () => {
-    const army = validStandardArmy();
-    army.units = [1, 2, 3, 4, 5].map((n) => ({
-      count: 1,
-      unitType: baseUnitType({
-        cost: 10,
-        id: `11111111-1111-4111-8111-11111111111${n}`,
-        morale: 2,
-      }),
-    }));
-
-    expect(armyCompositionByMode.mini.maxUnitTypeCount).toBe(4);
-    expect(armySchemaForMode('mini').safeParse(army).success).toBe(false);
-  });
-
-  it('tutorial skips cost, morale, and card composition checks', () => {
-    const army: Army = {
-      commandCards: [baseCard(1, 1)],
-      id: '33333333-3333-4333-8333-333333333333',
-      name: 'Test Army',
-      units: [{ count: 1, unitType: baseUnitType({ cost: 100, morale: 0 }) }],
+        unitType: { ...getUnitByTrait(trait), cost: 20, morale: 2 },
+      })),
     };
 
-    expect(armySchemaForMode('tutorial').parse(army)).toStrictEqual(army);
+    const result = compositionIn('mini').safeParse(fiveTypes);
+
+    // Mini allows four types, and the issue points at the units.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'Mini armies may include at most 4 different unit types.',
+        path: ['units'],
+      },
+    ]);
+  });
+
+  it('refuses a Mini list whose cards take it past the cap its units keep to', () => {
+    // Five units at 25 points are 125, inside the 200 on their own; the 80
+    // points of cards are bought from the same points and make it 205.
+    const overCap: Army = {
+      ...legalMiniList,
+      units: [
+        {
+          count: 5,
+          unitType: { ...getUnitByTrait('formation'), cost: 25, morale: 2 },
+        },
+      ],
+    };
+
+    const result = compositionIn('mini').safeParse(overCap);
+
+    // The cost is the whole list's, so the issue points at the army itself.
+    expect(result.error?.issues).toMatchObject([
+      { message: 'Mini armies cannot cost more than 200.', path: [] },
+    ]);
+  });
+
+  it('refuses a Mini list short of 10 Morale', () => {
+    // Five units worth 1 Morale each carry 5 (§3.1.6).
+    const worthless: Army = {
+      ...legalMiniList,
+      units: [
+        {
+          count: 5,
+          unitType: { ...getUnitByTrait('formation'), cost: 20, morale: 1 },
+        },
+      ],
+    };
+
+    const result = compositionIn('mini').safeParse(worthless);
+
+    // The Morale is the units', so the issue points at them.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'Mini armies must have a total morale value of 10 or greater.',
+        path: ['units'],
+      },
+    ]);
+  });
+
+  it('refuses a Mini hand without two cards at every initiative', () => {
+    // Still eight cards, but three at 1 and one at 2 (§3.1.7).
+    const lopsided: Army = {
+      ...legalMiniList,
+      commandCards: [1, 1, 1, 2, 3, 3, 4, 4].map((initiative) =>
+        createTestCard({ cost: 10, initiative }),
+      ),
+    };
+
+    const result = compositionIn('mini').safeParse(lopsided);
+
+    // The spread is the cards', so the issue points at them.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message:
+          'Mini armies must have exactly 2 command cards for each initiative.',
+        path: ['commandCards'],
+      },
+    ]);
+  });
+
+  it('points each issue at the army inside a larger value', () => {
+    // Inside a game, White's army sits at `whiteArmy`; 5 Morale is short.
+    const worthless: Army = {
+      ...legalMiniList,
+      units: [
+        {
+          count: 5,
+          unitType: { ...getUnitByTrait('formation'), cost: 20, morale: 1 },
+        },
+      ],
+    };
+    const inGame = z
+      .custom<Army>()
+      .superRefine((army, ctx) =>
+        refineArmyComposition(army, 'mini', ctx, ['whiteArmy']),
+      );
+
+    const result = inGame.safeParse(worthless);
+
+    // The Morale issue names White's units.
+    expect(result.error?.issues).toMatchObject([
+      { path: ['whiteArmy', 'units'] },
+    ]);
+  });
+
+  it('raises nothing in Tutorial, which sets no cost cap, Morale floor or spread', () => {
+    // One very costly unit worth no Morale, and a single card (§3.1.3).
+    const anything: Army = {
+      ...legalMiniList,
+      commandCards: [createTestCard({ initiative: 1 })],
+      units: [
+        {
+          count: 1,
+          unitType: { ...getUnitByTrait('formation'), cost: 999, morale: 0 },
+        },
+      ],
+    };
+
+    const result = compositionIn('tutorial').safeParse(anything);
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('armySchemaForMode function', () => {
+  it('accepts a well-formed list that keeps the army rules and its mode', () => {
+    const result = armySchemaForMode('mini').safeParse(legalMiniList);
+
+    expect(result.data).toStrictEqual(legalMiniList);
+  });
+
+  it('refuses a well-formed list that breaks a limit of its mode', () => {
+    // Legal in Tutorial, but Mini asks two cards at each initiative.
+    const oneCard: Army = {
+      ...legalMiniList,
+      commandCards: [createTestCard({ initiative: 1 })],
+    };
+
+    const result = armySchemaForMode('mini').safeParse(oneCard);
+
+    expect(result.error?.issues).toMatchObject([{ path: ['commandCards'] }]);
   });
 
   it('applies the army rules even where tutorial skips composition', () => {
     // Tutorial has no composition limits, but a unit limit still holds.
     const army: Army = {
+      ...legalMiniList,
       commandCards: [],
-      id: '33333333-3333-4333-8333-333333333333',
-      name: 'Test Army',
-      units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
+      units: [
+        { count: 5, unitType: { ...getUnitByTrait('formation'), limit: 4 } },
+      ],
     };
 
     expect(armySchemaForMode('tutorial').safeParse(army).success).toBe(false);
@@ -201,24 +224,14 @@ describe('armySchemaForMode function', () => {
  * Entity shape schema still used as the base for mode refinement.
  */
 describe('entity armySchema shape', () => {
-  it('accepts shape without enforcing mode composition', () => {
-    const army: Army = {
-      commandCards: [],
-      id: '33333333-3333-4333-8333-333333333333',
-      name: 'Test Army',
-      units: [],
-    };
-
-    expect(armySchema.parse(army)).toStrictEqual(army);
-  });
-
   it('leaves the army rules to legality', () => {
     // Over the unit limit, which only legalArmySchema and armySchemaForMode reject.
     const army: Army = {
+      ...legalMiniList,
       commandCards: [],
-      id: '33333333-3333-4333-8333-333333333333',
-      name: 'Test Army',
-      units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
+      units: [
+        { count: 5, unitType: { ...getUnitByTrait('formation'), limit: 4 } },
+      ],
     };
 
     expect(armySchema.parse(army)).toStrictEqual(army);

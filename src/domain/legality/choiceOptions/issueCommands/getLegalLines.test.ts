@@ -1,23 +1,23 @@
 import type { Coordinate } from '@entities';
-import type { LegalLine } from './getLegalLines';
 import {
-  createBoardWithEngagedUnits,
+  coordinatesOfSegment,
   createBoardWithFacingRow,
+  createGameState,
+  createGameStateWithBoard,
+  createGameStateWithEngagedUnits,
   createTestCommand,
   createTestUnit,
-  createUnitWithPlacement,
-  replaceBoard,
 } from '@testing';
-import { addCommanderToBoard, addUnitToBoard } from '@transforms';
+import { addUnitsToCommandedUnits, deployCommander } from '@transforms';
+import { throwIfUndefined } from '@utils';
 
 import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 import {
   findLegalLine,
   getLegalLines,
   getLineRefusalReason,
+  listsWholeLine,
 } from './getLegalLines';
-
-import { createEmptyGameState } from '@factories';
 
 /**
  * A lines order is given to one line: an unbroken stretch of one to eight
@@ -41,48 +41,28 @@ describe('getLegalLines function', () => {
     size: 'lines',
   });
 
-  /** Each line as the spaces of its two ends. */
-  function endSpaces(lines: readonly LegalLine[]): [Coordinate, Coordinate][] {
-    const spaces = lines.map((line): [Coordinate, Coordinate] => [
-      line.ends[0].placement.coordinate,
-      line.ends[1].placement.coordinate,
-    ]);
-    return spaces;
-  }
-
   it('makes a unit within range a line of one', () => {
     // One black unit on E-5, with its commander.
-    const unit = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    let board = addUnitToBoard(
-      createEmptyGameState('standard').boardState,
-      unit,
+    const state = deployCommander(
+      createGameState([['E-5', 'black']]),
+      'black',
+      'E-5',
     );
-    board = addCommanderToBoard(board, 'black', 'E-5');
-    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     // A line of one names the same unit at both ends.
-    expect(
-      endSpaces(getLegalLines(atCommanderLineCommand, 'black', state)),
-    ).toStrictEqual([['E-5', 'E-5']]);
+    const lines = getLegalLines(atCommanderLineCommand, 'black', state);
+    expect(lines.map((line) => coordinatesOfSegment(line.ends))).toStrictEqual([
+      ['E-5', 'E-5'],
+    ]);
   });
 
   it('offers no line to a unit beyond range that stands alone', () => {
     // One black unit on A-1, far from its commander on E-5.
-    const unit = createUnitWithPlacement({
-      coordinate: 'A-1',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    let board = addUnitToBoard(
-      createEmptyGameState('standard').boardState,
-      unit,
+    const state = deployCommander(
+      createGameState([['A-1', 'black']]),
+      'black',
+      'E-5',
     );
-    board = addCommanderToBoard(board, 'black', 'E-5');
-    const state = replaceBoard(createEmptyGameState('standard'), board);
 
     // No unit of any line through it is within range.
     expect(getLegalLines(atCommanderLineCommand, 'black', state)).toStrictEqual(
@@ -96,15 +76,16 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5', 'E-6'],
     });
-    const state = replaceBoard(
-      createEmptyGameState('standard'),
-      addCommanderToBoard(board, 'black', 'E-5'),
+    const state = deployCommander(
+      createGameStateWithBoard(board),
+      'black',
+      'E-5',
     );
 
     const lines = getLegalLines(atCommanderLineCommand, 'black', state);
 
     // E-5 alone, or both together. E-6 alone holds no unit within range.
-    expect(endSpaces(lines)).toStrictEqual([
+    expect(lines.map((line) => coordinatesOfSegment(line.ends))).toStrictEqual([
       ['E-5', 'E-5'],
       ['E-5', 'E-6'],
     ]);
@@ -127,9 +108,10 @@ describe('getLegalLines function', () => {
       'E-8',
     ];
     const { board, unitAt } = createBoardWithFacingRow({ coordinates });
-    const state = replaceBoard(
-      createEmptyGameState('standard'),
-      addCommanderToBoard(board, 'black', 'E-4'),
+    const state = deployCommander(
+      createGameStateWithBoard(board),
+      'black',
+      'E-4',
     );
 
     const lines = getLegalLines(atCommanderLineCommand, 'black', state);
@@ -162,7 +144,7 @@ describe('getLegalLines function', () => {
       'E-10',
     ];
     const { board, unitAt } = createBoardWithFacingRow({ coordinates });
-    const state = replaceBoard(createEmptyGameState('standard'), board);
+    const state = createGameStateWithBoard(board);
 
     const lines = getLegalLines(unlimitedLineCommand, 'black', state);
 
@@ -182,19 +164,38 @@ describe('getLegalLines function', () => {
     ).toBeUndefined();
   });
 
-  it('refuses a line whose end has already been commanded this round', () => {
+  it('lists each line by every unit between its ends, in rank order', () => {
     // A rank of three, E-1 to E-3, under an order with no range limit.
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3'],
     });
-    const base = replaceBoard(createEmptyGameState('standard'), board);
-    const commanded = {
-      ...base,
-      currentRoundState: {
-        ...base.currentRoundState,
-        commandedUnits: [unitAt('E-1').unit],
-      },
-    };
+    const state = createGameStateWithBoard(board);
+
+    const lines = getLegalLines(unlimitedLineCommand, 'black', state);
+    const whole = throwIfUndefined(
+      findLegalLine(lines, [unitAt('E-3').unit, unitAt('E-1').unit]),
+      'E-1 to E-3 is a line of a rank of three',
+    );
+
+    // The line named by its outer ends orders the middle unit too: an order
+    // to a line commands every unit of it (§4.3.5).
+    expect(coordinatesOfSegment(whole.units)).toStrictEqual([
+      'E-1',
+      'E-2',
+      'E-3',
+    ]);
+  });
+
+  it('refuses a line whose end has already been commanded this round', () => {
+    // A rank of three, E-1 to E-3, under an order with no range limit; the
+    // unit on E-1 has had its order this round.
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1', 'E-2', 'E-3'],
+    });
+    const commanded = addUnitsToCommandedUnits(
+      createGameStateWithBoard(board),
+      [unitAt('E-1').unit],
+    );
 
     // One order per unit per round (§4.3.6), so it cannot be a line's end.
     expect(
@@ -215,8 +216,7 @@ describe('getLegalLines function', () => {
     const ours = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const theirs = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     // Our unit has walked into the enemy: both stand in E-5 (§2.2.1).
-    const board = createBoardWithEngagedUnits(ours, theirs, 'E-5', 'north');
-    const state = replaceBoard(createEmptyGameState('standard'), board);
+    const state = createGameStateWithEngagedUnits(ours, theirs, 'E-5', 'north');
 
     // An engaged unit cannot be ordered (§4.3.4), so it cannot end a line.
     expect(
@@ -229,20 +229,15 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3', 'E-4', 'E-5'],
     });
-    const base = replaceBoard(createEmptyGameState('standard'), board);
-    const state = {
-      ...base,
-      currentRoundState: {
-        ...base.currentRoundState,
-        commandedUnits: [unitAt('E-3').unit],
-      },
-    };
+    const state = addUnitsToCommandedUnits(createGameStateWithBoard(board), [
+      unitAt('E-3').unit,
+    ]);
 
     const lines = getLegalLines(unlimitedLineCommand, 'black', state);
 
     // A line cannot be drawn through a commanded unit (§4.3.6): two units on
     // either side give three stretches each, and none crosses E-3.
-    expect(endSpaces(lines)).toHaveLength(6);
+    expect(lines).toHaveLength(6);
     expect(
       findLegalLine(lines, [unitAt('E-2').unit, unitAt('E-4').unit]),
     ).toBeUndefined();
@@ -259,14 +254,9 @@ describe('getLegalLines function', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-1', 'E-2', 'E-3', 'E-4'],
     });
-    const base = replaceBoard(createEmptyGameState('standard'), board);
-    const state = {
-      ...base,
-      currentRoundState: {
-        ...base.currentRoundState,
-        commandedUnits: [unitAt('E-2').unit],
-      },
-    };
+    const state = addUnitsToCommandedUnits(createGameStateWithBoard(board), [
+      unitAt('E-2').unit,
+    ]);
 
     const lines = getLegalLines(unlimitedLineCommand, 'black', state);
     const mayBeOrdered = getLegalUnitsForIssueCommand(
@@ -282,5 +272,189 @@ describe('getLegalLines function', () => {
         expect(mayBeOrdered).toContainEqual(end.unit);
       }
     }
+  });
+});
+
+/**
+ * A line order lists every unit it commands (§4.3.5), read from either end.
+ * A list that skips a unit between the ends, or runs past them, is not the
+ * line its ends name.
+ */
+describe('listsWholeLine function', () => {
+  const unlimitedLineCommand = createTestCommand({
+    number: 1,
+    restrictions: { inspirationRangeRestriction: -1, restrictionType: 'none' },
+    size: 'lines',
+  });
+
+  // Black has a rank of four, E-1 to E-4, facing north. The line under test
+  // is E-1 to E-3, as getLegalLines offers it.
+  const { board, unitAt } = createBoardWithFacingRow({
+    coordinates: ['E-1', 'E-2', 'E-3', 'E-4'],
+  });
+  const state = createGameStateWithBoard(board);
+  const line = throwIfUndefined(
+    findLegalLine(getLegalLines(unlimitedLineCommand, 'black', state), [
+      unitAt('E-1').unit,
+      unitAt('E-3').unit,
+    ]),
+    'E-1 to E-3 is a line of a rank of four',
+  );
+
+  /** The units standing on the given spaces, in that order. */
+  const unitsAt = (spaces: Coordinate[]) =>
+    spaces.map((space) => unitAt(space).unit);
+
+  it('accepts the line listed in rank order', () => {
+    expect(listsWholeLine(line, unitsAt(['E-1', 'E-2', 'E-3']))).toBe(true);
+  });
+
+  it('accepts the line listed from its other end', () => {
+    // A line is named from either end, so its units may be read either way.
+    expect(listsWholeLine(line, unitsAt(['E-3', 'E-2', 'E-1']))).toBe(true);
+  });
+
+  it('refuses a list that skips a unit between the ends', () => {
+    // E-2 stands between the ends, so the order commands it too.
+    expect(listsWholeLine(line, unitsAt(['E-1', 'E-3']))).toBe(false);
+  });
+
+  it('refuses a list that runs past an end', () => {
+    // E-4 stands beyond E-3, outside the line these ends name.
+    expect(listsWholeLine(line, unitsAt(['E-1', 'E-2', 'E-3', 'E-4']))).toBe(
+      false,
+    );
+  });
+
+  it('refuses a list of the right length out of rank order', () => {
+    // Every unit of the line is there, but the middle is not in the middle.
+    expect(listsWholeLine(line, unitsAt(['E-2', 'E-1', 'E-3']))).toBe(false);
+  });
+});
+
+/**
+ * When the ends a player names give no legal line, the refusal says which
+ * rule of §4.3.5 they break, checked in the order a player would: are the
+ * ends units this order may name, do they share an unbroken rank, is it short
+ * enough, and is any of it within reach of the commander.
+ */
+describe('getLineRefusalReason function', () => {
+  /** A lines order reaching no further than the commander's own space. */
+  const atCommanderLineCommand = createTestCommand({
+    number: 1,
+    restrictions: { inspirationRangeRestriction: 0, restrictionType: 'none' },
+    size: 'lines',
+  });
+
+  /** A lines order with no inspiration limit, so only the rank decides. */
+  const unlimitedLineCommand = createTestCommand({
+    number: 1,
+    restrictions: { inspirationRangeRestriction: -1, restrictionType: 'none' },
+    size: 'lines',
+  });
+
+  it('refuses an end that is not on the board', () => {
+    // Black has one unit on E-1; a second black unit has never been placed.
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1'],
+    });
+    const state = createGameStateWithBoard(board);
+    const offBoard = createTestUnit('black', { attack: 3, instanceNumber: 2 });
+
+    // Only a unit on the board can be ordered.
+    expect(
+      getLineRefusalReason(unlimitedLineCommand, 'black', state, [
+        unitAt('E-1').unit,
+        offBoard,
+      ]),
+    ).toBe('A line end is not on the board for black');
+  });
+
+  it('refuses an end that belongs to the enemy', () => {
+    // Black on E-1 stands beside a white unit on E-2.
+    const state = createGameState([
+      ['E-1', 'black'],
+      ['E-2', 'white'],
+    ]);
+    const ours = createTestUnit('black', { instanceNumber: 1 });
+    const theirs = createTestUnit('white', { instanceNumber: 1 });
+
+    // A line is a rank of the player's own units (§4.3.5).
+    expect(
+      getLineRefusalReason(unlimitedLineCommand, 'black', state, [
+        ours,
+        theirs,
+      ]),
+    ).toBe('A line end may not stand in a line under this order');
+  });
+
+  it('refuses ends with a gap between them', () => {
+    // Black on E-1 and E-3, with E-2 empty.
+    const { board, unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-1', 'E-3'],
+    });
+    const state = createGameStateWithBoard(board);
+
+    // A line is unbroken: no gap in the middle (§4.3.5).
+    expect(
+      getLineRefusalReason(unlimitedLineCommand, 'black', state, [
+        unitAt('E-1').unit,
+        unitAt('E-3').unit,
+      ]),
+    ).toBe('The two ends do not stand on one unbroken rank');
+  });
+
+  it('refuses ends nine units apart', () => {
+    // A rank of nine, E-1 to E-9, under an order with no range limit.
+    const coordinates: Coordinate[] = [
+      'E-1',
+      'E-2',
+      'E-3',
+      'E-4',
+      'E-5',
+      'E-6',
+      'E-7',
+      'E-8',
+      'E-9',
+    ];
+    const { board, unitAt } = createBoardWithFacingRow({ coordinates });
+    const state = createGameStateWithBoard(board);
+
+    // A line is at most eight units (§4.3.5); these ends take in nine.
+    expect(
+      getLineRefusalReason(unlimitedLineCommand, 'black', state, [
+        unitAt('E-9').unit,
+        unitAt('E-1').unit,
+      ]),
+    ).toBe('A line is at most 8 units; these ends span 9');
+  });
+
+  it('names the inspiration range when the ends are a whole line of eight beyond the commander’s reach', () => {
+    // A rank of eight, E-1 to E-8, with the commander far off on A-1.
+    const coordinates: Coordinate[] = [
+      'E-1',
+      'E-2',
+      'E-3',
+      'E-4',
+      'E-5',
+      'E-6',
+      'E-7',
+      'E-8',
+    ];
+    const { board, unitAt } = createBoardWithFacingRow({ coordinates });
+    const state = deployCommander(
+      createGameStateWithBoard(board),
+      'black',
+      'A-1',
+    );
+
+    // Eight is a whole line, so the length is not what is wrong: no unit of
+    // it stands with the commander (§4.3.5).
+    expect(
+      getLineRefusalReason(atCommanderLineCommand, 'black', state, [
+        unitAt('E-1').unit,
+        unitAt('E-8').unit,
+      ]),
+    ).toBe('No unit of the line is within inspiration range');
   });
 });

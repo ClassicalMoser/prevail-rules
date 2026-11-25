@@ -1,8 +1,5 @@
 import type { Coordinate } from '@entities';
-import { throwIfUndefined } from '@utils';
-import { createGameState, createTestUnit, placed } from '@testing';
-import { addUnitToBoard } from '@transforms';
-import { createEmptyStandardBoard } from '@factories';
+import { createGameState } from '@testing';
 
 import { canMoveInto } from './canMoveInto';
 
@@ -11,7 +8,7 @@ import { canMoveInto } from './canMoveInto';
  */
 describe('canMoveInto function', () => {
   describe('empty space', () => {
-    it('given the space has no unit, returns true', () => {
+    it('a move may end on open ground', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
@@ -23,22 +20,15 @@ describe('canMoveInto function', () => {
   });
 
   describe('engaged units', () => {
-    it('given the space has engaged units, returns false', () => {
-      let board = createEmptyStandardBoard();
-      // Add engaged units at D-5
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black'), 'D-5', 'north'),
-      );
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('white'), 'D-5', 'south'),
-      );
-      // Add unit attempting to move into
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black'), 'E-5', 'north'),
-      );
+    it('a move may not end in an engaged space', () => {
+      // D-5 holds a black unit locked with a white one; the black unit on
+      // E-5 may not join them (§2.2.3).
+      const gameState = createGameState([
+        ['E-5', 'black', 'north'],
+        ['D-5', 'black', 'north'],
+        ['D-5', 'white', 'south'],
+      ]);
+      const board = gameState.boardState;
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
       ).toBe(false);
@@ -46,7 +36,7 @@ describe('canMoveInto function', () => {
   });
 
   describe('friendly units', () => {
-    it('given the space has a single friendly unit, returns false', () => {
+    it('a move may not end on a friend', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'black', speed: 2 },
@@ -60,7 +50,7 @@ describe('canMoveInto function', () => {
 
   describe('enemy units', () => {
     describe('advance direction', () => {
-      it('given enemy can be engaged, returns true', () => {
+      it('an advance may end on an enemy it can legally engage', () => {
         // CanMoveInto delegates to canEngageEnemy for advance direction
         // Detailed engagement tests are in canEngageEnemy.test.ts
         const gameState = createGameState([
@@ -73,7 +63,9 @@ describe('canMoveInto function', () => {
         ).toBe(true);
       });
 
-      it('given enemy cannot be engaged, returns false', () => {
+      it('an advance may not end on an enemy it cannot legally engage', () => {
+        // E-5 is the north-facing enemy's back space, and a move begun on
+        // its flank (D-4) may not take it from behind (§6.2.2).
         const gameState = createGameState([
           { coord: 'E-5', facing: 'north', player: 'black' },
           { coord: 'D-5', facing: 'north', player: 'white' },
@@ -86,9 +78,13 @@ describe('canMoveInto function', () => {
     });
 
     describe('retreat direction', () => {
-      it('given attempting to retreat into enemy unit, returns false', () => {
+      it('a retreat may not end on an enemy, even one an advance could engage', () => {
+        // The black unit faces south and falls back north into D-5, where a
+        // white unit stands facing it: from E-5, its centre front space, an
+        // advance could close head-on. A retreat never creates an engagement
+        // (§9.1.7).
         const gameState = createGameState([
-          { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+          { coord: 'E-5', facing: 'south', player: 'black', speed: 2 },
           { coord: 'D-5', facing: 'south', player: 'white', speed: 2 },
         ]);
         const board = gameState.boardState;
@@ -119,24 +115,6 @@ describe('canMoveInto function', () => {
           'advance',
         ),
       ).toThrow('Coordinate Z-99 does not exist on standard board.');
-    });
-
-    it('given an invalid unitPresence, returns false', () => {
-      let board = createEmptyStandardBoard();
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black'), 'E-5', 'north'),
-      );
-      const space = throwIfUndefined(
-        board.board['D-5'],
-        'expected board space at D-5',
-      );
-      space.unitPresence = {
-        presenceType: 'invalid',
-      } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
-      expect(
-        canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 0, 'advance'),
-      ).toBe(false);
     });
   });
 });

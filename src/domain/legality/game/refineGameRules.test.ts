@@ -1,8 +1,20 @@
 import type { Army, Board, UnitType } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
+import type { Game } from '@game';
+import {
+  createEmptyGameState,
+  createEmptyLargeBoard,
+  createEmptySmallBoard,
+  createEmptyStandardBoard,
+  createInitialGameState,
+} from '@factories';
+import { replaceBoard } from '@testing';
 import { z } from 'zod';
 
-import { refineGameRules } from './refineGameRules';
+import {
+  legalGameSchema,
+  legalGameStateSchema,
+  refineGameRules,
+} from './refineGameRules';
 
 /** Limit 2 — over-limit cases write count 3 against this. */
 const limitTwo: UnitType = {
@@ -108,6 +120,122 @@ describe('refineGameRules function', () => {
 
     expect(result.error?.issues).toMatchObject([
       { path: ['whiteArmy', 'units', 0, 'count'] },
+    ]);
+  });
+});
+
+describe('legalGameSchema schema', () => {
+  /** Black's own copy of the legal army, so the two lists are not one. */
+  const blackArmy: Army = {
+    ...legalArmy,
+    id: '44444444-4444-4444-8444-444444444444',
+  };
+
+  /** A tutorial game just begun: both armies in reserve, no events yet. */
+  const game: Game = {
+    blackArmy,
+    blackPlayer: '55555555-5555-4555-8555-555555555555',
+    events: [],
+    gameMode: 'tutorial',
+    gameState: createInitialGameState({
+      blackArmy,
+      gameMode: 'tutorial',
+      whiteArmy: legalArmy,
+    }),
+    id: '66666666-6666-4666-8666-666666666666',
+    whiteArmy: legalArmy,
+    whitePlayer: '77777777-7777-4777-8777-777777777777',
+  };
+
+  it('accepts a game just begun from legal armies', () => {
+    const result = legalGameSchema.safeParse(game);
+
+    expect(result.success).toBe(true);
+  });
+
+  it("refuses a game whose state's index disagrees with its record, at its place in the game", () => {
+    // Neither commander has been placed, but the index calls White's lost.
+    const forged: Game = {
+      ...game,
+      gameState: {
+        ...game.gameState,
+        index: {
+          ...game.gameState.index,
+          commanders: { ...game.gameState.index.commanders, white: 'lost' },
+        },
+      },
+    };
+
+    const result = legalGameSchema.safeParse(forged);
+
+    // The index check runs on the game's state, and points inside it.
+    expect(result.error?.issues).toMatchObject([
+      { path: ['gameState', 'index', 'commanders', 'white'] },
+    ]);
+  });
+});
+
+describe('legalGameStateSchema function', () => {
+  it('accepts an empty state on the board its mode is played on', () => {
+    // Tutorial is played on the small board.
+    const result = legalGameStateSchema('tutorial').safeParse(
+      createEmptyGameState('tutorial'),
+    );
+
+    expect(result.success).toBe(true);
+  });
+
+  it('refuses a state on a board the wrong size for its mode, at the state root', () => {
+    // A standard board, whole and indexed, under a tutorial game.
+    const result = legalGameStateSchema('tutorial').safeParse(
+      createEmptyGameState('standard'),
+    );
+
+    // The state is the root, so the issue points at its own board type.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'gameMode tutorial requires board size small, got standard.',
+        path: ['boardState', 'boardType'],
+      },
+    ]);
+  });
+
+  it('refuses a space from another board size, at the state root', () => {
+    // The small board with the large board's far corner, X-36, added.
+    // A hole would make the better case, but the index check throws on one:
+    // see the TODO(wrong) on `legalGameStateSchema`.
+    const farLargeCorner = createEmptyLargeBoard().board['X-36'];
+    const widened: Board = {
+      board: { ...createEmptySmallBoard().board, 'X-36': farLargeCorner },
+      boardType: 'small',
+    };
+    const state = replaceBoard(createEmptyGameState('tutorial'), widened);
+
+    const result = legalGameStateSchema('tutorial').safeParse(state);
+
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'Unexpected coordinate X-36 for small board.',
+        path: ['boardState', 'board', 'X-36'],
+      },
+    ]);
+  });
+
+  it('refuses an index that disagrees with the record, at the state root', () => {
+    // Neither commander has been placed, but the index calls White's lost.
+    const state = createEmptyGameState('tutorial');
+    const forged = {
+      ...state,
+      index: {
+        ...state.index,
+        commanders: { ...state.index.commanders, white: 'lost' as const },
+      },
+    };
+
+    const result = legalGameStateSchema('tutorial').safeParse(forged);
+
+    expect(result.error?.issues).toMatchObject([
+      { path: ['index', 'commanders', 'white'] },
     ]);
   });
 });

@@ -43,6 +43,7 @@ describe('findMoveEnding function', () => {
 
     const ending = findMoveEnding(context, state);
 
+    // Its own space needs no one's permission (§5.3): nothing spent.
     expect(ending).toStrictEqual({
       flexibilityUsed: 0,
       path: [],
@@ -82,6 +83,7 @@ describe('findMoveEnding function', () => {
 
     const ending = findMoveEnding(context, state);
 
+    // A retreat must fall back (§9.1.2).
     expect(ending).toBeUndefined();
   });
 
@@ -117,6 +119,7 @@ describe('findMoveEnding function', () => {
 
     const ending = findMoveEnding(context, state);
 
+    // Its own space is an ending only for a unit that never left it.
     expect(ending).toBeUndefined();
   });
 
@@ -151,6 +154,7 @@ describe('findMoveEnding function', () => {
 
     const ending = findMoveEnding(context, state);
 
+    // Open ground may be rested on (§5.3); the cost is what the state spent.
     expect(ending).toStrictEqual({
       flexibilityUsed: 1,
       path: ['turnRight', 'step'],
@@ -191,6 +195,7 @@ describe('findMoveEnding function', () => {
 
     const ending = findMoveEnding(context, state);
 
+    // A friend's space may be passed through, never ended on (§5.3).
     expect(ending).toBeUndefined();
   });
 
@@ -227,6 +232,7 @@ describe('findMoveEnding function', () => {
 
     const ending = findMoveEnding(context, state);
 
+    // Squared up head on (§6.2.3): the turn joins the path and costs a point.
     expect(ending).toStrictEqual({
       flexibilityUsed: 1,
       path: ['step', 'turnLeft'],
@@ -236,14 +242,15 @@ describe('findMoveEnding function', () => {
   });
 
   it('a frontal engagement approached obliquely may not end there with no Flexibility left', () => {
-    // A black attacker on E-4 and a white defender on D-5 facing south.
+    // A black attacker on E-4 with no turn in it, and a white defender on
+    // D-5 facing south.
     const gameState = createGameState([
       {
         coord: 'E-4',
         facing: 'northEast',
-        flexibility: 2,
+        flexibility: 0,
         player: 'black',
-        speed: 2,
+        speed: 3,
       },
       ['D-5', 'white', 'south'],
     ]);
@@ -253,21 +260,22 @@ describe('findMoveEnding function', () => {
     );
     // Build the context of an advance begun on E-4.
     const context = createMoveContext(gameState, unit, 'advance');
-    // Both points spent turning left and back right to northEast, then the
-    // same diagonal step, with nothing left to square up.
+    // The same diagonal step, with nothing to square up with.
     const state: MoveState = {
       cameFrom: 'E-4',
       coordinate: 'D-5',
       facing: 'northEast',
       // Only the position it stands in now: no earlier one bears on this case.
       heldPositions: [{ coordinate: 'D-5', facing: 'northEast' }],
-      path: ['turnLeft', 'turnRight', 'step'],
+      path: ['step'],
       remainingFlexibility: 0,
-      remainingSpeed: 1,
+      remainingSpeed: 2,
     };
 
     const ending = findMoveEnding(context, state);
 
+    // Without the point for the squaring turn it cannot engage from there
+    // at all (§6.2.3).
     expect(ending).toBeUndefined();
   });
 });

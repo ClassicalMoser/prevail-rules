@@ -1,6 +1,4 @@
-import { createEmptyStandardBoard } from '@factories';
-import { createUnitWithPlacement } from '@testing';
-import { addUnitToBoard } from '@transforms';
+import { createGameState } from '@testing';
 
 import { getEngagementEndFacing } from './getEngagementEndFacing';
 
@@ -10,12 +8,7 @@ import { getEngagementEndFacing } from './getEngagementEndFacing';
  */
 describe('getEngagementEndFacing function', () => {
   // A south-facing defender: its front spaces are the E row below it.
-  const defender = createUnitWithPlacement({
-    coordinate: 'D-5',
-    facing: 'south',
-    playerSide: 'white',
-  });
-  const board = addUnitToBoard(createEmptyStandardBoard(), defender);
+  const board = createGameState([['D-5', 'white', 'south']]).boardState;
 
   it('a corner front approach squares to head-on with one turn, for a point', () => {
     // Stepping in from E-4, the defender's off-centre front space, arrives
@@ -23,6 +16,14 @@ describe('getEngagementEndFacing function', () => {
     const end = getEngagementEndFacing(board, 'D-5', 'E-4');
 
     expect(end).toStrictEqual({ facing: 'north', squaringTurn: 'turnLeft' });
+  });
+
+  it('the other corner front approach squares with a turn the other way', () => {
+    // From E-6 the step arrives facing northWest; a turn to its right
+    // squares it to north. Which way the turn goes is the path's to record.
+    const end = getEngagementEndFacing(board, 'D-5', 'E-6');
+
+    expect(end).toStrictEqual({ facing: 'north', squaringTurn: 'turnRight' });
   });
 
   it('a head-on approach is already square and needs no turn', () => {
@@ -41,6 +42,13 @@ describe('getEngagementEndFacing function', () => {
 
   it('open ground is no one to square up against', () => {
     const end = getEngagementEndFacing(board, 'C-5', 'C-4');
+
+    expect(end).toBeUndefined();
+  });
+
+  it('a space that is not a neighbour was not joined to the defender by a step', () => {
+    // G-5 is three rows below the defender: no single step leaves it for D-5.
+    const end = getEngagementEndFacing(board, 'D-5', 'G-5');
 
     expect(end).toBeUndefined();
   });

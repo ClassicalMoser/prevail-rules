@@ -1,8 +1,7 @@
-import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
-import type { Coordinate, UnitFacing } from '@entities';
-import type { MoveResult } from './moveResult';
+import type { UnitFacing } from '@entities';
 import { unitFacings } from '@entities';
-import { createGameState } from '@testing';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
+import { createGameState, hasMove } from '@testing';
 
 import { exploreUnitMoves } from './exploreUnitMoves';
 
@@ -10,41 +9,9 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  * ExploreUnitMoves: full move search with flexibility and speed usage per placement.
  */
 describe('exploreUnitMoves function', () => {
-  // Test helper to reduce repetition.
-  function exploreResultHasMatch(
-    moves: Set<MoveResult>,
-    match: {
-      coordinate?: Coordinate;
-      facing?: UnitFacing;
-      flexibilityUsed?: number;
-      speedUsed?: number;
-    },
-  ): boolean {
-    const { coordinate, facing, flexibilityUsed, speedUsed } = match;
-    const result = [...moves].find((m) => {
-      if (coordinate !== undefined && m.placement.coordinate !== coordinate) {
-        return false;
-      }
-      if (facing !== undefined && m.placement.facing !== facing) {
-        return false;
-      }
-      if (
-        flexibilityUsed !== undefined &&
-        m.flexibilityUsed !== flexibilityUsed
-      ) {
-        return false;
-      }
-      if (speedUsed !== undefined && m.speedUsed !== speedUsed) {
-        return false;
-      }
-      return true;
-    });
-    return result !== undefined;
-  }
-
   describe('initial position', () => {
-    it('given include starting position for advance', () => {
-      expect.hasAssertions();
+    it('an advance may end where it stands, at no cost', () => {
+      // A lone black unit on E-5 facing north.
       const gameState = createGameState([['E-5', 'black', 'north']]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
@@ -52,17 +19,18 @@ describe('exploreUnitMoves function', () => {
       );
 
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasStartingPosition = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-        facing: 'north',
+
+      // An order to stand still is a real move (§5.5): nothing spent.
+      expect([...moves]).toContainEqual({
         flexibilityUsed: 0,
+        path: [],
+        placement: { coordinate: 'E-5', facing: 'north' },
         speedUsed: 0,
       });
-      expect(hasStartingPosition).toBe(true);
     });
 
-    it('given not include starting position for retreat', () => {
-      expect.hasAssertions();
+    it('a retreat may not end where it stands', () => {
+      // A lone black unit on E-5 facing north.
       const gameState = createGameState([['E-5', 'black', 'north']]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
@@ -70,14 +38,14 @@ describe('exploreUnitMoves function', () => {
       );
 
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      const hasStartingPosition = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-      });
-      expect(hasStartingPosition).toBe(false);
+
+      // A retreat must fall back (§9.1.2), so its start is no ending, in
+      // any facing.
+      expect(hasMove(moves, 'E-5')).toBe(false);
     });
 
     it('one turn in place reaches 45° either way or about, nothing else', () => {
-      expect.hasAssertions();
+      // A black unit on E-5 facing north with two turns in it.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -93,36 +61,34 @@ describe('exploreUnitMoves function', () => {
       const moves = exploreUnitMoves(gameState, unit, 'advance');
       // One spend turns 45° to a side or 180° about (§5.2.1).
       const oneTurnFacings: UnitFacing[] = ['northWest', 'northEast', 'south'];
-      const oneTurnResults = oneTurnFacings.map((facing) =>
-        exploreResultHasMatch(moves, {
-          coordinate: 'E-5',
-          facing,
-          flexibilityUsed: 1,
-          speedUsed: 0,
-        }),
-      );
-      expect(oneTurnResults.every((result) => result)).toBe(true);
+      for (const facing of oneTurnFacings) {
+        expect([...moves]).toContainEqual(
+          expect.objectContaining({
+            flexibilityUsed: 1,
+            placement: { coordinate: 'E-5', facing },
+            speedUsed: 0,
+          }),
+        );
+      }
       // Every other facing is a wheel: two spends, never one.
       const wheelFacings: UnitFacing[] = unitFacings.filter(
         (facing) => facing !== 'north' && !oneTurnFacings.includes(facing),
       );
-      const wheelsAtOne = wheelFacings.map((facing) =>
-        exploreResultHasMatch(moves, {
-          coordinate: 'E-5',
-          facing,
-          flexibilityUsed: 1,
-        }),
-      );
-      expect(wheelsAtOne.some((result) => result)).toBe(false);
-      const wheelsAtTwo = wheelFacings.map((facing) =>
-        exploreResultHasMatch(moves, {
-          coordinate: 'E-5',
-          facing,
-          flexibilityUsed: 2,
-          speedUsed: 0,
-        }),
-      );
-      expect(wheelsAtTwo.every((result) => result)).toBe(true);
+      for (const facing of wheelFacings) {
+        expect([...moves]).not.toContainEqual(
+          expect.objectContaining({
+            flexibilityUsed: 1,
+            placement: { coordinate: 'E-5', facing },
+          }),
+        );
+        expect([...moves]).toContainEqual(
+          expect.objectContaining({
+            flexibilityUsed: 2,
+            placement: { coordinate: 'E-5', facing },
+            speedUsed: 0,
+          }),
+        );
+      }
     });
 
     it('a unit with Flexibility 1 cannot wheel to a perpendicular facing', () => {
@@ -142,66 +108,50 @@ describe('exploreUnitMoves function', () => {
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
 
-      expect(
-        exploreResultHasMatch(moves, { coordinate: 'E-5', facing: 'east' }),
-      ).toBe(false);
-      expect(
-        exploreResultHasMatch(moves, { coordinate: 'E-5', facing: 'west' }),
-      ).toBe(false);
+      expect(hasMove(moves, 'E-5', 'east')).toBe(false);
+      expect(hasMove(moves, 'E-5', 'west')).toBe(false);
       // The about-turn, though, is one motion (§5.2.1).
-      expect(
-        exploreResultHasMatch(moves, {
-          coordinate: 'E-5',
-          facing: 'south',
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
           flexibilityUsed: 1,
+          placement: { coordinate: 'E-5', facing: 'south' },
         }),
-      ).toBe(true);
+      );
     });
 
-    it('given not include starting position with different speed', () => {
-      expect.hasAssertions();
+    it('a move that walks away and comes back may not end where it began', () => {
+      // A black unit on E-5 facing north, Speed 2 and Flexibility 2: enough
+      // to step out to D-5, turn about, and step home facing south.
       const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 2,
+          player: 'black',
+          speed: 2,
+        },
       ]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
         'E-5',
       );
+
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasStartingPositionWithSpeedOne = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-        facing: 'north',
-        speedUsed: 1,
-      });
-      const hasStartingPositionWithSpeedTwo = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-        facing: 'north',
-        speedUsed: 2,
-      });
-      expect(hasStartingPositionWithSpeedOne).toBe(false);
-      expect(hasStartingPositionWithSpeedTwo).toBe(false);
+
+      // Its own space is an ending only for a unit that never left it
+      // (§5.3); turning about where it stands reaches the same place for less.
+      expect([...moves]).not.toContainEqual(
+        expect.objectContaining({
+          placement: { coordinate: 'E-5', facing: 'south' },
+          speedUsed: 2,
+        }),
+      );
     });
   });
-  describe('advance direction', () => {
-    it('given the unit has speed, includes a forward move', () => {
-      expect.hasAssertions();
-      const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
-      ]);
-      const unit = getSingleUnitWithPlacementAtCoordinate(
-        gameState.boardState,
-        'E-5',
-      );
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasForwardMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        speedUsed: 1,
-      });
-      expect(hasForwardMove).toBe(true);
-    });
 
-    it('given speed > 1, includes multiple forward moves', () => {
-      expect.hasAssertions();
+  describe('advance direction', () => {
+    it('steps straight ahead one space for each point of Speed, and no further', () => {
+      // A black unit on E-5 facing north with Speed 3.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -215,31 +165,35 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasOneMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 1,
-      });
-      const hasTwoMoves = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 2,
-      });
-      const hasThreeMoves = exploreResultHasMatch(moves, {
-        coordinate: 'B-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 3,
-      });
-      expect(hasOneMove).toBe(true);
-      expect(hasTwoMoves).toBe(true);
-      expect(hasThreeMoves).toBe(true);
+
+      // Each step costs 1 Speed (§5.1.2): D-5, C-5 and B-5 for 1, 2 and 3.
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'D-5', facing: 'north' },
+          speedUsed: 1,
+        }),
+      );
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'C-5', facing: 'north' },
+          speedUsed: 2,
+        }),
+      );
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'B-5', facing: 'north' },
+          speedUsed: 3,
+        }),
+      );
+      // A fourth step, to A-5, is past its Speed.
+      expect(hasMove(moves, 'A-5')).toBe(false);
     });
 
-    it('given the unit has speed and flexibility, includes turning moves', () => {
-      expect.hasAssertions();
+    it('turns 45° and steps onto the diagonal it then faces', () => {
+      // A black unit on E-5 facing north, Speed 2 and Flexibility 2.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -254,75 +208,27 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasForwardLeftMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-4',
-        facing: 'northWest',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      const hasForwardRightMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
-        facing: 'northEast',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(hasForwardLeftMove).toBe(true);
-      expect(hasForwardRightMove).toBe(true);
-    });
 
-    it('given include turn then move sequences in advance', () => {
-      expect.hasAssertions();
-      const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'north',
-          flexibility: 2,
-          player: 'black',
-          speed: 2,
-        },
-      ]);
-      const unit = getSingleUnitWithPlacementAtCoordinate(
-        gameState.boardState,
-        'E-5',
+      // A unit steps only the way it faces (§5.1.3): to reach D-4 or D-6 it
+      // turns first, then steps, 1 Flexibility and 1 Speed each.
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'D-4', facing: 'northWest' },
+          speedUsed: 1,
+        }),
       );
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
-      // Turn first, then move in the new direction
-      // This is already tested by "turning moves" test above
-      // But we verify it works for all diagonal directions
-      const hasNorthWestMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-4',
-        facing: 'northWest',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      const hasNorthEastMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
-        facing: 'northEast',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(hasNorthWestMove).toBe(true);
-      expect(hasNorthEastMove).toBe(true);
-    });
-
-    it('given not include moves that exceed speed', () => {
-      expect.hasAssertions();
-      const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
-      ]);
-      const unit = getSingleUnitWithPlacementAtCoordinate(
-        gameState.boardState,
-        'E-5',
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'D-6', facing: 'northEast' },
+          speedUsed: 1,
+        }),
       );
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasExcessiveMove = exploreResultHasMatch(moves, {
-        coordinate: 'B-5',
-      });
-      expect(hasExcessiveMove).toBe(false);
     });
 
-    it('given not include moves that exceed flexibility', () => {
-      expect.hasAssertions();
+    it('never spends more Flexibility than the unit has', () => {
+      // A black unit on E-5 facing north with one turn in it.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -337,19 +243,16 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      // Should not be able to turn twice
-      const hasDoubleTurn = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'south',
-        flexibilityUsed: 2,
-      });
-      expect(hasDoubleTurn).toBe(false);
+
+      // Every turn costs a point (§5.2.1): no ending uses a second.
+      const flexibilitySpent = [...moves].map((move) => move.flexibilityUsed);
+      expect(Math.max(...flexibilitySpent)).toBe(1);
     });
   });
 
   describe('retreat direction', () => {
-    it('given the unit has speed, includes a rearward move', () => {
-      expect.hasAssertions();
+    it('falls straight back one space for each point of Speed', () => {
+      // A black unit on E-5 facing north with Speed 2.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
@@ -358,14 +261,23 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      // Retreat moves rearward (south when facing north)
-      const hasRearwardMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 1,
-      });
-      expect(hasRearwardMove).toBe(true);
+
+      // A retreat is a backward move (§9.1.1): it steps away from its
+      // facing, to F-5 and G-5, still facing the enemy.
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'F-5', facing: 'north' },
+          speedUsed: 1,
+        }),
+      );
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'G-5', facing: 'north' },
+          speedUsed: 2,
+        }),
+      );
     });
 
     it('after the first step back a retreat wheels 45° a spend, and never turns about', () => {
@@ -386,57 +298,31 @@ describe('exploreUnitMoves function', () => {
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
       // One spend after the step does not reverse it to face south.
-      const aboutAfterStepAtOne = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'south',
-        flexibilityUsed: 1,
-      });
-      expect(aboutAfterStepAtOne).toBe(false);
+      expect([...moves]).not.toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'F-5', facing: 'south' },
+        }),
+      );
       // One spend wheels it no further than 45°: not yet east.
-      const wheelAfterStepAtOne = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'east',
-        flexibilityUsed: 1,
-      });
-      expect(wheelAfterStepAtOne).toBe(false);
+      expect([...moves]).not.toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'F-5', facing: 'east' },
+        }),
+      );
       // Two spends wheel it 90°, to face east.
-      const wheelAfterStepAtTwo = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'east',
-        flexibilityUsed: 2,
-        speedUsed: 1,
-      });
-      expect(wheelAfterStepAtTwo).toBe(true);
-    });
-
-    it('given speed > 1, includes multiple rearward moves', () => {
-      expect.hasAssertions();
-      const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
-      ]);
-      const unit = getSingleUnitWithPlacementAtCoordinate(
-        gameState.boardState,
-        'E-5',
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 2,
+          placement: { coordinate: 'F-5', facing: 'east' },
+          speedUsed: 1,
+        }),
       );
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      const hasOneMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 1,
-      });
-      const hasTwoMoves = exploreResultHasMatch(moves, {
-        coordinate: 'G-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 2,
-      });
-      expect(hasOneMove).toBe(true);
-      expect(hasTwoMoves).toBe(true);
     });
 
-    it('given the unit has speed and flexibility, includes turning moves', () => {
-      expect.hasAssertions();
+    it('turns 45° before falling back, then steps away from its new facing', () => {
+      // A black unit on E-5 facing north, Speed 2 and Flexibility 2.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -451,27 +337,28 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      // Turn to adjacent facing then move rearward
-      // When facing north, adjacent facings are northEast and northWest
-      // Rearward from northEast would be southEast, rearward from northWest would be southWest
-      const hasTurnLeftThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-6',
-        facing: 'northWest',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      const hasTurnRightThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-4',
-        facing: 'northEast',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(hasTurnLeftThenMove).toBe(true);
-      expect(hasTurnRightThenMove).toBe(true);
+
+      // Before its first step a retreat may turn 45° (§9.1.4). Facing
+      // north-west it falls back south-east, to F-6; facing north-east it
+      // falls back south-west, to F-4.
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'F-6', facing: 'northWest' },
+          speedUsed: 1,
+        }),
+      );
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'F-4', facing: 'northEast' },
+          speedUsed: 1,
+        }),
+      );
     });
 
-    it('given only allow moves to spaces behind starting position', () => {
-      expect.hasAssertions();
+    it('may turn 45° after stepping back', () => {
+      // A black unit on E-5 facing north, Speed 2 and Flexibility 2.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -486,30 +373,28 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      // Should not be able to move forward (north) during retreat
-      const hasForwardMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
-        speedUsed: 1,
-      });
-      expect(hasForwardMove).toBe(false);
-      // Should not be able to move parallel (east) during retreat
-      const hasRightMove = exploreResultHasMatch(moves, { coordinate: 'E-6' });
-      expect(hasRightMove).toBe(false);
-      // Should not be able to move parallel (west) during retreat
-      const hasLeftMove = exploreResultHasMatch(moves, { coordinate: 'E-4' });
-      expect(hasLeftMove).toBe(false);
+
+      // A step back to F-5, then a turn to face north-east there (§9.1.4).
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'F-5', facing: 'northEast' },
+          speedUsed: 1,
+        }),
+      );
     });
 
-    it('given include move then turn sequences for retreat', () => {
-      expect.hasAssertions();
+    it('stays behind the rank it started on, even where its steps could swing back to it', () => {
+      // A nimble black unit on E-5 facing north, Speed 3 and Flexibility 5.
+      // Turned 45° and stepped back to F-4, it has the turns to face south
+      // and the Speed to step "back" north again, onto E-4 beside its start.
       const gameState = createGameState([
         {
           coord: 'E-5',
           facing: 'north',
-          flexibility: 2,
+          flexibility: 5,
           player: 'black',
-          speed: 2,
+          speed: 3,
         },
       ]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
@@ -517,50 +402,15 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      // Move rearward then turn to adjacent facing
-      const hasMoveThenTurn = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'northEast',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(hasMoveThenTurn).toBe(true);
+
+      // A retreat stays in the region behind its starting position, both
+      // where it passes and where it ends (§9.1.2): nothing on rank E.
+      expect(hasMove(moves, 'E-4')).toBe(false);
+      expect(hasMove(moves, 'E-6')).toBe(false);
     });
 
-    it('given include turn then move sequences for retreat', () => {
-      expect.hasAssertions();
-      const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'north',
-          flexibility: 2,
-          player: 'black',
-          speed: 2,
-        },
-      ]);
-      const unit = getSingleUnitWithPlacementAtCoordinate(
-        gameState.boardState,
-        'E-5',
-      );
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      const hasTurnRightThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-4',
-        facing: 'northEast',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      const hasTurnLeftThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-6',
-        facing: 'northWest',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(hasTurnRightThenMove).toBe(true);
-      expect(hasTurnLeftThenMove).toBe(true);
-    });
-
-    it('given not turn in the initial position if no flexibility', () => {
-      expect.hasAssertions();
+    it('a unit with no Flexibility falls straight back without turning', () => {
+      // A black unit on E-5 facing north with no turn in it.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', flexibility: 0, player: 'black' },
       ]);
@@ -569,25 +419,19 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      const hasRightTurnAndMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-4',
-        facing: 'northEast',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      const hasLeftTurnAndMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-6',
-        facing: 'northWest',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(hasRightTurnAndMove).toBe(false);
-      expect(hasLeftTurnAndMove).toBe(false);
+
+      // Flexibility 0 cannot turn at all (§5.2.3): every ending still faces
+      // north, and none spent a turn.
+      const facings = new Set([...moves].map((move) => move.placement.facing));
+      expect(facings).toStrictEqual(new Set(['north']));
+      expect([...moves].every((move) => move.flexibilityUsed === 0)).toBe(true);
     });
   });
+
   describe('obstacle handling', () => {
-    it('given not move straight through an enemy unit', () => {
-      expect.hasAssertions();
+    it('cannot step through an enemy', () => {
+      // A black unit on E-5 facing north, Speed 2, with a white unit on
+      // D-5 straight ahead.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
@@ -597,17 +441,21 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasMove = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'north',
-        flexibilityUsed: 0,
-        speedUsed: 2,
-      });
-      expect(hasMove).toBe(false);
+
+      // An enemy's space is never passed through (§5.4.3): C-5, two steps
+      // straight on, is out of reach.
+      expect([...moves]).not.toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'C-5', facing: 'north' },
+          speedUsed: 2,
+        }),
+      );
     });
 
     it('navigating around an enemy costs the wheel back onto the line', () => {
-      expect.hasAssertions();
+      // A black unit on E-5 facing north, Speed 2 and Flexibility 3, with a
+      // white unit on D-5 straight ahead.
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -625,26 +473,27 @@ describe('exploreUnitMoves function', () => {
       const moves = exploreUnitMoves(gameState, unit, 'advance');
       // Swerving round the blocker is 45° out, then a 90° wheel back in:
       // one turn plus two (§5.2.1), three Flexibility in all.
-      const hasLeftThenRightMove = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'northEast',
-        flexibilityUsed: 3,
-        speedUsed: 2,
-      });
-      const hasRightThenLeftMove = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'northWest',
-        flexibilityUsed: 3,
-        speedUsed: 2,
-      });
-      expect(hasLeftThenRightMove).toBe(true);
-      expect(hasRightThenLeftMove).toBe(true);
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 3,
+          placement: { coordinate: 'C-5', facing: 'northEast' },
+          speedUsed: 2,
+        }),
+      );
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 3,
+          placement: { coordinate: 'C-5', facing: 'northWest' },
+          speedUsed: 2,
+        }),
+      );
       // The old two-spend zigzag relied on a free 90° turn, which no unit has.
-      const hasCheapZigzag = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        flexibilityUsed: 2,
-      });
-      expect(hasCheapZigzag).toBe(false);
+      expect([...moves]).not.toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 2,
+          placement: expect.objectContaining({ coordinate: 'C-5' }),
+        }),
+      );
     });
 
     it('a front approach off the corner squares up as it closes', () => {
@@ -668,19 +517,15 @@ describe('exploreUnitMoves function', () => {
         'E-4',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const squaredEngage = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
-        flexibilityUsed: 1,
-        speedUsed: 1,
-      });
-      expect(squaredEngage).toBe(true);
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 1,
+          placement: { coordinate: 'D-5', facing: 'north' },
+          speedUsed: 1,
+        }),
+      );
       // The unsquared 135° ending must never be offered.
-      const obliqueEngage = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'northEast',
-      });
-      expect(obliqueEngage).toBe(false);
+      expect(hasMove(moves, 'D-5', 'northEast')).toBe(false);
     });
 
     it('without Flexibility the cornered front approach cannot close', () => {
@@ -704,11 +549,12 @@ describe('exploreUnitMoves function', () => {
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
 
-      expect(exploreResultHasMatch(moves, { coordinate: 'D-5' })).toBe(false);
+      expect(hasMove(moves, 'D-5')).toBe(false);
     });
 
-    it('can engage an enemy unit', () => {
-      expect.hasAssertions();
+    it('steps straight into an enemy facing it, already squared up', () => {
+      // A black unit on E-5 facing north, and a white unit on D-5 facing
+      // south: the two look at each other.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'south', player: 'white', speed: 2 },
@@ -718,13 +564,15 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
+
+      // From the centre front space the step already faces head on, so the
+      // front engagement costs one step and no turn (§6.2.3).
+      expect([...moves]).toContainEqual({
         flexibilityUsed: 0,
+        path: ['step'],
+        placement: { coordinate: 'D-5', facing: 'north' },
         speedUsed: 1,
       });
-      expect(hasMove).toBe(true);
     });
 
     it('a diagonal step can end on an enemy in its flanking space', () => {
@@ -741,13 +589,13 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasDiagonalEngage = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
-        facing: 'northEast',
-        flexibilityUsed: 0,
-        speedUsed: 1,
-      });
-      expect(hasDiagonalEngage).toBe(true);
+      expect([...moves]).toContainEqual(
+        expect.objectContaining({
+          flexibilityUsed: 0,
+          placement: { coordinate: 'D-6', facing: 'northEast' },
+          speedUsed: 1,
+        }),
+      );
     });
 
     it('two enemies on the corners still shut a diagonal engagement', () => {
@@ -765,11 +613,13 @@ describe('exploreUnitMoves function', () => {
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
 
-      expect(exploreResultHasMatch(moves, { coordinate: 'D-6' })).toBe(false);
+      expect(hasMove(moves, 'D-6')).toBe(false);
     });
 
-    it('given not pass through diagonal enemy line', () => {
-      expect.hasAssertions();
+    it('cannot slip through a diagonal line of enemies', () => {
+      // A black unit on E-5 facing north-east, into a white line running
+      // corner to corner from B-3 to F-7. D-5 and E-6 are both in it, so
+      // the diagonal step to empty D-6 passes between two enemies.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
         { coord: 'B-3', facing: 'southWest', player: 'white', speed: 2 },
@@ -783,16 +633,24 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasMoveThroughEnemyLine = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
-      });
-      expect(hasMoveThroughEnemyLine).toBe(false);
+
+      // A blocked diagonal cannot be stepped across (§2.4.4, §5.4.5).
+      expect(hasMove(moves, 'D-6')).toBe(false);
     });
 
-    it('cannot encircle in one turn', () => {
-      expect.hasAssertions();
+    it('cannot loop round an enemy and take it from behind in one move', () => {
+      // A nimble black unit on E-5 facing north, Speed 3 and Flexibility 5,
+      // and a white unit on D-4 facing south: E-5 is one of its front
+      // spaces. Two steps to C-5 put the mover in the defender's back
+      // spaces, and three turns face it south-west, onto D-4.
       const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black', speed: 3 },
+        {
+          coord: 'E-5',
+          facing: 'north',
+          flexibility: 5,
+          player: 'black',
+          speed: 3,
+        },
         { coord: 'D-4', facing: 'south', player: 'white', speed: 2 },
       ]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
@@ -800,15 +658,17 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const hasMoveThroughEnemyLine = exploreResultHasMatch(moves, {
-        coordinate: 'D-4',
-        facing: 'south',
-      });
-      expect(hasMoveThroughEnemyLine).toBe(false);
+
+      // A rear engagement needs the mover to have begun the move behind the
+      // defender (§6.2.2), and this one began in front of it.
+      expect(hasMove(moves, 'D-4', 'southWest')).toBe(false);
+      // From the front it may still close, squared up head on (§6.2.3).
+      expect(hasMove(moves, 'D-4', 'north')).toBe(true);
     });
 
     it('cannot retreat into an enemy unit', () => {
-      expect.hasAssertions();
+      // A black unit on E-5 facing north, Speed 2, with a white unit on
+      // F-5 at its back.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'F-5', facing: 'south', player: 'white', speed: 2 },
@@ -818,43 +678,35 @@ describe('exploreUnitMoves function', () => {
         'E-5',
       );
       const moves = exploreUnitMoves(gameState, unit, 'retreat');
-      const hasMoveIntoEnemyUnit = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-      });
-      expect(hasMoveIntoEnemyUnit).toBe(false);
+
+      // A retreat never enters an enemy's space and never engages (§9.1.7).
+      expect(hasMove(moves, 'F-5')).toBe(false);
     });
   });
-  describe('edge cases', () => {
-    it('given the direction is invalid, throws', () => {
-      expect.hasAssertions();
-      const gameState = createGameState([
-        { coord: 'E-5', facing: 'north', player: 'black' },
-      ]);
-      const unit = getSingleUnitWithPlacementAtCoordinate(
-        gameState.boardState,
-        'E-5',
-      );
-      // Bad type assertion to trigger the error
-      const direction = 'invalid' as 'advance' | 'retreat';
-      expect(() => exploreUnitMoves(gameState, unit, direction)).toThrow(
-        'Invalid direction',
-      );
-    });
 
-    it('given not explore off the map or throw for the edge', () => {
-      expect.hasAssertions();
+  describe('edge cases', () => {
+    it('a unit facing the board edge with no turn in it can only stand', () => {
+      // A black unit on A-5, the northern edge, facing north off the board,
+      // with no Flexibility to turn away.
       const gameState = createGameState([
-        { coord: 'A-5', facing: 'north', player: 'black', speed: 2 },
+        { coord: 'A-5', facing: 'north', flexibility: 0, player: 'black' },
       ]);
       const unit = getSingleUnitWithPlacementAtCoordinate(
         gameState.boardState,
         'A-5',
       );
+
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const undefinedResults = [...moves].filter(
-        (m) => m.placement.coordinate === undefined,
-      );
-      expect(undefinedResults).toHaveLength(0);
+
+      // No step off the board, and no turn: standing is the only ending.
+      expect([...moves]).toStrictEqual([
+        {
+          flexibilityUsed: 0,
+          path: [],
+          placement: { coordinate: 'A-5', facing: 'north' },
+          speedUsed: 0,
+        },
+      ]);
     });
   });
 });

@@ -1,49 +1,50 @@
-import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
-import { createBoardWithCommander, replaceBoard } from '@testing';
+import { createEmptyGameState } from '@factories';
+import { deployCommander } from '@transforms';
 
 import { getLegalCommanderMoves } from './getLegalCommanderMoves';
 
-import { createEmptyGameState } from '@factories';
 /**
  * GetLegalCommanderMoves: legal commander destination coordinates within the move square.
+ *
+ * Where a side's commander may go in Phase 2, asked from the space it stands
+ * on. The walk itself is `exploreCommanderMoves`'s; this sets its distance and
+ * insists the commander is where the caller says.
  */
 describe('getLegalCommanderMoves function', () => {
-  it('given context, returns all moves on an empty board', () => {
-    const playerSide = 'white';
-    const startingCoordinate = 'E-5';
-    let gameState = createEmptyGameState('standard');
-    gameState = replaceBoard(
-      gameState,
-      createBoardWithCommander(playerSide, startingCoordinate),
+  it('lets a commander go up to four spaces', () => {
+    // White's commander stands alone at E-5, well clear of every edge.
+    const gameState = deployCommander(
+      createEmptyGameState('standard'),
+      'white',
+      'E-5',
     );
-    const legalMoves = getLegalCommanderMoves(
-      playerSide,
-      gameState,
-      startingCoordinate,
-    );
-    const squareLength = COMMANDER_MOVE_DISTANCE * 2 + 1;
-    expect(legalMoves.size).toStrictEqual(squareLength * squareLength);
+
+    const legalMoves = getLegalCommanderMoves('white', gameState, 'E-5');
+
+    // Four steps, diagonals counting as one (§4.2.2), reach a square nine
+    // spaces on a side: 81, its own space among them.
+    expect(legalMoves.size).toBe(81);
   });
 
-  it('given if no commander is at the starting position, throws', () => {
-    const playerSide = 'white';
-    const startingCoordinate = 'E-5';
+  it('throws when no commander stands where the move is asked from', () => {
+    // Nobody has placed a commander yet.
     const gameState = createEmptyGameState('standard');
-    expect(() =>
-      getLegalCommanderMoves(playerSide, gameState, startingCoordinate),
-    ).toThrow('Starting position does not contain specified commander');
+
+    expect(() => getLegalCommanderMoves('white', gameState, 'E-5')).toThrow(
+      'Starting position does not contain specified commander',
+    );
   });
 
-  it('given if the wrong commander is at the starting position, throws', () => {
-    const playerSide = 'white';
-    const startingCoordinate = 'E-5';
-    let gameState = createEmptyGameState('standard');
-    gameState = replaceBoard(
-      gameState,
-      createBoardWithCommander('black', startingCoordinate),
+  it("throws when only the other side's commander stands there", () => {
+    // Black's commander is at E-5; White's move is asked from there.
+    const gameState = deployCommander(
+      createEmptyGameState('standard'),
+      'black',
+      'E-5',
     );
-    expect(() =>
-      getLegalCommanderMoves(playerSide, gameState, startingCoordinate),
-    ).toThrow('Starting position does not contain specified commander');
+
+    expect(() => getLegalCommanderMoves('white', gameState, 'E-5')).toThrow(
+      'Starting position does not contain specified commander',
+    );
   });
 });

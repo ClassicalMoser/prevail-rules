@@ -1,12 +1,4 @@
-import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import {
-  createGameState,
-  createTestUnit,
-  placed,
-  replaceBoard,
-} from '@testing';
-import { addUnitToBoard } from '@transforms';
-import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
+import { createGameState } from '@testing';
 
 import { checkDiagonalMove } from './checkDiagonalMove';
 
@@ -23,11 +15,21 @@ describe('checkDiagonalMove function', () => {
         checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6'),
       ).toThrow('The step is not diagonal');
     });
+
+    it('two spaces that are not neighbours are not a step, so asking is a fault', () => {
+      // E-5 and C-7 lie on one diagonal, but two spaces apart.
+      const gameState = createGameState([
+        { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
+      ]);
+      expect(() =>
+        checkDiagonalMove('black', 0, gameState, 'E-5', 'C-7'),
+      ).toThrow('The two spaces are not neighbours');
+    });
   });
   // Every diagonal case steps northEast from E-5 to D-6; the corner spaces
   // flanking that step are D-5 and E-6.
   describe('diagonal facings with no enemy units', () => {
-    it('given both adjacent spaces are empty, returns true', () => {
+    it('a diagonal with both corners open may be stepped across', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
       ]);
@@ -35,7 +37,8 @@ describe('checkDiagonalMove function', () => {
     });
   });
   describe('diagonal facings with enemy units', () => {
-    it('given only one adjacent space is occupied by an enemy, returns true', () => {
+    it('one enemy at a corner does not block the diagonal', () => {
+      // §2.4.4: it takes enemies in both corners to block it.
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
@@ -43,7 +46,7 @@ describe('checkDiagonalMove function', () => {
       expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(true);
     });
 
-    it('given both adjacent spaces are occupied by enemy units, returns false', () => {
+    it('enemies at both corners block the diagonal', () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
@@ -55,187 +58,44 @@ describe('checkDiagonalMove function', () => {
     });
   });
   describe('diagonal facings with engaged units', () => {
-    it('given only one adjacent space is occupied by engaged units, returns true', () => {
-      // Create game state with engaged units at D-5, and unit under test at E-5
-      let board = createEmptyStandardBoard();
-
-      // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black', { speed: 2 }), 'D-5', 'north'),
-      );
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('white', { speed: 2 }), 'D-5', 'south'),
-      );
-
-      // Add unit under test at E-5
-      board = addUnitToBoard(
-        board,
-        placed(
-          createTestUnit('black', { instanceNumber: 3, speed: 2 }),
-          'E-5',
-          'northEast',
-        ),
-      );
-
-      let gameState = createEmptyGameState('standard');
-      gameState = replaceBoard(gameState, board);
-      expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(true);
-    });
-
-    it('given both adjacent spaces are occupied by engaged units, returns false', () => {
-      // Create game state with engaged units at D-5 and E-6, and unit under test at E-5
-      let board = createEmptyStandardBoard();
-
-      // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('black', { speed: 2 }), 'D-5', 'north'),
-      );
-      board = addUnitToBoard(
-        board,
-        placed(createTestUnit('white', { speed: 2 }), 'D-5', 'south'),
-      );
-
-      // Add engaged units at E-6
-      board = addUnitToBoard(
-        board,
-        placed(
-          createTestUnit('black', { instanceNumber: 2, speed: 2 }),
-          'E-6',
-          'north',
-        ),
-      );
-      board = addUnitToBoard(
-        board,
-        placed(
-          createTestUnit('white', { instanceNumber: 2, speed: 2 }),
-          'E-6',
-          'south',
-        ),
-      );
-
-      // Add unit under test at E-5
-      board = addUnitToBoard(
-        board,
-        placed(
-          createTestUnit('black', { instanceNumber: 3, speed: 2 }),
-          'E-5',
-          'northEast',
-        ),
-      );
-
-      let gameState = createEmptyGameState('standard');
-      gameState = replaceBoard(gameState, board);
+    it('engaged spaces at both corners shut the diagonal', () => {
+      // An engaged space cannot be passed through (§5.4.4), so neither
+      // corner lets the mover slip past.
+      const gameState = createGameState([
+        { coord: 'E-5', facing: 'northEast', player: 'black', speed: 2 },
+        ['D-5', 'black', 'north'],
+        ['D-5', 'white', 'south'],
+        ['E-6', 'black', 'north'],
+        ['E-6', 'white', 'south'],
+      ]);
       expect(checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6')).toBe(
         false,
       );
     });
   });
   describe('diagonal facings with friendly units', () => {
-    it('given one adjacent space has low flexibility friendly unit, returns true', () => {
-      const lowFlexibility = Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
+    // The mover has Flexibility 2. A friend of Flexibility 2 is too stiff
+    // to pass (2 + 2 is under 6); one of Flexibility 4 is not (§5.4.2).
+    it('friends too stiff to pass at both corners shut the diagonal for the mover', () => {
+      // §5.4.5: a wall of stiff friends closes a diagonal to a mover, though
+      // not to support or commanders.
       const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'northEast',
-          flexibility: lowFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'E-6',
-          facing: 'north',
-          flexibility: lowFlexibility,
-          player: 'black',
-        },
+        { coord: 'E-5', facing: 'northEast', flexibility: 2, player: 'black' },
+        { coord: 'D-5', facing: 'north', flexibility: 2, player: 'black' },
+        { coord: 'E-6', facing: 'north', flexibility: 2, player: 'black' },
       ]);
-      expect(
-        checkDiagonalMove('black', lowFlexibility, gameState, 'E-5', 'D-6'),
-      ).toBe(true);
+      expect(checkDiagonalMove('black', 2, gameState, 'E-5', 'D-6')).toBe(
+        false,
+      );
     });
 
-    it('given both adjacent spaces have low flexibility friendly units, returns false', () => {
-      const lowFlexibility = Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
+    it('one friend loose enough to pass opens the diagonal beside a stiff one', () => {
       const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'northEast',
-          flexibility: lowFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'D-5',
-          facing: 'north',
-          flexibility: lowFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'E-6',
-          facing: 'north',
-          flexibility: lowFlexibility,
-          player: 'black',
-        },
+        { coord: 'E-5', facing: 'northEast', flexibility: 2, player: 'black' },
+        { coord: 'D-5', facing: 'north', flexibility: 2, player: 'black' },
+        { coord: 'E-6', facing: 'north', flexibility: 4, player: 'black' },
       ]);
-      expect(
-        checkDiagonalMove('black', lowFlexibility, gameState, 'E-5', 'D-6'),
-      ).toBe(false);
-    });
-
-    it('given both adjacent spaces have high flexibility friendly units, returns true', () => {
-      const highFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
-      const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'northEast',
-          flexibility: highFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'D-5',
-          facing: 'north',
-          flexibility: highFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'E-6',
-          facing: 'north',
-          flexibility: highFlexibility,
-          player: 'black',
-        },
-      ]);
-      expect(
-        checkDiagonalMove('black', highFlexibility, gameState, 'E-5', 'D-6'),
-      ).toBe(true);
-    });
-
-    it('given one adjacent space has low flexibility friendly unit and the other has high flexibility friendly unit, returns true', () => {
-      const lowFlexibility = Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
-      const highFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
-      const middleFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2);
-      const gameState = createGameState([
-        {
-          coord: 'E-5',
-          facing: 'northEast',
-          flexibility: middleFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'D-5',
-          facing: 'north',
-          flexibility: lowFlexibility,
-          player: 'black',
-        },
-        {
-          coord: 'E-6',
-          facing: 'north',
-          flexibility: highFlexibility,
-          player: 'black',
-        },
-      ]);
-      expect(
-        checkDiagonalMove('black', middleFlexibility, gameState, 'E-5', 'D-6'),
-      ).toBe(true);
+      expect(checkDiagonalMove('black', 2, gameState, 'E-5', 'D-6')).toBe(true);
     });
   });
 });

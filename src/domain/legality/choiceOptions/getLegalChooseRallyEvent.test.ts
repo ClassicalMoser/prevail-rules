@@ -1,14 +1,18 @@
-import { tempCommandCards } from '@sampleValues';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
-import { PLAY_CARDS_PHASE } from '@game';
-import { createCleanupPhaseState, updateCardState } from '@testing';
-
-import { updatePhaseState, updateCurrentInitiative } from '@transforms';
+import { createEmptyGameState, createOwnedCardState } from '@factories';
+import {
+  createCleanupPhaseState,
+  createPlayCardsPhaseState,
+  createTestCard,
+} from '@testing';
+import {
+  updatePhaseState,
+  updatePlayerCardState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
-
-import { createEmptyGameState } from '@factories';
 
 const chooseRallyBase = {
   choiceType: 'chooseRally' as const,
@@ -31,23 +35,32 @@ describe('getLegalChooseRallyEvent function', () => {
     );
     // By cleanup the round's own card is in each played pile (§4.5.1), so a
     // rally always has a card to burn unless a case empties the pile.
-    const played = options.emptyPlayedPile ? [] : [tempCommandCards[2]];
-    const base = updateCardState(initiated, {
-      ...initiated.cardState,
-      black: { ...initiated.cardState.black, played },
-      white: { ...initiated.cardState.white, played },
-    });
+    // Each player's is a card of their own; which card does not matter.
+    const blackPlayed = options.emptyPlayedPile ? [] : [createTestCard()];
+    const whitePlayed = options.emptyPlayedPile ? [] : [createTestCard()];
+    const withBlack = updatePlayerCardState(
+      initiated,
+      'black',
+      createOwnedCardState({ played: blackPlayed }),
+    );
+    const base = updatePlayerCardState(
+      withBlack,
+      'white',
+      createOwnedCardState({ played: whitePlayed }),
+    );
     const phase = createCleanupPhaseState({ step: options.step });
     const state = updatePhaseState(base, phase);
     return state;
   }
 
   it('firstPlayerChooseRally: returns true/false for initiative player', () => {
+    // White holds the initiative, so white chooses first.
     const state = stateChooseRally({
       initiative: 'white',
       step: 'firstPlayerChooseRally',
     });
 
+    // White may rally or decline.
     expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
@@ -63,11 +76,13 @@ describe('getLegalChooseRallyEvent function', () => {
   });
 
   it('secondPlayerChooseRally: returns true/false for the other player', () => {
+    // Black holds the initiative and has chosen; white chooses second.
     const state = stateChooseRally({
       initiative: 'black',
       step: 'secondPlayerChooseRally',
     });
 
+    // White may rally or decline.
     expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
@@ -101,6 +116,7 @@ describe('getLegalChooseRallyEvent function', () => {
   });
 
   it('throws when cleanup step is not a choose-rally step', () => {
+    // Cards are still leaving play; nobody has been asked to rally yet.
     const state = updatePhaseState(
       createEmptyGameState('standard'),
       createCleanupPhaseState({ step: 'cardsLeavePlay' }),
@@ -112,10 +128,11 @@ describe('getLegalChooseRallyEvent function', () => {
   });
 
   it('throws when not in cleanup phase', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    // The players are still choosing their cards.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
 
     expect(() => getLegalChooseRallyEvent(state)).toThrow(
       'Expected cleanup phase, got playCards',

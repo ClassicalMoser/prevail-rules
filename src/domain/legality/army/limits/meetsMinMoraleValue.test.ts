@@ -13,6 +13,10 @@ describe('meetsMinMoraleValue function', () => {
   });
 
   it('allows any Morale where the mode sets no floor', () => {
+    // No list carries less than 0 Morale, and JavaScript reads `0 >= null` as
+    // true, so no case can tell the `null` test from the comparison: dropping
+    // it is an equivalent mutant. The test is kept so the reading does not
+    // lean on that coercion.
     expect(meetsMinMoraleValue(0, null)).toBe(true);
   });
 });

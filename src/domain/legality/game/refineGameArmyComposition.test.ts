@@ -78,4 +78,22 @@ describe('refineGameArmyComposition function', () => {
       },
     ]);
   });
+
+  it("reports a limit of the mode each side breaks under that side's army", () => {
+    // Legal in Tutorial, but a Mini list needs 10 Morale and two cards at
+    // each initiative; this one carries 2 Morale and no cards (§3.1.3).
+    const result = gameArmies.safeParse({
+      blackArmy: legalArmy,
+      gameMode: 'mini',
+      whiteArmy: legalArmy,
+    });
+
+    // White's two limits under White's army, then Black's under Black's.
+    expect(result.error?.issues).toMatchObject([
+      { path: ['whiteArmy', 'units'] },
+      { path: ['whiteArmy', 'commandCards'] },
+      { path: ['blackArmy', 'units'] },
+      { path: ['blackArmy', 'commandCards'] },
+    ]);
+  });
 });
