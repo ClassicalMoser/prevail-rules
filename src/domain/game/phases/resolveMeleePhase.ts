@@ -8,8 +8,11 @@ import { z } from 'zod';
 
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = [
-  'resolveMelee', // Loop: expect resolve-melee events for remaining engagements
-  'complete', // Expect one gameEffect: advance to cleanup phase
+  // Every engaged space fights, one at a time, in the order the first player
+  // chooses, each resolved completely before the next (§4.4.1, §4.4.2).
+  'resolveMelee',
+  // The phase ends, and cleanup follows.
+  'complete',
 ] as const;
 
 /** The type of a step in the resolve melee phase. */

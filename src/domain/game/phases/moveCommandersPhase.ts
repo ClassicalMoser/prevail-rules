@@ -4,9 +4,13 @@ import { z } from 'zod';
 
 /** Iterable list of valid steps in the move commanders phase. */
 export const moveCommandersPhaseSteps = [
-  'moveFirstCommander', // Expect one player choice: initiative player's move commander
-  'moveSecondCommander', // Expect one player choice: non-initiative player's move commander
-  'complete', // Expect one gameEffect: advance to issue commands phase
+  // The first player moves their commander, or leaves it where it is
+  // (§4.2.1, §4.2.6).
+  'moveFirstCommander',
+  // Then the second player moves theirs.
+  'moveSecondCommander',
+  // The phase ends, and commands are issued next.
+  'complete',
 ] as const;
 
 /** The type of a step in the move commanders phase. */

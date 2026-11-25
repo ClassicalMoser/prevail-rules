@@ -4,9 +4,14 @@ import { z } from 'zod';
 
 /** Iterable list of valid steps in the play cards phase. */
 export const playCardsPhaseSteps = [
-  'chooseCards', // Expect two player choices, one choose-card per player, then the reveal
-  'assignInitiative', // Expect one gameEffect: assign initiative
-  'complete', // Expect one gameEffect: advance to move commanders phase
+  // Both players choose a card in secret, and the two are revealed together
+  // (§4.1.1, §4.1.2).
+  'chooseCards',
+  // The lower initiative value takes initiative; a tie leaves it where it
+  // was (§4.1.3, §4.1.4).
+  'assignInitiative',
+  // The phase ends, and the commanders move next.
+  'complete',
 ] as const;
 
 /** The type of a step in the play cards phase. */

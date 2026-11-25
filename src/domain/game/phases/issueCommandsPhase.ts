@@ -8,11 +8,18 @@ import { commandResolutionStateSchema } from '../substeps/commandResolution';
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [
-  'firstPlayerIssueCommands', // Expect the initiative player's issueCommands choice
-  'firstPlayerResolveCommands', // Loop: expect resolve events (move or ranged attack) for the initiative player's issued commands
-  'secondPlayerIssueCommands', // Expect the non-initiative player's issueCommands choice
-  'secondPlayerResolveCommands', // Loop: expect resolve events (move or ranged attack) for the non-initiative player's issued commands
-  'complete', // Expect one gameEffect: advance to resolve melee phase
+  // The first player spends their card's command on the units it orders
+  // (§4.3.1).
+  'firstPlayerIssueCommands',
+  // Then carries out every order they gave, one unit at a time: each a move
+  // or a shot, and whatever it sets off.
+  'firstPlayerResolveCommands',
+  // The second player issues theirs.
+  'secondPlayerIssueCommands',
+  // And carries them out the same way.
+  'secondPlayerResolveCommands',
+  // The phase ends, and the melees are fought next.
+  'complete',
 ] as const;
 
 /** The type of a step in the issue commands phase. */
