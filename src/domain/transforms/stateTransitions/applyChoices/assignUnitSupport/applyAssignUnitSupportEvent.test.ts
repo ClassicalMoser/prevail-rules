@@ -1,147 +1,124 @@
-import type { AssignUnitSupportEvent } from '@events';
-import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
-import { CLEANUP_PHASE } from '@game';
-import { getBoardSpace } from '@queries';
-
-import { createTestCard, createTestUnit, placed, replaceBoard } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import type { UnitWithPlacement } from '@entities';
+import { createAssignUnitSupportEvent, createEmptyGameState } from '@factories';
+import { findUnitWithPlacementOnBoard, getCleanupPhaseState } from '@queries';
+import {
+  createBoardWithUnits,
+  createCleanupPhaseState,
+  createRallyResolutionState,
+  createTestCard,
+  createTestUnit,
+  placed,
+  replaceBoard,
+  updateCardState,
+} from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfBypassed, throwIfPending } from '@utils';
 
 import { applyAssignUnitSupportEvent } from './applyAssignUnitSupportEvent';
 
-import { createEmptyGameState } from '@factories';
-import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
+/**
+ * After a rally, the player who rallied gives each of their units on the
+ * board a place in the stacks their hand holds (§10.4.4). Whatever gets no
+ * place routs, all together, and its Morale is owed in one payment (§10.4.6,
+ * §10.4.7).
+ */
+describe('applyAssignUnitSupportEvent function', () => {
+  // Two of white's units: one its card holds, and one with Morale to pay.
+  const covered = createTestUnit('white', { instanceNumber: 1 });
+  const uncovered = createTestUnit('white', { instanceNumber: 2, morale: 2 });
 
-function awaitingSupportState() {
-  const base = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    'white',
-  );
-  const covered = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-  // attack 4 → positive morale (rout discard seeded); attack 2 units have morale 0.
-  const uncovered = createTestUnit('white', { attack: 4, instanceNumber: 1 });
+  // White's one card holds a single place for any unit (§10.4.2).
   const card = createTestCard({
-    unitSupport: {
-      count: 1,
-      supportType: 'unitType',
-      unitTypeId: covered.unitType.id,
-    },
+    unitSupport: { count: 1, supportType: 'generic' },
   });
-  base.cardState.white.inHand = [card];
-  let withBoard = replaceBoard(
-    base,
-    addUnitToBoard(base.boardState, placed(covered, 'E-5', 'south')),
-  );
-  withBoard = replaceBoard(
-    withBoard,
-    addUnitToBoard(withBoard.boardState, placed(uncovered, 'E-6', 'south')),
-  );
-  const state = updatePhaseState(withBoard, {
-    firstPlayerRallyResolutionState: {
-      completed: false,
+
+  /**
+   * White, holding the initiative, has rallied first in cleanup and now
+   * places its units on the board, holding the one card.
+   */
+  function whiteAssigningSupport(units: UnitWithPlacement[]) {
+    const empty = createEmptyGameState('standard');
+    const withHand = updateCardState(empty, {
+      ...empty.cardState,
+      white: { ...empty.cardState.white, inHand: [card] },
+    });
+    const withBoard = replaceBoard(withHand, createBoardWithUnits(units));
+
+    // White's rally is resolved: the burn done and the cards back in hand.
+    const rally = createRallyResolutionState({
       playerRallied: true,
       rallyResolved: true,
-      routState: 'pending',
-      substepType: 'rallyResolution',
-      unitsLostSupport: 'pending',
-    },
-    phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: 'pending',
-    step: 'firstPlayerResolveRally',
-  });
-  return { card, covered, state, uncovered };
-}
+    });
+    const cleanup = createCleanupPhaseState({
+      firstPlayerRallyResolutionState: rally,
+      step: 'firstPlayerResolveRally',
+    });
+    const assigning = updatePhaseState(withBoard, cleanup);
+    return assigning;
+  }
 
-describe('applyAssignUnitSupportEvent function', () => {
-  it('given partial cover, only uncovered units rout and routState is seeded', () => {
-    const { covered, state, uncovered } = awaitingSupportState();
-    const event: AssignUnitSupportEvent = {
-      assignments: [
-        {
-          unitSupport: {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: covered.unitType.id,
-          },
-          unit: covered,
-        },
-      ],
-      choiceType: 'assignUnitSupport',
-      eventType: 'playerChoice',
-      player: 'white',
-    };
+  it('routs the units given no place, and opens their Morale debt', () => {
+    // Two units on the board, and a card with one place.
+    const state = whiteAssigningSupport([
+      placed(covered, 'E-5', 'south'),
+      placed(uncovered, 'E-6', 'south'),
+    ]);
 
-    const next = applyAssignUnitSupportEvent(event, state);
-
-    expect(
-      getBoardSpace(next.boardState, 'E-5').unitPresence.presenceType,
-    ).not.toBe('none');
-    expect(
-      getBoardSpace(next.boardState, 'E-6').unitPresence.presenceType,
-    ).toBe('none');
-    expect(next.routedUnits).toContainEqual(uncovered);
-    expect(next.routedUnits).not.toContainEqual(covered);
-
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
+    // White gives the place to the unit on E-5.
+    const next = applyAssignUnitSupportEvent(
+      createAssignUnitSupportEvent({
+        assignments: [{ unit: covered, unitSupport: card.unitSupport }],
+        player: 'white',
+      }),
+      state,
     );
-    if (phase.phase !== CLEANUP_PHASE) {
-      throw new Error('cleanup');
-    }
-    expect(phase.step).toBe('firstPlayerResolveRally');
+
+    // The unit held together stays; the other leaves the board for good
+    // (§10.4.6).
+    expect(findUnitWithPlacementOnBoard(next, covered)).toStrictEqual(
+      placed(covered, 'E-5', 'south'),
+    );
+    expect(findUnitWithPlacementOnBoard(next, uncovered)).toBeUndefined();
+    expect(next.routedUnits).toStrictEqual([uncovered]);
+
+    // The rally stays open on white's step until the Morale is paid.
+    const cleanup = getCleanupPhaseState(next);
+    expect(cleanup.step).toBe('firstPlayerResolveRally');
     const rally = throwIfPending(
-      phase.firstPlayerRallyResolutionState,
+      cleanup.firstPlayerRallyResolutionState,
       'rally',
     );
-    expect(throwIfPending(rally.unitsLostSupport, 'lost')).toContainEqual(
-      uncovered,
-    );
+    expect(rally.unitsLostSupport).toStrictEqual([uncovered]);
     expect(
       throwIfBypassed(throwIfPending(rally.routState, 'rout'), 'rout')
         .completed,
     ).toBe(false);
   });
 
-  it('given empty board and empty assignments, advances cleanup with no rout', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const state = updatePhaseState(base, {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'firstPlayerResolveRally',
-    });
-    const event: AssignUnitSupportEvent = {
-      assignments: [],
-      choiceType: 'assignUnitSupport',
-      eventType: 'playerChoice',
-      player: 'white',
-    };
+  it('routs nothing when every unit has a place, and cleanup moves on', () => {
+    // One unit on the board, and a card with one place.
+    const state = whiteAssigningSupport([placed(covered, 'E-5', 'south')]);
 
-    const next = applyAssignUnitSupportEvent(event, state);
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
+    // White gives it the place.
+    const next = applyAssignUnitSupportEvent(
+      createAssignUnitSupportEvent({
+        assignments: [{ unit: covered, unitSupport: card.unitSupport }],
+        player: 'white',
+      }),
+      state,
     );
-    if (phase.phase !== CLEANUP_PHASE) {
-      throw new Error('cleanup');
-    }
-    expect(phase.step).toBe('secondPlayerChooseRally');
+
+    // Nothing routed, so there is nothing to pay, and black chooses whether
+    // to rally next (§10.3.6).
+    expect(next.routedUnits).toStrictEqual([]);
+    const cleanup = getCleanupPhaseState(next);
+    expect(cleanup.step).toBe('secondPlayerChooseRally');
     const rally = throwIfPending(
-      phase.firstPlayerRallyResolutionState,
+      cleanup.firstPlayerRallyResolutionState,
       'rally',
     );
     // Every unit kept its support, so the rally costs no rout.
-    expect(throwIfPending(rally.unitsLostSupport, 'lost')).toStrictEqual([]);
+    expect(rally.unitsLostSupport).toStrictEqual([]);
     expect(rally.routState).toBe('bypassed');
   });
 });

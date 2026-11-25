@@ -1,145 +1,83 @@
-import { tempCommandCards } from '@sampleValues';
 import type { ResolveInitiativeEvent } from '@events';
-import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
-
-import { updateCardState } from '@testing';
-
+import type { AuthoritativeGameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { getPlayCardsPhaseState } from '@queries';
+import {
+  createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
+  createTestCard,
+  updateCardState,
+} from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
-import { throwIfNone } from '@utils';
 
 import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
 
-import { createEmptyGameState } from '@factories';
+/** Both cards turned over and in play, initiative still to be decided. */
+function assigningInitiative(): AuthoritativeGameState {
+  const base = createEmptyGameState('standard');
+
+  // Each side's card is in play, face up (§4.1.2): Black's initiative 1,
+  // White's 3, so Black's is the lower.
+  const withCards = updateCardState(base, {
+    ...base.cardState,
+    black: {
+      ...base.cardState.black,
+      inPlay: createTestCard({ initiative: 1 }),
+    },
+    white: {
+      ...base.cardState.white,
+      inPlay: createTestCard({ initiative: 3 }),
+    },
+  });
+
+  // Phase 1, at the step where the two initiatives are compared.
+  const assigning = updatePhaseState(
+    withCards,
+    createPlayCardsPhaseState({ step: 'assignInitiative' }),
+  );
+  return assigning;
+}
+
 /**
- * `resolveInitiative` writes `currentInitiative` from the event and finishes the playCards
- * phase (`complete`). Wrong step still applies mechanically (trusted event path).
+ * The lower initiative in play takes the initiative, and a tie leaves it where
+ * it was (§4.1.3, §4.1.4). The procedure compares the cards; the apply records
+ * the side it found, and card play is over.
  */
 describe('applyResolveInitiativeEvent function', () => {
-  /** PlayCards.assignInitiative with both inPlay populated from two command cards. */
-  function createGameStateInAssignInitiativeStep(): GameState {
-    const state = createEmptyGameState('standard');
+  it('gives the initiative to the side named, and ends card play', () => {
+    // White held the initiative as the round began; Black's lower card has
+    // taken it.
+    const state = assigningInitiative();
+    const event: ResolveInitiativeEvent = {
+      effectType: 'resolveInitiative',
+      eventType: 'gameEffect',
+      player: 'black',
+    };
 
-    const stateWithCards = updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        awaitingPlay: null,
-        inPlay: tempCommandCards[0],
-      },
-      white: {
-        ...state.cardState.white,
-        awaitingPlay: null,
-        inPlay: tempCommandCards[1],
-      },
-    });
+    const next = applyResolveInitiativeEvent(event, state);
 
-    const stateWithPhase = updatePhaseState(stateWithCards, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'assignInitiative',
-    });
+    // Black is the first player for the rest of the round (§4.1.5).
+    expect(next.currentInitiative).toBe('black');
 
-    return stateWithPhase;
-  }
-
-  describe('initiative and phase completion', () => {
-    it('given event player black, currentInitiative becomes black', () => {
-      const state = createGameStateInAssignInitiativeStep();
-
-      const event: ResolveInitiativeEvent = {
-        effectType: 'resolveInitiative',
-        eventType: 'gameEffect',
-        player: 'black',
-      };
-
-      const newState = applyResolveInitiativeEvent(event, state);
-
-      expect(newState.currentInitiative).toBe('black');
-    });
-
-    it('given event player white, playCards step becomes complete', () => {
-      const state = createGameStateInAssignInitiativeStep();
-
-      const event: ResolveInitiativeEvent = {
-        effectType: 'resolveInitiative',
-        eventType: 'gameEffect',
-        player: 'white',
-      };
-
-      const newState = applyResolveInitiativeEvent(event, state);
-
-      expect(
-        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
-      ).toBe('complete');
-    });
-
-    it('given same base state, black then white events each set initiative without sharing output', () => {
-      const state = createGameStateInAssignInitiativeStep();
-
-      const blackEvent: ResolveInitiativeEvent = {
-        effectType: 'resolveInitiative',
-        eventType: 'gameEffect',
-        player: 'black',
-      };
-
-      const whiteEvent: ResolveInitiativeEvent = {
-        effectType: 'resolveInitiative',
-        eventType: 'gameEffect',
-        player: 'white',
-      };
-
-      const stateWithBlack = applyResolveInitiativeEvent(blackEvent, state);
-      expect(stateWithBlack.currentInitiative).toBe('black');
-
-      const stateWithWhite = applyResolveInitiativeEvent(whiteEvent, state);
-      expect(stateWithWhite.currentInitiative).toBe('white');
-    });
+    // Phase 1 is done; the commanders move next.
+    expect(getPlayCardsPhaseState(next).step).toBe('complete');
   });
 
-  describe('structural update', () => {
-    it('given initiative and step before apply, input root initiative and step unchanged', () => {
-      const state = createGameStateInAssignInitiativeStep();
-      const originalInitiative = state.currentInitiative;
-      const originalStep = throwIfNone(
-        state.currentRoundState.currentPhaseState,
-        'phase',
-      ).step;
+  it('throws when the game is not playing cards', () => {
+    // The commanders are already moving.
+    const moving = updatePhaseState(
+      assigningInitiative(),
+      createMoveCommandersPhaseState(),
+    );
+    const event: ResolveInitiativeEvent = {
+      effectType: 'resolveInitiative',
+      eventType: 'gameEffect',
+      player: 'black',
+    };
 
-      const event: ResolveInitiativeEvent = {
-        effectType: 'resolveInitiative',
-        eventType: 'gameEffect',
-        player: 'black',
-      };
-
-      applyResolveInitiativeEvent(event, state);
-
-      expect(state.currentInitiative).toBe(originalInitiative);
-      expect(
-        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').step,
-      ).toBe(originalStep);
-    });
-  });
-
-  describe('trusted mechanical apply', () => {
-    it('given playCards chooseCards step, still sets initiative black and step complete', () => {
-      const state = createGameStateInAssignInitiativeStep();
-      const stateWithWrongStep = updatePhaseState(state, {
-        phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
-      });
-
-      const event: ResolveInitiativeEvent = {
-        effectType: 'resolveInitiative',
-        eventType: 'gameEffect',
-        player: 'black',
-      };
-
-      const newState = applyResolveInitiativeEvent(event, stateWithWrongStep);
-
-      expect(newState.currentInitiative).toBe('black');
-      expect(
-        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
-      ).toBe('complete');
-    });
+    // Initiative is decided only as the cards are played (§4.1).
+    expect(() => applyResolveInitiativeEvent(event, moving)).toThrow(
+      'Expected playCards phase, got moveCommanders',
+    );
   });
 });

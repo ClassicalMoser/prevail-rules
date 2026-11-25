@@ -1,16 +1,17 @@
-import { getRangedAttackResolutionState } from '@queries';
-import {
-  createIssueCommandsPhaseState,
-  createRangedAttackResolutionState,
-  createTestCard,
-  createUnitWithPlacement,
-  updateCardState,
-} from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { CommandCard } from '@entities';
 import {
   createCommitToRangedDefenseEvent,
   createEmptyGameState,
 } from '@factories';
+import { getRangedAttackResolutionState } from '@queries';
+import {
+  createGameStateResolvingCommand,
+  createRangedAttackResolutionState,
+  createTestCard,
+  createTestUnit,
+  updateCardState,
+} from '@testing';
+import { updateCurrentInitiative } from '@transforms/pureTransforms';
 
 import { applyCommitToRangedDefenseEvent } from './applyCommitToRangedDefenseEvent';
 
@@ -24,30 +25,30 @@ describe('applyCommitToRangedDefenseEvent function', () => {
    * Black's shot at a white unit, aimed, with white's commitment owed; white
    * holds the given hand.
    */
-  function shotAwaitingDefence(whiteHand: ReturnType<typeof createTestCard>[]) {
-    const state = createEmptyGameState('standard');
-    const withHand = updateCardState(state, {
-      ...state.cardState,
-      white: { ...state.cardState.white, inHand: whiteHand },
+  function shotAwaitingDefence(whiteHand: CommandCard[]) {
+    // Black holds the initiative and carries out the Shoot order.
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
+    const withHand = updateCardState(base, {
+      ...base.cardState,
+      white: { ...base.cardState.white, inHand: whiteHand },
     });
     // The target is a white unit; where it stands is not read here.
-    const target = createUnitWithPlacement({ playerSide: 'white' });
     const shot = createRangedAttackResolutionState(withHand, {
       defendingCommitment: { commitmentType: 'pending' },
-      defendingUnit: target.unit,
+      defendingUnit: createTestUnit('white'),
     });
-    const awaiting = updatePhaseState(
-      withHand,
-      createIssueCommandsPhaseState(withHand, {
-        currentCommandResolutionState: shot,
-      }),
-    );
+    const awaiting = createGameStateResolvingCommand(shot, withHand);
     return awaiting;
   }
 
+  // A card committable for Defence (§8.4).
+  const defenceCard = createTestCard({ modifiers: ['defense'] });
+
   it('a Defence card committed by the target is recorded on the shot and leaves its hand', () => {
     // White's only card names Defence.
-    const defenceCard = createTestCard({ modifiers: ['defense'] });
     const state = shotAwaitingDefence([defenceCard]);
 
     // White commits it against the shot.
@@ -69,7 +70,6 @@ describe('applyCommitToRangedDefenseEvent function', () => {
 
   it('a target that refuses keeps its hand, and the shot records the refusal', () => {
     // White holds a Defence card it chooses not to spend.
-    const defenceCard = createTestCard({ modifiers: ['defense'] });
     const state = shotAwaitingDefence([defenceCard]);
 
     // White refuses (§8.3).

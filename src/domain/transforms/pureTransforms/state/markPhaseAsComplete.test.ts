@@ -1,66 +1,42 @@
-import type { CleanupPhaseState, PlayCardsPhaseState } from '@game';
-import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from '@game';
+import {
+  createCleanupPhaseState,
+  createPlayCardsPhaseState,
+  createRallyResolutionState,
+} from '@testing';
 
 import { markPhaseAsComplete } from './markPhaseAsComplete';
 
 /**
- * MarkPhaseAsComplete: Creates a new phase state with the step set to 'complete'.
+ * A phase brought to its end keeps everything it recorded on the way, its
+ * step now `complete`.
  */
 describe('markPhaseAsComplete function', () => {
-  it('given mark play cards phase as complete', () => {
-    const phaseState: PlayCardsPhaseState = {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    };
+  it('ends a phase at its first step, leaving the phase it was given as it was', () => {
+    // Play Cards, both players still choosing (§4.1.1).
+    const playCards = createPlayCardsPhaseState();
 
-    const completedPhase = markPhaseAsComplete(phaseState);
+    const completed = markPhaseAsComplete(playCards);
 
-    expect(completedPhase.step).toBe('complete');
-    expect(completedPhase.phase).toBe(PLAY_CARDS_PHASE);
-    expect(completedPhase).not.toBe(phaseState);
+    // The same phase, at its end; the one given is still choosing.
+    expect(completed).toStrictEqual({ phase: 'playCards', step: 'complete' });
+    expect(playCards.step).toBe('chooseCards');
   });
 
-  it('given mark cleanup phase as complete', () => {
-    const phaseState: CleanupPhaseState = {
-      firstPlayerRallyResolutionState: 'pending',
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'cardsLeavePlay',
-    };
-
-    const completedPhase = markPhaseAsComplete(phaseState);
-
-    expect(completedPhase.step).toBe('complete');
-    expect(completedPhase.phase).toBe(CLEANUP_PHASE);
-    expect(completedPhase.firstPlayerRallyResolutionState).toBe(
-      phaseState.firstPlayerRallyResolutionState,
-    );
-    expect(completedPhase).not.toBe(phaseState);
-  });
-
-  it('given preserve all other phase state properties', () => {
-    const phaseState: CleanupPhaseState = {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
+  it('keeps what the phase recorded on the way to its end', () => {
+    // Cleanup, the first player's rally under way (§4.5.2).
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const cleanup = createCleanupPhaseState({
+      firstPlayerRallyResolutionState: rally,
       step: 'firstPlayerResolveRally',
-    };
+    });
 
-    const completedPhase = markPhaseAsComplete(phaseState);
+    const completed = markPhaseAsComplete(cleanup);
 
-    expect(completedPhase.step).toBe('complete');
-    expect(completedPhase.firstPlayerRallyResolutionState).toBe(
-      phaseState.firstPlayerRallyResolutionState,
-    );
-    expect(completedPhase.secondPlayerRallyResolutionState).toBe(
-      phaseState.secondPlayerRallyResolutionState,
-    );
+    // Still Cleanup, at its end, the first player's rally and the second
+    // player's undecided one as they were.
+    expect(completed.phase).toBe('cleanup');
+    expect(completed.step).toBe('complete');
+    expect(completed.firstPlayerRallyResolutionState).toBe(rally);
+    expect(completed.secondPlayerRallyResolutionState).toBe('pending');
   });
 });

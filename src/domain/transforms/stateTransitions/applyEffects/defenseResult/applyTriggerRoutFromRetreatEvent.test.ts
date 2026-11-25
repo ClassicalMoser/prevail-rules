@@ -1,268 +1,196 @@
+import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
-import type { GameState } from '@game';
+import type { AttackApplyState, GameState } from '@game';
+import { createAttackApplyState } from '@factories';
 import {
+  findPositionOfUnit,
   getRangedAttackApplyState,
-  getMeleeRetreatState,
-  getRangedAttackRetreatState,
+  getRetreatState,
   isOpenSubstep,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
-  createAttackApplyStateWithRetreatAndReverse,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createTestUnit,
-  enemyCuttingOffRetreat,
   legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
  * Illegal retreat: nests a fresh `rout` substep under the existing retreat apply (ranged) or
  * the indicated melee side, preserving retreat metadata until rout resolution runs.
  */
 describe('applyTriggerRoutFromRetreatEvent function', () => {
-  /** IssueCommands + ranged retreat substep only (no rout yet). */
-  function createStateWithRangedAttackRetreat(): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
+  // Any units will do: the apply reads nothing of them but who they are.
+  const white = createTestUnit('white');
+  const black = createTestUnit('black');
 
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
+  // Each side's second unit: one stands right behind an enemy and faces its
+  // back, which cuts its retreat however much ground lies beyond (§9.1.5).
+  const whiteCutter = createTestUnit('white', { instanceNumber: 2 });
+  const blackCutter = createTestUnit('black', { instanceNumber: 2 });
 
-    // Nowhere to go: the nested rout is still due, so it stays pending.
-    const attackApplyState = createAttackApplyStateWithRetreat(
-      unitWithPlacement.unit,
-      // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
-      legalRetreatsOf(unitWithPlacement, [
-        enemyCuttingOffRetreat(unitWithPlacement),
-      ]),
-    );
-    const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
-      attackApplyState,
+  /** The trigger: it carries nothing, since the state names the retreat. */
+  const trigger: TriggerRoutFromRetreatEvent = {
+    effectType: 'triggerRoutFromRetreat',
+    eventType: 'gameEffect',
+  };
+
+  /**
+   * A shot at White's unit on E-5 facing north, from Black's shooter in
+   * front of it on D-5, with Black's second unit on F-5 facing north, right
+   * at its back. `apply` builds the target's results from the retreats it
+   * has, which are none.
+   */
+  function shotAtCutOffWhite(
+    apply: (retreats: ReturnType<typeof legalRetreatsOf>) => AttackApplyState,
+  ): GameState {
+    const shooter = createTestUnit('black', { instanceNumber: 3, range: 1 });
+    const target = placed(white, 'E-5', 'north');
+    const cutter = placed(blackCutter, 'F-5', 'north');
+    const base = createGameStateWithUnits([
+      target,
+      placed(shooter, 'D-5', 'south'),
+      cutter,
+    ]);
+
+    // The rules find no retreat: its line of withdrawal is cut.
+    const retreats = legalRetreatsOf(target, [cutter]);
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: apply(retreats),
+      attackingUnit: shooter,
+      defendingUnit: white,
     });
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: rangedAttackState,
-    });
 
-    return updatePhaseState(stateWithUnit, phaseState);
+    // Phase 3, with that shot being carried out.
+    const resolving = createGameStateResolvingCommand(shot, base);
+    return resolving;
   }
 
-  /** ResolveMelee + one-sided retreat apply for the named player. */
-  function createStateWithMeleeRetreat(
-    retreatingPlayer: 'white' | 'black',
-  ): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(
-      retreatingPlayer === 'white' ? 'black' : 'white',
-      {
-        attack: 2,
-      },
+  /**
+   * A melee on E-5, White's unit facing north and Black's facing it, in
+   * which one side's unit was driven back and cannot go: the other side's
+   * second unit stands right at its back. White holds the initiative, so
+   * its unit's results sit in the first player's slot.
+   */
+  function meleeCuttingOff(retreating: PlayerSide): GameState {
+    const whiteHere = placed(white, 'E-5', 'north');
+    const blackHere = placed(black, 'E-5', 'south');
+    const cutter: UnitWithPlacement =
+      retreating === 'white'
+        ? placed(blackCutter, 'F-5', 'north')
+        : placed(whiteCutter, 'D-5', 'south');
+    const base = createGameStateWithUnits([whiteHere, blackHere, cutter]);
+
+    // The rules find no retreat for the driven unit.
+    const [driven, enemy] =
+      retreating === 'white' ? [whiteHere, blackHere] : [blackHere, whiteHere];
+    const retreats = legalRetreatsOf(driven, [enemy, cutter]);
+    const apply = createAttackApplyStateWithRetreat(driven.unit, retreats);
+    const melee = createMeleeResolutionState(
+      base,
+      retreating === 'white'
+        ? { attackOnFirstPlayerApplyState: apply }
+        : { attackOnSecondPlayerApplyState: apply },
     );
 
-    const retreatingUnitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
-
-    let stateWithUnits = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, retreatingUnitWithPlacement),
-    );
-    stateWithUnits = replaceBoard(
-      stateWithUnits,
-      addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
-    );
-
-    // Nowhere to go: the nested rout is still due, so it stays pending.
-    const attackApplyState = createAttackApplyStateWithRetreat(
-      retreatingUnitWithPlacement.unit,
-      // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
-      legalRetreatsOf(retreatingUnitWithPlacement, [
-        enemyCuttingOffRetreat(retreatingUnitWithPlacement),
-      ]),
-    );
-    const meleeState = createMeleeResolutionState(
-      stateWithUnits,
-      retreatingPlayer === 'white'
-        ? { attackOnSecondPlayerApplyState: attackApplyState }
-        : { attackOnFirstPlayerApplyState: attackApplyState },
-    );
-    const phaseState = createResolveMeleePhaseState(stateWithUnits, {
-      currentMeleeResolutionState: meleeState,
+    // Phase 4, with that melee being fought.
+    const phase = createResolveMeleePhaseState(base, {
+      currentMeleeResolutionState: melee,
     });
-
-    return updatePhaseState(stateWithUnits, phaseState);
+    const fighting = updatePhaseState(base, phase);
+    return fighting;
   }
 
   describe('ranged retreat context', () => {
-    it('given ranged retreat flow, trigger adds rout substep targeting retreating player unit', () => {
-      const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRangedAttackRetreatState(state);
+    it('opens a rout in the retreat it replaces, and the unit leaves the board', () => {
+      const state = shotAtCutOffWhite((retreats) =>
+        createAttackApplyStateWithRetreat(white, retreats),
+      );
 
-      // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent = {
-        effectType: 'triggerRoutFromRetreat',
-        eventType: 'gameEffect',
-      };
+      const newState = applyTriggerRoutFromRetreatEvent(trigger, state);
 
-      const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getRangedAttackRetreatState(newState);
-
-      // triggerRoutFromRetreat opens the nested rout under this retreat.
-      const rout = newRetreatState.routState;
-      expect(isOpenSubstep(rout)).toBe(true);
+      // The rout is nested in White's retreat, which stays open to hold it.
+      const retreat = getRetreatState(newState, 'white');
+      const rout = retreat.routState;
       if (!isOpenSubstep(rout)) {
         throw new Error('expected open rout');
       }
-      expect(rout.substepType).toBe('rout');
-      expect(rout.player).toBe(retreatState.retreatingUnit.playerSide);
-      expect(rout.unitsToRout).toContain(retreatState.retreatingUnit);
-    });
-
-    it('given same trigger, new rout has undefined discard count and not completed', () => {
-      const state = createStateWithRangedAttackRetreat();
-
-      // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent = {
-        effectType: 'triggerRoutFromRetreat',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getRangedAttackRetreatState(newState);
-
-      // triggerRoutFromRetreat opens the nested rout under this retreat.
-      const rout = newRetreatState.routState;
-      expect(isOpenSubstep(rout)).toBe(true);
-      if (!isOpenSubstep(rout)) {
-        throw new Error('expected open rout');
-      }
+      // White owes the Morale of its own unit, not yet counted (§9.3.2).
+      expect(rout.player).toBe('white');
+      expect(rout.unitsToRout).toStrictEqual([white]);
       expect(rout.numberToDiscard).toBe('pending');
       expect(rout.cardsChosen).toBe(false);
       expect(rout.completed).toBe(false);
+      expect(retreat.completed).toBe(false);
+      // The unit leaves when the rout opens, not when the discard is paid.
+      expect(findPositionOfUnit(newState, white)).toBeUndefined();
+      expect(newState.routedUnits).toContainEqual(white);
     });
   });
 
   describe('melee retreat context', () => {
-    it('given black melee retreat, the black retreat in the melee seeds its rout', () => {
-      const state = createStateWithMeleeRetreat('black');
+    it.each(['white', 'black'] as const)(
+      'the %s retreat in the melee opens its own rout',
+      (retreating) => {
+        const newState = applyTriggerRoutFromRetreatEvent(
+          trigger,
+          meleeCuttingOff(retreating),
+        );
 
-      // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent = {
-        effectType: 'triggerRoutFromRetreat',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getMeleeRetreatState(newState, 'black');
-
-      // triggerRoutFromRetreat opens the nested rout under this retreat.
-      const rout = newRetreatState.routState;
-      expect(isOpenSubstep(rout)).toBe(true);
-      if (!isOpenSubstep(rout)) {
-        throw new Error('expected open rout');
-      }
-      expect(rout.player).toBe('black');
-    });
-
-    it('given white melee retreat, the white retreat in the melee seeds its rout', () => {
-      const state = createStateWithMeleeRetreat('white');
-
-      // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent = {
-        effectType: 'triggerRoutFromRetreat',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getMeleeRetreatState(newState, 'white');
-
-      // triggerRoutFromRetreat opens the nested rout under this retreat.
-      const rout = newRetreatState.routState;
-      expect(isOpenSubstep(rout)).toBe(true);
-      if (!isOpenSubstep(rout)) {
-        throw new Error('expected open rout');
-      }
-      expect(rout.player).toBe('white');
-    });
+        // The rout sits in this side's retreat and is this side's to pay.
+        const rout = getRetreatState(newState, retreating).routState;
+        if (!isOpenSubstep(rout)) {
+          throw new Error('expected open rout');
+        }
+        expect(rout.player).toBe(retreating);
+      },
+    );
   });
 
-  describe('rout supersedes reverse', () => {
-    it('bypasses a still-pending reverse on the apply when the retreat routs', () => {
-      const state = updateCurrentInitiative(
-        createEmptyGameState('standard'),
-        'black',
-      );
-      const retreatingUnit = createTestUnit('white', { attack: 2 });
-      const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-      const stateWithUnit = replaceBoard(
-        state,
-        addUnitToBoard(state.boardState, unitWithPlacement),
-      );
-      // Retreat and reverse were both due; nowhere to go opens a rout instead.
-      const attackApplyState = createAttackApplyStateWithRetreatAndReverse(
-        unitWithPlacement.unit,
-        // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
-        legalRetreatsOf(unitWithPlacement, [
-          enemyCuttingOffRetreat(unitWithPlacement),
-        ]),
-      );
-      expect(attackApplyState.reverseState).toBe('pending');
-      const ranged = createRangedAttackResolutionState(stateWithUnit, {
-        attackApplyState,
-      });
-      const full = updatePhaseState(
-        stateWithUnit,
-        createIssueCommandsPhaseState(stateWithUnit, {
-          currentCommandResolutionState: ranged,
+  describe('rout supersedes later results', () => {
+    it('bypasses a reverse and a rout the attack also reached, since the unit has already gone', () => {
+      // The shot reached all three thresholds. The unit cannot retreat, so it
+      // routs at its retreat's turn, and routs only once (§7.5.6).
+      const state = shotAtCutOffWhite((retreats) => ({
+        ...createAttackApplyState(white, {
+          unitRetreated: true,
+          unitReversed: true,
+          unitRouted: true,
         }),
-      );
-      const event: TriggerRoutFromRetreatEvent = {
-        effectType: 'triggerRoutFromRetreat',
-        eventType: 'gameEffect',
-      };
+        retreatState: createRetreatState(white, retreats),
+      }));
 
-      const next = applyTriggerRoutFromRetreatEvent(event, full);
+      const next = applyTriggerRoutFromRetreatEvent(trigger, state);
+
+      // Neither later result is owed any more.
       const apply = getRangedAttackApplyState(next);
       expect(apply.reverseState).toBe('bypassed');
+      expect(apply.routState).toBe('bypassed');
     });
   });
 
   describe('structural update', () => {
-    it('given retreat routState ref before ranged trigger, input retreat unchanged after apply', () => {
-      const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRangedAttackRetreatState(state);
-      const originalRoutState = retreatState.routState;
+    it('leaves the state it was given as it was', () => {
+      const state = shotAtCutOffWhite((retreats) =>
+        createAttackApplyStateWithRetreat(white, retreats),
+      );
+      const retreatBefore = getRetreatState(state, 'white');
 
-      // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent = {
-        effectType: 'triggerRoutFromRetreat',
-        eventType: 'gameEffect',
-      };
+      applyTriggerRoutFromRetreatEvent(trigger, state);
 
-      applyTriggerRoutFromRetreatEvent(event, state);
-
-      expect(retreatState.routState).toBe(originalRoutState);
+      // A transition returns a new state; the old one still has the rout
+      // unopened and the unit on E-5.
+      expect(retreatBefore.routState).toBe('pending');
+      expect(findPositionOfUnit(state, white)?.coordinate).toBe('E-5');
     });
   });
 });

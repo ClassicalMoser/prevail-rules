@@ -1,20 +1,15 @@
-import { throwIfBypassed } from '@utils';
 import type { MoveDelta } from '@entities';
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
-import { createAttackApplyState, createEmptyGameState } from '@factories';
+import { createAttackApplyState } from '@factories';
+import { getRangedAttackApplyState, getRetreatState } from '@queries';
 import {
-  getRangedAttackApplyState,
-  getRetreatStateFromAttackApply,
-} from '@queries';
-import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createRangedAttackResolutionState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyOpenRetreatFromAttackApplyEvent } from './applyOpenRetreatFromAttackApplyEvent';
 
@@ -24,28 +19,35 @@ import { applyOpenRetreatFromAttackApplyEvent } from './applyOpenRetreatFromAtta
  * does not judge them, so each case varies the event to show one branch.
  */
 describe('applyOpenRetreatFromAttackApplyEvent function', () => {
-  function stateWithPendingRetreat(): GameState {
-    const state = createEmptyGameState('standard');
-    // A stand-in defender on the board, the unit the retreat is opened for.
-    const defendingUnit = createTestUnit('white', { attack: 2, speed: 3 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApply = createAttackApplyState(defendingUnit, {
+  /**
+   * A shot that reached its target's Retreat, and the Reverse too, with
+   * neither step opened yet: White's unit on E-5 facing north, Black's
+   * shooter in front of it on D-5 facing it.
+   */
+  function shotDrivingBack(): GameState {
+    // Any unit will do: the apply reads nothing of it but who it is.
+    const target = createTestUnit('white');
+    const shooter = createTestUnit('black', { range: 1 });
+    const base = createGameStateWithUnits([
+      placed(target, 'E-5', 'north'),
+      placed(shooter, 'D-5', 'south'),
+    ]);
+
+    // The shot reached Retreat and Reverse; both steps are due, unopened.
+    const apply = createAttackApplyState(target, {
       unitRetreated: true,
-      unitReversed: false,
+      unitReversed: true,
       unitRouted: false,
     });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: apply,
+      attackingUnit: shooter,
+      defendingUnit: target,
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+
+    // Phase 3, with that shot being carried out.
+    const resolving = createGameStateResolvingCommand(shot, base);
+    return resolving;
   }
 
   /** The open event as its procedure would build it, carrying `retreatPaths`. */
@@ -60,23 +62,15 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     return event;
   }
 
-  /** The retreat the apply now holds. */
-  function openedRetreat(state: GameState) {
-    const retreat = throwIfBypassed(
-      getRetreatStateFromAttackApply(getRangedAttackApplyState(state)),
-      'the attack applies a retreat',
-    );
-    return retreat;
-  }
-
   it('a lone retreat is opened already chosen, with no rout to follow', () => {
     // On an empty board the unit's one retreat is a step straight back.
     const next = applyOpenRetreatFromAttackApplyEvent(
       openWith([['step']]),
-      stateWithPendingRetreat(),
+      shotDrivingBack(),
     );
 
-    const retreat = openedRetreat(next);
+    // The retreat is White's, holding the one retreat the event gave.
+    const retreat = getRetreatState(next, 'white');
     expect(retreat.retreatingUnit.playerSide).toBe('white');
     expect(retreat.legalRetreatPaths).toStrictEqual([['step']]);
     // One legal retreat is no choice (§9.1.3), and one that can be made never
@@ -93,10 +87,11 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
         ['turnLeft', 'step'],
         ['turnRight', 'step'],
       ]),
-      stateWithPendingRetreat(),
+      shotDrivingBack(),
     );
 
-    const retreat = openedRetreat(next);
+    // Both are kept, and neither is taken for the owner.
+    const retreat = getRetreatState(next, 'white');
     expect(retreat.legalRetreatPaths).toStrictEqual([
       ['turnLeft', 'step'],
       ['turnRight', 'step'],
@@ -108,11 +103,24 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     // §9.1.6: a unit that must retreat and cannot routs instead.
     const next = applyOpenRetreatFromAttackApplyEvent(
       openWith([]),
-      stateWithPendingRetreat(),
+      shotDrivingBack(),
     );
 
-    const retreat = openedRetreat(next);
+    // The retreat opens empty, its rout waiting to be triggered.
+    const retreat = getRetreatState(next, 'white');
     expect(retreat.legalRetreatPaths).toStrictEqual([]);
     expect(retreat.routState).toBe('pending');
+  });
+
+  it('leaves the reverse due for its own turn, after the retreat', () => {
+    // The unit falls back before it turns about (§7.5.4), so opening the
+    // retreat does not open the reverse the shot also reached.
+    const next = applyOpenRetreatFromAttackApplyEvent(
+      openWith([['step']]),
+      shotDrivingBack(),
+    );
+
+    // The reverse is still due, not yet opened.
+    expect(getRangedAttackApplyState(next).reverseState).toBe('pending');
   });
 });

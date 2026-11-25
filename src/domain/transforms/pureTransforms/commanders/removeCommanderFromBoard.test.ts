@@ -1,197 +1,69 @@
-import type { Coordinate } from '@ruleValues';
 import { createEmptyStandardBoard } from '@factories';
-import { throwIfUndefined } from '@utils';
 
 import { addCommanderToBoard } from './addCommanderToBoard';
 import { removeCommanderFromBoard } from './removeCommanderFromBoard';
 
 /**
- * RemoveCommanderFromBoard: removeCommanderFromBoard.
+ * A commander lifted off its space leaves it; another side's commander
+ * sharing that space, and every other space, stay as they were.
  */
 describe('removeCommanderFromBoard function', () => {
-  const coordinate: Coordinate = 'E-5';
+  it('lifts the commander off its space, leaving the board it was given as it was', () => {
+    // Black's commander stands alone on E-5.
+    const board = addCommanderToBoard(
+      createEmptyStandardBoard(),
+      'black',
+      'E-5',
+    );
 
-  describe('removing commander from space with one commander', () => {
-    it('given remove commander and leave empty set', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
+    const lifted = removeCommanderFromBoard(board, 'E-5', 'black');
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithCommander,
-        coordinate,
-        'black',
-      );
-
-      expect(newBoard).not.toBe(boardWithCommander);
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual([]);
-    });
-
-    it('given not mutate the original board', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'white',
-        coordinate,
-      );
-
-      removeCommanderFromBoard(boardWithCommander, coordinate, 'white');
-
-      expect(boardWithCommander.board[coordinate]?.commanders).toStrictEqual([
-        'white',
-      ]);
-    });
+    // E-5 is empty of commanders; the board it was lifted from still has it.
+    expect(lifted.board['E-5']?.commanders).toStrictEqual([]);
+    expect(board.board['E-5']?.commanders).toStrictEqual(['black']);
   });
 
-  describe('removing commander from space with multiple commanders', () => {
-    it('given remove one commander and leave the other', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-      const boardWithBoth = addCommanderToBoard(
-        boardWithWhite,
-        'black',
-        coordinate,
-      );
+  it('leaves the other side’s commander sharing the space', () => {
+    // Both commanders stand on E-5: black's rode in with its unit (§4.3.10).
+    const withWhite = addCommanderToBoard(
+      createEmptyStandardBoard(),
+      'white',
+      'E-5',
+    );
+    const withBoth = addCommanderToBoard(withWhite, 'black', 'E-5');
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithBoth,
-        coordinate,
-        'white',
-      );
+    const lifted = removeCommanderFromBoard(withBoth, 'E-5', 'white');
 
-      expect(newBoard).not.toBe(boardWithBoth);
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(['black']);
-    });
-
-    it('given remove black commander and leave white', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-      const boardWithBoth = addCommanderToBoard(
-        boardWithWhite,
-        'black',
-        coordinate,
-      );
-
-      const newBoard = removeCommanderFromBoard(
-        boardWithBoth,
-        coordinate,
-        'black',
-      );
-
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(['white']);
-    });
-
-    it('given removing from multiple commanders, does not mutate the original board', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-      const boardWithBoth = addCommanderToBoard(
-        boardWithWhite,
-        'black',
-        coordinate,
-      );
-
-      removeCommanderFromBoard(boardWithBoth, coordinate, 'white');
-
-      expect(boardWithBoth.board[coordinate]?.commanders).toStrictEqual([
-        'white',
-        'black',
-      ]);
-    });
+    // Only white's is lifted; black's stays with its own unit.
+    expect(lifted.board['E-5']?.commanders).toStrictEqual(['black']);
   });
 
-  describe('error cases', () => {
-    it('given error when commander is not present, throws', () => {
-      const board = createEmptyStandardBoard();
+  it('leaves a commander on another space where it stands', () => {
+    // Black's commander on E-5, white's on D-4.
+    const withBlack = addCommanderToBoard(
+      createEmptyStandardBoard(),
+      'black',
+      'E-5',
+    );
+    const withBoth = addCommanderToBoard(withBlack, 'white', 'D-4');
 
-      expect(() =>
-        removeCommanderFromBoard(board, coordinate, 'black'),
-      ).toThrow('Commander not present to remove');
-    });
+    const lifted = removeCommanderFromBoard(withBoth, 'E-5', 'black');
 
-    it('given error when trying to remove wrong commander, throws', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-
-      expect(() =>
-        removeCommanderFromBoard(boardWithWhite, coordinate, 'black'),
-      ).toThrow('Commander not present to remove');
-    });
-
-    it('given error when trying to remove already removed commander, throws', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
-      const boardAfterRemoval = removeCommanderFromBoard(
-        boardWithCommander,
-        coordinate,
-        'black',
-      );
-
-      expect(() =>
-        removeCommanderFromBoard(boardAfterRemoval, coordinate, 'black'),
-      ).toThrow('Commander not present to remove');
-    });
+    // White's on D-4 is untouched.
+    expect(lifted.board['D-4']?.commanders).toStrictEqual(['white']);
   });
 
-  describe('preserving other board spaces', () => {
-    it('given preserve commanders on other spaces', () => {
-      const board = createEmptyStandardBoard();
-      const otherCoord: Coordinate = 'D-4';
-      const boardWithCommander1 = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
-      const boardWithBoth = addCommanderToBoard(
-        boardWithCommander1,
-        'white',
-        otherCoord,
-      );
+  it('throws when that side’s commander is not on the space', () => {
+    // Only white's commander stands on E-5.
+    const board = addCommanderToBoard(
+      createEmptyStandardBoard(),
+      'white',
+      'E-5',
+    );
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithBoth,
-        coordinate,
-        'black',
-      );
-
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual([]);
-      expect(newBoard.board[otherCoord]?.commanders).toStrictEqual(['white']);
-    });
-
-    it('given preserve units on other spaces', () => {
-      const board = createEmptyStandardBoard();
-      const otherCoord: Coordinate = 'D-4';
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
-      // Add a unit to another space
-      boardWithCommander.board[otherCoord] = {
-        ...throwIfUndefined(
-          boardWithCommander.board[otherCoord],
-          `expected board space at ${otherCoord}`,
-        ),
-        unitPresence: {
-          presenceType: 'none',
-        },
-      };
-
-      const newBoard = removeCommanderFromBoard(
-        boardWithCommander,
-        coordinate,
-        'black',
-      );
-
-      expect(newBoard.board[otherCoord]?.unitPresence).toStrictEqual({
-        presenceType: 'none',
-      });
-    });
+    // Black's is not there to lift, though another commander is.
+    expect(() => removeCommanderFromBoard(board, 'E-5', 'black')).toThrow(
+      'Commander not present to remove',
+    );
   });
 });

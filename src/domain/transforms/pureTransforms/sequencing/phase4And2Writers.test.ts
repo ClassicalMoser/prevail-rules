@@ -5,6 +5,7 @@ import {
 } from '@queries';
 import {
   createMeleeResolutionState,
+  createMoveCommandersPhaseState,
   createResolveMeleePhaseState,
 } from '@testing';
 
@@ -18,6 +19,7 @@ import { updateMoveCommandersStep } from './updateMoveCommandersStep';
  * (§4.4.2), and each player moves their commander before orders begin (§4.2.1).
  */
 describe('openMeleeResolution and clearMeleeResolution functions', () => {
+  // Phase 4 with three engagements waiting and none yet chosen.
   const empty = createEmptyGameState('standard');
   const waiting = updatePhaseState(
     empty,
@@ -32,6 +34,7 @@ describe('openMeleeResolution and clearMeleeResolution functions', () => {
       openMeleeResolution(waiting, 'E-5'),
     );
 
+    // E-5 no longer waits; its melee is the one being fought.
     expect(phase.remainingEngagements).toStrictEqual(['E-4', 'E-6']);
     expect(phase.currentMeleeResolutionState).toMatchObject({
       location: 'E-5',
@@ -44,11 +47,13 @@ describe('openMeleeResolution and clearMeleeResolution functions', () => {
 
     const phase = getResolveMeleePhaseState(clearMeleeResolution(opened));
 
+    // No melee is under way, and the other two still wait their turn.
     expect(phase.currentMeleeResolutionState).toBe('pending');
     expect(phase.remainingEngagements).toStrictEqual(['E-4', 'E-6']);
   });
 
   it('throws when a melee is already under way, since they are fought one at a time', () => {
+    // The melee at E-5 is still being fought when E-4 is chosen.
     const underWay = updatePhaseState(
       empty,
       createResolveMeleePhaseState(empty, {
@@ -64,17 +69,18 @@ describe('openMeleeResolution and clearMeleeResolution functions', () => {
 });
 
 describe('updateMoveCommandersStep function', () => {
-  it('moves the commander moves to the step given', () => {
-    const empty = createEmptyGameState('standard');
-    const moving = updatePhaseState(empty, {
-      phase: 'moveCommanders',
-      step: 'moveFirstCommander',
-    });
+  it('moves from the first player’s commander to the second’s', () => {
+    // The first player's commander is moving.
+    const moving = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState({ step: 'moveFirstCommander' }),
+    );
 
     const next = getMoveCommandersPhaseState(
       updateMoveCommandersStep(moving, 'moveSecondCommander'),
     );
 
+    // The second player's commander moves next (§4.2.1).
     expect(next.step).toBe('moveSecondCommander');
   });
 });

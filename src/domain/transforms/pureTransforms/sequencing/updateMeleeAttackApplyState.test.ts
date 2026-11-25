@@ -1,132 +1,61 @@
+import { createEmptyGameState } from '@factories';
+import { getMeleeResolutionState } from '@queries';
 import {
   createAttackApplyStateWithNothingDue,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState, updateCurrentInitiative } from '../';
-import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateMeleeAttackApplyState: Creates a new game state with the attack apply state updated for a specific player in melee resolution.
+ * Both units in a melee strike at once, and each takes its own results
+ * (§7.2.1). The two slots are named for whose unit takes the blow: the first
+ * player's, holding the initiative, or the second's.
  */
 describe('updateMeleeAttackApplyState function', () => {
-  function createStateInResolveMelee() {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const meleeState = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState:
-        createAttackApplyStateWithNothingDue(blackUnit),
-      attackOnSecondPlayerApplyState:
-        createAttackApplyStateWithNothingDue(whiteUnit),
-    });
-    const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: meleeState,
-    });
-    return updatePhaseState(state, phaseState);
-  }
+  const blackUnit = createTestUnit('black', { attack: 2 });
+  const whiteUnit = createTestUnit('white', { attack: 2 });
 
-  it('given update white attack apply state', () => {
-    const state = createStateInResolveMelee();
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const updated = createAttackApplyStateWithNothingDue(whiteUnit, {
+  // Black holds the initiative, and both blows have landed with nothing due.
+  const onBlack = createAttackApplyStateWithNothingDue(blackUnit);
+  const onWhite = createAttackApplyStateWithNothingDue(whiteUnit);
+  const fighting = createGameStateResolvingMelee(
+    createMeleeResolutionState(createEmptyGameState('standard'), {
+      attackOnFirstPlayerApplyState: onBlack,
+      attackOnSecondPlayerApplyState: onWhite,
+    }),
+    'black',
+  );
+
+  it('writes the first player’s unit’s results to the first slot', () => {
+    const done = createAttackApplyStateWithNothingDue(blackUnit, {
       completed: true,
     });
 
-    const newState = updateMeleeAttackApplyState(state, 'white', updated);
+    const melee = getMeleeResolutionState(
+      updateMeleeAttackApplyState(fighting, 'black', done),
+    );
 
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const whiteApply = throwIfPending(
-      melee.attackOnSecondPlayerApplyState,
-      'white apply',
-    );
-    const blackApply = throwIfPending(
-      melee.attackOnFirstPlayerApplyState,
-      'black apply',
-    );
-    expect(whiteApply.completed).toBe(true);
-    expect(blackApply.completed).toBe(false);
+    // Black holds the initiative, so its unit's results are the first; the
+    // white unit's are untouched.
+    expect(melee.attackOnFirstPlayerApplyState).toBe(done);
+    expect(melee.attackOnSecondPlayerApplyState).toBe(onWhite);
   });
 
-  it('given update black attack apply state', () => {
-    const state = createStateInResolveMelee();
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const updated = createAttackApplyStateWithNothingDue(blackUnit, {
+  it('writes the second player’s unit’s results to the second slot', () => {
+    const done = createAttackApplyStateWithNothingDue(whiteUnit, {
       completed: true,
     });
 
-    const newState = updateMeleeAttackApplyState(state, 'black', updated);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const blackApply = throwIfPending(
-      melee.attackOnFirstPlayerApplyState,
-      'black apply',
-    );
-    const whiteApply = throwIfPending(
-      melee.attackOnSecondPlayerApplyState,
-      'white apply',
-    );
-    expect(blackApply.completed).toBe(true);
-    expect(whiteApply.completed).toBe(false);
-  });
-
-  it('given not mutate the original state', () => {
-    const state = createStateInResolveMelee();
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const origPhase = throwIfNone(
-      state.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    const originalCompleted =
-      origPhase.phase === 'resolveMelee'
-        ? throwIfPending(
-            throwIfPending(origPhase.currentMeleeResolutionState, 'melee')
-              .attackOnSecondPlayerApplyState,
-            'white apply',
-          ).completed
-        : undefined;
-
-    updateMeleeAttackApplyState(
-      state,
-      'white',
-      createAttackApplyStateWithNothingDue(whiteUnit, { completed: true }),
+    const melee = getMeleeResolutionState(
+      updateMeleeAttackApplyState(fighting, 'white', done),
     );
 
-    const checkPhase = throwIfNone(
-      state.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    const currentCompleted =
-      checkPhase.phase === 'resolveMelee'
-        ? throwIfPending(
-            throwIfPending(checkPhase.currentMeleeResolutionState, 'melee')
-              .attackOnSecondPlayerApplyState,
-            'white apply',
-          ).completed
-        : undefined;
-    expect(currentCompleted).toBe(originalCompleted);
+    // White is the second player, so its unit's results are the second; the
+    // black unit's are untouched.
+    expect(melee.attackOnSecondPlayerApplyState).toBe(done);
+    expect(melee.attackOnFirstPlayerApplyState).toBe(onBlack);
   });
 });

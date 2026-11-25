@@ -1,47 +1,49 @@
-import { throwIfNone } from '@utils';
 import type { CompletePlayCardsPhaseEvent } from '@events';
-import type { GameState } from '@game';
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-
-import { createPlayCardsPhaseState, withLostCommander } from '@testing';
+import { createEmptyGameState } from '@factories';
+import { getCurrentPhaseState } from '@queries';
 import {
-  updatePhaseState,
+  createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
+  withLostCommander,
+} from '@testing';
+import {
   updateCurrentInitiative,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 import { applyCompletePlayCardsPhaseEvent } from './applyCompletePlayCardsPhaseEvent';
 
-import { createEmptyGameState } from '@factories';
+/** The effect that ends card play; it carries nothing. */
+const event: CompletePlayCardsPhaseEvent = {
+  effectType: 'completePlayCardsPhase',
+  eventType: 'gameEffect',
+};
+
 /**
- * End of simultaneous card play: `playCards` is recorded in `completedPhases` and the round
- * advances to `moveCommanders.moveFirstCommander`.
+ * Once both cards are in play and initiative is decided, Phase 2 opens with
+ * the first player moving their commander (§4.2.1).
  */
 describe('applyCompletePlayCardsPhaseEvent function', () => {
-  it('given playCards complete step, next phase moveCommanders and completedPhases lists playCards', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const full: GameState = updatePhaseState(
-      state,
+  it("opens Phase 2 on the first player's commander, and records card play as done", () => {
+    // Black holds the initiative, and card play is complete.
+    const state = updatePhaseState(
+      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
       createPlayCardsPhaseState({ step: 'complete' }),
     );
 
-    const event: CompletePlayCardsPhaseEvent = {
-      effectType: 'completePlayCardsPhase',
-      eventType: 'gameEffect',
-    };
+    const next = applyCompletePlayCardsPhaseEvent(event, state);
 
-    const next = applyCompletePlayCardsPhaseEvent(event, full);
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe(MOVE_COMMANDERS_PHASE);
-    expect(phase.step).toBe('moveFirstCommander');
-    const completed = [...next.currentRoundState.completedPhases];
-    expect(completed).toHaveLength(1);
-    expect(completed[0]?.phase).toBe(PLAY_CARDS_PHASE);
+    // The first player's commander moves first.
+    expect(getCurrentPhaseState(next)).toStrictEqual({
+      phase: 'moveCommanders',
+      step: 'moveFirstCommander',
+    });
+
+    // No query reads the round's record of finished phases, so the field is
+    // read as written: Phase 1, as it ended.
+    expect(next.currentRoundState.completedPhases).toStrictEqual([
+      { phase: 'playCards', step: 'complete' },
+    ]);
   });
 
   it('when the first player’s commander has fallen, Move Commanders still opens on the first player’s turn', () => {
@@ -50,25 +52,28 @@ describe('applyCompletePlayCardsPhaseEvent function', () => {
       createEmptyGameState('standard'),
       'black',
     );
-    const full: GameState = updatePhaseState(
+    const full = updatePhaseState(
       withLostCommander(base, 'black'),
       createPlayCardsPhaseState({ step: 'complete' }),
     );
 
-    const next = applyCompletePlayCardsPhaseEvent(
-      {
-        effectType: 'completePlayCardsPhase',
-        eventType: 'gameEffect',
-      },
-      full,
-    );
+    const next = applyCompletePlayCardsPhaseEvent(event, full);
 
     // The phase opens on Black's turn as always. Passing it over is
     // skipLostCommanderMove's, which the expected engine asks for.
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
+    expect(getCurrentPhaseState(next).step).toBe('moveFirstCommander');
+  });
+
+  it('throws when the game is not playing cards', () => {
+    // The commanders are already moving.
+    const moving = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState(),
     );
-    expect(phase.step).toBe('moveFirstCommander');
+
+    // Phase 1 ends only from Phase 1.
+    expect(() => applyCompletePlayCardsPhaseEvent(event, moving)).toThrow(
+      'Expected playCards phase, got moveCommanders',
+    );
   });
 });

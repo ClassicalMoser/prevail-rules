@@ -1,16 +1,17 @@
 import type { AttackResult, UnitInstance } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
-import type { GameState } from '@game';
-import { createEmptyGameState } from '@factories';
+import type { GameState, RangedAttackResolutionState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createRangedAttackResolutionState,
   createTestCard,
   createTestUnit,
+  placed,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updateCurrentInitiative } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
 import { applyResolveRangedAttackEvent } from './applyResolveRangedAttackEvent';
@@ -20,27 +21,37 @@ import { applyResolveRangedAttackEvent } from './applyResolveRangedAttackEvent';
  * measured thresholds. Openers write the substeps later.
  */
 describe('applyResolveRangedAttackEvent function', () => {
-  /** IssueCommands + ranged CRS with white defender on E-5 and both inPlay cards. */
-  function createRangedResolutionFixture(): {
+  /**
+   * IssueCommands + ranged CRS with white defender on E-5 and both inPlay cards.
+   * Black holds the initiative, and its archer on G-5 has aimed at White's
+   * unit; both commitments are made, and the shot is about to be measured.
+   */
+  function createRangedResolutionFixture(
+    shot: Partial<RangedAttackResolutionState> = {},
+  ): {
     full: GameState;
     defender: UnitInstance;
   } {
-    const base = createEmptyGameState('standard');
+    const defender = createTestUnit('white', { attack: 2 });
+    const shooter = createTestUnit('black', { range: 2 });
+    const base = updateCurrentInitiative(
+      createGameStateWithUnits([
+        placed(defender, 'E-5', 'south'),
+        placed(shooter, 'G-5', 'north'),
+      ]),
+      'black',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
-    const defender = createTestUnit('white', { attack: 2 });
     const ranged = createRangedAttackResolutionState(withCards, {
+      attackingUnit: shooter,
       defendingUnit: defender,
+      ...shot,
     });
-    const full = updatePhaseState(
-      withCards,
-      createIssueCommandsPhaseState(withCards, {
-        currentCommandResolutionState: ranged,
-      }),
-    );
+    const full = createGameStateResolvingCommand(ranged, withCards);
     return { defender, full };
   }
 
@@ -118,5 +129,17 @@ describe('applyResolveRangedAttackEvent function', () => {
     expect(apply.retreatState).toBe('pending');
     expect(apply.routState).toBe('bypassed');
     expect(apply.reverseState).toBe('bypassed');
+  });
+
+  it('throws when the shot has not been aimed yet', () => {
+    // The shooter has committed but not named its target (§4.3.11 step 3);
+    // a shot is measured only against the target it was aimed at.
+    const { full } = createRangedResolutionFixture({
+      defendingUnit: 'pending',
+    });
+
+    expect(() => applyResolveRangedAttackEvent(rangedEvent(), full)).toThrow(
+      'The shot has not been aimed yet',
+    );
   });
 });

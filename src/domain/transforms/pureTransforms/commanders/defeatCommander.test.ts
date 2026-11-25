@@ -1,8 +1,7 @@
-import { createEmptyGameState, createEmptyStandardBoard } from '@factories';
-import { replaceBoard } from '@testing';
+import { createEmptyGameState } from '@factories';
 
-import { addCommanderToBoard } from './addCommanderToBoard';
 import { defeatCommander } from './defeatCommander';
+import { deployCommander } from './deployCommander';
 
 /**
  * A commander is defeated (§4.2.8): off the board, among the lost, and filed
@@ -10,9 +9,10 @@ import { defeatCommander } from './defeatCommander';
  */
 describe('defeatCommander function', () => {
   // Black's commander stands on E-5.
-  const state = replaceBoard(
+  const state = deployCommander(
     createEmptyGameState('standard'),
-    addCommanderToBoard(createEmptyStandardBoard(), 'black', 'E-5'),
+    'black',
+    'E-5',
   );
 
   it('takes the commander off the board and records it as lost', () => {

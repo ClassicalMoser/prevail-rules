@@ -1,309 +1,134 @@
-import { getReverseStateFromAttackApply } from '@queries';
-import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
+import { createEmptyGameState } from '@factories';
+import { getMeleeReverseState, getRangedAttackReverseState } from '@queries';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithReverse,
-  createIssueCommandsPhaseState,
+  createGameStateMovingInto,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
+  createGameStateWithUnits,
   createMeleeResolutionState,
-  createMovementResolutionState,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
-  createResolveMeleePhaseState,
   createReverseState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updateCurrentInitiative, updatePhaseState } from '../';
 
+import { updatePhaseState } from '../state/updatePhaseState';
 import { updateReverseState } from './updateReverseState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateReverseState: Creates a new game state with the reverse state updated in an attack apply state.
+ * Only an attack turns a unit about (§9.2): after a shot in Phase 3, or on
+ * either side of a melee in Phase 4. The reverse is written on the results
+ * of the attack that forced it; this writer carries it forward and never
+ * opens one.
  */
 describe('updateReverseState function', () => {
-  function createStateWithRangedAttackReverse() {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, placement),
-    );
-    const attackApply = createAttackApplyStateWithReverse(placement.unit);
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: createRangedAttackResolutionState(
-        stateWithUnit,
-        {
-          attackApplyState: attackApply,
-        },
-      ),
-    });
-    return updatePhaseState(stateWithUnit, phaseState);
-  }
+  const whiteUnit = createTestUnit('white', { attack: 2 });
+  const blackUnit = createTestUnit('black', { attack: 2 });
 
-  function createStateWithMeleeReverse(reversingPlayer: 'white' | 'black') {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(
-      reversingPlayer === 'white' ? 'black' : 'white',
-      {
-        attack: 2,
-      },
-    );
-    const reversingPlacement = placed(reversingUnit, 'E-5', 'north');
-    const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, reversingPlacement),
-    );
-    stateWithUnits = replaceBoard(
-      stateWithUnits,
-      addUnitToBoard(stateWithUnits.boardState, otherPlacement),
-    );
-    const attackApply = createAttackApplyStateWithReverse(
-      reversingPlacement.unit,
-    );
-    const melee = createMeleeResolutionState(
-      stateWithUnits,
-      reversingPlayer === 'white'
-        ? { attackOnSecondPlayerApplyState: attackApply }
-        : { attackOnFirstPlayerApplyState: attackApply },
-    );
-    return updatePhaseState(
-      stateWithUnits,
-      createResolveMeleePhaseState(stateWithUnits, {
-        currentMeleeResolutionState: melee,
+  // White's reverse once the unit has turned about.
+  const turned = createReverseState(whiteUnit, { completed: true });
+
+  it('writes a reverse a shot forced onto the shot’s results', () => {
+    // Black's skirmishers on C-5 shot white's unit on E-5 hard enough to turn it
+    // about, and the reverse is open.
+    const board = createGameStateWithUnits([
+      placed(blackUnit, 'C-5', 'south'),
+      placed(whiteUnit, 'E-5', 'north'),
+    ]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackApplyState: createAttackApplyStateWithReverse(whiteUnit),
+      attackingUnit: blackUnit,
+      defendingUnit: whiteUnit,
+    });
+    const shooting = createGameStateResolvingCommand(shot, board);
+
+    const after = updateReverseState(shooting, turned);
+
+    // The shot's results hold the finished reverse.
+    expect(getRangedAttackReverseState(after)).toBe(turned);
+  });
+
+  it('in a melee, writes the reverse on the side of the unit turning about', () => {
+    // Black holds the initiative. Its blow reversed white's unit; white's
+    // blow reached nothing.
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(createEmptyGameState('standard'), {
+        attackOnFirstPlayerApplyState:
+          createAttackApplyStateWithNothingDue(blackUnit),
+        attackOnSecondPlayerApplyState:
+          createAttackApplyStateWithReverse(whiteUnit),
       }),
-    );
-  }
-
-  it('given update reverse state in ranged attack resolution', () => {
-    const state = createStateWithRangedAttackReverse();
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const newReverse = createReverseState(placement.unit, {
-      completed: true,
-    });
-
-    const newState = updateReverseState(state, newReverse);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('issueCommands');
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('phase');
-    }
-    const commandState = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
-    );
-    if (commandState.commandResolutionType !== 'rangedAttack') {
-      throw new Error('type');
-    }
-    const attackApply = throwIfPending(
-      commandState.attackApplyState,
-      'attack apply',
-    );
-    expect(
-      throwIfBypassed(
-        getReverseStateFromAttackApply(attackApply),
-        'the attack applies a reverse',
-      ).completed,
-    ).toBe(true);
-  });
-
-  it('given update reverse state in melee resolution for white', () => {
-    const state = createStateWithMeleeReverse('white');
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const newReverse = createReverseState(placement.unit, { completed: true });
-
-    const newState = updateReverseState(state, newReverse);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const whiteApply = throwIfPending(
-      melee.attackOnSecondPlayerApplyState,
-      'white apply',
-    );
-    expect(
-      throwIfBypassed(
-        getReverseStateFromAttackApply(whiteApply),
-        'the attack applies a reverse',
-      ).completed,
-    ).toBe(true);
-  });
-
-  it('given update reverse state in melee resolution for black', () => {
-    const state = createStateWithMeleeReverse('black');
-    const unit = createTestUnit('black', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const newReverse = createReverseState(placement.unit, { completed: true });
-
-    const newState = updateReverseState(state, newReverse);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const blackApply = throwIfPending(
-      melee.attackOnFirstPlayerApplyState,
-      'black apply',
-    );
-    expect(
-      throwIfBypassed(
-        getReverseStateFromAttackApply(blackApply),
-        'the attack applies a reverse',
-      ).completed,
-    ).toBe(true);
-  });
-
-  it('given when ranged attack apply has no reverse state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
       'black',
     );
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const attackApply = createAttackApplyStateWithNothingDue(unit);
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createRangedAttackResolutionState(state, {
-        attackApplyState: attackApply,
+
+    const after = updateReverseState(fighting, turned);
+
+    // White's side of the melee holds the finished reverse.
+    expect(getMeleeReverseState(after, 'white')).toBe(turned);
+  });
+
+  it('throws when the shot did not turn its target about', () => {
+    // The shot reached nothing, so no reverse was opened.
+    const empty = createEmptyGameState('standard');
+    const shooting = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(empty, {
+        attackApplyState: createAttackApplyStateWithNothingDue(whiteUnit),
       }),
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
+      empty,
+    );
 
-    expect(() =>
-      updateReverseState(stateInPhase, createReverseState(placement.unit)),
-    ).toThrow('No reverse state found in attack apply state');
+    expect(() => updateReverseState(shooting, turned)).toThrow(
+      'No reverse state found in attack apply state',
+    );
   });
 
-  it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
+  it('throws in a melee when the unit turning about is on the other side', () => {
+    // Black holds the initiative. White's blow reversed black's unit;
+    // black's blow reached nothing, so white has no reverse.
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(createEmptyGameState('standard'), {
+        attackOnFirstPlayerApplyState:
+          createAttackApplyStateWithReverse(blackUnit),
+        attackOnSecondPlayerApplyState:
+          createAttackApplyStateWithNothingDue(whiteUnit),
+      }),
       'black',
     );
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state),
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
 
-    expect(() =>
-      updateReverseState(stateInPhase, createReverseState(placement.unit)),
-    ).toThrow(
+    expect(() => updateReverseState(fighting, turned)).toThrow(
+      'No reverse state found in attack apply state',
+    );
+  });
+
+  it('throws during a move, which reverses nobody', () => {
+    // A unit is moving and has walked into nobody.
+    const moving = createGameStateMovingInto('pending');
+
+    expect(() => updateReverseState(moving, turned)).toThrow(
       'Reverse state update not expected in issueCommands (command type: movement)',
     );
   });
 
-  it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const phaseState = createIssueCommandsPhaseState(state);
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
+  it('throws in Phase 3 between units, when nothing is turning about', () => {
+    // No unit's move or shot is under way.
+    const between = createGameStateResolvingCommand('pending');
 
-    expect(() =>
-      updateReverseState(stateInPhase, createReverseState(placement.unit)),
-    ).toThrow('No command resolution state found');
+    expect(() => updateReverseState(between, turned)).toThrow(
+      'No command resolution state found',
+    );
   });
 
-  it('given when melee white attack apply has no reverse state, throws', () => {
-    const state = updateCurrentInitiative(
+  it('throws in a phase where no attack is carried out', () => {
+    const playingCards = updatePhaseState(
       createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whitePlacement = placed(whiteUnit, 'E-5', 'north');
-    const blackPlacement = placed(blackUnit, 'E-5', 'south');
-    const melee = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState: createAttackApplyStateWithReverse(
-        blackPlacement.unit,
-      ),
-      attackOnSecondPlayerApplyState:
-        createAttackApplyStateWithNothingDue(whiteUnit),
-    });
-    const stateInPhase = updatePhaseState(
-      state,
-      createResolveMeleePhaseState(state, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
-
-    expect(() =>
-      updateReverseState(stateInPhase, createReverseState(whitePlacement.unit)),
-    ).toThrow('No reverse state found in attack apply state');
-  });
-
-  it('given when melee black attack apply has no reverse state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whitePlacement = placed(whiteUnit, 'E-5', 'north');
-    const blackPlacement = placed(blackUnit, 'E-5', 'south');
-    const melee = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState:
-        createAttackApplyStateWithNothingDue(blackUnit),
-      attackOnSecondPlayerApplyState: createAttackApplyStateWithReverse(
-        whitePlacement.unit,
-      ),
-    });
-    const stateInPhase = updatePhaseState(
-      state,
-      createResolveMeleePhaseState(state, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
-
-    expect(() =>
-      updateReverseState(stateInPhase, createReverseState(blackPlacement.unit)),
-    ).toThrow('No reverse state found in attack apply state');
-  });
-
-  it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const stateInPlayCards = updatePhaseState(
-      state,
       createPlayCardsPhaseState(),
     );
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
 
-    expect(() =>
-      updateReverseState(stateInPlayCards, createReverseState(placement.unit)),
-    ).toThrow('Reverse state update not expected in phase: playCards');
+    expect(() => updateReverseState(playingCards, turned)).toThrow(
+      'Reverse state update not expected in phase: playCards',
+    );
   });
 });

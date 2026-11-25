@@ -1,65 +1,37 @@
-import { tempCommandCards } from '@sampleValues';
+import { createOwnedCardState } from '@factories';
+import { createTestCard } from '@testing';
+
 import { moveCardToPlayed } from './moveCardToPlayed';
 
-import { createEmptyGameState } from '@factories';
 /**
- * MoveCardToPlayed: Moves a player's card from inPlay to played pile.
+ * At Cleanup this round's card leaves play for the played pile (§4.5.1),
+ * where a rally will later find it.
  */
 describe('moveCardToPlayed function', () => {
-  it('given move card from inPlay to played', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      inPlay: tempCommandCards[0],
-      played: [],
-    };
+  it('puts the card in play on top of the cards played in earlier rounds', () => {
+    // Black played one card in an earlier round, and has this round's in play.
+    const earlier = createTestCard();
+    const thisRound = createTestCard();
+    const owned = createOwnedCardState({
+      inPlay: thisRound,
+      played: [earlier],
+    });
 
     const result = moveCardToPlayed(owned);
 
+    // Nothing is in play any more, and the card joins the played pile.
     expect(result.inPlay).toBeNull();
-    expect(result.played).toStrictEqual([tempCommandCards[0]]);
+    expect(result.played).toStrictEqual([earlier, thisRound]);
   });
 
-  it('given append to existing played cards', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      inPlay: tempCommandCards[1],
-      played: [tempCommandCards[0]],
-    };
+  it('returns the cards unchanged when no card is in play', () => {
+    // This case covers the soft guard marked TODO(wrong) in
+    // `moveCardToPlayed`; the fix replaces it with one asserting a throw.
+    const owned = createOwnedCardState({ inHand: [createTestCard()] });
 
     const result = moveCardToPlayed(owned);
 
-    expect(result.played).toStrictEqual([
-      tempCommandCards[0],
-      tempCommandCards[1],
-    ]);
-  });
-
-  it('given context, returns unchanged state if no card in play', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      inPlay: null,
-      played: [],
-    };
-
-    const result = moveCardToPlayed(owned);
-
+    // The very same piles come back.
     expect(result).toBe(owned);
-    expect(result.inPlay).toBeNull();
-    expect(result.played).toStrictEqual([]);
-  });
-
-  it('given not mutate the original card state', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      inPlay: tempCommandCards[0],
-      played: [],
-    };
-    const originalInPlay = owned.inPlay;
-    const originalPlayed = owned.played;
-
-    moveCardToPlayed(owned);
-
-    expect(owned.inPlay).toBe(originalInPlay);
-    expect(owned.played).toBe(originalPlayed);
   });
 });

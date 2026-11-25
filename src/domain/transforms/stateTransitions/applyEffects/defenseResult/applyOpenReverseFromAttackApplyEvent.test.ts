@@ -1,19 +1,13 @@
-import { throwIfBypassed } from '@utils';
 import type { OpenReverseFromAttackApplyEvent } from '@events';
-import type { GameState } from '@game';
-import { createAttackApplyState, createEmptyGameState } from '@factories';
+import { createAttackApplyState } from '@factories';
+import { getRangedAttackReverseState } from '@queries';
 import {
-  getRangedAttackApplyState,
-  getReverseStateFromAttackApply,
-} from '@queries';
-import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createRangedAttackResolutionState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyOpenReverseFromAttackApplyEvent } from './applyOpenReverseFromAttackApplyEvent';
 
@@ -22,49 +16,42 @@ import { applyOpenReverseFromAttackApplyEvent } from './applyOpenReverseFromAtta
  * The unit is held by identity.
  */
 describe('applyOpenReverseFromAttackApplyEvent function', () => {
-  function stateWithPendingReverse(): {
-    state: GameState;
-    defendingUnit: ReturnType<typeof createTestUnit>;
-  } {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApply = createAttackApplyState(defendingUnit, {
+  it('opens a reverse holding the defending unit by identity', () => {
+    // White's unit on E-5 facing north, shot by Black's shooter in front of
+    // it. Any unit will do: the apply reads nothing of it but who it is.
+    const target = createTestUnit('white');
+    const shooter = createTestUnit('black', { range: 1 });
+    const base = createGameStateWithUnits([
+      placed(target, 'E-5', 'north'),
+      placed(shooter, 'D-5', 'south'),
+    ]);
+
+    // The shot reached the target's Reverse and nothing else, so the
+    // reverse is due and unopened.
+    const apply = createAttackApplyState(target, {
       unitRetreated: false,
       unitReversed: true,
       unitRouted: false,
     });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: apply,
+      attackingUnit: shooter,
+      defendingUnit: target,
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return {
-      defendingUnit,
-      state: updatePhaseState(withBoard, phase),
-    };
-  }
+    const state = createGameStateResolvingCommand(shot, base);
 
-  it('opens a reverse holding the defending unit by identity', () => {
-    const { state, defendingUnit } = stateWithPendingReverse();
+    // The event carries nothing; the state names the apply.
     const event: OpenReverseFromAttackApplyEvent = {
       effectType: 'openReverseFromAttackApply',
       eventType: 'gameEffect',
     };
-
     const next = applyOpenReverseFromAttackApplyEvent(event, state);
-    const apply = getRangedAttackApplyState(next);
-    const reverse = throwIfBypassed(
-      getReverseStateFromAttackApply(apply),
-      'the attack applies a reverse',
-    );
+
+    // The reverse is open, unfinished, and names the target itself; where it
+    // stands is read from the board when the reverse resolves.
+    const reverse = getRangedAttackReverseState(next);
     expect(reverse.substepType).toBe('reverse');
-    expect(reverse.reversingUnit).toBe(defendingUnit);
+    expect(reverse.completed).toBe(false);
+    expect(reverse.reversingUnit).toBe(target);
   });
 });

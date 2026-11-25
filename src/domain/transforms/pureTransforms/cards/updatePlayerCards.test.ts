@@ -1,24 +1,33 @@
-import type { CardState, HiddenCardState, OwnedCardState } from '@game';
-import { createTestCard } from '@testing';
+import type { HiddenCardState, OwnedCardState } from '@game';
+import { createTestCard, updateCardState } from '@testing';
 
-import { replaceCardState } from './replaceCardState';
-import { toHiddenCardState } from './toHiddenCardState';
+import { projectGameStateForVisibility } from '../visibility';
 import { updatePlayerCards } from './updatePlayerCards';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createCardState,
+  createEmptyGameState,
+  createOwnedCardState,
+} from '@factories';
 
 /**
  * Every seat applies the same event, so a player's cards change differently
  * for each: seen where the seat can read the hand, counted where it cannot
  * (§4.1.2).
+ *
+ * TODO(misleading): §4.1.2 is the reveal of both played cards; that a hand
+ * is secret is §1.4. Settle by citing §1.4.
  */
 describe('updatePlayerCards function', () => {
   const card = createTestCard();
-  const base = createEmptyGameState('standard');
-  const authoritative = replaceCardState(base, {
-    ...base.cardState,
-    black: { ...base.cardState.black, inHand: [card] },
-  });
+  // Black holds one card; White holds another.
+  const authoritative = updateCardState(
+    createEmptyGameState('standard'),
+    createCardState({
+      black: createOwnedCardState({ inHand: [card] }),
+      white: createOwnedCardState({ inHand: [createTestCard()] }),
+    }),
+  );
 
   /**
    * Marks which fold ran, so the spec can say which way a seat was read: the
@@ -43,12 +52,7 @@ describe('updatePlayerCards function', () => {
 
   it('changes the cards as counted where the seat cannot see the hand', () => {
     // White's seat holds white's cards in full and black's only as a count.
-    const whiteSeen: CardState = {
-      black: toHiddenCardState(authoritative.cardState.black),
-      visibility: 'whiteSeen',
-      white: authoritative.cardState.white,
-    };
-    const state = replaceCardState(authoritative, whiteSeen);
+    const state = projectGameStateForVisibility(authoritative, 'whiteSeen');
 
     const forBlack = updatePlayerCards(state, 'black', change);
     const forWhite = updatePlayerCards(state, 'white', change);

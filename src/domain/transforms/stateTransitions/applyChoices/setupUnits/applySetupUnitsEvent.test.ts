@@ -1,128 +1,101 @@
+import { createEmptyGameState, createSetupUnitsEvent } from '@factories';
+import { getCommanderSpace, getUnitWithPlacementOnBoard } from '@queries';
 import { createUnitWithPlacement, withReservedUnits } from '@testing';
 
 import { applySetupUnitsEvent } from './applySetupUnitsEvent';
 
-import { createEmptyGameState, createSetupUnitsEvent } from '@factories';
 /**
  * Pre-game setup: each `setupUnits` choice merges unit placements and the
  * commander into `boardState`, and clears those units from reserve. Round 0
  * ends with its own `roundEnd`, not here.
  */
 describe('applySetupUnitsEvent function', () => {
+  // White holds the initiative in a new game and so deploys first; black
+  // deploys second (§3.5.4). Each has one unit waiting in reserve.
+  const whiteUnit = createUnitWithPlacement({
+    coordinate: 'B-5',
+    facing: 'south',
+    playerSide: 'white',
+  });
+  const blackUnit = createUnitWithPlacement({
+    coordinate: 'K-5',
+    facing: 'north',
+    playerSide: 'black',
+  });
+
   it('places a side’s last reserved unit and its commander, and leaves round 0 for its roundEnd', () => {
-    const unitWithPlacement = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
+    // Black's unit is the last in reserve.
     const state = withReservedUnits(createEmptyGameState('standard'), [
-      unitWithPlacement.unit,
+      blackUnit.unit,
     ]);
 
-    const event = createSetupUnitsEvent({
-      commanderCoordinate: 'E-5',
-      player: 'black',
-      unitPlacements: [unitWithPlacement],
-    });
+    // Black deploys its unit, with its commander on the same space (§3.5.3).
+    const newState = applySetupUnitsEvent(
+      createSetupUnitsEvent({
+        commanderCoordinate: 'K-5',
+        player: 'black',
+        unitPlacements: [blackUnit],
+      }),
+      state,
+    );
 
-    const newState = applySetupUnitsEvent(event, state);
-
-    const presence = newState.boardState.board['E-5']?.unitPresence;
-    expect(presence?.presenceType).toBe('single');
-    if (presence?.presenceType !== 'single') {
-      return;
-    }
-    expect(presence.unit.playerSide).toBe('black');
-    expect(presence.facing).toBe('north');
-    expect(newState.boardState.board['E-5']?.commanders).toStrictEqual([
-      'black',
-    ]);
+    // The unit stands where black put it, facing the way black chose
+    // (§3.5.1), and the reserve is empty…
+    expect(getUnitWithPlacementOnBoard(newState, blackUnit.unit)).toStrictEqual(
+      blackUnit,
+    );
     expect(newState.reservedUnits).toStrictEqual([]);
+    // …the commander shares the unit's space…
+    expect(getCommanderSpace('black', newState)).toBe('K-5');
     // Setup stays round 0, with no phase begun, until round 0 ends with its
     // own roundEnd.
     expect(newState.currentRoundState.roundNumber).toBe(0);
     expect(newState.currentRoundState.currentPhaseState).toBe('none');
   });
 
-  it('given black placement while white still reserved, stays in setup phase none', () => {
-    const blackUnit = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const whiteUnit = createUnitWithPlacement({
-      coordinate: 'A-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
+  it("deploys only the deploying side's units, and leaves the other side's in reserve", () => {
+    // Both armies wait; white deploys first.
+    const state = withReservedUnits(createEmptyGameState('standard'), [
+      whiteUnit.unit,
+      blackUnit.unit,
+    ]);
+
+    // White's commander stands on a space of its own.
+    const newState = applySetupUnitsEvent(
+      createSetupUnitsEvent({
+        commanderCoordinate: 'B-6',
+        player: 'white',
+        unitPlacements: [whiteUnit],
+      }),
+      state,
+    );
+
+    // Black's army still waits to deploy; setup is still round 0.
+    expect(newState.reservedUnits).toStrictEqual([blackUnit.unit]);
+    expect(newState.currentRoundState.roundNumber).toBe(0);
+    expect(newState.currentRoundState.currentPhaseState).toBe('none');
+    // White's commander is on its own space, not on its unit's.
+    expect(getCommanderSpace('white', newState)).toBe('B-6');
+  });
+
+  it('leaves the state it was given unchanged', () => {
     const state = withReservedUnits(createEmptyGameState('standard'), [
       blackUnit.unit,
-      whiteUnit.unit,
-    ]);
-
-    const event = createSetupUnitsEvent({
-      commanderCoordinate: 'E-5',
-      player: 'black',
-      unitPlacements: [blackUnit],
-    });
-
-    const newState = applySetupUnitsEvent(event, state);
-
-    expect(newState.reservedUnits).toStrictEqual([whiteUnit.unit]);
-    expect(newState.currentRoundState.currentPhaseState).toBe('none');
-    // Setup is still round 0.
-    expect(newState.currentRoundState.roundNumber).toBe(0);
-    expect(newState.boardState.board['E-5']?.commanders).toStrictEqual([
-      'black',
-    ]);
-  });
-
-  it('given commander alone on empty setup cell, places commander without stacking on unit', () => {
-    const unit = createUnitWithPlacement({
-      coordinate: 'L-3',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const state = withReservedUnits(createEmptyGameState('standard'), [
-      unit.unit,
-    ]);
-
-    const event = createSetupUnitsEvent({
-      commanderCoordinate: 'L-4',
-      player: 'black',
-      unitPlacements: [unit],
-    });
-
-    const newState = applySetupUnitsEvent(event, state);
-
-    expect(newState.boardState.board['L-3']?.commanders).toStrictEqual([]);
-    expect(newState.boardState.board['L-4']?.commanders).toStrictEqual([
-      'black',
-    ]);
-  });
-
-  it('given empty board ref before apply, input boardState identity and E-5 still none after apply', () => {
-    const unitWithPlacement = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const state = withReservedUnits(createEmptyGameState('standard'), [
-      unitWithPlacement.unit,
     ]);
     const originalBoardRef = state.boardState;
 
-    const event = createSetupUnitsEvent({
-      commanderCoordinate: 'E-5',
-      player: 'black',
-      unitPlacements: [unitWithPlacement],
-    });
-
-    applySetupUnitsEvent(event, state);
-
-    expect(state.boardState).toBe(originalBoardRef);
-    expect(state.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
+    applySetupUnitsEvent(
+      createSetupUnitsEvent({
+        commanderCoordinate: 'K-5',
+        player: 'black',
+        unitPlacements: [blackUnit],
+      }),
+      state,
     );
+
+    // The original board is the same object, and the unit still waits in
+    // reserve.
+    expect(state.boardState).toBe(originalBoardRef);
+    expect(state.reservedUnits).toStrictEqual([blackUnit.unit]);
   });
 });

@@ -1,305 +1,232 @@
-import { throwIfBypassed } from '@utils';
+import type { PlayerSide, UnitFacing, UnitInstance } from '@entities';
 import type { ResolveReverseEvent } from '@events';
-import type { GameState } from '@game';
+import type { AttackApplyState, GameState } from '@game';
 import {
-  getMeleeAttackApplyState,
-  getPositionOfUnit,
-  getRangedAttackApplyState,
-  getReverseStateFromAttackApply,
+  findPositionOfUnit,
+  getMeleeReverseState,
+  getRangedAttackReverseState,
 } from '@queries';
 import {
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithReverse,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithEngagedUnits,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createTestUnit,
   legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateCurrentInitiative,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyResolveReverseEvent } from './applyResolveReverseEvent';
 
-import { createEmptyGameState } from '@factories';
+// TODO(misleading): "Defender's counterattack facing" — a reverse is not a
+// counterattack; it is a unit shaken and turned about (§9.2). Settle by
+// rewording this header.
 /**
  * Defender’s counterattack facing: turns the unit on its space to the event's `facing` and closes the
  * reverse substep (`completed`) for ranged or the correct melee apply side.
  */
 describe('applyResolveReverseEvent function', () => {
-  /** IssueCommands + ranged apply in reverse substep for white on E-5. */
-  function createStateWithRangedAttackReverse(): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const reversingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(reversingUnit, 'E-5', 'north');
+  // Any units will do: the apply reads nothing of them but who they are.
+  const white = createTestUnit('white');
+  const black = createTestUnit('black');
 
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-
-    const attackApplyState = createAttackApplyStateWithReverse(reversingUnit);
-    const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
-      attackApplyState,
-    });
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: rangedAttackState,
+  /**
+   * A shot at White's unit on E-5 facing north, from Black's shooter in
+   * front of it on D-5, with this apply on the target.
+   */
+  function shotAtWhite(apply: AttackApplyState): GameState {
+    const shooter = createTestUnit('black', { range: 1 });
+    const base = createGameStateWithUnits([
+      placed(white, 'E-5', 'north'),
+      placed(shooter, 'D-5', 'south'),
+    ]);
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: apply,
+      attackingUnit: shooter,
+      defendingUnit: white,
     });
 
-    return updatePhaseState(stateWithUnit, phaseState);
+    // Phase 3, with that shot being carried out.
+    const resolving = createGameStateResolvingCommand(shot, base);
+    return resolving;
   }
 
   /**
-   * Melee reverse: reversing side on E-5 alone; opponent already “gone” with retreat apply at E-4
-   * so engagement geometry matches post-retreat resolution.
+   * A melee on E-5 in which one unit's reverse is open, and the other unit
+   * has already fallen back one step and is done (§7.5.6: both retreats
+   * come before either reverse). White holds the initiative, so its unit's
+   * results sit in the first player's slot.
    */
-  function createStateWithMeleeReverse(
-    reversingPlayer: 'white' | 'black',
-  ): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
-    const opponentPlayer = reversingPlayer === 'white' ? 'black' : 'white';
-    const opponentUnit = createTestUnit(opponentPlayer, { attack: 2 });
+  function meleeAfterEnemyFellBack(reversing: PlayerSide): GameState {
+    // The reversing unit still stands on E-5; the enemy stood there too,
+    // facing it, and is now one step back the way it faced away from.
+    const unit = reversing === 'white' ? white : black;
+    const enemy = reversing === 'white' ? black : white;
+    const facing: UnitFacing = reversing === 'white' ? 'north' : 'south';
+    const enemyFacing: UnitFacing = reversing === 'white' ? 'south' : 'north';
+    const enemyLanding = reversing === 'white' ? 'D-5' : 'F-5';
+    const base = createGameStateWithUnits([
+      placed(unit, 'E-5', facing),
+      placed(enemy, enemyLanding, enemyFacing),
+    ]);
 
-    const reversingUnitWithPlacement = placed(reversingUnit, 'E-5', 'north');
-    // Opponent was at E-5 but has already retreated/routed to a different coordinate
-    const opponentUnitWithPlacement = placed(
-      opponentUnit, // Moved away after retreat/rout
-      'E-4',
-      'south',
-    );
-
-    // Only the reversing unit is on the board (opponent has already retreated/routed)
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, reversingUnitWithPlacement),
-    );
-
-    const opponentAttackApplyState = createAttackApplyStateWithRetreat(
-      opponentUnitWithPlacement.unit,
-      legalRetreatsOf(opponentUnitWithPlacement),
-    );
-    const reversingAttackApplyState =
-      createAttackApplyStateWithReverse(reversingUnit);
-
-    const meleeState = createMeleeResolutionState(
-      stateWithUnit,
-      reversingPlayer === 'white'
+    // The enemy's retreat, worked out from the shared space and carried out.
+    const enemyRetreats = legalRetreatsOf(placed(enemy, 'E-5', enemyFacing), [
+      placed(unit, 'E-5', facing),
+    ]);
+    const enemyApply = createAttackApplyStateWithRetreat(enemy, enemyRetreats, {
+      retreatState: createRetreatState(enemy, enemyRetreats, {
+        completed: true,
+      }),
+    });
+    const unitApply = createAttackApplyStateWithReverse(unit);
+    const melee = createMeleeResolutionState(
+      base,
+      reversing === 'white'
         ? {
-            attackOnFirstPlayerApplyState: opponentAttackApplyState,
-            attackOnSecondPlayerApplyState: reversingAttackApplyState,
+            attackOnFirstPlayerApplyState: unitApply,
+            attackOnSecondPlayerApplyState: enemyApply,
           }
         : {
-            attackOnFirstPlayerApplyState: reversingAttackApplyState,
-            attackOnSecondPlayerApplyState: opponentAttackApplyState,
+            attackOnFirstPlayerApplyState: enemyApply,
+            attackOnSecondPlayerApplyState: unitApply,
           },
     );
-    const phaseState = createResolveMeleePhaseState(stateWithUnit, {
-      currentMeleeResolutionState: meleeState,
-    });
 
-    return updatePhaseState(stateWithUnit, phaseState);
+    // Phase 4, with that melee being fought.
+    const phase = createResolveMeleePhaseState(base, {
+      currentMeleeResolutionState: melee,
+    });
+    const fighting = updatePhaseState(base, phase);
+    return fighting;
+  }
+
+  /** The reverse as its procedure writes it: the unit and its new facing. */
+  function reverseOf(
+    unit: UnitInstance,
+    facing: UnitFacing,
+  ): ResolveReverseEvent {
+    const event: ResolveReverseEvent = {
+      effectType: 'resolveReverse',
+      eventType: 'gameEffect',
+      facing,
+      unit,
+    };
+    return event;
   }
 
   describe('ranged reverse substep', () => {
-    it('given event south facing on E-5, board single presence faces south for reversing unit', () => {
-      const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const reverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(attackApplyState),
-        'the attack applies a reverse',
-      );
+    it('the target of a shot turns about where it stands, and its reverse is done', () => {
+      const state = shotAtWhite(createAttackApplyStateWithReverse(white));
 
-      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
+      // Facing north, turned 180° it faces south (§9.2.1).
+      const next = applyResolveReverseEvent(reverseOf(white, 'south'), state);
 
-      const event: ResolveReverseEvent = {
-        effectType: 'resolveReverse',
-        eventType: 'gameEffect',
-        facing: newPlacement.placement.facing,
-        unit: reverseState.reversingUnit,
-      };
-
-      const newState = applyResolveReverseEvent(event, state);
-
-      const boardSpace = newState.boardState.board['E-5'];
-      expect(boardSpace?.unitPresence.presenceType).toBe('single');
-      if (boardSpace?.unitPresence.presenceType === 'single') {
-        expect(boardSpace.unitPresence.facing).toBe('south');
-        expect(boardSpace.unitPresence.unit).toStrictEqual(
-          reverseState.reversingUnit,
-        );
-      }
-    });
-
-    it('given same event, reverse substep completed and the unit stands turned', () => {
-      const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const reverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(attackApplyState),
-        'the attack applies a reverse',
-      );
-
-      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
-
-      const event: ResolveReverseEvent = {
-        effectType: 'resolveReverse',
-        eventType: 'gameEffect',
-        facing: newPlacement.placement.facing,
-        unit: reverseState.reversingUnit,
-      };
-
-      const newState = applyResolveReverseEvent(event, state);
-      const newAttackApplyState = getRangedAttackApplyState(newState);
-      const newReverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(newAttackApplyState),
-        'the attack applies a reverse',
-      );
-
-      expect(newReverseState.completed).toBe(true);
-      // The unit stands turned on the board.
-      expect(getPositionOfUnit(newState, newPlacement.unit)).toStrictEqual(
-        newPlacement.placement,
-      );
-    });
-
-    it('given black observer on D-5, reverse apply leaves D-5 untouched', () => {
-      const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const reverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(attackApplyState),
-        'the attack applies a reverse',
-      );
-
-      // Add another unit at a different location
-      const otherUnit = createTestUnit('black', { attack: 2 });
-      const stateWithOtherUnit = replaceBoard(
-        state,
-        addUnitToBoard(state.boardState, placed(otherUnit, 'D-5', 'north')),
-      );
-
-      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
-
-      const event: ResolveReverseEvent = {
-        effectType: 'resolveReverse',
-        eventType: 'gameEffect',
-        facing: newPlacement.placement.facing,
-        unit: reverseState.reversingUnit,
-      };
-
-      const newState = applyResolveReverseEvent(event, stateWithOtherUnit);
-
-      // Other unit should still be at D-5
-      const otherSpace = newState.boardState.board['D-5'];
-      expect(otherSpace?.unitPresence.presenceType).toBe('single');
-      if (otherSpace?.unitPresence.presenceType === 'single') {
-        expect(otherSpace.unitPresence.unit).toStrictEqual(otherUnit);
-      }
+      // Same space, the other way round: a reverse is not a move (§9.2.2).
+      expect(findPositionOfUnit(next, white)).toStrictEqual({
+        coordinate: 'E-5',
+        facing: 'south',
+      });
+      // The reverse is owed nothing more.
+      expect(getRangedAttackReverseState(next).completed).toBe(true);
     });
   });
 
   describe('melee reverse substep', () => {
-    it('given black reverses south on E-5, black apply reverse completed and board updated', () => {
-      const state = createStateWithMeleeReverse('black');
-      const attackApplyState = getMeleeAttackApplyState(state, 'black');
-      const reverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(attackApplyState),
-        'the attack applies a reverse',
+    it.each([
+      { reversing: 'white', turnedTo: 'south' },
+      { reversing: 'black', turnedTo: 'north' },
+    ] as const)(
+      "$reversing's unit, its enemy fallen back, turns about to face $turnedTo and its reverse is done",
+      ({ reversing, turnedTo }) => {
+        const unit = reversing === 'white' ? white : black;
+        const state = meleeAfterEnemyFellBack(reversing);
+
+        // No longer sharing its space, the unit does turn (§7.5.5).
+        const next = applyResolveReverseEvent(reverseOf(unit, turnedTo), state);
+
+        // It turns on E-5, and the reverse on its own side is closed.
+        expect(findPositionOfUnit(next, unit)).toStrictEqual({
+          coordinate: 'E-5',
+          facing: turnedTo,
+        });
+        expect(getMeleeReverseState(next, reversing).completed).toBe(true);
+      },
+    );
+  });
+
+  describe('a unit still engaged', () => {
+    it('keeps its facing, and the reverse is done all the same', () => {
+      // Both units are still locked on E-5: neither fell back. White's blow
+      // reached Black's Reverse, but Black's unit does not turn while it
+      // shares its space with an enemy (§7.5.5). The procedure writes its
+      // facing unchanged.
+      const base = createGameStateWithEngagedUnits(
+        white,
+        black,
+        'E-5',
+        'north',
+      );
+      // Black's blow reached nothing on White.
+      const melee = createMeleeResolutionState(base, {
+        attackOnFirstPlayerApplyState:
+          createAttackApplyStateWithNothingDue(white),
+        attackOnSecondPlayerApplyState:
+          createAttackApplyStateWithReverse(black),
+      });
+      const state = updatePhaseState(
+        base,
+        createResolveMeleePhaseState(base, {
+          currentMeleeResolutionState: melee,
+        }),
       );
 
-      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
+      const next = applyResolveReverseEvent(reverseOf(black, 'south'), state);
 
-      const event: ResolveReverseEvent = {
-        effectType: 'resolveReverse',
-        eventType: 'gameEffect',
-        facing: newPlacement.placement.facing,
-        unit: reverseState.reversingUnit,
-      };
-
-      const newState = applyResolveReverseEvent(event, state);
-      const newAttackApplyState = getMeleeAttackApplyState(newState, 'black');
-      const newReverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(newAttackApplyState),
-        'the attack applies a reverse',
-      );
-
-      expect(newReverseState.completed).toBe(true);
-      // The unit stands turned on the board.
-      expect(getPositionOfUnit(newState, newPlacement.unit)).toStrictEqual(
-        newPlacement.placement,
-      );
-
-      const boardSpace = newState.boardState.board['E-5'];
-      expect(boardSpace?.unitPresence.presenceType).toBe('single');
+      // Black still faces White, and its reverse is closed.
+      expect(findPositionOfUnit(next, black)).toStrictEqual({
+        coordinate: 'E-5',
+        facing: 'south',
+      });
+      expect(getMeleeReverseState(next, 'black').completed).toBe(true);
     });
+  });
 
-    it('given white reverses east on E-5, white reverse completed and white faces east', () => {
-      const state = createStateWithMeleeReverse('white');
-      const attackApplyState = getMeleeAttackApplyState(state, 'white');
-      const reverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(attackApplyState),
-        'the attack applies a reverse',
+  describe('an attack that reached no Reverse', () => {
+    it('throws: there is no reverse to resolve', () => {
+      // The shot reached White's Retreat and no higher, so its reverse is
+      // bypassed. A reverse arriving now is a fault in the sequence.
+      const retreats = legalRetreatsOf(placed(white, 'E-5', 'north'));
+      const state = shotAtWhite(
+        createAttackApplyStateWithRetreat(white, retreats),
       );
 
-      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'east');
-
-      const event: ResolveReverseEvent = {
-        effectType: 'resolveReverse',
-        eventType: 'gameEffect',
-        facing: newPlacement.placement.facing,
-        unit: reverseState.reversingUnit,
-      };
-
-      const newState = applyResolveReverseEvent(event, state);
-      const newAttackApplyState = getMeleeAttackApplyState(newState, 'white');
-      const newReverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(newAttackApplyState),
-        'the attack applies a reverse',
-      );
-
-      expect(newReverseState.completed).toBe(true);
-      // The unit stands turned on the board.
-      expect(getPositionOfUnit(newState, newPlacement.unit)).toStrictEqual(
-        newPlacement.placement,
-      );
+      expect(() =>
+        applyResolveReverseEvent(reverseOf(white, 'south'), state),
+      ).toThrow('This attack apply applied no reverse to resolve');
     });
   });
 
   describe('structural update', () => {
-    it('given reverse completed and board ref before apply, input slice unchanged after apply', () => {
-      const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const reverseState = throwIfBypassed(
-        getReverseStateFromAttackApply(attackApplyState),
-        'the attack applies a reverse',
-      );
-      const originalCompleted = reverseState.completed;
-      const originalBoardState = state.boardState;
+    it('leaves the state it was given as it was', () => {
+      const state = shotAtWhite(createAttackApplyStateWithReverse(white));
+      const reverseBefore = getRangedAttackReverseState(state);
+      const boardBefore = state.boardState;
 
-      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
+      applyResolveReverseEvent(reverseOf(white, 'south'), state);
 
-      const event: ResolveReverseEvent = {
-        effectType: 'resolveReverse',
-        eventType: 'gameEffect',
-        facing: newPlacement.placement.facing,
-        unit: reverseState.reversingUnit,
-      };
-
-      applyResolveReverseEvent(event, state);
-
-      expect(reverseState.completed).toBe(originalCompleted);
-      expect(state.boardState).toBe(originalBoardState);
+      // A transition returns a new state; the old one still shows the unit
+      // facing north and the reverse unfinished.
+      expect(reverseBefore.completed).toBe(false);
+      expect(state.boardState).toBe(boardBefore);
+      expect(findPositionOfUnit(state, white)?.facing).toBe('north');
     });
   });
 });

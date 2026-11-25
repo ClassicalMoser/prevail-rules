@@ -1,46 +1,49 @@
-import { tempCommandCards } from '@sampleValues';
-import type { OwnedCardState } from '@game';
+import { createOwnedCardState } from '@factories';
+import { createTestCard } from '@testing';
 
 import { chooseCard } from './chooseCard';
 
-import { createEmptyGameState } from '@factories';
 /**
- * ChooseCard: Moves a card from a player's hand to awaitingPlay (choosing a card for play).
+ * In Phase 1 each player picks a card from hand and lays it face down
+ * (§4.1.1). Only a card in hand can be chosen (§10.1.1).
  */
 describe('chooseCard function', () => {
-  function ownedWithHand(hand: typeof tempCommandCards): OwnedCardState {
-    const state = createEmptyGameState('standard');
-    return {
-      ...state.cardState.black,
-      awaitingPlay: null,
-      inHand: [...hand],
-    };
-  }
+  it('lays the chosen card face down and leaves the rest of the hand', () => {
+    // Black holds two cards and chooses the first.
+    const chosen = createTestCard();
+    const kept = createTestCard();
+    const owned = createOwnedCardState({ inHand: [chosen, kept] });
 
-  it('moves card from hand to awaitingPlay', () => {
-    const owned = ownedWithHand([tempCommandCards[0], tempCommandCards[1]]);
+    const result = chooseCard(owned, chosen);
 
-    const result = chooseCard(owned, tempCommandCards[0]);
-
-    expect(result.inHand).toStrictEqual([tempCommandCards[1]]);
-    expect(result.awaitingPlay).toBe(tempCommandCards[0]);
+    // The other card stays in hand.
+    expect(result.inHand).toStrictEqual([kept]);
+    // The chosen card waits face down for the reveal.
+    expect(result.awaitingPlay).toBe(chosen);
   });
 
-  it('leaves remaining hand cards in place', () => {
-    const owned = ownedWithHand([tempCommandCards[1], tempCommandCards[2]]);
+  it('lays down the hand’s own copy, not the copy the choice names', () => {
+    // The choice names Black's card, who it is, under another name.
+    const held = createTestCard({ name: 'As held' });
+    const owned = createOwnedCardState({ inHand: [held] });
+    const named = { ...held, name: 'Renamed' };
 
-    const result = chooseCard(owned, tempCommandCards[1]);
+    const result = chooseCard(owned, named);
 
-    expect(result.inHand).toStrictEqual([tempCommandCards[2]]);
-    expect(result.awaitingPlay).toBe(tempCommandCards[1]);
+    // The card face down is the one from the hand, as it prints.
+    expect(result.awaitingPlay).toBe(held);
   });
 
-  it('throws when card not in hand', () => {
-    const owned = ownedWithHand([tempCommandCards[0]]);
-    const cardNotInHand = tempCommandCards[1];
+  it('throws when the card is not in the hand', () => {
+    // Black's only other card has already been played.
+    const played = createTestCard({ id: 'already-played' });
+    const owned = createOwnedCardState({
+      inHand: [createTestCard()],
+      played: [played],
+    });
 
-    expect(() => chooseCard(owned, cardNotInHand)).toThrow(
-      `Command card ${tempCommandCards[1].id} not found in player's hand`,
+    expect(() => chooseCard(owned, played)).toThrow(
+      "Command card already-played not found in player's hand",
     );
   });
 });

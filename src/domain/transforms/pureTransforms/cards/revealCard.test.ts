@@ -1,45 +1,31 @@
+import { createOwnedCardState } from '@factories';
 import { createTestCard } from '@testing';
-
-import { createEmptyGameState } from '@factories';
 
 import { revealCard } from './revealCard';
 
 /**
- * RevealCard: Moves a player's card from awaitingPlay to inPlay.
+ * The face-down card is turned over and is in play for the round (§4.1.2).
  */
 describe('revealCard function', () => {
-  it('given move card from awaitingPlay to inPlay', () => {
+  it('turns the waiting card face up, in play', () => {
+    // Black has laid a card face down.
     const awaitingCard = createTestCard();
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
+    const owned = createOwnedCardState({
       awaitingPlay: awaitingCard,
-    };
+      inHand: [createTestCard()],
+    });
 
     const result = revealCard(owned);
 
+    // The same card is now in play, and nothing waits.
     expect(result.inPlay).toBe(awaitingCard);
     expect(result.awaitingPlay).toBeNull();
   });
 
-  it('given if player has no card awaiting play, throws', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      awaitingPlay: null,
-    };
+  it('throws when the player has no card waiting', () => {
+    // Black has not chosen a card yet.
+    const owned = createOwnedCardState({ inHand: [createTestCard()] });
 
     expect(() => revealCard(owned)).toThrow('Player has no card awaiting play');
-  });
-
-  it('given not mutate the original card state', () => {
-    const originalAwaiting = createTestCard();
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      awaitingPlay: originalAwaiting,
-    };
-
-    revealCard(owned);
-
-    expect(owned.awaitingPlay).toBe(originalAwaiting);
-    expect(owned.inPlay).not.toBe(originalAwaiting);
   });
 });

@@ -2,10 +2,8 @@ import { throwIfBypassed } from '@utils';
 import type {
   OpenReverseFromAttackApplyEvent,
   ResolveRetreatEvent,
-  TriggerRoutFromRetreatEvent,
 } from '@events';
-import type { AuthoritativeGameState } from '@game';
-import { createAttackApplyState, createEmptyGameState } from '@factories';
+import { createAttackApplyState } from '@factories';
 import { generateEventFromProcedure } from '@procedures';
 import {
   getRangedAttackApplyState,
@@ -14,63 +12,55 @@ import {
   getReverseStateFromAttackApply,
 } from '@queries';
 import {
-  createAttackApplyStateWithRetreatAndReverse,
+  createGameStateWithUnits,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
-  enemyCuttingOffRetreat,
-  legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyOpenRetreatFromAttackApplyEvent } from './applyOpenRetreatFromAttackApplyEvent';
 import { applyOpenReverseFromAttackApplyEvent } from './applyOpenReverseFromAttackApplyEvent';
 import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
-import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
 /**
  * Facts the attack-outcome cleanup made reachable: a retreat then a reverse on
  * the square the retreat left the unit on, and a failed retreat that routs and
  * bypasses reverse.
+ *
+ * The second fact is stated with the apply that carries it out, in the
+ * `applyTriggerRoutFromRetreatEvent function` spec ("rout supersedes later
+ * results"); this spec keeps the first, which runs across three applies.
  */
 describe('attack apply outcome flow', () => {
-  /**
-   * IssueCommands with a ranged attack apply already measured for the defender.
-   * Stand-in enough to open and resolve the apply's outcome steps.
-   */
-  function rangedApplyShell(
-    defendingUnit: ReturnType<typeof createTestUnit>,
-    attackApply: ReturnType<typeof createAttackApplyState>,
-  ): AuthoritativeGameState {
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const empty = createEmptyGameState('standard');
-    const withBoard = replaceBoard(
-      empty,
-      addUnitToBoard(empty.boardState, unitWithPlacement),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
-  }
-
   it('after a retreat that also cleared reverse, the reverse opens on the square the retreat moved to', () => {
+    // White's unit on E-5 facing north, shot by Black's shooter in front of
+    // it on D-5. Any unit will do: on open ground its one retreat is a step
+    // straight back.
+    const defendingUnit = createTestUnit('white');
+    const shooter = createTestUnit('black', { range: 1 });
+    const base = createGameStateWithUnits([
+      placed(defendingUnit, 'E-5', 'north'),
+      placed(shooter, 'D-5', 'south'),
+    ]);
+
     // Both thresholds fell; the factory leaves both steps due and neither open.
-    const defendingUnit = createTestUnit('white', { attack: 2, speed: 3 });
-    const start = rangedApplyShell(
-      defendingUnit,
-      createAttackApplyState(defendingUnit, {
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: createAttackApplyState(defendingUnit, {
         unitRetreated: true,
         unitReversed: true,
         unitRouted: false,
       }),
-    );
+      attackingUnit: shooter,
+      defendingUnit,
+    });
+    // Phase 3 with that shot under way, built from the authoritative game
+    // the procedure below needs.
+    const phase = createIssueCommandsPhaseState(base, {
+      currentCommandResolutionState: shot,
+    });
+    const start = updatePhaseState(base, phase);
 
     // Open the retreat first — reverse waits until the unit has a new square.
     // Its procedure works out where the unit may go.
@@ -132,27 +122,5 @@ describe('attack apply outcome flow', () => {
     expect(
       getPositionOfUnit(afterReverseOpen, reverse.reversingUnit),
     ).toStrictEqual({ coordinate: 'F-5', facing: 'north' });
-  });
-
-  it('a retreat with nowhere to go that routs bypasses reverse on the apply', () => {
-    // Both steps were due; nowhere to retreat means a rout instead of a reverse.
-    const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
-    const attackApply = createAttackApplyStateWithRetreatAndReverse(
-      unitWithPlacement.unit,
-      // An enemy right behind it, facing it, cuts its retreat (§9.1.5).
-      legalRetreatsOf(unitWithPlacement, [
-        enemyCuttingOffRetreat(unitWithPlacement),
-      ]),
-    );
-    expect(attackApply.reverseState).toBe('pending');
-    const full = rangedApplyShell(retreatingUnit, attackApply);
-
-    const event: TriggerRoutFromRetreatEvent = {
-      effectType: 'triggerRoutFromRetreat',
-      eventType: 'gameEffect',
-    };
-    const next = applyTriggerRoutFromRetreatEvent(event, full);
-    expect(getRangedAttackApplyState(next).reverseState).toBe('bypassed');
   });
 });

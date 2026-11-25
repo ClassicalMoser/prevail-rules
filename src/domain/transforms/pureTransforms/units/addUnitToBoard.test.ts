@@ -1,220 +1,122 @@
-import type { Coordinate } from '@ruleValues';
 import { createTestUnit, placed } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
-import { throwIfUndefined } from '@utils';
 
+import { addEngagingUnitToBoard } from './addEngagingUnitToBoard';
 import { addUnitToBoard } from './addUnitToBoard';
 
 /**
  * AddUnitToBoard: Adds a unit to a board (pure function, returns new board).
+ * A space holds one unit, or two enemies engaged facing each other (§2.2.1),
+ * and nothing enters an engaged space (§2.2.3).
+ *
+ * The board fixtures in `@testing` are built with this function, so the
+ * setup here places units by calling it directly.
  */
 describe('addUnitToBoard function', () => {
-  const coordinate: Coordinate = 'E-5';
+  // Black's unit, and the enemy and the friend it may meet.
+  const unit = createTestUnit('black', { attack: 3 });
+  const enemy = createTestUnit('white', { attack: 3 });
+  const friend = createTestUnit('black', { attack: 3, instanceNumber: 2 });
 
-  describe('empty space', () => {
-    it('given add a single unit to an empty space', () => {
-      const board = createEmptyStandardBoard();
-      const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = placed(unit, coordinate, 'north');
+  it('stands a unit alone on an empty space, facing the way it is set down, and leaves the board it was given as it was', () => {
+    const board = createEmptyStandardBoard();
 
-      const newBoard = addUnitToBoard(board, unitWithPlacement);
+    const newBoard = addUnitToBoard(board, placed(unit, 'E-5', 'north'));
 
-      expect(newBoard).not.toBe(board);
-      expect(newBoard.board[coordinate]?.unitPresence).toStrictEqual({
-        facing: 'north',
-        presenceType: 'single',
-        unit,
-      });
+    // The unit stands alone on E-5, facing north.
+    expect(newBoard.board['E-5']?.unitPresence).toStrictEqual({
+      facing: 'north',
+      presenceType: 'single',
+      unit,
     });
-
-    it('given not mutate the original board', () => {
-      const board = createEmptyStandardBoard();
-      const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = placed(unit, coordinate, 'north');
-
-      addUnitToBoard(board, unitWithPlacement);
-
-      expect(board.board[coordinate]?.unitPresence).toStrictEqual({
-        presenceType: 'none',
-      });
-    });
-
-    it('given preserve other board spaces', () => {
-      const board = createEmptyStandardBoard();
-      const otherCoord: Coordinate = 'D-4';
-      const otherUnit = createTestUnit('white', { attack: 3 });
-      board.board[otherCoord] = {
-        ...throwIfUndefined(
-          board.board[otherCoord],
-          `expected board space at ${otherCoord}`,
-        ),
-        unitPresence: {
-          facing: 'south',
-          presenceType: 'single',
-          unit: otherUnit,
-        },
-      };
-
-      const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = placed(unit, coordinate, 'north');
-
-      const newBoard = addUnitToBoard(board, unitWithPlacement);
-
-      expect(newBoard.board[otherCoord]?.unitPresence).toStrictEqual({
-        facing: 'south',
-        presenceType: 'single',
-        unit: otherUnit,
-      });
+    // The board it was given still has E-5 empty.
+    expect(board.board['E-5']?.unitPresence).toStrictEqual({
+      presenceType: 'none',
     });
   });
 
-  describe('space with engaged units', () => {
-    it('given error when trying to add unit to space with engaged units, throws', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const secondaryUnit = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const board = createEmptyStandardBoard();
-      board.board[coordinate] = {
-        ...throwIfUndefined(
-          board.board[coordinate],
-          `expected board space at ${coordinate}`,
-        ),
-        unitPresence: {
-          presenceType: 'engaged',
-          primaryFacing: 'north',
-          primaryUnit,
-          secondaryUnit,
-        },
-      };
+  it('leaves every other space as it was', () => {
+    // White's unit already stands on D-4, facing south.
+    const board = addUnitToBoard(
+      createEmptyStandardBoard(),
+      placed(enemy, 'D-4', 'south'),
+    );
 
-      const newUnit = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const unitWithPlacement = placed(newUnit, coordinate, 'south');
+    const newBoard = addUnitToBoard(board, placed(unit, 'E-5', 'north'));
 
-      expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
-        'Cannot add unit to space with engaged units',
-      );
+    // D-4 still holds White's unit, facing south.
+    expect(newBoard.board['D-4']?.unitPresence).toStrictEqual({
+      facing: 'south',
+      presenceType: 'single',
+      unit: enemy,
     });
   });
 
-  describe('space with friendly single unit', () => {
-    it('given error when trying to add friendly unit to space with friendly unit, throws', () => {
-      const existingUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const board = createEmptyStandardBoard();
-      board.board[coordinate] = {
-        ...throwIfUndefined(
-          board.board[coordinate],
-          `expected board space at ${coordinate}`,
-        ),
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: existingUnit,
-        },
-      };
+  it('sets a unit down engaged with a lone enemy it faces, the enemy first of the pair with its facing', () => {
+    // White's unit stands on E-5 facing north; Black's is set down facing
+    // south, into it.
+    const board = addUnitToBoard(
+      createEmptyStandardBoard(),
+      placed(enemy, 'E-5', 'north'),
+    );
 
-      const newUnit = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const unitWithPlacement = placed(newUnit, coordinate, 'south');
+    const newBoard = addUnitToBoard(board, placed(unit, 'E-5', 'south'));
 
-      expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
-        'Cannot add unit to space with friendly unit',
-      );
+    // The two stand engaged; the pair keeps White's facing, and Black faces
+    // opposite it.
+    expect(newBoard.board['E-5']?.unitPresence).toStrictEqual({
+      presenceType: 'engaged',
+      primaryFacing: 'north',
+      primaryUnit: enemy,
+      secondaryUnit: unit,
+    });
+    // The board it was given still has White alone on E-5.
+    expect(board.board['E-5']?.unitPresence).toStrictEqual({
+      facing: 'north',
+      presenceType: 'single',
+      unit: enemy,
     });
   });
 
-  describe('space with enemy single unit', () => {
-    it('given adding enemy unit with opposite facing, creates engaged unit presence', () => {
-      const existingUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const board = createEmptyStandardBoard();
-      board.board[coordinate] = {
-        ...throwIfUndefined(
-          board.board[coordinate],
-          `expected board space at ${coordinate}`,
-        ),
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: existingUnit,
-        },
-      };
+  it('refuses to set a unit down with an enemy it does not face', () => {
+    // White's unit stands on E-5 facing north; Black's would face north too,
+    // with its back to it.
+    const board = addUnitToBoard(
+      createEmptyStandardBoard(),
+      placed(enemy, 'E-5', 'north'),
+    );
 
-      const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = placed(newUnit, coordinate, 'south');
+    expect(() => addUnitToBoard(board, placed(unit, 'E-5', 'north'))).toThrow(
+      'Engaged unit must have opposite facing',
+    );
+  });
 
-      const newBoard = addUnitToBoard(board, unitWithPlacement);
+  it('refuses a space a friendly unit already holds', () => {
+    // Another of Black's units stands on E-5.
+    const board = addUnitToBoard(
+      createEmptyStandardBoard(),
+      placed(friend, 'E-5', 'north'),
+    );
 
-      expect(newBoard.board[coordinate]?.unitPresence).toStrictEqual({
-        presenceType: 'engaged',
-        primaryFacing: 'north',
-        primaryUnit: existingUnit,
-        secondaryUnit: newUnit,
-      });
-    });
+    expect(() => addUnitToBoard(board, placed(unit, 'E-5', 'south'))).toThrow(
+      'Cannot add unit to space with friendly unit',
+    );
+  });
 
-    it('given error when adding enemy unit without opposite facing, throws', () => {
-      const existingUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const board = createEmptyStandardBoard();
-      board.board[coordinate] = {
-        ...throwIfUndefined(
-          board.board[coordinate],
-          `expected board space at ${coordinate}`,
-        ),
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: existingUnit,
-        },
-      };
+  it('refuses a space where two units are engaged', () => {
+    // White's unit on E-5, engaged by another of Black's units arriving
+    // from the north, facing south.
+    const standing = addUnitToBoard(
+      createEmptyStandardBoard(),
+      placed(enemy, 'E-5', 'north'),
+    );
+    const engaged = addEngagingUnitToBoard(
+      standing,
+      placed(friend, 'E-5', 'south'),
+    );
 
-      const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = placed(newUnit, coordinate, 'north');
-
-      expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
-        'Engaged unit must have opposite facing',
-      );
-    });
-
-    it('given creating engagement, does not mutate the original board', () => {
-      const existingUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const board = createEmptyStandardBoard();
-      board.board[coordinate] = {
-        ...throwIfUndefined(
-          board.board[coordinate],
-          `expected board space at ${coordinate}`,
-        ),
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: existingUnit,
-        },
-      };
-
-      const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = placed(newUnit, coordinate, 'south');
-
-      addUnitToBoard(board, unitWithPlacement);
-
-      expect(board.board[coordinate]?.unitPresence).toStrictEqual({
-        facing: 'north',
-        presenceType: 'single',
-        unit: existingUnit,
-      });
-    });
+    expect(() => addUnitToBoard(engaged, placed(unit, 'E-5', 'south'))).toThrow(
+      'Cannot add unit to space with engaged units',
+    );
   });
 });

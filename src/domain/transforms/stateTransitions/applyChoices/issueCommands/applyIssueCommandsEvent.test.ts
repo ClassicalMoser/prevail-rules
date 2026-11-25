@@ -1,23 +1,23 @@
-import { tempCommandCards } from '@sampleValues';
 import type { GameState } from '@game';
-import { ISSUE_COMMANDS_PHASE } from '@game';
-
+import { createEmptyGameState, createIssueCommandsEvent } from '@factories';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
   createBoardWithFacingRow,
   createBoardWithUnits,
+  createIssueCommandsPhaseState,
+  createTestCard,
   createTestUnit,
   placed,
   replaceBoard,
   updateCardState,
 } from '@testing';
-
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updateCurrentInitiative,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyIssueCommandsEvent } from './applyIssueCommandsEvent';
 
-import { createEmptyGameState, createIssueCommandsEvent } from '@factories';
-import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 /**
  * Issuing orders (§4.3): the player's whole allocation of their card's
  * command at once. Every unit it orders is ordered for the round, and the
@@ -35,16 +35,13 @@ describe('applyIssueCommandsEvent function', () => {
     );
     const withCards = updateCardState(state, {
       ...state.cardState,
-      black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
-      white: { ...state.cardState.white, inPlay: tempCommandCards[1] },
+      black: { ...state.cardState.black, inPlay: createTestCard() },
+      white: { ...state.cardState.white, inPlay: createTestCard() },
     });
-    const issuing = updatePhaseState(withCards, {
-      currentCommandResolutionState: 'pending',
-      phase: ISSUE_COMMANDS_PHASE,
-      remainingUnitsFirstPlayer: [],
-      remainingUnitsSecondPlayer: [],
-      step,
-    });
+    const issuing = updatePhaseState(
+      withCards,
+      createIssueCommandsPhaseState(withCards, { step }),
+    );
     return issuing;
   }
 

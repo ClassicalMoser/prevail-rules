@@ -1,8 +1,32 @@
-import type { CardsLeavePlayEvent, GameEffectEvent } from '@events';
+import type {
+  CardsLeavePlayEvent,
+  CompleteIssueCommandsPhaseEvent,
+  CompleteMoveCommandersPhaseEvent,
+  GameEffectEvent,
+  ResolveFlankEngagementEvent,
+  SkipLostCommanderMoveEvent,
+} from '@events';
 import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
+import {
+  getBoardSpace,
+  getCurrentPhaseState,
+  getMoveCommandersPhaseState,
+} from '@queries';
 import { tempCommandCards } from '@sampleValues';
-import { createCleanupPhaseState, updateCardState } from '@testing';
+import {
+  createCleanupPhaseState,
+  createFlankEngagementState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
+  createIssueCommandsPhaseState,
+  createMoveCommandersPhaseState,
+  createMovementResolutionState,
+  createTestUnit,
+  placed,
+  updateCardState,
+  withLostCommander,
+} from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 
@@ -43,6 +67,98 @@ describe('applyGameEffectEvent function', () => {
     expect(result.cardState.white.inPlay).toBeNull();
     expect(result.cardState.black.played).toStrictEqual([tempCommandCards[0]]);
     expect(result.cardState.white.played).toStrictEqual([tempCommandCards[1]]);
+  });
+
+  // The routes below are the ones no other spec reaches through this router;
+  // the rest are taken whenever a scenario or the application applies an
+  // effect.
+
+  it("ends Phase 2: the first player's orders are next", () => {
+    // Both commanders have moved.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      empty,
+      createMoveCommandersPhaseState({ step: 'complete' }),
+    );
+    const event: CompleteMoveCommandersPhaseEvent = {
+      effectType: 'completeMoveCommandersPhase',
+      eventType: 'gameEffect',
+    };
+
+    const result = applyGameEffectEvent(event, state);
+
+    // Phase 3 is open, the first player to issue their orders (§4.3).
+    expect(getCurrentPhaseState(result)).toMatchObject({
+      phase: 'issueCommands',
+      step: 'firstPlayerIssueCommands',
+    });
+  });
+
+  it("passes over a defeated commander's turn", () => {
+    // White holds the initiative, and its commander has fallen (§4.2.8).
+    const lost = withLostCommander(createEmptyGameState('standard'), 'white');
+    const state = updatePhaseState(lost, createMoveCommandersPhaseState());
+    const event: SkipLostCommanderMoveEvent = {
+      effectType: 'skipLostCommanderMove',
+      eventType: 'gameEffect',
+    };
+
+    const result = applyGameEffectEvent(event, state);
+
+    // Black's commander moves next (§4.2.1).
+    expect(getMoveCommandersPhaseState(result).step).toBe(
+      'moveSecondCommander',
+    );
+  });
+
+  it('ends Phase 3: every engaged space is to be fought', () => {
+    // Both players' orders are carried out, and nothing is engaged.
+    const empty = createEmptyGameState('standard');
+    const state = updatePhaseState(
+      empty,
+      createIssueCommandsPhaseState(empty, { step: 'complete' }),
+    );
+    const event: CompleteIssueCommandsPhaseEvent = {
+      effectType: 'completeIssueCommandsPhase',
+      eventType: 'gameEffect',
+      remainingEngagements: [],
+    };
+
+    const result = applyGameEffectEvent(event, state);
+
+    // Phase 4 is open, with no fight to choose (§4.4.4).
+    expect(getCurrentPhaseState(result)).toMatchObject({
+      phase: 'resolveMelee',
+      remainingEngagements: [],
+    });
+  });
+
+  it('settles a flank engagement: the two units share the space', () => {
+    // White stands at E-5 facing east. Black's move ends on its flank, facing
+    // north, and has waited on F-5 for the engagement to place it.
+    const defender = createTestUnit('white');
+    const attacker = createTestUnit('black');
+    const withUnits = createGameStateWithUnits([
+      placed(defender, 'E-5', 'east'),
+      placed(attacker, 'F-5', 'north'),
+    ]);
+    const movement = createMovementResolutionState(withUnits, {
+      engagementState: createFlankEngagementState(),
+      movingUnit: attacker,
+      targetPlacement: { coordinate: 'E-5', facing: 'north' },
+    });
+    const state = createGameStateResolvingCommand(movement, withUnits);
+    const event: ResolveFlankEngagementEvent = {
+      effectType: 'resolveFlankEngagement',
+      eventType: 'gameEffect',
+    };
+
+    const result = applyGameEffectEvent(event, state);
+
+    // The two are engaged at E-5, to fight in Phase 4 (§6.3.4).
+    expect(getBoardSpace(result.boardState, 'E-5').unitPresence).toMatchObject({
+      presenceType: 'engaged',
+    });
   });
 
   it('throws for a kind of effect it has no rule for', () => {

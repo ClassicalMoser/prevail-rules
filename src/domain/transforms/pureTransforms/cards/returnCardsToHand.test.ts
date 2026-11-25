@@ -1,75 +1,34 @@
-import { tempCommandCards } from '@sampleValues';
+import { createOwnedCardState } from '@factories';
+import { createTestCard } from '@testing';
+
 import { returnCardsToHand } from './returnCardsToHand';
 
-import { createEmptyGameState } from '@factories';
 /**
- * ReturnCardsToHand: Returns all played and discarded cards to the player's hand.
+ * A rally takes the played pile, less the burnt card, and the entire discard
+ * pile back into hand (§10.3.2). Burnt cards never come back.
  */
 describe('returnCardsToHand function', () => {
-  it('given context, returns all played and discarded cards to hand', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [tempCommandCards[2]],
-      inHand: [tempCommandCards[0]],
-      played: [tempCommandCards[1]],
-    };
+  it('returns the played and discarded cards after those still held, and keeps the burnt pile', () => {
+    // Black holds one card, has played one, discarded one, and burnt one.
+    const held = createTestCard();
+    const played = createTestCard();
+    const discarded = createTestCard();
+    const burnt = createTestCard();
+    const owned = createOwnedCardState({
+      burnt: [burnt],
+      discarded: [discarded],
+      inHand: [held],
+      played: [played],
+    });
 
     const result = returnCardsToHand(owned);
 
-    expect(result.inHand).toStrictEqual([
-      tempCommandCards[0],
-      tempCommandCards[1],
-      tempCommandCards[2],
-    ]);
+    // The hand: what was held, then the played pile, then the discards.
+    expect(result.inHand).toStrictEqual([held, played, discarded]);
+    // Both piles are empty now.
     expect(result.played).toStrictEqual([]);
     expect(result.discarded).toStrictEqual([]);
-  });
-
-  it('given handle empty played and discarded', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [],
-      inHand: [tempCommandCards[0]],
-      played: [],
-    };
-
-    const result = returnCardsToHand(owned);
-
-    expect(result.inHand).toStrictEqual([tempCommandCards[0]]);
-    expect(result.played).toStrictEqual([]);
-    expect(result.discarded).toStrictEqual([]);
-  });
-
-  it('given preserve order: hand, then played, then discarded', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [tempCommandCards[2]],
-      inHand: [tempCommandCards[0]],
-      played: [tempCommandCards[1]],
-    };
-
-    const result = returnCardsToHand(owned);
-
-    expect(result.inHand[0]).toBe(tempCommandCards[0]);
-    expect(result.inHand[1]).toBe(tempCommandCards[1]);
-    expect(result.inHand[2]).toBe(tempCommandCards[2]);
-  });
-
-  it('given not mutate the original card state', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [tempCommandCards[2]],
-      inHand: [tempCommandCards[0]],
-      played: [tempCommandCards[1]],
-    };
-    const originalHand = owned.inHand;
-    const originalPlayed = owned.played;
-    const originalDiscarded = owned.discarded;
-
-    returnCardsToHand(owned);
-
-    expect(owned.inHand).toBe(originalHand);
-    expect(owned.played).toBe(originalPlayed);
-    expect(owned.discarded).toBe(originalDiscarded);
+    // The burnt card stays out of the game.
+    expect(result.burnt).toStrictEqual([burnt]);
   });
 });

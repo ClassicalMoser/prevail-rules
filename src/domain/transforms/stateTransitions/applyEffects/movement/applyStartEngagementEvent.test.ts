@@ -1,280 +1,224 @@
-import type { EngagementType, UnitWithPlacement } from '@entities';
+import type { EngagementType, UnitFacing } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import type { GameState } from '@game';
-import { throwIfNone, throwIfPending } from '@utils';
+import type { GameState, MovementResolutionState } from '@game';
 import {
-  createIssueCommandsPhaseState,
+  getBoardSpace,
+  getFlankEngagementStateFromMovement,
+  getFrontEngagementStateFromMovement,
+  getRearEngagementStateFromMovement,
+} from '@queries';
+import {
+  createBoardWithUnits,
+  createGameStateResolvingCommand,
+  createGameStateWithBoard,
   createMovementResolutionState,
-  createTestCard,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
 import {
   addCommanderToBoard,
-  addUnitToBoard,
-  updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms/pureTransforms';
+import { createUnitPlacement } from '@factories';
 
 import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 
-import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * When a move enters an enemy hex, this seeds `engagementState` on the movement CRS from the
  * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
  */
 describe('applyStartEngagementEvent function', () => {
+  /** White's unit, standing on E-6. */
+  const defender = createTestUnit('white');
+
+  /** Black's unit, whose move from F-6 ends on E-6 facing north. */
+  const mover = createTestUnit('black');
+
   /**
-   * Black E-5 moving into white on E-6 with north-facing target placement;
-   * if the commander rides, black's commander stands with the mover.
+   * Black holds the initiative and carries out a Move: its unit has written
+   * a move from F-6 into White's unit on E-6, ending facing north, and waits
+   * on F-6 until the engagement places it. White's unit faces the way that
+   * makes the engagement the case's kind (§6.3.1); if the commander rides,
+   * Black's commander stands with the mover.
    */
-  function stateWithMovementToEnemy(options?: { commanderRides?: boolean }): {
-    state: GameState;
-    defenderWithPlacement: UnitWithPlacement;
-  } {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defendingUnit = createTestUnit('white');
-    const blackMover = createTestUnit('black');
-    const defenderWithPlacement = placed(defendingUnit, 'E-6', 'south');
-    // The mover waits on its start space until the engagement places it.
-    const moverWithPlacement = placed(blackMover, 'E-5', 'north');
-    const units = addUnitToBoard(
-      addUnitToBoard(state.boardState, defenderWithPlacement),
-      moverWithPlacement,
+  function movingIntoEnemy(
+    defenderFacing: UnitFacing,
+    options: {
+      commanderRides?: boolean;
+      movement?: Partial<MovementResolutionState>;
+    } = {},
+  ): GameState {
+    const units = createBoardWithUnits([
+      placed(defender, 'E-6', defenderFacing),
+      placed(mover, 'F-6', 'north'),
+    ]);
+    const commanderRides = options.commanderRides ?? false;
+    const board = commanderRides
+      ? addCommanderToBoard(units, 'black', 'F-6')
+      : units;
+    const base = updateCurrentInitiative(
+      createGameStateWithBoard(board),
+      'black',
     );
-    const commanderRides = options?.commanderRides ?? false;
-    const withBoard = replaceBoard(
-      state,
-      commanderRides ? addCommanderToBoard(units, 'black', 'E-5') : units,
-    );
-    const movement = createMovementResolutionState(withBoard, {
+    const movement = createMovementResolutionState(base, {
       moveCommander: commanderRides,
-      movingUnit: blackMover,
+      movingUnit: mover,
       targetPlacement: createUnitPlacement('E-6', 'north'),
+      ...options.movement,
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: movement,
-    });
-    return {
-      defenderWithPlacement,
-      state: updatePhaseState(withBoard, phase),
-    };
+    const resolving = createGameStateResolvingCommand(movement, base);
+    return resolving;
   }
 
-  it('given event engagementType front, movement engagement is front', () => {
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
+  /** The procedure's answer: the kind of engagement, and the mover's Speed. */
+  function startEngagement(
+    engagementType: EngagementType,
+    engagingSpeed = 2,
+  ): StartEngagementEvent {
     const event: StartEngagementEvent = {
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 2,
-      effectType: 'startEngagement' as const,
-      engagementType: 'front' as const,
-      eventType: 'gameEffect' as const,
+      defendingUnit: defender,
+      effectType: 'startEngagement',
+      engagementType,
+      engagingSpeed,
+      eventType: 'gameEffect',
     };
-
-    const next = applyStartEngagementEvent(event, state);
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('Expected issueCommands phase');
-    }
-    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
-    expect(cmd.commandResolutionType).toBe('movement');
-    if (cmd.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(cmd.engagementState, 'engagement');
-    expect(engagement.engagementResolutionState.engagementType).toBe('front');
-  });
+    return event;
+  }
 
   it('sets a front attacker down with the defender at once, recording its Speed', () => {
-    // Black waits on E-5; its move ends head-on into white on E-6.
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
-    const event: StartEngagementEvent = {
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 3,
-      effectType: 'startEngagement' as const,
-      engagementType: 'front' as const,
-      eventType: 'gameEffect' as const,
-    };
-
-    const next = applyStartEngagementEvent(event, state);
-
-    // The attacker has left E-5 and stands engaged with white on E-6, before
-    // the defender decides whether to fall back (§6.3.2).
-    expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
+    // Black waits on F-6; its move ends head-on into White facing south.
+    const next = applyStartEngagementEvent(
+      startEngagement('front', 3),
+      movingIntoEnemy('south'),
     );
-    expect(next.boardState.board['E-6']?.unitPresence).toMatchObject({
+
+    // The attacker has left F-6 and stands engaged with White on E-6, before
+    // the defender decides whether to fall back (§6.3.2).
+    expect(getBoardSpace(next.boardState, 'F-6').unitPresence).toStrictEqual({
+      presenceType: 'none',
+    });
+    expect(getBoardSpace(next.boardState, 'E-6').unitPresence).toStrictEqual({
       presenceType: 'engaged',
       primaryFacing: 'north',
-      secondaryUnit: defenderWithPlacement.unit,
+      primaryUnit: mover,
+      secondaryUnit: defender,
     });
-    // The engagement keeps the Speed sampled where its move began.
-    expect(next).toMatchObject({
-      currentRoundState: {
-        currentPhaseState: {
-          currentCommandResolutionState: {
-            engagementState: {
-              engagementResolutionState: { engagingSpeed: 3 },
-            },
-          },
-        },
-      },
-    });
+    // The engagement is a front one, and keeps the Speed sampled where its
+    // move began, to compare against the defender's.
+    const front = getFrontEngagementStateFromMovement(next);
+    expect(front.engagementResolutionState.engagingSpeed).toBe(3);
+    // It stays open for the defender's commitment (§6.3.2 step 1).
+    expect(front.completed).toBe(false);
   });
 
   it('a commander riding into a front engagement joins the fight with its unit', () => {
     // §4.3.10: the one way a commander comes to share an enemy's space.
-    // Black's commander rides with the mover from E-5 into white on E-6.
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy({
-      commanderRides: true,
-    });
-    const event: StartEngagementEvent = {
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 3,
-      effectType: 'startEngagement' as const,
-      engagementType: 'front' as const,
-      eventType: 'gameEffect' as const,
-    };
+    // Black's commander rides with the mover from F-6 into White on E-6.
+    const next = applyStartEngagementEvent(
+      startEngagement('front'),
+      movingIntoEnemy('south', { commanderRides: true }),
+    );
 
-    const next = applyStartEngagementEvent(event, state);
-
-    // The commander has left E-5 with its unit and stands in the engaged
+    // The commander has left F-6 with its unit and stands in the engaged
     // space, committed to the fight.
-    expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
-    expect(next.boardState.board['E-6']?.commanders).toStrictEqual(['black']);
+    expect(getBoardSpace(next.boardState, 'F-6').commanders).toStrictEqual([]);
+    expect(getBoardSpace(next.boardState, 'E-6').commanders).toStrictEqual([
+      'black',
+    ]);
   });
 
-  it('given event engagementType rear, rear routState player matches defender side with pending penalty', () => {
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
-    const event: StartEngagementEvent = {
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 2,
-      effectType: 'startEngagement' as const,
-      engagementType: 'rear' as const,
-      eventType: 'gameEffect' as const,
-    };
-
-    const next = applyStartEngagementEvent(event, state);
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
+  it('a rear engagement routs the defender off the board at once, its Morale owed by White', () => {
+    // Black came from behind White, which faces north as Black does (§6.3.3).
+    const next = applyStartEngagementEvent(
+      startEngagement('rear'),
+      movingIntoEnemy('north'),
     );
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('Expected issueCommands phase');
-    }
-    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
-    if (cmd.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(cmd.engagementState, 'engagement');
-    const res = engagement.engagementResolutionState;
-    expect(res.engagementType).toBe('rear');
-    if (res.engagementType !== 'rear') {
-      throw new Error('rear');
-    }
-    const rout = throwIfPending(res.routState, 'rout');
-    expect(rout.player).toBe(defenderWithPlacement.unit.playerSide);
-    expect(rout.numberToDiscard).toBe('pending');
+
+    // The defender is out of the game, with no melee and no reply.
+    expect(next.routedUnits).toStrictEqual([defender]);
+    // Its owner owes the Morale, which resolveRout works out, and the
+    // engagement stays open until it is paid.
+    const rear = getRearEngagementStateFromMovement(next);
+    expect(rear.completed).toBe(false);
+    expect(rear.engagementResolutionState.routState).toMatchObject({
+      numberToDiscard: 'pending',
+      player: 'white',
+      unitsToRout: [defender],
+    });
   });
 
   it('a rear engagement steps the attacker into the space its routed defender left', () => {
     // §6.3.3: the defender routs off the board at once, and the attacker
     // stands where it stood before its owner is asked for the Morale.
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
-    const event: StartEngagementEvent = {
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 2,
-      effectType: 'startEngagement' as const,
-      engagementType: 'rear' as const,
-      eventType: 'gameEffect' as const,
-    };
-
-    const next = applyStartEngagementEvent(event, state);
+    const next = applyStartEngagementEvent(
+      startEngagement('rear'),
+      movingIntoEnemy('north'),
+    );
 
     // The attacker has left its start space for the defender's.
-    expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
-    );
-    const target = next.boardState.board['E-6']?.unitPresence;
-    expect(target?.presenceType === 'single' && target.unit.playerSide).toBe(
-      'black',
-    );
-    expect(target?.presenceType === 'single' && target.facing).toBe('north');
+    expect(getBoardSpace(next.boardState, 'F-6').unitPresence).toStrictEqual({
+      presenceType: 'none',
+    });
+    expect(getBoardSpace(next.boardState, 'E-6').unitPresence).toStrictEqual({
+      facing: 'north',
+      presenceType: 'single',
+      unit: mover,
+    });
   });
 
   it("a commander riding into the defender's rear arrives with the attacker", () => {
-    // §4.3.10: black's commander stands with the attacker on E-5 and rides.
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy({
-      commanderRides: true,
-    });
-
+    // §4.3.10: Black's commander stands with the attacker on F-6 and rides.
     // The rear engagement starts: the defender routs and the attacker takes
     // its space at once.
     const next = applyStartEngagementEvent(
-      {
-        defendingUnit: defenderWithPlacement.unit,
-        engagingSpeed: 2,
-        effectType: 'startEngagement',
-        engagementType: 'rear',
-        eventType: 'gameEffect',
-      },
-      state,
+      startEngagement('rear'),
+      movingIntoEnemy('north', { commanderRides: true }),
     );
 
     // The commander is with the attacker in the space the defender left, and
     // the rout does not touch it: only the unit routed.
-    expect(next.boardState.board['E-5']?.commanders).toStrictEqual([]);
-    expect(next.boardState.board['E-6']?.commanders).toStrictEqual(['black']);
+    expect(getBoardSpace(next.boardState, 'F-6').commanders).toStrictEqual([]);
+    expect(getBoardSpace(next.boardState, 'E-6').commanders).toStrictEqual([
+      'black',
+    ]);
   });
 
-  it('given event engagementType flank, flank substep present and defenderRotated false', () => {
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
-    const event: StartEngagementEvent = {
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 2,
-      effectType: 'startEngagement' as const,
-      engagementType: 'flank' as const,
-      eventType: 'gameEffect' as const,
-    };
+  it('a flank engagement opens with the defender not yet turned, and nobody moved', () => {
+    // Black's facing crosses White's, which faces east (§6.3.4).
+    const state = movingIntoEnemy('east');
+    const next = applyStartEngagementEvent(startEngagement('flank'), state);
 
-    const next = applyStartEngagementEvent(event, state);
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('Expected issueCommands phase');
-    }
-    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
-    if (cmd.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(cmd.engagementState, 'engagement');
-    const res = engagement.engagementResolutionState;
-    expect(res.engagementType).toBe('flank');
-    if (res.engagementType !== 'flank') {
-      throw new Error('flank');
-    }
-    expect(res.defenderRotated).toBe(false);
+    // The defender is turned by the next effect, resolveFlankEngagement.
+    const flank = getFlankEngagementStateFromMovement(next);
+    expect(flank.engagementResolutionState.defenderRotated).toBe(false);
+    expect(flank.completed).toBe(false);
+    // Until then the attacker waits on F-6 and the defender is untouched.
+    expect(next.boardState).toStrictEqual(state.boardState);
+    expect(next.routedUnits).toStrictEqual([]);
   });
 
-  it('given bogus engagementType siege cast, throws unknown engagement type', () => {
-    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
-    const event: StartEngagementEvent = {
-      eventType: 'gameEffect' as const,
-      effectType: 'startEngagement' as const,
-      // Intentionally bad type cast to test error path
-      engagementType: 'siege' as unknown as EngagementType,
-      defendingUnit: defenderWithPlacement.unit,
-      engagingSpeed: 2,
+  it('throws when the move into the defender has not been written', () => {
+    // An engagement starts only from a move written into the enemy.
+    const state = movingIntoEnemy('south', {
+      movement: { targetPlacement: 'pending' },
+    });
+
+    expect(() =>
+      applyStartEngagementEvent(startEngagement('front'), state),
+    ).toThrow('The move has not been written yet');
+  });
+
+  it('throws on an engagement type that is not front, flank or rear', () => {
+    // The three kinds cover every way two facings meet (§6.3.1); a fourth
+    // can come only from a forged event.
+    const forged: StartEngagementEvent = {
+      ...startEngagement('front'),
+      // A value the type forbids, to reach the exhaustive default.
+      engagementType: 'siege' as never,
     };
 
-    expect(() => applyStartEngagementEvent(event, state)).toThrow(
-      'Unknown engagement type: siege',
-    );
+    expect(() =>
+      applyStartEngagementEvent(forged, movingIntoEnemy('south')),
+    ).toThrow('Unknown engagement type: siege');
   });
 });

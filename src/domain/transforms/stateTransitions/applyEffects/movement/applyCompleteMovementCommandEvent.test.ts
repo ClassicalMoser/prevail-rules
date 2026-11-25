@@ -2,9 +2,9 @@ import type { UnitInstance } from '@entities';
 import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
 import { getIssueCommandsPhaseState } from '@queries';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
+  createTestCard,
   createTestUnit,
   updateCardState,
 } from '@testing';
@@ -39,10 +39,11 @@ describe('applyCompleteMovementCommandEvent function', () => {
       createEmptyGameState('standard'),
       'black',
     );
+    // Each side has its own Move card in play; a test card is a Move.
     const withCards = updateCardState(base, {
       ...base.cardState,
-      black: { ...base.cardState.black, inPlay: tempCommandCards[0] },
-      white: { ...base.cardState.white, inPlay: tempCommandCards[0] },
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     const state = updatePhaseState(
       withCards,

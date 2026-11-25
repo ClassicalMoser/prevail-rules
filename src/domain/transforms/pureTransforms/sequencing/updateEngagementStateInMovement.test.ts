@@ -1,70 +1,58 @@
-import { getFrontEngagementStateFromMovement } from '@queries';
+import { createEmptyGameState } from '@factories';
+import { getEngagementStateFromMovement } from '@queries';
 import {
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
-  createMovementResolutionState,
+  createGameStateMovingInto,
+  createGameStateResolvingCommand,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
 } from '@testing';
-import { updatePhaseState } from '../';
 
+import { updatePhaseState } from '../state/updatePhaseState';
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateEngagementStateInMovement: Updates the engagement state within the current movement resolution (issue commands phase).
+ * Only a move walks into an enemy (§6.1.1), and the engagement it makes is
+ * set up as the move resolves (§4.3.10), so the move under way carries it.
  */
 describe('updateEngagementStateInMovement function', () => {
-  it('updates engagement state in movement resolution', () => {
-    const state = createEmptyGameState('standard');
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state, {
-        engagementState: createFrontEngagementState(),
-      }),
+  it('writes the engagement as it now stands onto the move under way', () => {
+    // A move has walked into an enemy head on.
+    const moving = createGameStateMovingInto(createFrontEngagementState());
+
+    // The defender has chosen to fall back.
+    const fallingBack = createFrontEngagementState({
+      defendingUnitRetreats: true,
     });
-    const stateInPhase = updatePhaseState(state, phaseState);
+    const after = updateEngagementStateInMovement(moving, fallingBack);
 
-    const engagementState = getFrontEngagementStateFromMovement(stateInPhase);
-    const newEngagementState = {
-      ...engagementState,
-      engagementResolutionState: {
-        ...engagementState.engagementResolutionState,
-        defendingUnitRetreats: true,
-      },
-    };
-
-    const newState = updateEngagementStateInMovement(
-      stateInPhase,
-      newEngagementState,
-    );
-
-    const updated = getFrontEngagementStateFromMovement(newState);
-    expect(updated.engagementResolutionState.defendingUnitRetreats).toBe(true);
+    // The move holds the engagement with that choice made.
+    expect(getEngagementStateFromMovement(after)).toBe(fallingBack);
   });
 
-  it('throws when not in issueCommands phase', () => {
-    const state = createEmptyGameState('standard');
-    const stateInPlayCards = updatePhaseState(
-      state,
+  it('throws outside Phase 3, where no unit is moving', () => {
+    const playingCards = updatePhaseState(
+      createEmptyGameState('standard'),
       createPlayCardsPhaseState(),
     );
-    const engagementState = createFrontEngagementState();
 
     expect(() =>
-      updateEngagementStateInMovement(stateInPlayCards, engagementState),
+      updateEngagementStateInMovement(
+        playingCards,
+        createFrontEngagementState(),
+      ),
     ).toThrow('Not in issueCommands phase');
   });
 
-  it('throws when command resolution is not movement', () => {
-    const state = createEmptyGameState('standard');
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createRangedAttackResolutionState(state),
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const engagementState = createFrontEngagementState();
+  it('throws during a shot, which engages nobody', () => {
+    const empty = createEmptyGameState('standard');
+    const shooting = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(empty),
+      empty,
+    );
 
     expect(() =>
-      updateEngagementStateInMovement(stateInPhase, engagementState),
+      updateEngagementStateInMovement(shooting, createFrontEngagementState()),
     ).toThrow('Current command resolution is not a movement');
   });
 });

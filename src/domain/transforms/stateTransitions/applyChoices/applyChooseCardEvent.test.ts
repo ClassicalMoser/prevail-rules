@@ -1,249 +1,173 @@
-import { tempCommandCards } from '@sampleValues';
-import type { ChooseCardEvent } from '@events';
-import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
-
-import { updateCardState } from '@testing';
-
-import { updatePhaseState } from '@transforms/pureTransforms';
-import { throwIfNone } from '@utils';
+import type { CommandCard } from '@entities';
+import type { AuthoritativeGameState } from '@game';
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
+import { getPlayCardsPhaseState } from '@queries';
+import {
+  createPlayCardsPhaseState,
+  createTestCard,
+  updateCardState,
+} from '@testing';
+import {
+  projectGameStateForVisibility,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyChooseCardEvent } from './applyChooseCardEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
  * Play-cards `chooseCards`: the chosen command card leaves `inHand` and sits in `awaitingPlay`
  * until both sides pick; then the round step advances to `revealCards`.
  */
+// TODO(misleading): the step does not advance to `revealCards`; it stays on
+// `chooseCards`, and the expected engine asks for the reveal once both cards
+// are in (see the case below). Settle by rewording this header.
 describe('applyChooseCardEvent function', () => {
   /** PlayCards.chooseCards with the supplied hands and no card awaiting play yet. */
   function createGameStateInChooseCardsStep(
-    blackHand: typeof tempCommandCards,
-    whiteHand: typeof tempCommandCards,
-  ): GameState {
+    blackHand: CommandCard[],
+    whiteHand: CommandCard[],
+  ): AuthoritativeGameState {
+    // A new game's piles are empty, so no card is awaiting play yet.
     const state = createEmptyGameState('standard');
-
-    // Set up card state with hands and no awaiting cards
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        awaitingPlay: null,
-        inHand: [...blackHand],
-      },
-      white: {
-        ...state.cardState.white,
-        awaitingPlay: null,
-        inHand: [...whiteHand],
-      },
+      black: { ...state.cardState.black, inHand: blackHand },
+      white: { ...state.cardState.white, inHand: whiteHand },
     });
 
-    // Set up phase state
-    const stateWithPhase = updatePhaseState(stateWithCards, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
-
+    // Phase 1, both players choosing.
+    const stateWithPhase = updatePhaseState(
+      stateWithCards,
+      createPlayCardsPhaseState(),
+    );
     return stateWithPhase;
   }
 
-  describe('hand and awaitingPlay', () => {
-    it('given black picks first card from two in hand, that card is awaitingPlay and hand shrinks', () => {
-      const state = createGameStateInChooseCardsStep(
-        [tempCommandCards[0], tempCommandCards[1]],
-        [tempCommandCards[2]],
-      );
+  // Black holds two cards, white one; every card in one place.
+  const blackFirst = createTestCard();
+  const blackSecond = createTestCard();
+  const whiteOnly = createTestCard();
 
-      const event: ChooseCardEvent = {
-        card: tempCommandCards[0],
-        choiceType: 'chooseCard',
-        eventType: 'playerChoice',
-        player: 'black',
-      };
+  it('lays the chosen card face down, out of the hand, and leaves the other player alone', () => {
+    const state = createGameStateInChooseCardsStep(
+      [blackFirst, blackSecond],
+      [whiteOnly],
+    );
 
-      const newState = applyChooseCardEvent(event, state);
+    const newState = applyChooseCardEvent(
+      createChooseCardEvent({ card: blackFirst, player: 'black' }),
+      state,
+    );
 
-      // CommandCard should be removed from hand
-      expect(newState.cardState.black.inHand).toStrictEqual([
-        tempCommandCards[1],
-      ]);
-      // CommandCard should be in awaitingPlay
-      expect(newState.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
-      // White player's state should be unchanged
-      expect(newState.cardState.white.inHand).toStrictEqual([
-        tempCommandCards[2],
-      ]);
-      expect(newState.cardState.white.awaitingPlay).toBeNull();
-    });
-
-    it('given white picks middle card, white hand and awaitingPlay update and black unchanged', () => {
-      const state = createGameStateInChooseCardsStep(
-        [tempCommandCards[0]],
-        [tempCommandCards[1], tempCommandCards[2]],
-      );
-
-      const event: ChooseCardEvent = {
-        card: tempCommandCards[1],
-        choiceType: 'chooseCard',
-        eventType: 'playerChoice',
-        player: 'white',
-      };
-
-      const newState = applyChooseCardEvent(event, state);
-
-      // CommandCard should be removed from hand
-      expect(newState.cardState.white.inHand).toStrictEqual([
-        tempCommandCards[2],
-      ]);
-      // CommandCard should be in awaitingPlay
-      expect(newState.cardState.white.awaitingPlay).toBe(tempCommandCards[1]);
-      // Black player's state should be unchanged
-      expect(newState.cardState.black.inHand).toStrictEqual([
-        tempCommandCards[0],
-      ]);
-      expect(newState.cardState.black.awaitingPlay).toBeNull();
-    });
+    // Black's card waits face down for the reveal (§4.1.1)…
+    expect(newState.cardState.black.inHand).toStrictEqual([blackSecond]);
+    expect(newState.cardState.black.awaitingPlay).toBe(blackFirst);
+    // …and white, choosing at the same time, is untouched.
+    expect(newState.cardState.white.inHand).toStrictEqual([whiteOnly]);
+    expect(newState.cardState.white.awaitingPlay).toBeNull();
   });
 
-  describe('when both sides have chosen', () => {
-    it('given black then white each choose their only card, the step stays chooseCards for the reveal to be asked for', () => {
-      const state = createGameStateInChooseCardsStep(
-        [tempCommandCards[0]],
-        [tempCommandCards[1]],
-      );
+  it('given black then white each choose their only card, the step stays chooseCards for the reveal to be asked for', () => {
+    const state = createGameStateInChooseCardsStep([blackFirst], [whiteOnly]);
 
-      // First player chooses
-      const firstEvent: ChooseCardEvent = {
-        card: tempCommandCards[0],
-        choiceType: 'chooseCard',
-        eventType: 'playerChoice',
-        player: 'black',
-      };
-      const afterFirst = applyChooseCardEvent(firstEvent, state);
+    // Both players choose (§4.1.1), in either order.
+    const afterBlack = applyChooseCardEvent(
+      createChooseCardEvent({ card: blackFirst, player: 'black' }),
+      state,
+    );
+    const afterSecond = applyChooseCardEvent(
+      createChooseCardEvent({ card: whiteOnly, player: 'white' }),
+      afterBlack,
+    );
 
-      // Should still be on chooseCards step
-      expect(
-        throwIfNone(afterFirst.currentRoundState.currentPhaseState, 'phase')
-          .step,
-      ).toBe('chooseCards');
-
-      // Second player chooses
-      const secondEvent: ChooseCardEvent = {
-        card: tempCommandCards[1],
-        choiceType: 'chooseCard',
-        eventType: 'playerChoice',
-        player: 'white',
-      };
-      const afterSecond = applyChooseCardEvent(secondEvent, afterFirst);
-
-      // The step does not move: the expected engine sees both cards in and
-      // asks for the reveal (§4.1.2).
-      expect(
-        throwIfNone(afterSecond.currentRoundState.currentPhaseState, 'phase')
-          .step,
-      ).toBe('chooseCards');
-    });
-
-    it('given only black chooses while white still has a card, step stays chooseCards', () => {
-      const state = createGameStateInChooseCardsStep(
-        [tempCommandCards[0], tempCommandCards[1]],
-        [tempCommandCards[2]],
-      );
-
-      const event: ChooseCardEvent = {
-        card: tempCommandCards[0],
-        choiceType: 'chooseCard',
-        eventType: 'playerChoice',
-        player: 'black',
-      };
-
-      const newState = applyChooseCardEvent(event, state);
-
-      // Should still be on chooseCards step
-      expect(
-        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
-      ).toBe('chooseCards');
-    });
+    // The step does not move: the expected engine sees both cards in and
+    // asks for the reveal (§4.1.2).
+    expect(getPlayCardsPhaseState(afterSecond).step).toBe('chooseCards');
   });
 
-  describe('whiteSeen opponent chooseCard', () => {
-    it('applies projected black chooseCard onto the hidden slice, and stays on chooseCards once both are in', () => {
-      const authoritative = createGameStateInChooseCardsStep(
-        [tempCommandCards[0]],
-        [tempCommandCards[1]],
-      );
-      const whiteSeen = {
-        ...authoritative,
-        visibility: 'whiteSeen' as const,
-        cardState: {
-          visibility: 'whiteSeen' as const,
-          white: {
-            ...authoritative.cardState.white,
-            awaitingPlay: null,
-            inHand: [tempCommandCards[1]],
-          },
-          black: {
-            awaitingPlay: null,
-            burnt: [],
-            discarded: [],
-            inHand: ['hidden' as const],
-            inPlay: null,
-            played: [],
-          },
-        },
-      };
+  it('applies projected black chooseCard onto the hidden slice, and stays on chooseCards once both are in', () => {
+    // White's seat sees its own hand, and only how many cards black holds.
+    const authoritative = createGameStateInChooseCardsStep(
+      [blackFirst],
+      [whiteOnly],
+    );
+    const whiteSeen = projectGameStateForVisibility(authoritative, 'whiteSeen');
 
-      const afterBlack = applyChooseCardEvent(
+    // Black's choice reaches white's seat face down.
+    const afterBlack = applyChooseCardEvent(
+      {
+        card: 'hidden',
+        choiceType: 'chooseCard',
+        eventType: 'playerChoice',
+        player: 'black',
+      },
+      whiteSeen,
+    );
+
+    // One hidden card has left black's hand to lie face down.
+    expect(afterBlack.cardState.black.awaitingPlay).toBe('hidden');
+    expect(afterBlack.cardState.black.inHand).toStrictEqual([]);
+
+    // White's own choice is shown on its own seat.
+    const afterWhite = applyChooseCardEvent(
+      createChooseCardEvent({ card: whiteOnly, player: 'white' }),
+      afterBlack,
+    );
+
+    // The step does not move; the reveal is asked for next.
+    expect(afterWhite.cardState.white.awaitingPlay).toBe(whiteOnly);
+    expect(getPlayCardsPhaseState(afterWhite).step).toBe('chooseCards');
+  });
+
+  it('refuses a face-down card on a record that can see the hand', () => {
+    // The full record holds every card, so a choice it folds must name one.
+    const state = createGameStateInChooseCardsStep([blackFirst], [whiteOnly]);
+
+    expect(() =>
+      applyChooseCardEvent(
         {
           card: 'hidden',
           choiceType: 'chooseCard',
           eventType: 'playerChoice',
           player: 'black',
         },
-        whiteSeen,
-      );
-
-      expect(afterBlack.cardState.black.awaitingPlay).toBe('hidden');
-      expect(afterBlack.cardState.black.inHand).toStrictEqual([]);
-
-      const afterWhite = applyChooseCardEvent(
-        {
-          card: tempCommandCards[1],
-          choiceType: 'chooseCard',
-          eventType: 'playerChoice',
-          player: 'white',
-        },
-        afterBlack,
-      );
-
-      // The step does not move; the reveal is asked for next.
-      expect(
-        throwIfNone(afterWhite.currentRoundState.currentPhaseState, 'phase')
-          .step,
-      ).toBe('chooseCards');
-    });
+        state,
+      ),
+    ).toThrow('No hidden player under authoritative visibility');
   });
 
-  describe('structural update', () => {
-    it('given prior black hand snapshot, apply leaves input state object unchanged', () => {
-      const state = createGameStateInChooseCardsStep(
-        [tempCommandCards[0], tempCommandCards[1]],
-        [tempCommandCards[2]],
-      );
-      const originalHand = [...state.cardState.black.inHand];
+  it('refuses a named card for a hand the seat cannot see', () => {
+    // White's seat sees only how many cards black holds, so a card named for
+    // black is a choice that seat was never sent.
+    const whiteSeen = projectGameStateForVisibility(
+      createGameStateInChooseCardsStep([blackFirst], [whiteOnly]),
+      'whiteSeen',
+    );
 
-      const event: ChooseCardEvent = {
-        card: tempCommandCards[0],
-        choiceType: 'chooseCard',
-        eventType: 'playerChoice',
-        player: 'black',
-      };
+    expect(() =>
+      applyChooseCardEvent(
+        createChooseCardEvent({ card: blackFirst, player: 'black' }),
+        whiteSeen,
+      ),
+    ).toThrow('Player black is not owned under whiteSeen visibility');
+  });
 
-      applyChooseCardEvent(event, state);
+  it('given prior black hand snapshot, apply leaves input state object unchanged', () => {
+    const state = createGameStateInChooseCardsStep(
+      [blackFirst, blackSecond],
+      [whiteOnly],
+    );
 
-      // Original state should be unchanged
-      expect(state.cardState.black.inHand).toStrictEqual(originalHand);
-      expect(state.cardState.black.awaitingPlay).toBeNull();
-    });
+    applyChooseCardEvent(
+      createChooseCardEvent({ card: blackFirst, player: 'black' }),
+      state,
+    );
+
+    // Original state should be unchanged
+    expect(state.cardState.black.inHand).toStrictEqual([
+      blackFirst,
+      blackSecond,
+    ]);
+    expect(state.cardState.black.awaitingPlay).toBeNull();
   });
 });

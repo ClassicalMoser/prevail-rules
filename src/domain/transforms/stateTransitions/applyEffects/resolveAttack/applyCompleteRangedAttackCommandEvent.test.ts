@@ -1,17 +1,19 @@
 import type { CompleteRangedAttackCommandEvent } from '@events';
+import { getIssueCommandsPhaseState } from '@queries';
 import {
+  createGameStateWithUnits,
   createIssueCommandsPhaseState,
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
-  replaceBoard,
   updateCardState,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updateCurrentInitiative,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
-
-import { createEmptyGameState } from '@factories';
 
 const event = {
   effectType: 'completeRangedAttackCommand' as const,
@@ -31,22 +33,28 @@ const rangedCard = {
  */
 describe('applyCompleteRangedAttackCommandEvent function', () => {
   it('ends the order of a player whose remaining units have no legal target, and advances to the second player', () => {
+    // Black holds the initiative and plays a Shoot card; its archer on E-5
+    // has no enemy anywhere on the board to shoot at.
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
       playerSide: 'black',
       unitOptions: { range: 2 },
     });
-    let state = createEmptyGameState('standard');
-    state = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inPlay: rangedCard },
-      white: { ...state.cardState.white, inPlay: createTestCard() },
+    const base = updateCurrentInitiative(
+      createGameStateWithUnits([attacker]),
+      'black',
+    );
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: rangedCard },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
     });
-    state = replaceBoard(state, addUnitToBoard(state.boardState, attacker));
-    state = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
+    // Black is carrying out its order, the archer still to act and no shot
+    // under way.
+    const state = updatePhaseState(
+      withCards,
+      createIssueCommandsPhaseState(withCards, {
         currentCommandResolutionState: 'pending',
         remainingUnitsFirstPlayer: [attacker.unit],
         step: 'firstPlayerResolveCommands',
@@ -55,12 +63,11 @@ describe('applyCompleteRangedAttackCommandEvent function', () => {
 
     const next = applyCompleteRangedAttackCommandEvent(event, state);
 
-    const phase = next.currentRoundState.currentPhaseState;
-    if (phase === 'none' || phase.phase !== 'issueCommands') {
-      throw new Error('issue');
-    }
     // The unit had no target, so it is skipped, and its owner's orders are done.
-    expect(phase.step).toBe('secondPlayerIssueCommands');
-    expect(phase.remainingUnitsFirstPlayer).toStrictEqual([]);
+    // White issues its orders next.
+    expect(getIssueCommandsPhaseState(next)).toMatchObject({
+      remainingUnitsFirstPlayer: [],
+      step: 'secondPlayerIssueCommands',
+    });
   });
 });

@@ -1,52 +1,25 @@
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createMoveCommandersPhaseState } from '@testing';
 
 import { updatePhaseState } from './updatePhaseState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdatePhaseState: Creates a new game state with the phase state updated.
+ * The phase the round is in is replaced; the rest of the round stays.
  */
 describe('updatePhaseState function', () => {
-  it('given update the phase state', () => {
+  it('puts the round in the given phase, leaving the state it was given as it was', () => {
+    // A new game, in no phase yet; Move Commanders begins (§4.2).
     const state = createEmptyGameState('standard');
-    const newPhaseState = {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    } as const;
+    const moveCommanders = createMoveCommandersPhaseState();
 
-    const newState = updatePhaseState(state, newPhaseState);
+    const updated = updatePhaseState(state, moveCommanders);
 
-    expect(newState.currentRoundState.currentPhaseState).toStrictEqual(
-      newPhaseState,
-    );
-  });
-
-  it('given not mutate the original state', () => {
-    const state = createEmptyGameState('standard');
-    const originalPhaseState = state.currentRoundState.currentPhaseState;
-    const newPhaseState = {
-      phase: MOVE_COMMANDERS_PHASE,
+    // The round is in Move Commanders, first commander to move; the state
+    // given is still in no phase.
+    expect(updated.currentRoundState.currentPhaseState).toStrictEqual({
+      phase: 'moveCommanders',
       step: 'moveFirstCommander',
-    } as const;
-
-    updatePhaseState(state, newPhaseState);
-
-    expect(state.currentRoundState.currentPhaseState).toBe(originalPhaseState);
-  });
-
-  it('given update to different phase and step', () => {
-    const state = createEmptyGameState('standard');
-    const newPhaseState = {
-      phase: MOVE_COMMANDERS_PHASE,
-      step: 'complete',
-    } as const;
-
-    const newState = updatePhaseState(state, newPhaseState);
-
-    const phaseState = newState.currentRoundState.currentPhaseState;
-    expect(phaseState !== 'none' && phaseState.phase).toBe(
-      MOVE_COMMANDERS_PHASE,
-    );
-    expect(phaseState !== 'none' && phaseState.step).toBe('complete');
+    });
+    expect(state.currentRoundState.currentPhaseState).toBe('none');
   });
 });

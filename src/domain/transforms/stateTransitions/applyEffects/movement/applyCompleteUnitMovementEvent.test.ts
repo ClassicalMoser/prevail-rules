@@ -1,21 +1,27 @@
-import type { GameState } from '@game';
+import type { UnitInstance, UnitWithPlacement } from '@entities';
+import type { GameState, MovementResolutionState } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
+  createGameStateWithUnits,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestUnit,
-  createUnitWithPlacement,
-  replaceBoard,
+  placed,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updateCurrentInitiative,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 import { applyCompleteUnitMovementEvent } from './applyCompleteUnitMovementEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
  * After path + engagement finish, completeUnitMovement clears CRS and either
  * waits for the next moveUnit or advances the issue-commands step. The mover
  * already stands where its move ends; this sets nobody down.
+ * TODO(misleading): this effect never advances the step; the expected engine
+ * asks for completeMovementCommand for that, as the second case shows.
+ * Settle by saying it only clears the unit's move, whatever is left.
  */
 describe('applyCompleteUnitMovementEvent function', () => {
   const event = {
@@ -23,63 +29,64 @@ describe('applyCompleteUnitMovementEvent function', () => {
     eventType: 'gameEffect' as const,
   };
 
-  /** A movement whose black mover has been set down on E-6, where it ends. */
-  function arrivedAtE6(state: GameState) {
-    const mover = createUnitWithPlacement({
-      coordinate: 'E-6',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const movement = createMovementResolutionState(state, {
-      movingUnit: mover.unit,
-      targetPlacement: mover.placement,
-    });
-    return { mover, movement };
-  }
+  /** Black's unit carrying out its move. */
+  const mover = createTestUnit('black', { attack: 2 });
 
-  it('clears CRS to pending when more units remain to resolve', () => {
-    const state = createEmptyGameState('standard');
-    const leftover = createTestUnit('black', { attack: 2 });
-    const { mover, movement } = arrivedAtE6(state);
-    // The mover has been set down on E-6, where its move ends.
-    const withMover = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, mover),
+  /**
+   * Black holds the initiative and carries out its Move order: `mover`'s
+   * move is under way, written to end on E-6 facing north unless the case
+   * says otherwise, and the units listed are still to move after it.
+   */
+  function resolvingMove(
+    board: UnitWithPlacement[],
+    remaining: UnitInstance[] = [],
+    movement: Partial<MovementResolutionState> = {},
+  ): GameState {
+    const base = updateCurrentInitiative(
+      createGameStateWithUnits(board),
+      'black',
     );
-    const full: GameState = updatePhaseState(
-      withMover,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-        remainingUnitsFirstPlayer: [leftover],
+    const move = createMovementResolutionState(base, {
+      movingUnit: mover,
+      targetPlacement: { coordinate: 'E-6', facing: 'north' },
+      ...movement,
+    });
+    const resolving = updatePhaseState(
+      base,
+      createIssueCommandsPhaseState(base, {
+        currentCommandResolutionState: move,
+        remainingUnitsFirstPlayer: remaining,
         step: 'firstPlayerResolveCommands',
       }),
     );
+    return resolving;
+  }
 
-    const next = applyCompleteUnitMovementEvent(event, full);
-    const phase = getIssueCommandsPhaseState(next);
-    expect(phase.currentCommandResolutionState).toBe('pending');
-    expect(phase.step).toBe('firstPlayerResolveCommands');
-    expect(phase.remainingUnitsFirstPlayer).toStrictEqual([leftover]);
+  it('ends the unit’s move and keeps the units still to move after it', () => {
+    // The mover has been set down on E-6, where its move ends; another of
+    // Black's units on E-8 is still to move.
+    const waiting = createTestUnit('black', { attack: 3 });
+    const state = resolvingMove(
+      [placed(mover, 'E-6', 'north'), placed(waiting, 'E-8', 'north')],
+      [waiting],
+    );
+
+    const next = applyCompleteUnitMovementEvent(event, state);
+
+    // No move is under way, Black is still carrying out its order, and the
+    // waiting unit may move next (§4.3.9).
+    expect(getIssueCommandsPhaseState(next)).toMatchObject({
+      currentCommandResolutionState: 'pending',
+      remainingUnitsFirstPlayer: [waiting],
+      step: 'firstPlayerResolveCommands',
+    });
   });
 
   it('leaves the step where it is when the last unit has moved, for the order to be completed next', () => {
-    const state = createEmptyGameState('standard');
-    const { mover, movement } = arrivedAtE6(state);
     // The mover has been set down on E-6, where its move ends.
-    const withMover = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, mover),
-    );
-    const full: GameState = updatePhaseState(
-      withMover,
-      createIssueCommandsPhaseState(withMover, {
-        currentCommandResolutionState: movement,
-        remainingUnitsFirstPlayer: [],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
+    const state = resolvingMove([placed(mover, 'E-6', 'north')]);
 
-    const next = applyCompleteUnitMovementEvent(event, full);
+    const next = applyCompleteUnitMovementEvent(event, state);
     const phase = getIssueCommandsPhaseState(next);
 
     // The unit's move is cleared. Ending the order is not this effect's to
@@ -92,28 +99,35 @@ describe('applyCompleteUnitMovementEvent function', () => {
   it('throws when the mover has not been set down where its move ends', () => {
     // The move was written to E-6, but the mover still stands on E-5,
     // where it started.
-    const empty = createEmptyGameState('standard');
-    const movement = createMovementResolutionState(empty);
-    const state = replaceBoard(
-      empty,
-      addUnitToBoard(empty.boardState, {
-        placement: { coordinate: 'E-5', facing: 'north' },
-        unit: movement.movingUnit,
-      }),
-    );
-    const full: GameState = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-        remainingUnitsFirstPlayer: [],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
+    const state = resolvingMove([placed(mover, 'E-5', 'north')]);
 
     // The move itself, or the engagement, sets the mover down; finishing a
     // move that was never carried out would hide whatever skipped it.
-    expect(() => applyCompleteUnitMovementEvent(event, full)).toThrow(
+    expect(() => applyCompleteUnitMovementEvent(event, state)).toThrow(
       'The mover has not been set down where its move ends',
+    );
+  });
+
+  it('throws when the mover stands on the space its move ends on, facing another way', () => {
+    // The move was written to end on E-6 facing north; the mover is on E-6
+    // but faces north-east, so it is not where its move put it (§2.3).
+    const state = resolvingMove([placed(mover, 'E-6', 'northEast')]);
+
+    expect(() => applyCompleteUnitMovementEvent(event, state)).toThrow(
+      'The mover has not been set down where its move ends',
+    );
+  });
+
+  it('throws when the move has not been written yet', () => {
+    // The mover has been chosen and stands on E-5, but no move is written:
+    // the player has yet to send it (§4.3.10 step 3).
+    const state = resolvingMove([placed(mover, 'E-5', 'north')], [], {
+      targetPlacement: 'pending',
+    });
+
+    // Finishing a move that has no end yet is a fault in the sequence.
+    expect(() => applyCompleteUnitMovementEvent(event, state)).toThrow(
+      'The move has not been written yet',
     );
   });
 });

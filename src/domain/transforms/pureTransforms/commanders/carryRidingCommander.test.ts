@@ -1,12 +1,12 @@
-import { createEmptyGameState, createEmptyStandardBoard } from '@factories';
+import { createEmptyGameState } from '@factories';
 import {
+  createGameStateWithUnits,
   createMovementResolutionState,
   createUnitWithPlacement,
-  replaceBoard,
 } from '@testing';
 
-import { addCommanderToBoard } from './addCommanderToBoard';
 import { carryRidingCommander } from './carryRidingCommander';
+import { deployCommander } from './deployCommander';
 
 /**
  * A commander riding with a moving unit ends in the unit's final space
@@ -16,15 +16,19 @@ import { carryRidingCommander } from './carryRidingCommander';
  * and lands on C-5.
  */
 describe('carryRidingCommander function', () => {
+  // Black's unit has already landed on C-5, as its callers write the unit
+  // before the rider.
   const mover = createUnitWithPlacement({
-    coordinate: 'E-5',
+    coordinate: 'C-5',
     facing: 'north',
     playerSide: 'black',
   });
-  // Black's commander shares the unit's starting space (§4.3.10).
-  const state = replaceBoard(
-    createEmptyGameState('standard'),
-    addCommanderToBoard(createEmptyStandardBoard(), 'black', 'E-5'),
+  // Black's commander still stands on E-5, the unit's starting space
+  // (§4.3.10).
+  const state = deployCommander(
+    createGameStateWithUnits([mover]),
+    'black',
+    'E-5',
   );
 
   /** The movement as declared: the unit is bound for C-5, rider or not. */
@@ -56,7 +60,8 @@ describe('carryRidingCommander function', () => {
   it('a commander who stays behind is left on the start space', () => {
     const carried = carryRidingCommander(state, movement(false), 'C-5');
 
-    // Nothing moves: the commander only goes in Phase 2 (§4.3.10).
+    // Nothing moves: the commander only goes in Phase 2 (§4.3.10). The very
+    // same state comes back.
     expect(carried).toBe(state);
   });
 });

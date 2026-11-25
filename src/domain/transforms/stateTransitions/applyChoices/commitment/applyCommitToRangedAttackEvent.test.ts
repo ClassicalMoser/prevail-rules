@@ -1,55 +1,62 @@
-import { tempCommandCards } from '@sampleValues';
-import { getRangedAttackResolutionState } from '@queries';
-import {
-  createIssueCommandsPhaseState,
-  createRangedAttackResolutionState,
-  updateCardState,
-} from '@testing';
-
-import { updatePhaseState } from '@transforms/pureTransforms';
-
-import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
-
 import {
   createCommitToRangedAttackEvent,
   createEmptyGameState,
 } from '@factories';
+import { getRangedAttackResolutionState } from '@queries';
+import {
+  createGameStateResolvingCommand,
+  createRangedAttackResolutionState,
+  createTestCard,
+  updateCardState,
+} from '@testing';
+import { updateCurrentInitiative } from '@transforms/pureTransforms';
+
+import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
+
 /**
  * The shooter's commitment (§4.3.11 step 2): the attacker locks in its card;
  * `attackingCommitment` flips to completed and the card leaves hand. The
  * target's commitment is its own event (`applyCommitToRangedDefenseEvent`).
  */
 describe('applyCommitToRangedAttackEvent function', () => {
-  it('given pending attackingCommitment and black holds the card, attacking completed and black hand empty', () => {
-    const state = createEmptyGameState('standard');
-    const stateWithBlackCardInHand = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
-    });
-    const rangedState = createRangedAttackResolutionState(
-      stateWithBlackCardInHand,
-      {
-        attackingCommitment: { commitmentType: 'pending' },
-      },
+  it("records the shooter's card on the shot, before its target is named, and spends it", () => {
+    // Black, holding the initiative, carries out a Shoot order with its own
+    // unit. It holds a card committable for Range, and one it keeps.
+    const rangeCard = createTestCard({ modifiers: ['range'] });
+    const kept = createTestCard();
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
     );
-    const stateInPhase = updatePhaseState(
-      stateWithBlackCardInHand,
-      createIssueCommandsPhaseState(stateWithBlackCardInHand, {
-        currentCommandResolutionState: rangedState,
+    const withHand = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inHand: [rangeCard, kept] },
+    });
+
+    // The shot's default shooter is black's; its commitment is owed, and no
+    // target or supporter is named yet.
+    const shot = createRangedAttackResolutionState(withHand, {
+      attackingCommitment: { commitmentType: 'pending' },
+      defendingCommitment: { commitmentType: 'pending' },
+      defendingUnit: 'pending',
+      supportingUnits: 'pending',
+    });
+    const state = createGameStateResolvingCommand(shot, withHand);
+
+    const next = applyCommitToRangedAttackEvent(
+      createCommitToRangedAttackEvent({
+        committedCard: rangeCard,
+        player: 'black',
       }),
+      state,
     );
-    const event = createCommitToRangedAttackEvent({
-      committedCard: tempCommandCards[0],
-      player: 'black',
-    });
 
-    const newState = applyCommitToRangedAttackEvent(event, stateInPhase);
-    const newRanged = getRangedAttackResolutionState(newState);
-
-    expect(newRanged.attackingCommitment).toStrictEqual({
-      card: tempCommandCards[0],
-      commitmentType: 'completed',
-    });
-    expect(newState.cardState.black.inHand).toHaveLength(0);
+    // The shot counts the card: its Range for the arc, its Attack for the
+    // blow (§7.4.5)…
+    expect(
+      getRangedAttackResolutionState(next).attackingCommitment,
+    ).toStrictEqual({ card: rangeCard, commitmentType: 'completed' });
+    // …and it has left black's hand (§8.1).
+    expect(next.cardState.black.inHand).toStrictEqual([kept]);
   });
 });

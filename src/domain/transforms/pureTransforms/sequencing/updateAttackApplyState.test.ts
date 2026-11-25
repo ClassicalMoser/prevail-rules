@@ -1,185 +1,106 @@
+import { createEmptyGameState } from '@factories';
+import { getMeleeResolutionState, getRangedAttackApplyState } from '@queries';
 import {
   createAttackApplyStateWithNothingDue,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
-  createResolveMeleePhaseState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updateCurrentInitiative, updatePhaseState } from '../';
-import { throwIfNone, throwIfPending } from '@utils';
 
+import { updatePhaseState } from '../state/updatePhaseState';
 import { updateAttackApplyState } from './updateAttackApplyState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateAttackApplyState: Creates a new game state with the attack apply state updated.
+ * An attack's results are carried out on its target after a shot in Phase 3
+ * or a melee in Phase 4 (§7.5). A shot is one way and has one target
+ * (§7.4.4); in a melee both units take results, each on its own side
+ * (§7.2.1).
  */
 describe('updateAttackApplyState function', () => {
-  function createStateWithRangedAttackApply() {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, placement),
-    );
-    const attackApply = createAttackApplyStateWithNothingDue(unit);
-    const ranged = createRangedAttackResolutionState(stateWithUnit, {
-      attackApplyState: attackApply,
-    });
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(stateWithUnit, phaseState);
-  }
+  const blackUnit = createTestUnit('black', { attack: 2 });
+  const whiteUnit = createTestUnit('white', { attack: 2 });
 
-  function createStateWithMeleeApply() {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const melee = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState:
-        createAttackApplyStateWithNothingDue(blackUnit),
-      attackOnSecondPlayerApplyState:
-        createAttackApplyStateWithNothingDue(whiteUnit),
+  it('writes a shot’s results on its target', () => {
+    // Black's skirmishers on C-5 have shot white's unit on E-5, and the blow
+    // reached nothing.
+    const board = createGameStateWithUnits([
+      placed(blackUnit, 'C-5', 'south'),
+      placed(whiteUnit, 'E-5', 'north'),
+    ]);
+    const shot = createRangedAttackResolutionState(board, {
+      attackApplyState: createAttackApplyStateWithNothingDue(whiteUnit),
+      attackingUnit: blackUnit,
+      defendingUnit: whiteUnit,
     });
-    return updatePhaseState(
-      state,
-      createResolveMeleePhaseState(state, {
-        currentMeleeResolutionState: melee,
+    const shooting = createGameStateResolvingCommand(shot, board);
+
+    // The results are carried out.
+    const done = createAttackApplyStateWithNothingDue(whiteUnit, {
+      completed: true,
+    });
+    const after = updateAttackApplyState(shooting, done);
+
+    // The shot's one apply is the finished one.
+    expect(getRangedAttackApplyState(after)).toBe(done);
+  });
+
+  it('in a melee, writes the results on the side of the unit that takes them', () => {
+    // Black holds the initiative; both blows have landed with nothing due.
+    const onBlack = createAttackApplyStateWithNothingDue(blackUnit);
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(createEmptyGameState('standard'), {
+        attackOnFirstPlayerApplyState: onBlack,
+        attackOnSecondPlayerApplyState:
+          createAttackApplyStateWithNothingDue(whiteUnit),
       }),
-    );
-  }
-
-  it('given update attack apply state in ranged attack resolution', () => {
-    const state = createStateWithRangedAttackApply();
-    const unit = createTestUnit('white', { attack: 2 });
-    const updated = createAttackApplyStateWithNothingDue(unit, {
-      completed: true,
-    });
-
-    const newState = updateAttackApplyState(state, updated);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('issueCommands');
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('phase');
-    }
-    const commandState = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
-    );
-    expect(commandState.substepType).toBe('commandResolution');
-    if (commandState.commandResolutionType !== 'rangedAttack') {
-      throw new Error('type');
-    }
-    const attackApply = throwIfPending(
-      commandState.attackApplyState,
-      'attack apply',
-    );
-    expect(attackApply.completed).toBe(true);
-  });
-
-  it('given update white attack apply state in melee resolution', () => {
-    const state = createStateWithMeleeApply();
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const updated = createAttackApplyStateWithNothingDue(whiteUnit, {
-      completed: true,
-    });
-
-    const newState = updateAttackApplyState(state, updated);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const whiteApply = throwIfPending(
-      melee.attackOnSecondPlayerApplyState,
-      'white apply',
-    );
-    expect(whiteApply.completed).toBe(true);
-  });
-
-  it('given update black attack apply state in melee resolution', () => {
-    const state = createStateWithMeleeApply();
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const updated = createAttackApplyStateWithNothingDue(blackUnit, {
-      completed: true,
-    });
-
-    const newState = updateAttackApplyState(state, updated);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const blackApply = throwIfPending(
-      melee.attackOnFirstPlayerApplyState,
-      'black apply',
-    );
-    expect(blackApply.completed).toBe(true);
-  });
-
-  it('given when ranged attack resolution has no attack apply state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
       'black',
     );
-    const ranged = createRangedAttackResolutionState(state, {
-      attackApplyState: 'pending',
+
+    // The results on white's unit are carried out.
+    const done = createAttackApplyStateWithNothingDue(whiteUnit, {
+      completed: true,
     });
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: ranged,
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const unit = createTestUnit('white', { attack: 2 });
+    const melee = getMeleeResolutionState(
+      updateAttackApplyState(fighting, done),
+    );
+
+    // White's unit is the second player's, so its side is the second; black's
+    // is untouched.
+    expect(melee.attackOnSecondPlayerApplyState).toBe(done);
+    expect(melee.attackOnFirstPlayerApplyState).toBe(onBlack);
+  });
+
+  it('throws when the shot has not yet been measured, since there are no results to write over', () => {
+    // A shot whose blow is still to be worked out.
+    const empty = createEmptyGameState('standard');
+    const aiming = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(empty, { attackApplyState: 'pending' }),
+      empty,
+    );
 
     expect(() =>
       updateAttackApplyState(
-        stateInPhase,
-        createAttackApplyStateWithNothingDue(unit),
+        aiming,
+        createAttackApplyStateWithNothingDue(whiteUnit),
       ),
     ).toThrow('No attack apply state found in ranged attack resolution state');
   });
 
-  it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = updateCurrentInitiative(
+  it('throws in a phase where no attack is carried out', () => {
+    const playingCards = updatePhaseState(
       createEmptyGameState('standard'),
-      'black',
-    );
-    const stateInPlayCards = updatePhaseState(
-      state,
       createPlayCardsPhaseState(),
     );
-    const unit = createTestUnit('white', { attack: 2 });
 
     expect(() =>
       updateAttackApplyState(
-        stateInPlayCards,
-        createAttackApplyStateWithNothingDue(unit),
+        playingCards,
+        createAttackApplyStateWithNothingDue(whiteUnit),
       ),
     ).toThrow('Attack apply state update not expected in phase: playCards');
   });

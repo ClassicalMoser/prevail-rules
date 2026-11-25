@@ -78,6 +78,27 @@ describe('projectGameForVisibility function', () => {
     );
   });
 
+  it('shows white’s seat its own chosen card, and black’s face down', () => {
+    // White's seat asks for the game after both cards are chosen.
+    const projected = projectGameForVisibility(
+      gameWithBothCardsChosen(),
+      'whiteSeen',
+    );
+
+    expect(projected.events).toStrictEqual([
+      // White chose this card itself, so it is in view.
+      chooseCard('white'),
+      // Black laid its card face down, so white learns only that black chose
+      // (§4.1.1).
+      {
+        card: 'hidden',
+        choiceType: 'chooseCard',
+        eventType: 'playerChoice',
+        player: 'black',
+      },
+    ]);
+  });
+
   it('shows a seat the card it chose, and the other card face down', () => {
     // Black's seat asks for the game after both cards are chosen.
     const projected = projectGameForVisibility(
@@ -154,6 +175,16 @@ describe('projectGameForVisibility function', () => {
 
     // And it is white's game at run time too.
     expect(white.visibility).toBe('whiteSeen');
+  });
+
+  it('throws for a view that is not one of the four', () => {
+    // No caller can name another view; one is forced through to reach the
+    // guard.
+    const view = 'opponent' as never; // a view the type rules out
+
+    expect(() =>
+      projectGameForVisibility(gameWithBothCardsChosen(), view),
+    ).toThrow('Invalid visibility: opponent');
   });
 });
 

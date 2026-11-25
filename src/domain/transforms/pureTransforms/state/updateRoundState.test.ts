@@ -3,46 +3,22 @@ import { createEmptyGameState } from '@factories';
 import { updateRoundState } from './updateRoundState';
 
 /**
- * UpdateRoundState: Creates a new game state with the round state updated.
+ * The whole round is replaced at once, as when one round ends and the next
+ * begins.
  */
 describe('updateRoundState function', () => {
-  it('given update the round state', () => {
+  it('puts the given round in place, leaving the state it was given as it was', () => {
+    // Setup is round 0; round 1 begins.
     const state = createEmptyGameState('standard');
-    const newRoundState = {
+    const roundOne = {
       ...state.currentRoundState,
-      roundNumber: 2,
+      roundNumber: 1,
     };
 
-    const newState = updateRoundState(state, newRoundState);
+    const updated = updateRoundState(state, roundOne);
 
-    expect(newState.currentRoundState.roundNumber).toBe(2);
-  });
-
-  it('given not mutate the original state', () => {
-    const state = createEmptyGameState('standard');
-    const originalRoundNumber = state.currentRoundState.roundNumber;
-    const newRoundState = {
-      ...state.currentRoundState,
-      roundNumber: 2,
-    };
-
-    updateRoundState(state, newRoundState);
-
-    expect(state.currentRoundState.roundNumber).toBe(originalRoundNumber);
-  });
-
-  it('given update round state using a function', () => {
-    const state = createEmptyGameState('standard');
-    const originalRoundNumber = state.currentRoundState.roundNumber;
-    const newRoundNumber = originalRoundNumber + 1;
-    const newRoundState = {
-      ...state.currentRoundState,
-      roundNumber: newRoundNumber,
-    };
-    const newState = updateRoundState(state, newRoundState);
-
-    // A game still in setup is round 0; the new state is the next round.
-    expect(newState.currentRoundState.roundNumber).toBe(1);
+    // The game is in round 1; the state given is still in setup.
+    expect(updated.currentRoundState.roundNumber).toBe(1);
     expect(state.currentRoundState.roundNumber).toBe(0);
   });
 });

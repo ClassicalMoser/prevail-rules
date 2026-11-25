@@ -1,90 +1,43 @@
+import { createEmptyGameState } from '@factories';
+import { getCurrentCommandResolutionState } from '@queries';
 import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMovementResolutionState,
 } from '@testing';
-import { updatePhaseState } from '../';
-import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateCommandResolutionState: Creates a new game state with the command resolution state updated in the issue commands phase.
+ * In Phase 3 each unit's move or shot is carried out on its own, one at a
+ * time (§4.3.9). This writer carries the one under way forward; it does not
+ * start one.
  */
 describe('updateCommandResolutionState function', () => {
-  it('given update the command resolution state in issue commands phase', () => {
-    const state = createEmptyGameState('standard');
-    const commandResolution = createMovementResolutionState(state);
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: commandResolution,
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-
-    const updatedResolution = createMovementResolutionState(state, {
-      completed: true,
-    });
-    const newState = updateCommandResolutionState(
-      stateInPhase,
-      updatedResolution,
+  it('replaces the unit’s move under way with its next state', () => {
+    // A black unit's move is under way.
+    const empty = createEmptyGameState('standard');
+    const moving = createGameStateResolvingCommand(
+      createMovementResolutionState(empty),
+      empty,
     );
 
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('issueCommands');
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('phase');
-    }
-    const commandState = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
-    );
-    expect(commandState.completed).toBe(true);
+    // The move is carried out.
+    const finished = createMovementResolutionState(empty, { completed: true });
+    const after = updateCommandResolutionState(moving, finished);
+
+    // The move under way is the finished one.
+    expect(getCurrentCommandResolutionState(after)).toBe(finished);
   });
 
-  it('given not mutate the original state', () => {
-    const state = createEmptyGameState('standard');
-    const commandResolution = createMovementResolutionState(state);
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: commandResolution,
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const origPhase = throwIfNone(
-      stateInPhase.currentRoundState.currentPhaseState,
-      'phase',
+  it('throws when no unit’s move or shot is under way, since there is nothing to carry forward', () => {
+    // Phase 3, between units: none has been chosen to act yet.
+    const between = createGameStateResolvingCommand('pending');
+    const move = createMovementResolutionState(
+      createEmptyGameState('standard'),
     );
-    const originalResolution =
-      origPhase.phase === 'issueCommands'
-        ? throwIfPending(origPhase.currentCommandResolutionState, 'command')
-        : undefined;
 
-    updateCommandResolutionState(stateInPhase, {
-      ...commandResolution,
-      completed: true,
-    });
-
-    const checkPhase = throwIfNone(
-      stateInPhase.currentRoundState.currentPhaseState,
-      'phase',
+    expect(() => updateCommandResolutionState(between, move)).toThrow(
+      'No current command resolution state found',
     );
-    const currentResolution =
-      checkPhase.phase === 'issueCommands'
-        ? throwIfPending(checkPhase.currentCommandResolutionState, 'command')
-        : undefined;
-    expect(currentResolution).toBe(originalResolution);
-  });
-
-  it('given when no current command resolution state is set, throws', () => {
-    const state = createEmptyGameState('standard');
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: 'pending',
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const commandResolution = createMovementResolutionState(state);
-
-    expect(() =>
-      updateCommandResolutionState(stateInPhase, commandResolution),
-    ).toThrow('No current command resolution state found');
   });
 });

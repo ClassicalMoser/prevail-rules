@@ -1,36 +1,22 @@
-import type { EngagementState } from '@game';
-import { createEmptyGameState } from '@factories';
 import {
   getEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
+  getRearEngagementStateFromMovement,
 } from '@queries';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
-  createMovementResolutionState,
+  createGameStateMovingInto,
+  createRearEngagementState,
+  createRoutState,
+  createTestUnit,
 } from '@testing';
 
-import { updatePhaseState } from '../state/updatePhaseState';
 import { completeEngagementInMovement } from './completeEngagementInMovement';
 import { updateFlankEngagementResolutionState } from './updateFlankEngagementResolutionState';
 import { updateFrontEngagementResolutionState } from './updateFrontEngagementResolutionState';
 import { updateRearEngagementResolutionState } from './updateRearEngagementResolutionState';
-
-/** A movement under way with this engagement. */
-function engagedWith(engagementState: EngagementState) {
-  const empty = createEmptyGameState('standard');
-  const state = updatePhaseState(
-    empty,
-    createIssueCommandsPhaseState(empty, {
-      currentCommandResolutionState: createMovementResolutionState(empty, {
-        engagementState,
-      }),
-    }),
-  );
-  return state;
-}
 
 /**
  * An engagement settles in parts: from the front the defender commits, decides
@@ -40,7 +26,8 @@ function engagedWith(engagementState: EngagementState) {
  */
 describe('the engagement resolution writers', () => {
   it('changes what a front engagement has settled and keeps the rest', () => {
-    const state = engagedWith(createFrontEngagementState());
+    // A move has walked into an enemy head on.
+    const state = createGameStateMovingInto(createFrontEngagementState());
 
     const front = getFrontEngagementStateFromMovement(
       updateFrontEngagementResolutionState(state, {
@@ -48,6 +35,8 @@ describe('the engagement resolution writers', () => {
       }),
     );
 
+    // The defender's ways back are written; its choice and the engagement
+    // itself are still open.
     expect(front.engagementResolutionState.retreatPaths).toStrictEqual([
       ['step'],
     ]);
@@ -58,7 +47,8 @@ describe('the engagement resolution writers', () => {
   });
 
   it('throws when the engagement under way is not the kind written', () => {
-    const flanked = engagedWith(createFlankEngagementState());
+    // The move came in from the flank, where the defender cannot fall back.
+    const flanked = createGameStateMovingInto(createFlankEngagementState());
 
     expect(() =>
       updateFrontEngagementResolutionState(flanked, {
@@ -68,20 +58,38 @@ describe('the engagement resolution writers', () => {
   });
 
   it('records that a flanked defender has been turned', () => {
-    const state = engagedWith(createFlankEngagementState());
+    // A move has walked into an enemy's flank.
+    const state = createGameStateMovingInto(createFlankEngagementState());
 
     const flank = getEngagementStateFromMovement(
       updateFlankEngagementResolutionState(state, { defenderRotated: true }),
     );
 
+    // The defender has been turned to face the engaging unit.
     expect(flank.engagementResolutionState).toMatchObject({
       defenderRotated: true,
       engagementType: 'flank',
     });
   });
 
+  it('records the rout of a defender caught from behind', () => {
+    // A move has come up behind white's unit, whose rout is open and its
+    // cost not yet worked out.
+    const defender = createTestUnit('white');
+    const state = createGameStateMovingInto(createRearEngagementState());
+    const priced = createRoutState('white', defender, { numberToDiscard: 2 });
+
+    const rear = getRearEngagementStateFromMovement(
+      updateRearEngagementResolutionState(state, { routState: priced }),
+    );
+
+    // The rout now owes two cards, and the engagement waits for them.
+    expect(rear.engagementResolutionState.routState).toBe(priced);
+    expect(rear.engagementResolutionState.completed).toBe(false);
+  });
+
   it('refuses to write a rear engagement into a front one', () => {
-    const state = engagedWith(createFrontEngagementState());
+    const state = createGameStateMovingInto(createFrontEngagementState());
 
     expect(() => updateRearEngagementResolutionState(state, {})).toThrow(
       'Engagement type is not rear',
@@ -89,12 +97,13 @@ describe('the engagement resolution writers', () => {
   });
 
   it('marks the engagement under way as finished', () => {
-    const state = engagedWith(createFrontEngagementState());
+    const state = createGameStateMovingInto(createFrontEngagementState());
 
     const done = getMovementResolutionState(
       completeEngagementInMovement(state),
     );
 
+    // The engagement is settled, so the move can carry on.
     expect(done.engagementState).toMatchObject({ completed: true });
   });
 });

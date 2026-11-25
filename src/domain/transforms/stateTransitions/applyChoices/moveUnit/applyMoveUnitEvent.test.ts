@@ -1,60 +1,83 @@
 import type { UnitWithPlacement } from '@entities';
-import type { GameState } from '@game';
-import { createMoveUnitEvent, createEmptyGameState } from '@factories';
+import type { AuthoritativeGameState } from '@game';
+import {
+  createChooseMovingUnitEvent,
+  createCommitToMovementEvent,
+  createMoveUnitEvent,
+} from '@factories';
 import { generateStartEngagementEvent } from '@procedures';
-import { getMovementResolutionState } from '@queries';
 import {
-  createIssueCommandsPhaseState,
-  createMovementResolutionState,
-  createUnitWithPlacement,
-  replaceBoard,
-} from '@testing';
-import {
-  addCommanderToBoard,
-  addUnitToBoard,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+  findCommanderSpace,
+  getMovementResolutionState,
+  getSingleUnitWithPlacementAtCoordinate,
+  getUnitWithPlacementOnBoard,
+} from '@queries';
+import { createPlayableGame, resolvingMoveOrder } from '@testing';
+import { deployCommander } from '@transforms/pureTransforms';
+import { applyCommitToMovementEvent } from '../commitment/applyCommitToMovementEvent';
+import { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
 
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
 /**
  * The move is written into the movement its unit's `chooseMovingUnit`
  * opened, once any card has been committed (§4.3.10). Each case starts there:
- * the unit named, its commitment declined, its move not yet written.
+ * black, holding the initiative, has named the unit on E-5 under a Move order
+ * and declined to commit, and its move is not yet written.
+ *
+ * `readyToWriteMove` in `@testing` plays the same two choices, but through
+ * `applyEvent`, which reaches this spec's subject; so the two are applied
+ * here directly.
+ *
+ * @param units - Where each unit stands; black's mover on E-5 among them
+ * @param commanderOnMover - Whether black's commander stands with the mover
+ * @returns The game waiting for the mover's `moveUnit`, and the mover
  */
 function awaitingMove(
-  mover: UnitWithPlacement,
-  others: UnitWithPlacement[] = [],
-): GameState {
-  let state = createEmptyGameState('standard');
-  let board = addUnitToBoard(state.boardState, mover);
-  for (const other of others) {
-    board = addUnitToBoard(board, other);
-  }
-  state = replaceBoard(state, board);
-  const movement = createMovementResolutionState(state, {
-    commitment: { commitmentType: 'declined' },
-    moveCommander: 'pending',
-    movingUnit: mover.unit,
-    targetPlacement: 'pending',
-  });
-  const opened = updatePhaseState(
-    state,
-    createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: movement,
-    }),
+  units: Parameters<typeof createPlayableGame>[0],
+  commanderOnMover = false,
+): { mover: UnitWithPlacement; state: AuthoritativeGameState } {
+  // The armies in the field, black to act first.
+  const game = createPlayableGame(units, { initiative: 'black' });
+
+  // Black's commander, where the spec puts it: with the mover, so it may
+  // ride (§4.3.10).
+  const withCommander = commanderOnMover
+    ? deployCommander(game, 'black', 'E-5')
+    : game;
+
+  // The Move order names the unit on E-5 alone.
+  const mover = getSingleUnitWithPlacementAtCoordinate(
+    withCommander.boardState,
+    'E-5',
   );
-  return opened;
+  const ordered = resolvingMoveOrder(withCommander, [mover.unit]);
+
+  // Black names it, then declines to commit a card for its move.
+  const named = applyChooseMovingUnitEvent(
+    createChooseMovingUnitEvent({ player: 'black', unit: mover.unit }),
+    ordered,
+  );
+  const declined = applyCommitToMovementEvent(
+    createCommitToMovementEvent({ committedCard: 'none', player: 'black' }),
+    named,
+  );
+  return { mover, state: declined };
 }
 
 describe('applyMoveUnitEvent function', () => {
   it('a move onto open ground carries the unit there and records where it went', () => {
-    const mover = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const state = awaitingMove(mover);
+    // Flexibility 4 pays for the four turns below; Speed 2 for the steps.
+    const { mover, state } = awaitingMove([
+      {
+        coord: 'E-5',
+        facing: 'north',
+        flexibility: 4,
+        player: 'black',
+        speed: 2,
+      },
+      { coord: 'A-5', facing: 'south', player: 'white' },
+    ]);
 
     // From E-5: wheel right to east, two steps to E-7, wheel back to north.
     // The transform reads where the path leads; legality was settled before.
@@ -74,14 +97,14 @@ describe('applyMoveUnitEvent function', () => {
       state,
     );
 
-    expect(moved.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
-    );
-    expect(moved.boardState.board['E-7']?.unitPresence).toMatchObject({
+    // The unit stands on E-7, facing north again.
+    expect(
+      getUnitWithPlacementOnBoard(moved, mover.unit).placement,
+    ).toStrictEqual({
+      coordinate: 'E-7',
       facing: 'north',
-      presenceType: 'single',
-      unit: mover.unit,
     });
+    // The move records where it ended and that no commander rode.
     const movement = getMovementResolutionState(moved);
     expect(movement.targetPlacement).toStrictEqual({
       coordinate: 'E-7',
@@ -93,18 +116,10 @@ describe('applyMoveUnitEvent function', () => {
   it('a move into an enemy leaves the mover on its start space until the engagement', () => {
     // §5.1.4: the mover's stats were read where the move began, and it
     // waits there until the engagement places it.
-    const engager = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { speed: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = awaitingMove(engager, [defender]);
+    const { mover, state } = awaitingMove([
+      { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+      { coord: 'D-5', facing: 'south', player: 'white' },
+    ]);
 
     // One step from E-5 into the enemy on D-5, already head-on.
     const moved = applyMoveUnitEvent(
@@ -116,14 +131,14 @@ describe('applyMoveUnitEvent function', () => {
       state,
     );
 
-    expect(moved.boardState.board['E-5']?.unitPresence).toMatchObject({
-      presenceType: 'single',
-      unit: engager.unit,
+    // The mover has not left E-5.
+    expect(
+      getUnitWithPlacementOnBoard(moved, mover.unit).placement,
+    ).toStrictEqual({
+      coordinate: 'E-5',
+      facing: 'north',
     });
-    expect(moved.boardState.board['D-5']?.unitPresence).toMatchObject({
-      presenceType: 'single',
-      unit: defender.unit,
-    });
+    // The move records the enemy's space, squared up to it.
     const movement = getMovementResolutionState(moved);
     expect(movement.targetPlacement).toStrictEqual({
       coordinate: 'D-5',
@@ -135,16 +150,12 @@ describe('applyMoveUnitEvent function', () => {
 
   it('a commander riding onto open ground arrives with the unit', () => {
     // §4.3.10: black's commander stands with the mover on E-5 and rides.
-    const mover = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const opened = awaitingMove(mover);
-    // The commander stands with the unit, so it may ride.
-    const state = replaceBoard(
-      opened,
-      addCommanderToBoard(opened.boardState, 'black', 'E-5'),
+    const { state } = awaitingMove(
+      [
+        { coord: 'E-5', facing: 'north', player: 'black' },
+        { coord: 'A-5', facing: 'south', player: 'white' },
+      ],
+      true,
     );
 
     // One step north, from E-5 to D-5, the commander riding along.
@@ -159,29 +170,19 @@ describe('applyMoveUnitEvent function', () => {
 
     // The commander ends in the unit's final space, and the move records
     // that it rode.
-    expect(moved.boardState.board['E-5']?.commanders).toStrictEqual([]);
-    expect(moved.boardState.board['D-5']?.commanders).toStrictEqual(['black']);
+    expect(findCommanderSpace('black', moved)).toBe('D-5');
     expect(getMovementResolutionState(moved).moveCommander).toBe(true);
   });
 
   it('a commander riding into an enemy waits with the unit', () => {
     // The mover waits on its start space until the engagement places it
     // (§5.1.4); so does the commander riding with it.
-    const engager = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const opened = awaitingMove(engager, [defender]);
-    // The commander stands with the engager, so it may ride into the fight.
-    const state = replaceBoard(
-      opened,
-      addCommanderToBoard(opened.boardState, 'black', 'E-5'),
+    const { state } = awaitingMove(
+      [
+        { coord: 'E-5', facing: 'north', player: 'black' },
+        { coord: 'D-5', facing: 'south', player: 'white' },
+      ],
+      true,
     );
 
     // One step from E-5 into the enemy on D-5, the commander riding along.
@@ -196,7 +197,27 @@ describe('applyMoveUnitEvent function', () => {
 
     // Not yet in the enemy's space: it goes when the engagement places the
     // unit, and no earlier.
-    expect(moved.boardState.board['E-5']?.commanders).toStrictEqual(['black']);
-    expect(moved.boardState.board['D-5']?.commanders).toStrictEqual([]);
+    expect(findCommanderSpace('black', moved)).toBe('E-5');
+  });
+
+  it('throws when the path written runs off the board', () => {
+    // The unit on E-5 faces the north edge, four rows away.
+    const { state } = awaitingMove([
+      { coord: 'E-5', facing: 'north', player: 'black' },
+      { coord: 'L-5', facing: 'north', player: 'white' },
+    ]);
+
+    // Five steps forward pass row A and leave the board, a path no
+    // validation offers.
+    expect(() =>
+      applyMoveUnitEvent(
+        createMoveUnitEvent({
+          moveCommander: false,
+          path: ['step', 'step', 'step', 'step', 'step'],
+          player: 'black',
+        }),
+        state,
+      ),
+    ).toThrow(new Error('The advance path leaves the board'));
   });
 });

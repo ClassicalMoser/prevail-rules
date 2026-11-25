@@ -30,6 +30,7 @@ function issuingOn(step: IssueCommandsPhaseStep): GameState {
   return state;
 }
 
+// One ordered unit for each side.
 const blackUnit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
 const whiteUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
 
@@ -48,6 +49,8 @@ describe('updateRemainingUnitsForPlayer function', () => {
       updateRemainingUnitsForPlayer(state, 'white', [whiteUnit]),
     );
 
+    // Black holds the initiative, so its units take the first list and
+    // white's the second.
     expect(black.remainingUnitsFirstPlayer).toStrictEqual([blackUnit]);
     expect(white.remainingUnitsSecondPlayer).toStrictEqual([whiteUnit]);
   });
@@ -60,6 +63,7 @@ describe('updateIssueCommandsStep function', () => {
       'firstPlayerResolveCommands',
     );
 
+    // Having issued their orders, the first player carries them out.
     expect(getIssueCommandsPhaseState(moved).step).toBe(
       'firstPlayerResolveCommands',
     );
@@ -72,26 +76,34 @@ describe('openCommandResolution and clearCommandResolution functions', () => {
     const move = createMovementResolutionState(state);
 
     const opened = openCommandResolution(state, move);
+    // The unit's move is the one under way.
     expect(
       getIssueCommandsPhaseState(opened).currentCommandResolutionState,
     ).toBe(move);
 
     const cleared = clearCommandResolution(opened);
+    // Finished, it leaves nothing under way for the next unit (§4.3.9).
     expect(
       getIssueCommandsPhaseState(cleared).currentCommandResolutionState,
     ).toBe('pending');
   });
 
   it('throws when another unit’s move is already under way, since orders go one unit at a time', () => {
+    // One unit's move is already under way.
     const state = issuingOn('firstPlayerResolveCommands');
     const opened = openCommandResolution(
       state,
       createMovementResolutionState(state),
     );
 
-    expect(() =>
-      openCommandResolution(opened, createMovementResolutionState(state)),
-    ).toThrow('A command is already being resolved');
+    // A second black unit's move cannot begin until the first is finished.
+    const nextMove = createMovementResolutionState(state, {
+      movingUnit: createTestUnit('black', { instanceNumber: 2 }),
+    });
+
+    expect(() => openCommandResolution(opened, nextMove)).toThrow(
+      'A command is already being resolved',
+    );
   });
 });
 
@@ -115,6 +127,7 @@ describe('beginResolvingCommands function', () => {
 
 describe('finishResolvingCommands function', () => {
   it('passes from the first player’s orders to the second player issuing theirs', () => {
+    // Black, the first player, still has a unit it has not moved.
     const resolving = updateRemainingUnitsForPlayer(
       issuingOn('firstPlayerResolveCommands'),
       'black',
@@ -125,6 +138,7 @@ describe('finishResolvingCommands function', () => {
       finishResolvingCommands(resolving),
     );
 
+    // Black's unspent order is forfeited (§4.3.3), and white issues next.
     expect(finished.remainingUnitsFirstPlayer).toStrictEqual([]);
     expect(finished.step).toBe('secondPlayerIssueCommands');
   });
@@ -134,6 +148,7 @@ describe('finishResolvingCommands function', () => {
       finishResolvingCommands(issuingOn('secondPlayerResolveCommands')),
     );
 
+    // Nobody is left to give orders, so Phase 3 is over.
     expect(finished.step).toBe('complete');
   });
 });

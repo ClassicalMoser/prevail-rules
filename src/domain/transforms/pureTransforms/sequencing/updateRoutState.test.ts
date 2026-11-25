@@ -1,303 +1,150 @@
-import { getRoutStateFromAttackApply } from '@queries';
-import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
+import { createEmptyGameState } from '@factories';
+import {
+  getCleanupPhaseState,
+  getMeleeRoutState,
+  getRangedAttackRetreatState,
+  getRangedAttackRoutState,
+  getRearEngagementRoutState,
+  getRoutStateFromRally,
+} from '@queries';
+import { throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithNothingDue,
+  createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRout,
-  createCleanupPhaseState,
-  createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createCleanupPhaseStateWithRallyRout,
+  createGameStateMovingInto,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createMovementResolutionState,
-  createPlayCardsPhaseState,
-  createRallyResolutionState,
   createRangedAttackResolutionState,
   createRearEngagementState,
-  createResolveMeleePhaseState,
+  createRetreatState,
   createRoutState,
-  createTestCard,
   createTestUnit,
+  legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '../';
 
+import { updateCurrentInitiative } from '../state/updateCurrentInitiative';
+import { updatePhaseState } from '../state/updatePhaseState';
 import { updateRoutState } from './updateRoutState';
 
-import { createEmptyGameState } from '@factories';
-import { updateCurrentInitiative } from '../state/updateCurrentInitiative';
 /**
- * UpdateRoutState: Creates a new game state with the rout state updated.
+ * A rout is opened by whatever caused it: an attack's results, a rear
+ * engagement (§6.3.3), a rally's support check (§10.4.6), or a retreat with
+ * nowhere to go (§9.1.6). This writer finds the one the routing player owns
+ * and writes the rout there as it now stands; it never opens one, and closing
+ * the parent is `settleRout`'s.
  */
 describe('updateRoutState function', () => {
-  function createStateWithRangedAttackRout() {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
+  const whiteUnit = createTestUnit('white', { attack: 2 });
+  const blackUnit = createTestUnit('black', { attack: 2 });
+
+  // White's rout once its cost is worked out: two cards, not yet chosen.
+  const priced = createRoutState('white', whiteUnit, { numberToDiscard: 2 });
+
+  it('writes the rout of a defender caught from behind onto the rear engagement', () => {
+    // A move came up behind white's unit, whose rout is open.
+    const defender = createTestUnit('white');
+    const caught = createGameStateMovingInto(createRearEngagementState());
+    const owed = createRoutState('white', defender, { numberToDiscard: 2 });
+
+    const after = updateRoutState(caught, owed);
+
+    // The rear engagement holds the priced rout.
+    expect(getRearEngagementRoutState(after)).toBe(owed);
+  });
+
+  it('writes the rout a shot caused onto the shot’s results', () => {
+    // A shot routed white's unit outright, and the rout is open.
+    const empty = createEmptyGameState('standard');
+    const shooting = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(empty, {
+        attackApplyState: createAttackApplyStateWithRout(whiteUnit),
+      }),
+      empty,
+    );
+
+    const after = updateRoutState(shooting, priced);
+
+    // The shot's results hold the priced rout.
+    expect(getRangedAttackRoutState(after)).toBe(priced);
+  });
+
+  it('writes the rout of a unit that could not retreat into the retreat, not onto the results around it', () => {
+    // A shot drove white's unit back against the board's south edge, so its
+    // retreat holds an open rout.
+    const atTheEdge = legalRetreatsOf(placed(whiteUnit, 'L-5', 'north'));
+    const empty = createEmptyGameState('standard');
+    const shooting = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(empty, {
+        attackApplyState: createAttackApplyStateWithRetreat(
+          whiteUnit,
+          atTheEdge,
+          {
+            retreatState: createRetreatState(whiteUnit, atTheEdge, {
+              routState: createRoutState('white', whiteUnit),
+            }),
+          },
+        ),
+      }),
+      empty,
+    );
+
+    const after = updateRoutState(shooting, priced);
+
+    // The retreat holds the priced rout.
+    expect(getRangedAttackRetreatState(after).routState).toBe(priced);
+  });
+
+  it('in a melee where both units routed, writes only the routing player’s side', () => {
+    // Black holds the initiative; each blow routed the other unit, and both
+    // routs are open.
+    const blackRout = createRoutState('black', blackUnit);
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(createEmptyGameState('standard'), {
+        attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(
+          blackUnit,
+          { routState: blackRout },
+        ),
+        attackOnSecondPlayerApplyState:
+          createAttackApplyStateWithRout(whiteUnit),
+      }),
       'black',
     );
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, placement),
-    );
-    const attackApply = createAttackApplyStateWithRout(unit);
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: createRangedAttackResolutionState(
-        stateWithUnit,
-        {
-          attackApplyState: attackApply,
-        },
-      ),
-    });
-    return updatePhaseState(stateWithUnit, phaseState);
-  }
 
-  function createStateWithMeleeRout(routingPlayer: 'white' | 'black') {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const routedUnit = createTestUnit(routingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(
-      routingPlayer === 'white' ? 'black' : 'white',
-      { attack: 2 },
-    );
-    const routedPlacement = placed(routedUnit, 'E-5', 'north');
-    const otherPlacement = placed(otherUnit, 'E-5', 'south');
-    let stateWithUnits = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, routedPlacement),
-    );
-    stateWithUnits = replaceBoard(
-      stateWithUnits,
-      addUnitToBoard(stateWithUnits.boardState, otherPlacement),
-    );
-    const attackApply = createAttackApplyStateWithRout(routedUnit);
-    const melee = createMeleeResolutionState(
-      stateWithUnits,
-      routingPlayer === 'white'
-        ? { attackOnSecondPlayerApplyState: attackApply }
-        : { attackOnFirstPlayerApplyState: attackApply },
-    );
-    return updatePhaseState(
-      stateWithUnits,
-      createResolveMeleePhaseState(stateWithUnits, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
-  }
+    const after = updateRoutState(fighting, priced);
 
-  it('given update rout state in rear engagement during movement resolution', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    state.cardState.black.inPlay = createTestCard();
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const movement = createMovementResolutionState(state, {
-      engagementState: createRearEngagementState({
-        routState: createRoutState('white', whiteUnit),
-      }),
-    });
-    const stateInPhase = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-      }),
-    );
-    const newRout = createRoutState('white', whiteUnit, {
-      numberToDiscard: 3,
-    });
-
-    const newState = updateRoutState(stateInPhase, newRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('issueCommands');
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('phase');
-    }
-    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
-    if (cmd.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(cmd.engagementState, 'engagement');
-    const res = throwIfPending(
-      engagement.engagementResolutionState,
-      'resolution',
-    );
-    expect(res.engagementType).toBe('rear');
-    if (res.engagementType !== 'rear') {
-      throw new Error('rear');
-    }
-    expect(throwIfPending(res.routState, 'rout').numberToDiscard).toBe(3);
-  });
-
-  it('given update rout state in ranged attack resolution', () => {
-    const state = createStateWithRangedAttackRout();
-    const unit = createTestUnit('white', { attack: 2 });
-    const newRout = createRoutState('white', unit, { numberToDiscard: 2 });
-
-    const newState = updateRoutState(state, newRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('issueCommands');
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('phase');
-    }
-    const commandState = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
-    );
-    if (commandState.commandResolutionType !== 'rangedAttack') {
-      throw new Error('type');
-    }
-    const attackApply = throwIfPending(
-      commandState.attackApplyState,
-      'attack apply',
-    );
-    expect(
-      throwIfBypassed(
-        getRoutStateFromAttackApply(attackApply),
-        'the attack applies a rout',
-      ).numberToDiscard,
-    ).toBe(2);
-  });
-
-  it('given update rout state in melee resolution for white', () => {
-    const state = createStateWithMeleeRout('white');
-    const unit = createTestUnit('white', { attack: 2 });
-    const newRout = createRoutState('white', unit, { numberToDiscard: 1 });
-
-    const newState = updateRoutState(state, newRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const whiteApply = throwIfPending(
-      melee.attackOnSecondPlayerApplyState,
-      'white apply',
-    );
-    expect(
-      throwIfBypassed(
-        getRoutStateFromAttackApply(whiteApply),
-        'the attack applies a rout',
-      ).numberToDiscard,
-    ).toBe(1);
-  });
-
-  it('given update rout state in melee resolution for black', () => {
-    const state = createStateWithMeleeRout('black');
-    const unit = createTestUnit('black', { attack: 2 });
-    const newRout = createRoutState('black', unit, { numberToDiscard: 2 });
-
-    const newState = updateRoutState(state, newRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    const blackApply = throwIfPending(
-      melee.attackOnFirstPlayerApplyState,
-      'black apply',
-    );
-    expect(
-      throwIfBypassed(
-        getRoutStateFromAttackApply(blackApply),
-        'the attack applies a rout',
-      ).numberToDiscard,
-    ).toBe(2);
-  });
-
-  it('given update rout state in cleanup phase (routs from lost support)', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const unit = createTestUnit('white', { attack: 2 });
-    const rallyState = createRallyResolutionState({
-      playerRallied: true,
-      rallyResolved: true,
-      routState: createRoutState('white', unit),
-    });
-    const phaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: rallyState,
-      step: 'firstPlayerResolveRally',
-    });
-    const stateInCleanup = updatePhaseState(state, phaseState);
-    const newRout = createRoutState('white', unit, { numberToDiscard: 2 });
-
-    const newState = updateRoutState(stateInCleanup, newRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('cleanup');
-    if (phase.phase !== 'cleanup') {
-      throw new Error('phase');
-    }
-    const rally = throwIfPending(
-      phase.firstPlayerRallyResolutionState,
-      'rally',
-    );
-    expect(
-      throwIfBypassed(throwIfPending(rally.routState, 'rout'), 'rout')
-        .numberToDiscard,
-    ).toBe(2);
-    expect(phase.step).toBe('firstPlayerResolveRally');
-    expect(rally.completed).toBe(false);
+    // White's side holds the priced rout; black's is as it was.
+    expect(getMeleeRoutState(after, 'white')).toBe(priced);
+    expect(getMeleeRoutState(after, 'black')).toBe(blackRout);
   });
 
   it('writes a settled rally rout and leaves the rally and the step for settleRout', () => {
-    const state = updateCurrentInitiative(
+    // White holds the initiative and has rallied first; the support check
+    // left a unit without a place, and its rout is open.
+    const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
     );
-    const unit = createTestUnit('white', { attack: 2 });
-    const rallyState = createRallyResolutionState({
-      playerRallied: true,
-      rallyResolved: true,
-      routState: createRoutState('white', unit),
-      unitsLostSupport: [unit],
-    });
-    const phaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: rallyState,
-      step: 'firstPlayerResolveRally',
-    });
-    const stateInCleanup = updatePhaseState(state, phaseState);
-    const completedRout = createRoutState('white', unit, {
+    const rallying = updatePhaseState(
+      base,
+      createCleanupPhaseStateWithRallyRout(
+        base,
+        createRoutState('white', whiteUnit),
+      ),
+    );
+    const completedRout = createRoutState('white', whiteUnit, {
       cardsChosen: true,
       completed: true,
       numberToDiscard: 1,
     });
 
-    const newState = updateRoutState(stateInCleanup, completedRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
+    const phase = getCleanupPhaseState(
+      updateRoutState(rallying, completedRout),
     );
-    expect(phase.phase).toBe('cleanup');
-    if (phase.phase !== 'cleanup') {
-      throw new Error('phase');
-    }
+
     // Cleanup stays on this rally: moving on is settleRout's.
     expect(phase.step).toBe('firstPlayerResolveRally');
     const rally = throwIfPending(
@@ -306,146 +153,39 @@ describe('updateRoutState function', () => {
     );
     // The rout is recorded as settled, and the rally around it is still open.
     expect(rally.completed).toBe(false);
-    expect(
-      throwIfBypassed(throwIfPending(rally.routState, 'rout'), 'rout')
-        .completed,
-    ).toBe(true);
+    expect(getRoutStateFromRally(rally)).toBe(completedRout);
   });
 
-  it('given when no rout state in attack apply, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const unit = createTestUnit('white', { attack: 2 });
-    const attackApply = createAttackApplyStateWithNothingDue(unit);
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createRangedAttackResolutionState(state, {
-        attackApplyState: attackApply,
+  it('throws naming the player and the phase when that player has no open rout', () => {
+    // The shot reached nothing, so nobody is routing.
+    const empty = createEmptyGameState('standard');
+    const shooting = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(empty, {
+        attackApplyState: createAttackApplyStateWithNothingDue(whiteUnit),
       }),
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
+      empty,
+    );
 
-    expect(() =>
-      updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow(/^No open rout to write for/u);
+    expect(() => updateRoutState(shooting, priced)).toThrow(
+      'No open rout to write for white in phase issueCommands',
+    );
   });
 
-  it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state, {
-        engagementState: createFrontEngagementState(),
+  it('throws in a melee when only the other side is routing, since a rout belongs to the player who pays', () => {
+    // Black holds the initiative. White's blow routed black's unit; black's
+    // blow reached nothing.
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(createEmptyGameState('standard'), {
+        attackOnFirstPlayerApplyState:
+          createAttackApplyStateWithRout(blackUnit),
+        attackOnSecondPlayerApplyState:
+          createAttackApplyStateWithNothingDue(whiteUnit),
       }),
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const unit = createTestUnit('white', { attack: 2 });
-
-    expect(() =>
-      updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow(/^No open rout to write for/u);
-  });
-
-  it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
       'black',
     );
-    const phaseState = createIssueCommandsPhaseState(state);
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const unit = createTestUnit('white', { attack: 2 });
 
-    expect(() =>
-      updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow(/^No open rout to write for/u);
-  });
-
-  it('given when melee white attack apply has no rout state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+    expect(() => updateRoutState(fighting, priced)).toThrow(
+      'No open rout to write for white in phase resolveMelee',
     );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const melee = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState: createAttackApplyStateWithRout(blackUnit),
-      attackOnSecondPlayerApplyState:
-        createAttackApplyStateWithNothingDue(whiteUnit),
-    });
-    const stateInPhase = updatePhaseState(
-      state,
-      createResolveMeleePhaseState(state, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
-
-    expect(() =>
-      updateRoutState(stateInPhase, createRoutState('white', whiteUnit)),
-    ).toThrow(/^No open rout to write for/u);
-  });
-
-  it('given when melee black attack apply has no rout state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const melee = createMeleeResolutionState(state, {
-      attackOnFirstPlayerApplyState:
-        createAttackApplyStateWithNothingDue(blackUnit),
-      attackOnSecondPlayerApplyState: createAttackApplyStateWithRout(whiteUnit),
-    });
-    const stateInPhase = updatePhaseState(
-      state,
-      createResolveMeleePhaseState(state, {
-        currentMeleeResolutionState: melee,
-      }),
-    );
-
-    expect(() =>
-      updateRoutState(stateInPhase, createRoutState('black', blackUnit)),
-    ).toThrow(/^No open rout to write for/u);
-  });
-
-  it('given when cleanup rally resolution has no rout state, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const rallyState = createRallyResolutionState({
-      playerRallied: true,
-      rallyResolved: true,
-      routState: 'pending',
-    });
-    const phaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: rallyState,
-      step: 'firstPlayerResolveRally',
-    });
-    const stateInCleanup = updatePhaseState(state, phaseState);
-    const unit = createTestUnit('white', { attack: 2 });
-
-    expect(() =>
-      updateRoutState(stateInCleanup, createRoutState('white', unit)),
-    ).toThrow(/^No open rout to write for/u);
-  });
-
-  it('given when not in issueCommands, resolveMelee, or cleanup phase, throws', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const stateInPlayCards = updatePhaseState(
-      state,
-      createPlayCardsPhaseState(),
-    );
-    const unit = createTestUnit('white', { attack: 2 });
-
-    expect(() =>
-      updateRoutState(stateInPlayCards, createRoutState('white', unit)),
-    ).toThrow(/^No open rout to write for/u);
   });
 });

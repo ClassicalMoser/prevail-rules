@@ -1,133 +1,107 @@
-import { throwIfNone, throwIfPending } from '@utils';
+import type { MoveDelta } from '@entities';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
 import {
+  getEngagementStateFromMovement,
+  getFrontEngagementStateFromMovement,
+} from '@queries';
+import {
+  createBoardWithEngagedUnits,
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithBoard,
   createMovementResolutionState,
-  createTestCard,
-  createUnitByStat,
-  placed,
-  replaceBoard,
+  createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { updateCurrentInitiative } from '@transforms/pureTransforms';
 
 import { applyResolveEngageRetreatOptionEvent } from './applyResolveEngageRetreatOptionEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
  * Procedure output for front engagement: records the retreats the defender may make on the
  * front engagement resolution state under the movement CRS. With none, the defender stands
  * and the engagement ends (§6.3.2).
  */
 describe('applyResolveEngageRetreatOptionEvent function', () => {
-  /** Default front engagement factory with black engager speed 2 for retreat eligibility math. */
-  function baseFrontEngagementState() {
-    const front = createFrontEngagementState();
-    return {
-      ...front,
-      engagingUnit: createUnitByStat('black', 'speed', 2),
+  /**
+   * Black holds the initiative and carries out a Move: its unit has walked
+   * head-on into White's on E-5 and stands engaged there, and White has
+   * declined to commit a card. Whether White may fall back is what the
+   * procedure has just worked out.
+   */
+  function retreatBeingWorkedOut(): GameState {
+    const defender = createTestUnit('white');
+    const attacker = createTestUnit('black', { attack: 2 });
+
+    // The attacker entered the defender's space as the engagement started
+    // (§6.3.2): the defender faces north, the attacker opposite it.
+    const base = updateCurrentInitiative(
+      createGameStateWithBoard(
+        createBoardWithEngagedUnits(defender, attacker, 'E-5'),
+      ),
+      'black',
+    );
+    const front = createFrontEngagementState({
+      defensiveCommitment: { commitmentType: 'declined' },
+    });
+    const movement = createMovementResolutionState(base, {
+      engagementState: front,
+      movingUnit: attacker,
+      targetPlacement: { coordinate: 'E-5', facing: 'south' },
+    });
+    const resolving = createGameStateResolvingCommand(movement, base);
+    return resolving;
+  }
+
+  /** The procedure's answer: the retreats the defender may make. */
+  function retreatOption(
+    retreatPaths: MoveDelta[][],
+  ): ResolveEngageRetreatOptionEvent {
+    const event: ResolveEngageRetreatOptionEvent = {
+      effectType: 'resolveEngageRetreatOption',
+      eventType: 'gameEffect',
+      retreatPaths,
     };
+    return event;
   }
 
   it('records the retreats the defender may make, and leaves the engagement open', () => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defender = createUnitByStat('white', 'speed', 3);
-    const engagementState = baseFrontEngagementState();
-    const defenderWithPlacement = placed(defender, 'E-5', 'south');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, defenderWithPlacement),
+    // The defender is the faster and has one way back: a step straight back.
+    const next = applyResolveEngageRetreatOptionEvent(
+      retreatOption([['step']]),
+      retreatBeingWorkedOut(),
     );
-    const movement = createMovementResolutionState(withBoard, {
-      engagementState,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-    });
-    const full: GameState = updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    const front = getFrontEngagementStateFromMovement(next);
 
-    const event: ResolveEngageRetreatOptionEvent = {
-      retreatPaths: [['step']],
-      effectType: 'resolveEngageRetreatOption' as const,
-      eventType: 'gameEffect' as const,
-    };
-
-    const next = applyResolveEngageRetreatOptionEvent(event, full);
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
+    // The retreat is recorded as the procedure worked it out.
+    expect(front.engagementResolutionState.retreatPaths).toStrictEqual([
+      ['step'],
+    ]);
+    // Whether to take it is the defender's owner's choice, still to come
+    // (§6.3.2 step 3), so the engagement stays open.
+    expect(front.engagementResolutionState.defendingUnitRetreats).toBe(
+      'pending',
     );
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('Expected issueCommands phase');
-    }
-    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
-    if (cmd.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(cmd.engagementState, 'engagement');
-    const res = engagement.engagementResolutionState;
-    if (res.engagementType !== 'front') {
-      throw new Error('front');
-    }
-    expect(res.retreatPaths).toStrictEqual([['step']]);
-    expect(engagement.completed).toBe(false);
+    expect(front.completed).toBe(false);
   });
 
   it('with no retreat to make, the defender stands and the engagement is complete', () => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defender = createUnitByStat('white', 'speed', 2);
-    const engagementState = {
-      ...baseFrontEngagementState(),
-      engagingUnit: createUnitByStat('black', 'speed', 4),
-    };
-    const defenderWithPlacement = placed(defender, 'E-5', 'south');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, defenderWithPlacement),
-    );
-    const movement = createMovementResolutionState(withBoard, {
-      engagementState,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-    });
-    const full: GameState = updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
+    // The defender is not the faster, or has nowhere to go: no retreats.
+    const next = applyResolveEngageRetreatOptionEvent(
+      retreatOption([]),
+      retreatBeingWorkedOut(),
     );
 
-    const next = applyResolveEngageRetreatOptionEvent(
-      {
-        retreatPaths: [],
-        effectType: 'resolveEngageRetreatOption',
-        eventType: 'gameEffect',
-      },
-      full,
-    );
-    const phase = throwIfNone(
-      next.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('Expected issueCommands phase');
-    }
-    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
-    if (cmd.commandResolutionType !== 'movement') {
-      throw new Error('movement');
-    }
-    const engagement = throwIfPending(cmd.engagementState, 'engagement');
-    expect(engagement.completed).toBe(true);
-    if (engagement.engagementResolutionState.engagementType !== 'front') {
-      throw new Error('front');
-    }
-    expect(engagement.engagementResolutionState.retreatPaths).toStrictEqual([]);
-    // With nowhere to go, it will never fall back.
-    expect(engagement.engagementResolutionState.retreatState).toBe('bypassed');
+    // Nothing more is owed before the melee in Phase 4 (§6.3.2 step 4).
+    expect(getEngagementStateFromMovement(next).completed).toBe(true);
+    // It was never offered the choice, so it is recorded as standing, and
+    // no retreat will open for it.
+    expect(
+      getFrontEngagementStateFromMovement(next).engagementResolutionState,
+    ).toMatchObject({
+      defendingUnitRetreats: false,
+      retreatPaths: [],
+      retreatState: 'bypassed',
+    });
   });
 });

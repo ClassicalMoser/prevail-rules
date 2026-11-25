@@ -1,5 +1,5 @@
 import { createEmptyGameState, createUnitIndexKey } from '@factories';
-import { createTestUnit, placed } from '@testing';
+import { createTestUnit, placed, withReservedUnits } from '@testing';
 
 import { deployUnit } from './deployUnit';
 
@@ -10,14 +10,7 @@ import { deployUnit } from './deployUnit';
 describe('deployUnit function', () => {
   // White's one unit, waiting in reserve and filed there.
   const unit = createTestUnit('white', { attack: 3 });
-  const waiting = {
-    ...createEmptyGameState('standard'),
-    index: {
-      commanders: { black: 'reserved' as const, white: 'reserved' as const },
-      units: { [createUnitIndexKey(unit)]: 'reserved' as const },
-    },
-    reservedUnits: [unit],
-  };
+  const waiting = withReservedUnits(createEmptyGameState('standard'), [unit]);
 
   it('takes the unit out of reserve, places it, and files it where it stands', () => {
     const deployed = deployUnit(waiting, placed(unit, 'L-5', 'north'));

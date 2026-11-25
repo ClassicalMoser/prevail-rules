@@ -1,384 +1,183 @@
+import type { PlayerSide } from '@entities';
 import type { ResolveRoutEvent } from '@events';
-import type { GameState } from '@game';
+import type { AttackApplyState, GameState } from '@game';
+import { createAttackApplyState, createEmptyGameState } from '@factories';
+import { getRearEngagementStateFromMovement, getRoutState } from '@queries';
 import {
-  getMeleeAttackApplyState,
-  getRangedAttackApplyState,
-  getRearEngagementStateFromMovement,
-  getIssueCommandsPhaseState,
-  getRoutStateFromAttackApply,
-  getRoutStateFromRally,
-} from '@queries';
-import {
-  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRout,
-  createCleanupPhaseState,
-  createIssueCommandsPhaseState,
+  createCleanupPhaseStateWithRallyRout,
+  createGameStateMovingInto,
+  createGameStateResolvingCommand,
+  createGameStateWithEngagedUnits,
+  createGameStateWithUnits,
   createMeleeResolutionState,
-  createMovementResolutionState,
-  createRallyResolutionState,
   createRangedAttackResolutionState,
+  createRearEngagementState,
   createResolveMeleePhaseState,
   createRoutState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
 import {
-  addUnitToBoard,
-  updateCurrentInitiative,
+  removeUnitsLeavingUnderRout,
   updatePhaseState,
 } from '@transforms/pureTransforms';
-import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 
 import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 
-import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * Writes `numberToDiscard` (and related rout bookkeeping) onto the active rout substep for
  * the matching source: ranged/melee apply, cleanup rally, or rear engagement under movement.
  */
 describe('applyResolveRoutEvent function', () => {
-  /** IssueCommands + ranged apply with rout substep on white at E-5. */
-  function createStateWithRangedAttackRout(): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const routedUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(routedUnit, 'E-5', 'north');
+  // Any units will do: the apply reads the penalty off the event, not their
+  // Morale.
+  const white = createTestUnit('white');
+  const black = createTestUnit('black');
 
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-
-    const attackApplyState = createAttackApplyStateWithRout(routedUnit);
-    const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
-      attackApplyState,
+  /**
+   * A shot at White's unit on E-5 facing north, from Black's shooter in
+   * front of it on D-5, with this apply on the target.
+   */
+  function shotAtWhite(apply: AttackApplyState): GameState {
+    const shooter = createTestUnit('black', { range: 1 });
+    const base = createGameStateWithUnits([
+      placed(white, 'E-5', 'north'),
+      placed(shooter, 'D-5', 'south'),
+    ]);
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: apply,
+      attackingUnit: shooter,
+      defendingUnit: white,
     });
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: rangedAttackState,
-    });
 
-    return updatePhaseState(stateWithUnit, phaseState);
+    // Phase 3, with that shot being carried out.
+    const resolving = createGameStateResolvingCommand(shot, base);
+    return resolving;
   }
 
-  /** ResolveMelee + rout substep on the named player’s attack apply. */
-  function createStateWithMeleeRout(
-    routingPlayer: 'white' | 'black',
-  ): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    const routedUnit = createTestUnit(routingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(
-      routingPlayer === 'white' ? 'black' : 'white',
-      { attack: 2 },
-    );
-
-    const routedUnitWithPlacement = placed(routedUnit, 'E-5', 'north');
-    const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
-
-    let stateWithUnits = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, routedUnitWithPlacement),
-    );
-    stateWithUnits = replaceBoard(
-      stateWithUnits,
-      addUnitToBoard(stateWithUnits.boardState, otherUnitWithPlacement),
-    );
-
-    const attackApplyState = createAttackApplyStateWithRout(routedUnit);
-    const meleeState = createMeleeResolutionState(
-      stateWithUnits,
-      routingPlayer === 'white'
-        ? { attackOnSecondPlayerApplyState: attackApplyState }
-        : { attackOnFirstPlayerApplyState: attackApplyState },
-    );
-    const phaseState = createResolveMeleePhaseState(stateWithUnits, {
-      currentMeleeResolutionState: meleeState,
-    });
-
-    return updatePhaseState(stateWithUnits, phaseState);
+  /**
+   * The shot broke White's unit: its rout is open and the unit has left the
+   * board, its Morale not yet counted.
+   */
+  function shotRoutingWhite(): GameState {
+    const shot = shotAtWhite(createAttackApplyStateWithRout(white));
+    const routed = removeUnitsLeavingUnderRout(shot, [white]);
+    return routed;
   }
 
-  function createStateWithRearEngagementRoutAwaitingPenalty(): GameState {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
+  /**
+   * A melee on E-5, White's unit facing north and Black's facing it, in
+   * which one side's unit broke: its rout is open and it has left the board.
+   * White holds the initiative, so its unit's results sit in the first
+   * player's slot.
+   */
+  function meleeRouting(routing: PlayerSide): GameState {
+    const base = createGameStateWithEngagedUnits(white, black, 'E-5', 'north');
+    const unit = routing === 'white' ? white : black;
+    const apply = createAttackApplyStateWithRout(unit);
+    const melee = createMeleeResolutionState(
+      base,
+      routing === 'white'
+        ? { attackOnFirstPlayerApplyState: apply }
+        : { attackOnSecondPlayerApplyState: apply },
     );
-    const defender = createTestUnit('white', { attack: 2 });
-    const attacker = createTestUnit('black', { attack: 2 });
-    const movement = createMovementResolutionState(state, {
-      engagementState: {
-        completed: false,
-        engagementResolutionState: {
-          completed: false,
-          engagementType: 'rear',
-          routState: {
-            cardsChosen: false,
-            completed: false,
-            numberToDiscard: 'pending',
-            player: 'white',
-            substepType: 'rout',
-            unitsToRout: [defender],
-          },
-        },
-        substepType: 'engagementResolution',
-      },
-      movingUnit: attacker,
-      targetPlacement: createUnitPlacement('E-5', 'south'),
+
+    // Phase 4, with that melee being fought, and the broken unit gone.
+    const phase = createResolveMeleePhaseState(base, {
+      currentMeleeResolutionState: melee,
     });
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: movement,
-    });
-    return updatePhaseState(state, phaseState);
+    const fighting = updatePhaseState(base, phase);
+    const routed = removeUnitsLeavingUnderRout(fighting, [unit]);
+    return routed;
+  }
+
+  /** The rout's cost as its procedure counts it: who pays, and how many. */
+  function penaltyOf(player: PlayerSide, penalty: number): ResolveRoutEvent {
+    const event: ResolveRoutEvent = {
+      effectType: 'resolveRout',
+      eventType: 'gameEffect',
+      penalty,
+      player,
+    };
+    return event;
   }
 
   describe('ranged rout substep', () => {
-    it('given ranged rout and event penalty 2, nested routState.numberToDiscard is 2', () => {
-      const state = createStateWithRangedAttackRout();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const routState = throwIfBypassed(
-        getRoutStateFromAttackApply(attackApplyState),
-        'the attack applies a rout',
+    it('writes the Morale owed on the rout, which then waits for its owner to choose the cards', () => {
+      const next = applyResolveRoutEvent(
+        penaltyOf('white', 2),
+        shotRoutingWhite(),
       );
 
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 2,
-        player: routState.player,
-      };
-
-      const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getRangedAttackApplyState(newState);
-      const newRoutState = throwIfBypassed(
-        getRoutStateFromAttackApply(newAttackApplyState),
-        'the attack applies a rout',
-      );
-
-      expect(newRoutState.numberToDiscard).toBe(2);
+      // Two cards are owed (§9.3.2) and none chosen yet.
+      const rout = getRoutState(next, 'white');
+      expect(rout.numberToDiscard).toBe(2);
+      expect(rout.cardsChosen).toBe(false);
+      expect(rout.completed).toBe(false);
+      // The rout is still White's, of the same unit.
+      expect(rout.unitsToRout).toStrictEqual([white]);
     });
 
     it('a zero penalty closes the rout — there is nothing to choose', () => {
-      const state = createStateWithRangedAttackRout();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const routState = throwIfBypassed(
-        getRoutStateFromAttackApply(attackApplyState),
-        'the attack applies a rout',
+      // Morale 0 costs nothing (§9.3.2).
+      const next = applyResolveRoutEvent(
+        penaltyOf('white', 0),
+        shotRoutingWhite(),
       );
 
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 0,
-        player: routState.player,
-      };
-
-      const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getRangedAttackApplyState(newState);
-      const newRoutState = throwIfBypassed(
-        getRoutStateFromAttackApply(newAttackApplyState),
-        'the attack applies a rout',
-      );
-
-      expect(newRoutState.numberToDiscard).toBe(0);
-      expect(newRoutState.cardsChosen).toBe(true);
-      expect(newRoutState.completed).toBe(true);
-    });
-
-    it('given penalty 3, player unitsToRout and cardsChosen unchanged besides numberToDiscard', () => {
-      const state = createStateWithRangedAttackRout();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const routState = throwIfBypassed(
-        getRoutStateFromAttackApply(attackApplyState),
-        'the attack applies a rout',
-      );
-
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 3,
-        player: routState.player,
-      };
-
-      const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getRangedAttackApplyState(newState);
-      const newRoutState = throwIfBypassed(
-        getRoutStateFromAttackApply(newAttackApplyState),
-        'the attack applies a rout',
-      );
-
-      expect(newRoutState.substepType).toBe('rout');
-      expect(newRoutState.player).toBe(routState.player);
-      expect(newRoutState.unitsToRout).toStrictEqual(routState.unitsToRout);
-      expect(newRoutState.cardsChosen).toBe(false);
-      expect(newRoutState.completed).toBe(false);
+      // Nothing owed, nothing to choose, and the rout is done.
+      const rout = getRoutState(next, 'white');
+      expect(rout.numberToDiscard).toBe(0);
+      expect(rout.cardsChosen).toBe(true);
+      expect(rout.completed).toBe(true);
     });
   });
 
   describe('melee rout substep', () => {
-    it('given black melee rout, event penalty 2 updates black apply rout numberToDiscard', () => {
-      const state = createStateWithMeleeRout('black');
-      const attackApplyState = getMeleeAttackApplyState(state, 'black');
-      const routState = throwIfBypassed(
-        getRoutStateFromAttackApply(attackApplyState),
-        'the attack applies a rout',
-      );
+    it.each(['white', 'black'] as const)(
+      "the Morale owed lands on %s's own rout: each owner pays for their own unit (§9.3.3)",
+      (routing) => {
+        const next = applyResolveRoutEvent(
+          penaltyOf(routing, 2),
+          meleeRouting(routing),
+        );
 
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 2,
-        player: routState.player,
-      };
-
-      const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getMeleeAttackApplyState(newState, 'black');
-      const newRoutState = throwIfBypassed(
-        getRoutStateFromAttackApply(newAttackApplyState),
-        'the attack applies a rout',
-      );
-
-      expect(newRoutState.numberToDiscard).toBe(2);
-    });
-
-    it('given white melee rout, event penalty 1 updates white apply rout numberToDiscard', () => {
-      const state = createStateWithMeleeRout('white');
-      const attackApplyState = getMeleeAttackApplyState(state, 'white');
-      const routState = throwIfBypassed(
-        getRoutStateFromAttackApply(attackApplyState),
-        'the attack applies a rout',
-      );
-
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 1,
-        player: routState.player,
-      };
-
-      const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getMeleeAttackApplyState(newState, 'white');
-      const newRoutState = throwIfBypassed(
-        getRoutStateFromAttackApply(newAttackApplyState),
-        'the attack applies a rout',
-      );
-
-      expect(newRoutState.numberToDiscard).toBe(1);
-    });
+        // The penalty is written on the routing side's rout.
+        expect(getRoutState(next, routing).numberToDiscard).toBe(2);
+      },
+    );
   });
 
   describe('cleanup rally rout', () => {
-    it('given firstPlayerResolveRally with routState, event penalty 2 lands on rally rout', () => {
-      const state = updateCurrentInitiative(
-        createEmptyGameState('standard'),
-        'black',
+    it('the Morale of units that lost their support lands on the rally rout', () => {
+      // White rallied, and a unit with no place at the support check routed
+      // (§10.4.6). White holds the initiative, so it is White's rally first.
+      const state = createEmptyGameState('standard');
+      const rally = createCleanupPhaseStateWithRallyRout(
+        state,
+        createRoutState('white', white),
       );
-      const routedUnit = createTestUnit('white', { attack: 2 });
-      const routState = createRoutState('white', routedUnit);
+      const onRally = updatePhaseState(state, rally);
 
-      const rallyState = createRallyResolutionState({
-        playerRallied: true,
-        rallyResolved: false,
-        routState,
-        unitsLostSupport: [],
-      });
+      const next = applyResolveRoutEvent(penaltyOf('white', 2), onRally);
 
-      const phaseState = createCleanupPhaseState({
-        firstPlayerRallyResolutionState: rallyState,
-        step: 'firstPlayerResolveRally',
-      });
-
-      const stateWithRally = updatePhaseState(state, phaseState);
-
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 2,
-        player: routedUnit.playerSide,
-      };
-
-      const newState = applyResolveRoutEvent(event, stateWithRally);
-      const newPhaseState = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      if (newPhaseState.phase !== 'cleanup') {
-        throw new Error('Expected cleanup phase');
-      }
-      const newRallyState = throwIfPending(
-        newPhaseState.firstPlayerRallyResolutionState,
-        'rally',
-      );
-      const newRoutState = throwIfBypassed(
-        getRoutStateFromRally(newRallyState),
-        'rout',
-      );
-
-      expect(newRoutState.numberToDiscard).toBe(2);
+      // Two cards are owed on the rally's rout (§10.4.7).
+      expect(getRoutState(next, 'white').numberToDiscard).toBe(2);
     });
   });
 
   describe('rear engagement movement', () => {
-    it('given rear engagement rout under movement CRS, event penalty matches summed unit penalties', () => {
-      const state = createStateWithRearEngagementRoutAwaitingPenalty();
-      const movement = getIssueCommandsPhaseState(state);
-      const commandState = throwIfPending(
-        movement.currentCommandResolutionState,
-        'command',
-      );
-      if (commandState.commandResolutionType !== 'movement') {
-        throw new Error('movement');
-      }
-      const engagement = throwIfPending(
-        commandState.engagementState,
-        'engagement',
-      );
-      const resolution = throwIfPending(
-        engagement.engagementResolutionState,
-        'resolution',
-      );
-      if (resolution.engagementType !== 'rear') {
-        throw new Error('expected rear');
-      }
-      const rout = throwIfPending(resolution.routState, 'rout');
+    it("the Morale of a unit routed from the rear lands on the engagement's rout", () => {
+      // Black's unit engaged White's from the rear, and White's unit routed
+      // on the spot (§6.3.3).
+      const state = createGameStateMovingInto(createRearEngagementState());
 
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: rout.unitsToRout.reduce(
-          (sum: number, u) => sum + u.unitType.morale,
-          0,
-        ),
-        player: rout.player,
-      };
+      const next = applyResolveRoutEvent(penaltyOf('white', 2), state);
 
-      const newState = applyResolveRoutEvent(event, state);
-      const newMovement = getIssueCommandsPhaseState(newState);
-      const newCommandState = throwIfPending(
-        newMovement.currentCommandResolutionState,
-        'command',
-      );
-      if (newCommandState.commandResolutionType !== 'movement') {
-        throw new Error('movement');
-      }
-      const newEngagement = throwIfPending(
-        newCommandState.engagementState,
-        'engagement',
-      );
-      const newResolution = throwIfPending(
-        newEngagement.engagementResolutionState,
-        'resolution',
-      );
-      if (newResolution.engagementType !== 'rear') {
-        throw new Error('expected rear');
-      }
-      expect(
-        throwIfPending(newResolution.routState, 'rout').numberToDiscard,
-      ).toBe(event.penalty);
+      // Two cards are owed, and the engagement waits for them.
+      expect(getRoutState(next, 'white').numberToDiscard).toBe(2);
+      expect(getRearEngagementStateFromMovement(next).completed).toBe(false);
     });
   });
 
@@ -386,15 +185,9 @@ describe('applyResolveRoutEvent function', () => {
     it('a zero-Morale rout closes the rear engagement, so the move can finish', () => {
       // A defender worth no Morale — a cheap skirmisher — routed from the
       // rear: no discard to ask for, so the engagement ends here (§6.3.3).
-      const state = createStateWithRearEngagementRoutAwaitingPenalty();
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 0,
-        player: 'white',
-      };
+      const state = createGameStateMovingInto(createRearEngagementState());
 
-      const newState = applyResolveRoutEvent(event, state);
+      const newState = applyResolveRoutEvent(penaltyOf('white', 0), state);
       const engagement = getRearEngagementStateFromMovement(newState);
 
       expect(engagement.completed).toBe(true);
@@ -403,56 +196,31 @@ describe('applyResolveRoutEvent function', () => {
   });
 
   describe('structural update', () => {
-    it('given original rout numberToDiscard undefined, input rout object unchanged after apply', () => {
-      const state = createStateWithRangedAttackRout();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const routState = throwIfBypassed(
-        getRoutStateFromAttackApply(attackApplyState),
-        'the attack applies a rout',
-      );
-      const originalNumberToDiscard = routState.numberToDiscard;
+    it('leaves the state it was given as it was', () => {
+      const state = shotRoutingWhite();
+      const routBefore = getRoutState(state, 'white');
 
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 2,
-        player: routState.player,
-      };
+      applyResolveRoutEvent(penaltyOf('white', 2), state);
 
-      applyResolveRoutEvent(event, state);
-
-      expect(routState.numberToDiscard).toBe(originalNumberToDiscard);
+      // A transition returns a new state; the old rout is still uncounted.
+      expect(routBefore.numberToDiscard).toBe('pending');
+      expect(getRoutState(state, 'white').numberToDiscard).toBe('pending');
     });
   });
 
   describe('errors', () => {
     it('throws when the ranged apply owes a rout that was never opened', () => {
-      const state = updateCurrentInitiative(
-        createEmptyGameState('standard'),
-        'black',
-      );
-      const unit = createTestUnit('white', { attack: 2 });
-      const attackApplyState = createAttackApplyStateWithNothingDue(unit, {
-        routState: 'pending',
+      // The shot reached White's Rout, but the rout has not been opened.
+      const unopened = createAttackApplyState(white, {
+        unitRetreated: false,
+        unitReversed: false,
+        unitRouted: true,
       });
-      const rangedAttackState = createRangedAttackResolutionState(state, {
-        attackApplyState,
-      });
-      const phaseState = createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: rangedAttackState,
-      });
-      const stateWithoutRout = updatePhaseState(state, phaseState);
 
-      const event: ResolveRoutEvent = {
-        effectType: 'resolveRout',
-        eventType: 'gameEffect',
-        penalty: 2,
-        player: unit.playerSide,
-      };
-
-      expect(() => applyResolveRoutEvent(event, stateWithoutRout)).toThrow(
-        'No rout is in play for white',
-      );
+      // Counting its Morale now is a fault in the sequence.
+      expect(() =>
+        applyResolveRoutEvent(penaltyOf('white', 2), shotAtWhite(unopened)),
+      ).toThrow('No rout is in play for white');
     });
   });
 });

@@ -1,23 +1,16 @@
-import type { UnitWithPlacement } from '@entities';
-import type { GameState } from '@game';
-import { createChooseMovingUnitEvent, createEmptyGameState } from '@factories';
+import type { AuthoritativeGameState } from '@game';
+import { createChooseMovingUnitEvent, createMoveUnitEvent } from '@factories';
 import { getLegalMoveUnits } from '@legality';
 import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,
+  getSingleUnitWithPlacementAtCoordinate,
 } from '@queries';
 import {
-  createIssueCommandsPhaseState,
-  createTestCard,
-  createUnitWithPlacement,
-  replaceBoard,
-  updateCardState,
+  createPlayableGame,
+  createTestUnit,
+  resolvingMoveOrder,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms/pureTransforms';
 import { applyCompleteUnitMovementEvent } from '@transforms/stateTransitions/applyEffects/movement/applyCompleteUnitMovementEvent';
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
@@ -28,101 +21,104 @@ import { applyChooseMovingUnitEvent } from './applyChooseMovingUnitEvent';
  * opens with the commitment still to come and the move unwritten, and the
  * unit leaves the list of those the order has still to move.
  *
- * Black carries out a Move card for the given units, all on the board.
+ * Black carries out a Move order for two Speed-2 units on E-5 and E-3; a
+ * white unit stands across the field so both armies are in it.
  */
-function resolvingOrder(units: UnitWithPlacement[]): GameState {
-  let state = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    'black',
+function blackMovingTwo(): AuthoritativeGameState {
+  const game = createPlayableGame(
+    [
+      { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+      { coord: 'E-3', facing: 'north', player: 'black', speed: 2 },
+      { coord: 'A-5', facing: 'south', player: 'white' },
+    ],
+    { initiative: 'black' },
   );
-  state = updateCardState(state, {
-    ...state.cardState,
-    black: { ...state.cardState.black, inPlay: createTestCard() },
-  });
-  let board = state.boardState;
-  for (const unit of units) {
-    board = addUnitToBoard(board, unit);
-  }
-  state = replaceBoard(state, board);
-  const resolving = updatePhaseState(
-    state,
-    createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: 'pending',
-      remainingUnitsFirstPlayer: units.map((unit) => unit.unit),
-      step: 'firstPlayerResolveCommands',
-    }),
-  );
+  const first = getSingleUnitWithPlacementAtCoordinate(game.boardState, 'E-5');
+  const second = getSingleUnitWithPlacementAtCoordinate(game.boardState, 'E-3');
+  const resolving = resolvingMoveOrder(game, [first.unit, second.unit]);
   return resolving;
 }
 
 describe('applyChooseMovingUnitEvent function', () => {
-  const first = createUnitWithPlacement({
-    coordinate: 'E-5',
-    facing: 'north',
-    playerSide: 'black',
-    unitOptions: { speed: 2 },
-  });
-  const second = createUnitWithPlacement({
-    coordinate: 'E-3',
-    facing: 'north',
-    playerSide: 'black',
-    unitOptions: { instanceNumber: 2, speed: 2 },
-  });
-
   it('opens the move with the commitment owed and the move unwritten', () => {
-    const state = resolvingOrder([first, second]);
+    const state = blackMovingTwo();
+    const mover = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-5',
+    );
 
+    // Black names the unit on E-5 to move.
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: first.unit,
+        unit: mover.unit,
       }),
       state,
     );
 
-    const movement = getMovementResolutionState(named);
-    expect(movement.movingUnit).toStrictEqual(first.unit);
-    expect(movement.commitment).toStrictEqual({ commitmentType: 'pending' });
-    expect(movement.targetPlacement).toBe('pending');
-    expect(movement.moveCommander).toBe('pending');
+    // The owner commits before the move is written (§4.3.10 step 2), so the
+    // path, its destination, the riding commander and any engagement all
+    // wait.
+    expect(getMovementResolutionState(named)).toStrictEqual({
+      commandResolutionType: 'movement',
+      commitment: { commitmentType: 'pending' },
+      completed: false,
+      engagementState: 'pending',
+      moveCommander: 'pending',
+      movingUnit: mover.unit,
+      substepType: 'commandResolution',
+      targetPlacement: 'pending',
+    });
   });
 
   it('takes the unit off the list the order has still to move', () => {
-    const state = resolvingOrder([first, second]);
+    const state = blackMovingTwo();
+    const mover = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-5',
+    );
+    const other = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-3',
+    );
 
+    // Black names the unit on E-5; each unit moves once (§4.3.6).
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: first.unit,
+        unit: mover.unit,
       }),
       state,
     );
 
+    // Only the unit on E-3 is still to move.
     expect(
       getIssueCommandsPhaseState(named).remainingUnitsFirstPlayer,
-    ).toStrictEqual([second.unit]);
+    ).toStrictEqual([other.unit]);
   });
 
   it('once its move is done, the unit is not offered again', () => {
     // Each unit moves once per order (§4.3.6).
-    const state = resolvingOrder([first, second]);
+    const state = blackMovingTwo();
+    const mover = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-5',
+    );
 
-    // Name the first unit, write its move (one step north), complete it.
+    // Name the unit on E-5, write its move (one step north), complete it.
     const named = applyChooseMovingUnitEvent(
       createChooseMovingUnitEvent({
         player: 'black',
-        unit: first.unit,
+        unit: mover.unit,
       }),
       state,
     );
     const moved = applyMoveUnitEvent(
-      {
-        choiceType: 'moveUnit',
-        eventType: 'playerChoice',
+      createMoveUnitEvent({
         moveCommander: false,
         path: ['step'],
         player: 'black',
-      },
+      }),
       named,
     );
     const done = applyCompleteUnitMovementEvent(
@@ -133,8 +129,60 @@ describe('applyChooseMovingUnitEvent function', () => {
       moved,
     );
 
+    // Only the unit on E-3, the second of the order, is offered next.
     expect(
       getLegalMoveUnits(done)?.units.map((unit) => unit.unit.instanceNumber),
     ).toStrictEqual([2]);
+  });
+
+  it('refuses to open a second move while one is under way', () => {
+    // Units are moved one at a time, each finished first (§4.3.9).
+    const state = blackMovingTwo();
+    const first = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-5',
+    );
+    const second = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-3',
+    );
+
+    // The unit on E-5 is named, and its move has not been written.
+    const named = applyChooseMovingUnitEvent(
+      createChooseMovingUnitEvent({
+        player: 'black',
+        unit: first.unit,
+      }),
+      state,
+    );
+
+    // Naming the unit on E-3 now is a fault in whatever sent it.
+    expect(() =>
+      applyChooseMovingUnitEvent(
+        createChooseMovingUnitEvent({
+          player: 'black',
+          unit: second.unit,
+        }),
+        named,
+      ),
+    ).toThrow(new Error('A command is already being resolved'));
+  });
+
+  it('throws when the unit named is not on the board', () => {
+    const state = blackMovingTwo();
+
+    // A third black unit, never placed: the event names a unit the board
+    // does not hold.
+    const absent = createTestUnit('black', { instanceNumber: 3, speed: 2 });
+
+    expect(() =>
+      applyChooseMovingUnitEvent(
+        createChooseMovingUnitEvent({
+          player: 'black',
+          unit: absent,
+        }),
+        state,
+      ),
+    ).toThrow(new Error('Unit not found on board'));
   });
 });

@@ -1,124 +1,99 @@
-import { tempCommandCards } from '@sampleValues';
+import {
+  createCardState,
+  createEmptyGameState,
+  createOwnedCardState,
+} from '@factories';
+import { createTestCard, updateCardState } from '@testing';
+
+import { projectGameStateForVisibility } from '../visibility';
 import { revealBothAwaitingCards } from './revealBothAwaitingCards';
 
-import { createEmptyGameState } from '@factories';
 /**
- * RevealBothAwaitingCards: visibility-preserving reveal of both awaitingPlay slots.
+ * Both face-down cards are turned over together, and each is in play for the
+ * round (§4.1.2). A view that holds a waiting card puts its own copy in play;
+ * a view that held it face down has only the reveal event's copy.
  */
 describe('revealBothAwaitingCards function', () => {
+  // Each side has one card face down, waiting to be revealed.
+  const blackAwaiting = createTestCard({ name: 'Black, as held' });
+  const whiteAwaiting = createTestCard({ name: 'White, as held' });
+  const game = updateCardState(
+    createEmptyGameState('standard'),
+    createCardState({
+      black: createOwnedCardState({
+        awaitingPlay: blackAwaiting,
+        inHand: [createTestCard()],
+      }),
+      white: createOwnedCardState({
+        awaitingPlay: whiteAwaiting,
+        inHand: [createTestCard()],
+      }),
+    }),
+  );
+
+  // The reveal names both cards, who they are, under other names, so each
+  // case can tell the held copy from the event's.
   const revealed = {
-    black: tempCommandCards[0],
-    white: tempCommandCards[1],
+    black: { ...blackAwaiting, name: 'Black, as revealed' },
+    white: { ...whiteAwaiting, name: 'White, as revealed' },
   };
 
-  it('given authoritative, reveals both owned awaitingPlay slots from state', () => {
-    const { cardState } = createEmptyGameState('standard');
-    const authoritative = {
-      visibility: 'authoritative' as const,
-      black: {
-        ...cardState.black,
-        awaitingPlay: tempCommandCards[0],
-        inPlay: null,
-      },
-      white: {
-        ...cardState.white,
-        awaitingPlay: tempCommandCards[1],
-        inPlay: null,
-      },
-    };
+  it('puts both held copies in play in the full record', () => {
+    const result = revealBothAwaitingCards(game.cardState, revealed);
 
-    const result = revealBothAwaitingCards(authoritative, revealed);
-
+    // The full record held both cards, so the event's copies are not read.
     expect(result.visibility).toBe('authoritative');
-    expect(result.black.inPlay).toBe(tempCommandCards[0]);
+    expect(result.black.inPlay).toBe(blackAwaiting);
     expect(result.black.awaitingPlay).toBeNull();
-    expect(result.white.inPlay).toBe(tempCommandCards[1]);
+    expect(result.white.inPlay).toBe(whiteAwaiting);
     expect(result.white.awaitingPlay).toBeNull();
   });
 
-  it('given whiteSeen, reveals owned white from state and black from payload', () => {
-    const { cardState } = createEmptyGameState('standard');
-    const whiteSeen = {
-      visibility: 'whiteSeen' as const,
-      white: {
-        ...cardState.white,
-        awaitingPlay: tempCommandCards[1],
-        inPlay: null,
-      },
-      black: {
-        awaitingPlay: 'hidden' as const,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: null,
-        played: [],
-      },
-    };
+  it("puts White's held copy and Black's revealed copy in play at White's seat", () => {
+    const { cardState } = projectGameStateForVisibility(game, 'whiteSeen');
 
-    const result = revealBothAwaitingCards(whiteSeen, revealed);
+    const result = revealBothAwaitingCards(cardState, revealed);
 
+    // White's seat held its own card; Black's it saw only face down.
     expect(result.visibility).toBe('whiteSeen');
-    expect(result.white.inPlay).toBe(tempCommandCards[1]);
+    expect(result.white.inPlay).toBe(whiteAwaiting);
     expect(result.white.awaitingPlay).toBeNull();
     expect(result.black.inPlay).toBe(revealed.black);
     expect(result.black.awaitingPlay).toBeNull();
   });
 
-  it('given blackSeen, reveals owned black from state and white from payload', () => {
-    const { cardState } = createEmptyGameState('standard');
-    const blackSeen = {
-      visibility: 'blackSeen' as const,
-      black: {
-        ...cardState.black,
-        awaitingPlay: tempCommandCards[0],
-        inPlay: null,
-      },
-      white: {
-        awaitingPlay: 'hidden' as const,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: null,
-        played: [],
-      },
-    };
+  it("puts Black's held copy and White's revealed copy in play at Black's seat", () => {
+    const { cardState } = projectGameStateForVisibility(game, 'blackSeen');
 
-    const result = revealBothAwaitingCards(blackSeen, revealed);
+    const result = revealBothAwaitingCards(cardState, revealed);
 
+    // Black's seat held its own card; White's it saw only face down.
     expect(result.visibility).toBe('blackSeen');
-    expect(result.black.inPlay).toBe(tempCommandCards[0]);
+    expect(result.black.inPlay).toBe(blackAwaiting);
     expect(result.black.awaitingPlay).toBeNull();
     expect(result.white.inPlay).toBe(revealed.white);
     expect(result.white.awaitingPlay).toBeNull();
   });
 
-  it('given spectator, reveals both awaitingPlay slots from the payload', () => {
-    const spectator = {
-      visibility: 'spectator' as const,
-      black: {
-        awaitingPlay: 'hidden' as const,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: null,
-        played: [],
-      },
-      white: {
-        awaitingPlay: 'hidden' as const,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: null,
-        played: [],
-      },
-    };
+  it('puts both revealed copies in play for a spectator, who held neither', () => {
+    const { cardState } = projectGameStateForVisibility(game, 'spectator');
 
-    const result = revealBothAwaitingCards(spectator, revealed);
+    const result = revealBothAwaitingCards(cardState, revealed);
 
     expect(result.visibility).toBe('spectator');
     expect(result.black.inPlay).toBe(revealed.black);
     expect(result.black.awaitingPlay).toBeNull();
     expect(result.white.inPlay).toBe(revealed.white);
     expect(result.white.awaitingPlay).toBeNull();
+  });
+
+  it('throws for a visibility the game does not know', () => {
+    expect(() =>
+      revealBothAwaitingCards(
+        // A visibility the type forbids, to reach the exhaustive default.
+        { ...game.cardState, visibility: 'nobody' } as never,
+        revealed,
+      ),
+    ).toThrow('Invalid card state:');
   });
 });

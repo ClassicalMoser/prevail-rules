@@ -1,10 +1,5 @@
-import { createEmptyGameState, createUnitIndexKey } from '@factories';
-import {
-  createBoardWithUnits,
-  createTestUnit,
-  placed,
-  replaceBoard,
-} from '@testing';
+import { createUnitIndexKey } from '@factories';
+import { createGameStateWithUnits, createTestUnit, placed } from '@testing';
 
 import { routUnit } from './routUnit';
 
@@ -15,10 +10,7 @@ import { routUnit } from './routUnit';
 describe('routUnit function', () => {
   // Black's unit stands on E-5.
   const unit = createTestUnit('black', { attack: 3 });
-  const state = replaceBoard(
-    createEmptyGameState('standard'),
-    createBoardWithUnits([placed(unit, 'E-5', 'north')]),
-  );
+  const state = createGameStateWithUnits([placed(unit, 'E-5', 'north')]);
 
   it('takes the unit off the board, among the routed, and files it as routed', () => {
     const routed = routUnit(state, unit);
@@ -29,6 +21,30 @@ describe('routUnit function', () => {
     });
     expect(routed.routedUnits).toStrictEqual([unit]);
     expect(routed.index.units[createUnitIndexKey(unit)]).toBe('routed');
+  });
+
+  it('routs the unit the board held, however the unit was named', () => {
+    // The board holds the unit with Attack 3; it is named claiming Attack 99.
+    const claimed = {
+      ...unit,
+      unitType: {
+        ...unit.unitType,
+        stats: { ...unit.unitType.stats, attack: 99 },
+      },
+    };
+
+    const routed = routUnit(state, claimed);
+
+    // The unit among the routed is the one the board held.
+    expect(routed.routedUnits).toStrictEqual([unit]);
+  });
+
+  it('throws for a unit that has already routed', () => {
+    // The unit routed once, and is named to rout again.
+    const routedOnce = routUnit(state, unit);
+
+    // A unit routs once (§9.3.1); a second rout is a fault in whatever named it.
+    expect(() => routUnit(routedOnce, unit)).toThrow('Unit already routed');
   });
 
   it('throws for a unit not on the board', () => {

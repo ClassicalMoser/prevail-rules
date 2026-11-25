@@ -1,30 +1,34 @@
 import { tempCommandCards } from '@sampleValues';
-import type { HiddenCardState } from '@game';
+import { createOwnedCardState } from '@factories';
+import { createTestCard } from '@testing';
 
 import { burnHiddenCardFromPlayed } from './burnHiddenCardFromPlayed';
+import { toHiddenCardState } from './toHiddenCardState';
 
-function hiddenWithPlayed(
-  played: HiddenCardState['played'],
-  burnt: HiddenCardState['burnt'] = [],
-): HiddenCardState {
-  return {
-    awaitingPlay: 'hidden',
-    burnt,
-    discarded: [],
-    inHand: ['hidden'],
-    inPlay: null,
-    played,
-  };
-}
-
+/**
+ * A rally burns one played card (§10.3.2). The played pile is face up, so a
+ * seat that cannot see the rallying player's hand still burns the very card,
+ * and the hand stays as it was.
+ */
 describe('burnHiddenCardFromPlayed function', () => {
   it('moves the matching played card onto the public burnt pile', () => {
-    const hidden = hiddenWithPlayed([tempCommandCards[0], tempCommandCards[1]]);
+    // The opponent holds one card face down and has played two.
+    const burned = createTestCard();
+    const kept = createTestCard();
+    const hidden = toHiddenCardState(
+      createOwnedCardState({
+        inHand: [createTestCard()],
+        played: [burned, kept],
+      }),
+    );
 
-    const result = burnHiddenCardFromPlayed(hidden, tempCommandCards[0]);
+    const result = burnHiddenCardFromPlayed(hidden, burned);
 
-    expect(result.played).toStrictEqual([tempCommandCards[1]]);
-    expect(result.burnt).toStrictEqual([tempCommandCards[0]]);
+    // The other played card stays, to come back to hand.
+    expect(result.played).toStrictEqual([kept]);
+    // Everyone sees which card burnt.
+    expect(result.burnt).toStrictEqual([burned]);
+    // The burn does not touch the hand.
     expect(result.inHand).toStrictEqual(['hidden']);
   });
 
@@ -32,7 +36,9 @@ describe('burnHiddenCardFromPlayed function', () => {
     // The opponent's played card is face up here; the rally names it, who it
     // is, under another name.
     const played = tempCommandCards[0];
-    const hidden = hiddenWithPlayed([played]);
+    const hidden = toHiddenCardState(
+      createOwnedCardState({ played: [played] }),
+    );
     const named = { ...played, name: 'Renamed' };
 
     const result = burnHiddenCardFromPlayed(hidden, named);
@@ -42,10 +48,14 @@ describe('burnHiddenCardFromPlayed function', () => {
   });
 
   it('throws when the card is not in the played pile', () => {
-    const hidden = hiddenWithPlayed([tempCommandCards[0]]);
+    // The rally names a card the opponent never played.
+    const hidden = toHiddenCardState(
+      createOwnedCardState({ played: [createTestCard()] }),
+    );
+    const neverPlayed = createTestCard({ id: 'never-played' });
 
-    expect(() => burnHiddenCardFromPlayed(hidden, tempCommandCards[1])).toThrow(
-      `Command card ${tempCommandCards[1].id} not found in player's played cards`,
+    expect(() => burnHiddenCardFromPlayed(hidden, neverPlayed)).toThrow(
+      "Command card never-played not found in player's played cards",
     );
   });
 });

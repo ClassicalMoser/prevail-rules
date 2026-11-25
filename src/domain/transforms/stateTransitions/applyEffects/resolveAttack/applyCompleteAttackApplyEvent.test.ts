@@ -1,18 +1,19 @@
+import type { UnitInstance } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
-import type { GameState } from '@game';
-import { getRangedAttackApplyState, getMeleeResolutionState } from '@queries';
+import type { AttackApplyState, GameState } from '@game';
+import { getMeleeResolutionState, getRangedAttackApplyState } from '@queries';
 import {
   createAttackApplyStateWithNothingDue,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithEngagedUnits,
+  createGameStateWithUnits,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
 import {
-  addUnitToBoard,
   updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
@@ -20,235 +21,185 @@ import { throwIfPending } from '@utils';
 
 import { applyCompleteAttackApplyEvent } from './applyCompleteAttackApplyEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
  * Marks the active attack-apply substep finished for the defending player named in the event
  * (ranged single apply vs melee side chosen by initiative order).
+ * TODO(misleading): the event names no player; the apply to close is the
+ * state's to say (`getAttackApplyToClose`): a shot's only one, or in a melee
+ * the second player's unit's before the first player's (§7.5.6). Settle by
+ * saying so.
  */
 describe('applyCompleteAttackApplyEvent function', () => {
-  /** IssueCommands + ranged CRS + incomplete apply for white defender on E-5. */
-  function createStateWithRangedAttackApply(): GameState {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
+  const event: CompleteAttackApplyEvent = {
+    effectType: 'completeAttackApply',
+    eventType: 'gameEffect',
+  };
 
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
+  /** White's unit, shot at or fighting on E-5. */
+  const whiteUnit = createTestUnit('white', { attack: 2 });
 
-    const attackApplyState =
-      createAttackApplyStateWithNothingDue(defendingUnit);
-    const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
-      attackApplyState,
-    });
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: rangedAttackState,
-    });
+  /** Black's unit, shooting from E-7 or fighting White's on E-5. */
+  const blackUnit = createTestUnit('black', { attack: 3 });
 
-    return updatePhaseState(stateWithUnit, phaseState);
-  }
-
-  /** ResolveMelee + two applies; pass side still incomplete or omit for both complete. */
-  function createStateWithMeleeApply(
-    incompletePlayer?: 'white' | 'black' | 'both',
-  ): GameState {
-    // Black holds the initiative here, so black's apply is the first player's.
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
+  /**
+   * Black holds the initiative and carries out a Shoot order: its unit on
+   * E-7 shot White's on E-5, which the shot did not move, and the target's
+   * results, none of them due, are carried out.
+   */
+  function shotCarriedOut(): GameState {
+    const base = updateCurrentInitiative(
+      createGameStateWithUnits([
+        placed(whiteUnit, 'E-5', 'south'),
+        placed(blackUnit, 'E-7', 'north'),
+      ]),
       'black',
     );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: createAttackApplyStateWithNothingDue(whiteUnit),
+      attackingUnit: blackUnit,
+      defendingUnit: whiteUnit,
+    });
+    const resolving = createGameStateResolvingCommand(shot, base);
+    return resolving;
+  }
 
-    const whiteUnitWithPlacement = placed(whiteUnit, 'E-5', 'north');
-    const blackUnitWithPlacement = placed(blackUnit, 'E-5', 'south');
+  /** Where one unit's apply stands in the melee. */
+  type ApplyStage = 'open' | 'closed' | 'unwritten';
 
-    let stateWithUnits = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, whiteUnitWithPlacement),
+  /** That unit's apply, with neither result due, at that stage. */
+  function applyOn(
+    unit: UnitInstance,
+    stage: ApplyStage,
+  ): AttackApplyState | 'pending' {
+    // Unwritten until resolveMelee writes both sides' results.
+    if (stage === 'unwritten') {
+      return 'pending';
+    }
+    const apply = createAttackApplyStateWithNothingDue(unit, {
+      completed: stage === 'closed',
+    });
+    return apply;
+  }
+
+  /**
+   * Black holds the initiative, so Black's unit is the first player's and
+   * White's the second's (§4.1.5). The two fight on E-5, neither result due;
+   * each side's apply is at the stage the case says.
+   */
+  function meleeCarriedOut(stages: {
+    black: ApplyStage;
+    white: ApplyStage;
+  }): GameState {
+    const base = updateCurrentInitiative(
+      createGameStateWithEngagedUnits(whiteUnit, blackUnit, 'E-5'),
+      'black',
     );
-    stateWithUnits = replaceBoard(
-      stateWithUnits,
-      addUnitToBoard(stateWithUnits.boardState, blackUnitWithPlacement),
+    const melee = createMeleeResolutionState(base, {
+      attackOnFirstPlayerApplyState: applyOn(blackUnit, stages.black),
+      attackOnSecondPlayerApplyState: applyOn(whiteUnit, stages.white),
+    });
+    const fighting = updatePhaseState(
+      base,
+      createResolveMeleePhaseState(base, {
+        currentMeleeResolutionState: melee,
+      }),
     );
+    return fighting;
+  }
 
-    const whiteAttackApply = createAttackApplyStateWithNothingDue(whiteUnit, {
-      completed: incompletePlayer !== 'white' && incompletePlayer !== 'both',
-    });
-    const blackAttackApply = createAttackApplyStateWithNothingDue(blackUnit, {
-      completed: incompletePlayer !== 'black' && incompletePlayer !== 'both',
-    });
-
-    const meleeState = createMeleeResolutionState(stateWithUnits, {
-      attackOnFirstPlayerApplyState: blackAttackApply,
-      attackOnSecondPlayerApplyState: whiteAttackApply,
-    });
-    const phaseState = createResolveMeleePhaseState(stateWithUnits, {
-      currentMeleeResolutionState: meleeState,
-    });
-
-    return updatePhaseState(stateWithUnits, phaseState);
+  /** The apply in one of the melee's slots, which this spec always writes. */
+  function written(apply: AttackApplyState | 'pending'): AttackApplyState {
+    const opened = throwIfPending(apply, 'The spec wrote both melee applies');
+    return opened;
   }
 
   describe('ranged apply', () => {
-    it('closes the one apply of a shot', () => {
-      const state = createStateWithRangedAttackApply();
-      const attackApplyState = getRangedAttackApplyState(state);
-      expect(attackApplyState.completed).toBe(false);
+    it('closes the one apply of a shot, and changes nothing else on it', () => {
+      const next = applyCompleteAttackApplyEvent(event, shotCarriedOut());
 
-      const event: CompleteAttackApplyEvent = {
-        effectType: 'completeAttackApply',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyCompleteAttackApplyEvent(event, state);
-      const newAttackApplyState = getRangedAttackApplyState(newState);
-
-      expect(newAttackApplyState.completed).toBe(true);
+      // A shot is one way (§7.4.4), so the target's apply is the one to
+      // close; what the shot reached, and on whom, is as it was.
+      expect(getRangedAttackApplyState(next)).toStrictEqual({
+        attackResult: {
+          unitRetreated: false,
+          unitReversed: false,
+          unitRouted: false,
+        },
+        completed: true,
+        defendingUnit: whiteUnit,
+        retreatState: 'bypassed',
+        reverseState: 'bypassed',
+        routState: 'bypassed',
+        substepType: 'attackApply',
+      });
     });
 
-    it('given same completion, substepType defendingUnit and attackResult unchanged besides completed', () => {
-      const state = createStateWithRangedAttackApply();
-      const attackApplyState = getRangedAttackApplyState(state);
+    it('leaves the state it was given untouched', () => {
+      // A transition returns a new state; the one it read stays as it was.
+      const state = shotCarriedOut();
+      applyCompleteAttackApplyEvent(event, state);
 
-      const event: CompleteAttackApplyEvent = {
-        effectType: 'completeAttackApply',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyCompleteAttackApplyEvent(event, state);
-      const newAttackApplyState = getRangedAttackApplyState(newState);
-
-      expect(newAttackApplyState.substepType).toBe('attackApply');
-      expect(newAttackApplyState.defendingUnit).toStrictEqual(
-        attackApplyState.defendingUnit,
-      );
-      expect(newAttackApplyState.attackResult).toStrictEqual(
-        attackApplyState.attackResult,
-      );
+      expect(getRangedAttackApplyState(state).completed).toBe(false);
     });
   });
 
   describe('melee apply', () => {
     it('closes the melee apply left open, when it is black’s', () => {
-      const state = createStateWithMeleeApply('black');
-      const meleeState = getMeleeResolutionState(state);
-      const firstPlayer = state.currentInitiative;
-      const attackOnFirstPlayerApply =
-        firstPlayer === 'white'
-          ? meleeState.attackOnSecondPlayerApplyState
-          : meleeState.attackOnFirstPlayerApplyState;
-
-      expect(throwIfPending(attackOnFirstPlayerApply, 'apply').completed).toBe(
-        false,
+      // White's unit's apply is already closed; Black's is left.
+      const next = applyCompleteAttackApplyEvent(
+        event,
+        meleeCarriedOut({ black: 'open', white: 'closed' }),
       );
 
-      const event: CompleteAttackApplyEvent = {
-        effectType: 'completeAttackApply',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyCompleteAttackApplyEvent(event, state);
-      const newMeleeState = getMeleeResolutionState(newState);
-      const newAttackOnFirstPlayerApply =
-        firstPlayer === 'white'
-          ? newMeleeState.attackOnSecondPlayerApplyState
-          : newMeleeState.attackOnFirstPlayerApplyState;
-
-      expect(
-        throwIfPending(newAttackOnFirstPlayerApply, 'apply').completed,
-      ).toBe(true);
+      // Black holds the initiative, so its unit's apply is the first
+      // player's.
+      const melee = getMeleeResolutionState(next);
+      expect(written(melee.attackOnFirstPlayerApplyState).completed).toBe(true);
     });
 
     it('with both melee applies open, closes the second player’s first', () => {
       // Black strikes first, so white's unit suffers first and its apply is
       // the first to close (§7.5.6).
-      const state = createStateWithMeleeApply('both');
-
-      const newState = applyCompleteAttackApplyEvent(
-        { effectType: 'completeAttackApply', eventType: 'gameEffect' },
-        state,
+      const next = applyCompleteAttackApplyEvent(
+        event,
+        meleeCarriedOut({ black: 'open', white: 'open' }),
       );
 
-      const melee = getMeleeResolutionState(newState);
-      expect(
-        throwIfPending(melee.attackOnSecondPlayerApplyState, 'apply').completed,
-      ).toBe(true);
-      expect(
-        throwIfPending(melee.attackOnFirstPlayerApplyState, 'apply').completed,
-      ).toBe(false);
+      const melee = getMeleeResolutionState(next);
+      expect(written(melee.attackOnSecondPlayerApplyState).completed).toBe(
+        true,
+      );
+      expect(written(melee.attackOnFirstPlayerApplyState).completed).toBe(
+        false,
+      );
     });
 
     it('closes the melee apply left open, when it is white’s', () => {
-      const state = createStateWithMeleeApply('white');
-      const meleeState = getMeleeResolutionState(state);
-      const firstPlayer = state.currentInitiative;
-      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const attackOnSecondPlayerApply =
-        secondPlayer === 'white'
-          ? meleeState.attackOnSecondPlayerApplyState
-          : meleeState.attackOnFirstPlayerApplyState;
-
-      expect(throwIfPending(attackOnSecondPlayerApply, 'apply').completed).toBe(
-        false,
+      // Black's unit's apply is already closed; White's is left.
+      const next = applyCompleteAttackApplyEvent(
+        event,
+        meleeCarriedOut({ black: 'closed', white: 'open' }),
       );
 
-      const event: CompleteAttackApplyEvent = {
-        effectType: 'completeAttackApply',
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyCompleteAttackApplyEvent(event, state);
-      const newMeleeState = getMeleeResolutionState(newState);
-      const newAttackOnSecondPlayerApply =
-        secondPlayer === 'white'
-          ? newMeleeState.attackOnSecondPlayerApplyState
-          : newMeleeState.attackOnFirstPlayerApplyState;
-
-      expect(
-        throwIfPending(newAttackOnSecondPlayerApply, 'apply').completed,
-      ).toBe(true);
-    });
-  });
-
-  describe('structural update', () => {
-    it('given ranged apply completed false before apply, input apply object unchanged after apply', () => {
-      const state = createStateWithRangedAttackApply();
-      const attackApplyState = getRangedAttackApplyState(state);
-      const originalCompleted = attackApplyState.completed;
-
-      const event: CompleteAttackApplyEvent = {
-        effectType: 'completeAttackApply',
-        eventType: 'gameEffect',
-      };
-
-      applyCompleteAttackApplyEvent(event, state);
-
-      expect(attackApplyState.completed).toBe(originalCompleted);
+      // White is the second player, so its unit's apply is the second's.
+      const melee = getMeleeResolutionState(next);
+      expect(written(melee.attackOnSecondPlayerApplyState).completed).toBe(
+        true,
+      );
     });
   });
 
   describe('errors', () => {
     it('throws when one side’s melee apply is not written yet', () => {
-      const state = createStateWithMeleeApply('black');
-      const meleeState = getMeleeResolutionState(state);
-      const phaseState = createResolveMeleePhaseState(state, {
-        currentMeleeResolutionState: {
-          ...meleeState,
-          attackOnSecondPlayerApplyState: 'pending',
-        },
+      // Both sides' results are written by the one resolveMelee effect
+      // (§7.2.1), so a melee with only Black's written is a fault in that
+      // write.
+      const missingWhite = meleeCarriedOut({
+        black: 'open',
+        white: 'unwritten',
       });
-      const stateMissingWhiteApply = updatePhaseState(state, phaseState);
 
-      const event: CompleteAttackApplyEvent = {
-        effectType: 'completeAttackApply',
-        eventType: 'gameEffect',
-      };
-
-      expect(() =>
-        applyCompleteAttackApplyEvent(event, stateMissingWhiteApply),
-      ).toThrow(
+      expect(() => applyCompleteAttackApplyEvent(event, missingWhite)).toThrow(
         'A melee attack apply has not been written yet, so none can close',
       );
     });

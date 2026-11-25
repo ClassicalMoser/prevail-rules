@@ -1,22 +1,30 @@
 import { tempCommandCards } from '@sampleValues';
+import { createTestCard } from '@testing';
 import { burnCardFromPlayed } from './burnCardFromPlayed';
 
-import { createEmptyGameState, createOwnedCardState } from '@factories';
+import { createOwnedCardState } from '@factories';
 /**
- * BurnCardFromPlayed: Burns a specific card from the player's played pile.
+ * A rally burns one card from the played pile, and it is gone for good
+ * (§10.3.2). The rest of the pile is left to return to hand.
  */
 describe('burnCardFromPlayed function', () => {
-  it('given move card from played to burnt', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      burnt: [],
-      played: [tempCommandCards[0], tempCommandCards[1]],
-    };
+  it('moves the burnt card from the played pile onto the burnt pile, after any burnt before', () => {
+    // Black has played two cards since the last rally, and burnt one at an
+    // earlier rally.
+    const burnedEarlier = createTestCard();
+    const burned = createTestCard();
+    const kept = createTestCard();
+    const owned = createOwnedCardState({
+      burnt: [burnedEarlier],
+      played: [burned, kept],
+    });
 
-    const result = burnCardFromPlayed(owned, tempCommandCards[0]);
+    const result = burnCardFromPlayed(owned, burned);
 
-    expect(result.played).toStrictEqual([tempCommandCards[1]]);
-    expect(result.burnt).toStrictEqual([tempCommandCards[0]]);
+    // The other played card stays, to come back to hand.
+    expect(result.played).toStrictEqual([kept]);
+    // The burnt card joins the one burnt before; neither returns.
+    expect(result.burnt).toStrictEqual([burnedEarlier, burned]);
   });
 
   it('burns the played pile’s own copy, not the copy the rally names', () => {
@@ -32,45 +40,17 @@ describe('burnCardFromPlayed function', () => {
     expect(result.burnt).toStrictEqual([played]);
   });
 
-  it('given if card is not in played pile, throws', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      burnt: [],
-      played: [tempCommandCards[0]],
-    };
+  it('throws when the card named is not in the played pile', () => {
+    // The card the rally names is still in Black's hand; a burn comes only
+    // from the played pile (§10.2).
+    const inHand = createTestCard({ id: 'card-in-hand' });
+    const owned = createOwnedCardState({
+      inHand: [inHand],
+      played: [createTestCard()],
+    });
 
-    expect(() => burnCardFromPlayed(owned, tempCommandCards[1])).toThrow(
-      `Command card ${tempCommandCards[1].id} not found in player's played cards`,
+    expect(() => burnCardFromPlayed(owned, inHand)).toThrow(
+      "Command card card-in-hand not found in player's played cards",
     );
-  });
-
-  it('given not mutate the original card state', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      burnt: [],
-      played: [tempCommandCards[0]],
-    };
-    const originalPlayed = owned.played;
-    const originalBurnt = owned.burnt;
-
-    burnCardFromPlayed(owned, tempCommandCards[0]);
-
-    expect(owned.played).toBe(originalPlayed);
-    expect(owned.burnt).toBe(originalBurnt);
-  });
-
-  it('given append to existing burnt cards', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      burnt: [tempCommandCards[2]],
-      played: [tempCommandCards[0], tempCommandCards[1]],
-    };
-
-    const result = burnCardFromPlayed(owned, tempCommandCards[0]);
-
-    expect(result.burnt).toStrictEqual([
-      tempCommandCards[2],
-      tempCommandCards[0],
-    ]);
   });
 });

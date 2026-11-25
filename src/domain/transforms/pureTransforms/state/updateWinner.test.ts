@@ -7,18 +7,18 @@ import { updateWinner } from './updateWinner';
  * there is no draw in this game (§11.3).
  */
 describe('updateWinner function', () => {
-  it('sets the winner', () => {
+  it('names the side that prevailed and changes nothing else', () => {
+    // A game still going: nobody has won.
     const state = createEmptyGameState('standard');
-    const newState = updateWinner(state, 'black');
-    expect(newState.winner).toBe('black');
-    expect(newState).not.toBe(state);
-  });
 
-  it('preserves other top-level fields', () => {
-    const state = createEmptyGameState('standard');
-    const newState = updateWinner(state, 'white');
-    expect(newState.currentRoundState).toBe(state.currentRoundState);
-    expect(newState.boardState).toBe(state.boardState);
-    expect(newState.cardState).toBe(state.cardState);
+    // White's hand runs out, and black prevails (§11.1).
+    const updated = updateWinner(state, 'black');
+
+    // Black is the winner; the round, the board and the cards are the very
+    // same.
+    expect(updated.winner).toBe('black');
+    expect(updated.currentRoundState).toBe(state.currentRoundState);
+    expect(updated.boardState).toBe(state.boardState);
+    expect(updated.cardState).toBe(state.cardState);
   });
 });

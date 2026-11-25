@@ -1,7 +1,6 @@
-import { createEmptyGameState, createEmptyStandardBoard } from '@factories';
-import { replaceBoard } from '@testing';
+import { createEmptyGameState } from '@factories';
 
-import { addCommanderToBoard } from './addCommanderToBoard';
+import { deployCommander } from './deployCommander';
 import { moveCommanderOnBoard } from './moveCommanderOnBoard';
 
 /**
@@ -9,8 +8,12 @@ import { moveCommanderOnBoard } from './moveCommanderOnBoard';
  * space and its entry in the index changing in one write.
  */
 describe('moveCommanderOnBoard function', () => {
-  const board = addCommanderToBoard(createEmptyStandardBoard(), 'black', 'E-5');
-  const state = replaceBoard(createEmptyGameState('standard'), board);
+  // Black's commander stands on E-5; white's is not yet placed.
+  const state = deployCommander(
+    createEmptyGameState('standard'),
+    'black',
+    'E-5',
+  );
 
   it('the commander leaves its space and stands on the new one', () => {
     // Black's commander goes from E-5 to C-5.
@@ -24,10 +27,9 @@ describe('moveCommanderOnBoard function', () => {
 
   it('the other side’s commander in the same space stays put', () => {
     // Both commanders may share a space (§2.2.3); only black's is moved.
-    const shared = replaceBoard(
-      createEmptyGameState('standard'),
-      addCommanderToBoard(board, 'white', 'E-5'),
-    );
+    // TODO(misleading): §2.2.3 is the rule that nothing enters an engaged
+    // space; commanders sharing a space is §2.2.2. Settle by citing §2.2.2.
+    const shared = deployCommander(state, 'white', 'E-5');
 
     const moved = moveCommanderOnBoard(shared, 'black', 'C-5');
 

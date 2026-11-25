@@ -1,5 +1,6 @@
 import { createEmptyGameState } from '@factories';
 
+import { defeatCommander } from './defeatCommander';
 import { deployCommander } from './deployCommander';
 
 /**
@@ -32,6 +33,19 @@ describe('deployCommander function', () => {
     );
 
     // A commander deploys once.
+    expect(() => deployCommander(state, 'white', 'L-6')).toThrow(
+      'The white commander has already been placed',
+    );
+  });
+
+  it('throws for a commander already lost', () => {
+    // White's commander stood on L-5 and fell there (§4.2.8).
+    const state = defeatCommander(
+      deployCommander(createEmptyGameState('standard'), 'white', 'L-5'),
+      'white',
+    );
+
+    // A fallen commander does not come back.
     expect(() => deployCommander(state, 'white', 'L-6')).toThrow(
       'The white commander has already been placed',
     );

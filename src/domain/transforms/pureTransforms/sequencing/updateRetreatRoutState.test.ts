@@ -1,12 +1,12 @@
+import { createEmptyGameState } from '@factories';
+import { getMeleeRetreatState, getRangedAttackRetreatState } from '@queries';
 import {
-  getIssueCommandsPhaseState,
-  getRetreatStateFromAttackApply,
-  isOpenSubstep,
-} from '@queries';
-import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
-import {
+  createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateResolvingMelee,
+  createGameStateWithUnits,
+  createMeleeResolutionState,
   createRangedAttackResolutionState,
   createRetreatState,
   createRoutState,
@@ -14,123 +14,84 @@ import {
   enemyCuttingOffRetreat,
   legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateRetreatRoutState: Creates a new game state with the rout state updated within a retreat state.
+ * A unit that must retreat and cannot routs instead (§9.1.6), and the
+ * retreat it could not make holds that rout until it is paid.
  */
 describe('updateRetreatRoutState function', () => {
-  function createStateWithRangedAttackRetreat() {
-    const state = createEmptyGameState('standard');
-    const unit = createTestUnit('white', { attack: 2 });
-    const placement = placed(unit, 'E-5', 'north');
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, placement),
-    );
-    const retreatState = createRetreatState(
-      placement.unit,
-      legalRetreatsOf(placement, [enemyCuttingOffRetreat(placement)]),
-      {
-        routState: createRoutState('white', unit),
-      },
-    );
-    const attackApply = createAttackApplyStateWithRetreat(
-      placement.unit,
-      legalRetreatsOf(placement),
-      {
-        retreatState,
-      },
-    );
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: createRangedAttackResolutionState(
-        stateWithUnit,
-        {
-          attackApplyState: attackApply,
-        },
-      ),
-    });
-    return updatePhaseState(stateWithUnit, phaseState);
-  }
-
-  it('given update rout state within retreat in ranged attack resolution', () => {
-    const state = createStateWithRangedAttackRetreat();
-    const unit = createTestUnit('white', { attack: 2 });
-    const newRout = createRoutState('white', unit, { numberToDiscard: 2 });
-
-    const newState = updateRetreatRoutState(state, newRout);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    expect(phase.phase).toBe('issueCommands');
-    if (phase.phase !== 'issueCommands') {
-      throw new Error('phase');
-    }
-    const commandState = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
-    );
-    if (commandState.commandResolutionType !== 'rangedAttack') {
-      throw new Error('type');
-    }
-    const attackApply = throwIfPending(
-      commandState.attackApplyState,
-      'attack apply',
-    );
-    const retreat = throwIfBypassed(
-      getRetreatStateFromAttackApply(attackApply),
-      'the attack applies a retreat',
-    );
-    const rout = retreat.routState;
-    // The update wrote an open rout under the retreat; pending and bypassed are not readable.
-    expect(isOpenSubstep(rout)).toBe(true);
-    if (!isOpenSubstep(rout)) {
-      throw new Error('expected open rout');
-    }
-    expect(rout.numberToDiscard).toBe(2);
-  });
+  const whiteUnit = createTestUnit('white', { attack: 2 });
+  const blackSkirmishers = createTestUnit('black', { attack: 2 });
 
   it('writes a settled rout and leaves the retreat for settleRout to close', () => {
     // The writer records the rout only. Closing the retreat it settled
     // (§9.1.6) is settleRout's, so both ways of settling share it.
-    const state = createStateWithRangedAttackRetreat();
-    const unit = createTestUnit('white', { attack: 2 });
+    // Black's skirmishers on C-5 shot white's unit and drove it back, but a
+    // black unit stands right behind it, facing it, and cuts off its retreat
+    // (§9.1.5): the rout is open inside the retreat.
+    const struck = placed(whiteUnit, 'E-5', 'north');
+    const cutter = enemyCuttingOffRetreat(struck);
+    const shooter = placed(blackSkirmishers, 'C-5', 'south');
+    const cutOff = legalRetreatsOf(struck, [cutter, shooter]);
+    const retreat = createRetreatState(whiteUnit, cutOff, {
+      routState: createRoutState('white', whiteUnit),
+    });
+    const board = createGameStateWithUnits([struck, cutter, shooter]);
+    const shooting = createGameStateResolvingCommand(
+      createRangedAttackResolutionState(board, {
+        attackApplyState: createAttackApplyStateWithRetreat(whiteUnit, cutOff, {
+          retreatState: retreat,
+        }),
+        attackingUnit: blackSkirmishers,
+        defendingUnit: whiteUnit,
+      }),
+      board,
+    );
     // A rout settled outright: no cards owed, so none are chosen.
-    const settled = createRoutState('white', unit, {
+    const settled = createRoutState('white', whiteUnit, {
       cardsChosen: true,
       completed: true,
       numberToDiscard: 0,
     });
 
-    const newState = updateRetreatRoutState(state, settled);
+    const newState = updateRetreatRoutState(shooting, settled);
 
     // Read the retreat back out of the ranged attack's apply: the rout inside
     // it is settled, and the retreat itself is still open.
-    const phase = getIssueCommandsPhaseState(newState);
-    const command = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
+    const after = getRangedAttackRetreatState(newState);
+    expect(after.routState).toBe(settled);
+    expect(after.completed).toBe(false);
+  });
+
+  it('in a melee, writes the rout inside the retreat of the side that could not fall back', () => {
+    // Black holds the initiative. Its blow drove white's unit back against
+    // the board's south edge, so white's retreat holds an open rout; white's
+    // blow reached nothing.
+    const atTheEdge = legalRetreatsOf(placed(whiteUnit, 'L-5', 'north'));
+    const retreat = createRetreatState(whiteUnit, atTheEdge, {
+      routState: createRoutState('white', whiteUnit),
+    });
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(createEmptyGameState('standard'), {
+        attackOnFirstPlayerApplyState:
+          createAttackApplyStateWithNothingDue(blackSkirmishers),
+        attackOnSecondPlayerApplyState: createAttackApplyStateWithRetreat(
+          whiteUnit,
+          atTheEdge,
+          { retreatState: retreat },
+        ),
+      }),
+      'black',
     );
-    if (command.commandResolutionType !== 'rangedAttack') {
-      throw new Error('type');
-    }
-    const apply = throwIfPending(command.attackApplyState, 'attack apply');
-    const retreat = throwIfBypassed(
-      getRetreatStateFromAttackApply(apply),
-      'the attack applies a retreat',
-    );
-    const rout = throwIfBypassed(
-      throwIfPending(retreat.routState, 'rout'),
-      'the rout was opened',
-    );
-    expect(rout.completed).toBe(true);
-    expect(retreat.completed).toBe(false);
+
+    // The cost of the rout is worked out: two cards.
+    const priced = createRoutState('white', whiteUnit, { numberToDiscard: 2 });
+    const newState = updateRetreatRoutState(fighting, priced);
+
+    // White's retreat holds the priced rout.
+    expect(getMeleeRetreatState(newState, 'white').routState).toBe(priced);
   });
 });

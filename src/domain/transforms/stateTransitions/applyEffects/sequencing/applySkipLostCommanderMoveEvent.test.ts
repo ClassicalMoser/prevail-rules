@@ -47,4 +47,13 @@ describe('applySkipLostCommanderMoveEvent function', () => {
     // With both turns taken, the phase is done.
     expect(getMoveCommandersPhaseState(passed).step).toBe('complete');
   });
+
+  it('throws once both turns are taken', () => {
+    // The phase is already done; there is no turn to pass over.
+    const state = onStep('complete');
+
+    expect(() => applySkipLostCommanderMoveEvent(event, state)).toThrow(
+      'Move Commanders is complete; no turn follows',
+    );
+  });
 });

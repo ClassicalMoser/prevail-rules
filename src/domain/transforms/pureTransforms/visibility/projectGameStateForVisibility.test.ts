@@ -1,35 +1,41 @@
 import { tempCommandCards } from '@sampleValues';
 import type { AuthoritativeGameState } from '@game';
 import { gameStateSchema } from '@game';
+import { createEmptyGameState } from '@factories';
+import { updateCardState } from '@testing';
 
 import { projectGameStateForVisibility } from './projectGameStateForVisibility';
 
-import { createEmptyGameState } from '@factories';
-
+/**
+ * The server's record with a card in every place a view treats differently:
+ * black's hand and the card black is waiting to play, which are private, and
+ * white's hand beside a public discard. Five different cards, one in each
+ * place.
+ */
 function authoritativeState(): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
-  return {
-    ...gameState,
-    cardState: {
-      visibility: 'authoritative',
-      black: {
-        awaitingPlay: tempCommandCards[0],
-        burnt: [],
-        discarded: [],
-        inHand: [tempCommandCards[1]],
-        inPlay: null,
-        played: [],
-      },
-      white: {
-        awaitingPlay: null,
-        burnt: [],
-        discarded: [tempCommandCards[2]],
-        inHand: [tempCommandCards[3], tempCommandCards[4]],
-        inPlay: null,
-        played: [],
-      },
+  const withCards = updateCardState(gameState, {
+    visibility: 'authoritative',
+    black: {
+      awaitingPlay: tempCommandCards[0],
+      burnt: [],
+      discarded: [],
+      inHand: [tempCommandCards[1]],
+      inPlay: null,
+      played: [],
     },
-  };
+    white: {
+      awaitingPlay: null,
+      burnt: [],
+      discarded: [tempCommandCards[2]],
+      inHand: [tempCommandCards[3], tempCommandCards[4]],
+      inPlay: null,
+      played: [],
+    },
+  });
+
+  // The record, every card face up.
+  return withCards;
 }
 
 describe('projectGameStateForVisibility function', () => {
@@ -56,11 +62,14 @@ describe('projectGameStateForVisibility function', () => {
       'whiteSeen',
     );
 
+    // White reads its own hand.
     expect(projected.cardState.visibility).toBe('whiteSeen');
     expect(projected.cardState.white.inHand).toStrictEqual([
       tempCommandCards[3],
       tempCommandCards[4],
     ]);
+    // Black's hand and the card black laid down are face down, one hidden
+    // card for each, so white knows how many but not which (§4.1.1).
     expect(projected.cardState.black).toStrictEqual({
       awaitingPlay: 'hidden',
       burnt: [],
@@ -69,6 +78,7 @@ describe('projectGameStateForVisibility function', () => {
       inPlay: null,
       played: [],
     });
+    // White's own discard is public anyway, and stays in view.
     expect(projected.cardState.white.discarded).toStrictEqual([
       tempCommandCards[2],
     ]);
@@ -80,8 +90,10 @@ describe('projectGameStateForVisibility function', () => {
       'blackSeen',
     );
 
+    // Black reads the card it laid down.
     expect(projected.cardState.visibility).toBe('blackSeen');
     expect(projected.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
+    // White's hand is face down; white's discard, being public, is not.
     expect(projected.cardState.white.inHand).toStrictEqual([
       'hidden',
       'hidden',
@@ -95,6 +107,8 @@ describe('projectGameStateForVisibility function', () => {
     const state = authoritativeState();
     const projected = projectGameStateForVisibility(state, 'spectator');
 
+    // A spectator holds neither hand: both are face down, and so is the
+    // card black laid down. White has laid none, and nothing is invented.
     expect(projected.cardState.visibility).toBe('spectator');
     expect(projected.cardState.white.inHand).toStrictEqual([
       'hidden',
@@ -103,11 +117,22 @@ describe('projectGameStateForVisibility function', () => {
     expect(projected.cardState.black.inHand).toStrictEqual(['hidden']);
     expect(projected.cardState.black.awaitingPlay).toBe('hidden');
     expect(projected.cardState.white.awaitingPlay).toBeNull();
+    // The discard is public, so it stays in view.
     expect(projected.cardState.white.discarded).toStrictEqual([
       tempCommandCards[2],
     ]);
     // The board is never hidden.
     expect(projected.boardState).toBe(state.boardState);
+  });
+
+  it('throws for a view that is not one of the four', () => {
+    // No caller can name another view; one is forced through to reach the
+    // guard.
+    const view = 'opponent' as never; // a view the type rules out
+
+    expect(() =>
+      projectGameStateForVisibility(authoritativeState(), view),
+    ).toThrow('Invalid visibility: opponent');
   });
 });
 

@@ -1,26 +1,21 @@
-import { throwIfBypassed } from '@utils';
 import type { OpenRoutFromAttackApplyEvent } from '@events';
-import type { GameState } from '@game';
-import { createAttackApplyState, createEmptyGameState } from '@factories';
+import type { AttackApplyState, GameState } from '@game';
+import { createAttackApplyState } from '@factories';
 import {
+  findPositionOfUnit,
   getRangedAttackApplyState,
-  getRoutStateFromAttackApply,
+  getRoutState,
 } from '@queries';
 import {
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithUnits,
   createRangedAttackResolutionState,
   createRetreatState,
   createReverseState,
   createTestUnit,
   legalRetreatsOf,
   placed,
-  replaceBoard,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateAttackApplyState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
 
 import { applyOpenRoutFromAttackApplyEvent } from './applyOpenRoutFromAttackApplyEvent';
 
@@ -28,86 +23,83 @@ import { applyOpenRoutFromAttackApplyEvent } from './applyOpenRoutFromAttackAppl
  * Opens the rout under an attack apply whose rout slot is still pending.
  */
 describe('applyOpenRoutFromAttackApplyEvent function', () => {
-  function stateWithPendingRout(): {
+  // Any unit will do: the apply reads nothing of it but who it is.
+  const target = createTestUnit('white');
+
+  /**
+   * A shot that reached all three of its target's thresholds, with the rout
+   * the one step left. White's unit stood on E-5 facing north, Black's
+   * shooter in front of it on D-5; the unit has since fallen back to F-5
+   * and turned about (§7.5.2).
+   */
+  function shotRouting(): {
+    apply: AttackApplyState;
     state: GameState;
-    defendingUnit: ReturnType<typeof createTestUnit>;
   } {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApply = createAttackApplyState(defendingUnit, {
+    const shooter = createTestUnit('black', { range: 1 });
+    const base = createGameStateWithUnits([
+      placed(target, 'F-5', 'south'),
+      placed(shooter, 'D-5', 'south'),
+    ]);
+
+    // All three thresholds were met. The retreat was the one step back from
+    // E-5 on open ground, taken and done; the reverse is done too.
+    const measured = createAttackApplyState(target, {
       unitRetreated: true,
       unitReversed: true,
       unitRouted: true,
     });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return {
-      defendingUnit,
-      state: updatePhaseState(withBoard, phase),
+    const apply: AttackApplyState = {
+      ...measured,
+      retreatState: createRetreatState(
+        target,
+        legalRetreatsOf(placed(target, 'E-5', 'north')),
+        { completed: true },
+      ),
+      reverseState: createReverseState(target, { completed: true }),
     };
+    const shot = createRangedAttackResolutionState(base, {
+      attackApplyState: apply,
+      attackingUnit: shooter,
+      defendingUnit: target,
+    });
+
+    // Phase 3, with that shot being carried out.
+    const state = createGameStateResolvingCommand(shot, base);
+    return { apply, state };
   }
 
-  it('opens a rout listing the defending unit when the slot is pending', () => {
-    const { state, defendingUnit } = stateWithPendingRout();
-    const event: OpenRoutFromAttackApplyEvent = {
-      effectType: 'openRoutFromAttackApply',
-      eventType: 'gameEffect',
-    };
+  /** The open event: it carries nothing, since the state names the apply. */
+  const openRout: OpenRoutFromAttackApplyEvent = {
+    effectType: 'openRoutFromAttackApply',
+    eventType: 'gameEffect',
+  };
 
-    const next = applyOpenRoutFromAttackApplyEvent(event, state);
-    const apply = getRangedAttackApplyState(next);
-    const rout = throwIfBypassed(
-      getRoutStateFromAttackApply(apply),
-      'the attack applies a rout',
-    );
+  it('opens a rout of the defending unit, owed by its owner, and takes the unit off the board', () => {
+    const { state } = shotRouting();
+
+    const next = applyOpenRoutFromAttackApplyEvent(openRout, state);
+
+    // White routs its own unit and owes its Morale, not yet counted.
+    const rout = getRoutState(next, 'white');
     expect(rout.substepType).toBe('rout');
-    expect(rout.unitsToRout).toContain(defendingUnit);
-    expect(rout.player).toBe('white');
+    expect(rout.unitsToRout).toStrictEqual([target]);
+    expect(rout.numberToDiscard).toBe('pending');
     // The unit leaves when the rout opens, not when the discard is paid.
-    expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
-    );
-    expect(next.routedUnits).toContainEqual(defendingUnit);
+    expect(findPositionOfUnit(next, target)).toBeUndefined();
+    expect(next.routedUnits).toContainEqual(target);
   });
 
   it('leaves the retreat and reverse already carried out as they were', () => {
-    const { state, defendingUnit } = stateWithPendingRout();
     // The rout comes last (§7.5.2): by its turn the unit has fallen back and
     // turned about, and those results stay recorded.
-    const before = getRangedAttackApplyState(state);
-    const standing = placed(defendingUnit, 'E-5', 'north');
-    const retreated = createRetreatState(
-      standing.unit,
-      legalRetreatsOf(standing),
-      {
-        chosenRetreatPath: ['step'],
-        completed: true,
-      },
-    );
-    const reversed = createReverseState(defendingUnit, { completed: true });
-    const ready = updateAttackApplyState(state, {
-      ...before,
-      retreatState: retreated,
-      reverseState: reversed,
-    });
+    const { apply, state } = shotRouting();
 
-    const next = applyOpenRoutFromAttackApplyEvent(
-      { effectType: 'openRoutFromAttackApply', eventType: 'gameEffect' },
-      ready,
-    );
+    const next = applyOpenRoutFromAttackApplyEvent(openRout, state);
 
-    const apply = getRangedAttackApplyState(next);
-    expect(apply.retreatState).toStrictEqual(retreated);
-    expect(apply.reverseState).toStrictEqual(reversed);
+    // Both earlier results are the same as before the rout opened.
+    const after = getRangedAttackApplyState(next);
+    expect(after.retreatState).toStrictEqual(apply.retreatState);
+    expect(after.reverseState).toStrictEqual(apply.reverseState);
   });
 });

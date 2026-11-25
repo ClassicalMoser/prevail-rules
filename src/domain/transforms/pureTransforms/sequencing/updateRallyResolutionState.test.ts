@@ -11,6 +11,7 @@ import { updateRallyResolutionState } from './updateRallyResolutionState';
  * first (§10.3): the slots are named for that order.
  */
 describe('updateRallyResolutionState function', () => {
+  // Black holds the initiative, so black rallies first and white second.
   const inCleanup = updatePhaseState(
     updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
     createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
@@ -23,6 +24,7 @@ describe('updateRallyResolutionState function', () => {
       updateRallyResolutionState(inCleanup, 'black', rally),
     );
 
+    // Black's rally is the first; white's is untouched.
     expect(written.firstPlayerRallyResolutionState).toBe(rally);
     expect(written.secondPlayerRallyResolutionState).toBe('pending');
   });
@@ -34,6 +36,7 @@ describe('updateRallyResolutionState function', () => {
       updateRallyResolutionState(inCleanup, 'white', rally),
     );
 
+    // White's rally is the second; black's is untouched.
     expect(written.secondPlayerRallyResolutionState).toBe(rally);
     expect(written.firstPlayerRallyResolutionState).toBe('pending');
   });

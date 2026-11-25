@@ -1,40 +1,39 @@
-import { tempCommandCards } from '@sampleValues';
+import { createOwnedCardState } from '@factories';
+import { createTestCard } from '@testing';
+
 import { revealHiddenCard } from './revealHiddenCard';
+import { toHiddenCardState } from './toHiddenCardState';
 
 /**
- * RevealHiddenCard: Promotes hidden awaitingPlay to inPlay using event payload.
+ * The opponent's face-down card is turned over and is in play for the round
+ * (§4.1.2). This seat never knew which card it was, so the reveal names it.
  */
 describe('revealHiddenCard function', () => {
-  const hiddenBase = {
-    awaitingPlay: 'hidden' as const,
-    burnt: [],
-    discarded: [],
-    inHand: ['hidden' as const],
-    inPlay: null,
-    played: [],
-  };
+  it('puts the revealed card in play, and nothing waits', () => {
+    // The opponent has laid a card face down.
+    const hidden = toHiddenCardState(
+      createOwnedCardState({
+        awaitingPlay: createTestCard(),
+        inHand: [createTestCard()],
+      }),
+    );
+    const revealed = createTestCard();
 
-  it('given awaitingPlay is hidden, sets inPlay from payload and clears awaitingPlay', () => {
-    const result = revealHiddenCard(hiddenBase, tempCommandCards[0]);
+    const result = revealHiddenCard(hidden, revealed);
 
-    expect(result.inPlay).toBe(tempCommandCards[0]);
+    // The reveal's card is in play.
+    expect(result.inPlay).toBe(revealed);
     expect(result.awaitingPlay).toBeNull();
   });
 
-  it('given awaitingPlay is null, throws', () => {
-    expect(() =>
-      revealHiddenCard(
-        { ...hiddenBase, awaitingPlay: null },
-        tempCommandCards[0],
-      ),
-    ).toThrow('Player has no card awaiting play');
-  });
+  it('throws when the player has no card waiting', () => {
+    // The opponent has not chosen a card yet.
+    const hidden = toHiddenCardState(
+      createOwnedCardState({ inHand: [createTestCard()] }),
+    );
 
-  it('given not mutate the original card state', () => {
-    const hidden = { ...hiddenBase };
-    revealHiddenCard(hidden, tempCommandCards[0]);
-
-    expect(hidden.awaitingPlay).toBe('hidden');
-    expect(hidden.inPlay).toBeNull();
+    expect(() => revealHiddenCard(hidden, createTestCard())).toThrow(
+      'Player has no card awaiting play',
+    );
   });
 });

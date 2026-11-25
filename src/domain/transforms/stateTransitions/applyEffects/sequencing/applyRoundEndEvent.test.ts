@@ -1,128 +1,84 @@
 import type { RoundEndEvent } from '@events';
-import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
-
+import type { AuthoritativeGameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { getCurrentPhaseState } from '@queries';
 import {
   createCleanupPhaseState,
-  createIssueCommandsPhaseState,
   createPlayCardsPhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState, updateRoundState } from '@transforms/pureTransforms';
-import { throwIfNone } from '@utils';
+import {
+  updateCurrentInitiative,
+  updateRoundState,
+} from '@transforms/pureTransforms';
 
 import { applyRoundEndEvent } from './applyRoundEndEvent';
 
-import { createEmptyGameState } from '@factories';
+/** The effect that ends a round; it carries nothing. */
+const event: RoundEndEvent = {
+  effectType: 'roundEnd',
+  eventType: 'gameEffect',
+};
+
+// A unit White ordered during round 3.
+const orderedUnit = createTestUnit('white');
+
 /**
- * Round rollover: finishing cleanup bumps `roundNumber`, resets per-round bookkeeping
- * (`completedPhases`, `commandedUnits`), and starts the next round in `playCards.chooseCards`.
- * Trusted path can fire without a cleanup phase slice (mechanical advance).
+ * Round 3 at the end of Cleanup, Black holding the initiative, with a unit
+ * ordered and card play recorded among the finished phases.
+ */
+function endOfRoundThree(): AuthoritativeGameState {
+  const blackFirst = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'black',
+  );
+  const ending = updateRoundState(blackFirst, {
+    commandedUnits: [orderedUnit],
+    completedPhases: [createPlayCardsPhaseState({ step: 'complete' })],
+    currentPhaseState: createCleanupPhaseState({ step: 'complete' }),
+    roundNumber: 3,
+  });
+  return ending;
+}
+
+/**
+ * A round ends after Cleanup and the next begins at Phase 1 (§4.5.4). Nothing
+ * is remembered between rounds but what is on the table (§1.5).
  */
 describe('applyRoundEndEvent function', () => {
-  /** Cleanup.complete on a default empty game. */
-  function createGameStateInCleanupCompleteStep(): GameState {
-    const state = createEmptyGameState('standard');
-    return updatePhaseState(
-      state,
-      createCleanupPhaseState({ step: 'complete' }),
-    );
-  }
+  it('begins the next round with both players choosing a card', () => {
+    const next = applyRoundEndEvent(event, endOfRoundThree());
 
-  const event: RoundEndEvent = {
-    effectType: 'roundEnd',
-    eventType: 'gameEffect',
-  };
-
-  describe('normal cleanup complete', () => {
-    it('given cleanup.complete, next phase playCards and step chooseCards', () => {
-      const state = createGameStateInCleanupCompleteStep();
-
-      const newState = applyRoundEndEvent(event, state);
-
-      const phase = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      expect(phase.phase).toBe(PLAY_CARDS_PHASE);
-      expect(phase.step).toBe('chooseCards');
-    });
-
-    it('given cleanup.complete, the round number increments', () => {
-      const state = createGameStateInCleanupCompleteStep();
-      const priorRound = state.currentRoundState.roundNumber;
-
-      const newState = applyRoundEndEvent(event, state);
-
-      expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
-    });
-
-    it('given seeded completedPhases and commandedUnits, next state clears both sets', () => {
-      const base = createGameStateInCleanupCompleteStep();
-      const unit = createTestUnit('black');
-      const completedEntry = createPlayCardsPhaseState({ step: 'complete' });
-      const state = updateRoundState(base, {
-        ...base.currentRoundState,
-        commandedUnits: [unit],
-        completedPhases: [completedEntry],
-      });
-
-      const newState = applyRoundEndEvent(event, state);
-
-      expect(newState.currentRoundState.completedPhases).toHaveLength(0);
-      expect(newState.currentRoundState.commandedUnits).toHaveLength(0);
+    // Round 4, at its first step (§4.1.1).
+    expect(next.currentRoundState.roundNumber).toBe(4);
+    expect(getCurrentPhaseState(next)).toStrictEqual({
+      phase: 'playCards',
+      step: 'chooseCards',
     });
   });
 
-  describe('structural update', () => {
-    it('given phase and round before apply, input cleanup phase and round unchanged after apply', () => {
-      const state = createGameStateInCleanupCompleteStep();
-      const originalPhase = throwIfNone(
-        state.currentRoundState.currentPhaseState,
-        'phase',
-      ).phase;
-      const originalRound = state.currentRoundState.roundNumber;
+  it('carries no orders into the new round, but keeps the initiative', () => {
+    const next = applyRoundEndEvent(event, endOfRoundThree());
 
-      applyRoundEndEvent(event, state);
-
-      expect(
-        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
-      ).toBe(originalPhase);
-      expect(state.currentRoundState.roundNumber).toBe(originalRound);
-    });
+    // A unit may be ordered again: once a round (§4.3.6).
+    expect(next.currentRoundState.commandedUnits).toStrictEqual([]);
+    // No phase of the new round is finished yet.
+    expect(next.currentRoundState.completedPhases).toStrictEqual([]);
+    // Whose initiative it is stays on the table (§1.5, §4.1.4).
+    expect(next.currentInitiative).toBe('black');
   });
 
-  describe('trusted mechanical apply', () => {
-    it('given issueCommands first step, still increments round and lands on playCards.chooseCards', () => {
-      const base = createEmptyGameState('standard');
-      const state = updatePhaseState(
-        base,
-        createIssueCommandsPhaseState(base, {
-          step: 'firstPlayerIssueCommands',
-        }),
-      );
-      const priorRound = state.currentRoundState.roundNumber;
+  it('ends setup, round 0, into round 1 the same way', () => {
+    // Setup is over; it is round 0, and holds no phase.
+    const setup = createEmptyGameState('standard');
 
-      const newState = applyRoundEndEvent(event, state);
+    const next = applyRoundEndEvent(event, setup);
 
-      expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
-      expect(
-        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase')
-          .phase,
-      ).toBe(PLAY_CARDS_PHASE);
-    });
-
-    it('given bare empty state without phase, still increments round and sets playCards.chooseCards', () => {
-      const state = createEmptyGameState('standard');
-      const priorRound = state.currentRoundState.roundNumber;
-
-      const newState = applyRoundEndEvent(event, state);
-
-      expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
-      expect(
-        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase')
-          .phase,
-      ).toBe(PLAY_CARDS_PHASE);
+    // The first round of the battle begins with card play.
+    expect(next.currentRoundState.roundNumber).toBe(1);
+    expect(getCurrentPhaseState(next)).toStrictEqual({
+      phase: 'playCards',
+      step: 'chooseCards',
     });
   });
 });

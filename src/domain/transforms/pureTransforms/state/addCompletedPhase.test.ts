@@ -1,59 +1,44 @@
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-
-import { addCompletedPhase } from '../';
-
 import { createEmptyGameState } from '@factories';
+import {
+  createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
+} from '@testing';
+
+import { addCompletedPhase } from './addCompletedPhase';
+
 /**
- * AddCompletedPhase: Adds a completed phase to the completed phases set.
+ * A phase that has ended is recorded after those that ended before it this
+ * round, the phases running in a fixed order (§4).
  */
 describe('addCompletedPhase function', () => {
-  it('adds the phase to completedPhases without mutating the input', () => {
+  it('records the ended phase, leaving the state it was given as it was', () => {
+    // A new game, nothing ended yet; Play Cards has just ended.
     const state = createEmptyGameState('standard');
-    const phaseState = {
-      phase: PLAY_CARDS_PHASE,
-      step: 'complete',
-    } as const;
+    const playCards = createPlayCardsPhaseState({ step: 'complete' });
 
-    const newState = addCompletedPhase(state, phaseState);
+    const recorded = addCompletedPhase(state, playCards);
 
-    expect(newState.currentRoundState.completedPhases).toContain(phaseState);
-    expect(state.currentRoundState.completedPhases).not.toContain(phaseState);
+    // Play Cards is the one phase recorded; the state given has none.
+    expect(recorded.currentRoundState.completedPhases).toStrictEqual([
+      { phase: 'playCards', step: 'complete' },
+    ]);
+    expect(state.currentRoundState.completedPhases).toStrictEqual([]);
   });
 
-  it('leaves the original completedPhases reference unchanged', () => {
-    const state = createEmptyGameState('standard');
-    const originalCompletedPhases = state.currentRoundState.completedPhases;
-    const phaseState = {
-      phase: MOVE_COMMANDERS_PHASE,
-      step: 'complete',
-    } as const;
-
-    addCompletedPhase(state, phaseState);
-
-    expect(state.currentRoundState.completedPhases).toBe(
-      originalCompletedPhases,
+  it('records a later phase after those already ended', () => {
+    // Play Cards has ended and been recorded; then Move Commanders ends.
+    const afterPlayCards = addCompletedPhase(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'complete' }),
     );
-  });
+    const moveCommanders = createMoveCommandersPhaseState({ step: 'complete' });
 
-  it('keeps existing completed phases when adding another', () => {
-    const state = createEmptyGameState('standard');
-    const firstPhase = {
-      phase: PLAY_CARDS_PHASE,
-      step: 'complete',
-    } as const;
-    const stateWithFirst = addCompletedPhase(state, firstPhase);
+    const recorded = addCompletedPhase(afterPlayCards, moveCommanders);
 
-    const secondPhase = {
-      phase: MOVE_COMMANDERS_PHASE,
-      step: 'complete',
-    } as const;
-    const stateWithBoth = addCompletedPhase(stateWithFirst, secondPhase);
-
-    expect(stateWithBoth.currentRoundState.completedPhases).toContain(
-      firstPhase,
-    );
-    expect(stateWithBoth.currentRoundState.completedPhases).toContain(
-      secondPhase,
-    );
+    // Both are recorded, in the order they ended.
+    expect(recorded.currentRoundState.completedPhases).toStrictEqual([
+      { phase: 'playCards', step: 'complete' },
+      { phase: 'moveCommanders', step: 'complete' },
+    ]);
   });
 });

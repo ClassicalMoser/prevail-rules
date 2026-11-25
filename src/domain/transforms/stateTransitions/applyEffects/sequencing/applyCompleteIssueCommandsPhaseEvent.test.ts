@@ -1,262 +1,109 @@
 import type { Coordinate } from '@ruleValues';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
-import { ISSUE_COMMANDS_PHASE } from '@game';
-
+import type { AuthoritativeGameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { getCurrentPhaseState } from '@queries';
 import {
   createGameStateWithEngagedUnits,
   createIssueCommandsPhaseState,
   createTestUnit,
-  replaceBoard,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
-import { throwIfNone, throwIfUndefined } from '@utils';
 
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
 
+/** The effect that ends Phase 3, carrying the fights Phase 4 owes. */
 function issueCommandsCompleteEvent(
   remainingEngagements: Coordinate[],
 ): CompleteIssueCommandsPhaseEvent {
-  return {
+  const event: CompleteIssueCommandsPhaseEvent = {
     effectType: 'completeIssueCommandsPhase',
     eventType: 'gameEffect',
     remainingEngagements,
   };
+  return event;
+}
+
+/** Both players' orders carried out, a Black and a White unit engaged at E-5. */
+function ordersCarriedOut(): AuthoritativeGameState {
+  // A move this phase ended in the enemy's space (§6.1.1).
+  const engaged = createGameStateWithEngagedUnits(
+    createTestUnit('black'),
+    createTestUnit('white'),
+    'E-5',
+  );
+
+  // Phase 3 on its last step.
+  const done = updatePhaseState(
+    engaged,
+    createIssueCommandsPhaseState(engaged, { step: 'complete' }),
+  );
+  return done;
 }
 
 /**
- * End of issuing: transitions to `resolveMelee` with `remainingEngagements` taken from the
- * event (trusted list—empty set means no melees queued even if board still shows engagement).
+ * Once both players' orders are carried out, Phase 4 opens, and every engaged
+ * space fights in it (§4.4.1). The procedure lists those spaces; the first
+ * player chooses the order they are fought in (§4.4.2).
  */
 describe('applyCompleteIssueCommandsPhaseEvent function', () => {
-  /** IssueCommands.complete with E-5 engaged pair from factory and empty command queues. */
-  function createGameStateInCompleteStep(): GameState {
-    const blackUnit = createTestUnit('black', { attack: 3 });
-    const whiteUnit = createTestUnit('white', { attack: 3 });
-    const state = createGameStateWithEngagedUnits(blackUnit, whiteUnit, 'E-5');
+  it('opens Phase 4 with every engaged space the procedure listed, none yet chosen', () => {
+    const next = applyCompleteIssueCommandsPhaseEvent(
+      issueCommandsCompleteEvent(['E-5']),
+      ordersCarriedOut(),
+    );
 
-    const initialPhaseState: IssueCommandsPhaseState = {
-      currentCommandResolutionState: 'pending',
-      phase: ISSUE_COMMANDS_PHASE,
-      remainingUnitsFirstPlayer: [],
-      remainingUnitsSecondPlayer: [],
-      step: 'complete',
-    };
-    const stateWithPhase = updatePhaseState(state, initialPhaseState);
-
-    return stateWithPhase;
-  }
-
-  describe('phase handoff', () => {
-    it('given event remaining E-5, next phase resolveMelee and step resolveMelee', () => {
-      const state = createGameStateInCompleteStep();
-
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5'],
-      );
-
-      const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
-
-      const phase = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      expect(phase.phase).toBe('resolveMelee');
-      expect(phase.step).toBe('resolveMelee');
+    // The fight at E-5 is owed, and the first player has not chosen one.
+    expect(getCurrentPhaseState(next)).toStrictEqual({
+      currentMeleeResolutionState: 'pending',
+      phase: 'resolveMelee',
+      remainingEngagements: ['E-5'],
+      step: 'resolveMelee',
     });
+  });
 
-    it('given same transition, completedPhases gains one issueCommands entry', () => {
-      const state = createGameStateInCompleteStep();
+  it("records Phase 3 among the round's finished phases", () => {
+    const next = applyCompleteIssueCommandsPhaseEvent(
+      issueCommandsCompleteEvent(['E-5']),
+      ordersCarriedOut(),
+    );
 
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5'],
-      );
-
-      const newState: GameState = applyCompleteIssueCommandsPhaseEvent(
-        event,
-        state,
-      );
-
-      const completedPhases = [...newState.currentRoundState.completedPhases];
-      expect(completedPhases).toHaveLength(1);
-      expect(completedPhases[0]?.phase).toBe('issueCommands');
-    });
-
-    it('given event Set with E-5, resolveMelee.remainingEngagements contains E-5', () => {
-      const state = createGameStateInCompleteStep();
-
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5'],
-      );
-
-      const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
-
-      const phaseState = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      if (phaseState.phase !== 'resolveMelee') {
-        throw new Error('Expected resolveMelee phase');
-      }
-
-      expect(phaseState.remainingEngagements).toContain('E-5');
-    });
-
-    it('given event lists E-5 and E-6 after second engagement hacked onto board, set has both', () => {
-      const blackUnit1 = createTestUnit('black', { attack: 3 });
-      const whiteUnit1 = createTestUnit('white', { attack: 3 });
-      const engagedAtE5 = createGameStateWithEngagedUnits(
-        blackUnit1,
-        whiteUnit1,
-        'E-5',
-      );
-
-      const blackUnit2 = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const whiteUnit2 = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      // A second engaged pair written straight onto E-6, through the board
-      // writer so the index of where every unit stands follows.
-      const state = replaceBoard(engagedAtE5, {
-        ...engagedAtE5.boardState,
-        board: {
-          ...engagedAtE5.boardState.board,
-          'E-6': {
-            ...throwIfUndefined(
-              engagedAtE5.boardState.board['E-6'],
-              'expected board space at E-6',
-            ),
-            unitPresence: {
-              presenceType: 'engaged',
-              primaryFacing: 'north',
-              primaryUnit: blackUnit2,
-              secondaryUnit: whiteUnit2,
-            },
-          },
-        },
-      });
-
-      const stateWithPhase: GameState = updatePhaseState(state, {
+    // No query reads the round's record of finished phases, so the field
+    // is read as written: Phase 3, as it ended.
+    expect(next.currentRoundState.completedPhases).toStrictEqual([
+      {
         currentCommandResolutionState: 'pending',
-        phase: ISSUE_COMMANDS_PHASE,
+        phase: 'issueCommands',
         remainingUnitsFirstPlayer: [],
         remainingUnitsSecondPlayer: [],
         step: 'complete',
-      });
+      },
+    ]);
+  });
 
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5', 'E-6'],
-      );
+  it('takes the fights from the event, and does not look at the board itself', () => {
+    // The board still shows E-5 engaged, but the event lists no fight.
+    const next = applyCompleteIssueCommandsPhaseEvent(
+      issueCommandsCompleteEvent([]),
+      ordersCarriedOut(),
+    );
 
-      const newState = applyCompleteIssueCommandsPhaseEvent(
-        event,
-        stateWithPhase,
-      );
-
-      const phaseState = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      if (phaseState.phase !== 'resolveMelee') {
-        throw new Error('Expected resolveMelee phase');
-      }
-
-      expect(phaseState.remainingEngagements).toContain('E-5');
-      expect(phaseState.remainingEngagements).toContain('E-6');
-      expect(phaseState.remainingEngagements).toHaveLength(2);
-    });
-
-    it('given standard handoff, new resolveMelee slice has no currentMeleeResolutionState', () => {
-      const state = createGameStateInCompleteStep();
-
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5'],
-      );
-
-      const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
-
-      const phaseState = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      if (phaseState.phase !== 'resolveMelee') {
-        throw new Error('Expected resolveMelee phase');
-      }
-
-      expect(phaseState.currentMeleeResolutionState).toBe('pending');
+    // What the procedure found is what Phase 4 owes; the apply finds
+    // nothing for itself.
+    expect(getCurrentPhaseState(next)).toMatchObject({
+      remainingEngagements: [],
     });
   });
 
-  describe('structural update', () => {
-    it('given phase and completedPhases size before apply, input issueCommands slice unchanged', () => {
-      const state = createGameStateInCompleteStep();
-      const originalPhase = throwIfNone(
-        state.currentRoundState.currentPhaseState,
-        'phase',
-      ).phase;
-      const originalCompletedPhasesSize =
-        state.currentRoundState.completedPhases.length;
+  it('throws before the round has a phase', () => {
+    // Round 0 is setup, with no phase to end.
+    const setup = createEmptyGameState('standard');
 
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5'],
-      );
-
-      applyCompleteIssueCommandsPhaseEvent(event, state);
-
-      expect(
-        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
-      ).toBe(originalPhase);
-      expect(state.currentRoundState.completedPhases).toHaveLength(
-        originalCompletedPhasesSize,
-      );
-    });
-  });
-
-  describe('trusted mechanical apply', () => {
-    it('given empty remainingEngagements event despite board engagement, queue stays empty', () => {
-      const state = createGameStateInCompleteStep();
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        [],
-      );
-
-      const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
-
-      const phaseState = throwIfNone(
-        newState.currentRoundState.currentPhaseState,
-        'phase',
-      );
-      if (phaseState.phase !== 'resolveMelee') {
-        throw new Error('Expected resolveMelee phase');
-      }
-      expect(phaseState.remainingEngagements).toHaveLength(0);
-    });
-
-    it('given issueCommands firstPlayerIssueCommands step, still advances to resolveMelee phase', () => {
-      const state = createGameStateInCompleteStep();
-      const stateWithWrongStep = updatePhaseState(
-        state,
-        createIssueCommandsPhaseState(state, {
-          step: 'firstPlayerIssueCommands',
-        }),
-      );
-
-      const event: CompleteIssueCommandsPhaseEvent = issueCommandsCompleteEvent(
-        ['E-5'],
-      );
-
-      const newState = applyCompleteIssueCommandsPhaseEvent(
-        event,
-        stateWithWrongStep,
-      );
-
-      expect(
-        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase')
-          .phase,
-      ).toBe('resolveMelee');
-    });
+    expect(() =>
+      applyCompleteIssueCommandsPhaseEvent(
+        issueCommandsCompleteEvent([]),
+        setup,
+      ),
+    ).toThrow('No current phase state found');
   });
 });

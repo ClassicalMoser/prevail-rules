@@ -1,208 +1,150 @@
-import { tempCommandCards } from '@sampleValues';
-import type { CommitToMovementEvent } from '@events';
+import type { MovementResolutionState } from '@game';
+import { createCommitToMovementEvent, createEmptyGameState } from '@factories';
 import {
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
 } from '@queries';
 import {
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
   createMovementResolutionState,
+  createTestCard,
+  createTestUnit,
   updateCardState,
 } from '@testing';
 
-import { updatePhaseState } from '@transforms/pureTransforms';
-import { throwIfUndefined } from '@utils';
-
 import { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Movement command commitment: pending `commitment` on the movement CRS becomes completed with
- * the played card, and that card is removed from the moving player’s hand.
+ * A Move order asks for a commitment twice at most: the mover may commit a
+ * card for Speed or Flexibility before its unit sets off (§4.3.10 step 2), and
+ * a defender it meets head on may do the same before the two Speeds are
+ * compared (§6.3.2 step 1). The card goes to the discard pile, and the
+ * commitment is written to whichever of the two is owed.
  */
 describe('applyCommitToMovementEvent function', () => {
-  it('given black pending movement and one card in hand, commitment completed and hand empty', () => {
-    const state = createEmptyGameState('standard');
-    const stateWithBlackCardInHand = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
+  // A card committable for Speed (§8.4), and a card each side keeps: committing
+  // a last card would lose the game (§11.1).
+  const speedCard = createTestCard({ modifiers: ['speed'] });
+  const kept = { black: createTestCard(), white: createTestCard() };
+
+  /**
+   * White, holding the initiative, carries out a Move order with its own
+   * unit, and the given player holds the Speed card.
+   */
+  function whiteMoving(
+    holder: 'white' | 'black',
+    movement: Partial<MovementResolutionState>,
+  ) {
+    // The holder has the Speed card besides the one it keeps.
+    const empty = createEmptyGameState('standard');
+    const handOf = (side: 'white' | 'black') =>
+      side === holder ? [speedCard, kept[side]] : [kept[side]];
+    const withHand = updateCardState(empty, {
+      ...empty.cardState,
+      black: { ...empty.cardState.black, inHand: handOf('black') },
+      white: { ...empty.cardState.white, inHand: handOf('white') },
     });
-    const movementState = createMovementResolutionState(
-      stateWithBlackCardInHand,
-      {
-        commitment: { commitmentType: 'pending' },
-      },
-    );
-    const stateInPhase = updatePhaseState(
-      stateWithBlackCardInHand,
-      createIssueCommandsPhaseState(stateWithBlackCardInHand, {
-        currentCommandResolutionState: movementState,
+
+    // White's unit is the one moving; the spec says how far the move has got.
+    const move = createMovementResolutionState(withHand, {
+      movingUnit: createTestUnit('white'),
+      ...movement,
+    });
+    const moving = createGameStateResolvingCommand(move, withHand);
+    return moving;
+  }
+
+  it("records the mover's card on the move, before its unit sets off, and spends it", () => {
+    // White's commitment is owed, and no one has been met yet.
+    const state = whiteMoving('white', {
+      commitment: { commitmentType: 'pending' },
+    });
+
+    const next = applyCommitToMovementEvent(
+      createCommitToMovementEvent({
+        committedCard: speedCard,
+        player: 'white',
       }),
+      state,
     );
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
-      committedCard: tempCommandCards[0],
-      eventType: 'playerChoice',
-      player: 'black',
-    };
 
-    const newState = applyCommitToMovementEvent(event, stateInPhase);
-    const newMovement = getMovementResolutionState(newState);
-
-    expect(newMovement.commitment).toStrictEqual({
-      card: tempCommandCards[0],
+    // The move counts the card for its Speed (§5.1.1)…
+    expect(getMovementResolutionState(next).commitment).toStrictEqual({
+      card: speedCard,
       commitmentType: 'completed',
     });
-    expect(newState.cardState.black.inHand).toHaveLength(0);
+    // …and the card has left white's hand (§8.1).
+    expect(next.cardState.white.inHand).toStrictEqual([kept.white]);
   });
 
-  it('given white pending movement and one card in hand, same shape for white side', () => {
-    const state = createEmptyGameState('standard');
-    const stateWithWhiteCardInHand = updateCardState(state, {
-      ...state.cardState,
-      white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
-    });
-    const movementState = createMovementResolutionState(
-      stateWithWhiteCardInHand,
-      {
-        commitment: { commitmentType: 'pending' },
-      },
-    );
-    const stateInPhase = updatePhaseState(
-      stateWithWhiteCardInHand,
-      createIssueCommandsPhaseState(stateWithWhiteCardInHand, {
-        currentCommandResolutionState: movementState,
-      }),
-    );
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
-      committedCard: tempCommandCards[0],
-      eventType: 'playerChoice',
-      player: 'white',
-    };
-
-    const newState = applyCommitToMovementEvent(event, stateInPhase);
-    const newMovement = getMovementResolutionState(newState);
-
-    expect(newMovement.commitment).toStrictEqual({
-      card: tempCommandCards[0],
-      commitmentType: 'completed',
-    });
-    expect(newState.cardState.white.inHand).toHaveLength(0);
-  });
-
-  it('given front engagement refuse (no card), declines defensiveCommitment without discarding', () => {
-    const state = createEmptyGameState('standard');
-    const card = throwIfUndefined(
-      tempCommandCards[0],
-      'expected temp command card',
-    );
-    const withWhiteCard = updateCardState(state, {
-      ...state.cardState,
-      white: { ...state.cardState.white, inHand: [card] },
-    });
-    const movementState = createMovementResolutionState(withWhiteCard, {
+  it("records a front engagement's defender's card on the engagement, not on the move", () => {
+    // White's unit has met black's head on; white declined its own
+    // commitment, and black's is owed.
+    const state = whiteMoving('black', {
       commitment: { commitmentType: 'declined' },
       engagementState: createFrontEngagementState(),
     });
-    const stateInPhase = updatePhaseState(
-      withWhiteCard,
-      createIssueCommandsPhaseState(withWhiteCard, {
-        currentCommandResolutionState: movementState,
+
+    const next = applyCommitToMovementEvent(
+      createCommitToMovementEvent({
+        committedCard: speedCard,
+        player: 'black',
       }),
+      state,
     );
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
-      committedCard: 'none',
-      eventType: 'playerChoice',
-      player: 'white',
-    };
 
-    const newState = applyCommitToMovementEvent(event, stateInPhase);
-    const front = getFrontEngagementStateFromMovement(newState);
-
-    expect(front.engagementResolutionState.defensiveCommitment).toStrictEqual({
+    // The defender's Speed counts the card when the two are compared…
+    expect(
+      getFrontEngagementStateFromMovement(next).engagementResolutionState
+        .defensiveCommitment,
+    ).toStrictEqual({ card: speedCard, commitmentType: 'completed' });
+    // …the mover's refusal stands as it was…
+    expect(getMovementResolutionState(next).commitment).toStrictEqual({
       commitmentType: 'declined',
     });
-    expect(newState.cardState.white.inHand).toStrictEqual([card]);
+    // …and the card has left black's hand.
+    expect(next.cardState.black.inHand).toStrictEqual([kept.black]);
   });
 
-  it('given front engagement defensive commit pending, completes defensiveCommitment and leaves mover commitment declined', () => {
-    const state = createEmptyGameState('standard');
-    const card = throwIfUndefined(
-      tempCommandCards[0],
-      'expected temp command card',
-    );
-    const withWhiteCard = updateCardState(state, {
-      ...state.cardState,
-      white: { ...state.cardState.white, inHand: [card] },
-    });
-    const movementState = createMovementResolutionState(withWhiteCard, {
+  it("records a defender's refusal on the engagement and leaves its hand alone", () => {
+    // As above, but black refuses (§8.3).
+    const state = whiteMoving('black', {
       commitment: { commitmentType: 'declined' },
       engagementState: createFrontEngagementState(),
     });
-    const stateInPhase = updatePhaseState(
-      withWhiteCard,
-      createIssueCommandsPhaseState(withWhiteCard, {
-        currentCommandResolutionState: movementState,
-      }),
+
+    const next = applyCommitToMovementEvent(
+      createCommitToMovementEvent({ committedCard: 'none', player: 'black' }),
+      state,
     );
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
-      committedCard: card,
-      eventType: 'playerChoice',
-      player: 'white',
-    };
 
-    const newState = applyCommitToMovementEvent(event, stateInPhase);
-    const newMovement = getMovementResolutionState(newState);
-    const front = getFrontEngagementStateFromMovement(newState);
-
-    expect(newMovement.commitment).toStrictEqual({
-      commitmentType: 'declined',
-    });
-    expect(front.engagementResolutionState.defensiveCommitment).toStrictEqual({
-      card,
-      commitmentType: 'completed',
-    });
-    expect(newState.cardState.white.inHand).toHaveLength(0);
+    // The defender declined, and keeps its card.
+    expect(
+      getFrontEngagementStateFromMovement(next).engagementResolutionState
+        .defensiveCommitment,
+    ).toStrictEqual({ commitmentType: 'declined' });
+    expect(next.cardState.black.inHand).toStrictEqual([speedCard, kept.black]);
   });
 
-  it('given hand and commitment snapshot before apply, input state hand and movement slice unchanged', () => {
-    const state = createEmptyGameState('standard');
-    const stateWithBlackCardInHand = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
+  it('leaves the state it was given unchanged', () => {
+    // White's commitment is owed.
+    const state = whiteMoving('white', {
+      commitment: { commitmentType: 'pending' },
     });
-    const movementState = createMovementResolutionState(
-      stateWithBlackCardInHand,
-      {
-        commitment: { commitmentType: 'pending' },
-      },
-    );
-    const stateInPhase = updatePhaseState(
-      stateWithBlackCardInHand,
-      createIssueCommandsPhaseState(stateWithBlackCardInHand, {
-        currentCommandResolutionState: movementState,
+
+    applyCommitToMovementEvent(
+      createCommitToMovementEvent({
+        committedCard: speedCard,
+        player: 'white',
       }),
+      state,
     );
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
-      committedCard: tempCommandCards[0],
-      eventType: 'playerChoice',
-      player: 'black',
-    };
 
-    const handBefore = [...stateInPhase.cardState.black.inHand];
-    const commitmentBefore =
-      getMovementResolutionState(stateInPhase).commitment;
-
-    applyCommitToMovementEvent(event, stateInPhase);
-
-    expect(stateInPhase.cardState.black.inHand).toStrictEqual(handBefore);
-    expect(getMovementResolutionState(stateInPhase).commitment).toStrictEqual(
-      commitmentBefore,
-    );
+    // The original still holds the card and still owes the commitment.
+    expect(state.cardState.white.inHand).toStrictEqual([speedCard, kept.white]);
+    expect(getMovementResolutionState(state).commitment).toStrictEqual({
+      commitmentType: 'pending',
+    });
   });
 });

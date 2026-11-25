@@ -1,4 +1,4 @@
-import type { AttackResult } from '@entities';
+import type { AttackResult, PlayerSide } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { createEmptyGameState } from '@factories';
@@ -25,11 +25,21 @@ import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
  * The factory records which outcomes are due; openers write the substeps later.
  */
 describe('applyResolveMeleeEvent function', () => {
-  /** ResolveMelee phase with default melee CRS and both inPlay command cards set. */
-  function baseMeleeGameState(): GameState {
+  /** White's unit in the melee. */
+  const whiteUnit = createTestUnit('white', { attack: 2 });
+
+  /** Black's unit in the melee. */
+  const blackUnit = createTestUnit('black', { attack: 3 });
+
+  /**
+   * ResolveMelee phase with default melee CRS and both inPlay command cards set.
+   * Black holds the initiative unless the case says otherwise, so White's
+   * unit is the second player's.
+   */
+  function baseMeleeGameState(initiative: PlayerSide = 'black'): GameState {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
-      'black',
+      initiative,
     );
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -39,12 +49,7 @@ describe('applyResolveMeleeEvent function', () => {
     // White's unit and Black's stand engaged on E-5, the melee's space.
     const engaged = replaceBoard(
       withCards,
-      createBoardWithEngagedUnits(
-        createTestUnit('white', { attack: 2 }),
-        createTestUnit('black', { attack: 2 }),
-        'E-5',
-        'north',
-      ),
+      createBoardWithEngagedUnits(whiteUnit, blackUnit, 'E-5', 'north'),
     );
     const melee = createMeleeResolutionState(engaged);
     return updatePhaseState(
@@ -119,7 +124,7 @@ describe('applyResolveMeleeEvent function', () => {
     expect(blackApply.reverseState).toBe('bypassed');
   });
 
-  it('leaves a pending rout for white when only white routes', () => {
+  it('leaves a pending rout for white when only white routs', () => {
     const full = baseMeleeGameState();
     const event: ResolveMeleeEvent = meleeEvent({ unitRouted: true });
 
@@ -156,5 +161,27 @@ describe('applyResolveMeleeEvent function', () => {
     expect(whiteApply.retreatState).toBe('pending');
     expect(whiteApply.routState).toBe('bypassed');
     expect(whiteApply.reverseState).toBe('bypassed');
+  });
+
+  it('writes White’s result in the first player’s slot when White holds the initiative', () => {
+    // The slots are named for whose unit takes the result: the first
+    // player's blow lands first, so the order they are carried out in
+    // follows the initiative (§7.5.6).
+    const full = baseMeleeGameState('white');
+    const event = meleeEvent({ unitReversed: true });
+
+    const next = applyResolveMeleeEvent(event, full);
+    const melee = getMeleeResolutionState(next);
+
+    // White holds the initiative, so its unit's reverse is the first
+    // player's, and Black's untouched unit is the second player's.
+    expect(melee.attackOnFirstPlayerApplyState).toMatchObject({
+      defendingUnit: whiteUnit,
+      reverseState: 'pending',
+    });
+    expect(melee.attackOnSecondPlayerApplyState).toMatchObject({
+      defendingUnit: blackUnit,
+      reverseState: 'bypassed',
+    });
   });
 });

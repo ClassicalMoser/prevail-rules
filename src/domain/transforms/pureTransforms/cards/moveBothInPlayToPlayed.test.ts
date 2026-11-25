@@ -1,92 +1,124 @@
-import { tempCommandCards } from '@sampleValues';
+import {
+  createCardState,
+  createEmptyGameState,
+  createOwnedCardState,
+} from '@factories';
+import { createTestCard, updateCardState } from '@testing';
+
+import { projectGameStateForVisibility } from '../visibility';
 import { moveBothInPlayToPlayed } from './moveBothInPlayToPlayed';
 
-import { createEmptyGameState } from '@factories';
 /**
- * MoveBothInPlayToPlayed: visibility-preserving move of both inPlay cards to played.
+ * Cleanup opens with both players putting this round's card onto their
+ * played pile (§4.5.1). The card in play is face up, so every view moves
+ * both, whether or not it can see the hands.
  */
 describe('moveBothInPlayToPlayed function', () => {
-  it('given authoritative, moves both inPlay to played', () => {
-    const { cardState } = createEmptyGameState('standard');
-    const authoritative = {
-      visibility: 'authoritative' as const,
-      black: {
-        ...cardState.black,
-        inPlay: tempCommandCards[0],
-        played: [],
-      },
-      white: {
-        ...cardState.white,
-        inPlay: tempCommandCards[1],
-        played: [],
-      },
-    };
+  // Each side has a card in play, one in hand, and one played in an earlier
+  // round.
+  const blackInPlay = createTestCard();
+  const whiteInPlay = createTestCard();
+  const blackPlayedEarlier = createTestCard();
+  const whitePlayedEarlier = createTestCard();
+  const game = updateCardState(
+    createEmptyGameState('standard'),
+    createCardState({
+      black: createOwnedCardState({
+        inHand: [createTestCard()],
+        inPlay: blackInPlay,
+        played: [blackPlayedEarlier],
+      }),
+      white: createOwnedCardState({
+        inHand: [createTestCard()],
+        inPlay: whiteInPlay,
+        played: [whitePlayedEarlier],
+      }),
+    }),
+  );
 
-    const result = moveBothInPlayToPlayed(authoritative);
+  it('moves both cards in play onto the played piles in the full record', () => {
+    const result = moveBothInPlayToPlayed(game.cardState);
 
+    // The view is kept, and each card in play goes on top of its pile.
     expect(result.visibility).toBe('authoritative');
     expect(result.black.inPlay).toBeNull();
-    expect(result.black.played).toStrictEqual([tempCommandCards[0]]);
+    expect(result.black.played).toStrictEqual([
+      blackPlayedEarlier,
+      blackInPlay,
+    ]);
     expect(result.white.inPlay).toBeNull();
-    expect(result.white.played).toStrictEqual([tempCommandCards[1]]);
+    expect(result.white.played).toStrictEqual([
+      whitePlayedEarlier,
+      whiteInPlay,
+    ]);
   });
 
-  it('given whiteSeen, moves owned and hidden inPlay to played', () => {
-    const { cardState } = createEmptyGameState('standard');
-    const whiteSeen = {
-      visibility: 'whiteSeen' as const,
-      white: {
-        ...cardState.white,
-        inPlay: tempCommandCards[1],
-        played: [],
-      },
-      black: {
-        awaitingPlay: 'hidden' as const,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: tempCommandCards[0],
-        played: [],
-      },
-    };
+  it("moves both cards in play at White's seat, Black's hand still face down", () => {
+    const { cardState } = projectGameStateForVisibility(game, 'whiteSeen');
 
-    const result = moveBothInPlayToPlayed(whiteSeen);
+    const result = moveBothInPlayToPlayed(cardState);
 
+    // White's own card and Black's face-up card both move.
     expect(result.visibility).toBe('whiteSeen');
-    expect(result.white.inPlay).toBeNull();
-    expect(result.white.played).toStrictEqual([tempCommandCards[1]]);
+    expect(result.white.played).toStrictEqual([
+      whitePlayedEarlier,
+      whiteInPlay,
+    ]);
     expect(result.black.inPlay).toBeNull();
-    expect(result.black.played).toStrictEqual([tempCommandCards[0]]);
+    expect(result.black.played).toStrictEqual([
+      blackPlayedEarlier,
+      blackInPlay,
+    ]);
+    // Black's hand stays face down.
+    expect(result.black.inHand).toStrictEqual(['hidden']);
   });
 
-  it('given spectator, moves both hidden inPlay cards to played', () => {
-    const spectator = {
-      visibility: 'spectator' as const,
-      black: {
-        awaitingPlay: 'hidden' as const,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: tempCommandCards[0],
-        played: [],
-      },
-      white: {
-        awaitingPlay: null,
-        burnt: [],
-        discarded: [],
-        inHand: ['hidden' as const],
-        inPlay: tempCommandCards[1],
-        played: [],
-      },
-    };
+  it("moves both cards in play at Black's seat, White's hand still face down", () => {
+    const { cardState } = projectGameStateForVisibility(game, 'blackSeen');
 
-    const result = moveBothInPlayToPlayed(spectator);
+    const result = moveBothInPlayToPlayed(cardState);
 
-    expect(result.visibility).toBe('spectator');
-    expect(result.black.inPlay).toBeNull();
-    expect(result.black.played).toStrictEqual([tempCommandCards[0]]);
+    // Black's own card and White's face-up card both move.
+    expect(result.visibility).toBe('blackSeen');
+    expect(result.black.played).toStrictEqual([
+      blackPlayedEarlier,
+      blackInPlay,
+    ]);
     expect(result.white.inPlay).toBeNull();
-    expect(result.white.played).toStrictEqual([tempCommandCards[1]]);
+    expect(result.white.played).toStrictEqual([
+      whitePlayedEarlier,
+      whiteInPlay,
+    ]);
+    // White's hand stays face down.
+    expect(result.white.inHand).toStrictEqual(['hidden']);
+  });
+
+  it('moves both cards in play for a spectator, who sees neither hand', () => {
+    const { cardState } = projectGameStateForVisibility(game, 'spectator');
+
+    const result = moveBothInPlayToPlayed(cardState);
+
+    // Both cards in play are face up, so both move.
+    expect(result.visibility).toBe('spectator');
+    expect(result.black.played).toStrictEqual([
+      blackPlayedEarlier,
+      blackInPlay,
+    ]);
+    expect(result.white.played).toStrictEqual([
+      whitePlayedEarlier,
+      whiteInPlay,
+    ]);
+    // Both hands stay face down.
     expect(result.black.inHand).toStrictEqual(['hidden']);
+    expect(result.white.inHand).toStrictEqual(['hidden']);
+  });
+
+  it('throws for a visibility the game does not know', () => {
+    expect(() =>
+      moveBothInPlayToPlayed(
+        // A visibility the type forbids, to reach the exhaustive default.
+        { ...game.cardState, visibility: 'nobody' } as never,
+      ),
+    ).toThrow('Invalid card state:');
   });
 });

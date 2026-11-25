@@ -1,82 +1,116 @@
-import { throwIfPending } from '@utils';
 import type { ResolveFlankEngagementEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameState, MovementResolutionState } from '@game';
+import { getBoardSpace, getFlankEngagementStateFromMovement } from '@queries';
 import {
+  createBoardWithUnits,
   createFlankEngagementState,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createGameStateWithBoard,
   createMovementResolutionState,
-  createTestCard,
   createTestUnit,
   placed,
-  replaceBoard,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addCommanderToBoard,
+  updateCurrentInitiative,
+} from '@transforms/pureTransforms';
 
 import { applyResolveFlankEngagementEvent } from './applyResolveFlankEngagementEvent';
 
-import { createEmptyGameState } from '@factories';
 /** A defender engaged from the flank is turned to face its attacker (§6.3.4). */
 describe('applyResolveFlankEngagementEvent function', () => {
-  it('sets the attacker down with the defender, the defender turned to face it (§6.3.4)', () => {
-    // White stands at E-5 facing east; Black's move ends on its flank,
-    // facing north, and has waited on F-5 until the engagement places it.
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defender = createTestUnit('white');
-    const attacker = createTestUnit('black', { attack: 2 });
-    const flank = createFlankEngagementState();
-    const start = placed(attacker, 'F-5', 'north');
-    const boardState = addUnitToBoard(
-      addUnitToBoard(state.boardState, placed(defender, 'E-5', 'east')),
-      start,
+  const event: ResolveFlankEngagementEvent = {
+    effectType: 'resolveFlankEngagement',
+    eventType: 'gameEffect',
+  };
+
+  /** White's unit, standing on E-5 facing east. */
+  const defender = createTestUnit('white');
+
+  /** Black's unit, whose move ends on White's flank, facing north. */
+  const attacker = createTestUnit('black', { attack: 2 });
+
+  /**
+   * Black holds the initiative and carries out a Move: its unit's move into
+   * E-5 facing north has opened a flank engagement on White's unit, and the
+   * attacker waits on F-5 until the engagement places it.
+   */
+  function flankEngaged(
+    options: {
+      commanderRides?: boolean;
+      movement?: Partial<MovementResolutionState>;
+    } = {},
+  ): GameState {
+    const units = createBoardWithUnits([
+      placed(defender, 'E-5', 'east'),
+      placed(attacker, 'F-5', 'north'),
+    ]);
+    // A commander riding with the attacker stands with it on F-5.
+    const board =
+      options.commanderRides === true
+        ? addCommanderToBoard(units, 'black', 'F-5')
+        : units;
+    const base = updateCurrentInitiative(
+      createGameStateWithBoard(board),
+      'black',
     );
-    const withBoard = replaceBoard(state, boardState);
-    const movement = createMovementResolutionState(withBoard, {
-      engagementState: flank,
+    const movement = createMovementResolutionState(base, {
+      engagementState: createFlankEngagementState(),
+      moveCommander: options.commanderRides === true,
       movingUnit: attacker,
       targetPlacement: { coordinate: 'E-5', facing: 'north' },
+      ...options.movement,
     });
-    const full: GameState = updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
-    );
-    const event: ResolveFlankEngagementEvent = {
-      effectType: 'resolveFlankEngagement',
-      eventType: 'gameEffect',
-    };
+    const resolving = createGameStateResolvingCommand(movement, base);
+    return resolving;
+  }
 
-    const next = applyResolveFlankEngagementEvent(event, full);
+  it('sets the attacker down with the defender, the defender turned to face it (§6.3.4)', () => {
+    const next = applyResolveFlankEngagementEvent(event, flankEngaged());
 
     // The two are engaged in E-5: Black facing north, so White faces south.
-    expect(next.boardState.board['E-5']?.unitPresence).toStrictEqual({
+    expect(getBoardSpace(next.boardState, 'E-5').unitPresence).toStrictEqual({
       presenceType: 'engaged',
       primaryFacing: 'north',
       primaryUnit: attacker,
       secondaryUnit: defender,
     });
     // Black has left the space it waited on.
-    expect(next.boardState.board['F-5']?.unitPresence).toStrictEqual({
+    expect(getBoardSpace(next.boardState, 'F-5').unitPresence).toStrictEqual({
       presenceType: 'none',
     });
     // The engagement is over: the defender has turned.
-    const phase = next.currentRoundState.currentPhaseState;
-    if (phase === 'none' || phase.phase !== 'issueCommands') {
-      throw new Error('Expected Issue Commands');
-    }
-    const resolution = throwIfPending(
-      phase.currentCommandResolutionState,
-      'command',
-    );
-    if (resolution.commandResolutionType !== 'movement') {
-      throw new Error('Expected a Move order');
-    }
-    const engagement = throwIfPending(resolution.engagementState, 'engagement');
-    expect(engagement.completed).toBe(true);
-    expect(engagement.engagementResolutionState).toStrictEqual({
+    // It may not retreat, so nothing more is owed before Phase 4.
+    const flank = getFlankEngagementStateFromMovement(next);
+    expect(flank.completed).toBe(true);
+    expect(flank.engagementResolutionState).toStrictEqual({
       defenderRotated: true,
       engagementType: 'flank',
     });
+  });
+
+  it('a commander riding into a flank engagement joins the fight with its unit', () => {
+    // §4.3.10: Black's commander rides with the attacker from F-5.
+    const next = applyResolveFlankEngagementEvent(
+      event,
+      flankEngaged({ commanderRides: true }),
+    );
+
+    // It has left F-5 and stands in the engaged space, committed to the
+    // fight.
+    expect(getBoardSpace(next.boardState, 'F-5').commanders).toStrictEqual([]);
+    expect(getBoardSpace(next.boardState, 'E-5').commanders).toStrictEqual([
+      'black',
+    ]);
+  });
+
+  it('throws when the move into the defender has not been written', () => {
+    // An engagement opens only from a move written into the enemy, so an
+    // engagement on an unwritten move is a fault in whatever wrote it.
+    const state = flankEngaged({ movement: { targetPlacement: 'pending' } });
+
+    expect(() => applyResolveFlankEngagementEvent(event, state)).toThrow(
+      'The move has not been written yet',
+    );
   });
 });

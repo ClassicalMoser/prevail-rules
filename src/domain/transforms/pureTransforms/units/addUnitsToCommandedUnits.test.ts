@@ -5,41 +5,51 @@ import { addUnitsToCommandedUnits } from './addUnitsToCommandedUnits';
 import { createEmptyGameState } from '@factories';
 /**
  * AddUnitsToCommandedUnits: Adds units to the commandedUnits set in the current round state.
+ * A unit is commanded once a round (§4.3.6), so the round keeps a list of
+ * every unit ordered so far, both players' alike.
  */
 describe('addUnitsToCommandedUnits function', () => {
-  it('given add units to commandedUnits set', () => {
+  // Two of White's units, and one of Black's.
+  const whiteFirst = createTestUnit('white', { attack: 3 });
+  const whiteSecond = createTestUnit('white', {
+    attack: 3,
+    instanceNumber: 2,
+  });
+  const black = createTestUnit('black', { attack: 3 });
+
+  it('records the units a player orders as commanded this round', () => {
+    // A new round: nobody has been commanded yet.
     const state = createEmptyGameState('standard');
-    const unit1 = createTestUnit('black', { attack: 3 });
-    const unit2 = createTestUnit('white', { attack: 4 });
-    const units = [unit1, unit2];
 
-    const newState = addUnitsToCommandedUnits(state, units);
+    const newState = addUnitsToCommandedUnits(state, [whiteFirst, whiteSecond]);
 
-    expect(newState.currentRoundState.commandedUnits).toStrictEqual(units);
+    // Both of White's units are commanded.
+    expect(newState.currentRoundState.commandedUnits).toStrictEqual([
+      whiteFirst,
+      whiteSecond,
+    ]);
   });
 
-  it('given not mutate the original state', () => {
-    const state = createEmptyGameState('standard');
-    const unit = createTestUnit('black', { attack: 3 });
-    const units = [unit];
+  it('keeps the units commanded earlier in the round when more are ordered, and leaves the state it was given as it was', () => {
+    // White, holding the initiative, has ordered its two units.
+    const whiteOrdered = addUnitsToCommandedUnits(
+      createEmptyGameState('standard'),
+      [whiteFirst, whiteSecond],
+    );
 
-    addUnitsToCommandedUnits(state, units);
+    // Then Black orders its one.
+    const newState = addUnitsToCommandedUnits(whiteOrdered, [black]);
 
-    expect(state.currentRoundState.commandedUnits).toHaveLength(0);
-  });
-
-  it('given add to existing commandedUnits', () => {
-    const state = createEmptyGameState('standard');
-    const unit1 = createTestUnit('black', { attack: 2 });
-    const unit2 = createTestUnit('white', { attack: 3 });
-    const unit3 = createTestUnit('black', { attack: 4 });
-
-    const stateWithUnit1 = addUnitsToCommandedUnits(state, [unit1]);
-    const newState = addUnitsToCommandedUnits(stateWithUnit1, [unit2, unit3]);
-
-    expect(newState.currentRoundState.commandedUnits).toHaveLength(3);
-    expect([...newState.currentRoundState.commandedUnits]).toContain(unit1);
-    expect([...newState.currentRoundState.commandedUnits]).toContain(unit2);
-    expect([...newState.currentRoundState.commandedUnits]).toContain(unit3);
+    // All three are commanded, in the order they were ordered.
+    expect(newState.currentRoundState.commandedUnits).toStrictEqual([
+      whiteFirst,
+      whiteSecond,
+      black,
+    ]);
+    // The state it was given still lists only White's two.
+    expect(whiteOrdered.currentRoundState.commandedUnits).toStrictEqual([
+      whiteFirst,
+      whiteSecond,
+    ]);
   });
 });

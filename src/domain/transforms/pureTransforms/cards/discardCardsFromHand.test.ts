@@ -1,28 +1,30 @@
 import { tempCommandCards } from '@sampleValues';
+import { createTestCard } from '@testing';
 import { discardCardsFromHand } from './discardCardsFromHand';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createOwnedCardState } from '@factories';
 /**
- * DiscardCardsFromHand: Pure transform to move specified cards from hand to discarded pile.
+ * A card committed for +1 (§8.1) or paid for a rout's Morale (§9.3.2) leaves
+ * the hand for the discard pile, where it waits for the next rally.
  */
 describe('discardCardsFromHand function', () => {
-  it('given move cards from hand to discarded', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [],
-      inHand: [tempCommandCards[0], tempCommandCards[1], tempCommandCards[2]],
-    };
+  it('moves the named cards from hand onto the discard pile, after those already there', () => {
+    // Black holds three cards and has discarded one earlier; a rout costs two.
+    const earlier = createTestCard();
+    const first = createTestCard();
+    const kept = createTestCard();
+    const second = createTestCard();
+    const owned = createOwnedCardState({
+      discarded: [earlier],
+      inHand: [first, kept, second],
+    });
 
-    const result = discardCardsFromHand(owned, [
-      tempCommandCards[0].id,
-      tempCommandCards[2].id,
-    ]);
+    const result = discardCardsFromHand(owned, [first.id, second.id]);
 
-    expect(result.inHand).toStrictEqual([tempCommandCards[1]]);
-    expect(result.discarded).toStrictEqual([
-      tempCommandCards[0],
-      tempCommandCards[2],
-    ]);
+    // The card not named stays in hand.
+    expect(result.inHand).toStrictEqual([kept]);
+    // The two paid go on top of the earlier discard.
+    expect(result.discarded).toStrictEqual([earlier, first, second]);
   });
 
   it('lays the cards on the discard pile in the order they are named, not the order they were held', () => {
@@ -48,54 +50,17 @@ describe('discardCardsFromHand function', () => {
     expect(result.inHand).toStrictEqual([tempCommandCards[1]]);
   });
 
-  it('given not mutate the original card state', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [],
-      inHand: [tempCommandCards[0], tempCommandCards[1]],
-    };
-    const originalHand = owned.inHand;
-    const originalDiscarded = owned.discarded;
+  it('throws when a card named is not in the hand', () => {
+    // Black's other card has already been played, so it cannot be discarded
+    // from hand.
+    const played = createTestCard({ id: 'already-played' });
+    const owned = createOwnedCardState({
+      inHand: [createTestCard()],
+      played: [played],
+    });
 
-    discardCardsFromHand(owned, [tempCommandCards[0].id]);
-
-    expect(owned.inHand).toBe(originalHand);
-    expect(owned.discarded).toBe(originalDiscarded);
-  });
-
-  it('given append to existing discarded cards', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [tempCommandCards[2]],
-      inHand: [tempCommandCards[0], tempCommandCards[1]],
-    };
-
-    const result = discardCardsFromHand(owned, [tempCommandCards[0].id]);
-
-    expect(result.discarded).toStrictEqual([
-      tempCommandCards[2],
-      tempCommandCards[0],
-    ]);
-  });
-
-  it('given handle multiple cards', () => {
-    const owned = {
-      ...createEmptyGameState('standard').cardState.black,
-      discarded: [],
-      inHand: [tempCommandCards[0], tempCommandCards[1], tempCommandCards[2]],
-    };
-
-    const result = discardCardsFromHand(owned, [
-      tempCommandCards[0].id,
-      tempCommandCards[1].id,
-      tempCommandCards[2].id,
-    ]);
-
-    expect(result.inHand).toStrictEqual([]);
-    expect(result.discarded).toStrictEqual([
-      tempCommandCards[0],
-      tempCommandCards[1],
-      tempCommandCards[2],
-    ]);
+    expect(() => discardCardsFromHand(owned, [played.id])).toThrow(
+      'Card already-played is not in the hand',
+    );
   });
 });

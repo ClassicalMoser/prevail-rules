@@ -5,7 +5,11 @@ import {
   getRangedAttackResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
 } from '@queries';
-import { createPlayableGame, resolvingShootOrder } from '@testing';
+import {
+  createPlayableGame,
+  createTestUnit,
+  resolvingShootOrder,
+} from '@testing';
 
 import { applyChooseShooterEvent } from './applyChooseShooterEvent';
 
@@ -57,16 +61,17 @@ describe('applyChooseShooterEvent function', () => {
     );
 
     // The shooter commits before it aims (§4.3.11 step 2), so the target,
-    // its supporters and both commitments all wait.
-    const shot = getRangedAttackResolutionState(named);
-    expect(shot.attackingUnit).toStrictEqual(shooter.unit);
-    expect(shot.attackingCommitment).toStrictEqual({
-      commitmentType: 'pending',
-    });
-    expect(shot.defendingUnit).toBe('pending');
-    expect(shot.supportingUnits).toBe('pending');
-    expect(shot.defendingCommitment).toStrictEqual({
-      commitmentType: 'pending',
+    // its supporters, the target's commitment and the blow all wait.
+    expect(getRangedAttackResolutionState(named)).toStrictEqual({
+      attackApplyState: 'pending',
+      attackingCommitment: { commitmentType: 'pending' },
+      attackingUnit: shooter.unit,
+      commandResolutionType: 'rangedAttack',
+      completed: false,
+      defendingCommitment: { commitmentType: 'pending' },
+      defendingUnit: 'pending',
+      substepType: 'commandResolution',
+      supportingUnits: 'pending',
     });
   });
 
@@ -94,5 +99,56 @@ describe('applyChooseShooterEvent function', () => {
     expect(
       getIssueCommandsPhaseState(named).remainingUnitsFirstPlayer,
     ).toStrictEqual([other.unit]);
+  });
+
+  it('refuses to open a second shot while one is under way', () => {
+    // Shots are carried out one at a time, each finished first (§4.3.9).
+    const state = blackShootingWithTwo();
+    const first = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-5',
+    );
+    const second = getSingleUnitWithPlacementAtCoordinate(
+      state.boardState,
+      'E-3',
+    );
+
+    // The unit on E-5 is named, and its shot has not been aimed.
+    const named = applyChooseShooterEvent(
+      createChooseShooterEvent({
+        player: 'black',
+        unit: first.unit,
+      }),
+      state,
+    );
+
+    // Naming the unit on E-3 now is a fault in whatever sent it.
+    expect(() =>
+      applyChooseShooterEvent(
+        createChooseShooterEvent({
+          player: 'black',
+          unit: second.unit,
+        }),
+        named,
+      ),
+    ).toThrow(new Error('A command is already being resolved'));
+  });
+
+  it('throws when the unit named is not on the board', () => {
+    const state = blackShootingWithTwo();
+
+    // A third black Range-2 unit, never placed: the event names a unit the
+    // board does not hold.
+    const absent = createTestUnit('black', { instanceNumber: 3, range: 2 });
+
+    expect(() =>
+      applyChooseShooterEvent(
+        createChooseShooterEvent({
+          player: 'black',
+          unit: absent,
+        }),
+        state,
+      ),
+    ).toThrow(new Error('Unit not found on board'));
   });
 });

@@ -1,81 +1,39 @@
+import { createEmptyGameState } from '@factories';
+import { getMeleeResolutionState } from '@queries';
 import {
+  createGameStateResolvingMelee,
   createMeleeResolutionState,
-  createResolveMeleePhaseState,
 } from '@testing';
-import { updatePhaseState } from '../';
-import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeResolutionState } from './updateMeleeResolutionState';
 
-import { createEmptyGameState } from '@factories';
 /**
- * UpdateMeleeResolutionState: Creates a new game state with the melee resolution state updated in the resolve melee phase.
+ * In Phase 4 each engagement is fought completely before the next is chosen
+ * (§4.4.2). This writer carries the melee being fought forward; it does not
+ * choose one.
  */
 describe('updateMeleeResolutionState function', () => {
-  it('given update the melee resolution state in resolve melee phase', () => {
-    const state = createEmptyGameState('standard');
-    const meleeState = createMeleeResolutionState(state);
-    const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: meleeState,
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-
-    const updatedMelee = createMeleeResolutionState(state, { completed: true });
-    const newState = updateMeleeResolutionState(stateInPhase, updatedMelee);
-
-    const phase = throwIfNone(
-      newState.currentRoundState.currentPhaseState,
-      'phase',
+  it('replaces the melee being fought with its next state', () => {
+    // The melee at E-5 is being fought.
+    const empty = createEmptyGameState('standard');
+    const fighting = createGameStateResolvingMelee(
+      createMeleeResolutionState(empty),
     );
-    expect(phase.phase).toBe('resolveMelee');
-    if (phase.phase !== 'resolveMelee') {
-      throw new Error('phase');
-    }
-    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    expect(melee.completed).toBe(true);
+
+    // The melee is carried out.
+    const finished = createMeleeResolutionState(empty, { completed: true });
+    const after = updateMeleeResolutionState(fighting, finished);
+
+    // The melee being fought is the finished one.
+    expect(getMeleeResolutionState(after)).toBe(finished);
   });
 
-  it('given not mutate the original state', () => {
-    const state = createEmptyGameState('standard');
-    const meleeState = createMeleeResolutionState(state);
-    const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: meleeState,
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const origPhase = throwIfNone(
-      stateInPhase.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    const originalMelee =
-      origPhase.phase === 'resolveMelee'
-        ? throwIfPending(origPhase.currentMeleeResolutionState, 'melee')
-        : undefined;
+  it('throws between melees, since there is nothing to carry forward', () => {
+    // Phase 4, with the first player still to choose the next engagement.
+    const between = createGameStateResolvingMelee('pending');
+    const melee = createMeleeResolutionState(createEmptyGameState('standard'));
 
-    updateMeleeResolutionState(stateInPhase, {
-      ...meleeState,
-      completed: true,
-    });
-
-    const checkPhase = throwIfNone(
-      stateInPhase.currentRoundState.currentPhaseState,
-      'phase',
-    );
-    const currentMelee =
-      checkPhase.phase === 'resolveMelee'
-        ? throwIfPending(checkPhase.currentMeleeResolutionState, 'melee')
-        : undefined;
-    expect(currentMelee).toBe(originalMelee);
-  });
-
-  it('given when no current melee resolution state is set, throws', () => {
-    const state = createEmptyGameState('standard');
-    const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: 'pending',
-    });
-    const stateInPhase = updatePhaseState(state, phaseState);
-    const meleeState = createMeleeResolutionState(state);
-
-    expect(() => updateMeleeResolutionState(stateInPhase, meleeState)).toThrow(
+    expect(() => updateMeleeResolutionState(between, melee)).toThrow(
       'No current melee resolution state found',
     );
   });
