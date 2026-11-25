@@ -142,6 +142,8 @@ gets marked, not rewritten. List any case dropped or merged.
 - Split a file so that it has one primary export. Each spec moves with it.
 - Name an intermediate. `return` stands on its own line and returns that name.
 - Move a predicate to the layer that owns it, as `LAYERS.md` describes.
+- Replace a direct comparison with a sentinel (`=== 'pending'`, `'bypassed'`,
+  `'none'`) by its `@utils` guard. A discriminant field is not a sentinel.
 - Do not refile a directory onto a different axis.
 
 ### What it may fix
@@ -158,7 +160,8 @@ A fix gets a failing spec first, and its own commit.
 
 Any change to a game rule. Any change to a thrown message, a branch, a call order,
 or a return value that is not an allowed fix. A possible bug that could be a design
-decision. Replacing an ad-hoc definition in production code with a shared helper.
+decision. Replacing an ad-hoc definition with a shared helper that could behave
+differently.
 
 Those get a mark, not a change.
 
@@ -167,10 +170,13 @@ Those get a mark, not a change.
 Queries and transforms are meant to compose. An ad-hoc walk or change that repeats
 a shared helper is a finding.
 
-Search the whole package for the helper. Do not rely on the names in scope. Mark
-the duplicate in production code and do not replace it. Two definitions can look
-the same and differ on `'bypassed'`, `'pending'`, or whether they throw — say which
-ones you compared and how.
+Search the whole package for the helper. Do not rely on the names in scope. Two
+definitions can look the same and differ on `'bypassed'`, `'pending'`, or whether
+they throw — say which ones you compared and how.
+
+Code that obviously rebuilds what a factory or query already builds, or fails to
+call one, is replaced by the call in the sweep, once the comparison shows they
+behave the same. Where they could differ, mark it instead.
 
 Duplicated test helpers are the exception. Those are extracted, not marked.
 
