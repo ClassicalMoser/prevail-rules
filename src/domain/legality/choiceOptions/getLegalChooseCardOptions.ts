@@ -18,6 +18,8 @@ import { getOwnedPlayerCardState, getPlayCardsPhaseState } from '@queries';
 // per-player reader there ("has this player chosen a card").
 function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
   const { cardState } = gameState;
+  // Named now, so a fault below can say which visibility it met.
+  const { visibility } = cardState;
   switch (cardState.visibility) {
     case 'authoritative': {
       // The full record sees both hands, so it offers each player still
@@ -49,13 +51,9 @@ function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
       return [];
     }
     default: {
-      // TODO(wrong): an unknown visibility is returned as the list of players,
-      // so the caller fails later with a TypeError ("not iterable") instead of
-      // a message naming what was missing (DESIGN.md, "Faults and absence").
-      // Settled by throwing here with the visibility in the message, as
-      // `projectGameStateForVisibility` does.
+      // A visibility no view of the game has is a fault in the state.
       const _exhaustive: never = cardState;
-      return _exhaustive;
+      throw new Error(`Invalid visibility: ${String(visibility)}`);
     }
   }
 }
