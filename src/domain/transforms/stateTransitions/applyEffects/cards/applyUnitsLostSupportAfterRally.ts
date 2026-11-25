@@ -84,14 +84,11 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
       : 'bypassed';
 
   // The check is made: the rally records who lost their place, and the rout
-  // that costs, if any.
-  // TODO(wrong): when nothing routs, Cleanup moves on below but this rally
-  // keeps `completed: false`; when units rout, `settleRout` closes the rally
-  // with `completed: true` as it moves Cleanup on. A spec "a rally whose
-  // every unit kept its place ends complete" fails today. Settle by writing
-  // `completed: true` here when nothing routs.
+  // that costs, if any. With nothing to pay the rally is over now; with a
+  // rout open, `settleRout` closes it once the Morale is paid.
   const updatedRallyState = {
     ...rallyState,
+    completed: unitsToRout.length === 0,
     routState,
     unitsLostSupport: unitsToRout.map((u) => u.unit),
   };
