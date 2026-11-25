@@ -76,11 +76,8 @@ describe('isSameCardValue function', () => {
   });
 
   it('refuses a copy that lists a commit stat more often than the card does', () => {
-    // Each listed stat is +1 when the card is committed (§8.4), so a copy
-    // listing Attack twice would count double.
-    // TODO(misleading): `getRawUnitStat` adds only the first matching
-    // modifier, so a doubled Attack would add +1, not +2; and §8.2 is the
-    // rule for +1 per stat. Settle with the `getRawUnitStat` mark.
+    // A card names each stat it may be committed for once; a copy listing
+    // Attack twice is not the card held, whatever it would add.
     const forged = {
       ...held,
       modifiers: ['attack' as const, 'attack' as const],
