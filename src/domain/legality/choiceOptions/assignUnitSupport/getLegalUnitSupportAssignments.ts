@@ -120,6 +120,8 @@ export function getLegalUnitSupportAssignments(
  * @returns A short label such as `trait:formation:4`
  */
 export function getUnitSupportLabel(unitSupport: UnitSupport): string {
+  // Named now, so a fault below can say which kind it met.
+  const { supportType } = unitSupport;
   switch (unitSupport.supportType) {
     case 'generic': {
       // A stack for any unit at all says only how many it holds.
@@ -138,13 +140,10 @@ export function getUnitSupportLabel(unitSupport: UnitSupport): string {
     }
     // Every kind of unit support is handled above, and the compiler checks
     // it.
-    // TODO(wrong): a value of no kind the rules name is handed back as the
-    // "label" itself, not a string, so a refusal would carry an object. Its
-    // siblings `unitMatchesSupport` and `isSameUnitSupportKind` throw
-    // `Unknown unit support type` here; settle by throwing the same.
     default: {
+      // A support of no kind the rules name is a fault in the card.
       const _exhaustive: never = unitSupport;
-      return _exhaustive;
+      throw new Error(`Unknown unit support type: ${String(supportType)}`);
     }
   }
 }
