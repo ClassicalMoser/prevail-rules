@@ -6,7 +6,10 @@ import {
   createOpenedFrontEngagementResolutionState,
   createOpenedRearEngagementResolutionState,
 } from '@factories';
-import { getMovementResolutionState } from '@queries';
+import {
+  getMovementResolutionState,
+  getUnitWithPlacementOnBoard,
+} from '@queries';
 import {
   carryRidingCommander,
   moveUnitIntoEngagement,
@@ -41,9 +44,13 @@ export function applyStartEngagementEvent<S extends GameState>(
     'The move has not been written yet',
   );
 
-  // The unit that was already there is the defender, named by the event;
-  // the unit that moved in is the engaging unit (§6.1.3).
-  const { defendingUnit } = event;
+  // The unit that was already there is the defender, named by the event and
+  // taken as the board holds it, so a forged copy cannot enter the rout; the
+  // unit that moved in is the engaging unit (§6.1.3).
+  const defendingUnit = getUnitWithPlacementOnBoard(
+    state,
+    event.defendingUnit,
+  ).unit;
   const engagingUnit = movementState.movingUnit;
 
   // How the engaging unit meets the defender decides how the engagement opens.
@@ -52,12 +59,6 @@ export function applyStartEngagementEvent<S extends GameState>(
       case 'rear': {
         // From the rear the defender routs at once (§6.3.3); its penalty is
         // filled in by resolveRout.
-        // TODO(wrong): the rout is opened with the event's copy of the
-        // defender, so `routState.unitsToRout` holds the event's unit, not
-        // the board's (DESIGN.md: a transform takes the state's own copy,
-        // never the event's). Settle by reading the board's copy by identity
-        // (`getUnitWithPlacementOnBoard`) before the defender leaves the
-        // board, and opening the rout with that.
         const rear = createOpenedRearEngagementResolutionState(defendingUnit);
         return rear;
       }
