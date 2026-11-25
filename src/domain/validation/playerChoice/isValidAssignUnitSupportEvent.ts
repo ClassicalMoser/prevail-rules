@@ -8,7 +8,7 @@ import {
   getLegalUnitSupportAssignments,
   isSameUnitSupportAssignment,
 } from '@legality';
-import { findIllegal } from '@utils';
+import { findIllegal, throwIfUndefined } from '@utils';
 
 /** Why the assignment at this position was refused, given those before it. */
 function refusalReasonAt(
@@ -16,15 +16,26 @@ function refusalReasonAt(
   assignments: readonly UnitSupportAssignment[],
   index: number,
 ): string {
-  const assignment = assignments[index];
-  if (assignment === undefined) {
-    throw new Error(`No assignment at position ${index}`);
-  }
+  // The place the player asked for that the legal options did not offer.
+  // TODO(composition): unreachable. `index` is the one `findIllegal` found
+  // walking these same assignments, so it always names one of them, and the
+  // throw only narrows the type. Settled by having `ChoiceRefusal` in `@utils`
+  // carry the refused part itself, so this lookup and its guard go.
+  const assignment = throwIfUndefined(
+    assignments[index],
+    `No assignment at position ${index}`,
+  );
+
+  // Only the places filled before it count against it: a unit already
+  // placed, or a stack already full, is judged as it stood when this one
+  // was asked for (§10.4.4).
   const reason = getAssignmentRefusalReason(
     legal,
     assignments.slice(0, index),
     assignment,
   );
+
+  // The rule that place breaks, worded by the legal options' owner.
   return reason;
 }
 
@@ -41,26 +52,39 @@ export function isValidAssignUnitSupportEvent(
   event: AssignUnitSupportEvent,
   state: GameState,
 ): ValidationResult {
+  // The stacks the rallying player's hand holds, each with the units that
+  // match it; asked only while a rally awaits its support check (§10.4.1).
   const legal = getLegalAssignUnitSupport(state);
 
+  // Only the player who rallied checks their units (§10.4.1). The expected
+  // check refuses anyone else first; this keeps the validator whole when it
+  // is asked directly.
   if (event.player !== legal.player) {
-    return {
+    const wrongPlayer: ValidationResult = {
       errorReason: `Expected assign unit support from ${legal.player}, got ${event.player}`,
       result: false,
     };
+    return wrongPlayer;
   }
 
+  // Each place the player filled must have been open after the places filled
+  // before it, and the player may stop only where the options allow
+  // (§10.4.4–10.4.5).
   const { assignments } = event;
   const refused = findIllegal(
     assignments,
     (soFar) => getLegalUnitSupportAssignments(legal, soFar),
     isSameUnitSupportAssignment,
   );
+
+  // Every unit was given a place it could take, and no open place could have
+  // held one left over: the rest rout (§10.4.6).
   if (refused === undefined) {
     const valid: ValidationResult = { result: true };
     return valid;
   }
 
+  // A place that was never open: the reason names the rule it breaks.
   if (refused.refusal === 'notEnumerated') {
     const notEnumerated: ValidationResult = {
       errorReason: refusalReasonAt(legal, assignments, refused.index),
@@ -69,6 +93,8 @@ export function isValidAssignUnitSupportEvent(
     return notEnumerated;
   }
 
+  // The player stopped while an open place could still take an uncovered
+  // unit, and that place must be filled (§10.4.5).
   const notMaximal: ValidationResult = {
     errorReason:
       'Support assignment is not maximal: unused slots could still cover uncovered units',

@@ -5,8 +5,10 @@ import {
   getBoardSpace,
   getMovementResolutionState,
   getUnitWithPlacementOnBoard,
+  isFriendlyUnit,
   modifiersFromCompletedCommitment,
 } from '@queries';
+import { isResolved } from '@utils';
 import { isValidMovePath } from './isValidMovePath';
 
 /**
@@ -20,18 +22,27 @@ export function isValidMoveUnitEvent(
   event: MoveUnitEvent,
   state: GameState,
 ): ValidationResult {
+  // The unit being moved under the Move order now being carried out; asked
+  // outside one, the query throws.
   const movement = getMovementResolutionState(state);
-  if (movement.targetPlacement !== 'pending') {
-    return {
+
+  // A unit makes one move per order (§4.3.10): once its move is written,
+  // there is no second.
+  if (isResolved(movement.targetPlacement)) {
+    const alreadyMoved: ValidationResult = {
       errorReason: 'This unit has already moved',
       result: false,
     };
+    return alreadyMoved;
   }
-  if (movement.movingUnit.playerSide !== event.player) {
-    return {
+
+  // Only the player carrying out the order moves its unit.
+  if (!isFriendlyUnit(movement.movingUnit, event.player)) {
+    const notTheirUnit: ValidationResult = {
       errorReason: `Expected the move from ${movement.movingUnit.playerSide}, got ${event.player}`,
       result: false,
     };
+    return notTheirUnit;
   }
 
   // The move is from where the unit stands, which the board holds.
@@ -46,20 +57,29 @@ export function isValidMoveUnitEvent(
     'advance',
     modifiersFromCompletedCommitment(movement.commitment),
   );
+  // A path the rules refuse is refused with the reason it gives.
   if (!pathValid.result) {
     return pathValid;
   }
 
-  // Only a commander standing with the unit can ride along.
+  // Only a commander standing in the unit's space may move with it; one
+  // standing anywhere else moves only in Phase 2 (§4.3.10).
+  // TODO(composition): whether a side's commander stands in a space is read
+  // off the space's `commanders` here, in getLegalCommanderMoves,
+  // applyResolveRetreatEvent and defeatCommanderWithRoutedUnit. Settled by
+  // one `@queries` reader all four ask.
   if (event.moveCommander) {
     const space = getBoardSpace(state.boardState, mover.placement.coordinate);
     if (!space.commanders.includes(event.player)) {
-      return {
+      const noRider: ValidationResult = {
         errorReason: `Cannot move commander with unit: commander not at ${mover.placement.coordinate}`,
         result: false,
       };
+      return noRider;
     }
   }
 
-  return { result: true };
+  // A legal path, and a rider only where one stands with the unit.
+  const valid: ValidationResult = { result: true };
+  return valid;
 }

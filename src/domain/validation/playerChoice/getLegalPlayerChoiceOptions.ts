@@ -186,16 +186,34 @@ export type LegalPlayerChoiceOptions =
  * @throws When both players are asked, so no single side is named
  */
 function getSingleSideAsked(playerSource: PlayerSource): PlayerSide {
+  // Only the card choice of Phase 1 is asked of both players at once, and
+  // the router has answered that one already.
+  // TODO(composition): unreachable while the expected engine names both
+  // players only for `chooseCard` (`getExpectedPlayCardsPhaseEvent`), and no
+  // spec can reach it, since the expected event is read from the state, not
+  // passed in. `ExpectedPlayerInput` lets any choice name both players; a
+  // union that names both only for `chooseCard` would let the type rule
+  // this out and the guard go. Settled by the author deciding that shape in
+  // `@events`.
   if (playerSource === 'bothPlayers') {
     throw new Error(
       'Only choosing cards is asked of both players, so no single side is asked',
     );
   }
+
+  // The one side asked.
   return playerSource;
 }
 
 /**
  * Presentation router for legal player-choice options.
+ *
+ * TODO(misleading): the next paragraph names `getExpectedEvent`, and
+ * "Soft-empty option payloads when enumerators return `null`/`[]`" reads as
+ * though this turned a `null` into an empty offer. The body calls
+ * `findExpectedEvent`, so a finished game answers `null` here instead of
+ * throwing, and it passes each enumerator's answer through unchanged.
+ * Settled by rewording both to match.
  *
  * Uses `getExpectedEvent` for what/who, then packages the matching
  * `@legality` root atoms or event lists. Selection-dependent follow-ups
@@ -210,6 +228,9 @@ function getSingleSideAsked(playerSource: PlayerSource): PlayerSide {
  * throws to the caller with its own message.
  *
  * @throws When an enumerator for the expected choice throws.
+ *
+ * A bot reads its choice from these offers (`getBotChoice`), and the bot
+ * harness asks it whether a seat is owed a choice at all (`playBotGame`).
  */
 export function getLegalPlayerChoiceOptions<S extends GameState>(
   state: S,
@@ -218,7 +239,9 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
 
   // A finished game, or an effect the engine applies itself, is owed no choice.
   if (expected === undefined || expected.actionType !== 'playerChoice') {
-    return null;
+    // Nothing to offer: no player is asked.
+    const nothingOwed = null;
+    return nothingOwed;
   }
 
   // Both players choose their cards at once, in secret (§4.1.1), until one
@@ -229,12 +252,16 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       events: getLegalChooseCardOptions(state),
       playerSource: expected.playerSource,
     };
+    // Each player's own cards, both offered at once.
     return chooseCard;
   }
 
   // Every other choice is asked of one side, named on every offer.
   const player = getSingleSideAsked(expected.playerSource);
   const base = { playerSource: player };
+
+  // Each branch asks the enumerator for its choice, and returns the offer
+  // under that choice's name with the side asked.
 
   switch (expected.choiceType) {
     case 'assignUnitSupport': {
@@ -243,103 +270,122 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // units that match it, and the places are filled one at a time from
       // getLegalUnitSupportAssignments. Whatever is left over routs (§10.4.6).
       const assignUnitSupport = getLegalAssignUnitSupport(state);
-      return {
+      const supportOffer: LegalPlayerChoiceOptions = {
         ...base,
         assignUnitSupport,
         choiceType: 'assignUnitSupport',
       };
+      return supportOffer;
     }
     case 'chooseMeleeResolution': {
       // The first player chooses which engagement to resolve next, and the order
       // is entirely theirs (§4.4.2); offer the engagements still unresolved.
-      return {
+      const events = getLegalChooseMeleeResolutionEvents(state);
+      const meleeOrderOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseMeleeResolution',
-        events: getLegalChooseMeleeResolutionEvents(state),
+        events,
       };
+      return meleeOrderOffer;
     }
     case 'chooseRally': {
       // The first player decides whether to rally at cleanup (§4.5.2); offer
       // that decision.
-      return {
+      const events = getLegalChooseRallyEvent(state);
+      const rallyOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseRally',
-        events: getLegalChooseRallyEvent(state),
+        events,
       };
+      return rallyOffer;
     }
     case 'chooseRoutDiscard': {
       // A routed unit costs its Morale, paid by discarding cards chosen freely
       // from hand (§9.3.2); offer the cards that may pay it.
       const routDiscard = getLegalRoutDiscardCards(state);
-      return {
+      const discardOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseRoutDiscard',
         routDiscard,
       };
+      return discardOffer;
     }
     case 'chooseRetreatOption': {
       // A retreat must be the smallest legal backward move, and where several
       // tie the owner chooses the space and facing (§9.1.3); offer those ties.
-      return {
+      const events = getLegalChooseRetreatOptionEvents(state);
+      const retreatOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseRetreatOption',
-        events: getLegalChooseRetreatOptionEvents(state),
+        events,
       };
+      return retreatOffer;
     }
     case 'commitToMelee': {
       // Committing a card is optional and worth +1, and only a card in hand may
       // be committed (§8.6); offer each legal commitment, or none.
-      return {
+      const events = getLegalCommitToMeleeEvents(state);
+      const meleeCommitmentOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'commitToMelee',
-        events: getLegalCommitToMeleeEvents(state),
+        events,
       };
+      return meleeCommitmentOffer;
     }
     case 'commitToMovement': {
       // Committing a card is optional and worth +1, and only a card in hand may
       // be committed (§8.6); offer each legal commitment, or none.
-      return {
+      const events = getLegalCommitToMovementEvents(state);
+      const movementCommitmentOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'commitToMovement',
-        events: getLegalCommitToMovementEvents(state),
+        events,
       };
+      return movementCommitmentOffer;
     }
     case 'chooseWhetherToRetreat': {
       // A defender faster than the engager, with a retreat to make, may fall
       // back instead of fighting (§6.3.2); offer the retreat-or-stand choices.
-      return {
+      const events = getLegalChooseWhetherToRetreatEvents(state);
+      const fallBackOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseWhetherToRetreat',
-        events: getLegalChooseWhetherToRetreatEvents(state),
+        events,
       };
+      return fallBackOffer;
     }
     case 'commitToRangedAttack': {
       // Committing a card is optional and worth +1, and only a card in hand may
       // be committed (§8.6); offer each legal commitment, or none.
-      return {
+      const events = getLegalCommitToRangedAttackEvents(state);
+      const attackCommitmentOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'commitToRangedAttack',
-        events: getLegalCommitToRangedAttackEvents(state),
+        events,
       };
+      return attackCommitmentOffer;
     }
     case 'commitToRangedDefense': {
       // Committing a card is optional and worth +1, and only a card in hand may
       // be committed (§8.6); offer each legal commitment, or none.
-      return {
+      const events = getLegalCommitToRangedDefenseEvents(state);
+      const defenceCommitmentOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'commitToRangedDefense',
-        events: getLegalCommitToRangedDefenseEvents(state),
+        events,
       };
+      return defenceCommitmentOffer;
     }
     case 'issueCommands': {
       // Offer the command to spend. Its allocations are too many to list
       // whole; ordering nobody is always open (§4.3.2–4.3.3).
       const issueCommands = getLegalIssueCommands(state);
-      return {
+      const ordersOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'issueCommands',
         issueCommands,
       };
+      return ordersOffer;
     }
     case 'moveCommander': {
       // The first player moves their commander, then the second (§4.2.1);
@@ -347,28 +393,33 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       // passed over before this is asked (§4.2.8), so the commander must be
       // on the board, and its absence throws.
       const startingCoordinate = getCommanderSpace(player, state);
+      // Every space within four steps it may reach from there (§4.2.2–4.2.5).
+      const reachable = getLegalCommanderMoves(
+        player,
+        state,
+        startingCoordinate,
+      );
       // Where it may go is a set; the offer writes it down in board order,
       // which means nothing and only keeps it from following the walk.
-      const destinations = listInBoardOrder(
-        state.boardState,
-        getLegalCommanderMoves(player, state, startingCoordinate),
-      );
-      return {
+      const destinations = listInBoardOrder(state.boardState, reachable);
+      const commanderOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'moveCommander',
         destinations,
         startingCoordinate,
       };
+      return commanderOffer;
     }
     case 'chooseMovingUnit': {
       // Each commanded unit is finished before the next begins (§4.3.9); offer
       // the units still able to move.
       const moveUnits = getLegalMoveUnits(state);
-      return {
+      const nextMoverOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseMovingUnit',
         moveUnits,
       };
+      return nextMoverOffer;
     }
     case 'moveUnit': {
       // A unit has been named and its card settled; offer every ending its move
@@ -379,55 +430,65 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         state,
         movement.movingUnit,
       );
+      // The card committed before the move, if any, adds to its Speed or
+      // Flexibility (§4.3.10), and so to where the move can reach.
+      const committed = modifiersFromCompletedCommitment(movement.commitment);
+      const reachable = getLegalUnitMoves(movingUnit, state, committed);
       // The endings are a set; the offer writes them down in board order,
       // which means nothing and only keeps it from following the walk.
-      const moves = listMovesInBoardOrder(
-        state.boardState,
-        getLegalUnitMoves(
-          movingUnit,
-          state,
-          modifiersFromCompletedCommitment(movement.commitment),
-        ),
-      );
-      return {
+      const moves = listMovesInBoardOrder(state.boardState, reachable);
+      const moveOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'moveUnit',
         movingUnit,
         moves,
       };
+      return moveOffer;
     }
     case 'chooseShooter': {
       // A command may order several shooters, one shot at a time; offer the
       // units able to shoot.
       const rangedAttackers = getLegalRangedAttackers(state);
-      return {
+      const nextShooterOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'chooseShooter',
         rangedAttackers,
       };
+      return nextShooterOffer;
     }
     case 'performRangedAttack': {
       // A shooter has been named and its card settled; offer every enemy it may
       // target, the committed card counted.
       const legal = getLegalShooterTargets(state);
-      return {
+      const targetOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'performRangedAttack',
         shooter: legal.shooter,
         targets: [...legal.targets],
       };
+      return targetOffer;
     }
     case 'setupUnits': {
       // Each player places their whole army in their own zone, one unit per
       // space (§3.5.1); offer the units and spaces still open.
       const setupUnits = getLegalSetupUnits(state, player);
-      return {
+      const deploymentOffer: LegalPlayerChoiceOptions = {
         ...base,
         choiceType: 'setupUnits',
         setupUnits,
       };
+      return deploymentOffer;
     }
     default: {
+      // Every choice type but `chooseCard`, answered above, has a case, so
+      // the type leaves nothing here.
+      // TODO(wrong): this returns the unhandled choice type itself, a
+      // string, as though it were an offer, where every other exhaustive
+      // default in the domain throws (`applyPlayerChoiceEvent`,
+      // `procedureRegistry`). A choice type added without a case would reach
+      // a bot as a string. No spec can reach it, since the choice type is
+      // read from the expected engine, not passed in. Settled by throwing
+      // `Unknown player choice type`.
       const _exhaustive: never = expected.choiceType;
       return _exhaustive;
     }

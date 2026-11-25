@@ -19,6 +19,8 @@ export function isValidChooseShooterEvent(
   const legal = getLegalRangedAttackers(state);
 
   // Only the player carrying out the order names its shooters.
+  // The expected check refuses anyone else first; this keeps the validator
+  // whole when it is asked directly.
   if (event.player !== legal.player) {
     const wrongPlayer: ValidationResult = {
       errorReason: `Expected a shooter from ${legal.player}, got ${event.player}`,
@@ -32,6 +34,8 @@ export function isValidChooseShooterEvent(
     isSameUnitInstance(candidate.unit, event.unit),
   );
   if (!offered) {
+    // A unit the order did not name, one that has already shot or supported
+    // a shot (§7.3.4), or one with nothing in its arc to shoot at.
     const notOffered: ValidationResult = {
       errorReason: `Unit is not a legal ranged attacker for ${event.player}`,
       result: false,
@@ -39,6 +43,8 @@ export function isValidChooseShooterEvent(
     return notOffered;
   }
 
+  // One of the ordered units that may shoot; its commitment and target come
+  // next (§4.3.11 steps 2 and 3).
   const valid: ValidationResult = { result: true };
   return valid;
 }

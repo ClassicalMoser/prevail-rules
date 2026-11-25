@@ -61,6 +61,10 @@ Movement legality (`getLegalUnitMoves`, `findLegalMoveDeltas`, commander moves) 
 
 `gameState/` checks that a state is internally consistent, including `eachCardPresentOnce` and `eachUnitPresentOnce`.
 
+> **Stale (scout, 2026-11-25):** the line above reads as if these run on a state alone and are run somewhere. Both check a record against the armies that fought it: `eachCardPresentOnce` that every card each army brought is in one of its owner's places, once; `eachUnitPresentOnce` that every unit each army brought is on the board or routed, once. Nothing in production calls either, and `eachUnitPresentOnce` has no place for units still in reserve at setup. The marks in each file say what would settle them.
+
+`game/` re-exports `legalGameSchema` and `legalGameStateSchema` from `@legality`: the game and game-state schemas with the game rules, including the check that a state's index agrees with its board and lists (`refineGameStateIndex`). They are here because `@application` reads a game through `@validation` (`parseLegalGameForMode`) and may not import `@legality`. Unlike the entry points, a schema does not answer with a `ValidationResult`; its `safeParse` refuses with Zod issues.
+
 ## Why this pattern
 
 - **Actionable failures**: Orchestrators and clients need _why_ an event was rejected, not just `false`.
