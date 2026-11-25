@@ -129,7 +129,7 @@ Walk folders in IDE order (alphabetical).
 
 ### `expected/` (`@expected`)
 
-- [ ] `expected/` — `findExpectedEvent` answers `undefined` for a finished game; `getExpectedEvent` insists
+- [ ] `expected/` — scout complete 2026-11-25 (awaiting human read); `findExpectedEvent` answers `undefined` for a finished game; `getExpectedEvent` insists
   - [ ] `expectedEvent/`
 
 ### `procedures/` (`@procedures`)
