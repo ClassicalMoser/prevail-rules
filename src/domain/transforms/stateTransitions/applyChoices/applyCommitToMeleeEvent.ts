@@ -28,7 +28,11 @@ export function applyCommitToMeleeEvent<S extends GameState>(
     event.committedCard,
   );
 
-  const newCommitment = commitmentFromCommittedCard(event.committedCard);
+  const newCommitment = commitmentFromCommittedCard(
+    stateWithCards,
+    player,
+    event.committedCard,
+  );
   const newMeleeState = {
     ...meleeState,
     ...(hasInitiative(state, player)

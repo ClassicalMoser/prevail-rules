@@ -35,7 +35,11 @@ export function applyCommitToRangedAttackEvent<S extends GameState>(
   // The shot remembers what the shooter committed, for the aim and the attack value.
   const committedShot: RangedAttackResolutionState = {
     ...shot,
-    attackingCommitment: commitmentFromCommittedCard(event.committedCard),
+    attackingCommitment: commitmentFromCommittedCard(
+      stateWithCards,
+      event.player,
+      event.committedCard,
+    ),
   };
   const committed = updateCommandResolutionState(stateWithCards, committedShot);
   return committed;

@@ -35,7 +35,11 @@ export function applyCommitToRangedDefenseEvent<S extends GameState>(
   // The shot remembers what the target committed, for when it is resolved.
   const defended: RangedAttackResolutionState = {
     ...shot,
-    defendingCommitment: commitmentFromCommittedCard(event.committedCard),
+    defendingCommitment: commitmentFromCommittedCard(
+      stateWithCards,
+      event.player,
+      event.committedCard,
+    ),
   };
   const committed = updateCommandResolutionState(stateWithCards, defended);
   return committed;

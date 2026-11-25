@@ -34,7 +34,11 @@ export function applyCommitToMovementEvent<S extends GameState>(
     event.committedCard,
   );
 
-  const newCommitment = commitmentFromCommittedCard(event.committedCard);
+  const newCommitment = commitmentFromCommittedCard(
+    stateWithCards,
+    player,
+    event.committedCard,
+  );
 
   // Front-engagement defender commits/refuses into nested defensiveCommitment.
   if (
