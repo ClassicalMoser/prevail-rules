@@ -21,8 +21,12 @@ export function getExpectedReverseEvent(
   }
 
   // The turn is deterministic, so the engine resolves it.
-  return {
+  // A reverse turns the unit 180° where it stands (§9.2.1), and a unit still
+  // sharing its space with an enemy holds its facing instead (§7.5.5). Either
+  // way nobody chooses anything, so the same effect carries it out.
+  const turnAbout: ExpectedEventInfo = {
     actionType: 'gameEffect',
     effectType: 'resolveReverse',
   };
+  return turnAbout;
 }

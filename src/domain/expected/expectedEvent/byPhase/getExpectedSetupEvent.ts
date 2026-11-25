@@ -15,22 +15,37 @@ import { getOtherPlayer, isFriendlyUnit } from '@queries';
 export function getExpectedSetupEvent(state: GameState): ExpectedEventInfo {
   // The side with the initiative sets up first, then the other.
   const firstPlayer = state.currentInitiative;
-  for (const player of [firstPlayer, getOtherPlayer(firstPlayer)]) {
+  const deploymentOrder = [firstPlayer, getOtherPlayer(firstPlayer)];
+
+  for (const player of deploymentOrder) {
+    // Before deployment a side's whole army waits in reserve, so a side with
+    // anything still there has not yet placed its army (§3.5.1).
+    // TODO(composition): "this side's units in reserve" is also filtered by
+    // hand in `getLegalSetupUnits` and `findWinnerFromNoUnits`. Settle with
+    // one reader in `@queries` that all three ask.
     const hasUnitsToPlace = state.reservedUnits.some((unit) =>
       isFriendlyUnit(unit, player),
     );
+
+    // The first side in that order still holding a reserve places its whole
+    // army now, in one choice; `getLegalSetupUnits` offers it the units and
+    // the spaces of its zone.
     if (hasUnitsToPlace) {
-      return {
+      const placeArmy: ExpectedEventInfo = {
         actionType: 'playerChoice',
         choiceType: 'setupUnits',
         playerSource: player,
       };
+      return placeArmy;
     }
   }
 
   // Both armies are on the board: round 0 is over.
-  return {
+  // The round's end is its own effect, and it is what begins round 1
+  // (DESIGN.md, "Rounds").
+  const endSetup: ExpectedEventInfo = {
     actionType: 'gameEffect',
     effectType: 'roundEnd',
   };
+  return endSetup;
 }

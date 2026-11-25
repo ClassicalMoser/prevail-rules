@@ -1,5 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
+import { throwIfUndefined } from '@utils';
 import { findExpectedEvent } from './findExpectedEvent';
 
 /**
@@ -15,9 +16,11 @@ import { findExpectedEvent } from './findExpectedEvent';
  * @throws When the game is already over (`winner` set).
  */
 export function getExpectedEvent(state: GameState): ExpectedEventInfo {
-  const expected = findExpectedEvent(state);
-  if (expected === undefined) {
-    throw new Error('Game is already over');
-  }
+  // The find answers `undefined` only once the battle is won; a caller of this
+  // twin has said the game goes on, so a finished game is its mistake.
+  const found = findExpectedEvent(state);
+  const expected = throwIfUndefined(found, 'Game is already over');
+
+  // The choice or effect the game is waiting for.
   return expected;
 }

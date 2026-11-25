@@ -28,11 +28,17 @@ export function getExpectedAttackApplyEvent(
 
   // Every stage is done, or none was reached: close the apply. A miss is
   // common in melee and leaves only the empty shell to complete.
+  // A closed apply has nothing left to close. The shot and the melee each
+  // check for that before calling here, so a call now is the caller's fault.
   if (attackApplyState.completed) {
     throw new Error('Attack apply state is already complete');
   }
-  return {
+
+  // Closing the apply hands the turn back to the shot or the melee it
+  // belongs to.
+  const closeApply: ExpectedEventInfo = {
     actionType: 'gameEffect',
     effectType: 'completeAttackApply',
   };
+  return closeApply;
 }
