@@ -153,6 +153,26 @@ describe('legalGameSchema schema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('refuses a game on a board with a hole, rather than throwing', () => {
+    // The game's board lacks H-12. The index check would look that space up,
+    // so it must wait until the board is known to be whole: a record read
+    // from outside is refused, never thrown on.
+    const holed: Game = {
+      ...game,
+      gameState: replaceBoard(game.gameState, boardWithHole),
+    };
+
+    const result = legalGameSchema.safeParse(holed);
+
+    // Only the hole is reported, at its place in the game.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'Missing coordinate H-12 for small board.',
+        path: ['gameState', 'boardState', 'board', 'H-12'],
+      },
+    ]);
+  });
+
   it("refuses a game whose state's index disagrees with its record, at its place in the game", () => {
     // Neither commander has been placed, but the index calls White's lost.
     const forged: Game = {
@@ -217,6 +237,21 @@ describe('legalGameStateSchema function', () => {
       {
         message: 'Unexpected coordinate X-36 for small board.',
         path: ['boardState', 'board', 'X-36'],
+      },
+    ]);
+  });
+
+  it('refuses a board with a hole, at the state root, rather than throwing', () => {
+    // The tutorial board lacks H-12; the index check must not look it up.
+    const state = replaceBoard(createEmptyGameState('tutorial'), boardWithHole);
+
+    const result = legalGameStateSchema('tutorial').safeParse(state);
+
+    // Only the hole is reported, pointing into the state's own board.
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'Missing coordinate H-12 for small board.',
+        path: ['boardState', 'board', 'H-12'],
       },
     ]);
   });
