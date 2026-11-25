@@ -76,8 +76,9 @@ export default defineConfig({
         // Exclude barrel files
         '**/index.{js,ts}',
       ],
-      // Only run coverage on testable files in the domain folder
-      include: ['src/domain/**/*.{js,ts}'],
+      // Run coverage on the domain and the application that composes it; the
+      // bot will move to its own package, so it is left out.
+      include: ['src/domain/**/*.{js,ts}', 'src/application/**/*.{js,ts}'],
       provider: 'v8',
     },
     exclude: ['dist/**', 'node_modules/**'],

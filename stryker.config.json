@@ -12,6 +12,7 @@
     "!src/domain/entities/**/*.{js,ts}",
     "!src/domain/events/**/*.{js,ts}",
     "!src/domain/game/**/*.{js,ts}",
+    "!src/bot/**/*.{js,ts}",
     "!**/index.{js,ts}"
   ],
   "reporters": ["html", "clear-text", "progress"],
