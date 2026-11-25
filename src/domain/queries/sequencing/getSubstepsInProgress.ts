@@ -34,13 +34,15 @@ function fromRout(slot: RoutState | 'pending' | 'bypassed'): SubstepState[] {
   return isUnderWay(slot) ? [slot] : [];
 }
 
-/** A unit turning to face its attacker. */
-function fromReverse(
-  slot: ReverseState | 'pending' | 'bypassed',
-): SubstepState[] {
+/**
+ * A unit turning to face its attacker. Only an open reverse is read here: a
+ * reverse is due only as an attack's result, and the stage hands it over once
+ * opened.
+ */
+function fromReverse(reverse: ReverseState): SubstepState[] {
   // A reverse opens nothing beneath it either: the trail ends at the unit
-  // turning about, and loses it once the unit has turned.
-  return isUnderWay(slot) ? [slot] : [];
+  // turning about.
+  return [reverse];
 }
 
 /** A unit falling back, and the rout it meets if it has nowhere to go (§9.1.6). */
@@ -84,32 +86,21 @@ function fromDueStage<T extends { completed: boolean }>(
 /**
  * One stage of one attack's results: `undefined` when nothing is due in it,
  * empty when it is due but not yet opened, and the result itself once open.
+ *
+ * Keyed by stage, so the type demands a reader for every stage
+ * `attackApplyStages` lists, and a stage left out fails to compile.
  */
-function fromAttackApplyStage(
-  apply: AttackApplyState,
-  stage: AttackApplyStage,
-): SubstepState[] | undefined {
-  switch (stage) {
-    // The unit falls back, and may rout on the spot if it cannot.
-    case 'retreat': {
-      return fromDueStage(apply.retreatState, fromRetreat);
-    }
-    // The unit turns about.
-    case 'reverse': {
-      return fromDueStage(apply.reverseState, fromReverse);
-    }
-    // The unit leaves the field, and its player owes the cards.
-    case 'rout': {
-      return fromDueStage(apply.routState, fromRout);
-    }
-    // Unreachable: `attackApplyStages` lists only the three stages above, and
-    // this helper is fed from it alone, so no case can cover this line.
-    default: {
-      const _exhaustive: never = stage;
-      throw new Error(`Unknown attack apply stage: ${String(_exhaustive)}`);
-    }
-  }
-}
+const fromAttackApplyStage: Record<
+  AttackApplyStage,
+  (apply: AttackApplyState) => SubstepState[] | undefined
+> = {
+  // The unit falls back, and may rout on the spot if it cannot.
+  retreat: (apply) => fromDueStage(apply.retreatState, fromRetreat),
+  // The unit turns about.
+  reverse: (apply) => fromDueStage(apply.reverseState, fromReverse),
+  // The unit leaves the field, and its player owes the cards.
+  rout: (apply) => fromDueStage(apply.routState, fromRout),
+};
 
 /**
  * The attack whose results are being carried out, and the result under way.
@@ -131,7 +122,7 @@ function fromAttackApplies(
   // due or still open is where play stands.
   for (const stage of attackApplyStages) {
     for (const apply of applies) {
-      const within = fromAttackApplyStage(apply, stage);
+      const within = fromAttackApplyStage[stage](apply);
       if (within !== undefined) {
         return [apply, ...within];
       }
