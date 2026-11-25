@@ -24,11 +24,17 @@ export function discardCardsFromHand(
   owned: OwnedCardState,
   cardIds: string[],
 ): OwnedCardState {
+  // A card is in one place at a time: naming one twice would lay it on the
+  // discard pile twice while it leaves the hand once.
+  const repeated = cardIds.find(
+    (cardId, index) => cardIds.indexOf(cardId) !== index,
+  );
+  if (repeated !== undefined) {
+    throw new Error(`Card ${repeated} is named more than once`);
+  }
+
   // Each named card is found in the hand; naming one the hand lacks is a
   // malformed call, not a discard to skip.
-  // TODO(wrong): an id named twice finds the same card twice, so the card
-  // lies on the discard pile twice while leaving the hand once: one card in
-  // two places. Settle by throwing on a repeated id, as for a missing one.
   const cardsToDiscard = cardIds.map((cardId) =>
     throwIfUndefined(
       owned.inHand.find((card) => card.id === cardId),
