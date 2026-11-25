@@ -59,6 +59,7 @@ export {
   getHiddenPlayerCardState,
   findOwnedPlayerCardState,
   getOwnedPlayerCardState,
+  getTopDiscardedCard,
   modifiersFromCompletedCommitment,
   isCommitmentChoiceType,
 } from './card';

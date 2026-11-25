@@ -7,6 +7,9 @@ export { getOwnedPlayerCardState } from './getOwnedPlayerCardState';
 export { findCardInPlay } from './findCardInPlay';
 export { getCardInPlay } from './getCardInPlay';
 
+// The card on top of a player's discard pile, readable in every view.
+export { getTopDiscardedCard } from './getTopDiscardedCard';
+
 // Whether both players have a card waiting to be revealed.
 export { haveBothPlayersChosenCards } from './haveBothPlayersChosenCards';
 
