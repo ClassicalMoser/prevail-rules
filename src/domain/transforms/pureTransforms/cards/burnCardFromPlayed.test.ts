@@ -1,7 +1,7 @@
 import { tempCommandCards } from '@sampleValues';
 import { burnCardFromPlayed } from './burnCardFromPlayed';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createOwnedCardState } from '@factories';
 /**
  * BurnCardFromPlayed: Burns a specific card from the player's played pile.
  */
@@ -17,6 +17,19 @@ describe('burnCardFromPlayed function', () => {
 
     expect(result.played).toStrictEqual([tempCommandCards[1]]);
     expect(result.burnt).toStrictEqual([tempCommandCards[0]]);
+  });
+
+  it('burns the played pile’s own copy, not the copy the rally names', () => {
+    // Black has played one card; the rally names it, who it is, under
+    // another name.
+    const played = tempCommandCards[0];
+    const owned = createOwnedCardState({ played: [played] });
+    const named = { ...played, name: 'Renamed' };
+
+    const result = burnCardFromPlayed(owned, named);
+
+    // The card burnt is the one that was played, as it prints.
+    expect(result.burnt).toStrictEqual([played]);
   });
 
   it('given if card is not in played pile, throws', () => {

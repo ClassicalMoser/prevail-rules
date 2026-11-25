@@ -28,6 +28,19 @@ describe('burnHiddenCardFromPlayed function', () => {
     expect(result.inHand).toStrictEqual(['hidden']);
   });
 
+  it('burns the played pile’s own copy, not the copy the rally names', () => {
+    // The opponent's played card is face up here; the rally names it, who it
+    // is, under another name.
+    const played = tempCommandCards[0];
+    const hidden = hiddenWithPlayed([played]);
+    const named = { ...played, name: 'Renamed' };
+
+    const result = burnHiddenCardFromPlayed(hidden, named);
+
+    // The card burnt is the one that was played, as it prints.
+    expect(result.burnt).toStrictEqual([played]);
+  });
+
   it('throws when the card is not in the played pile', () => {
     const hidden = hiddenWithPlayed([tempCommandCards[0]]);
 
