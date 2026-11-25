@@ -30,6 +30,8 @@ export function refineGameStateIndex(
   const unitPlaces = new Map<string, string[]>();
   const commanderPlaces = new Map<string, string[]>();
   for (const place of listPiecePlaces(state)) {
+    // A unit goes by its index key, a commander by its side, as the index
+    // names each.
     const [places, name] =
       place.piece === 'unit'
         ? [unitPlaces, place.key]
@@ -37,7 +39,8 @@ export function refineGameStateIndex(
     places.set(name, [...(places.get(name) ?? []), place.entry]);
   }
 
-  // A unit the record holds in more than one place.
+  // A unit the record holds in more than one place: a piece stands in one
+  // place at a time, whether on the board, in reserve or routed.
   for (const [key, places] of unitPlaces) {
     if (places.length > 1) {
       ctx.addIssue({
@@ -48,7 +51,8 @@ export function refineGameStateIndex(
     }
   }
 
-  // A commander the record holds in more than one place.
+  // A commander the record holds in more than one place: on the board, or
+  // waiting to be placed, or lost (§4.2.8), never two of these.
   for (const [side, places] of commanderPlaces) {
     if (places.length > 1) {
       ctx.addIssue({
@@ -71,6 +75,9 @@ export function refineGameStateIndex(
     ...Object.keys(saidUnits),
     ...Object.keys(heldUnits),
   ]);
+  // TODO(misleading): an entry missing from the index reads "puts unit K at
+  // nowhere", where the record's side reads "has it nowhere". Settle the
+  // wording of the index's side to match.
   for (const key of unitKeys) {
     const said = Object.hasOwn(saidUnits, key) ? saidUnits[key] : 'nowhere';
     const held = Object.hasOwn(heldUnits, key) ? heldUnits[key] : 'nowhere';
@@ -83,7 +90,8 @@ export function refineGameStateIndex(
     }
   }
 
-  // Each side's commander, compared.
+  // Each side's commander, compared. Both sides always have an entry, so
+  // there is no "nowhere" to fill in.
   for (const side of playerSides) {
     const said = state.index.commanders[side];
     const held = expected.commanders[side];

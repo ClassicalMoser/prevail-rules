@@ -10,5 +10,9 @@ export function isWithinMaxUnitTypeCount(
   unitTypeCount: number,
   maxUnitTypeCount: number,
 ): boolean {
-  return unitTypeCount <= maxUnitTypeCount;
+  // A list may field as many types as the mode allows, and no more.
+  const withinLimit = unitTypeCount <= maxUnitTypeCount;
+
+  // Whether the list keeps to the mode's variety of troops.
+  return withinLimit;
 }

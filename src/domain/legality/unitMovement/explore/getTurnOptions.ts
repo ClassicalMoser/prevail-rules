@@ -77,14 +77,14 @@ export function getTurnOptions(
   // Of those, only a turn to a facing it has not yet held on this space
   // (§5.2.4).
   const allowed = new Set<MoveTurn>(
-    [...candidates].filter(
-      (turn) =>
-        !isPositionHeld(
-          state,
-          state.coordinate,
-          getTurnedFacing(state.facing, turn),
-        ),
-    ),
+    [...candidates].filter((turn) => {
+      // A turn keeps the space and changes only the facing.
+      const turnedFacing = getTurnedFacing(state.facing, turn);
+      const held = isPositionHeld(state, state.coordinate, turnedFacing);
+      return !held;
+    }),
   );
+
+  // The walk, and a move written part by part, take only these turns.
   return allowed;
 }

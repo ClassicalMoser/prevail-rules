@@ -31,16 +31,28 @@ export function exploreUnitMoves(
   direction: 'advance' | 'retreat',
   commitmentModifiers?: Modifier[],
 ): Set<MoveResult> {
+  // The budget and the start, settled once where the move begins (§5.1.4).
   const context = createMoveContext(
     gameState,
     unitWithPlacement,
     direction,
     commitmentModifiers,
   );
+
+  // The walk begins with the unit where it stands, nothing yet spent.
+  const start = getStartState(context);
+
+  // Keep every ending the walk reports, and never ask it to stop: an
+  // advance offers each place it may end (`getLegalUnitMoves`), and a
+  // retreat must see them all to find its smallest (§9.1.3,
+  // `getLegalRetreats`).
   const results = new Set<MoveResult>();
-  walkMoveEndings(context, getStartState(context), (ending) => {
+  walkMoveEndings(context, start, (ending) => {
     results.add(ending);
     return false;
   });
+
+  // Every legal ending, possibly several to one placement by different
+  // paths; both callers narrow them to the smallest.
   return results;
 }

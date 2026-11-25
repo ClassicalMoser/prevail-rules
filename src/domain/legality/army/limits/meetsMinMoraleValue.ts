@@ -11,5 +11,10 @@ export function meetsMinMoraleValue(
   moraleValue: number,
   minMoraleValue: number | null,
 ): boolean {
-  return minMoraleValue === null || moraleValue >= minMoraleValue;
+  // Tutorial sets no floor, so any Morale will do; otherwise the list must
+  // reach the floor, and reaching it exactly is enough (§3.1.6).
+  const meetsFloor = minMoraleValue === null || moraleValue >= minMoraleValue;
+
+  // Whether somebody in the list matters enough.
+  return meetsFloor;
 }

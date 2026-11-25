@@ -24,6 +24,8 @@ function pendingShooter<S extends GameState>(gameState: S): PlayerSide {
   if (resolution.attackingCommitment.commitmentType !== 'pending') {
     throw new Error('The shooter has already committed or refused a card');
   }
+
+  // The shooter's owner is the one who may lean on the shot.
   const shooter = resolution.attackingUnit.playerSide;
   return shooter;
 }
@@ -45,6 +47,7 @@ function pendingShooter<S extends GameState>(gameState: S): PlayerSide {
 export function getLegalCommitToRangedAttackEvents<S extends GameState>(
   gameState: S,
 ): CommitToRangedAttackEvent[] {
+  // Only the shooting player is asked here; the target answers separately.
   const player = pendingShooter(gameState);
 
   // Each card in hand naming a stat this commitment applies, then the
@@ -54,11 +57,16 @@ export function getLegalCommitToRangedAttackEvents<S extends GameState>(
     player,
     RANGED_ATTACK_COMMITMENT_MODIFIERS,
   );
+
+  // Each offer becomes the event the shooter would send to make it.
   const events = offers.map((offer) =>
     createCommitToRangedAttackEvent({
       committedCard: offer.committedCard,
       player,
     }),
   );
+
+  // What `isValidCommitToRangedAttackEvent` checks a submitted commitment
+  // against.
   return events;
 }

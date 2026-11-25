@@ -32,14 +32,23 @@ export function getLegalChooseRallyEvent(
   const choosingPlayer = getRallyingPlayer(gameState);
 
   // Rallying needs a card to burn; declining is always allowed.
+  // Only hands are secret (§1.4): the played pile is in every view, so a seat
+  // reads the opponent's as plainly as its own.
+  // TODO(composition): this reads the played pile off the card state inline,
+  // where only a query should walk the state (DESIGN.md, "Who reads and who
+  // writes"). Settled by a `@queries/card` reader for a player's played pile,
+  // or by a query that says whether a player has a card to burn.
   const canRally = gameState.cardState[choosingPlayer].played.length > 0;
   const performRallyChoices = canRally ? [true, false] : [false];
 
+  // Each choice becomes the event that player would send to make it.
   const result = performRallyChoices.map((performRally) =>
     createChooseRallyEvent({
       performRally,
       player: choosingPlayer,
     }),
   );
+
+  // What `isValidChooseRallyEvent` checks the player's answer against.
   return result;
 }

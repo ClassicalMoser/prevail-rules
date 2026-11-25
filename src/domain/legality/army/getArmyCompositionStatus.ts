@@ -59,9 +59,12 @@ export function getArmyCompositionStatus(
   army: Army,
   mode: GameModeName,
 ): ArmyCompositionStatus {
+  // The limits the chosen mode sets on a list (§3.1.3).
   const rules = armyCompositionByMode[mode];
 
   // Every mode caps how many different unit types a list may field.
+  // Each entry of a list is one unit type, so the entries are the count; a
+  // type listed twice is the army rules' to refuse (`refineArmyRules`, §3.1.5).
   const unitTypeCountValue = army.units.length;
   const unitTypeCount: ArmyLimitStatus = {
     limit: rules.maxUnitTypeCount,
@@ -108,5 +111,7 @@ export function getArmyCompositionStatus(
     morale,
     unitTypeCount,
   };
+  // Each limit with what the army holds against it; the refine words the
+  // unmet ones, a list builder shows them all.
   return status;
 }

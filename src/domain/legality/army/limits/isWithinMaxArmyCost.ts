@@ -11,5 +11,10 @@ export function isWithinMaxArmyCost(
   armyCost: number,
   maxArmyCost: number | null,
 ): boolean {
-  return maxArmyCost === null || armyCost <= maxArmyCost;
+  // Tutorial sets no cap, so any cost will do; otherwise a list may spend the
+  // whole cap and not a point more.
+  const withinCap = maxArmyCost === null || armyCost <= maxArmyCost;
+
+  // Whether the list could be bought with the mode's points.
+  return withinCap;
 }

@@ -4,6 +4,7 @@ import type { GameState } from '@game';
 import { MOVEMENT_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToMovementEvent } from '@factories';
 import {
+  findFrontEngagementStateFromMovement,
   findMovementResolutionState,
   getFrontEngagementStage,
   getOtherPlayer,
@@ -13,31 +14,41 @@ import { getCommitmentOffers } from './commitment';
 /**
  * Player whose commit-to-movement is pending: either the moving unit (CRS
  * commitment) or the front-engagement defender (defensive commitment).
+ *
+ * @param gameState - The game state, carrying out a Move order
+ * @returns The player to ask
+ * @throws Error when no movement is being carried out, or neither of its
+ * commitments is owed
  */
 function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
   // A commitment is owed only while a movement is being carried out.
-  const crs = findMovementResolutionState(gameState);
-  if (crs === undefined) {
+  const movement = findMovementResolutionState(gameState);
+  if (movement === undefined) {
     throw new Error('No movement is being carried out');
   }
 
-  if (crs.commitment.commitmentType === 'pending') {
-    return crs.movingUnit.playerSide;
-  }
-
-  if (crs.engagementState === 'pending') {
-    throw new Error('No movement commitment is owed');
+  // The moving player may commit before the unit sets off (§4.3.10 step 2).
+  if (movement.commitment.commitmentType === 'pending') {
+    const mover = movement.movingUnit.playerSide;
+    return mover;
   }
 
   // A front engagement's defender may commit at the start of it (§6.3.2).
-  const engagement = crs.engagementState.engagementResolutionState;
+  // A flanked defender is turned and a rear-struck one routs (§6.3.3,
+  // §6.3.4), so neither is offered a commitment, and nor is a move that has
+  // met no one.
+  const front = findFrontEngagementStateFromMovement(gameState);
   if (
-    engagement.engagementType === 'front' &&
-    getFrontEngagementStage(engagement) === 'defenderCommitting'
+    front !== undefined &&
+    getFrontEngagementStage(front.engagementResolutionState) ===
+      'defenderCommitting'
   ) {
-    return getOtherPlayer(crs.movingUnit.playerSide);
+    // The defender is the other side from the unit that moved into it.
+    const defender = getOtherPlayer(movement.movingUnit.playerSide);
+    return defender;
   }
 
+  // The mover has committed or refused, and no defender is owed one.
   throw new Error('No movement commitment is owed');
 }
 
@@ -57,6 +68,7 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
 export function getLegalCommitToMovementEvents<S extends GameState>(
   gameState: S,
 ): CommitToMovementEvent[] {
+  // Only the player whose turn it is to commit in this move is asked.
   const player = pendingCommitPlayer(gameState);
 
   // Each card in hand naming a stat this commitment applies, then the
@@ -66,11 +78,15 @@ export function getLegalCommitToMovementEvents<S extends GameState>(
     player,
     MOVEMENT_COMMITMENT_MODIFIERS,
   );
+
+  // Each offer becomes the event that player would send to make it.
   const events = offers.map((offer) =>
     createCommitToMovementEvent({
       committedCard: offer.committedCard,
       player,
     }),
   );
+
+  // What `isValidCommitToMovementEvent` checks a submitted commitment against.
   return events;
 }

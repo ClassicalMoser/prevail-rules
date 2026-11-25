@@ -3,6 +3,7 @@ import type { z } from 'zod';
 import { refineArmyComposition } from '../army/refineArmyComposition';
 import { refineArmyRules } from '../army/refineArmyRules';
 
+/** The parts of a game its army check reads: the mode and both sides' lists. */
 interface GameArmies {
   gameMode: GameModeName;
   whiteArmy: Army;
@@ -12,6 +13,13 @@ interface GameArmies {
 /**
  * Adds Zod issues when either army breaks the army rules or fails mode
  * composition rules.
+ *
+ * Each side builds its own list (§3.1), so each is checked on its own and
+ * each issue points at the army it belongs to. `refineGameRules` runs this
+ * for a whole game record.
+ *
+ * @param game - The mode and both armies
+ * @param ctx - Where to add each issue
  */
 export function refineGameArmyComposition(
   game: GameArmies,

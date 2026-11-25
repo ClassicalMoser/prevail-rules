@@ -5,6 +5,7 @@ import {
   getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
 } from '@queries';
+import { isResolved } from '@utils';
 import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
 
 /**
@@ -34,6 +35,14 @@ export interface LegalShooterTargets {
  * here: a Range card reaches one space further out, adding any enemy just
  * beyond its own Range. It never gives a shot to a unit with none: only a
  * unit with a target at its own Range is named to shoot (§4.3.11 step 1).
+ *
+ * Validation checks a `performRangedAttack` against this offer, and the legal
+ * options a client is shown are built from it.
+ *
+ * @param gameState - The game, in a Shoot order waiting for its target
+ * @returns The shooting player, the shooter where it stands, and its targets
+ * @throws Error when no ranged attack is being resolved, before the shooter
+ * has committed or refused, or once the target is named
  */
 export function getLegalShooterTargets<S extends GameState>(
   gameState: S,
@@ -45,7 +54,7 @@ export function getLegalShooterTargets<S extends GameState>(
   if (resolution.attackingCommitment.commitmentType === 'pending') {
     throw new Error('The shooter has not yet committed or refused a card');
   }
-  if (resolution.defendingUnit !== 'pending') {
+  if (isResolved(resolution.defendingUnit)) {
     throw new Error("The shot's target is already named");
   }
 
@@ -61,6 +70,7 @@ export function getLegalShooterTargets<S extends GameState>(
   );
   const targets = getLegalRangedAttackTargets(shooter, gameState, committed);
 
+  // Whose shot it is, the shooter where it stands, and what it may aim at.
   const legal: LegalShooterTargets = {
     shooter,
     player: shootingUnit.playerSide,

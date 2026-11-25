@@ -33,11 +33,15 @@ export interface LegalIssueCommands {
 export function getLegalIssueCommands<S extends GameState>(
   gameState: S,
 ): LegalIssueCommands {
+  // Orders are issued in Phase 3, each player on their own issuing step
+  // before they carry any out (§4.3). The phase query throws outside Phase 3.
   const { step } = getIssueCommandsPhaseState(gameState);
   if (
     step !== 'firstPlayerIssueCommands' &&
     step !== 'secondPlayerIssueCommands'
   ) {
+    // On a resolve step the orders are already given and being carried out,
+    // and once the phase is complete nobody is ordering.
     throw new Error(`Not on an issuing step: ${step}`);
   }
 
@@ -45,5 +49,7 @@ export function getLegalIssueCommands<S extends GameState>(
   const player = getCommandingPlayer(gameState);
   const { command } = getCardInPlay(gameState.cardState, player);
   const legal: LegalIssueCommands = { command, player };
+
+  // Who issues, and what their card lets them order.
   return legal;
 }

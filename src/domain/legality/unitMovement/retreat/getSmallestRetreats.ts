@@ -16,12 +16,17 @@ import { compareMoveSize, getSmallestMovePerEnding } from '../size';
  * @returns The paths of the smallest retreats, one per ending; empty when there are none
  */
 export function getSmallestRetreats(endings: Set<MoveResult>): MoveDelta[][] {
+  // The endings in the order the walk found them, which is the order the
+  // first path to each is kept in.
   const all = [...endings];
 
   // With no legal ending there is no retreat to offer.
+  // (Without this test the filter below would find nothing either; it is
+  // here so the smallest has a first ending to start from.)
   const [first, ...rest] = all;
   if (first === undefined) {
-    return [];
+    const none: MoveDelta[][] = [];
+    return none;
   }
 
   // Fewest turns first: a retreat should not wheel when it can fall straight
@@ -31,12 +36,14 @@ export function getSmallestRetreats(endings: Set<MoveResult>): MoveDelta[][] {
       compareMoveSize(ending, smallestSoFar) < 0 ? ending : smallestSoFar,
     first,
   );
+  // Every ending as small as that one: a tie is the owner's choice.
   const smallest = all.filter(
     (ending) => compareMoveSize(ending, smallestSize) === 0,
   );
 
   // One path per ending: a second path to the same place is no choice.
   const onePerEnding = getSmallestMovePerEnding(smallest);
+  // A retreat is offered, and recorded, by the path that makes it.
   const paths: MoveDelta[][] = [];
   for (const ending of onePerEnding) {
     paths.push([...ending.path]);

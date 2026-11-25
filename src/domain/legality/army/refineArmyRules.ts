@@ -12,6 +12,8 @@ import { refineCommandCardModifiers } from './refineCommandCardModifiers';
  * Takes only the units and command cards, so a caller without an army id
  * (such as a draft being written) can run the same rules.
  *
+ * @param army - The units and command cards of the list
+ * @param ctx - Where to add each issue
  * @param pathPrefix - Where the army sits in a larger value, such as
  * `['whiteArmy']` in a game, so each issue points at the right army.
  */
@@ -20,7 +22,8 @@ export function refineArmyRules(
   ctx: z.RefinementCtx,
   pathPrefix: (string | number)[] = [],
 ): void {
-  // Each unit type carries its own limit on how many may be fielded.
+  // Each unit type carries its own limit on how many may be fielded (§3.1.4).
+  // An entry past it is named by its count, the number to bring down.
   for (const [index, unit] of army.units.entries()) {
     if (!isWithinUnitTypeLimit(unit.count, unit.unitType.limit)) {
       ctx.addIssue({
@@ -46,7 +49,9 @@ export function refineArmyRules(
     seenUnitTypeIds.add(unitTypeId);
   }
 
-  // An army holds one copy of each command card.
+  // An army holds one copy of each command card (§3.1.5). The cards are the
+  // hand (§3.1.2), and a second copy would be a card the rules never let an
+  // army hold. The second listing is the one named.
   const seenCommandCardIds = new Set<string>();
   for (const [index, card] of army.commandCards.entries()) {
     if (seenCommandCardIds.has(card.id)) {

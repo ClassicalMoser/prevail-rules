@@ -7,5 +7,10 @@
  * @returns Whether the list keeps to the type's limit
  */
 export function isWithinUnitTypeLimit(count: number, limit: number): boolean {
-  return count <= limit;
+  // The type's printed limit is the most copies one army may field (§3.1.4);
+  // fielding exactly that many is allowed.
+  const withinLimit = count <= limit;
+
+  // Whether the list fields no more of the type than it allows.
+  return withinLimit;
 }

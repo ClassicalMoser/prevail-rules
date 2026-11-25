@@ -1,3 +1,4 @@
+import { createUnitPlacement } from '@factories';
 import {
   findForwardSpace,
   findRearwardSpace,
@@ -33,6 +34,7 @@ export function getStepOption(
 ): { next: MoveState; mayContinue: boolean } | undefined {
   // Every step costs a point of Speed.
   if (state.remainingSpeed === 0) {
+    // With none left the unit may still turn, but not step.
     return undefined;
   }
 
@@ -47,12 +49,14 @@ export function getStepOption(
   );
   // The board edge is the end of the world in that direction.
   if (nextCoordinate === undefined) {
+    // No step off the board.
     return undefined;
   }
 
   // A step may not bring the move back to a position it held: that space,
   // facing this way (§5.2.4).
   if (isPositionHeld(state, nextCoordinate, state.facing)) {
+    // The move would come back to where it already stood, facing this way.
     return undefined;
   }
 
@@ -60,22 +64,28 @@ export function getStepOption(
   // diagonal (§5.4.5): no slipping between two units standing corner to
   // corner. Whether the step may then end on the space is not this test's
   // question — that is how a diagonal step can still engage an enemy.
+  // An orthogonal step has no corners to pass between, and the corner test
+  // is asked only of a diagonal one. The friend's half of the test uses the
+  // unit's Flexibility for the whole move, not what is left of it (§5.4.2).
   const isDiagonal = isDiagonalFacing(state.facing);
-  if (
-    isDiagonal &&
-    !checkDiagonalMove(
+  const cornersOpen =
+    !isDiagonal ||
+    checkDiagonalMove(
       context.unitSide,
       context.totalFlexibility,
       context.gameState,
       state.coordinate,
       nextCoordinate,
-    )
-  ) {
+    );
+  if (!cornersOpen) {
+    // Both corner spaces shut: the step cannot be taken at all.
     return undefined;
   }
 
   // The move goes on only through ground it may cross (§5.4) and, for a
   // retreat, only behind its starting rank (§9.1.2).
+  // As in the corner test, a friend is passed by the whole move's
+  // Flexibility (§5.4.2).
   const mayContinue =
     canMoveThrough(
       context.unitSide,
@@ -92,12 +102,15 @@ export function getStepOption(
     facing: state.facing,
     heldPositions: [
       ...state.heldPositions,
-      { coordinate: nextCoordinate, facing: state.facing },
+      createUnitPlacement(nextCoordinate, state.facing),
     ],
     path: [...state.path, 'step'],
     remainingFlexibility: state.remainingFlexibility,
     remainingSpeed: state.remainingSpeed - 1,
   };
   const option = { mayContinue, next };
+
+  // The walk goes on from `next` when it may continue; otherwise it may only
+  // end there (`findMoveEnding`).
   return option;
 }

@@ -37,12 +37,17 @@ export function listMovesInBoardOrder(
     const { row, column } = getGridPosition(board, move.placement.coordinate);
     const facing = unitFacings.indexOf(move.placement.facing);
     const rank = (row * ENOUGH_COLUMNS + column) * unitFacings.length + facing;
-    return { move, rank };
+
+    // The ending, carried with its place so the sort reads one number.
+    const withRank = { move, rank };
+    return withRank;
   });
 
   // Lowest rank first: row, then column, then facing.
   const listed = ranked
     .toSorted((a, b) => a.rank - b.rank)
     .map(({ move }) => move);
+
+  // The same endings, nothing added or dropped, now in board order.
   return listed;
 }

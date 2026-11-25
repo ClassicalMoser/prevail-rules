@@ -40,6 +40,8 @@ export function getLegalRetreats(
   }
 
   // Every legal backward move, then only the smallest of them.
+  // The walk keeps the retreat behind its starting rank and to its opening
+  // 45° (§9.1.2, §9.1.4); the cut is asked first because no walk can see it.
   const endings = exploreUnitMoves(
     gameState,
     unitWithPlacement,
@@ -47,5 +49,8 @@ export function getLegalRetreats(
     commitmentModifiers,
   );
   const smallest = getSmallestRetreats(endings);
+
+  // One path per ending the owner may choose; empty when the walk found
+  // nowhere to go, and the unit routs instead (§9.1.6).
   return smallest;
 }

@@ -34,21 +34,30 @@ export function canMoveThrough(
   const spaceUnitPresence = space.unitPresence;
 
   // If the space has no unit presence, any unit can move through it.
+  // Empty spaces are crossed freely (§5.4.1). Terrain will cost something
+  // here once it is read; for now it does not (RULEBOOK appendix A3).
   if (hasNoUnit(spaceUnitPresence)) {
     return true;
   }
 
   // If the space has two units engaged in combat, no unit can move through it.
+  // Nothing crosses an engaged space until its fight is settled (§2.2.3,
+  // §5.4.4).
   if (hasEngagedUnits(spaceUnitPresence)) {
     return false;
   }
+
   // An enemy occupant cannot be passed through.
+  // Never, whatever either unit's Flexibility (§5.4.3).
   if (!isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
     return false;
   }
   // A player can only move through their own unit if the combined
   // Flexibility value of the two units equals or exceeds
   // The legal threshold.
+  // Both are current values, modifiers included (§5.4.2): the mover's is
+  // the one its move was sampled with, passed in; the friend's is read
+  // where it stands.
   const currentSpaceUnitFlexibility = getCurrentUnitStat(
     spaceUnitPresence.unit,
     'flexibility',
@@ -56,9 +65,11 @@ export function canMoveThrough(
   );
   const combinedFlexibility =
     currentUnitFlexibility + currentSpaceUnitFlexibility;
+  // Two stiff formations cannot interpenetrate.
   if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
     return false;
   }
 
+  // Nimble enough between them: the mover filters through its friend.
   return true;
 }

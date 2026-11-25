@@ -6,6 +6,14 @@ import { isSameUnitSupportKind } from '@queries';
  * Skips `count &lt; 1`. Does not attach eligible units.
  *
  * Order follows first appearance in `hand`.
+ *
+ * After a rally every card the player still owns is back in hand (§10.1.2),
+ * so the hand is the whole of what can hold the army together. Its stacks
+ * are what `getLegalAssignUnitSupport` offers the player to fill, and what
+ * the bot weighs before it rallies.
+ *
+ * @param hand - The rallying player's hand, read only for each card's unit support
+ * @returns One stack per kind of unit named, with every place its cards hold
  */
 export function combineSupportCategoriesFromHand(
   hand: readonly Pick<CommandCard, 'unitSupport'>[],
@@ -17,6 +25,11 @@ export function combineSupportCategoriesFromHand(
 
     // Every card holds at least one place (§10.4.2); a card holding none
     // has nothing to add to any stack.
+    // TODO(composition): the card schema already refuses a unit support of
+    // fewer than one place (`count: z.int().min(1)` in `unitSupport.ts`), so
+    // this catches only a card that was never parsed, such as a spec's. Settle
+    // by dropping the guard and its spec case, or by saying why the hand keeps
+    // a second defence.
     if (unitSupport.count < 1) {
       continue;
     }

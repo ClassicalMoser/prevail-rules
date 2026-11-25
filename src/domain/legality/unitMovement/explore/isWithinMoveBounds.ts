@@ -15,9 +15,15 @@ export function isWithinMoveBounds(
   context: MoveContext,
   coordinate: Coordinate,
 ): boolean {
+  // An ordered advance is bound only by its allowances and the ground.
   if (context.direction === 'advance') {
     return true;
   }
+
+  // A retreat falls back into the half of the board behind its starting
+  // rank (§2.3.3), which `createMoveContext` worked out once for the move.
   const isBehindStartingRank = context.retreatSpaces.has(coordinate);
+
+  // Whether the retreat may use this space, to pass through or to end on.
   return isBehindStartingRank;
 }

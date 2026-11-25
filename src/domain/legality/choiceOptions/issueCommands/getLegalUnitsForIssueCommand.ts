@@ -15,15 +15,22 @@ import {
  * `getLegalUnitsToOrder`).
  * For `size: 'lines'`: the units a line may be traced from, since every line
  * needs one unit within inspiration range (see `getLegalLines`).
+ *
+ * @param command - The command on the card in play
+ * @param player - The player issuing it
+ * @param gameState - The current game state
+ * @returns Each of the player's units the order may name, with where it stands
  */
 export function getLegalUnitsForIssueCommand(
   command: Command,
   player: PlayerSide,
   gameState: GameState,
 ): UnitWithPlacement[] {
+  // An order reaches only the player's own units on the board (§4.3.4).
   const onBoard = getPlayerUnitsWithPlacementOnBoard(gameState, player);
   const result: UnitWithPlacement[] = [];
 
+  // The units already ordered this round; none takes a second order (§4.3.6).
   const { commandedUnits } = gameState.currentRoundState;
 
   for (const unitWithPlacement of onBoard) {
@@ -39,7 +46,8 @@ export function getLegalUnitsForIssueCommand(
     ) {
       continue;
     }
-    // Within inspiration range, where the order needs it.
+    // Within inspiration range, where the order needs it: measured from the
+    // player's own commander now, as the order is issued (§4.3.4).
     if (
       unitMatchesInspirationRange(
         unitWithPlacement.unit,
@@ -51,5 +59,7 @@ export function getLegalUnitsForIssueCommand(
     }
   }
 
+  // Every unit meeting the order's full restrictions; empty when none does,
+  // and the order can then be given to nobody.
   return result;
 }

@@ -1,6 +1,7 @@
 import type { MoveContext } from './moveContext';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
+import { createUnitPlacement } from '@factories';
 import { canMoveInto } from '../passage';
 import { getEngagementEndFacing } from '../engaging';
 import { isWithinMoveBounds } from './isWithinMoveBounds';
@@ -18,6 +19,8 @@ export function findMoveEnding(
   context: MoveContext,
   state: MoveState,
 ): MoveResult | undefined {
+  // What the move has spent to reach this point. A retreat is judged by
+  // these (§9.1.3), and an advance offers the smallest way to each ending.
   const speedUsed = context.totalSpeed - state.remainingSpeed;
   const flexibilityUsed = context.totalFlexibility - state.remainingFlexibility;
 
@@ -27,14 +30,18 @@ export function findMoveEnding(
   // back has gained nothing it could not have by standing still.
   if (state.coordinate === context.start.coordinate) {
     if (context.direction !== 'advance' || speedUsed > 0) {
+      // A retreat that has not fallen back, or a walk that came home.
       return undefined;
     }
     const standing: MoveResult = {
       flexibilityUsed,
       path: state.path,
-      placement: { coordinate: state.coordinate, facing: state.facing },
+      placement: createUnitPlacement(state.coordinate, state.facing),
       speedUsed,
     };
+
+    // An order to stand, or to turn on the spot, is a real move (§5.5
+    // edge case): the unit still counts as commanded.
     return standing;
   }
 
@@ -53,6 +60,8 @@ export function findMoveEnding(
       context.direction,
     ) && isWithinMoveBounds(context, state.coordinate);
   if (!mayEndHere) {
+    // A friend's space, an engaged one, an engagement the approach does not
+    // allow, or ground outside a retreat's bounds.
     return undefined;
   }
 
@@ -75,11 +84,15 @@ export function findMoveEnding(
     squaringTurn === null ? state.path : [...state.path, squaringTurn];
   const squaringCost = squaringTurn === null ? 0 : 1;
 
+  // The ending as the walk and the offers report it: where the unit ends,
+  // how it faces, the path to submit, and the cost with the squaring turn.
   const ending: MoveResult = {
     flexibilityUsed: flexibilityUsed + squaringCost,
     path,
-    placement: { coordinate: state.coordinate, facing: endFacing },
+    placement: createUnitPlacement(state.coordinate, endFacing),
     speedUsed,
   };
+
+  // A legal place for the move to stop.
   return ending;
 }

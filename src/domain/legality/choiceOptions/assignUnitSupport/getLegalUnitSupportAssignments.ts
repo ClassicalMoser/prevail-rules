@@ -21,9 +21,14 @@ export function isSameUnitSupportAssignment(
   a: UnitSupportAssignment,
   b: UnitSupportAssignment,
 ): boolean {
+  // A place is one unit in one stack: the same unit in another stack is a
+  // different place. The validator matches a submitted place against the
+  // offered ones by this, since equal objects are not the same reference.
   const same =
     areUnitSupportsEqual(a.unitSupport, b.unitSupport) &&
     isSameUnitInstance(a.unit, b.unit);
+
+  // Whether the two give the same unit the same place.
   return same;
 }
 
@@ -32,9 +37,13 @@ function placesFilled(
   unitSupport: UnitSupport,
   assignedSoFar: readonly UnitSupportAssignment[],
 ): number {
+  // Only places in this stack count against its places; a unit placed in
+  // another stack leaves this one's room as it was.
   const filled = assignedSoFar.filter((assignment) =>
     areUnitSupportsEqual(assignment.unitSupport, unitSupport),
   ).length;
+
+  // The places this stack has already given.
   return filled;
 }
 
@@ -43,7 +52,11 @@ function hasPlace(
   unit: UnitInstance,
   assignedSoFar: readonly UnitSupportAssignment[],
 ): boolean {
+  // A unit takes only one place, in whichever stack (§10.4.4), so any
+  // earlier assignment naming it settles it.
   const placed = findUnitIndex(assignedSoFar, unit) !== undefined;
+
+  // Whether the unit is already held in some stack.
   return placed;
 }
 
@@ -71,12 +84,14 @@ export function getLegalUnitSupportAssignments(
   legal: LegalAssignUnitSupport,
   assignedSoFar: readonly UnitSupportAssignment[],
 ): OpenChoice<UnitSupportAssignment> {
+  // Every place that may be filled next, stack by stack in hand order.
   const next: UnitSupportAssignment[] = [];
   for (const { eligibleUnits, unitSupport } of legal.categories) {
     // A unit support whose places are all filled holds nobody more.
     if (placesFilled(unitSupport, assignedSoFar) >= unitSupport.count) {
       continue;
     }
+
     // Any matching unit still without a place may take one here.
     for (const unit of eligibleUnits) {
       if (!hasPlace(unit, assignedSoFar)) {
@@ -91,6 +106,9 @@ export function getLegalUnitSupportAssignments(
     mayStop: next.length === 0,
     next,
   };
+
+  // The places open next, and whether the player may stop and let the rest
+  // rout (§10.4.6).
   return choice;
 }
 
@@ -104,14 +122,26 @@ export function getLegalUnitSupportAssignments(
 export function getUnitSupportLabel(unitSupport: UnitSupport): string {
   switch (unitSupport.supportType) {
     case 'generic': {
-      return `generic:${unitSupport.count}`;
+      // A stack for any unit at all says only how many it holds.
+      const genericLabel = `generic:${unitSupport.count}`;
+      return genericLabel;
     }
     case 'trait': {
-      return `trait:${unitSupport.trait}:${unitSupport.count}`;
+      // A trait stack names the trait its units must have.
+      const traitLabel = `trait:${unitSupport.trait}:${unitSupport.count}`;
+      return traitLabel;
     }
     case 'unitType': {
-      return `unitType:${unitSupport.unitTypeId}:${unitSupport.count}`;
+      // A unit-type stack names the one type it holds, by its id.
+      const unitTypeLabel = `unitType:${unitSupport.unitTypeId}:${unitSupport.count}`;
+      return unitTypeLabel;
     }
+    // Every kind of unit support is handled above, and the compiler checks
+    // it.
+    // TODO(wrong): a value of no kind the rules name is handed back as the
+    // "label" itself, not a string, so a refusal would carry an object. Its
+    // siblings `unitMatchesSupport` and `isSameUnitSupportKind` throw
+    // `Unknown unit support type` here; settle by throwing the same.
     default: {
       const _exhaustive: never = unitSupport;
       return _exhaustive;
@@ -134,30 +164,41 @@ export function getAssignmentRefusalReason(
   assignedSoFar: readonly UnitSupportAssignment[],
   assignment: UnitSupportAssignment,
 ): string {
+  // The stack as the player would read it, for every reason below.
   const label = getUnitSupportLabel(assignment.unitSupport);
 
-  // The unit support must be one the hand sums to (§10.4.3).
+  // The unit support must be one the hand sums to (§10.4.3): a stack whose
+  // kind or number of places the hand does not add up to is not there.
   const held = legal.categories.find((category) =>
     areUnitSupportsEqual(category.unitSupport, assignment.unitSupport),
   );
   if (held === undefined) {
-    return `Unit support ${label} is not available from hand`;
+    const notHeld = `Unit support ${label} is not available from hand`;
+    return notHeld;
   }
 
   // A unit takes only one place (§10.4.4).
   if (hasPlace(assignment.unit, assignedSoFar)) {
-    return 'Unit is assigned support more than once';
+    const placedTwice = 'Unit is assigned support more than once';
+    return placedTwice;
   }
 
   // A unit support holds no more units than its count.
   if (placesFilled(held.unitSupport, assignedSoFar) >= held.unitSupport.count) {
-    return `Assignment for ${label} exceeds support count ${held.unitSupport.count}`;
+    const overfilled = `Assignment for ${label} exceeds support count ${held.unitSupport.count}`;
+    return overfilled;
   }
 
   // Otherwise the unit is not one of the player's units on the board that
   // matches this unit support.
   if (!unitMatchesSupport(assignment.unit, held.unitSupport)) {
-    return `Unit does not match support ${label}`;
+    const unmatched = `Unit does not match support ${label}`;
+    return unmatched;
   }
-  return `Unit is not on the board for ${legal.player}`;
+
+  // A unit that matches an open stack and has no place yet was left out of
+  // the offer only because it is not among the rallying player's units on
+  // the board (§10.4.4).
+  const offBoard = `Unit is not on the board for ${legal.player}`;
+  return offBoard;
 }

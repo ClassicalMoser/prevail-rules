@@ -26,7 +26,9 @@ export function getLegalUnitsToOrder(
   gameState: GameState,
   chosenSoFar: readonly UnitInstance[],
 ): OpenChoice<UnitInstance> {
-  // Once the order's number is reached, it takes nobody more.
+  // Once the order's number is reached, it takes nobody more (§4.3.2).
+  // Every other eligible unit stays open until then, except those already
+  // chosen: a unit is ordered once (§4.3.6).
   const full = chosenSoFar.length >= command.number;
   const next = full
     ? []
@@ -40,6 +42,8 @@ export function getLegalUnitsToOrder(
     mayStop: true,
     next,
   };
+
+  // The units still open to this order, and leave to stop here.
   return choice;
 }
 
@@ -47,6 +51,9 @@ export function getLegalUnitsToOrder(
  * Why the unit at a position in a submitted order was not among those
  * offered after the units before it: the rule of §4.3.2–4.3.4 it breaks, in
  * the order a player would check them.
+ *
+ * Asked by isValidIssueCommandsEvent after findIllegal has found the first
+ * unit not offered, so it words that refusal and decides nothing itself.
  *
  * @param command - The units order being issued
  * @param submitted - Every unit the player named
@@ -58,18 +65,23 @@ export function getUnitsOrderRefusalReason(
   submitted: readonly UnitInstance[],
   index: number,
 ): string {
+  // The units named before the one refused, which were all offered, and the
+  // refused unit itself. An index past the list names no unit, and asking
+  // why it was refused is the caller's mistake.
   const chosenSoFar = submitted.slice(0, index);
   const unit = submitted[index];
   if (unit === undefined) {
     throw new Error(`No unit at position ${index}`);
   }
 
-  // A unit is ordered once.
+  // A unit is ordered once (§4.3.6). Asked first, so a unit named twice is
+  // refused as a repeat even when the second naming also passes the number.
   if (hasUnitInArray(chosenSoFar, unit)) {
     return 'Duplicate units in issue command selection';
   }
 
-  // The printed number is a ceiling.
+  // The printed number is a ceiling (§4.3.2): once that many are chosen, a
+  // further unit is one too many.
   if (chosenSoFar.length >= command.number) {
     return `Expected at most ${command.number} units, got ${submitted.length}`;
   }

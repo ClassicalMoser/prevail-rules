@@ -10,6 +10,9 @@ import type { MoveState } from './moveState';
  * @returns The first point of the move
  */
 export function getStartState(context: MoveContext): MoveState {
+  // No step has been taken yet, so the space the last step left is the start
+  // space itself. Nothing reads it before the first step: an engagement only
+  // ever follows a step into the enemy's space (§6.1.1).
   const start: MoveState = {
     cameFrom: context.start.coordinate,
     coordinate: context.start.coordinate,
@@ -20,5 +23,7 @@ export function getStartState(context: MoveContext): MoveState {
     remainingFlexibility: context.totalFlexibility,
     remainingSpeed: context.totalSpeed,
   };
+
+  // The walk, and a path followed part by part, both begin here.
   return start;
 }

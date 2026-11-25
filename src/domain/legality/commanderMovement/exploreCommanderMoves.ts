@@ -36,6 +36,7 @@ export function exploreCommanderMoves(
   gameState: GameState,
   maxDistance: number,
 ): Set<Coordinate> {
+  // The field the commander crosses.
   const board = gameState.boardState;
 
   // Where the commander stands is a legal ending: it may stay put (§4.2.6).
@@ -46,6 +47,8 @@ export function exploreCommanderMoves(
   let ring: Coordinate[] = [startingCoordinate];
 
   // One ring per step, until the distance is spent or nowhere new is left.
+  // Stopping on an empty ring only saves work: a step out from nowhere
+  // reaches nothing, so the answer is the same either way.
   for (let step = 0; step < maxDistance && ring.length > 0; step++) {
     const nextRing: Coordinate[] = [];
 
@@ -60,6 +63,8 @@ export function exploreCommanderMoves(
 
         // A space already reached was reached by a way no longer than this
         // one, so this way adds nothing.
+        // Skipping it changes no answer, only how much is walked: going on
+        // from it again would reach only what the shorter way reaches.
         if (legalMoves.has(to)) {
           continue;
         }

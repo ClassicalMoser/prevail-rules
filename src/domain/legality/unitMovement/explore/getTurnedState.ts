@@ -1,4 +1,5 @@
 import type { MoveTurn } from '@entities';
+import { createUnitPlacement } from '@factories';
 import { getTurnedFacing } from '@queries';
 import type { MoveState } from './moveState';
 
@@ -23,10 +24,12 @@ export function getTurnedState(state: MoveState, turn: MoveTurn): MoveState {
     facing,
     heldPositions: [
       ...state.heldPositions,
-      { coordinate: state.coordinate, facing },
+      createUnitPlacement(state.coordinate, facing),
     ],
     path: [...state.path, turn],
     remainingFlexibility: state.remainingFlexibility - 1,
   };
+
+  // The point the move goes on from, or may end at.
   return turned;
 }

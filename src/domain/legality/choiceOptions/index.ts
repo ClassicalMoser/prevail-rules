@@ -1,3 +1,5 @@
+// Unit support after a rally (§10.4): the places a hand holds, offered a
+// unit at a time, and the refusal words for a choice that breaks them.
 export {
   combineSupportCategoriesFromHand,
   getAssignmentRefusalReason,
@@ -8,15 +10,26 @@ export {
   type LegalAssignUnitSupport,
   type LegalSupportCategory,
 } from './assignUnitSupport';
+// Phase 1: each card a player still choosing may play (§4.1.1).
 export { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
+// Phase 4: the engagement the first player may fight next (§4.4.2).
 export { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
+// Cleanup: whether the player may rally, or only decline (§10.3).
 export { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
+// A retreat's owner choosing among equally small retreats (§9.1.3).
 export { getLegalChooseRetreatOptionEvents } from './getLegalChooseRetreatOptionEvents';
+// A front engagement's defender: fall back or stand (§6.3.2).
 export { getLegalChooseWhetherToRetreatEvents } from './getLegalChooseWhetherToRetreatEvents';
+// A melee commitment, the first player's then the second's (§7.2.2).
 export { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
+// A movement commitment: the mover's, or a front engagement's defender's (§8.4).
 export { getLegalCommitToMovementEvents } from './getLegalCommitToMovementEvents';
+// The shooter's commitment, before it names a target (§4.3.11 step 2).
 export { getLegalCommitToRangedAttackEvents } from './getLegalCommitToRangedAttackEvents';
+// The target's commitment, once it is named (§4.3.11 step 5).
 export { getLegalCommitToRangedDefenseEvents } from './getLegalCommitToRangedDefenseEvents';
+// Phase 3 orders (§4.3): what a card may order, the units or lines it may
+// name, and the refusal words for an order that breaks them.
 export {
   getLegalIssueCommands,
   getLegalLines,
@@ -32,11 +45,14 @@ export {
   type LegalIssueCommands,
   type LegalLine,
 } from './issueCommands';
+// The ordered units a player may name to move next (§4.3.10 step 1).
 export { getLegalMoveUnits, type LegalMoveUnits } from './getLegalMoveUnits';
+// A rout's Morale payment: who pays, how many, and from which cards (§9.3.2).
 export {
   getLegalRoutDiscardCards,
   type LegalRoutDiscardCards,
 } from './getLegalRoutDiscardCards';
+// Setup: where each side may deploy its army (§3.5.4).
 export {
   getLegalSetupUnits,
   getSetupZoneCoordinates,
@@ -44,6 +60,7 @@ export {
   SETUP_ZONE_EXCLUDED_SIDE_RANKS,
   type LegalSetupUnits,
 } from './setupUnits';
+// A Shoot order (§4.3.11, §7.4): who may shoot, at whom, and who may support.
 export {
   canUnitRangedAttackTarget,
   getLegalShooterTargets,

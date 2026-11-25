@@ -27,23 +27,34 @@ function pendingWhetherToRetreatPlayer<S extends GameState>(
 
   // The defender decides only at its own stage of the engagement.
   const stage = getFrontEngagementStage(front.engagementResolutionState);
+
+  // Its commitment comes first, since a Speed card can make it fast enough
+  // to fall back (§6.3.2 step 1).
   if (stage === 'defenderCommitting') {
     throw new Error('The defender has not yet committed');
   }
+
+  // Whether it is faster than the mover and has a way back is worked out
+  // before it is asked (§6.3.2 step 2).
   if (stage === 'retreatBeingWorkedOut') {
     throw new Error('It is not yet known whether the defender can retreat');
   }
+
+  // A defender with nowhere to fall back to is not offered the choice; it
+  // stays and fights (§6.3.2 step 2).
   if (stage === 'noRetreat') {
     throw new Error('The defender has nowhere to retreat to');
   }
+
+  // Once it has chosen, the choice is not offered again.
   if (stage !== 'defenderDeciding') {
     throw new Error('The defender has already decided whether to retreat');
   }
 
   // The defender is the other side from the unit that moved into it.
-  return getOtherPlayer(
-    getMovementResolutionState(gameState).movingUnit.playerSide,
-  );
+  const mover = getMovementResolutionState(gameState).movingUnit.playerSide;
+  const defender = getOtherPlayer(mover);
+  return defender;
 }
 
 /**
@@ -58,12 +69,19 @@ function pendingWhetherToRetreatPlayer<S extends GameState>(
 export function getLegalChooseWhetherToRetreatEvents<S extends GameState>(
   gameState: S,
 ): ChooseWhetherToRetreatEvent[] {
+  // Only the defender of a front engagement, at its moment to decide.
   const player = pendingWhetherToRetreatPlayer(gameState);
 
-  return [true, false].map((choosesToRetreat) =>
+  // It may fall back or stand (§6.3.2 steps 3 and 4); falling back is a
+  // "may", so standing is always open (§1.2).
+  const choices = [true, false].map((choosesToRetreat) =>
     createChooseWhetherToRetreatEvent({
       player,
       choosesToRetreat,
     }),
   );
+
+  // What `isValidChooseWhetherToRetreatEvent` checks the defender's answer
+  // against.
+  return choices;
 }

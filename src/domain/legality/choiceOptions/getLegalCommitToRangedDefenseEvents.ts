@@ -4,6 +4,7 @@ import type { GameState } from '@game';
 import { RANGED_DEFENSE_COMMITMENT_MODIFIERS } from '@ruleValues';
 import { createCommitToRangedDefenseEvent } from '@factories';
 import { findRangedAttackResolutionState } from '@queries';
+import { isPending } from '@utils';
 import { getCommitmentOffers } from './commitment';
 
 /**
@@ -20,7 +21,7 @@ function pendingTargetOwner<S extends GameState>(gameState: S): PlayerSide {
 
   // Until the target is named there is no one to defend: the defender
   // commits after the shooter, knowing what it faces (§7.4.5).
-  if (resolution.defendingUnit === 'pending') {
+  if (isPending(resolution.defendingUnit)) {
     throw new Error('The shot’s target is not yet named');
   }
 
@@ -28,6 +29,8 @@ function pendingTargetOwner<S extends GameState>(gameState: S): PlayerSide {
   if (resolution.defendingCommitment.commitmentType !== 'pending') {
     throw new Error('The target has already committed or refused a card');
   }
+
+  // The target's owner is the one who may brace it against the shot.
   const owner = resolution.defendingUnit.playerSide;
   return owner;
 }
@@ -47,6 +50,7 @@ function pendingTargetOwner<S extends GameState>(gameState: S): PlayerSide {
 export function getLegalCommitToRangedDefenseEvents<S extends GameState>(
   gameState: S,
 ): CommitToRangedDefenseEvent[] {
+  // Only the owner of the unit being shot at is asked here.
   const player = pendingTargetOwner(gameState);
 
   // Each card in hand naming a stat this commitment applies, then the
@@ -56,11 +60,16 @@ export function getLegalCommitToRangedDefenseEvents<S extends GameState>(
     player,
     RANGED_DEFENSE_COMMITMENT_MODIFIERS,
   );
+
+  // Each offer becomes the event the target's owner would send to make it.
   const events = offers.map((offer) =>
     createCommitToRangedDefenseEvent({
       committedCard: offer.committedCard,
       player,
     }),
   );
+
+  // What `isValidCommitToRangedDefenseEvent` checks a submitted commitment
+  // against.
   return events;
 }

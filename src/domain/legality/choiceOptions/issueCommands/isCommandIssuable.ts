@@ -19,11 +19,24 @@ import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
  * legal, so the step asks for issueCommands either way. Settled by
  * deprecating and removing it, or by finding the caller that should use it
  * (the bot, to tell an order with no legal units from one it does not want).
+ *
+ * @param command - The command on the card in play
+ * @param player - The player issuing it
+ * @param gameState - The current game state
+ * @returns Whether any unit meets the order's full restrictions
  */
 export function isCommandIssuable(
   command: Command,
   player: PlayerSide,
   gameState: GameState,
 ): boolean {
-  return getLegalUnitsForIssueCommand(command, player, gameState).length > 0;
+  // A units order needs one eligible unit to name, and a line needs one unit
+  // within range to anchor it (§4.3.5); a line of one is that unit alone, so
+  // the same list answers both.
+  const eligible = getLegalUnitsForIssueCommand(command, player, gameState);
+
+  // Issuable when anyone at all may take the order; the printed number is a
+  // ceiling, so one is enough (§4.3.2).
+  const issuable = eligible.length > 0;
+  return issuable;
 }

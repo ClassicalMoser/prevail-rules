@@ -12,5 +12,12 @@ export function meetsCardsPerInitiative(
   cardCount: number,
   cardsPerInitiative: number | null,
 ): boolean {
-  return cardsPerInitiative === null || cardCount === cardsPerInitiative;
+  // Tutorial sets no spread, so any number will do; otherwise the count must
+  // be exactly the mode's, since an extra card at one value is a card short
+  // at another (§3.1.7).
+  const meetsSpread =
+    cardsPerInitiative === null || cardCount === cardsPerInitiative;
+
+  // Whether this initiative holds its share of the hand.
+  return meetsSpread;
 }

@@ -32,7 +32,9 @@ export function checkDiagonalMove(
   currentCoordinate: Coordinate,
   targetCoordinate: Coordinate,
 ): boolean {
+  // The corners are read from the board the step is taken on.
   const board = gameState.boardState;
+
   // A step goes straight ahead (§5.1.3), so the two spaces fix its facing.
   // Only a diagonal step has corners to pass between; asking of any other
   // is a fault in the caller, not a rule.
@@ -44,6 +46,9 @@ export function checkDiagonalMove(
   if (currentFacing === undefined) {
     throw new Error('The two spaces are not neighbours');
   }
+
+  // A straight step has no corner to cut, so asking of one is the caller's
+  // fault.
   const isDiagonalFacingResult = isDiagonalFacing(currentFacing);
   if (!isDiagonalFacingResult) {
     throw new Error('The step is not diagonal');
@@ -57,6 +62,12 @@ export function checkDiagonalMove(
   );
 
   // Filter out spaces that we can't move through
+  // Each corner is asked the mover's own pass-through question (§5.4.1 to
+  // §5.4.4): an enemy, an engaged space, or a friend too stiff to pass all
+  // shut that corner. This is the mover's stricter test; support and
+  // commanders ask only whether enemies hold both corners (§2.4.4). Terrain
+  // will be paid on the corner the mover chooses (§5.5.3); it is not read yet
+  // (RULEBOOK appendix A3).
   const validPassThroughSpaces = corners.filter((space) =>
     canMoveThrough(unitSide, currentUnitFlexibility, space, gameState),
   );

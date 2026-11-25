@@ -30,6 +30,8 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
   if (owing === undefined) {
     throw new Error('No melee commitment is owed');
   }
+
+  // The player whose card, if any, is now to be laid down for their unit.
   return owing;
 }
 
@@ -47,6 +49,7 @@ function pendingCommitPlayer<S extends GameState>(gameState: S): PlayerSide {
 export function getLegalCommitToMeleeEvents<S extends GameState>(
   gameState: S,
 ): CommitToMeleeEvent[] {
+  // Only the player whose turn it is to commit in this melee is asked.
   const player = pendingCommitPlayer(gameState);
 
   // Each card in hand naming a stat this commitment applies, then the
@@ -56,11 +59,15 @@ export function getLegalCommitToMeleeEvents<S extends GameState>(
     player,
     MELEE_COMMITMENT_MODIFIERS,
   );
+
+  // Each offer becomes the event that player would send to make it.
   const events = offers.map((offer) =>
     createCommitToMeleeEvent({
       committedCard: offer.committedCard,
       player,
     }),
   );
+
+  // What `isValidCommitToMeleeEvent` checks a submitted commitment against.
   return events;
 }

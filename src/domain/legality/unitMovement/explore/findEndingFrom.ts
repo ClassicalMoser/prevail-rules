@@ -17,10 +17,16 @@ export function findEndingFrom(
   context: MoveContext,
   from: MoveState,
 ): MoveResult | undefined {
+  // Keep the first ending the walk reports, and stop it there: one is
+  // enough to show the move can be finished. Its callers ask only whether
+  // there is one (`findLegalMoveDeltas`), so which ending is kept does not
+  // matter; stopping early only saves the rest of the walk.
   let found: MoveResult | undefined;
   walkMoveEndings(context, from, (ending) => {
     found = ending;
     return true;
   });
+
+  // An ending, or `undefined` when every way on from here is a dead end.
   return found;
 }

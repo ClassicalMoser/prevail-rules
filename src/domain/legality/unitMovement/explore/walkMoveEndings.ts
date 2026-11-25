@@ -33,18 +33,35 @@ export function walkMoveEndings(
   // more Speed and no more Flexibility than an earlier one there can reach
   // nothing the earlier one could not, and at no lower cost, so it is not
   // walked again. An arrival with more of either is.
+  // The positions held on the way differ from route to route (§5.2.4), and
+  // that does not upset this: a way on that the earlier route's held
+  // positions forbid comes back to one of them, where that route stood
+  // sooner with more left, so the ending is found from there. The space each
+  // route last stepped from differs too, but it is read only where an
+  // engagement is judged, and the walk never goes on from an enemy's space.
   const arrivals = new Map<string, { speed: number; flexibility: number }[]>();
+
+  // Whether the caller has what it wanted. Once it has, nothing more is
+  // walked: `findEndingFrom` needs only one ending to know a move can be
+  // finished.
   let stopped = false;
   const report = (ending: MoveResult): void => {
     if (onEnding(ending)) {
       stopped = true;
     }
   };
+
+  // One point of the move: report it if the move may stop there, then go on
+  // by every turn and the step the rules allow.
   const walk = (state: MoveState): void => {
+    // The caller already has its answer.
     if (stopped) {
       return;
     }
 
+    // TODO(composition): `getSmallestMovePerEnding` writes the same
+    // space-and-facing key for a placement. One reader of that key would
+    // keep the two from drifting apart.
     // An arrival no better than one already walked from here finds nothing
     // new.
     const position = `${state.coordinate}|${state.facing}`;
@@ -73,17 +90,21 @@ export function walkMoveEndings(
 
     // Or turn on the spot, each way the rules allow, and go on from there.
     for (const turn of getTurnOptions(context, state)) {
-      walk(getTurnedState(state, turn));
+      const turned = getTurnedState(state, turn);
+      walk(turned);
     }
 
     // Or step, if a step can be taken.
     const step = getStepOption(context, state);
+    // No step from here: the board edge, a held position, a shut diagonal
+    // or no Speed left. Turns were the only ways on.
     if (step === undefined) {
       return;
     }
     // A space it may pass through, the move goes on from.
     if (step.mayContinue) {
       walk(step.next);
+      // Everything from that space is walked; this point has no more ways on.
       return;
     }
     // A space it may not pass through, the move can only stop in.
@@ -92,5 +113,7 @@ export function walkMoveEndings(
       report(stoppingEnding);
     }
   };
+
+  // Every ending reachable from the given point, found by walking on from it.
   walk(from);
 }

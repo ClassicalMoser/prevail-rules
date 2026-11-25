@@ -1,5 +1,7 @@
 import type { Coordinate, UnitFacing } from '@entities';
 import type { MoveState } from './moveState';
+import { createUnitPlacement } from '@factories';
+import { isSamePlacement } from '@queries';
 
 /**
  * Whether the move has already held this position: stood on this space,
@@ -18,9 +20,11 @@ export function isPositionHeld(
 ): boolean {
   // A position is a space and a facing together: the same space faced
   // another way is a new position, and so is another space faced this way.
-  const held = state.heldPositions.some(
-    (position) =>
-      position.coordinate === coordinate && position.facing === facing,
+  const position = createUnitPlacement(coordinate, facing);
+  const held = state.heldPositions.some((heldPosition) =>
+    isSamePlacement(heldPosition, position),
   );
+
+  // A step or turn that would come back here is not offered.
   return held;
 }

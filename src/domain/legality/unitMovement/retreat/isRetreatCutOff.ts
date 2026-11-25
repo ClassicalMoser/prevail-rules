@@ -22,6 +22,8 @@ export function isRetreatCutOff(
   unitWithPlacement: UnitWithPlacement,
 ): boolean {
   const { placement, unit } = unitWithPlacement;
+
+  // The three spaces behind the unit, as it faces now (§2.3.2).
   const backSpaces = getBackSpaces(
     board,
     placement.coordinate,
@@ -45,5 +47,8 @@ export function isRetreatCutOff(
       return true;
     }
   }
+
+  // No enemy at its back looks at it: the road behind is open, though the
+  // ground may still leave it nowhere to go.
   return false;
 }

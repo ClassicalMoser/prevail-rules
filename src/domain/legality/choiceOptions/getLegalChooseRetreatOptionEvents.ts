@@ -28,14 +28,20 @@ export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   }
   const { retreatState } = awaiting;
 
+  // The retreating unit's owner chooses among equally small retreats
+  // (§9.1.3), whoever drove it back.
   const player = retreatState.retreatingUnit.playerSide;
 
   // Each offered retreat is chosen by naming its path.
+  // The paths were worked out when the retreat opened, so they are read, not
+  // recomputed; each is copied so the event does not share the state's array.
   const choices = retreatState.legalRetreatPaths.map((path) =>
     createChooseRetreatOptionEvent({
       path: [...path],
       player,
     }),
   );
+
+  // What `isValidChooseRetreatOptionEvent` checks the owner's choice against.
   return choices;
 }
