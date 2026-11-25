@@ -31,9 +31,7 @@ export { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEve
 // A commitToRangedDefense event: the target of a shot commits for Defence or Flexibility.
 export { createCommitToRangedDefenseEvent } from './createCommitToRangedDefenseEvent';
 
-// A issueCommand event with its fixed types filled in.
-// TODO(misleading): the event is `issueCommands`, plural. Settled by
-// correcting the name (and "A" to "An").
+// An issueCommands event with its fixed types filled in.
 export { createIssueCommandsEvent } from './createIssueCommandsEvent';
 
 // A moveCommander event with its fixed types filled in.

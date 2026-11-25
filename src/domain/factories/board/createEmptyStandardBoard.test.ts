@@ -8,5 +8,7 @@ describe('createEmptyStandardBoard function', () => {
     // Rows A to L, columns 1 to 18: L-18 is the far corner.
     expect(Object.keys(board.board)).toHaveLength(216);
     expect(board.board).toHaveProperty('L-18');
+    // Does not have spaces only present on a large board.
+    expect(board.board).not.toHaveProperty('X-36');
   });
 });

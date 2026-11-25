@@ -10,7 +10,7 @@ import type { OwnedCardState } from '@game';
  * @returns The player's card state
  */
 export function createOwnedCardState(
-  piles?: Partial<OwnedCardState>,
+  piles: Partial<OwnedCardState>,
 ): OwnedCardState {
   return {
     awaitingPlay: null,

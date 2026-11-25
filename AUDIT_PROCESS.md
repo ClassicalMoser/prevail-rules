@@ -176,7 +176,10 @@ they throw — say which ones you compared and how.
 
 Code that obviously rebuilds what a factory or query already builds, or fails to
 call one, is replaced by the call in the sweep, once the comparison shows they
-behave the same. Where they could differ, mark it instead.
+behave the same. Where they could differ, mark it instead. A difference only in
+the wording of a thrown message is not one: take the existing helper's message
+and update the specs that pinned the old one. Only a different result, or a
+throw on a different input, keeps the hand code and earns the mark.
 
 Duplicated test helpers are the exception. Those are extracted, not marked.
 

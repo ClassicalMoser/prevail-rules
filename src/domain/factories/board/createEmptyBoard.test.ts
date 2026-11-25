@@ -1,4 +1,5 @@
-import { boardSchema, coordinateLayoutMap } from '@entities';
+import { boardSchema } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
 import { createEmptyBoard } from './createEmptyBoard';
 
 /**

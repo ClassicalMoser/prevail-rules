@@ -10,9 +10,7 @@ export { createEmptyLargeBoard } from './board';
 // An empty board of any size, from the size alone.
 export { createEmptyBoard } from './board';
 
-// Blank game for a mode: mode-sized board, empty piles, initiative black.
-// TODO(misleading): says initiative black, but `createEmptyGameState` gives
-// white the initiative (§3.3.2). Settled by correcting this line.
+// Blank game for a mode: mode-sized board, empty piles, initiative white.
 export { createEmptyGameState } from './game';
 
 // New game from both armies: empty shell, dealt hands, reserved instances.

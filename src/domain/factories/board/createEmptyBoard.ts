@@ -1,14 +1,11 @@
-import type { Board, BoardSpace, BoardType } from '@entities';
-import { coordinateLayoutMap } from '@entities';
+import type { Board, BoardSpace } from '@entities';
+import { coordinateLayoutMap } from '@ruleValues';
+import type { BoardType } from '@ruleValues';
 
 /**
  * Creates an empty board space with default values.
- * All spaces start as plain terrain, elevation 0, no water, no units.
- *
- * TODO(misleading): a board space has no water field; what this sets is open
- * ground cover, difficulty 1, not blocking, and no commanders. The same "water"
- * appears in `BoardSpace`'s own header in `@entities`. Settled by naming the
- * fields set here, once water is decided for the space.
+ * All spaces start as open ground, level at every corner, at difficulty 1,
+ * not blocking sight, with no unit and no commander.
  */
 function createEmptyBoardSpace(): BoardSpace {
   return {

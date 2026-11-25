@@ -1,55 +1,76 @@
 import { createEmptyGameState } from './createEmptyGameState';
 
 /**
- * Empty game state maps each catalog mode onto a board size and otherwise blank scaffolding.
- * Tutorial and mini share the small board. Standard and epic use their own sizes.
- * A value outside GameModeName is rejected so a drifted catalog fails at runtime.
+ * The game before anyone has mustered: setup has not begun, White holds the
+ * initiative, no card has been dealt and no piece placed. The mode decides
+ * only which board it is played on.
  */
-
 describe('createEmptyGameState function', () => {
-  it('starts white on a standard board with empty piles and no phase', () => {
-    const gameState = createEmptyGameState('standard');
+  // Any mode will do for the facts that do not depend on the board.
+  const gameState = createEmptyGameState('standard');
 
-    // Setup is round 0; the first round to be played is 1.
-    expect(gameState.currentRoundState.roundNumber).toBe(0);
-    expect(gameState.currentRoundState.completedPhases).toStrictEqual([]);
-    expect(gameState.currentRoundState.currentPhaseState).toBe('none');
-    expect(gameState.currentRoundState.commandedUnits).toStrictEqual([]);
-    // White holds the initiative going into round one (§3.3.2).
+  it('begins at setup, round 0, with no phase under way', () => {
+    // Setup is round 0, with its own events; nothing has been played yet, so
+    // no phase is done, none is under way, and no unit has been ordered.
+    expect(gameState.currentRoundState).toStrictEqual({
+      commandedUnits: [],
+      completedPhases: [],
+      currentPhaseState: 'none',
+      roundNumber: 0,
+    });
+  });
+
+  it('gives White the initiative', () => {
+    // White holds the initiative going into round one, and so sets up first
+    // (§3.3.2).
     expect(gameState.currentInitiative).toBe('white');
-    expect(gameState.boardState.boardType).toBe('standard');
-    // The engine's own view, before any card has been dealt to either side.
-    expect(gameState.cardState.visibility).toBe('authoritative');
-    expect(gameState.cardState.black.inHand).toStrictEqual([]);
-    expect(gameState.cardState.black.played).toStrictEqual([]);
-    expect(gameState.cardState.black.discarded).toStrictEqual([]);
-    expect(gameState.cardState.black.burnt).toStrictEqual([]);
-    expect(gameState.cardState.black.awaitingPlay).toBeNull();
-    expect(gameState.cardState.black.inPlay).toBeNull();
-    expect(gameState.cardState.white.inHand).toStrictEqual([]);
-    expect(gameState.cardState.white.played).toStrictEqual([]);
-    expect(gameState.cardState.white.discarded).toStrictEqual([]);
-    expect(gameState.cardState.white.burnt).toStrictEqual([]);
-    expect(gameState.cardState.white.awaitingPlay).toBeNull();
-    expect(gameState.cardState.white.inPlay).toBeNull();
-    // No army has been mustered: no unit waits in reserve or has routed, and
-    // no commander is lost.
+  });
+
+  it('holds no card on either side, in the engine’s own full view', () => {
+    // Every pile empty and nothing chosen or in play.
+    const empty = {
+      awaitingPlay: null,
+      burnt: [],
+      discarded: [],
+      inHand: [],
+      inPlay: null,
+      played: [],
+    };
+
+    // The engine creates the full record; a seat's view is projected from it.
+    expect(gameState.cardState).toStrictEqual({
+      black: empty,
+      visibility: 'authoritative',
+      white: empty,
+    });
+  });
+
+  it('has no piece anywhere yet', () => {
+    // No army has been brought, so nothing waits in reserve or has routed.
     expect(gameState.reservedUnits).toStrictEqual([]);
     expect(gameState.routedUnits).toStrictEqual([]);
+
+    // Both commanders wait to be placed at setup, and none is lost.
+    expect(gameState.index).toStrictEqual({
+      commanders: { black: 'reserved', white: 'reserved' },
+      units: {},
+    });
     expect(gameState.lostCommanders).toStrictEqual([]);
   });
 
-  // Tutorial and mini both select the small board.
-  it('uses the small board for tutorial', () => {
+  it('has nobody winning yet', () => {
+    // The game has not begun, so it cannot be over.
+    expect(gameState.winner).toBe('pending');
+  });
+
+  it('lays out the board the mode is played on', () => {
+    // Standard has its own board; tutorial and mini share the small one; epic
+    // is played on the large one.
+    expect(createEmptyGameState('standard').boardState.boardType).toBe(
+      'standard',
+    );
     expect(createEmptyGameState('tutorial').boardState.boardType).toBe('small');
-  });
-
-  it('uses the small board for mini', () => {
     expect(createEmptyGameState('mini').boardState.boardType).toBe('small');
-  });
-
-  // Epic selects the large board.
-  it('uses the large board for epic', () => {
     expect(createEmptyGameState('epic').boardState.boardType).toBe('large');
   });
 

@@ -1,10 +1,8 @@
 // The attack-apply an attack leaves behind, with each outcome due or bypassed.
 export { createAttackApplyState } from './createAttackApplyState';
 
-// A rout and a retreat as they open, owing what the rules say is owed.
-// TODO(misleading): this line heads every opened substep below, not only the
-// rout and retreat: engagement and its three kinds, reverse, rally and melee
-// too. Settled by widening it, or by a line per group.
+// Each substep as it opens, owing what the rules say is owed: a rout, an
+// engagement and its three kinds, a reverse, a rally, a melee and a retreat.
 export { createOpenedRoutState } from './createOpenedRoutState';
 export { createOpenedEngagementState } from './createOpenedEngagementState';
 export { createOpenedFlankEngagementResolutionState } from './createOpenedFlankEngagementResolutionState';

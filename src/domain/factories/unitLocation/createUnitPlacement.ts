@@ -1,4 +1,5 @@
-import type { Coordinate, UnitFacing, UnitPlacement } from '@entities';
+import type { UnitFacing, UnitPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 
 /**
  * A placement from the space stood on and the direction faced.

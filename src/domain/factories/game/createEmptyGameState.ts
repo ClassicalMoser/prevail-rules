@@ -1,19 +1,24 @@
-import type { Board, GameModeName } from '@entities';
+import type { Board } from '@entities';
+import { boardSizeByGameMode } from '@ruleValues';
 import type { AuthoritativeGameState } from '@game';
-import { boardSizeByGameMode } from '@entities';
+import type { GameModeName } from '@ruleValues';
 import { createCardState } from './createCardState';
+import { createOwnedCardState } from './createOwnedCardState';
 import { createEmptyBoard } from '@factories/board';
 
 /**
  * The game before anyone has mustered: the board it is played on, empty hands
  * and piles, and a round that has not begun.
  */
-function shell(board: Board): AuthoritativeGameState {
+function createEmptyGameStateOnBoard(board: Board): AuthoritativeGameState {
   return {
     boardState: board,
     // Authoritative because the engine creates the game; a seat's view is
     // projected from this, never created. Both sides start with empty piles.
-    cardState: createCardState(),
+    cardState: createCardState({
+      black: createOwnedCardState({}),
+      white: createOwnedCardState({}),
+    }),
     // White holds the initiative going into round one (§3.3.2), and so sets
     // up first in round 0.
     currentInitiative: 'white',
@@ -57,6 +62,6 @@ export function createEmptyGameState(
   }
   // Lay out an empty board of the size that mode is played on.
   const board = createEmptyBoard(boardSizeByGameMode[name]);
-  const gameState = shell(board);
+  const gameState = createEmptyGameStateOnBoard(board);
   return gameState;
 }

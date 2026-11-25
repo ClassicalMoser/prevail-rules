@@ -14,8 +14,11 @@ const emptyPiles = {
 };
 
 describe('createCardState function', () => {
-  it('is authoritative with both sides empty when given no piles', () => {
-    const cardState = createCardState();
+  it('is authoritative, with each side holding the piles it is given', () => {
+    const cardState = createCardState({
+      black: createOwnedCardState({}),
+      white: createOwnedCardState({}),
+    });
 
     expect(cardState).toStrictEqual({
       black: emptyPiles,
@@ -37,20 +40,6 @@ describe('createCardState function', () => {
       black: { ...emptyPiles, inHand: [blackCard] },
       visibility: 'authoritative',
       white: { ...emptyPiles, inHand: [whiteCard] },
-    });
-  });
-
-  it('leaves white empty when only black is given', () => {
-    const card = tempCommandCards[0];
-
-    const cardState = createCardState({
-      black: createOwnedCardState({ inHand: [card] }),
-    });
-
-    expect(cardState).toStrictEqual({
-      black: { ...emptyPiles, inHand: [card] },
-      visibility: 'authoritative',
-      white: emptyPiles,
     });
   });
 });

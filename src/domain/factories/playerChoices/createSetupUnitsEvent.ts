@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide, UnitWithPlacement } from '@entities';
+import type { PlayerSide, UnitWithPlacement } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { SetupUnitsEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 

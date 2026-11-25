@@ -1,4 +1,5 @@
-import type { Coordinate, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { Coordinate } from '@ruleValues';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
