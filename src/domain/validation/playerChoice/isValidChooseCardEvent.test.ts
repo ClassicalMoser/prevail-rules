@@ -1,46 +1,38 @@
-import { tempCommandCards } from '@sampleValues';
-import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
-import { updateCardState } from '@testing';
-
+import type { AuthoritativeGameState } from '@game';
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
+import {
+  createPlayCardsPhaseState,
+  createPlayableGame,
+  createTestCard,
+} from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 
-import { createChooseCardEvent, createEmptyGameState } from '@factories';
 /**
- * IsValidChooseCardEvent: membership against getLegalChooseCardOptions.
+ * Both players choose a card from hand at once and lay it face down
+ * (§4.1.1). A choice is legal when the card is in the chooser's own hand and
+ * the event shows it as the hand holds it.
+ *
+ * Each player holds one stand-in card, and neither has chosen yet.
  */
 describe('isValidChooseCardEvent function', () => {
-  function stateChooseCardsBothPending(): GameState {
-    const base = createEmptyGameState('standard');
-    const withPhase = updatePhaseState(base, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
+  const blackCard = createTestCard();
+  const whiteCard = createTestCard();
+
+  /** Phase 1, both players still choosing. */
+  function choosingCards(): AuthoritativeGameState {
+    const game = createPlayableGame([], {
+      hands: { black: [blackCard], white: [whiteCard] },
     });
-    return updateCardState(withPhase, {
-      ...withPhase.cardState,
-      black: {
-        ...withPhase.cardState.black,
-        awaitingPlay: null,
-        inHand: [tempCommandCards[2]],
-      },
-      white: {
-        ...withPhase.cardState.white,
-        awaitingPlay: null,
-        inHand: [tempCommandCards[3]],
-      },
-    });
+    const choosing = updatePhaseState(game, createPlayCardsPhaseState());
+    return choosing;
   }
 
-  it('accepts a card that is in the pending player hand', () => {
-    const state = stateChooseCardsBothPending();
-    const event = createChooseCardEvent({
-      card: tempCommandCards[2],
-      player: 'black',
-    });
+  it('accepts a card from the chooser’s own hand', () => {
+    const event = createChooseCardEvent({ card: blackCard, player: 'black' });
 
-    expect(isValidChooseCardEvent(event, state)).toStrictEqual({
+    expect(isValidChooseCardEvent(event, choosingCards())).toStrictEqual({
       result: true,
     });
   });
@@ -48,42 +40,47 @@ describe('isValidChooseCardEvent function', () => {
   it("rejects a card that bears a hand card's id but claims a different cost", () => {
     // The card is shown to every seat as it is chosen, so what the event
     // says the card is must be what the hand holds.
-    const state = stateChooseCardsBothPending();
     const event = createChooseCardEvent({
-      card: { ...tempCommandCards[2], cost: tempCommandCards[2].cost + 5 },
+      card: { ...blackCard, cost: blackCard.cost + 5 },
       player: 'black',
     });
 
-    expect(isValidChooseCardEvent(event, state)).toStrictEqual({
-      errorReason: `Card ${tempCommandCards[2].id} differs from the card held in its cost`,
+    expect(isValidChooseCardEvent(event, choosingCards())).toStrictEqual({
+      errorReason: `Card ${blackCard.id} differs from the card held in its cost`,
       result: false,
     });
   });
 
-  it('rejects a card that is not in the player hand', () => {
-    const state = stateChooseCardsBothPending();
-    const event = createChooseCardEvent({
-      card: tempCommandCards[0],
-      player: 'black',
-    });
+  it('refuses a card that is in the other player’s hand', () => {
+    // Both hands are on offer while both choose, but White may play only
+    // from its own.
+    const event = createChooseCardEvent({ card: blackCard, player: 'white' });
 
-    const validation = isValidChooseCardEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toContain(tempCommandCards[0].id);
+    expect(isValidChooseCardEvent(event, choosingCards())).toStrictEqual({
+      errorReason: `Command card ${blackCard.id} is not a legal choice for white`,
+      result: false,
+    });
+  });
+
+  it('refuses a card that is in no hand', () => {
+    // A card the army does not hold: there is no hand card to compare it with,
+    // so the refusal names the card, not a part of it.
+    const stranger = createTestCard();
+    const event = createChooseCardEvent({ card: stranger, player: 'black' });
+
+    expect(isValidChooseCardEvent(event, choosingCards())).toStrictEqual({
+      errorReason: `Command card ${stranger.id} is not a legal choice for black`,
+      result: false,
+    });
   });
 
   it('throws when asked off the chooseCards step, which the expected check rules out first', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'assignInitiative',
-    });
-    const event = createChooseCardEvent({
-      card: tempCommandCards[2],
-      player: 'black',
-    });
+    // Phase 1 after both cards are in, when they are compared.
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState({ step: 'assignInitiative' }),
+    );
+    const event = createChooseCardEvent({ card: blackCard, player: 'black' });
 
     // A choice sent out of turn is refused by the expected check before
     // membership is asked; reaching here is a fault.

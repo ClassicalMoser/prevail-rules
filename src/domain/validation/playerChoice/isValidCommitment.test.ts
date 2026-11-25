@@ -8,6 +8,8 @@ import { isValidCommitment } from './isValidCommitment';
  * this judges what the player sent against them.
  */
 describe('isValidCommitment function', () => {
+  // Black is the player asked, and holds one card the moment accepts: the
+  // offers are that card and the refusal, as an enumerator lists them.
   const card = createTestCard({ modifiers: ['attack'] });
   const offered = [
     { committedCard: card, player: 'black' as const },
@@ -15,6 +17,7 @@ describe('isValidCommitment function', () => {
   ];
 
   it('accepts an offered card, and an offered refusal', () => {
+    // The card as black holds it, then declining to commit at all.
     expect(
       isValidCommitment(
         { committedCard: card, player: 'black' },
@@ -32,8 +35,10 @@ describe('isValidCommitment function', () => {
   });
 
   it('refuses a card that is not offered, naming the moment', () => {
+    // A card black does not hold, so it was never offered.
     const other = createTestCard({ modifiers: ['speed'] });
 
+    // The reason says which commitment was refused, and with what card.
     expect(
       isValidCommitment(
         { committedCard: other, player: 'black' },
@@ -47,6 +52,7 @@ describe('isValidCommitment function', () => {
   });
 
   it('refuses the other player’s commitment', () => {
+    // White is not the one asked, so even white's refusal is not an answer.
     expect(
       isValidCommitment(
         { committedCard: 'none', player: 'white' },
@@ -62,17 +68,21 @@ describe('isValidCommitment function', () => {
 
   it('refuses a card that bears an offered id but claims other stats', () => {
     // The id names the card held; the stats must be that card's.
-    const claimsMore = {
-      ...card,
-      modifiers: ['attack', 'speed'] as typeof card.modifiers,
-    };
+    const claimsMore = createTestCard({
+      id: card.id,
+      modifiers: ['attack', 'speed'],
+    });
 
+    // Refused with the part of the card that differs.
     expect(
       isValidCommitment(
         { committedCard: claimsMore, player: 'black' },
         offered,
         'ranged attack',
-      ).result,
-    ).toBe(false);
+      ),
+    ).toStrictEqual({
+      errorReason: `Card ${card.id} differs from the card held in its commit stats`,
+      result: false,
+    });
   });
 });

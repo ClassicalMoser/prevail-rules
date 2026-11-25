@@ -1,436 +1,345 @@
-import type { UnitCount, UnitType } from '@entities';
-import {
-  createBoardWithEngagedUnits,
-  createBoardWithUnits,
-  getUnitByStatValue,
-  placed,
-} from '@testing';
-import { createUnitInstance } from '@factories';
+import type { Board, UnitCount } from '@entities';
+import { createEmptySmallBoard, createUnitInstance } from '@factories';
+import { createBoardWithUnits, getUnitByStatValue, placed } from '@testing';
 
 import { eachUnitPresentOnce } from './eachUnitPresentOnce';
 
+// Two sample unit types: the first with Attack 2 (Velites) and the first
+// with Attack 3 (Punic Citizen Spearmen). The check tells units apart only by
+// side, type and number, so any two types will do.
+const velites = getUnitByStatValue('attack', 2);
+const spearmen = getUnitByStatValue('attack', 3);
+
+// White brought two Velites and Black one. Spearmen are a type neither army
+// brought.
+const whiteArmy = new Set<UnitCount>([{ count: 2, unitType: velites }]);
+const blackArmy = new Set<UnitCount>([{ count: 1, unitType: velites }]);
+
+// Each army's pieces, numbered from 1 within their type.
+const whiteVelites1 = createUnitInstance('white', velites, 1);
+const whiteVelites2 = createUnitInstance('white', velites, 2);
+const blackVelites1 = createUnitInstance('black', velites, 1);
+
 /**
  * EachUnitPresentOnce: eachUnitPresentOnce.
+ *
+ * Every piece an army brings stands on one space of the board, alone or
+ * locked with an enemy, until it routs and leaves the battle for good
+ * (§9.3.1). So every unit both armies brought is in exactly one place, and no
+ * other unit is anywhere.
  */
 describe('eachUnitPresentOnce function', () => {
-  const attack2UnitType = getUnitByStatValue('attack', 2);
-  const attack3UnitType = getUnitByStatValue('attack', 3);
+  it('accepts both armies each standing once on the board', () => {
+    // White's two Velites face Black's one across the field.
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(whiteVelites2, 'E-6', 'north'),
+      placed(blackVelites1, 'C-5', 'south'),
+    ]);
 
-  if (!attack2UnitType || !attack3UnitType) {
-    throw new Error('Required unit types not found');
-  }
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
 
-  // Helper: Creates unit instance matching the function's 1-indexed pattern
-  // Function uses: for (let i = 1; i <= count; i++) createUnitInstance(..., i)
-  // So for count=1: creates instance 1, for count=2: creates instances 1 and 2
-  const createExpectedUnit = (
-    playerSide: 'white' | 'black',
-    unitType: UnitType,
-    instanceNumber: number,
-  ) => createUnitInstance(playerSide, unitType, instanceNumber);
+    // White's first Velites and Black's are two pieces, one per side.
+    expect(validation).toStrictEqual({ result: true });
+  });
 
-  // Helper: Creates army set from unit type and count
-  const createArmy = (unitType: UnitType, count: number): Set<UnitCount> =>
-    new Set([{ count, unitType }]);
+  it('counts both units locked in an engaged space', () => {
+    // Black's Velites has walked into White's first, head on, and the two
+    // share E-5 (§6.1.1).
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(blackVelites1, 'E-5', 'south'),
+      placed(whiteVelites2, 'E-6', 'north'),
+    ]);
 
-  describe('valid cases', () => {
-    it('given all units are present once on empty board with empty armies, returns true', () => {
-      const { result } = eachUnitPresentOnce(
-        new Set(),
-        new Set(),
-        createBoardWithUnits([]),
-        new Set(),
-      );
-      expect(result).toBe(true);
-    });
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
 
-    it('given all white units are present once, returns true', () => {
-      const unit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const unit2 = createExpectedUnit('white', attack2UnitType, 2);
-      const whiteArmy = createArmy(attack2UnitType, 2);
-      const board = createBoardWithUnits([
-        placed(unit1, 'E-5', 'north'),
-        placed(unit2, 'E-6', 'north'),
-      ]);
+    // Both units in the engaged space are on the board.
+    expect(validation).toStrictEqual({ result: true });
+  });
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        new Set(),
-      );
-      expect(result).toBe(true);
-    });
+  it('accepts units that have routed, beside those still standing', () => {
+    // White's second Velites and Black's have routed; White's first stands.
+    const board = createBoardWithUnits([placed(whiteVelites1, 'E-5', 'north')]);
+    const routed = new Set([whiteVelites2, blackVelites1]);
 
-    it('given all black units are present once, returns true', () => {
-      const unit1 = createExpectedUnit('black', attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithUnits([placed(unit1, 'E-5', 'north')]);
+    const validation = eachUnitPresentOnce(whiteArmy, blackArmy, board, routed);
 
-      const { result } = eachUnitPresentOnce(
-        new Set(),
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(true);
-    });
+    // A routed unit has left the battle, but the record still names it.
+    expect(validation).toStrictEqual({ result: true });
+  });
 
-    it('given both white and black units are present once, returns true', () => {
-      const whiteUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const blackUnit = createExpectedUnit('black', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithUnits([
-        placed(whiteUnit, 'E-5', 'north'),
-        placed(blackUnit, 'E-6', 'south'),
-      ]);
+  it('refuses a unit standing on two spaces', () => {
+    // White's first Velites is recorded on E-5 and again on E-7.
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(whiteVelites2, 'E-6', 'north'),
+      placed(whiteVelites1, 'E-7', 'north'),
+      placed(blackVelites1, 'C-5', 'south'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(true);
-    });
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
 
-    it('given engaged units are present, returns true', () => {
-      const whiteUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const blackUnit = createExpectedUnit('black', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithEngagedUnits(
-        whiteUnit,
-        blackUnit,
-        'E-5',
-        'north',
-      );
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(true);
-    });
-
-    it('given return true with multiple unit types', () => {
-      const whiteUnit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const whiteUnit2 = createExpectedUnit('white', attack3UnitType, 1);
-      const whiteArmy = new Set<UnitCount>([
-        { count: 1, unitType: attack2UnitType },
-        { count: 1, unitType: attack3UnitType },
-      ]);
-      const board = createBoardWithUnits([
-        placed(whiteUnit1, 'E-5', 'north'),
-        placed(whiteUnit2, 'E-6', 'north'),
-      ]);
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        new Set(),
-      );
-      expect(result).toBe(true);
+    // Refused as one piece recorded twice, not as a piece no army brought.
+    expect(validation).toStrictEqual({
+      errorReason: 'Duplicate unit on board',
+      result: false,
     });
   });
 
-  describe('duplicate units', () => {
-    it('given a unit appears twice on the board, returns false', () => {
-      const unit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithUnits([
-        placed(unit1, 'E-5', 'north'),
-        placed(unit1, 'E-6', 'north'),
-      ]);
+  it('refuses an engaged unit already met standing on an earlier space', () => {
+    // White's first Velites stands on D-5, and is also locked with Black's
+    // Velites on E-5, the next row down.
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'D-5', 'north'),
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(blackVelites1, 'E-5', 'south'),
+      placed(whiteVelites2, 'E-6', 'north'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
-    });
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
 
-    it('given primary unit in engagement appears elsewhere, returns false', () => {
-      const whiteUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const blackUnit = createExpectedUnit('black', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithEngagedUnits(
-        whiteUnit,
-        blackUnit,
-        'E-5',
-        'north',
-      );
-      const space = board.board['E-6'];
-      if (!space) {
-        throw new Error('Space E-6 not found');
-      }
-      board.board['E-6'] = {
-        ...space,
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: whiteUnit,
-        },
-      };
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
-    });
-
-    it('given secondary unit in engagement appears elsewhere, returns false', () => {
-      const whiteUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const blackUnit = createExpectedUnit('black', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithEngagedUnits(
-        whiteUnit,
-        blackUnit,
-        'E-5',
-        'north',
-      );
-      const space = board.board['E-6'];
-      if (!space) {
-        throw new Error('Space E-6 not found');
-      }
-      board.board['E-6'] = {
-        ...space,
-        unitPresence: {
-          facing: 'south',
-          presenceType: 'single',
-          unit: blackUnit,
-        },
-      };
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
+    // The unit standing in the engaged space was already met.
+    expect(validation).toStrictEqual({
+      errorReason: 'Duplicate unit on board',
+      result: false,
     });
   });
 
-  describe('missing units', () => {
-    it('given a unit from army is missing from board, returns false', () => {
-      const unit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 2);
-      const board = createBoardWithUnits([placed(unit1, 'E-5', 'north')]);
+  it('refuses the enemy in an engaged space when it was already met on an earlier space', () => {
+    // Black's Velites stands on D-5, and is also the unit that walked into
+    // White's first Velites on E-5.
+    const board = createBoardWithUnits([
+      placed(blackVelites1, 'D-5', 'south'),
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(blackVelites1, 'E-5', 'south'),
+      placed(whiteVelites2, 'E-6', 'north'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
-    });
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
 
-    it('given white unit is missing, returns false', () => {
-      const blackUnit = createExpectedUnit('black', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithUnits([placed(blackUnit, 'E-5', 'south')]);
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
-    });
-
-    it('given black unit is missing, returns false', () => {
-      const whiteUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithUnits([placed(whiteUnit, 'E-5', 'north')]);
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
+    // The unit that walked in was already met.
+    expect(validation).toStrictEqual({
+      errorReason: 'Duplicate unit on board',
+      result: false,
     });
   });
 
-  describe('unexpected units', () => {
-    it('given board has unit not in armies, returns false', () => {
-      const unit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const unexpectedUnit = createExpectedUnit('white', attack3UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const board = createBoardWithUnits([
-        placed(unit1, 'E-5', 'north'),
-        placed(unexpectedUnit, 'E-6', 'north'),
-      ]);
+  it('refuses a unit standing on a later space after an engagement counted it', () => {
+    // White's first Velites is locked with Black's on E-5, and is also
+    // recorded on F-5, the next row down.
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(blackVelites1, 'E-5', 'south'),
+      placed(whiteVelites2, 'E-6', 'north'),
+      placed(whiteVelites1, 'F-5', 'north'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
-    });
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
 
-    it('given board has unit with wrong instance number, returns false', () => {
-      const unit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const wrongInstanceUnit = createUnitInstance('white', attack2UnitType, 3); // Should be 2
-      const whiteArmy = createArmy(attack2UnitType, 2);
-      const board = createBoardWithUnits([
-        placed(unit1, 'E-5', 'north'),
-        placed(wrongInstanceUnit, 'E-6', 'north'),
-      ]);
-
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        new Set(),
-      );
-      expect(result).toBe(false);
+    // Both units of an engagement are remembered as met.
+    expect(validation).toStrictEqual({
+      errorReason: 'Duplicate unit on board',
+      result: false,
     });
   });
 
-  describe('routed units', () => {
-    it('given all expected units are routed and none on board, returns true', () => {
-      const routedUnit1 = createExpectedUnit('white', attack2UnitType, 1);
-      const routedUnit2 = createExpectedUnit('white', attack2UnitType, 2);
-      const whiteArmy = createArmy(attack2UnitType, 2);
-      const routedUnits = new Set([routedUnit1, routedUnit2]);
-      const board = createBoardWithUnits([]);
+  it('refuses a unit numbered beyond the count its army brought', () => {
+    // White brought two Velites, but a third stands on E-7.
+    const whiteVelites3 = createUnitInstance('white', velites, 3);
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(whiteVelites2, 'E-6', 'north'),
+      placed(whiteVelites3, 'E-7', 'north'),
+      placed(blackVelites1, 'C-5', 'south'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(true);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
+
+    // Units are numbered from 1 within their type, so no army brought it.
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected unit on board',
+      result: false,
     });
+  });
 
-    it('given some units are on board and some are routed, returns true', () => {
-      const boardUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const routedUnit = createExpectedUnit('white', attack2UnitType, 2);
-      const whiteArmy = createArmy(attack2UnitType, 2);
-      const routedUnits = new Set([routedUnit]);
-      const board = createBoardWithUnits([placed(boardUnit, 'E-5', 'north')]);
+  it('refuses a unit in an engaged space of a type its army never brought', () => {
+    // White Spearmen stand on E-5 where Black's Velites walked into them;
+    // White brought no Spearmen.
+    const whiteSpearmen1 = createUnitInstance('white', spearmen, 1);
+    const board = createBoardWithUnits([
+      placed(whiteSpearmen1, 'E-5', 'north'),
+      placed(blackVelites1, 'E-5', 'south'),
+      placed(whiteVelites1, 'E-6', 'north'),
+      placed(whiteVelites2, 'E-7', 'north'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(true);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
+
+    // The unit standing in the engaged space is no army's.
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected unit on board',
+      result: false,
     });
+  });
 
-    it('given routed units from both sides are valid, returns true', () => {
-      const whiteRoutedUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const blackRoutedUnit = createExpectedUnit('black', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const blackArmy = createArmy(attack2UnitType, 1);
-      const routedUnits = new Set([whiteRoutedUnit, blackRoutedUnit]);
-      const board = createBoardWithUnits([]);
+  it('refuses the enemy in an engaged space when its army never brought that type', () => {
+    // Black Spearmen walked into White's first Velites on E-5; Black brought
+    // no Spearmen.
+    const blackSpearmen1 = createUnitInstance('black', spearmen, 1);
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(blackSpearmen1, 'E-5', 'south'),
+      placed(whiteVelites2, 'E-6', 'north'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        blackArmy,
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(true);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
+
+    // The unit that walked in is no army's.
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected unit on board',
+      result: false,
     });
+  });
 
-    it('given routed unit is not in expected units, returns false', () => {
-      const unexpectedRoutedUnit = createExpectedUnit(
-        'white',
-        attack3UnitType,
-        1,
-      );
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const routedUnits = new Set([unexpectedRoutedUnit]);
-      const board = createBoardWithUnits([]);
+  it('refuses an army whose unit is neither on the board nor routed', () => {
+    // White's second Velites is nowhere.
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(blackVelites1, 'C-5', 'south'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(false);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set(),
+    );
+
+    // The record has lost a piece.
+    expect(validation).toStrictEqual({
+      errorReason: 'One or more units missing from game state',
+      result: false,
     });
+  });
 
-    it('given routed unit has wrong instance number, returns false', () => {
-      const wrongInstanceRoutedUnit = createUnitInstance(
-        'white',
-        attack2UnitType,
-        3,
-      ); // Should be 1 or 2
-      const whiteArmy = createArmy(attack2UnitType, 2);
-      const routedUnits = new Set([wrongInstanceRoutedUnit]);
-      const board = createBoardWithUnits([]);
+  it('refuses a routed unit its army never brought', () => {
+    // Every unit both armies brought stands on the board, and a third White
+    // Velites is recorded as routed.
+    const whiteVelites3 = createUnitInstance('white', velites, 3);
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(whiteVelites2, 'E-6', 'north'),
+      placed(blackVelites1, 'C-5', 'south'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(false);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set([whiteVelites3]),
+    );
+
+    // The reason names the board though the unit was found routed (see the
+    // TODO(misleading) mark in the source).
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected unit on board',
+      result: false,
     });
+  });
 
-    it('given routed unit also appears on board, returns false', () => {
-      const unit = createExpectedUnit('white', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      const routedUnits = new Set([unit]);
-      const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
+  it('refuses a routed unit still standing on the board', () => {
+    // White's first Velites stands on E-5 and is also recorded as routed.
+    const board = createBoardWithUnits([
+      placed(whiteVelites1, 'E-5', 'north'),
+      placed(whiteVelites2, 'E-6', 'north'),
+      placed(blackVelites1, 'C-5', 'south'),
+    ]);
 
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(false);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      board,
+      new Set([whiteVelites1]),
+    );
+
+    // A routed unit has left the battle for good (§9.3.1); the board already
+    // counted this one.
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected unit on board',
+      result: false,
     });
+  });
 
-    it('given same unit is routed twice, returns false', () => {
-      const routedUnit = createExpectedUnit('white', attack2UnitType, 1);
-      const whiteArmy = createArmy(attack2UnitType, 1);
-      // Create a duplicate unit with same properties (different object reference)
-      const routedUnitDuplicate = createExpectedUnit(
-        'white',
-        attack2UnitType,
-        1,
-      );
-      const routedUnits = new Set([routedUnit, routedUnitDuplicate]);
-      const board = createBoardWithUnits([]);
+  it('refuses a board missing a space, rather than throwing', () => {
+    // A small board read from outside with its far corner, H-12, taken away.
+    // Every unit has routed, so the hole is the record's only fault.
+    const { 'H-12': _farCorner, ...withoutFarCorner } =
+      createEmptySmallBoard().board;
+    const boardWithHole: Board = {
+      board: withoutFarCorner,
+      boardType: 'small',
+    };
+    const routed = new Set([whiteVelites1, whiteVelites2, blackVelites1]);
 
-      // First routed unit will be removed from expectedUnits successfully
-      // Second routed unit will fail removeExpectedUnit (already removed) and return false
-      const { result } = eachUnitPresentOnce(
-        whiteArmy,
-        new Set(),
-        board,
-        routedUnits,
-      );
-      expect(result).toBe(false);
+    const validation = eachUnitPresentOnce(
+      whiteArmy,
+      blackArmy,
+      boardWithHole,
+      routed,
+    );
+
+    // Reading the missing space throws, and the entry point keeps its
+    // message under what it was checking.
+    expect(validation).toStrictEqual({
+      errorReason:
+        'Error checking each unit is present once: Coordinate H-12 does not exist on small board.',
+      result: false,
     });
   });
 });

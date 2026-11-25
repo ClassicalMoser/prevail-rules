@@ -1,8 +1,13 @@
-import { PLAY_CARDS_PHASE } from '@game';
+import type { GameState } from '@game';
 import type { MoveDelta } from '@entities';
 import {
+  createChooseRetreatOptionEvent,
+  createEmptyGameState,
+} from '@factories';
+import {
   createAttackApplyStateWithRetreat,
-  createIssueCommandsPhaseState,
+  createGameStateResolvingCommand,
+  createPlayCardsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
   enemyBlockingStraightBack,
@@ -14,80 +19,104 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { isValidChooseRetreatOptionEvent } from './isValidChooseRetreatOptionEvent';
 
-import {
-  createChooseRetreatOptionEvent,
-  createEmptyGameState,
-} from '@factories';
 /**
- * IsValidChooseRetreatOptionEvent: membership against getLegalChooseRetreatOptionEvents.
+ * Where several equally small retreats tie, the retreating unit's owner
+ * chooses among them (§9.1.3), naming one by its path.
+ *
+ * White's unit on E-5, facing north, has been shot and must fall back. A
+ * black unit on F-5, its back to White's, bars the straight step back and
+ * leaves two equal ways round it: a 45° turn either way, then a step.
  */
 describe('isValidChooseRetreatOptionEvent function', () => {
   // The two tied ways back the engine offers, each named by its moves.
   const optionA: MoveDelta[] = ['turnLeft', 'step'];
   const optionB: MoveDelta[] = ['turnRight', 'step'];
 
-  function stateWithRangedRetreat() {
+  /** The shot's retreat open on White's unit, its way back not yet chosen. */
+  function stateWithRangedRetreat(): GameState {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement = placed(unit, 'E-5', 'north');
-    // A black unit on F-5, its back to white's, bars the straight step back
-    // and leaves two equal ways round it (§9.1.3).
     const blocker = enemyBlockingStraightBack(placement);
-    const withUnit = replaceBoard(
+    const withUnits = replaceBoard(
       state,
       addUnitToBoard(addUnitToBoard(state.boardState, placement), blocker),
     );
+
+    // The engine, not the spec, works out the tied retreats.
     const tiedPaths = legalRetreatsOf(placement, [blocker]);
-    const attackApply = createAttackApplyStateWithRetreat(
-      placement.unit,
-      tiedPaths,
-    );
-    return updatePhaseState(
-      withUnit,
-      createIssueCommandsPhaseState(withUnit, {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          withUnit,
-          { attackApplyState: attackApply },
-        ),
-      }),
-    );
+
+    // White's unit is the target of the shot, and its retreat is open.
+    const attackApply = createAttackApplyStateWithRetreat(unit, tiedPaths);
+    const shot = createRangedAttackResolutionState(withUnits, {
+      attackApplyState: attackApply,
+      defendingUnit: unit,
+    });
+    const retreating = createGameStateResolvingCommand(shot, withUnits);
+    return retreating;
   }
 
-  it('accepts a retreat option listed on the retreat substep', () => {
+  it('accepts either of the tied retreats from the unit’s owner', () => {
+    // The owner chooses among equally small retreats by where they end
+    // (§9.1.3); either is theirs to pick.
     const state = stateWithRangedRetreat();
-    const event = createChooseRetreatOptionEvent({
+    const turningLeft = createChooseRetreatOptionEvent({
+      path: optionA,
       player: 'white',
+    });
+    const turningRight = createChooseRetreatOptionEvent({
       path: optionB,
+      player: 'white',
     });
 
-    expect(isValidChooseRetreatOptionEvent(event, state)).toStrictEqual({
+    expect(isValidChooseRetreatOptionEvent(turningLeft, state)).toStrictEqual({
+      result: true,
+    });
+    expect(isValidChooseRetreatOptionEvent(turningRight, state)).toStrictEqual({
       result: true,
     });
   });
 
-  it('rejects a path that is not among legalRetreatPaths', () => {
-    const state = stateWithRangedRetreat();
+  it('refuses a way back that is not one of the smallest retreats', () => {
+    // An about-face is never part of a retreat (§9.1.4), so this path was not
+    // offered.
     const event = createChooseRetreatOptionEvent({
-      player: 'white',
       path: ['turnAbout', 'step'],
+      player: 'white',
     });
 
-    const validation = isValidChooseRetreatOptionEvent(event, state);
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toContain('turnAbout, step');
+    expect(
+      isValidChooseRetreatOptionEvent(event, stateWithRangedRetreat()),
+    ).toStrictEqual({
+      errorReason: 'Retreat path turnAbout, step is not one offered to white',
+      result: false,
+    });
+  });
+
+  it('refuses a choice from the player whose unit is not retreating', () => {
+    // Black shot White's unit, but the way back is White's to choose
+    // (§9.1.3).
+    const event = createChooseRetreatOptionEvent({
+      path: optionB,
+      player: 'black',
+    });
+
+    expect(
+      isValidChooseRetreatOptionEvent(event, stateWithRangedRetreat()),
+    ).toStrictEqual({
+      errorReason: 'Retreat path turnRight, step is not one offered to black',
+      result: false,
+    });
   });
 
   it('throws when no retreat awaits a choice, which the expected check rules out first', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
     const event = createChooseRetreatOptionEvent({
-      player: 'white',
       path: optionA,
+      player: 'white',
     });
 
     // A choice sent out of turn is refused by the expected check before

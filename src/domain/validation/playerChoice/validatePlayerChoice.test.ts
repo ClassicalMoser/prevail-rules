@@ -1,128 +1,110 @@
-import { tempCommandCards } from '@sampleValues';
-import type { PlayerChoiceEvent } from '@events';
-import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import {
   createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
   createPlayableGame,
-  updateCardState,
+  createTestCard,
 } from '@testing';
 
 import { updatePhaseState } from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
-import {
-  createChooseCardEvent,
-  createEmptyGameState,
-  createMoveCommanderEvent,
-} from '@factories';
+import { createChooseCardEvent, createMoveCommanderEvent } from '@factories';
+
+// Each side's hand; each card is held by one player only.
+const blackCard = createTestCard();
+const blackSpareCard = createTestCard();
+const whiteCard = createTestCard();
+const whiteSpareCard = createTestCard();
+
+/**
+ * Phase 1 of a game under way, Black holding the initiative: both players
+ * are asked for a card at once (§4.1.1), and each holds two, so neither hand
+ * empties on playing one (§11.1).
+ */
+function choosingCards(): AuthoritativeGameState {
+  const game = createPlayableGame(
+    [
+      { coord: 'H-5', facing: 'north', player: 'black' },
+      { coord: 'B-5', facing: 'south', player: 'white' },
+    ],
+    {
+      hands: {
+        black: [blackCard, blackSpareCard],
+        white: [whiteCard, whiteSpareCard],
+      },
+      initiative: 'black',
+    },
+  );
+  const choosing = updatePhaseState(game, createPlayCardsPhaseState());
+  return choosing;
+}
+
 /**
  * ValidatePlayerChoice: Validates a player choice against the current game state.
+ *
+ * It asks in order whether the choice is expected, whether it is well formed,
+ * and whether the rules allow it, and answers the first refusal. It never
+ * throws: a fault beneath it becomes a refusal naming its cause.
  */
 describe('validatePlayerChoice function', () => {
-  function stateInPlayCardsChooseCards(): GameState {
-    const base = createEmptyGameState('standard');
-    const withPhase = updatePhaseState(base, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
+  it('refuses a choice the game is not waiting for, before reading what it holds', () => {
+    // Phase 1 asks for cards; moving a commander belongs to Phase 2, so the
+    // choice is refused as unexpected without its contents being judged.
+    const event = createMoveCommanderEvent({ player: 'black', to: 'G-5' });
+
+    expect(validatePlayerChoice(event, choosingCards())).toStrictEqual({
+      errorReason: 'Expected chooseCard, got moveCommander',
+      result: false,
     });
-    return updateCardState(withPhase, {
-      ...withPhase.cardState,
-      black: {
-        ...withPhase.cardState.black,
-        awaitingPlay: null,
-        inHand: [tempCommandCards[2]],
-      },
-      white: {
-        ...withPhase.cardState.white,
-        awaitingPlay: null,
-        inHand: [tempCommandCards[3]],
-      },
+  });
+
+  it('refuses an expected choice that does not parse, naming what is malformed', () => {
+    // Black is asked for a card, and sends one whose initiative is 9; a card
+    // shows an initiative of 1 to 4 (§4.1.3), so no card could look like it.
+    const event = createChooseCardEvent({
+      card: { ...blackCard, initiative: 9 },
+      player: 'black',
     });
+
+    // The refusal carries the schema's own account of the fault: the path
+    // to the bad field and the bound it broke.
+    expect(validatePlayerChoice(event, choosingCards())).toStrictEqual({
+      errorReason: `Invalid player choice event: [
+  {
+    "origin": "number",
+    "code": "too_big",
+    "maximum": 4,
+    "inclusive": true,
+    "path": [
+      "card",
+      "initiative"
+    ],
+    "message": "Too big: expected number to be <=4"
   }
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+]`,
+      result: false,
+    });
   });
 
-  it('fails when a game effect is expected instead of player input', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'assignInitiative',
+  it('refuses an expected, well-formed choice the rules do not allow', () => {
+    // Black is asked for a card and names one White holds: a well-formed
+    // card, but not one Black may lay down (§4.1.1).
+    const event = createChooseCardEvent({ card: whiteCard, player: 'black' });
+
+    expect(validatePlayerChoice(event, choosingCards())).toStrictEqual({
+      errorReason: `Command card ${whiteCard.id} is not a legal choice for black`,
+      result: false,
     });
-    const event = createChooseCardEvent({
-      card: tempCommandCards[0],
-      player: 'black',
-    });
-
-    const validation = validatePlayerChoice(event, state);
-
-    // eslint-disable-next-line no-console
-    console.log(validation);
-
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toContain('gameEffect');
-    expect(validation.errorReason).toContain('not a player choice');
   });
 
-  it('fails when the wrong player acts for the expected source', () => {
-    const withPhase = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
+  it('accepts an expected, well-formed choice the rules allow', () => {
+    // Black lays a card from its own hand.
+    const event = createChooseCardEvent({ card: blackCard, player: 'black' });
+
+    expect(validatePlayerChoice(event, choosingCards())).toStrictEqual({
+      result: true,
     });
-    const state = updateCardState(withPhase, {
-      ...withPhase.cardState,
-      black: {
-        ...withPhase.cardState.black,
-        // Already chose (awaitingPlay set); hand must stay non-empty so endgame
-        // does not short-circuit before the wrong-player check.
-        awaitingPlay: tempCommandCards[0],
-        inHand: [tempCommandCards[4]],
-      },
-      white: {
-        ...withPhase.cardState.white,
-        awaitingPlay: null,
-        inHand: [tempCommandCards[2]],
-      },
-    });
-
-    const event = createChooseCardEvent({
-      card: tempCommandCards[0],
-      player: 'black',
-    });
-
-    const validation = validatePlayerChoice(event, state);
-
-    const expectedErrorMessage = 'Expected input from white, not black';
-
-    // eslint-disable-next-line no-console
-    console.log(validation);
-
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toMatch(expectedErrorMessage);
-  });
-
-  it('fails when choice type does not match the expected choice', () => {
-    const state = stateInPlayCardsChooseCards();
-    const event: PlayerChoiceEvent = createMoveCommanderEvent({
-      player: 'black',
-      to: 'E-6',
-    });
-
-    const validation = validatePlayerChoice(event, state);
-
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) {
-      throw new Error('expected fail');
-    }
-    expect(validation.errorReason).toContain('chooseCard');
-    expect(validation.errorReason).toContain('moveCommander');
   });
 
   it('turns a fault found while checking legality into a refusal that names the cause', () => {

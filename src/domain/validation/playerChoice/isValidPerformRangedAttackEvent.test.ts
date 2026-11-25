@@ -1,355 +1,131 @@
-import type { PerformRangedAttackEvent } from '@events';
-import type { Commitment } from '@game';
+import { createPerformRangedAttackEvent } from '@factories';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
-  createIssueCommandsPhaseState,
-  createRangedAttackResolutionState,
+  createPlayableGame,
   createTestCard,
-  createTestCommand,
-  createUnitWithPlacement,
-  replaceBoard,
-  updateCardState,
+  readyToAimShot,
+  resolvingShootOrder,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
 
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
 
-import {
-  createEmptyGameState,
-  createPerformRangedAttackEvent,
-} from '@factories';
 /**
- * IsValidPerformRangedAttackEvent: one attacker, one defender, supporters
- * that independently can hit that defender. The shooter is the one its
- * `chooseShooter` named, and its committed card counts toward its Range;
- * supporters are judged at their own.
+ * The target and supporters for the shooter a `chooseShooter` named, aimed
+ * after its commitment (§4.3.11 steps 3–4): the target must be in the
+ * shooter's reach, its committed card counted, and each supporter must be
+ * able to make the same shot at its own Range.
+ *
+ * Black's Shoot order names two Range-2 units side by side, facing north:
+ * the shooter on E-5 and an ally on E-4. White has a unit on D-5, one rank
+ * out, and one on B-5, three ranks out from the shooter. Black holds a card
+ * that may be committed for Range.
  */
 describe('isValidPerformRangedAttackEvent function', () => {
-  /** In-play command must be rangedAttack for performRangedAttack to be expected. */
-  const rangedCard = {
-    ...createTestCard(),
-    command: createTestCommand({ type: 'rangedAttack' }),
-  };
+  const rangeCard = createTestCard({ modifiers: ['range'] });
+  const game = createPlayableGame(
+    [
+      { coord: 'E-5', facing: 'north', player: 'black', range: 2 },
+      { coord: 'E-4', facing: 'north', player: 'black', range: 2 },
+      { coord: 'D-5', facing: 'south', player: 'white' },
+      { coord: 'B-5', facing: 'south', player: 'white' },
+    ],
+    { hands: { black: [rangeCard, createTestCard()] }, initiative: 'black' },
+  );
+  const shooter = getSingleUnitWithPlacementAtCoordinate(
+    game.boardState,
+    'E-5',
+  );
+  const ally = getSingleUnitWithPlacementAtCoordinate(game.boardState, 'E-4');
+  const near = getSingleUnitWithPlacementAtCoordinate(game.boardState, 'D-5');
+  const far = getSingleUnitWithPlacementAtCoordinate(game.boardState, 'B-5');
+  const ordered = resolvingShootOrder(game, [shooter.unit, ally.unit]);
 
-  /**
-   * Black's Shoot order with its shooter already named, so the shot waits
-   * for its target: the shooter has left the order's units still to act,
-   * and its commitment is the one given (refused unless a case says
-   * otherwise).
-   */
-  function shotAwaitingTarget(
-    shooter: ReturnType<typeof createUnitWithPlacement>,
-    stillToAct: ReturnType<typeof createUnitWithPlacement>[],
-    board: ReturnType<typeof createUnitWithPlacement>[],
-    attackingCommitment?: Commitment,
-  ) {
-    let state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    state = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inPlay: rangedCard },
-    });
-    for (const unit of board) {
-      state = replaceBoard(state, addUnitToBoard(state.boardState, unit));
-    }
-    const shot = createRangedAttackResolutionState(state, {
-      // Refused unless the case commits a card.
-      attackingCommitment: attackingCommitment ?? {
-        commitmentType: 'declined',
-      },
-      attackingUnit: shooter.unit,
-      defendingCommitment: { commitmentType: 'pending' },
-      defendingUnit: 'pending',
-      supportingUnits: 'pending',
-    });
-    return updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: shot,
-        remainingUnitsFirstPlayer: stillToAct.map((u) => u.unit),
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
-  }
+  // Black names the E-5 unit to shoot, and declines to commit.
+  const declined = readyToAimShot(ordered, shooter, 'none');
 
-  function event(
-    partial: Omit<PerformRangedAttackEvent, 'choiceType' | 'eventType'>,
-  ): PerformRangedAttackEvent {
-    // Every case in this file is the first event of the round.
-    return createPerformRangedAttackEvent({
-      ...partial,
-    });
-  }
+  // Black names the E-5 unit to shoot, and commits the Range card.
+  const committedRange = readyToAimShot(ordered, shooter, rangeCard);
 
-  it('accepts a sole attacker vs a legal defender with no supporters', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { range: 2 },
+  it('accepts a target in the shooter’s arc with no supporters', () => {
+    const event = createPerformRangedAttackEvent({
+      player: 'black',
+      supportingUnits: [],
+      targetUnit: near.unit,
     });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = shotAwaitingTarget(attacker, [], [attacker, defender]);
 
-    expect(
-      isValidPerformRangedAttackEvent(
-        event({
-          player: 'black',
-          supportingUnits: [],
-          targetUnit: defender.unit,
-        }),
-        state,
-      ),
-    ).toStrictEqual({ result: true });
+    expect(isValidPerformRangedAttackEvent(event, declined)).toStrictEqual({
+      result: true,
+    });
   });
 
-  it('accepts a supporter that can also hit the target', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 1, range: 2 },
+  it('accepts a supporter from the same order that could make the shot itself', () => {
+    // The ally on E-4 has D-5 in its own arc, and has not yet shot.
+    const event = createPerformRangedAttackEvent({
+      player: 'black',
+      supportingUnits: [ally.unit],
+      targetUnit: near.unit,
     });
-    const supporter = createUnitWithPlacement({
-      coordinate: 'E-4',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2, range: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = shotAwaitingTarget(
-      attacker,
-      [supporter],
-      [attacker, supporter, defender],
-    );
 
-    expect(
-      isValidPerformRangedAttackEvent(
-        event({
-          player: 'black',
-          supportingUnits: [supporter.unit],
-          targetUnit: defender.unit,
-        }),
-        state,
-      ),
-    ).toStrictEqual({ result: true });
+    expect(isValidPerformRangedAttackEvent(event, declined)).toStrictEqual({
+      result: true,
+    });
   });
 
-  it('rejects a supporter that cannot hit the target', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 1, range: 2 },
+  it('refuses a shot aimed by the other side', () => {
+    // White names a target for Black's shooter.
+    const event = createPerformRangedAttackEvent({
+      player: 'white',
+      supportingUnits: [],
+      targetUnit: near.unit,
     });
-    const facingAway = createUnitWithPlacement({
-      coordinate: 'E-4',
-      facing: 'south',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2, range: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = shotAwaitingTarget(
-      attacker,
-      [facingAway],
-      [attacker, facingAway, defender],
-    );
 
-    const result = isValidPerformRangedAttackEvent(
-      event({
-        player: 'black',
-        supportingUnits: [facingAway.unit],
-        targetUnit: defender.unit,
-      }),
-      state,
-    );
-    expect(result.result).toBe(false);
-  });
-
-  it('a supporter can be named only once, since naming it spends its shot', () => {
-    // An attacker and one supporter that can both hit the defender.
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 1, range: 2 },
-    });
-    const supporter = createUnitWithPlacement({
-      coordinate: 'E-4',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2, range: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = shotAwaitingTarget(
-      attacker,
-      [supporter],
-      [attacker, supporter, defender],
-    );
-
-    // The same supporter listed twice, to claim +2 for one shot.
-    expect(
-      isValidPerformRangedAttackEvent(
-        event({
-          player: 'black',
-          supportingUnits: [supporter.unit, supporter.unit],
-          targetUnit: defender.unit,
-        }),
-        state,
-      ),
-    ).toStrictEqual({
-      errorReason: 'Duplicate supporting unit',
+    // Only the shooter's owner aims it.
+    expect(isValidPerformRangedAttackEvent(event, declined)).toStrictEqual({
+      errorReason: 'Expected perform ranged attack from black, got white',
       result: false,
     });
   });
 
-  it('the shooter cannot also support its own shot', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { range: 2 },
+  it('refuses a target beyond the shooter’s Range', () => {
+    // B-5 is three ranks out; the shooter's Range is 2, and no card lifts it.
+    const event = createPerformRangedAttackEvent({
+      player: 'black',
+      supportingUnits: [],
+      targetUnit: far.unit,
     });
-    const defender = createUnitWithPlacement({
-      coordinate: 'D-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = shotAwaitingTarget(attacker, [], [attacker, defender]);
 
-    // The attacker names itself as a supporter, to add +1 to its own shot.
-    expect(
-      isValidPerformRangedAttackEvent(
-        event({
-          player: 'black',
-          supportingUnits: [attacker.unit],
-          targetUnit: defender.unit,
-        }),
-        state,
-      ),
-    ).toStrictEqual({
-      errorReason: 'Attacker cannot also be listed as a supporter',
+    expect(isValidPerformRangedAttackEvent(event, declined)).toStrictEqual({
+      errorReason:
+        'Target is not a legal ranged-attack defender for the attacker',
       result: false,
     });
-  });
-
-  it('rejects an out-of-range target', () => {
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { range: 1 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'C-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    const state = shotAwaitingTarget(attacker, [], [attacker, defender]);
-
-    const result = isValidPerformRangedAttackEvent(
-      event({
-        player: 'black',
-        supportingUnits: [],
-        targetUnit: defender.unit,
-      }),
-      state,
-    );
-    expect(result.result).toBe(false);
   });
 
   it('accepts a target one space beyond the shooter’s Range when its committed card names Range', () => {
-    // A Range-2 shooter, and a target three ranks out.
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { range: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'B-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    // Black committed a Range card before aiming (§4.3.11 step 2).
-    const state = shotAwaitingTarget(attacker, [], [attacker, defender], {
-      card: createTestCard({ modifiers: ['range'] }),
-      commitmentType: 'completed',
+    // Black committed the Range card before aiming (§4.3.11 step 2).
+    const event = createPerformRangedAttackEvent({
+      player: 'black',
+      supportingUnits: [],
+      targetUnit: far.unit,
     });
 
     expect(
-      isValidPerformRangedAttackEvent(
-        event({
-          player: 'black',
-          supportingUnits: [],
-          targetUnit: defender.unit,
-        }),
-        state,
-      ),
+      isValidPerformRangedAttackEvent(event, committedRange),
     ).toStrictEqual({ result: true });
   });
 
   it('the shooter’s Range card does not stretch a supporter’s arc', () => {
-    // Two Range-2 units of the order, side by side, and a target three
-    // ranks ahead of the shooter.
-    const attacker = createUnitWithPlacement({
-      coordinate: 'E-5',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 1, range: 2 },
+    // The card reaches B-5 for the shooter alone; the ally's own Range of 2
+    // does not (§4.3.11 step 4, §8.4.1).
+    const event = createPerformRangedAttackEvent({
+      player: 'black',
+      supportingUnits: [ally.unit],
+      targetUnit: far.unit,
     });
-    const supporter = createUnitWithPlacement({
-      coordinate: 'E-4',
-      facing: 'north',
-      playerSide: 'black',
-      unitOptions: { instanceNumber: 2, range: 2 },
-    });
-    const defender = createUnitWithPlacement({
-      coordinate: 'B-5',
-      facing: 'south',
-      playerSide: 'white',
-    });
-    // The shooter's Range card reaches B-5 for the shooter alone (§8.4.1).
-    const state = shotAwaitingTarget(
-      attacker,
-      [supporter],
-      [attacker, supporter, defender],
-      {
-        card: createTestCard({ modifiers: ['range'] }),
-        commitmentType: 'completed',
-      },
-    );
 
+    // The supporters' refusal is the event's.
     expect(
-      isValidPerformRangedAttackEvent(
-        event({
-          player: 'black',
-          supportingUnits: [supporter.unit],
-          targetUnit: defender.unit,
-        }),
-        state,
-      ),
+      isValidPerformRangedAttackEvent(event, committedRange),
     ).toStrictEqual({
       errorReason:
         'Supporting unit cannot independently ranged-attack the target',

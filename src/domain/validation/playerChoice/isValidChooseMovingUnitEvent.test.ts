@@ -1,17 +1,12 @@
-import { PLAY_CARDS_PHASE } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import { createChooseMovingUnitEvent, createEmptyGameState } from '@factories';
+import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
 import {
-  createIssueCommandsPhaseState,
-  createTestCard,
-  createUnitWithPlacement,
-  replaceBoard,
-  updateCardState,
+  createPlayCardsPhaseState,
+  createPlayableGame,
+  resolvingMoveOrder,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
+import { updatePhaseState } from '@transforms';
 
 import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
 
@@ -19,40 +14,43 @@ import { isValidChooseMovingUnitEvent } from './isValidChooseMovingUnitEvent';
  * Naming the next unit to move under a Move order (§4.3.10): one of the
  * ordered units still to move, standing where the board has it.
  *
- * Black carries out a Move card for its unit on E-5 facing north.
+ * Black holds the initiative and carries out a Move order for its units on
+ * E-5 and E-7. Its unit on E-9 was not ordered.
  */
 describe('isValidChooseMovingUnitEvent function', () => {
-  const ordered = createUnitWithPlacement({
-    coordinate: 'E-5',
-    facing: 'north',
-    playerSide: 'black',
-  });
+  const game = createPlayableGame(
+    [
+      ['E-5', 'black'],
+      ['E-7', 'black'],
+      ['E-9', 'black'],
+    ],
+    { initiative: 'black' },
+  );
+  const firstOrdered = getSingleUnitWithPlacementAtCoordinate(
+    game.boardState,
+    'E-5',
+  ).unit;
+  const secondOrdered = getSingleUnitWithPlacementAtCoordinate(
+    game.boardState,
+    'E-7',
+  ).unit;
+  const notOrdered = getSingleUnitWithPlacementAtCoordinate(
+    game.boardState,
+    'E-9',
+  ).unit;
 
-  function resolvingOrder() {
-    let state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'black',
-    );
-    state = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inPlay: createTestCard() },
-    });
-    state = replaceBoard(state, addUnitToBoard(state.boardState, ordered));
-    const resolving = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: 'pending',
-        remainingUnitsFirstPlayer: [ordered.unit],
-        step: 'firstPlayerResolveCommands',
-      }),
-    );
+  /** Black's Move order under way, both its units still to move. */
+  function resolvingOrder(): AuthoritativeGameState {
+    const resolving = resolvingMoveOrder(game, [firstOrdered, secondOrdered]);
     return resolving;
   }
 
-  it('accepts an ordered unit still to move', () => {
+  it('accepts either ordered unit still to move, in any order', () => {
+    // Units are resolved one at a time in any order the player likes
+    // (§4.3.9), so the second unit the order named may go first.
     const event = createChooseMovingUnitEvent({
       player: 'black',
-      unit: ordered.unit,
+      unit: secondOrdered,
     });
 
     expect(isValidChooseMovingUnitEvent(event, resolvingOrder())).toStrictEqual(
@@ -60,10 +58,25 @@ describe('isValidChooseMovingUnitEvent function', () => {
     );
   });
 
+  it('refuses a unit the order did not name', () => {
+    // A unit is moved only when an order names it (§4.3.2).
+    const event = createChooseMovingUnitEvent({
+      player: 'black',
+      unit: notOrdered,
+    });
+
+    expect(isValidChooseMovingUnitEvent(event, resolvingOrder())).toStrictEqual(
+      {
+        errorReason: 'Unit is not a legal move candidate for black',
+        result: false,
+      },
+    );
+  });
+
   it('refuses the other side naming a unit', () => {
     const event = createChooseMovingUnitEvent({
       player: 'white',
-      unit: ordered.unit,
+      unit: firstOrdered,
     });
 
     expect(isValidChooseMovingUnitEvent(event, resolvingOrder())).toStrictEqual(
@@ -75,16 +88,14 @@ describe('isValidChooseMovingUnitEvent function', () => {
   });
 
   it('throws when asked where no Move order is being carried out, which the expected check rules out first', () => {
+    // Cards are being chosen, not orders carried out.
     const state = updatePhaseState(
-      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-      {
-        phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
-      },
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
     );
     const event = createChooseMovingUnitEvent({
       player: 'black',
-      unit: ordered.unit,
+      unit: firstOrdered,
     });
 
     // A unit named while cards are chosen is refused by the expected check

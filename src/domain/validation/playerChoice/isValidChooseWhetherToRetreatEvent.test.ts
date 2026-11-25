@@ -1,82 +1,81 @@
-import { PLAY_CARDS_PHASE } from '@game';
+import type { GameState } from '@game';
+import {
+  createChooseWhetherToRetreatEvent,
+  createEmptyGameState,
+} from '@factories';
 import {
   createFrontEngagementState,
-  createIssueCommandsPhaseState,
-  createMovementResolutionState,
+  createGameStateMovingInto,
+  createPlayCardsPhaseState,
   createTestCard,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetreatEvent';
 
-import {
-  createChooseWhetherToRetreatEvent,
-  createEmptyGameState,
-} from '@factories';
 /**
- * IsValidChooseWhetherToRetreatEvent: membership against
- * getLegalChooseWhetherToRetreatEvents.
+ * A defender met head on may fall back if it is faster than the unit that
+ * walked into it and has somewhere to go (§6.3.2). Whether to is the
+ * defender's choice, and either answer is open.
+ *
+ * Black's unit has walked into White's head on. White has committed its card
+ * and has one way back, so White is deciding.
  */
 describe('isValidChooseWhetherToRetreatEvent function', () => {
-  function stateAwaitingWhetherToRetreat() {
-    const state = createEmptyGameState('standard');
-    const movement = createMovementResolutionState(state, {
-      engagementState: createFrontEngagementState({
-        retreatPaths: [['step']],
-        defendingUnitRetreats: 'pending',
-        defensiveCommitment: {
-          card: createTestCard(),
-          commitmentType: 'completed',
-        },
-      }),
+  /** White, the defender, deciding whether to fall back. */
+  function whiteDeciding(): GameState {
+    const engagement = createFrontEngagementState({
+      defendingUnitRetreats: 'pending',
+      defensiveCommitment: {
+        card: createTestCard(),
+        commitmentType: 'completed',
+      },
+      retreatPaths: [['step']],
     });
-    return updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    const deciding = createGameStateMovingInto(engagement);
+    return deciding;
   }
 
-  it('accepts choosing to retreat', () => {
-    const state = stateAwaitingWhetherToRetreat();
-    const event = createChooseWhetherToRetreatEvent({
+  it('accepts either answer from the defender: falling back or standing', () => {
+    // Falling back is a "may" (§1.2), so standing to fight is as open as
+    // retreating.
+    const fallsBack = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       player: 'white',
     });
-
-    expect(isValidChooseWhetherToRetreatEvent(event, state)).toStrictEqual({
-      result: true,
-    });
-  });
-
-  it('accepts choosing not to retreat', () => {
-    const state = stateAwaitingWhetherToRetreat();
-    const event = createChooseWhetherToRetreatEvent({
+    const stands = createChooseWhetherToRetreatEvent({
       choosesToRetreat: false,
       player: 'white',
     });
 
-    expect(isValidChooseWhetherToRetreatEvent(event, state)).toStrictEqual({
-      result: true,
-    });
+    expect(
+      isValidChooseWhetherToRetreatEvent(fallsBack, whiteDeciding()),
+    ).toStrictEqual({ result: true });
+    expect(
+      isValidChooseWhetherToRetreatEvent(stands, whiteDeciding()),
+    ).toStrictEqual({ result: true });
   });
 
-  it('rejects the wrong player', () => {
-    const state = stateAwaitingWhetherToRetreat();
+  it('refuses an answer from the player whose unit walked in', () => {
+    // The engaging unit has no say in whether its enemy falls back.
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       player: 'black',
     });
 
-    expect(isValidChooseWhetherToRetreatEvent(event, state).result).toBe(false);
+    expect(
+      isValidChooseWhetherToRetreatEvent(event, whiteDeciding()),
+    ).toStrictEqual({
+      errorReason: 'Choose whether to retreat is not legal for black',
+      result: false,
+    });
   });
 
   it('throws when no defender is deciding, which the expected check rules out first', () => {
-    const state = updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
-    });
+    const state = updatePhaseState(
+      createEmptyGameState('standard'),
+      createPlayCardsPhaseState(),
+    );
     const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       player: 'white',

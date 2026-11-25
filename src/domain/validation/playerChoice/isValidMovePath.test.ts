@@ -49,6 +49,23 @@ describe('isValidMovePath function', () => {
     });
   });
 
+  it('a retreat with no way back may not stop where it began, and offers nothing more', () => {
+    // A unit on the northern edge facing south: its back is off the board,
+    // and a 45° turn before the first step still leaves it so (§9.1.4).
+    const backToTheEdge = createGameState([['A-5', 'black', 'south']]);
+    const unit = getSingleUnitWithPlacementAtCoordinate(
+      backToTheEdge.boardState,
+      'A-5',
+    );
+
+    // A retreat may not end where it started (§9.1.2), and there is no step
+    // back to take, so the refusal names nothing to go on with.
+    expect(isValidMovePath(backToTheEdge, unit, [], 'retreat')).toStrictEqual({
+      errorReason: 'The move may not stop there',
+      result: false,
+    });
+  });
+
   describe('closing on an enemy from the front', () => {
     // A black attacker on E-4 facing northEast; a white defender on D-5
     // facing south, so E-4 is one of its corner front spaces.

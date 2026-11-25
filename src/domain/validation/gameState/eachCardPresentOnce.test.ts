@@ -1,374 +1,208 @@
 import { tempCommandCards } from '@sampleValues';
-import type { CommandCard } from '@entities';
-import type { AuthoritativeCardState } from '@game';
+import { createCardState, createOwnedCardState } from '@factories';
 
 import { eachCardPresentOnce } from './eachCardPresentOnce';
 
+// Stand-in cards from the sample deck. The check tells cards apart only by
+// which card each is, so any distinct cards will do.
+const [move, brace, screen, rampage, organize, recede, overrun, advance] =
+  tempCommandCards;
+
+// White's army and its hand just dealt, for the cases that judge Black's
+// side: White's side is whole there, so any fault reported is Black's.
+const whiteArmyCards = new Set([overrun, advance]);
+const whiteDealt = createOwnedCardState({ inHand: [overrun, advance] });
+
 /**
  * EachCardPresentOnce: eachCardPresentOnce.
+ *
+ * The cards an army brings are its hand for the whole battle (§3.1.2). They
+ * move between their owner's places but never leave them, so every card each
+ * army brought is in exactly one of its owner's places, and no other card is.
  */
 describe('eachCardPresentOnce function', () => {
-  // Helper to create a card set from indices
-  const cardSet = (...indices: number[]): Set<CommandCard> =>
-    new Set(indices.map((i) => tempCommandCards[i]));
-
-  // Helper to create a card state
-  function createCardState(
-    blackHand: CommandCard[],
-    whiteHand: CommandCard[],
-    blackAwaitingPlay?: CommandCard,
-    blackInPlay?: CommandCard,
-    blackPlayed?: CommandCard[],
-    blackDiscarded?: CommandCard[],
-    blackBurnt?: CommandCard[],
-    whiteAwaitingPlay?: CommandCard,
-    whiteInPlay?: CommandCard,
-    whitePlayed?: CommandCard[],
-    whiteDiscarded?: CommandCard[],
-    whiteBurnt?: CommandCard[],
-  ): AuthoritativeCardState {
-    return {
-      visibility: 'authoritative',
-      black: {
-        awaitingPlay: blackAwaitingPlay ?? tempCommandCards[0],
-        burnt: blackBurnt ?? [],
-        discarded: blackDiscarded ?? [],
-        inHand: [...blackHand],
-        inPlay: blackInPlay ?? tempCommandCards[1],
-        played: blackPlayed ?? [],
-      },
-      white: {
-        awaitingPlay: whiteAwaitingPlay ?? tempCommandCards[0],
-        burnt: whiteBurnt ?? [],
-        discarded: whiteDiscarded ?? [],
-        inHand: [...whiteHand],
-        inPlay: whiteInPlay ?? tempCommandCards[1],
-        played: whitePlayed ?? [],
-      },
-    };
-  }
-
-  describe('valid cases', () => {
-    it('given all cards are present once with empty starting hands, returns true', () => {
-      // Note: createCardState defaults awaitingPlay and inPlay to tempCommandCards[0] and tempCommandCards[1]
-      // So we need to include those in starting hands
-      // Cards can be duplicated between players
-      const blackStartingHand = cardSet(0, 1);
-      const whiteStartingHand = cardSet(0, 1);
-      const cardState = createCardState([], []);
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
+  it("accepts each army's cards just dealt into its hand", () => {
+    // Each side holds every card its army brought, and nothing else.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move, brace] }),
+      white: whiteDealt,
     });
 
-    it('given all black cards are present once in hand, returns true', () => {
-      const blackStartingHand = cardSet(0, 1, 2, 3);
-      const whiteStartingHand = cardSet(0, 1);
-      const cardState = createCardState(
-        [tempCommandCards[0], tempCommandCards[1]],
-        [],
-        tempCommandCards[2],
-        tempCommandCards[3],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move, brace]),
+      whiteArmyCards,
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
+    // Every card is where a card may be, once.
+    expect(validation).toStrictEqual({ result: true });
+  });
+
+  it("accepts a card in any of its owner's places, each card in one", () => {
+    // Black's cards are spread over the hand, the card in play, and the
+    // played, discard and burnt piles: a burnt card is gone from play but is
+    // still one of the army's cards.
+    const black = createOwnedCardState({
+      burnt: [organize],
+      discarded: [rampage],
+      inHand: [move],
+      inPlay: brace,
+      played: [screen],
+    });
+    // White has chosen its card face down and not yet revealed it.
+    const white = createOwnedCardState({
+      awaitingPlay: overrun,
+      inHand: [recede],
     });
 
-    it('given all white cards are present once in hand, returns true', () => {
-      // Default cards: black has tempCommandCards[0] awaitingPlay, tempCommandCards[1] inPlay
-      // White has tempCommandCards[0] awaitingPlay, tempCommandCards[1] inPlay
-      const blackStartingHand = cardSet(0, 1);
-      const whiteStartingHand = cardSet(0, 1, 2);
-      const cardState = createCardState([], [tempCommandCards[2]]);
+    const validation = eachCardPresentOnce(
+      new Set([move, brace, screen, rampage, organize]),
+      new Set([overrun, recede]),
+      createCardState({ black, white }),
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
+    // Wherever each card lies, it lies in one place.
+    expect(validation).toStrictEqual({ result: true });
+  });
+
+  it('counts each side against its own army, so both armies may bring the same card', () => {
+    // Both armies brought a Move and a Brace: four cards, two on each side.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move, brace] }),
+      white: createOwnedCardState({ inHand: [move, brace] }),
     });
 
-    it('given both black and white cards are present once, returns true', () => {
-      // Default cards: both players have tempCommandCards[0] awaitingPlay, tempCommandCards[1] inPlay
-      const blackStartingHand = cardSet(0, 1, 2);
-      const whiteStartingHand = cardSet(0, 1, 3);
-      const cardState = createCardState(
-        [tempCommandCards[2]],
-        [tempCommandCards[3]],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move, brace]),
+      new Set([move, brace]),
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
+    // Neither side's copy is counted against the other's.
+    expect(validation).toStrictEqual({ result: true });
+  });
+
+  it('refuses a card held twice in one hand', () => {
+    // Black's army brought one Move, and its hand holds it twice.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move, move] }),
+      white: whiteDealt,
     });
 
-    it('given cards are in different states, returns true', () => {
-      const blackStartingHand = cardSet(0, 1);
-      const whiteStartingHand = cardSet(2, 3);
-      const cardState = createCardState(
-        [],
-        [],
-        tempCommandCards[1],
-        tempCommandCards[0],
-        [],
-        [],
-        [],
-        tempCommandCards[3],
-        tempCommandCards[2],
-        [],
-        [],
-        [],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move]),
+      whiteArmyCards,
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
-    });
-
-    it('given cards are in played, discarded, or burnt states, returns true', () => {
-      // Cards in different states: awaitingPlay, inPlay, played, discarded, burnt
-      const blackStartingHand = cardSet(0, 1, 2);
-      const whiteStartingHand = cardSet(0, 1, 2, 3);
-      const cardState = createCardState(
-        [],
-        [],
-        tempCommandCards[0],
-        tempCommandCards[1],
-        [tempCommandCards[2]],
-        [],
-        [],
-        tempCommandCards[0],
-        tempCommandCards[1],
-        [],
-        [tempCommandCards[2]],
-        [tempCommandCards[3]],
-      );
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
+    // One card recorded in two places.
+    expect(validation).toStrictEqual({
+      errorReason: 'Command card is present more than once',
+      result: false,
     });
   });
 
-  describe('duplicate cards', () => {
-    it('given a card appears twice in the same hand, returns false', () => {
-      const blackStartingHand = cardSet(0);
-      const cardState = createCardState(
-        [tempCommandCards[0], tempCommandCards[0]],
-        [],
-      );
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
+  it('refuses a card both in hand and in play', () => {
+    // The card in play has left the hand (§4.1.6), yet the hand still holds
+    // it.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move], inPlay: move }),
+      white: whiteDealt,
     });
 
-    it('given a card appears in multiple states, returns false', () => {
-      const blackStartingHand = cardSet(0, 1);
-      const cardState = createCardState(
-        [tempCommandCards[0]],
-        [],
-        tempCommandCards[0],
-        tempCommandCards[1],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move]),
+      whiteArmyCards,
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('given the same card appears in both players states, returns true', () => {
-      // Cards can be duplicated between players
-      // Default cards: both players have tempCommandCards[0] awaitingPlay, tempCommandCards[1] inPlay
-      const blackStartingHand = new Set([
-        tempCommandCards[0],
-        tempCommandCards[1],
-        tempCommandCards[2],
-      ]);
-      const whiteStartingHand = cardSet(0, 1, 2);
-      const cardState = createCardState(
-        [tempCommandCards[2]],
-        [tempCommandCards[2]],
-      );
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(true);
+    // The card is met a second time when the card in play is read.
+    expect(validation).toStrictEqual({
+      errorReason: 'Command card is present more than once',
+      result: false,
     });
   });
 
-  describe('missing cards', () => {
-    it('given a card from starting hand is missing, returns false', () => {
-      const blackStartingHand = cardSet(0, 1);
-      const cardState = createCardState([tempCommandCards[0]], []);
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
+  it('refuses a card the army never brought, in place of one it did', () => {
+    // Black's army brought a Move and a Brace; its hand holds the Move and a
+    // Screen. Two cards for two, but the Screen was never Black's.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move, screen] }),
+      white: whiteDealt,
     });
 
-    it('given black card is missing, returns false', () => {
-      const blackStartingHand = cardSet(0);
-      const whiteStartingHand = cardSet(1);
-      const cardState = createCardState([], [tempCommandCards[1]]);
+    const validation = eachCardPresentOnce(
+      new Set([move, brace]),
+      whiteArmyCards,
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('given white card is missing, returns false', () => {
-      const blackStartingHand = cardSet(0);
-      const whiteStartingHand = cardSet(1);
-      const cardState = createCardState([tempCommandCards[0]], []);
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        whiteStartingHand,
-        cardState,
-      );
-      expect(result).toBe(false);
+    // No card joins a hand once the battle has begun (§3.1.2).
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected card',
+      result: false,
     });
   });
 
-  describe('unexpected cards', () => {
-    it('given cardState has card not in starting hands, returns false', () => {
-      const blackStartingHand = cardSet(0);
-      const cardState = createCardState(
-        [tempCommandCards[0], tempCommandCards[1]],
-        [],
-      );
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
+  it('refuses a card face down that the army never brought', () => {
+    // Black chose a Brace face down, but its army brought only a Move.
+    const cardState = createCardState({
+      black: createOwnedCardState({ awaitingPlay: brace, inHand: [move] }),
+      white: whiteDealt,
     });
 
-    it('given awaitingPlay has unexpected card, returns false', () => {
-      const blackStartingHand = cardSet(0, 2);
-      const cardState = createCardState(
-        [tempCommandCards[0]],
-        [],
-        tempCommandCards[1],
-        tempCommandCards[2],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move]),
+      whiteArmyCards,
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
+    // The card face down is one of the army's places too.
+    expect(validation).toStrictEqual({
+      errorReason: 'Unexpected card',
+      result: false,
+    });
+  });
+
+  it('refuses an army whose card is in none of its places', () => {
+    // Black's army brought a Move and a Brace; the Brace is nowhere.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move] }),
+      white: whiteDealt,
     });
 
-    it('given inPlay has unexpected card, returns false', () => {
-      const blackStartingHand = cardSet(0, 2);
-      const cardState = createCardState(
-        [tempCommandCards[0]],
-        [],
-        tempCommandCards[2],
-        tempCommandCards[1],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move, brace]),
+      whiteArmyCards,
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
+    // Cards only move between their owner's places, so a missing one was
+    // lost from the record.
+    expect(validation).toStrictEqual({
+      errorReason: 'Expected cards not found',
+      result: false,
+    });
+  });
+
+  it("judges White's side once Black's holds", () => {
+    // Black's side is whole; White's army brought one Move and its hand
+    // holds it twice.
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [move, brace] }),
+      white: createOwnedCardState({ inHand: [move, move] }),
     });
 
-    it('given played array has unexpected card, returns false', () => {
-      const blackStartingHand = cardSet(0, 2);
-      const cardState = createCardState(
-        [tempCommandCards[0]],
-        [],
-        tempCommandCards[2],
-        tempCommandCards[2],
-        [tempCommandCards[1]],
-      );
+    const validation = eachCardPresentOnce(
+      new Set([move, brace]),
+      new Set([move]),
+      cardState,
+    );
 
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('given discarded array has unexpected card, returns false', () => {
-      const blackStartingHand = cardSet(0, 2);
-      const cardState = createCardState(
-        [tempCommandCards[0]],
-        [],
-        tempCommandCards[2],
-        tempCommandCards[2],
-        [],
-        [tempCommandCards[1]],
-      );
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('given burnt array has unexpected card, returns false', () => {
-      const blackStartingHand = cardSet(0, 2);
-      const cardState = createCardState(
-        [tempCommandCards[0]],
-        [],
-        tempCommandCards[2],
-        tempCommandCards[2],
-        [],
-        [],
-        [tempCommandCards[1]],
-      );
-
-      const { result } = eachCardPresentOnce(
-        blackStartingHand,
-        new Set(),
-        cardState,
-      );
-      expect(result).toBe(false);
+    // White's fault is reported.
+    expect(validation).toStrictEqual({
+      errorReason: 'Command card is present more than once',
+      result: false,
     });
   });
 });

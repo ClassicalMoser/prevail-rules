@@ -1,274 +1,224 @@
-import { tempUnits } from '@sampleValues';
-import { CLEANUP_PHASE } from '@game';
-
-import { createTestCard, createTestUnit, placed, replaceBoard } from '@testing';
-
+import type { CommandCard, UnitSupport } from '@entities';
+import type { AuthoritativeGameState } from '@game';
+import { createAssignUnitSupportEvent, createEmptyGameState } from '@factories';
 import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
-import { throwIfUndefined } from '@utils';
+  createCleanupPhaseState,
+  createPlayableGame,
+  createRallyResolutionState,
+  createTestCard,
+  createTestUnit,
+  getUnitByTrait,
+} from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 
-import { createAssignUnitSupportEvent, createEmptyGameState } from '@factories';
+/**
+ * After a rally, the player who rallied gives each unit on the board one
+ * place in a stack their hand holds (§10.4.4). They must fill any open place
+ * an uncovered unit could take (§10.4.5), and whatever is left over routs
+ * (§10.4.6). The rules live in the legal options; these cases show the
+ * validator accepts what they offer and words what they refuse.
+ *
+ * White holds the initiative and is rallying first. The units are stand-in
+ * rows told apart by trait: foot with the formation trait alone, a phalanx
+ * that is formation as well, and horse with no formation trait.
+ */
+const foot = createTestUnit('white', { unitType: getUnitByTrait('formation') });
+const phalanx = createTestUnit('white', {
+  unitType: getUnitByTrait('formation', 'phalanx'),
+});
+const horse = createTestUnit('white', { unitType: getUnitByTrait('cavalry') });
 
-function awaitingSupportState() {
-  const base = updateCurrentInitiative(
-    createEmptyGameState('standard'),
-    'white',
-  );
-  const unit = createTestUnit('white', { attack: 3 });
-  const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
-  const card = createTestCard({
-    unitSupport: {
-      count: 1,
-      supportType: 'unitType',
-      unitTypeId: unit.unitType.id,
-    },
+/** A stack of places for any formation unit. */
+const formationStack: UnitSupport = {
+  count: 1,
+  supportType: 'trait',
+  trait: 'formation',
+};
+
+/** A stack of one place for any unit at all. */
+const genericStack: UnitSupport = { count: 1, supportType: 'generic' };
+
+/** A card holding this stack, and nothing else that matters here. */
+function cardHolding(unitSupport: UnitSupport): CommandCard {
+  const card = createTestCard({ unitSupport });
+  return card;
+}
+
+/**
+ * The game at White's support check: the rally has burnt its card and taken
+ * the rest back into hand, and no unit has been given a place yet
+ * (§10.3.2 step 4).
+ */
+function onWhiteSupportCheck(
+  units: Parameters<typeof createPlayableGame>[0],
+  hand: CommandCard[],
+): AuthoritativeGameState {
+  // White's hand is every card it still owns, back from the rally.
+  const game = createPlayableGame(units, {
+    hands: { white: hand },
+    initiative: 'white',
   });
-  base.cardState.white.inHand = [card];
-  let withBoard = replaceBoard(
-    base,
-    addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
-  );
-  withBoard = replaceBoard(
-    withBoard,
-    addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
-  );
-  const state = updatePhaseState(withBoard, {
-    firstPlayerRallyResolutionState: {
-      completed: false,
-      playerRallied: true,
-      rallyResolved: true,
-      routState: 'pending',
-      substepType: 'rallyResolution',
-      unitsLostSupport: 'pending',
-    },
-    phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: 'pending',
+
+  // White chose to rally and the burn is done, so the check is due.
+  const rally = createRallyResolutionState({
+    playerRallied: true,
+    rallyResolved: true,
+  });
+  const cleanup = createCleanupPhaseState({
+    firstPlayerRallyResolutionState: rally,
     step: 'firstPlayerResolveRally',
   });
-  return { other, state, unit };
+  const onCheck = updatePhaseState(game, cleanup);
+  return onCheck;
 }
 
 describe('isValidAssignUnitSupportEvent function', () => {
-  it('given empty assignments while a slot could cover a unit, is invalid (not maximal)', () => {
-    const { state } = awaitingSupportState();
+  it('accepts filling the one place a stack holds, and letting a matching unit left over rout', () => {
+    // One place for any unit, and two units on the board.
+    const state = onWhiteSupportCheck(
+      [
+        { coord: 'E-5', player: 'white', unitType: foot.unitType },
+        { coord: 'E-6', player: 'white', unitType: horse.unitType },
+      ],
+      [cardHolding(genericStack)],
+    );
+
+    // The foot takes the place; the stack is full, so the horse routs.
+    const event = createAssignUnitSupportEvent({
+      assignments: [{ unit: foot, unitSupport: genericStack }],
+      player: 'white',
+    });
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('accepts no assignment when no stack matches any unit on the board', () => {
+    // A formation stack, and only horse on the board: a stack need not be
+    // filled when no unit matches it (§10.4.4), so the horse routs.
+    const state = onWhiteSupportCheck(
+      [{ coord: 'E-5', player: 'white', unitType: horse.unitType }],
+      [cardHolding(formationStack)],
+    );
     const event = createAssignUnitSupportEvent({
       assignments: [],
       player: 'white',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      result: true,
+    });
   });
 
-  it('given covering every unit a unit support can cover, leaving uncoverable units, is valid', () => {
-    const { state, unit } = awaitingSupportState();
-    const event = createAssignUnitSupportEvent({
-      assignments: [
-        {
-          unitSupport: {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: unit.unitType.id,
-          },
-          unit,
-        },
+  it('accepts a poor choice of stack that leaves a place open no uncovered unit can take', () => {
+    // A place for the phalanx's own type, and a place for any formation unit.
+    const phalanxTypeStack: UnitSupport = {
+      count: 1,
+      supportType: 'unitType',
+      unitTypeId: phalanx.unitType.id,
+    };
+    const state = onWhiteSupportCheck(
+      [
+        { coord: 'E-5', player: 'white', unitType: phalanx.unitType },
+        { coord: 'E-6', player: 'white', unitType: foot.unitType },
       ],
+      [cardHolding(phalanxTypeStack), cardHolding(formationStack)],
+    );
+
+    // The phalanx takes the formation place the foot needed. The phalanx
+    // place stays open, but the foot cannot take it, so the foot routs. The
+    // player need not find the arrangement that saves the most (§10.4.5).
+    const event = createAssignUnitSupportEvent({
+      assignments: [{ unit: phalanx, unitSupport: formationStack }],
       player: 'white',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      result: true,
+    });
   });
 
-  it('given empty assignments when no unit support can cover anyone, is valid (all rout)', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
+  it('refuses stopping while an open place could take an uncovered unit', () => {
+    // A formation place, and foot that could take it.
+    const state = onWhiteSupportCheck(
+      [{ coord: 'E-5', player: 'white', unitType: foot.unitType }],
+      [cardHolding(formationStack)],
     );
-    const unit = createTestUnit('white', { attack: 3 });
-    base.cardState.white.inHand = [
-      createTestCard({ unitSupport: { count: 0, supportType: 'generic' } }),
-    ];
-    const withBoard = replaceBoard(
-      base,
-      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
-    );
-    const state = updatePhaseState(withBoard, {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'firstPlayerResolveRally',
-    });
+
+    // Leaving the place empty would rout the foot for nothing (§10.4.5).
     const event = createAssignUnitSupportEvent({
       assignments: [],
       player: 'white',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      errorReason:
+        'Support assignment is not maximal: unused slots could still cover uncovered units',
+      result: false,
+    });
   });
 
-  it('given generic slot left unused while a unit is uncovered, is invalid', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
+  it('refuses a second unit in a stack whose one place is filled', () => {
+    // One place for any unit, and two units on the board.
+    const state = onWhiteSupportCheck(
+      [
+        { coord: 'E-5', player: 'white', unitType: foot.unitType },
+        { coord: 'E-6', player: 'white', unitType: horse.unitType },
+      ],
+      [cardHolding(genericStack)],
     );
-    const unit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-    const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
-    const card = createTestCard({
-      unitSupport: { count: 1, supportType: 'generic' },
-    });
-    base.cardState.white.inHand = [card];
-    let withBoard = replaceBoard(
-      base,
-      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
-    );
-    withBoard = replaceBoard(
-      withBoard,
-      addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
-    );
-    const state = updatePhaseState(withBoard, {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'firstPlayerResolveRally',
-    });
-    const event = createAssignUnitSupportEvent({
-      assignments: [],
-      player: 'white',
-    });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
-  });
 
-  it('given one generic slot covering one of two units, is valid (excess must rout)', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const unit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-    const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
-    const card = createTestCard({
-      unitSupport: { count: 1, supportType: 'generic' },
-    });
-    base.cardState.white.inHand = [card];
-    let withBoard = replaceBoard(
-      base,
-      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
-    );
-    withBoard = replaceBoard(
-      withBoard,
-      addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
-    );
-    const state = updatePhaseState(withBoard, {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'firstPlayerResolveRally',
-    });
+    // Both are put in it; the horse, second, finds the place taken. The
+    // reason is judged against the places filled before it alone.
     const event = createAssignUnitSupportEvent({
       assignments: [
-        {
-          unitSupport: { count: 1, supportType: 'generic' },
-          unit,
-        },
+        { unit: foot, unitSupport: genericStack },
+        { unit: horse, unitSupport: genericStack },
       ],
       player: 'white',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      errorReason: 'Assignment for generic:1 exceeds support count 1',
+      result: false,
+    });
   });
 
-  it('given exceeding support count, is invalid', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const unit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-    const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
-    const card = createTestCard({
-      unitSupport: { count: 1, supportType: 'generic' },
-    });
-    base.cardState.white.inHand = [card];
-    let withBoard = replaceBoard(
-      base,
-      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
-    );
-    withBoard = replaceBoard(
-      withBoard,
-      addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
-    );
-    const state = updatePhaseState(withBoard, {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'firstPlayerResolveRally',
-    });
-    const event = createAssignUnitSupportEvent({
-      assignments: [
-        { unit, unitSupport: { count: 1, supportType: 'generic' } },
-        { unit: other, unitSupport: { count: 1, supportType: 'generic' } },
+  it('refuses a unit in a stack it does not match', () => {
+    // A formation place, foot that matches it and horse that does not.
+    const state = onWhiteSupportCheck(
+      [
+        { coord: 'E-5', player: 'white', unitType: foot.unitType },
+        { coord: 'E-6', player: 'white', unitType: horse.unitType },
       ],
-      player: 'white',
-    });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
-  });
+      [cardHolding(formationStack)],
+    );
 
-  it('given unit that does not match support type, is invalid', () => {
-    const { other, state, unit } = awaitingSupportState();
+    // The horse is put in the formation stack (§10.4.4).
     const event = createAssignUnitSupportEvent({
-      assignments: [
-        {
-          unitSupport: {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: unit.unitType.id,
-          },
-          unit: other,
-        },
-      ],
+      assignments: [{ unit: horse, unitSupport: formationStack }],
       player: 'white',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      errorReason: 'Unit does not match support trait:formation:1',
+      result: false,
+    });
   });
 
   it('refuses the same unit given the same place twice, since a unit takes only one place', () => {
-    const { state, unit } = awaitingSupportState();
-    const unitSupport = {
-      count: 1,
-      supportType: 'unitType' as const,
-      unitTypeId: unit.unitType.id,
-    };
+    const state = onWhiteSupportCheck(
+      [{ coord: 'E-5', player: 'white', unitType: foot.unitType }],
+      [cardHolding(formationStack)],
+    );
     // The unit is listed twice under the one unit support (§10.4.4).
     const event = createAssignUnitSupportEvent({
       assignments: [
-        { unit, unitSupport },
-        { unit, unitSupport },
+        { unit: foot, unitSupport: formationStack },
+        { unit: foot, unitSupport: formationStack },
       ],
       player: 'white',
     });
@@ -279,88 +229,22 @@ describe('isValidAssignUnitSupportEvent function', () => {
     });
   });
 
-  it('given suboptimal trait-on-type while type slot idles and another unit dies, is valid', () => {
-    const base = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
+  it('refuses an assignment from the player who did not rally', () => {
+    const state = onWhiteSupportCheck(
+      [{ coord: 'E-5', player: 'white', unitType: foot.unitType }],
+      [cardHolding(formationStack)],
     );
-    // Two different formation rows: one fills a unit-type slot, the other a trait slot.
-    const formationTypes = tempUnits.filter((unit) =>
-      unit.traits.includes('formation'),
-    );
-    const typedType = throwIfUndefined(
-      formationTypes[0],
-      'expected a formation unit',
-    );
-    const traitOnlyType = throwIfUndefined(
-      formationTypes[1],
-      'expected a second formation unit',
-    );
-    const typed = createTestUnit('white', {
-      instanceNumber: 1,
-      unitType: typedType,
-    });
-    const traitOnly = createTestUnit('white', {
-      instanceNumber: 1,
-      unitType: traitOnlyType,
-    });
-    expect(typed.unitType.traits).toContain('formation');
-    expect(traitOnly.unitType.traits).toContain('formation');
 
-    base.cardState.white.inHand = [
-      createTestCard({
-        unitSupport: {
-          count: 1,
-          supportType: 'unitType',
-          unitTypeId: typed.unitType.id,
-        },
-      }),
-      createTestCard({
-        unitSupport: {
-          count: 1,
-          supportType: 'trait',
-          trait: 'formation',
-        },
-      }),
-    ];
-    let withBoard = replaceBoard(
-      base,
-      addUnitToBoard(base.boardState, placed(typed, 'E-5', 'south')),
-    );
-    withBoard = replaceBoard(
-      withBoard,
-      addUnitToBoard(withBoard.boardState, placed(traitOnly, 'E-6', 'south')),
-    );
-    const state = updatePhaseState(withBoard, {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: true,
-        routState: 'pending',
-        substepType: 'rallyResolution',
-        unitsLostSupport: 'pending',
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending',
-      step: 'firstPlayerResolveRally',
-    });
-
-    // Burn trait on typed; leave the unit-type support unused; traitOnly uncovered and
-    // no remaining capacity matches them → legal but not globally optimal.
+    // Only the player who rallied checks their units (§10.4.1).
     const event = createAssignUnitSupportEvent({
-      assignments: [
-        {
-          unitSupport: {
-            count: 1,
-            supportType: 'trait',
-            trait: 'formation',
-          },
-          unit: typed,
-        },
-      ],
-      player: 'white',
+      assignments: [],
+      player: 'black',
     });
-    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
+
+    expect(isValidAssignUnitSupportEvent(event, state)).toStrictEqual({
+      errorReason: 'Expected assign unit support from white, got black',
+      result: false,
+    });
   });
 
   it('throws when asked where no rally awaits unit support, which the expected check rules out first', () => {
