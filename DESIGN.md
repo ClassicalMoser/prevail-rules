@@ -89,4 +89,4 @@ What an event carries:
 Rounds:
 
 - **Round 0 is setup.** The side holding the initiative, White at the start (RULEBOOK §3.3.2), places its whole army, then the other side; a `roundEnd` effect then begins round 1.
-- **The event that ends a round belongs to the round it ends.** A round's log is the cursor for replay and undo, so each round's log starts empty, round 1's included.
+- **The event that ends a round belongs to the round it ends.** A game keeps one stream of events from setup on, and each round's events close with its `roundEnd`.
