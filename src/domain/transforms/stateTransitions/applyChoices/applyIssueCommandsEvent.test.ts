@@ -49,16 +49,23 @@ describe('applyIssueCommandsEvent function', () => {
   }
 
   it('orders the units of a units order, and moves on to carrying them out', () => {
-    // Black, issuing first, orders two units.
+    // Black, issuing first, orders two of its units on the board.
     const unit1 = createTestUnit('black', { attack: 3 });
     const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
+    const state = replaceBoard(
+      issuingOn('firstPlayerIssueCommands'),
+      createBoardWithUnits([
+        placed(unit1, 'E-5', 'north'),
+        placed(unit2, 'E-6', 'north'),
+      ]),
+    );
 
     const issued = applyIssueCommandsEvent(
       createIssueCommandsEvent({
         allocation: { allocationType: 'units', units: [unit1, unit2] },
         player: 'black',
       }),
-      issuingOn('firstPlayerIssueCommands'),
+      state,
     );
 
     // Both are ordered for the round (§4.3.6)…
@@ -137,15 +144,19 @@ describe('applyIssueCommandsEvent function', () => {
   });
 
   it('moves the second player on to carrying out their own orders', () => {
-    // Black has finished; White issues second, ordering one unit.
+    // Black has finished; White issues second, ordering its one unit.
     const unit = createTestUnit('white', { attack: 3 });
+    const state = replaceBoard(
+      issuingOn('secondPlayerIssueCommands'),
+      createBoardWithUnits([placed(unit, 'E-5', 'south')]),
+    );
 
     const issued = applyIssueCommandsEvent(
       createIssueCommandsEvent({
         allocation: { allocationType: 'units', units: [unit] },
         player: 'white',
       }),
-      issuingOn('secondPlayerIssueCommands'),
+      state,
     );
 
     // White's unit is White's to carry out, on White's resolve step.
@@ -174,9 +185,12 @@ describe('applyIssueCommandsEvent function', () => {
   });
 
   it('leaves the state it was given unchanged', () => {
-    // Black orders one unit from a state it does not own.
-    const state = issuingOn('firstPlayerIssueCommands');
+    // Black orders its one unit from a state it does not own.
     const unit = createTestUnit('black', { attack: 3 });
+    const state = replaceBoard(
+      issuingOn('firstPlayerIssueCommands'),
+      createBoardWithUnits([placed(unit, 'E-5', 'north')]),
+    );
 
     applyIssueCommandsEvent(
       createIssueCommandsEvent({

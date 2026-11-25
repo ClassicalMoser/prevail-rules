@@ -1,5 +1,6 @@
 import type { IssueCommandsEvent } from '@events';
 import type { GameState } from '@game';
+import { getUnitWithPlacementOnBoard } from '@queries';
 import {
   addUnitsToCommandedUnits,
   beginResolvingCommands,
@@ -24,10 +25,16 @@ export function applyIssueCommandsEvent<S extends GameState>(
 ): S {
   // Every unit ordered, whether named in a units order or in a line.
   const { allocation } = event;
-  const units =
+  const named =
     allocation.allocationType === 'units'
       ? allocation.units
       : allocation.lines.flat();
+
+  // The order names each unit by who it is; its stats are the board's, so
+  // the unit ordered is the one standing there.
+  const units = named.map(
+    (unit) => getUnitWithPlacementOnBoard(state, unit).unit,
+  );
 
   // They are ordered for the round, and carried out next.
   const ordered = addUnitsToCommandedUnits(state, units);
