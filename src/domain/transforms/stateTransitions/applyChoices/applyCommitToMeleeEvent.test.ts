@@ -58,6 +58,50 @@ describe('applyCommitToMeleeEvent function', () => {
     expect(newState.cardState.white.inHand).toHaveLength(0);
   });
 
+  it('records the card the hand holds, not the copy the commitment names', () => {
+    // White, second to commit, holds one card committable for Attack.
+    const held = tempCommandCards[0];
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'black',
+    );
+    const withHand = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [held] },
+    });
+    const melee = createMeleeResolutionState(withHand, {
+      secondPlayerCommitment: { commitmentType: 'pending' },
+    });
+    const committing = updatePhaseState(
+      withHand,
+      createResolveMeleePhaseState(withHand, {
+        currentMeleeResolutionState: melee,
+      }),
+    );
+
+    // The commitment names that card, who it is, but prints it committable
+    // for Defence as well.
+    const claimed = {
+      ...held,
+      modifiers: [...held.modifiers, 'defense' as const],
+    };
+    const committed = applyCommitToMeleeEvent(
+      {
+        choiceType: 'commitToMelee',
+        committedCard: claimed,
+        eventType: 'playerChoice',
+        player: 'white',
+      },
+      committing,
+    );
+
+    // The commitment holds the card White actually had, so its bonus is read
+    // from what the card prints.
+    expect(
+      getMeleeResolutionState(committed).secondPlayerCommitment,
+    ).toStrictEqual({ card: held, commitmentType: 'completed' });
+  });
+
   it('given black pending and one card in hand, commit completes black and empties black hand', () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
