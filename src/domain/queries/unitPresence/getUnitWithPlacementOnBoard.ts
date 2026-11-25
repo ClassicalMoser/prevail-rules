@@ -1,7 +1,7 @@
 import type { UnitInstance, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { findPlayerUnitWithPosition } from './findPlayerUnitWithPosition';
-import { getPositionOfUnit } from './getPositionOfUnit';
+import { throwIfUndefined } from '@utils';
+import { findUnitWithPlacementOnBoard } from './findUnitWithPlacementOnBoard';
 
 /**
  * A unit as the board holds it, and where it stands. An event names a unit by
@@ -18,23 +18,12 @@ export function getUnitWithPlacementOnBoard(
   gameState: GameState,
   unit: UnitInstance,
 ): UnitWithPlacement {
-  // Where it stands; this insists, as a unit that is named must be there.
-  const placement = getPositionOfUnit(gameState, unit);
-
-  // The unit held in that space, which is the board's copy and not the name's.
-  const held = findPlayerUnitWithPosition(
-    gameState.boardState,
-    placement.coordinate,
-    unit.playerSide,
+  // The board's own unit and where it stands; a unit that is named must be
+  // there.
+  const held = throwIfUndefined(
+    findUnitWithPlacementOnBoard(gameState, unit),
+    'Unit not found on board',
   );
-  // TODO(composition): this cannot be reached. `getPositionOfUnit` has
-  // already found this unit on that space, and the side's unit there is the
-  // one it found, so coverage and the nightly mutants stop here. Settled by a
-  // reader that answers the board's unit and its placement in one walk, which
-  // `findPositionOfUnit` already makes.
-  if (held === undefined) {
-    throw new Error('Unit not found on board');
-  }
 
   // The board's own unit, standing where the board says.
   return held;

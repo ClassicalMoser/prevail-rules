@@ -243,6 +243,7 @@ export {
 // occupies the space.
 export {
   findPlayerUnitWithPosition,
+  findUnitWithPlacementOnBoard,
   findPositionOfUnit,
   getPositionOfUnit,
   getUnitWithPlacementOnBoard,
