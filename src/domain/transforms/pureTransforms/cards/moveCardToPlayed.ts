@@ -16,13 +16,10 @@ type PlayerCardSlice = OwnedCardState | HiddenCardState;
 export function moveCardToPlayed<T extends PlayerCardSlice>(playerCards: T): T {
   const cardInPlay = playerCards.inPlay;
 
-  // TODO(wrong): every round reveals a card for each player before Cleanup
-  // (§4.1.2), so no card in play here is a fault the expected engine should
-  // not let happen, and DESIGN.md has a question asked outside its gate
-  // throw rather than answer quietly. Settle by throwing, as `revealCard`
-  // does for a missing waiting card.
+  // Every round reveals a card for each player before Cleanup (§4.1.2), so a
+  // player with no card in play here is a fault, not a card to skip.
   if (!cardInPlay) {
-    return playerCards;
+    throw new Error('Player has no card in play');
   }
 
   // The card goes on top of the cards played in earlier rounds, where a

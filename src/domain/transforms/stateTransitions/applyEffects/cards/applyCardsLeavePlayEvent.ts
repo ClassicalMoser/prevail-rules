@@ -28,18 +28,19 @@ export function applyCardsLeavePlayEvent<S extends GameState>(
   _event: CardsLeavePlayEvent,
   state: S,
 ): S {
+  // The first player now decides whether to rally, and finishes before the
+  // second decides (§4.5.2, §10.3.6). Written first, so an event that comes
+  // outside Cleanup is refused before any card is touched.
+  const rallying = updateCleanupStep(state, 'firstPlayerChooseRally');
+
   // The played cards go to the played pile, and the rallies begin (§10.3).
   // Each card in play leaves it for its owner's played pile (§4.5.1). The
   // pile is face up, so every seat moves both cards, including the
   // opponent's; there they wait for a rally, and one of them is what a rally
   // burns (§10.3.3).
-  const cardsPutAway = moveBothInPlayToPlayed(state.cardState);
-  const stateWithCards = replaceCardState(state, cardsPutAway);
-
-  // The first player now decides whether to rally, and finishes before the
-  // second decides (§4.5.2, §10.3.6).
-  const rallying = updateCleanupStep(stateWithCards, 'firstPlayerChooseRally');
+  const cardsPutAway = moveBothInPlayToPlayed(rallying.cardState);
+  const stateWithCards = replaceCardState(rallying, cardsPutAway);
 
   // Both cards are out of play, and the rallies are next.
-  return rallying;
+  return stateWithCards;
 }
