@@ -75,3 +75,24 @@ export const gameStateSchema: typeof _gameStateSchemaObject =
   _gameStateSchemaObject;
 
 const _assertExactGameState: AssertExact<GameState, GameStateSchemaType> = true;
+
+/**
+ * What every view holds alike: the game itself. A view differs only in its
+ * `visibility` and in the cards that visibility may read.
+ */
+type SharedGameState<S extends GameState> = Omit<S, 'visibility' | 'cardState'>;
+
+// Each view holds the same game as the full record, so a field added to one
+// view and not the others fails here.
+const _assertWhiteSeenParity: AssertExact<
+  SharedGameState<WhiteSeenGameState>,
+  SharedGameState<AuthoritativeGameState>
+> = true;
+const _assertBlackSeenParity: AssertExact<
+  SharedGameState<BlackSeenGameState>,
+  SharedGameState<AuthoritativeGameState>
+> = true;
+const _assertSpectatorParity: AssertExact<
+  SharedGameState<SpectatorGameState>,
+  SharedGameState<AuthoritativeGameState>
+> = true;
