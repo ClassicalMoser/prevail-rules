@@ -618,7 +618,7 @@ A card naming Flexibility helps a shooter standing at a deficit: +1 Flexibility 
 
 ### 4.5 Phase 5 — Cleanup
 
-**4.5.1 Discard played cards.** Both players move their in-play card to their **played pile**. It is not in your hand and it is not in your discard; it sits in the played pile until you rally or the game ends.
+**4.5.1 Cards leave play.** Both players move their in-play card to their **played pile**. It is not in your hand and it is not in your discard; it sits in the played pile until you rally or the game ends.
 
 **4.5.2 The first player decides whether to rally**, and fully resolves that decision (§10.3) including the support check and any routs it causes.
 

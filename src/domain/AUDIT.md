@@ -57,12 +57,12 @@ Audit in this order (dependencies flow downward):
 
 ### `game/` (`@game`)
 
-- [ ] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
+- [x] `game/` — structural split + polish (visibility on `CardState`, `commitment/`, phase enum asserts stripped); reopened 2026-11-12, changed since the read
   - [x] `cardState/`
   - [x] `commitment/`
   - [x] `game/`
   - [x] `gameState/`
-  - [ ] `phases/`
+  - [x] `phases/`
   - [x] `roundState/`
   - [x] `substeps/`
     - [x] `commandResolution/`
