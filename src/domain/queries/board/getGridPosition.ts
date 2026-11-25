@@ -7,6 +7,12 @@ import { findGridPosition } from './findGridPosition';
  * board's layout says where each falls. For geometry that is easier counted
  * in rows and columns than walked a step at a time.
  *
+ * TODO(misleading): in the rules a position is a space and a facing (§5.2.4,
+ * `findPositionOfUnit`), but `GridPosition` here is a row and column only.
+ * Settle by renaming the row-and-column type and its readers (`GridPosition`,
+ * `findGridPosition`, `getGridPosition`, `findCoordinateAtPosition`,
+ * `positionByCoordinate`) to a word that is not "position".
+ *
  * @param board - The board the space is on
  * @param coordinate - The space
  * @returns Its row and column positions

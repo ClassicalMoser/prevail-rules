@@ -34,6 +34,8 @@ export function getLineSegmentContainingUnit(
   restrictions: Restrictions,
   commandedUnits: readonly UnitInstance[],
 ): UnitWithPlacement[] {
+  // A rank is one side's units, facing the way this one does or exactly the
+  // opposite (§4.3.5).
   const friendlySide = unit.unit.playerSide;
   const unitFacing = unit.placement.facing;
   const oppositeUnitFacing = getOppositeFacing(unitFacing);
@@ -62,9 +64,12 @@ export function getLineSegmentContainingUnit(
       restrictions,
       commandedUnits,
     );
+    // The first space that may not join ends the rank on this side.
     if (joiningUnit === undefined) {
       break;
     }
+
+    // Each unit further left goes before the ones already found.
     segment.unshift(joiningUnit);
   }
 
@@ -84,11 +89,15 @@ export function getLineSegmentContainingUnit(
       restrictions,
       commandedUnits,
     );
+    // The first space that may not join ends the rank on this side.
     if (joiningUnit === undefined) {
       break;
     }
+
+    // Each unit further right goes after the ones already found.
     segment.push(joiningUnit);
   }
 
+  // The whole unbroken rank, left to right; a line is any run of it.
   return segment;
 }

@@ -21,13 +21,17 @@ export function getBoardSpace(
   board: Board,
   coordinate: Coordinate,
 ): BoardSpace {
+  // The space itself: its ground, its corners, and who stands there.
   const space = board.board[coordinate];
 
+  // Every space of this size is on the board, so a missing one is a name
+  // from a larger board or a board built short, and asking is a fault.
   if (space === undefined) {
     throw new Error(
       `Coordinate ${coordinate} does not exist on ${board.boardType} board.`,
     );
   }
 
+  // The space, for its ground and whoever stands on it.
   return space;
 }

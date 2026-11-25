@@ -14,6 +14,8 @@ export function isFriendlyUnit(
   unit: UnitInstance,
   playerSide: PlayerSide,
 ): boolean {
+  // A unit fights for the side that fields it; friend and foe decide who may
+  // support, block, or be engaged.
   const friendly = unit.playerSide === playerSide;
   return friendly;
 }

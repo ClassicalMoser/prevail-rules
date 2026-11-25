@@ -47,6 +47,11 @@ export function getRawUnitStat(
 
   /**
    * Helper function to find a matching modifier in an array of modifiers.
+   *
+   * TODO(wrong): `find` takes the first match only, so a list that names one
+   * stat twice (the modifier lists do not forbid it) adds only the first.
+   * Settle whether a list may repeat a stat: forbid it in the card schema, or
+   * sum every match here.
    */
   const findMatchingModifier = (modifierList: Modifier[]) =>
     modifierList.find(
@@ -112,6 +117,7 @@ export function getRawUnitStat(
     }
   }
 
+  // The printed stat plus every source that applied, unfloored.
   const rawStat = baseStat + totalModifier;
   return rawStat;
 }

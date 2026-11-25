@@ -21,7 +21,10 @@ export function countCommandCardsByInitiative(
     LEGAL_INITIATIVES.map((initiative) => [initiative, 0]),
   );
 
-  // Each card counts once toward the initiative it shows.
+  // Each card counts once toward the initiative it shows. The fallback to
+  // zero is never taken for a card the card schema accepts, whose initiative
+  // is always one of the values started above; it is there because a
+  // `Record<number, number>` cannot promise the key is present.
   for (const card of army.commandCards) {
     counts[card.initiative] = (counts[card.initiative] ?? 0) + 1;
   }

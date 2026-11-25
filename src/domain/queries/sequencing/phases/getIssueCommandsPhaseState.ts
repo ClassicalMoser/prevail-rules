@@ -12,9 +12,14 @@ import { getCurrentPhaseState } from './getCurrentPhaseState';
 export function getIssueCommandsPhaseState<S extends GameState>(
   state: S,
 ): IssueCommandsPhaseState {
+  // The phase the round is in; before the round begins there is none.
   const phaseState = getCurrentPhaseState(state);
+
+  // A caller reading Phase 3, where each player issues and carries out their orders (§4.3) outside it has asked out of turn.
   if (phaseState.phase !== 'issueCommands') {
     throw new Error(`Expected issueCommands phase, got ${phaseState.phase}`);
   }
+
+  // The issue commands phase, with its step and what it holds.
   return phaseState;
 }

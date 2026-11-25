@@ -16,9 +16,12 @@ import { throwIfPending } from '@utils';
 export function getReverseStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): ReverseState | 'bypassed' {
+  // The attack reached the unit's Reverse and nothing has opened the step, so
+  // the caller is ahead of the sequencer.
   const reverseState = throwIfPending(
     attackApplyState.reverseState,
     'The reverse on this attack apply has not been opened yet',
   );
+  // The open reverse, or `'bypassed'` when this attack turns nobody about.
   return reverseState;
 }

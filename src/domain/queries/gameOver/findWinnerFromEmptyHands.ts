@@ -13,6 +13,8 @@ import type { GameState } from '@game';
 export function findWinnerFromEmptyHands(
   state: GameState,
 ): PlayerSide | undefined {
+  // Only the hand counts: cards in play, played or discarded are not the
+  // army's will to fight (§11.1).
   const whiteEmpty = state.cardState.white.inHand.length === 0;
   const blackEmpty = state.cardState.black.inHand.length === 0;
 
@@ -25,11 +27,17 @@ export function findWinnerFromEmptyHands(
     const tieWinner = state.currentInitiative;
     return tieWinner;
   }
+
+  // White's hand is empty: White has lost, and Black prevails.
   if (whiteEmpty) {
     return 'black';
   }
+
+  // Black's hand is empty: Black has lost, and White prevails.
   if (blackEmpty) {
     return 'white';
   }
+
+  // Both armies still have cards to fight with.
   return undefined;
 }

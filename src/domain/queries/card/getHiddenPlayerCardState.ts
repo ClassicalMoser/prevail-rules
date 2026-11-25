@@ -15,9 +15,11 @@ export function getHiddenPlayerCardState(
   const visibility = cardState.visibility;
   switch (visibility) {
     case 'authoritative': {
+      // The full record hides no hand, so asking for a hidden one is a fault.
       throw new Error('No hidden player under authoritative visibility');
     }
     case 'whiteSeen': {
+      // White's seat hides Black's hand; White's own is in view.
       if (player !== 'black') {
         throw new Error(
           `Player ${player} is not hidden under whiteSeen visibility`,
@@ -26,6 +28,7 @@ export function getHiddenPlayerCardState(
       return cardState.black;
     }
     case 'blackSeen': {
+      // Black's seat hides White's hand; Black's own is in view.
       if (player !== 'white') {
         throw new Error(
           `Player ${player} is not hidden under blackSeen visibility`,
@@ -38,6 +41,8 @@ export function getHiddenPlayerCardState(
       return cardState[player];
     }
     default: {
+      // Every visibility is handled above; only a value the type forbids
+      // arrives here.
       const _exhaustiveCheck: never = visibility;
       throw new Error(`Invalid visibility: ${_exhaustiveCheck}`);
     }

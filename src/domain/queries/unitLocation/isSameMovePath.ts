@@ -14,8 +14,12 @@ export function isSameMovePath(
   first: readonly MoveDelta[],
   second: readonly MoveDelta[],
 ): boolean {
+  // The same number of steps and turns, each the same as the one at its place in
+  // the other path: order matters, as turning before a step goes elsewhere.
   const same =
     first.length === second.length &&
     first.every((delta, index) => delta === second[index]);
+
+  // True when the two name one move.
   return same;
 }

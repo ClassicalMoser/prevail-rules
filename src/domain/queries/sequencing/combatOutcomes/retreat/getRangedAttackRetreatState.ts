@@ -15,6 +15,7 @@ import { getRetreatStateFromAttackApply } from './getRetreatStateFromAttackApply
  * applied no retreat to it
  */
 export function getRangedAttackRetreatState(state: GameState): RetreatState {
+  // The results the shot's target takes.
   const attackApplyState = getRangedAttackApplyState(state);
   // An attack that applied no retreat answers `'bypassed'`. That is a fact
   // about the attack, not a retreat this getter can hand back.
@@ -22,5 +23,6 @@ export function getRangedAttackRetreatState(state: GameState): RetreatState {
     getRetreatStateFromAttackApply(attackApplyState),
     'The ranged attack applied no retreat',
   );
+  // The retreat the shot's target is making.
   return retreatState;
 }

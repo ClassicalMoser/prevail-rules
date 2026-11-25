@@ -17,22 +17,27 @@ export function unitTypeMatchesRestrictions(
 ): boolean {
   switch (restrictions.restrictionType) {
     case 'none': {
+      // An order or round effect printed without a filter reaches any type.
       const unrestricted = true;
       return unrestricted;
     }
     case 'trait': {
+      // The unit must have every listed trait (§4.3.4).
       const traits = restrictions.traitRestrictions;
       const noUnitTypes: string[] = [];
       const matched = matchesUnitRequirements(unitType, traits, noUnitTypes);
       return matched;
     }
     case 'unitType': {
+      // The unit must be one of the listed types (§4.3.4).
       const noTraits: Trait[] = [];
       const unitTypeIds = restrictions.unitRestrictions;
       const matched = matchesUnitRequirements(unitType, noTraits, unitTypeIds);
       return matched;
     }
     default: {
+      // Never reached: every restriction type is handled above, and the
+      // compiler checks it. No case can run this line.
       const unreachable: never = restrictions;
       return unreachable;
     }

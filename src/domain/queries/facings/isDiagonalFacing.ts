@@ -8,6 +8,10 @@ import { diagonalFacings } from '@entities';
  * @returns True if the facing is a diagonal facing
  */
 export function isDiagonalFacing(facing: UnitFacing): boolean {
+  // Toward a corner: a step that way cuts across a corner, which the
+  // blocked-diagonal test governs (§2.4.4).
   const isDiagonal = diagonalFacings.some((candidate) => candidate === facing);
+
+  // True for north-east, south-east, south-west and north-west.
   return isDiagonal;
 }

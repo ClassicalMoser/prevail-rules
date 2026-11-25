@@ -19,13 +19,20 @@ export function findPlayerOwingMeleeCommitment(
   gameState: GameState,
   meleeState: MeleeResolutionState,
 ): PlayerSide | undefined {
+  // The first player is whoever holds the initiative this round.
   const firstPlayer = gameState.currentInitiative;
+
+  // The first player is asked before anyone else.
   if (meleeState.firstPlayerCommitment.commitmentType === 'pending') {
     return firstPlayer;
   }
+
+  // Once they have answered, the second player is asked.
   if (meleeState.secondPlayerCommitment.commitmentType === 'pending') {
     const secondPlayer = getOtherPlayer(firstPlayer);
     return secondPlayer;
   }
+
+  // Both have committed or refused: the attack values are next.
   return undefined;
 }

@@ -60,6 +60,8 @@ export { getBoardSpace } from './getBoardSpace';
 export { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlacementAtCoordinate';
 
 // Space occupied by a side's commander.
+// TODO(misleading): commanders do not occupy space (§2.2.2); settle as "the
+// space a side's commander stands on".
 export { findCommanderSpace } from './findCommanderSpace';
 // The same, insisting the commander is on the board.
 export { getCommanderSpace } from './getCommanderSpace';

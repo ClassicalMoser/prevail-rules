@@ -13,11 +13,17 @@ export function getResolveStepAfterIssuing(
   state: GameState,
 ): IssueCommandsPhaseStep {
   const { step } = getIssueCommandsPhaseState(state);
+
+  // The first player carries out their orders once they have issued them.
   if (step === 'firstPlayerIssueCommands') {
     return 'firstPlayerResolveCommands';
   }
+
+  // So does the second.
   if (step === 'secondPlayerIssueCommands') {
     return 'secondPlayerResolveCommands';
   }
+
+  // On a resolve step, or once the phase is done, no one is issuing.
   throw new Error(`Not on an issuing step: ${step}`);
 }

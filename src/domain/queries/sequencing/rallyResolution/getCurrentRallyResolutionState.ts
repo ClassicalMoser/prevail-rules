@@ -14,6 +14,8 @@ import { getRallyResolutionState } from './getRallyResolutionState';
 export function getCurrentRallyResolutionState(
   state: GameState,
 ): RallyResolutionState {
+  // A rally is carried out on its player's resolve step; on a choose step it
+  // has not begun, and before or after both rallies there is none.
   const { step } = getCleanupPhaseState(state);
   if (
     step !== 'firstPlayerResolveRally' &&
@@ -21,6 +23,7 @@ export function getCurrentRallyResolutionState(
   ) {
     throw new Error(`Not in a resolveRally step: ${step}`);
   }
+  // The resolve step belongs to one player, and it is their rally.
   const rallyState = getRallyResolutionState(state, getRallyingPlayer(state));
   return rallyState;
 }

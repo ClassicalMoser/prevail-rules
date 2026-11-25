@@ -16,9 +16,12 @@ import { throwIfPending } from '@utils';
 export function getRoutStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): RoutState | 'bypassed' {
+  // The attack reached the unit's Rout and nothing has opened the step, so
+  // the caller is ahead of the sequencer.
   const routState = throwIfPending(
     attackApplyState.routState,
     'The rout on this attack apply has not been opened yet',
   );
+  // The open rout, or `'bypassed'` when this attack breaks nobody.
   return routState;
 }

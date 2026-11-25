@@ -23,15 +23,18 @@ export function findOwnedPlayerCardState(
   const visibility = cardState.visibility;
   switch (visibility) {
     case 'authoritative': {
+      // The full record holds every card, so both hands are in view.
       return cardState[player];
     }
     case 'blackSeen': {
+      // Black's seat sees its own hand and only the size of White's.
       if (player !== 'black') {
         return undefined;
       }
       return cardState.black;
     }
     case 'whiteSeen': {
+      // White's seat sees its own hand and only the size of Black's.
       if (player !== 'white') {
         return undefined;
       }
@@ -42,6 +45,8 @@ export function findOwnedPlayerCardState(
       return undefined;
     }
     default: {
+      // Every visibility is handled above; only a value the type forbids
+      // arrives here.
       const _exhaustiveCheck: never = visibility;
       throw new Error(`Invalid visibility: ${_exhaustiveCheck}`);
     }

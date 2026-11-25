@@ -10,7 +10,12 @@ import { getCurrentPhaseState } from './phases/getCurrentPhaseState';
  * @throws Error if phase state is missing
  */
 export function getCurrentStep(state: GameState): string {
+  // The phase the round is in; before the round begins there is none.
   const phaseState = getCurrentPhaseState(state);
+
+  // Within it, where play stands: whose turn it is, and at what point.
   const step = phaseState.step;
+
+  // The step, for a caller that does not need to know which phase holds it.
   return step;
 }

@@ -26,6 +26,7 @@ export function getRallyResolutionStateForCurrentStep(
       `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
     );
   }
+  // Only the player whose step it is may resolve this rally.
   const rallyingPlayer = getRallyingPlayer(state);
   if (player !== rallyingPlayer) {
     throw new Error(
@@ -35,5 +36,9 @@ export function getRallyResolutionStateForCurrentStep(
     );
   }
 
+  // TODO(composition): `getCurrentRallyResolutionState` checks the resolve
+  // step again, with its own message, and that second check cannot fail once
+  // the one above has passed. Settle which of the two owns the step guard.
+  // That player's rally.
   return getCurrentRallyResolutionState(state);
 }

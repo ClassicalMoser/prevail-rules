@@ -107,5 +107,6 @@ export function listPiecePlaces(
     }
   }
 
+  // Each place a piece is held, the board's last, so a later place stands.
   return places;
 }

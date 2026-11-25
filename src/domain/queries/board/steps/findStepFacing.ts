@@ -8,6 +8,11 @@ import { findForwardSpace } from './findForwardSpace';
  * arrives with is fixed by where it came from and where it went — which is
  * why the rules that judge a step need only the two spaces, never a facing.
  *
+ * TODO(composition): this tries all eight facings, a full step each, to find
+ * one. The sign of the row and column difference between the two spaces
+ * names the facing outright; settle whether that arithmetic replaces the
+ * search.
+ *
  * @param board - The board
  * @param from - The space the step leaves
  * @param to - The space the step enters
@@ -18,8 +23,11 @@ export function findStepFacing(
   from: Coordinate,
   to: Coordinate,
 ): UnitFacing | undefined {
+  // The one facing whose step from the first space lands on the second.
   const facing = unitFacings.find(
     (candidate) => findForwardSpace(board, from, candidate) === to,
   );
+
+  // That facing, or none when no single step joins the two.
   return facing;
 }

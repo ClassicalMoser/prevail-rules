@@ -11,12 +11,17 @@ import { findCurrentCommandResolutionState } from './findCurrentCommandResolutio
 export function findRangedAttackResolutionState(
   state: GameState,
 ): RangedAttackResolutionState | undefined {
+  // Whatever order is being carried out, if any.
   const resolution = findCurrentCommandResolutionState(state);
+
+  // No order, or a Move: no unit is shooting.
   if (
     resolution === undefined ||
     resolution.commandResolutionType !== 'rangedAttack'
   ) {
     return undefined;
   }
+
+  // A Shoot order is being carried out.
   return resolution;
 }

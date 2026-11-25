@@ -7,6 +7,7 @@ import type { UnitFacing } from '@entities';
  * @returns The left-facing direction (90 degrees counterclockwise from the given facing)
  */
 export function getLeftFacing(facing: UnitFacing): UnitFacing {
+  // A quarter turn counterclockwise: the way a unit's left flank lies.
   switch (facing) {
     case 'north': {
       return 'west';
@@ -33,6 +34,7 @@ export function getLeftFacing(facing: UnitFacing): UnitFacing {
       return 'southWest';
     }
     default: {
+      // Only the eight facings exist; anything else is a malformed value.
       throw new Error(`Invalid facing: ${facing}`);
     }
   }

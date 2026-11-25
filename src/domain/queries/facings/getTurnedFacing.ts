@@ -28,14 +28,25 @@ const turnSteps: Record<MoveTurn, number> = {
  * @param facing - The way the unit faces before the turn
  * @param turn - Which of the three turns it makes
  * @returns The way it faces after
+ *
+ * TODO(composition): the compass here and the switch tables in
+ * `getOppositeFacing`, `getLeftFacing`, `getRightFacing`, `getAdjacentFacings`
+ * and `getOrthogonalFacings` state the same geometry twice: an about-turn is
+ * the opposite facing, the two adjacent facings are one turn left and right,
+ * and left and right are two turns each. Settled by deriving one from the
+ * other, as part of the spatial arithmetic the `@queries` read plans.
  */
 export function getTurnedFacing(
   facing: UnitFacing,
   turn: MoveTurn,
 ): UnitFacing {
+  // Where the unit faces now, as eighths clockwise from north.
   const from = compass.indexOf(facing);
+
   // Wrap round the compass in either direction.
   const to = (from + turnSteps[turn] + compass.length) % compass.length;
   const turned = compass[to];
+
+  // The facing the turn ends on.
   return turned;
 }

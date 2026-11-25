@@ -23,6 +23,9 @@ export function getPlayerUnitsWithPlacementOnBoard(
   const units = new Set<UnitWithPlacement>();
   const coordinates = getBoardCoordinates(state.boardState);
 
+  // Every space is asked for this side's unit, engaged or not: a unit locked
+  // in a fight is still on the board, still needs unit support after a rally
+  // (§10.4.4), and still counts against losing the last unit (§11.4).
   for (const coordinate of coordinates) {
     const unitWithPlacement = findPlayerUnitWithPosition(
       state.boardState,
@@ -34,5 +37,7 @@ export function getPlayerUnitsWithPlacementOnBoard(
     }
   }
 
+  // Each of this side's units once, with where it stands and which way it
+  // faces.
   return units;
 }

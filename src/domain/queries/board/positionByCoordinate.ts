@@ -10,6 +10,12 @@
  *
  * A constant table, built once when the module loads from the labels alone
  * and never written: nothing in play changes where a space sits.
+ *
+ * TODO(misleading): in the rules a position is a space and a facing (§5.2.4,
+ * `findPositionOfUnit`), but `GridPosition` here is a row and column only.
+ * Settle by renaming the row-and-column type and its readers (`GridPosition`,
+ * `findGridPosition`, `getGridPosition`, `findCoordinateAtPosition`,
+ * `positionByCoordinate`) to a word that is not "position".
  */
 import type { Coordinate, GridPosition } from '@entities';
 import { boardColumnNumbers, boardRowLetters } from '@ruleValues';

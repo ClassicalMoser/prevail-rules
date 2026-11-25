@@ -13,6 +13,10 @@ export function isEngagementFromFlank(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): boolean {
+  // The two facings at right angles to the defender's: the mover looks
+  // across it.
   const fromFlank = getOrthogonalFacings(defenderFacing).has(attackerFacing);
+
+  // True when the mover looks across the defender.
   return fromFlank;
 }

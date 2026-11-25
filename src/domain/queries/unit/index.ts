@@ -2,6 +2,9 @@
 export { isDefenseStat } from './isDefenseStat';
 
 // Whether a unit fights for this side.
+// TODO(misleading): the line above says what `isFriendlyUnit` is, not
+// `findUnitIndex`, which is where a unit stands in a list, by who it is.
+// Settle by giving each its own comment, next to the other list readers.
 export { findUnitIndex } from './findUnitIndex';
 export { isFriendlyUnit } from './isFriendlyUnit';
 

@@ -12,12 +12,17 @@ import { findCurrentCommandResolutionState } from './findCurrentCommandResolutio
 export function findMovementResolutionState(
   state: GameState,
 ): MovementResolutionState | undefined {
+  // Whatever order is being carried out, if any.
   const resolution = findCurrentCommandResolutionState(state);
+
+  // No order, or a Shoot: no unit is moving.
   if (
     resolution === undefined ||
     resolution.commandResolutionType !== 'movement'
   ) {
     return undefined;
   }
+
+  // A Move order is being carried out.
   return resolution;
 }

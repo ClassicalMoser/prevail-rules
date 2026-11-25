@@ -13,6 +13,7 @@ import type { CommandCard } from '@entities';
  * @returns True when both name the same card
  */
 export function isSameCard(card1: CommandCard, card2: CommandCard): boolean {
+  // An army holds no card twice (§3.1.5), so the id alone names the card.
   const same = card1.id === card2.id;
   return same;
 }

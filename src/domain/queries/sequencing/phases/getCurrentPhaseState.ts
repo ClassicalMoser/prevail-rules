@@ -12,7 +12,11 @@ import { throwIfNone } from '@utils';
 export function getCurrentPhaseState<S extends GameState>(
   state: S,
 ): PhaseState {
+  // A round passes through five phases in order (§4); before the first has
+  // begun, the round holds `'none'`, and nothing is there to read.
   const current = state.currentRoundState.currentPhaseState;
   const phaseState = throwIfNone(current, 'No current phase state found');
+
+  // The phase the round is in.
   return phaseState;
 }

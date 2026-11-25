@@ -20,7 +20,10 @@ export function findNextMeleeAttackApplyToClose(
   // Resolution order only applies once both applies have been opened.
   const appliesInOrder = getMeleeAppliesInResolutionOrder(meleeState);
   if (appliesInOrder.length < 2) {
+    // One side's attack is not yet measured, so neither can close.
     return undefined;
   }
+  // The first unit in that order whose results are not yet closed off, or
+  // none once both are.
   return appliesInOrder.find((apply) => !apply.completed);
 }

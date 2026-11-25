@@ -15,7 +15,9 @@ export function getRallyResolutionStateAwaitingBurn(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {
+  // The rally of the player whose resolve step this is.
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+
   // Burn runs only after the player chose to rally, and only once.
   if (!rallyState.playerRallied) {
     throw new Error('Player did not choose to rally');
@@ -23,5 +25,7 @@ export function getRallyResolutionStateAwaitingBurn(
   if (rallyState.rallyResolved) {
     throw new Error('Rally has already been resolved');
   }
+
+  // The rally, with one played card still to burn and the rest to return.
   return rallyState;
 }

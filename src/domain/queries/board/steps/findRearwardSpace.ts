@@ -6,6 +6,10 @@ import { findForwardSpace } from './findForwardSpace';
  * Get the rearward space for a given coordinate and facing.
  * This is the space directly behind the given coordinate in the given facing direction.
  *
+ * A retreat is a backward move (§9.1.1): the unit falls back without turning
+ * about, so each of its steps is this one (`getStepOption`,
+ * `findPlacementAfterPath`).
+ *
  * @param board - The board object
  * @param coordinate - The coordinate to get the rearward space for
  * @param facing - The facing to get the rearward space for

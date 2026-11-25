@@ -19,6 +19,7 @@ export function getMeleeRetreatState(
   state: GameState,
   player: 'white' | 'black',
 ): RetreatState {
+  // The results this player's unit takes from the other's blow.
   const attackApplyState = getMeleeAttackApplyState(state, player);
   // An attack that applied no retreat answers `'bypassed'`. That is a fact
   // about the attack, not a retreat this getter can hand back.
@@ -26,5 +27,6 @@ export function getMeleeRetreatState(
     getRetreatStateFromAttackApply(attackApplyState),
     `The melee attack on ${player} applied no retreat`,
   );
+  // The retreat this player's unit is making out of the melee.
   return retreatState;
 }

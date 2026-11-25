@@ -21,9 +21,11 @@ export function findRetreatState(
   player: 'white' | 'black',
 ): RetreatState | undefined {
   const location = findRetreatLocation(state, player);
+  // This player's unit is not falling back.
   if (location === undefined) {
     return undefined;
   }
+  // The retreat, whichever parent holds it.
   const retreatState = location.retreatState;
   return retreatState;
 }

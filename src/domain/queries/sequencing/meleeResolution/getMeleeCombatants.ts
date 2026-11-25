@@ -22,12 +22,20 @@ export interface MeleeCombatants {
  * @throws Error when either unit is not in the melee's space
  */
 export function getMeleeCombatants(state: GameState): MeleeCombatants {
+  // The space the first player chose to fight in.
   const { location } = getMeleeResolutionState(state);
+
+  // Each side's unit in that space, read from the board.
   const white = findPlayerUnitWithPosition(state.boardState, location, 'white');
   const black = findPlayerUnitWithPosition(state.boardState, location, 'black');
+
+  // A melee is fought between two units in one space; without both there is
+  // no melee, and the state is at fault.
   if (white === undefined || black === undefined) {
     throw new Error('Units not found on board');
   }
+
+  // Both units, by colour.
   const combatants: MeleeCombatants = { black, white };
   return combatants;
 }

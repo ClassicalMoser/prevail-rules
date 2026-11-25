@@ -23,14 +23,24 @@ export function findEngagementType(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): EngagementType | undefined {
+  // Facing the way the defender faces, or 45° off it: the mover came from
+  // behind, and the defender routs on the spot (§6.3.3).
   if (isEngagementFromRear(attackerFacing, defenderFacing)) {
     return 'rear';
   }
+
+  // Facing 90° across the defender: it is turned to face the mover and may
+  // not fall back (§6.3.4).
   if (isEngagementFromFlank(attackerFacing, defenderFacing)) {
     return 'flank';
   }
+
+  // Facing it head on: the defender may be offered a retreat (§6.3.2).
   if (isEngagementFromFront(attackerFacing, defenderFacing)) {
     return 'front';
   }
+
+  // Facing 135° off: a front approach always squares up (§6.2.3), so a move
+  // never ends this way; the caller decides what that means.
   return undefined;
 }

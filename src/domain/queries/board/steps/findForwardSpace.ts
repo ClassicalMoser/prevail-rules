@@ -41,12 +41,22 @@ function throwInvalidCoordinate(board: Board, coordinate: Coordinate): never {
 
   // Both parts are this board's, so the layout lists the space; reaching here
   // means the positions disagree with this size's rows and columns.
+  // TODO(composition): unreachable, and the one line no spec covers. The two
+  // checks above repeat `findGridPosition`'s, so with both parts this board's
+  // the step never got here; only `positionByCoordinate` and
+  // `coordinateLayoutMap` disagreeing could reach it. Settle by dropping it
+  // or by naming that disagreement as the fault.
   throw new Error(`Invalid coordinate: ${coordinate}`);
 }
 
 /**
  * One step forward from `coordinate` along `facing`, using the active board’s
  * coordinate layout (`board.boardType`).
+ *
+ * A unit only ever steps the way it faces (§5.1.3), so this is every step a
+ * move takes, and every neighbourhood the board readers build is one of
+ * these per direction (`getSpacesInDirections`). Off the board is an
+ * ordinary answer: a board edge in front of the unit.
  *
  * Returns `undefined` when that step would leave the board. Throws on a malformed
  * coordinate string, a row/column outside this board’s layout, or an invalid facing.
@@ -81,5 +91,7 @@ export function findForwardSpace(
   // A step past the last row or column leaves the board: there is no space
   // there, which is an ordinary answer (a board edge at a unit's front).
   const forwardSpace = findCoordinateAtPosition(board, forward);
+
+  // The space one step ahead, or nothing at the board edge.
   return forwardSpace;
 }

@@ -9,5 +9,6 @@ import type { SingleUnitPresence, UnitPresence } from '@entities';
 export function hasSingleUnit(
   unitPresence: UnitPresence,
 ): unitPresence is SingleUnitPresence {
+  // One unit, standing alone and free of any fight.
   return unitPresence.presenceType === 'single';
 }

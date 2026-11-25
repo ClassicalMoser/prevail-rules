@@ -14,6 +14,7 @@ import { getRoutStateFromAttackApply } from './getRoutStateFromAttackApply';
  * the attack applied no rout to it
  */
 export function getRangedAttackRoutState(state: GameState): RoutState {
+  // The results the shot's target takes.
   const attackApplyState = getRangedAttackApplyState(state);
   // An attack that applied no rout answers `'bypassed'`. That is a fact about
   // the attack, not a rout this getter can hand back.
@@ -21,5 +22,6 @@ export function getRangedAttackRoutState(state: GameState): RoutState {
     getRoutStateFromAttackApply(attackApplyState),
     'The ranged attack applied no rout',
   );
+  // The rout the shot's target fell into.
   return routState;
 }

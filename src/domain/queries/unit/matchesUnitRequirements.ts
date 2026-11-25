@@ -21,6 +21,7 @@ export function matchesUnitRequirements(
   // Where types are listed, the id (not the object) must be one of them.
   const isListedType =
     unitTypeIds.length === 0 || unitTypeIds.includes(unitType.id);
+  // A unit must pass both, though a restriction carries at most one list.
   const meets = hasAllTraits && isListedType;
   return meets;
 }

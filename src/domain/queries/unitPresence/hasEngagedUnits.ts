@@ -9,5 +9,6 @@ import type { EngagedUnitPresence, UnitPresence } from '@entities';
 export function hasEngagedUnits(
   unitPresence: UnitPresence,
 ): unitPresence is EngagedUnitPresence {
+  // Two enemies locked in one space (§2.2.1).
   return unitPresence.presenceType === 'engaged';
 }

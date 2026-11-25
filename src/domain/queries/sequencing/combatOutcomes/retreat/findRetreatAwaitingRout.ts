@@ -4,6 +4,10 @@ import { getOtherPlayer } from '@queries/player';
 import type { RetreatLocation } from './findRetreatLocation';
 import { findRetreatLocation } from './findRetreatLocation';
 
+// TODO(composition): the second-player-first order of players is written
+// out here, in findRetreatAwaitingChoice and in
+// findRetreatAwaitingMove; getMeleeAppliesInResolutionOrder holds the same order
+// by slot. Settled by one query for the players in the order their units suffer.
 // TODO(composition): finds its slot by "no legal retreat path" rather than
 // by a record of which retreat is awaiting its rout. Settled by deciding
 // whether that condition is a fair way to name the slot.
@@ -32,13 +36,17 @@ export function findRetreatAwaitingRout(
   const firstPlayer = state.currentInitiative;
   for (const player of [getOtherPlayer(firstPlayer), firstPlayer]) {
     const location = findRetreatLocation(state, player);
+    // Nowhere to fall back to, and the rout that takes the retreat's place
+    // (§9.1.6) is not yet written.
     if (
       location !== undefined &&
       location.retreatState.legalRetreatPaths.length === 0 &&
       isPending(location.retreatState.routState)
     ) {
+      // The first unit in that order whose retreat must become a rout.
       return location;
     }
   }
+  // No retreat is waiting to turn into a rout.
   return undefined;
 }

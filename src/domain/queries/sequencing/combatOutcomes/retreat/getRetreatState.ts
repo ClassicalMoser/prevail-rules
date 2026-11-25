@@ -19,8 +19,10 @@ export function getRetreatState(
   player: 'white' | 'black',
 ): RetreatState {
   const retreatState = findRetreatState(state, player);
+  // The caller is choosing or carrying out a retreat nobody opened.
   if (retreatState === undefined) {
     throw new Error(`No retreat is in play for ${player}`);
   }
+  // The retreat this player's unit is making.
   return retreatState;
 }

@@ -27,6 +27,7 @@ export function findRoutAwaitingPenalty(
   const firstPlayer = state.currentInitiative;
   for (const player of [firstPlayer, getOtherPlayer(firstPlayer)]) {
     const location = findRoutLocation(state, player);
+    // This side's rout is open and its Morale cost not yet counted.
     if (
       location !== undefined &&
       isPending(location.routState.numberToDiscard)
@@ -34,5 +35,6 @@ export function findRoutAwaitingPenalty(
       return location;
     }
   }
+  // No rout is waiting for its penalty.
   return undefined;
 }

@@ -9,5 +9,6 @@ import type { NoneUnitPresence, UnitPresence } from '@entities';
 export function hasNoUnit(
   unitPresence: UnitPresence,
 ): unitPresence is NoneUnitPresence {
+  // Nothing stands here, though a commander may (§2.2.2).
   return unitPresence.presenceType === 'none';
 }

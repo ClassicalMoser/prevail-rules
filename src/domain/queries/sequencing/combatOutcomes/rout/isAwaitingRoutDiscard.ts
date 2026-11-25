@@ -13,8 +13,11 @@ import { isPending } from '@utils';
  * @returns Whether a `chooseRoutDiscard` is still owed
  */
 export function isAwaitingRoutDiscard(routState: RoutState): boolean {
+  // `resolveRout` has counted the Morale the rout costs.
   const penaltyKnown = !isPending(routState.numberToDiscard);
+  // The owner has yet to choose which cards go (§9.3.2).
   const awaiting =
     penaltyKnown && !routState.cardsChosen && !routState.completed;
+  // Whether the discard choice is the rout's next step.
   return awaiting;
 }

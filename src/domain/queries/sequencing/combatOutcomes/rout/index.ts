@@ -26,6 +26,8 @@ export { getRoutStateFromRally } from './getRoutStateFromRally';
 // Selections. A rule of the game decides which candidate is answered about, so
 // each of these encodes sequencing rather than position.
 
+// TODO(misleading): a melee routs the second player's unit first (§7.5.6), not
+// the initiative's. Settled by rewording to "second player's unit first".
 // The rout still open in the current melee, initiative first.
 export { getNextMeleeRoutState } from './getNextMeleeRoutState';
 

@@ -15,8 +15,12 @@ export function getRallyResolutionState(
   player: PlayerSide,
 ): RallyResolutionState {
   const rallyState = findRallyResolutionState(state, player);
+  // A caller that asks before the player has chosen whether to rally has
+  // asked out of turn.
   if (rallyState === undefined) {
     throw new Error(`No ${player} rally resolution state found`);
   }
+
+  // The rally that player began.
   return rallyState;
 }

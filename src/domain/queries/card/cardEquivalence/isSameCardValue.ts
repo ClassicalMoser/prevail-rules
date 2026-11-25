@@ -27,6 +27,8 @@ export function isSameCardValue(
   held: CommandCard,
   given: CommandCard,
 ): ValidationResult {
+  // A different card altogether is refused as such, before any part is
+  // compared: the parts of two different cards need not agree.
   if (!isSameCard(held, given)) {
     return {
       errorReason: `Cards ${held.id} and ${given.id} are different cards`,
@@ -55,6 +57,8 @@ export function isSameCardValue(
     ],
     ['unit support', areUnitSupportsEqual(held.unitSupport, given.unitSupport)],
   ];
+  // The first part that differs is the one the reason names; a forged card
+  // usually alters only one.
   const differing = parts.find(([, same]) => !same);
   if (differing !== undefined) {
     return {
@@ -62,5 +66,7 @@ export function isSameCardValue(
       result: false,
     };
   }
+
+  // Every part agrees, so the card handed in is the card the game holds.
   return { result: true };
 }

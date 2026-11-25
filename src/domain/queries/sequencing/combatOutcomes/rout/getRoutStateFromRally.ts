@@ -16,6 +16,7 @@ import { throwIfPending } from '@utils';
 export function getRoutStateFromRally(
   rallyState: RallyResolutionState,
 ): RoutState | 'bypassed' {
+  // The open rout, or `'bypassed'` when every unit kept its place.
   return throwIfPending(
     rallyState.routState,
     'No rout state found in rally resolution state',

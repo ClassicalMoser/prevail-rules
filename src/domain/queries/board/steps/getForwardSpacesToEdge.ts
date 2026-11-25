@@ -4,6 +4,17 @@ import { findForwardSpace } from './findForwardSpace';
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.
  * This includes all spaces on the board in a direct line from the given coordinate in the given facing direction.
+ *
+ * A straight run to the edge: a line is looked for along it, rank-wise to
+ * each side of a unit (§4.3.5, `getLineSegmentContainingUnit`), and the
+ * half-planes ahead and behind are filled out with it (§2.3.3).
+ *
+ * TODO(misleading): the board is not used to infer a coordinate type; it is
+ * the size whose edge ends the run. Settle the `@param board` wording.
+ *
+ * TODO(composition): `getLineSegmentContainingUnit` stops at the first gap,
+ * yet the whole run to the edge is built first. Settle whether the line walk
+ * steps with `findForwardSpace` instead.
  * @param board - The board object (used to infer coordinate type)
  * @param coordinate - The coordinate to get the forward spaces to the edge for
  * @param facing - The facing to get the forward spaces to the edge for

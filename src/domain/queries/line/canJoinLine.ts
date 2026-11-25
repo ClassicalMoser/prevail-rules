@@ -48,19 +48,24 @@ export function canJoinLine(
     coordinate,
     friendlySide,
   );
+
   // No friendly unit: empty space or enemy.
   if (playerUnit === undefined) {
     return undefined;
   }
+
   // Facing must match the line facing or its opposite.
   const playerFacing = playerUnit.placement.facing;
   if (playerFacing !== lineFacing && playerFacing !== oppositeLineFacing) {
     return undefined;
   }
+
   // A line is drawn only through units an order may name, so it stops at an
   // engaged unit, a commanded one, or one the restrictions leave out.
   if (!canBeOrdered(playerUnit, board, restrictions, commandedUnits)) {
     return undefined;
   }
+
+  // A friendly unit, squared to the rank, that this order may name.
   return playerUnit;
 }

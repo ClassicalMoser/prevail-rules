@@ -27,9 +27,12 @@ export function getMeleeAttackApplyState(
   const attackApplyState = hasInitiative(state, defendingPlayer)
     ? meleeState.attackOnFirstPlayerApplyState
     : meleeState.attackOnSecondPlayerApplyState;
+  // Both sides' attacks are measured together, so a caller reaching for one
+  // before it is written is out of sequence.
   const opened = throwIfPending(
     attackApplyState,
     `No attack apply on ${defendingPlayer} found in melee resolution`,
   );
+  // The results that player's unit takes from the other's blow.
   return opened;
 }

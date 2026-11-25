@@ -31,10 +31,14 @@ export function findWinnerFromNoUnits(
   // not yet begun, not a defeat — and in play both armies can never vanish
   // in the same instant, because routs are carried out one at a time.
   if (!whiteHasArmy && blackHasArmy) {
+    // White's army is gone and Black's is not: Black prevails.
     return 'black';
   }
   if (!blackHasArmy && whiteHasArmy) {
+    // Black's army is gone and White's is not: White prevails.
     return 'white';
   }
+
+  // Both armies are in the game, or neither has been mustered yet.
   return undefined;
 }

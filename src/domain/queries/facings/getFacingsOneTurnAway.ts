@@ -11,13 +11,22 @@ import { getOppositeFacing } from './getOppositeFacing';
  *
  * @param facing - The facing the unit turns from
  * @returns The three facings a single turn may end on
+ *
+ * TODO(composition): nothing in production calls this. The move walk names
+ * each turn (`turnLeft`, `turnRight`, `turnAbout`) and reads where it leaves
+ * the unit through `getTurnedFacing`, in `getTurnOptions`, so it never asks for
+ * this set. Settled by removing it, or by finding the caller that should use it.
  */
 export function getFacingsOneTurnAway(facing: UnitFacing): Set<UnitFacing> {
   // 45° to either side of the current facing.
   const adjacents = getAdjacentFacings(facing);
+
   // The about-turn: reversing in place is easier than changing a facing
   const opposite = getOppositeFacing(facing);
+
   // Combined set
   const targets = new Set([...adjacents, opposite]);
+
+  // The three facings one Flexibility point can reach; never a 90° wheel.
   return targets;
 }

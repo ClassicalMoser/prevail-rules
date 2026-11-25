@@ -18,6 +18,7 @@ export function getMeleeReverseState(
   state: GameState,
   player: 'white' | 'black',
 ): ReverseState {
+  // The results this player's unit takes from the other's blow.
   const attackApplyState = getMeleeAttackApplyState(state, player);
   // An attack that applied no reverse answers `'bypassed'`. That is a fact about
   // the attack, not a reverse this getter can hand back.
@@ -25,5 +26,6 @@ export function getMeleeReverseState(
     getReverseStateFromAttackApply(attackApplyState),
     `The melee attack on ${player} applied no reverse`,
   );
+  // The reverse this player's unit is owed.
   return reverseState;
 }

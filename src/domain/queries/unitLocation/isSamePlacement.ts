@@ -14,6 +14,9 @@ import type { UnitPlacement } from '@entities';
  * @returns Whether both name the same space and the same facing
  */
 export function isSamePlacement(a: UnitPlacement, b: UnitPlacement): boolean {
+  // Both halves: the space, and the way the unit faces on it.
   const isSame = a.coordinate === b.coordinate && a.facing === b.facing;
+
+  // True only when both match.
   return isSame;
 }

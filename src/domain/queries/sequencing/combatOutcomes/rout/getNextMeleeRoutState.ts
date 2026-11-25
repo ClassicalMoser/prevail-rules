@@ -18,8 +18,10 @@ export function getNextMeleeRoutState(state: GameState): RoutState {
   for (const apply of getMeleeAppliesInResolutionOrder(meleeState)) {
     // A rout already paid is settled and is passed over.
     if (isOpenSubstep(apply.routState) && !apply.routState.completed) {
+      // The first unit in resolution order whose rout is still unpaid.
       return apply.routState;
     }
   }
+  // The sequencer asks only while a rout is owed, so none here is a fault.
   throw new Error('No rout state found in melee resolution');
 }

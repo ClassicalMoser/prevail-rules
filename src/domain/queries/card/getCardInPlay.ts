@@ -16,9 +16,13 @@ export function getCardInPlay(
   cardState: CardState,
   player: PlayerSide,
 ): CommandCard {
+  // A caller past the reveal expects a card; none means it asked too early
+  // or too late, which is a fault rather than an answer.
   const card = findCardInPlay(cardState, player);
   if (card === undefined) {
     throw new Error(`${player} has no card in play`);
   }
+
+  // The card whose command and round effect govern this round.
   return card;
 }

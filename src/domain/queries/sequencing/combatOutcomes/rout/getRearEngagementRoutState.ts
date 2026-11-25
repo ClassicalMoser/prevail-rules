@@ -8,6 +8,7 @@ import { getMovementResolutionState } from '@queries/sequencing/commandResolutio
  */
 export function getRearEngagementRoutState(state: GameState): RoutState {
   const movement = getMovementResolutionState(state);
+  // A move that has engaged nobody has routed nobody.
   const engagement = throwIfPending(
     movement.engagementState,
     'Movement resolution has no engagement state',
@@ -22,6 +23,8 @@ export function getRearEngagementRoutState(state: GameState): RoutState {
     );
   }
 
+  // A rear engagement opens its rout as it begins (§6.3.3), so the slot is
+  // always the substep itself.
   const routState = resolution.routState;
   return routState;
 }

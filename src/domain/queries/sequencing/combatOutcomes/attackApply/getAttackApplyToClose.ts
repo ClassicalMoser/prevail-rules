@@ -25,6 +25,7 @@ export function getAttackApplyToClose(state: GameState): AttackApplyState {
   // A ranged attack has one apply.
   if (phaseState.phase === 'issueCommands') {
     const rangedApply = getRangedAttackApplyState(state);
+    // The target's results are all carried out, so its apply closes.
     return rangedApply;
   }
 
@@ -41,14 +42,17 @@ export function getAttackApplyToClose(state: GameState): AttackApplyState {
       );
     }
     const next = findNextMeleeAttackApplyToClose(melee);
+    // Both are already closed, so the sequencer asked once too often.
     if (next === undefined) {
       throw new Error(
         'No incomplete attack apply state found in melee resolution',
       );
     }
+    // The second player's unit's apply closes first, then the first player's.
     return next;
   }
 
+  // Only a shot and a melee carry out an attack's results.
   throw new Error(
     `completeAttackApply not expected in phase: ${phaseState.phase}`,
   );

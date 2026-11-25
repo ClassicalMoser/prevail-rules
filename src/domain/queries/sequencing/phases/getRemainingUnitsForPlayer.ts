@@ -20,9 +20,15 @@ export function getRemainingUnitsForPlayer(
   state: GameState,
   player: PlayerSide,
 ): readonly UnitInstance[] {
+  // Only Phase 3 holds units still to act.
   const phaseState = getIssueCommandsPhaseState(state);
+
+  // The player holding the initiative orders first, so their units are held
+  // in the first player's slot, and the other player's in the second.
   const remaining = hasInitiative(state, player)
     ? phaseState.remainingUnitsFirstPlayer
     : phaseState.remainingUnitsSecondPlayer;
+
+  // That player's units still to move or shoot.
   return remaining;
 }

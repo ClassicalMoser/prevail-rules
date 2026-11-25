@@ -28,10 +28,13 @@ export function getMeleeSupportValue(
   board: Board,
   unit: UnitWithPlacement,
 ): number {
+  // Support is lent by the fighter's own side, to where it stands now and
+  // the way it faces now (§7.3.3).
   const { playerSide } = unit.unit;
   const unitCoordinate = unit.placement.coordinate;
   const unitFacing = unit.placement.facing;
   // Get the adjacent spaces
+  // A supporter stands right beside the fighter, diagonals included (§7.3.1).
   const adjacentSpaces = getAdjacentSpaces(board, unitCoordinate);
   // A friend in one of the fighter's three back spaces lends nothing (§7.3.1).
   const backSpaces = getBackSpaces(board, unitCoordinate, unitFacing);
@@ -100,5 +103,7 @@ export function getMeleeSupportValue(
   }
 
   // Return the total support value
+  // Every qualifying friend counts, with no cap (§7.3.2); the attack value
+  // adds this to the fighter's Attack (§7.1.3).
   return supportValue;
 }

@@ -20,12 +20,19 @@ export function findRallyResolutionState(
   state: GameState,
   player: PlayerSide,
 ): RallyResolutionState | undefined {
+  // Rallies happen only in cleanup.
   const phaseState = getCleanupPhaseState(state);
+
+  // The player with initiative rallies first, so their rally is the first slot.
   const slot = hasInitiative(state, player)
     ? phaseState.firstPlayerRallyResolutionState
     : phaseState.secondPlayerRallyResolutionState;
   if (isPending(slot)) {
+    // That player has not yet chosen whether to rally.
     return undefined;
   }
+
+  // Their rally as it stands: whether they chose to rally, and how far it has
+  // gone.
   return slot;
 }

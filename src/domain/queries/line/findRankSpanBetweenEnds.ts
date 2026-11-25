@@ -34,28 +34,42 @@ export function findRankSpanBetweenEnds(
   restrictions: Restrictions,
   commandedUnits: readonly UnitInstance[],
 ): RankSpan | undefined {
+  // The rank is drawn through the first end, so it must stand on the board.
   const [oneEnd, otherEnd] = ends;
   const placement = findPositionOfUnit(gameState, oneEnd);
   if (placement === undefined) {
     return undefined;
   }
 
+  // The unbroken rank through the first end, by the one statement of who may
+  // stand in a line under this order.
   const rank = getLineSegmentContainingUnit(
     gameState.boardState,
     { placement, unit: oneEnd },
     restrictions,
     commandedUnits,
   );
+  // Where each end stands in that rank. A second end outside it is beyond a
+  // gap, an enemy, a unit that may not join, or not in this rank at all.
+  // TODO(composition): `oneIndex` is never `undefined`, as the rank always
+  // holds the unit it was drawn from (`getLineSegmentContainingUnit` starts
+  // from it), so that half of the test is unreachable and its mutant survives;
+  // `getLegalLines` treats the same lookup as a fault (`throwIfUndefined`).
+  // Settled by doing the same here.
   const oneIndex = findUnitIndex(rank, oneEnd);
   const otherIndex = findUnitIndex(rank, otherEnd);
   if (oneIndex === undefined || otherIndex === undefined) {
     return undefined;
   }
 
+  // The stretch from the end nearer the rank's start to the farther one,
+  // whichever order the ends were named in.
   const span: RankSpan = {
     from: Math.min(oneIndex, otherIndex),
     rank,
     to: Math.max(oneIndex, otherIndex),
   };
+
+  // The rank and where in it the line runs.
   return span;
 }

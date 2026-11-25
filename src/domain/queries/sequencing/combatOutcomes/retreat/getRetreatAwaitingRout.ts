@@ -14,6 +14,7 @@ import { findRetreatAwaitingRout } from './findRetreatAwaitingRout';
  */
 export function getRetreatAwaitingRout(state: GameState): RetreatLocation {
   const location = findRetreatAwaitingRout(state);
+  // `triggerRoutFromRetreat` is owed only once a retreat has nowhere to go.
   if (location === undefined) {
     throw new Error('No retreat with nowhere to go is waiting for its rout');
   }
@@ -22,5 +23,6 @@ export function getRetreatAwaitingRout(state: GameState): RetreatLocation {
   if (location.source === 'frontEngagement') {
     throw new Error('A front engagement retreat always has a legal path');
   }
+  // The retreat on a shot's or a melee's apply whose rout is due.
   return location;
 }

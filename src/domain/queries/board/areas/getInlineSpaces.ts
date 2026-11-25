@@ -6,6 +6,11 @@ import { getForwardSpacesToEdge } from '../steps/getForwardSpacesToEdge';
  * Get the inline spaces for a given coordinate and facing,
  * continuing in a straight line to the left and right of the facing.
  * This includes the origin space.
+ *
+ * The line a unit's own space lies on across its facing: the half-planes
+ * ahead and behind (§2.3.3) begin past it, so it is left out of both
+ * (`getHalfPlaneInDirection`).
+ *
  * @param board - The board object
  * @param coordinate - The coordinate to get the inline spaces for
  * @param facing - The facing to get the inline spaces for

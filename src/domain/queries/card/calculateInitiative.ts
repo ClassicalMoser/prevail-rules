@@ -33,6 +33,7 @@ export function calculateInitiative(
   blackCard: CommandCard,
   currentInitiative: PlayerSide,
 ): PlayerSide {
+  // Each side's claim is the initiative printed on the card it revealed.
   const whiteInitiative = whiteCard.initiative;
   const blackInitiative = blackCard.initiative;
 
@@ -41,6 +42,7 @@ export function calculateInitiative(
     return 'white';
   }
 
+  // Black's lower card takes it the same way.
   if (blackInitiative < whiteInitiative) {
     return 'black';
   }

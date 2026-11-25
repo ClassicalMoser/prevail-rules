@@ -10,6 +10,13 @@ import { isSameUnitInstance } from '../unit/unitEquivalence';
  * @param unitWithPlacement - The unit with its placement
  * @returns ValidationResult indicating if the unit is at the placement
  * @throws Error when the placement names a coordinate that is not on the board
+ *
+ * TODO(composition): this hand-rolls `isSameUnitWithPlacement` (the side's
+ * unit on the named space, then its facing, then `isSameUnitInstance`), and
+ * `getLegalUnitMoves` makes the same check inline before a move. Its one
+ * caller, `getLegalRetreats`, turns a refusal straight into a throw, so a
+ * query answering a `ValidationResult` buys only the three messages. Settled
+ * by one getter that throws, comparing through `isSameUnitWithPlacement`.
  */
 export function isAtPlacement(
   board: Board,

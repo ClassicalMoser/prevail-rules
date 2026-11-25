@@ -7,6 +7,8 @@ import type { UnitFacing } from '@entities';
  * @returns The opposite facing (180 degrees away from the given facing)
  */
 export function getOppositeFacing(facing: UnitFacing): UnitFacing {
+  // Half way round the compass: the way a unit faces after an about-turn,
+  // and the way a squared-up enemy faces it (§6.2.3).
   switch (facing) {
     case 'north': {
       return 'south';
@@ -33,6 +35,7 @@ export function getOppositeFacing(facing: UnitFacing): UnitFacing {
       return 'southEast';
     }
     default: {
+      // Only the eight facings exist; anything else is a malformed value.
       throw new Error(`Invalid facing: ${facing}`);
     }
   }

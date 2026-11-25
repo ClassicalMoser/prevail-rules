@@ -10,6 +10,13 @@ import { getInlineSpaces } from './getInlineSpaces';
  * spaces (perpendicular to the facing, so a diagonal fill does not checkerboard),
  * then walks every collected space forward to the edge.
  *
+ * TODO(composition): every caller asks only whether one space is in the half
+ * (`canEngageEnemy`, and the retreat region `createMoveContext` keeps), yet
+ * this builds the whole set from many walks to the edge. A space is in it
+ * exactly when its row and column offset, weighed by the facing's row and
+ * column deltas, sums above zero. Settle whether a membership test by that
+ * arithmetic replaces the set.
+ *
  * @param board - The board object
  * @param coordinate - The coordinate the half-plane is in front of
  * @param facing - The direction of the half-plane

@@ -4,6 +4,12 @@ import { getAdjacentSpaces } from '../adjacency';
 /**
  * Get all spaces within a given distance from a coordinate.
  * Uses breadth-first traversal to find all spaces within the distance.
+ *
+ * TODO(composition): nothing in this repository calls this but a spec;
+ * `getSpacesApart` answers "within N spaces" (§2.4.2) by arithmetic instead.
+ * Settle whether it goes or stays as API for the packages built on these
+ * rules.
+ *
  * @param board - The board object
  * @param coordinate - The starting coordinate
  * @param distance - The maximum distance (inclusive)
@@ -16,10 +22,14 @@ export function getSpacesWithinDistance(
 ): Set<Coordinate> {
   // If distance is less than 0, return an empty set.
   if (distance < 0) {
+    // Nothing is fewer than no steps away.
     return new Set();
   }
   // If distance is exactly 0, return only the starting coordinate
+  // The loop below would answer the same, so a mutant dropping this check
+  // is equivalent.
   if (distance === 0) {
+    // "Within 0 spaces" is the same space (§2.4.2).
     return new Set([coordinate]);
   }
 
@@ -42,6 +52,8 @@ export function getSpacesWithinDistance(
       const adjacentSpaces = getAdjacentSpaces(board, space);
       for (const adjacentSpace of adjacentSpaces) {
         // Only add if we haven't seen this space before
+        // A set keeps each space once anyway; the check only keeps a ring
+        // from being walked out again, so a mutant removing it is equivalent.
         if (!spacesWithinDistance.has(adjacentSpace)) {
           spacesWithinDistance.add(adjacentSpace);
           nextLevel.add(adjacentSpace);
@@ -53,5 +65,7 @@ export function getSpacesWithinDistance(
     currentLevel = nextLevel;
   }
 
+  // The start and every space within that many steps, a diagonal counting
+  // as one, cut short by the board edge.
   return spacesWithinDistance;
 }

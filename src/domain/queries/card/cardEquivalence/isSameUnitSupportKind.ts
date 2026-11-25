@@ -35,6 +35,8 @@ export function isSameUnitSupportKind(
       return same;
     }
     default: {
+      // Never reached: every kind of unit support is handled above, and the
+      // compiler checks it. No case can run this line.
       const unreachable: never = support1;
       return unreachable;
     }

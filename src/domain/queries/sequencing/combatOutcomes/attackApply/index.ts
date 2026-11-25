@@ -18,6 +18,8 @@ export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 export { findNextMeleeAttackApplyToClose } from './findNextMeleeAttackApplyToClose';
 export { getAttackApplyToClose } from './getAttackApplyToClose';
 
+// TODO(misleading): this heading has no export beneath it, and a melee opens
+// the second player's unit first, not the initiative's. Settled by deleting it.
 // The defender whose melee attack-apply is still open, initiative first.
 
 // The stages an attack's results are carried out in (§7.5.2).

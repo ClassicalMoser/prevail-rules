@@ -23,9 +23,11 @@ export function findRoutOwingDiscard(state: GameState): RoutState | undefined {
   const firstPlayer = state.currentInitiative;
   for (const player of [firstPlayer, getOtherPlayer(firstPlayer)]) {
     const routState = findRoutState(state, player);
+    // This side's rout has its penalty counted and its cards not yet chosen.
     if (routState !== undefined && isAwaitingRoutDiscard(routState)) {
       return routState;
     }
   }
+  // Nobody owes a discard right now.
   return undefined;
 }

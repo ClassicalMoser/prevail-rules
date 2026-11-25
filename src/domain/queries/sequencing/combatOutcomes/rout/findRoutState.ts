@@ -23,9 +23,11 @@ export function findRoutState(
   player: PlayerSide,
 ): RoutState | undefined {
   const location = findRoutLocation(state, player);
+  // This player has no unit routing.
   if (location === undefined) {
     return undefined;
   }
+  // The rout, whichever parent holds it.
   const routState = location.routState;
   return routState;
 }

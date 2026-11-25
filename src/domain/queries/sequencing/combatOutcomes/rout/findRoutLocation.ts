@@ -59,9 +59,11 @@ export interface RoutLocation {
 function routOnRetreat(
   retreatSlot: RetreatState | 'pending' | 'bypassed',
 ): RoutSlotLocation | undefined {
+  // No retreat was opened, so none can have fallen into a rout.
   if (!isOpenSubstep(retreatSlot)) {
     return undefined;
   }
+  // The retreat's own rout slot: `'bypassed'` while it has somewhere to go.
   const nested = {
     routSlot: retreatSlot.routState,
     source: 'retreat' as const,
@@ -84,10 +86,12 @@ function routOnAttackApply(
   apply: AttackApplyState,
   source: 'rangedAttack' | 'melee',
 ): RoutSlotLocation | undefined {
+  // The attack reached the unit's Rout and the rout is open.
   if (isOpenSubstep(apply.routState)) {
     const ownRout = { routSlot: apply.routState, source };
     return ownRout;
   }
+  // Otherwise the only rout this apply can hold is one its retreat fell into.
   const retreatRout = routOnRetreat(apply.retreatState);
   return retreatRout;
 }
@@ -118,6 +122,7 @@ function routInCurrentContext(
 
     if (commandResolution.commandResolutionType === 'movement') {
       const engagement = commandResolution.engagementState;
+      // The move has not stepped into an enemy, so nobody is engaged.
       if (isPending(engagement)) {
         return undefined;
       }
@@ -129,6 +134,7 @@ function routInCurrentContext(
           routSlot: resolution.routState,
           source: 'rearEngagementMovement' as const,
         };
+        // The defender caught from behind (§6.3.3).
         return rearRout;
       }
       if (resolution.engagementType === 'front') {
@@ -141,6 +147,7 @@ function routInCurrentContext(
             'A front engagement’s retreat holds a rout, which cannot happen: a defender with nowhere to fall back to stands (§6.3.2)',
           );
         }
+        // The defender stood or gave ground, and neither routs it.
         return undefined;
       }
       // A flank engagement turns the defender and routs nobody.
@@ -149,29 +156,40 @@ function routInCurrentContext(
 
     if (commandResolution.commandResolutionType === 'rangedAttack') {
       const apply = commandResolution.attackApplyState;
+      // The shot is not yet measured, so it has broken nobody.
       if (isPending(apply)) {
         return undefined;
       }
+      // The shot's own rout, or the one its retreat fell into.
       return routOnAttackApply(apply, 'rangedAttack');
     }
 
+    // TODO(composition): unreachable, since a command resolution is a movement
+    // or a ranged attack and both return above. Settled by an exhaustive
+    // `never` default, as in `getAttackApplyAwaitingOpen`.
     // No other command reaches a defender.
     return undefined;
   }
 
   if (phaseState.phase === 'resolveMelee') {
     const melee = phaseState.currentMeleeResolutionState;
+    // Between engagements nobody is fighting, so nobody is routing.
     if (isPending(melee)) {
       return undefined;
     }
+    // TODO(misleading): the slots are named for whose unit holds the result,
+    // and resolve in the reverse order (`getMeleeAppliesInResolutionOrder`).
+    // Settled by rewording as in `findRetreatLocation`.
     // Both sides strike at once, so both can be routing. The slots are named
     // for the order they resolve in, so the owner is placed in that order.
     const sideApply = hasInitiative(state, player)
       ? melee.attackOnFirstPlayerApplyState
       : melee.attackOnSecondPlayerApplyState;
+    // The other unit's blow is not yet measured.
     if (isPending(sideApply)) {
       return undefined;
     }
+    // This side's own rout, or the one its retreat fell into.
     return routOnAttackApply(sideApply, 'melee');
   }
 
@@ -183,6 +201,7 @@ function routInCurrentContext(
       return undefined;
     }
     const rally = findRallyResolutionState(state, rallying);
+    // The player on this step has not yet chosen whether to rally.
     if (rally === undefined) {
       return undefined;
     }
@@ -190,6 +209,7 @@ function routInCurrentContext(
       routSlot: rally.routState,
       source: 'rally' as const,
     };
+    // The units the support check left without a place (§10.4.6).
     return rallyRout;
   }
 
@@ -230,6 +250,7 @@ export function findRoutLocation(
   player: PlayerSide,
 ): RoutLocation | undefined {
   const location = routInCurrentContext(state, player);
+  // Nothing in play holds a rout, or its slot is not opened.
   if (location === undefined || !isOpenSubstep(location.routSlot)) {
     return undefined;
   }
@@ -238,6 +259,7 @@ export function findRoutLocation(
   if (location.routSlot.player !== player) {
     return undefined;
   }
+  // This player's rout, with the parent accountable for it.
   const found = { routState: location.routSlot, source: location.source };
   return found;
 }

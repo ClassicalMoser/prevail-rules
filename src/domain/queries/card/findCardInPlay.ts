@@ -16,6 +16,9 @@ export function findCardInPlay(
   cardState: CardState,
   player: PlayerSide,
 ): CommandCard | undefined {
+  // The in-play slot is empty until the reveal, and empty again once the card
+  // goes to the played pile at cleanup (§4.5.1); an empty slot reads as no
+  // card.
   const card = cardState[player].inPlay ?? undefined;
   return card;
 }

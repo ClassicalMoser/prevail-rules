@@ -17,7 +17,9 @@ export function getRallyResolutionStateAwaitingUnitSupport(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {
+  // The rally of the player whose resolve step this is.
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+
   // Support is assigned only after the burn, and only while the list is still pending.
   if (!isAwaitingUnitSupport(rallyState)) {
     throw new Error(
@@ -26,5 +28,7 @@ export function getRallyResolutionStateAwaitingUnitSupport(
         : 'Rally has not been resolved yet',
     );
   }
+
+  // The rally, with every card back in hand and the support check to make.
   return rallyState;
 }

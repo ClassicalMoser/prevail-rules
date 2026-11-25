@@ -16,12 +16,17 @@ export function hasEnemyUnit(
 ): boolean {
   // An engagement counts as an enemy for either player.
   if (hasEngagedUnits(space.unitPresence)) {
+    // An engaged space holds an enemy of whoever asks.
     return true;
   }
   // A single unit is an enemy when it fights for the other side; an empty
   // space holds none.
+  // TODO(composition): the side test repeats `isFriendlyUnit`, the same
+  // comparison with no throw. Settled by calling it.
   const enemy =
     hasSingleUnit(space.unitPresence) &&
     space.unitPresence.unit.playerSide !== playerSide;
+
+  // True when an enemy stands here, on its own or in a fight.
   return enemy;
 }

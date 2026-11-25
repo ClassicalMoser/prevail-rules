@@ -13,6 +13,8 @@ export function hasUnitInArray(
   units: readonly UnitInstance[],
   unit: UnitInstance,
 ): boolean {
+  // Matched on who the unit is, so a copy named by an event is found: a unit
+  // already commanded this round cannot take a second order (§4.3.6).
   const found = units.some((member) => isSameUnitInstance(member, unit));
   return found;
 }

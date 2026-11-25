@@ -12,9 +12,14 @@ import { getCurrentCommandResolutionState } from './getCurrentCommandResolutionS
 export function getRangedAttackResolutionState(
   state: GameState,
 ): RangedAttackResolutionState {
+  // The order being carried out; asking outside one throws there.
   const commandResolutionState = getCurrentCommandResolutionState(state);
+
+  // A caller that reads a shot during a Move has asked out of turn.
   if (commandResolutionState.commandResolutionType !== 'rangedAttack') {
     throw new Error('Current command resolution is not a ranged attack');
   }
+
+  // The Shoot being carried out.
   return commandResolutionState;
 }

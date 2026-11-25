@@ -57,10 +57,13 @@ export function findRetreatLocation(
 
     if (commandResolution.commandResolutionType === 'rangedAttack') {
       const apply = commandResolution.attackApplyState;
+      // The shot is not yet measured, so it has driven nobody back.
       if (isPending(apply)) {
         return undefined;
       }
       const rangedRetreat = apply.retreatState;
+      // The shot did not reach the target's Retreat, or the retreat is not
+      // yet opened.
       if (!isOpenSubstep(rangedRetreat)) {
         return undefined;
       }
@@ -72,23 +75,29 @@ export function findRetreatLocation(
         retreatState: rangedRetreat,
         source: 'rangedAttack' as const,
       };
+      // This player's unit is falling back from the shot.
       return rangedLocation;
     }
 
     // A movement forces a retreat only when it engages from the front and the
     // defender gives ground rather than holding.
     const engagement = commandResolution.engagementState;
+    // The move has not stepped into an enemy, so nobody is engaged.
     if (isPending(engagement)) {
       return undefined;
     }
     const resolution = engagement.engagementResolutionState;
+    // A flank engagement forbids falling back and a rear one routs the
+    // defender outright (§6.3.3, §6.3.4).
     if (resolution.engagementType !== 'front') {
       return undefined;
     }
     const frontRetreat = resolution.retreatState;
+    // The defender has not yet chosen to give ground, or chose to stand.
     if (!isOpenSubstep(frontRetreat)) {
       return undefined;
     }
+    // Only the defender gives ground; the engaging unit holds the space.
     if (!isFriendlyUnit(frontRetreat.retreatingUnit, player)) {
       return undefined;
     }
@@ -96,11 +105,13 @@ export function findRetreatLocation(
       retreatState: frontRetreat,
       source: 'frontEngagement' as const,
     };
+    // This player's defender is falling back from the engagement.
     return frontLocation;
   }
 
   if (phaseState.phase === 'resolveMelee') {
     const melee = phaseState.currentMeleeResolutionState;
+    // Between engagements nobody is fighting, so nobody is falling back.
     if (isPending(melee)) {
       return undefined;
     }
@@ -109,10 +120,13 @@ export function findRetreatLocation(
     const sideApply = hasInitiative(state, player)
       ? melee.attackOnFirstPlayerApplyState
       : melee.attackOnSecondPlayerApplyState;
+    // The other unit's blow is not yet measured.
     if (isPending(sideApply)) {
       return undefined;
     }
     const meleeRetreat = sideApply.retreatState;
+    // The blow did not reach this unit's Retreat, or its retreat is not yet
+    // opened.
     if (!isOpenSubstep(meleeRetreat)) {
       return undefined;
     }
@@ -120,6 +134,7 @@ export function findRetreatLocation(
       retreatState: meleeRetreat,
       source: 'melee' as const,
     };
+    // This player's unit is falling back from the melee.
     return meleeLocation;
   }
 

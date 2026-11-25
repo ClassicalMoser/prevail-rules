@@ -11,6 +11,7 @@ export function isSameInstanceNumber(
   unit1: UnitInstance,
   unit2: UnitInstance,
 ): boolean {
+  // Copies of one unit type in an army are told apart by their number.
   const same = unit1.instanceNumber === unit2.instanceNumber;
   return same;
 }

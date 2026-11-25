@@ -16,6 +16,8 @@ export function getNextStepForResolveRally(
 ): 'secondPlayerChooseRally' | 'complete' {
   const phaseState = getCleanupPhaseState(state);
 
+  // The first player finishes their rally entirely before the second chooses
+  // whether to rally (§10.3.6).
   if (phaseState.step === 'firstPlayerResolveRally') {
     return 'secondPlayerChooseRally';
   }
@@ -26,5 +28,7 @@ export function getNextStepForResolveRally(
       `Cleanup is not on a resolve-rally step: ${phaseState.step}`,
     );
   }
+
+  // The second player's rally is the last thing in the round (§4.5.4).
   return 'complete';
 }

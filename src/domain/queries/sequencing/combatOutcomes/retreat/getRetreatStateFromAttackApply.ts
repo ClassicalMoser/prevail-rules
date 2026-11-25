@@ -16,9 +16,12 @@ import { throwIfPending } from '@utils';
 export function getRetreatStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): RetreatState | 'bypassed' {
+  // The attack reached the unit's Retreat and nothing has opened the step, so
+  // the caller is ahead of the sequencer.
   const retreatState = throwIfPending(
     attackApplyState.retreatState,
     'The retreat on this attack apply has not been opened yet',
   );
+  // The open retreat, or `'bypassed'` when this attack drives nobody back.
   return retreatState;
 }

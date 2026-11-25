@@ -16,11 +16,16 @@ import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhase
  * @throws Error when the game is not in cleanup
  */
 export function findRallyingPlayer(state: GameState): PlayerSide | undefined {
+  // Which cleanup step play is on, and who holds the initiative.
   const { step } = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
+
+  // The first player chooses whether to rally, and carries it out, first.
   if (step === 'firstPlayerChooseRally' || step === 'firstPlayerResolveRally') {
     return firstPlayer;
   }
+
+  // Then the second player does the same.
   if (
     step === 'secondPlayerChooseRally' ||
     step === 'secondPlayerResolveRally'
@@ -28,5 +33,7 @@ export function findRallyingPlayer(state: GameState): PlayerSide | undefined {
     const secondPlayer = getOtherPlayer(firstPlayer);
     return secondPlayer;
   }
+
+  // While the cards leave play, and once both rallies are done, no one rallies.
   return undefined;
 }

@@ -20,6 +20,10 @@ import { hasSingleUnit } from './hasSingleUnit';
  *
  * For engaged units, the secondary unit always faces opposite the primary unit.
  *
+ * TODO(misleading): this answers a `UnitWithPlacement`, the unit with its
+ * space and facing, so "position" says less than it returns. Settled by a
+ * name that says placement, with `findPositionOfUnit` and `getPositionOfUnit`.
+ *
  * @param board - The board to check
  * @param coordinate - The coordinate of the board space
  * @param playerSide - The player side to find a friendly unit for
@@ -57,6 +61,7 @@ export function findPlayerUnitWithPosition(
   // Handle single unit presence
   if (hasSingleUnit(unitPresence)) {
     if (isFriendlyUnit(unitPresence.unit, playerSide)) {
+      // One of ours, facing as it stands.
       return {
         placement: {
           coordinate,
@@ -70,6 +75,7 @@ export function findPlayerUnitWithPosition(
   }
   // Primary first. Its facing is the engagement's primary facing.
   if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
+    // The primary is ours, facing the way the space stores.
     return {
       placement: {
         coordinate,
@@ -87,5 +93,7 @@ export function findPlayerUnitWithPosition(
     },
     unit: unitPresence.secondaryUnit,
   };
+
+  // The secondary: two engaged units are enemies, so it is ours.
   return secondary;
 }

@@ -28,5 +28,7 @@ export function getCurrentUnitStat(
   // The raw sum may go negative; no stat in the game does (§7.1.4).
   const rawStat = getRawUnitStat(unit, stat, gameState, modifiers);
   const currentStat = Math.max(0, rawStat);
+
+  // The stat a rule reads: a move's Speed, a threshold a blow must meet.
   return currentStat;
 }

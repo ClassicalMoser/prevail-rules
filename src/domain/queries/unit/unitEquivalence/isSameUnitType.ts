@@ -11,6 +11,7 @@ export function isSameUnitType(
   unit1: UnitInstance,
   unit2: UnitInstance,
 ): boolean {
+  // The type is named by its id, so two copies of the type's record agree.
   const same = unit1.unitType.id === unit2.unitType.id;
   return same;
 }

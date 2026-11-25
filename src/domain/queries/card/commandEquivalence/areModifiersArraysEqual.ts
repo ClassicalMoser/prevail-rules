@@ -7,6 +7,10 @@ import { areModifiersEqual } from './areModifiersEqual';
  * Current use case is to find a matching command to remove from pending on issue.
  * Order does not matter.
  *
+ * TODO(misleading): the use case above is gone. The callers are now
+ * `areCommandsEqual` and `isSameCardValue`, which refuse a forged card's
+ * command or round effect. Settle by restating the use in those terms.
+ *
  * @param modifiers1 - First modifiers array
  * @param modifiers2 - Second modifiers array
  * @returns Whether the two arrays contain the same modifiers

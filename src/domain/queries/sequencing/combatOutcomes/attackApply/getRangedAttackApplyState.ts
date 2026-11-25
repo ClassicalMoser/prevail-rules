@@ -13,9 +13,13 @@ import { getRangedAttackResolutionState } from '@queries/sequencing/commandResol
  */
 export function getRangedAttackApplyState(state: GameState): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
+  // The apply is written once the shot is measured; asking before that is
+  // out of sequence.
   const attackApplyState = throwIfPending(
     rangedAttackState.attackApplyState,
     'No attack apply state found in ranged attack resolution',
   );
+  // The results the shot's target takes. A shot is one way (§7.4.4), so
+  // there is no second apply.
   return attackApplyState;
 }

@@ -11,6 +11,11 @@ import { getHalfPlaneInDirection } from './getHalfPlaneInDirection';
  * @param facing - The facing to get the spaces behind for
  * @returns A set of the space coordinates
  * (all spaces on the board behind the facing's inline spaces)
+ *
+ * The rules' "behind a unit" (§2.3.3): the whole back half of the field, not
+ * a wedge. A rear engagement needs the mover to have begun there (§6.2.2,
+ * `canEngageEnemy`), and a retreat must stay within it (§9.1.2,
+ * `createMoveContext`).
  */
 export function getSpacesBehind(
   board: Board,

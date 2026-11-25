@@ -41,6 +41,8 @@ export function canBeOrdered(
     return false;
   }
   // The order's trait and type filters.
+  // A unit must have every listed trait, or be one of the listed types; an
+  // order printed without either names any unit (§4.3.4).
   const allowed = unitTypeMatchesRestrictions(
     unitWithPlacement.unit.unitType,
     restrictions,

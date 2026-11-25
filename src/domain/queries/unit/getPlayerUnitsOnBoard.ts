@@ -26,5 +26,8 @@ export function getPlayerUnitsOnBoard(
 ): Set<UnitInstance> {
   // The units are the same ones, with their placements left behind.
   const placed = getPlayerUnitsWithPlacementOnBoard(state, player);
+
+  // The units alone, as the unit support check counts them after a rally
+  // (§10.4) and the endgame looks for a side with none left (§11.4).
   return new Set([...placed].map(({ unit }) => unit));
 }

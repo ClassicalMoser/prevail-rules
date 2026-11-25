@@ -22,15 +22,22 @@ export function findPlacementAfterPath(
   path: readonly MoveDelta[],
   direction: 'advance' | 'retreat',
 ): UnitPlacement | undefined {
+  // A unit only ever walks forwards; a retreat is the one backward move, made
+  // without turning about (§5, §9.1.1).
   const getSpaceInDirection =
     direction === 'advance' ? findForwardSpace : findRearwardSpace;
+
+  // The walk starts where and how the unit stood.
   let { coordinate, facing } = start;
 
   for (const delta of path) {
+    // A turn changes only the facing; the unit stays on its space (§5.2).
     if (delta !== 'step') {
       facing = getTurnedFacing(facing, delta);
       continue;
     }
+
+    // A step goes one space the way the unit faces, or behind it.
     const next = getSpaceInDirection(board, coordinate, facing);
     // Off the edge of the board: no such placement.
     if (next === undefined) {
@@ -39,6 +46,7 @@ export function findPlacementAfterPath(
     coordinate = next;
   }
 
+  // Where the last step or turn left the unit.
   const end: UnitPlacement = { coordinate, facing };
   return end;
 }

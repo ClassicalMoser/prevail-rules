@@ -23,13 +23,17 @@ export function getSpacesApart(
   from: Coordinate,
   to: Coordinate,
 ): number {
+  // Where each space sits, in rows and columns.
   const a = getGridPosition(board, from);
   const b = getGridPosition(board, to);
+
   // A diagonal step closes a row and a column at once, so the longer gap
   // is the count.
   const spacesApart = Math.max(
     Math.abs(a.row - b.row),
     Math.abs(a.column - b.column),
   );
+
+  // The steps between them, as an inspiration range counts them.
   return spacesApart;
 }

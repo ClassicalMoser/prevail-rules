@@ -19,6 +19,8 @@ export function applyAttackValue(
   defendingModifiers?: Modifier[],
 ): AttackResult {
   // Get the defensive stats of the unit
+  // Each threshold is the unit's current one: its card in play and, passed in
+  // here, a Defence commitment can raise all three together (§7.1.5, §8.5).
   const currentRoutValue = getCurrentUnitStat(
     unit,
     'rout',
@@ -43,11 +45,16 @@ export function applyAttackValue(
   const finishedAttackValue = Math.max(0, attackValue);
 
   // Check if the unit is routed, retreated, or reversed
+  // A threshold is met when the attack value equals or exceeds it (§7.5.1),
+  // and each of the three is judged on its own: one blow may meet any of
+  // them. The order they are carried out in is the caller's (§7.5.2).
   const unitRouted = finishedAttackValue >= currentRoutValue;
   const unitRetreated = finishedAttackValue >= currentRetreatValue;
   const unitReversed = finishedAttackValue >= currentReverseValue;
 
   // Return the result
+  // Which of the three thresholds the blow met, for the attack apply to carry
+  // out in turn.
   return {
     unitRetreated,
     unitReversed,

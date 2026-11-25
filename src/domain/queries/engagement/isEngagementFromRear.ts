@@ -13,10 +13,14 @@ export function isEngagementFromRear(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): boolean {
+  // The defender's own facing and the two 45° either side of it: the mover
+  // faces roughly the way the defender does, so it has come from behind.
   const rearFacings = new Set([
     ...getAdjacentFacings(defenderFacing),
     defenderFacing,
   ]);
   const fromRear = rearFacings.has(attackerFacing);
+
+  // True when the mover faces as the defender does, or nearly.
   return fromRear;
 }

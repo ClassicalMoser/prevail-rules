@@ -20,6 +20,10 @@ import { hasSingleUnit } from './hasSingleUnit';
  * is the space's to say: a lone unit faces as stored, and of two engaged units
  * the primary keeps its stored facing and the secondary faces opposite it.
  *
+ * TODO(misleading): this answers a `UnitPlacement`, the space and the facing,
+ * so "position" says less than it returns. Settled by a name that says
+ * placement, with `getPositionOfUnit` and `findPlayerUnitWithPosition`.
+ *
  * @param gameState - The game, for its index and its board
  * @param unit - The unit to find
  * @returns The unit's placement (coordinate and facing), or `undefined` when it is not on the board

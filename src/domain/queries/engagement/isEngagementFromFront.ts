@@ -13,6 +13,9 @@ export function isEngagementFromFront(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): boolean {
+  // The one facing that looks straight back at the defender.
   const fromFront = attackerFacing === getOppositeFacing(defenderFacing);
+
+  // True when the two look at each other.
   return fromFront;
 }

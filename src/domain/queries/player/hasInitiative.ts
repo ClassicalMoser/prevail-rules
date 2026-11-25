@@ -17,6 +17,8 @@ import type { GameState } from '@game';
  * @returns Whether that player is the first player this round
  */
 export function hasInitiative(state: GameState, player: PlayerSide): boolean {
+  // The side the state records as holding the initiative is the first player
+  // (§4.1.5); the other side is the second.
   const isFirstPlayer = state.currentInitiative === player;
   return isFirstPlayer;
 }

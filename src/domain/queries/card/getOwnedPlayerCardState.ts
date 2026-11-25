@@ -18,11 +18,15 @@ export function getOwnedPlayerCardState(
   cardState: CardState,
   player: PlayerSide,
 ): OwnedCardState {
+  // A caller that insists on the hand has made a mistake if this view cannot
+  // see it, so the absence the find answers becomes a fault here.
   const owned = findOwnedPlayerCardState(cardState, player);
   if (owned === undefined) {
     throw new Error(
       `Player ${player} is not owned under ${cardState.visibility} visibility`,
     );
   }
+
+  // The player's own piles, hand included.
   return owned;
 }

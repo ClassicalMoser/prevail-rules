@@ -19,16 +19,22 @@ export function findGameOverWinner(state: GameState): PlayerSide | undefined {
   // left to fight with, so it is asked about first (§11.1).
   const emptyHandWinner = findWinnerFromEmptyHands(state);
   if (emptyHandWinner !== undefined) {
+    // A hand gave out: the other side has prevailed.
     return emptyHandWinner;
   }
+
   // A Morale cost the hand cannot survive is the same loss, seen one event
   // early (§11.2).
   const routDiscardWinner = findWinnerFromUnpayableRoutDiscard(state);
   if (routDiscardWinner !== undefined) {
+    // A rout its owner cannot pay for: the other side has prevailed.
     return routDiscardWinner;
   }
+
   // Last, the rare case: an army destroyed to the last unit loses, however
   // many cards its player still holds (§11.4).
   const noUnitsWinner = findWinnerFromNoUnits(state);
+
+  // The side left with an army, or `undefined` while the battle goes on.
   return noUnitsWinner;
 }

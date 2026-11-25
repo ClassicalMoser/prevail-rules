@@ -18,8 +18,10 @@ export function getNextMeleeReverseState(state: GameState): ReverseState {
   for (const apply of getMeleeAppliesInResolutionOrder(meleeState)) {
     const reverse = apply.reverseState;
     if (isOpenSubstep(reverse) && !reverse.completed) {
+      // The first unit in resolution order still to turn about.
       return reverse;
     }
   }
+  // The sequencer asks only while a reverse is open, so none here is a fault.
   throw new Error('No reverse state found in melee resolution');
 }

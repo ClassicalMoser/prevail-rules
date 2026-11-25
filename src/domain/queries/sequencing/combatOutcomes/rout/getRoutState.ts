@@ -16,8 +16,10 @@ import { findRoutState } from './findRoutState';
  */
 export function getRoutState(state: GameState, player: PlayerSide): RoutState {
   const routState = findRoutState(state, player);
+  // The caller is resolving a rout nobody opened.
   if (routState === undefined) {
     throw new Error(`No rout is in play for ${player}`);
   }
+  // The rout this player owes cards for.
   return routState;
 }

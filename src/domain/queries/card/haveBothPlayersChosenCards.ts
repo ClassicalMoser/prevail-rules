@@ -10,6 +10,8 @@ import type { CardState } from '@game';
  * @returns True when each player has a card waiting to be revealed
  */
 export function haveBothPlayersChosenCards(cardState: CardState): boolean {
+  // A card chosen and not yet revealed waits face down; the reveal comes only
+  // once both sides have one there (§4.1.2).
   const both =
     cardState.black.awaitingPlay !== null &&
     cardState.white.awaitingPlay !== null;

@@ -27,8 +27,15 @@ export function getUnitWithPlacementOnBoard(
     placement.coordinate,
     unit.playerSide,
   );
+  // TODO(composition): this cannot be reached. `getPositionOfUnit` has
+  // already found this unit on that space, and the side's unit there is the
+  // one it found, so coverage and the nightly mutants stop here. Settled by a
+  // reader that answers the board's unit and its placement in one walk, which
+  // `findPositionOfUnit` already makes.
   if (held === undefined) {
     throw new Error('Unit not found on board');
   }
+
+  // The board's own unit, standing where the board says.
   return held;
 }

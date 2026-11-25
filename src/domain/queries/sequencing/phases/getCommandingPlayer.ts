@@ -16,14 +16,19 @@ import { getIssueCommandsPhaseState } from './getIssueCommandsPhaseState';
  * @throws Error when the phase is complete
  */
 export function getCommandingPlayer(state: GameState): PlayerSide {
+  // Which of the four steps the phase is on, and who holds the initiative.
   const { step } = getIssueCommandsPhaseState(state);
   const firstPlayer = state.currentInitiative;
+
+  // The first player issues all their orders, then carries them all out.
   if (
     step === 'firstPlayerIssueCommands' ||
     step === 'firstPlayerResolveCommands'
   ) {
     return firstPlayer;
   }
+
+  // Then the second player does the same.
   if (
     step === 'secondPlayerIssueCommands' ||
     step === 'secondPlayerResolveCommands'
@@ -31,5 +36,7 @@ export function getCommandingPlayer(state: GameState): PlayerSide {
     const secondPlayer = getOtherPlayer(firstPlayer);
     return secondPlayer;
   }
+
+  // Once both are done the phase is complete, and no one is commanding.
   throw new Error(`Issue commands is not on a player's step: ${step}`);
 }

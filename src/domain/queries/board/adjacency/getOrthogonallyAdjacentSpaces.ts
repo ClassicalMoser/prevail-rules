@@ -5,6 +5,10 @@ import { getSpacesInDirections } from './getSpacesInDirections';
 /**
  * Get the orthogonally adjacent spaces for a given coordinate.
  *
+ * TODO(composition): nothing in this repository calls this. Settle whether a
+ * rule should ask it, or the family keeps it as API for the packages built on
+ * these rules.
+ *
  * @param board - The board object
  * @param coordinate - The coordinate to get the orthogonally adjacent spaces for
  * @returns A set of the orthogonally adjacent space coordinates (up to 4 spaces)
@@ -19,5 +23,7 @@ export function getOrthogonallyAdjacentSpaces(
     coordinate,
     orthogonalFacings,
   );
+
+  // Those of the four that are on the board.
   return orthogonalSpaces;
 }

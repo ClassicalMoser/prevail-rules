@@ -5,6 +5,10 @@ import { haveSameMembers } from '@utils';
  * Compares two Restrictions objects for equivalence (not reference equality) by comparing all properties.
  * Current use case is to find a matching command to remove from pending on issue.
  *
+ * TODO(misleading): the use case above is gone. The callers are now
+ * `areCommandsEqual` and `isSameCardValue`, comparing a card's command and
+ * round effect to refuse a forged card. Settle by restating the use.
+ *
  * @param restrictions1 - First restrictions object
  * @param restrictions2 - Second restrictions object
  * @returns Whether the two restrictions have the same range and the same filter
@@ -14,6 +18,8 @@ export function areRestrictionsEqual(
   restrictions2: Restrictions,
 ): boolean {
   // Compare inspirationRangeRestriction
+  // The same restriction reaches as far from the commander, or is printed
+  // unrestricted on both (§4.2.7).
   if (
     restrictions1.inspirationRangeRestriction !==
     restrictions2.inspirationRangeRestriction
@@ -29,9 +35,12 @@ export function areRestrictionsEqual(
 
   switch (restrictions1.restrictionType) {
     case 'none': {
+      // With no filter and the same range, the two reach the same units.
       return true;
     }
     case 'trait': {
+      // Never true: the two types were compared above. The check narrows
+      // `restrictions2` for the compiler, so no case can run its return.
       if (restrictions2.restrictionType !== 'trait') {
         return false;
       }
@@ -43,6 +52,7 @@ export function areRestrictionsEqual(
       return sameTraits;
     }
     case 'unitType': {
+      // Never true, as for traits: it narrows `restrictions2`, nothing more.
       if (restrictions2.restrictionType !== 'unitType') {
         return false;
       }
@@ -54,6 +64,8 @@ export function areRestrictionsEqual(
       return sameUnits;
     }
     default: {
+      // Never reached: every restriction type is handled above, and the
+      // compiler checks it.
       const unreachable: never = restrictions1;
       return unreachable;
     }

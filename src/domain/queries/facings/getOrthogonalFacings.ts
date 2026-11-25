@@ -7,6 +7,8 @@ import type { UnitFacing } from '@entities';
  * @returns A set of the two orthogonal facings (90 degrees away from the given facing)
  */
 export const getOrthogonalFacings = (facing: UnitFacing): Set<UnitFacing> => {
+  // Each facing's two perpendiculars, 90° to either side: across the
+  // facing, as a flank attacker or a rank's neighbours lie (§2.3.2, §6.3.4).
   switch (facing) {
     case 'north': {
       return new Set(['west', 'east']);
@@ -33,6 +35,7 @@ export const getOrthogonalFacings = (facing: UnitFacing): Set<UnitFacing> => {
       return new Set(['southWest', 'northEast']);
     }
     default: {
+      // Only the eight facings exist; anything else is a malformed value.
       throw new Error(`Invalid facing: ${facing}`);
     }
   }

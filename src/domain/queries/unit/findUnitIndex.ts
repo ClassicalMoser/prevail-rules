@@ -13,8 +13,12 @@ export function findUnitIndex(
   members: readonly { unit: UnitInstance }[],
   unit: UnitInstance,
 ): number | undefined {
+  // A unit is matched by who it is, so the copy an order or an event names
+  // finds the entry in a rank, or in the unit support placed so far.
   const index = members.findIndex((member) =>
     isSameUnitInstance(member.unit, unit),
   );
+
+  // Not in the list is an ordinary answer: the caller asks in order to know.
   return index === -1 ? undefined : index;
 }

@@ -12,5 +12,7 @@ export { getMeleeReverseState } from './getMeleeReverseState';
 
 // Selection. A rule of the game decides which candidate is answered about.
 
+// TODO(misleading): a melee turns the second player's unit first (§7.5.6), not
+// the initiative's. Settled by rewording to "second player's unit first".
 // The reverse still open in the current melee, initiative first.
 export { getNextMeleeReverseState } from './getNextMeleeReverseState';

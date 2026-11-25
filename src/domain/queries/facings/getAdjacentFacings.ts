@@ -7,6 +7,8 @@ import type { UnitFacing } from '@entities';
  * @returns A set of the two adjacent facings (45 degrees away from the given facing)
  */
 export const getAdjacentFacings = (facing: UnitFacing): Set<UnitFacing> => {
+  // Each facing's two neighbours on the compass, 45° to either side: the
+  // facings one turn left or right reaches (§5.2.1).
   switch (facing) {
     case 'north': {
       return new Set(['northWest', 'northEast']);
@@ -33,6 +35,7 @@ export const getAdjacentFacings = (facing: UnitFacing): Set<UnitFacing> => {
       return new Set(['west', 'north']);
     }
     default: {
+      // Only the eight facings exist; anything else is a malformed value.
       throw new Error(`Invalid facing: ${facing}`);
     }
   }

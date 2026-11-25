@@ -13,8 +13,13 @@ export function getCommandedUnitsForPlayer(
   state: GameState,
   player: PlayerSide,
 ): UnitInstance[] {
+  // The round keeps one list for both players; a unit ordered once may not be
+  // ordered again this round, so each player's share of it is what they have
+  // spent their orders on.
   const commanded = state.currentRoundState.commandedUnits.filter((unit) =>
     isFriendlyUnit(unit, player),
   );
+
+  // That player's ordered units, in the order the round recorded them.
   return commanded;
 }

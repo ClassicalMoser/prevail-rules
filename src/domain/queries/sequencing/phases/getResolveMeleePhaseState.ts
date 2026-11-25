@@ -12,9 +12,14 @@ import { getCurrentPhaseState } from './getCurrentPhaseState';
 export function getResolveMeleePhaseState<S extends GameState>(
   state: S,
 ): ResolveMeleePhaseState {
+  // The phase the round is in; before the round begins there is none.
   const phaseState = getCurrentPhaseState(state);
+
+  // A caller reading Phase 4, where every engaged space fights (§4.4) outside it has asked out of turn.
   if (phaseState.phase !== 'resolveMelee') {
     throw new Error(`Expected resolveMelee phase, got ${phaseState.phase}`);
   }
+
+  // The resolve melee phase, with its step and what it holds.
   return phaseState;
 }

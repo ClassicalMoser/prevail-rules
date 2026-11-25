@@ -17,6 +17,7 @@ export function isSameUnitInstance(
 ): boolean {
   // Same instance only if both fight for the same side.
   const sameSide = isFriendlyUnit(unit1, unit2.playerSide);
+  // Then the same type and, among that type's copies, the same number.
   const same =
     sameSide &&
     isSameUnitType(unit1, unit2) &&

@@ -8,6 +8,8 @@ export { getDiagonallyAdjacentSpaces } from './getDiagonallyAdjacentSpaces';
 export { getAdjacentSpaces } from './getAdjacentSpaces';
 
 // Front arc: up to three spaces ahead (forward plus the two flanking diagonals).
+// TODO(misleading): "flanking" is the rules' word for the two spaces at 90°
+// (§2.3.2), not the diagonals ahead; settle as "the two diagonals ahead".
 export { getFrontSpaces } from './getFrontSpaces';
 
 // The two spaces left and right of the facing, clipped to the board.

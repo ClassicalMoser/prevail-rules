@@ -18,6 +18,7 @@ export function getMeleeRoutState(
   state: GameState,
   player: 'white' | 'black',
 ): RoutState {
+  // The results this player's unit takes from the other's blow.
   const attackApplyState = getMeleeAttackApplyState(state, player);
   // An attack that applied no rout answers `'bypassed'`. That is a fact about
   // the attack, not a rout this getter can hand back.
@@ -25,5 +26,6 @@ export function getMeleeRoutState(
     getRoutStateFromAttackApply(attackApplyState),
     `The melee attack on ${player} applied no rout`,
   );
+  // The rout this player's unit fell into.
   return routState;
 }

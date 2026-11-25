@@ -3,7 +3,9 @@ import { diagonalFacings } from '@entities';
 import { getSpacesInDirections } from './getSpacesInDirections';
 
 /**
- * Get the diagonally adjacent spaces for a given coordinate.
+ * Get the diagonally adjacent spaces for a given coordinate. Melee support
+ * from one of these is lent only across an open diagonal (§7.3.1,
+ * `getMeleeSupportValue`).
  *
  * @param board - The board object
  * @param coordinate - The coordinate to get the diagonally adjacent spaces for
@@ -19,5 +21,7 @@ export function getDiagonallyAdjacentSpaces(
     coordinate,
     diagonalFacings,
   );
+
+  // Those of the four that are on the board.
   return diagonalSpaces;
 }

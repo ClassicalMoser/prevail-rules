@@ -17,9 +17,13 @@ import { findRallyingPlayer } from './findRallyingPlayer';
  */
 export function getRallyingPlayer(state: GameState): PlayerSide {
   const player = findRallyingPlayer(state);
+  // On a step that belongs to no rally, a caller asking whose rally it is has
+  // asked out of turn; the step goes in the message.
   if (player === undefined) {
     const { step } = getCleanupPhaseState(state);
     throw new Error(`Cleanup phase is not on a rally step: ${step}`);
   }
+
+  // The player choosing or carrying out a rally on this step.
   return player;
 }

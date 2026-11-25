@@ -37,5 +37,6 @@ export function deriveGameStateIndex(state: GameState): GameStateIndex {
     }
   }
 
+  // Every piece filed where the record puts it.
   return index;
 }

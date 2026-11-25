@@ -25,5 +25,7 @@ export function getPlacementAfterPath(
   if (end === undefined) {
     throw new Error(`The ${direction} path leaves the board`);
   }
+
+  // Where the move or retreat being carried out ends.
   return end;
 }

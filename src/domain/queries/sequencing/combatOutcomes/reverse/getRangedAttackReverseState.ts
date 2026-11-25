@@ -14,6 +14,7 @@ import { getReverseStateFromAttackApply } from './getReverseStateFromAttackApply
  * the attack applied no reverse to it
  */
 export function getRangedAttackReverseState(state: GameState): ReverseState {
+  // The results the shot's target takes.
   const attackApplyState = getRangedAttackApplyState(state);
   // An attack that applied no reverse answers `'bypassed'`. That is a fact about
   // the attack, not a reverse this getter can hand back.
@@ -21,5 +22,6 @@ export function getRangedAttackReverseState(state: GameState): ReverseState {
     getReverseStateFromAttackApply(attackApplyState),
     'The ranged attack applied no reverse',
   );
+  // The reverse the shot's target is owed.
   return reverseState;
 }
