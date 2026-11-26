@@ -1,4 +1,4 @@
-import type { Army, PlayerSide, UnitInstance } from '@entities';
+import type { Army } from '@entities';
 import type { GameModeName } from '@ruleValues';
 import type {
   AuthoritativeGameState,
@@ -6,30 +6,10 @@ import type {
   UnitIndexKey,
 } from '@game';
 
-import { createUnitIndexKey, createUnitInstance } from '@factories/unit';
+import { createArmyUnits, createUnitIndexKey } from '@factories/unit';
 import { createCardState } from './createCardState';
 import { createEmptyGameState } from './createEmptyGameState';
 import { createOwnedCardState } from './createOwnedCardState';
-
-/**
- * One army's units as pieces to place: an instance of each, numbered from 1
- * within its type.
- */
-function reserveArmy(playerSide: PlayerSide, army: Army): UnitInstance[] {
-  const pieces: UnitInstance[] = [];
-
-  // Each entry is one unit type, with how many of it the army brings.
-  for (const { count, unitType } of army.units) {
-    // Every one of those is its own piece on the table, numbered from 1
-    // within its type.
-    for (let instanceNumber = 1; instanceNumber <= count; instanceNumber++) {
-      pieces.push(createUnitInstance(playerSide, unitType, instanceNumber));
-    }
-  }
-
-  // Every piece the army brought, ready to wait in reserve.
-  return pieces;
-}
 
 /**
  * Builds a `GameState` for a new game: empty board and round state,
@@ -54,11 +34,11 @@ export function createInitialGameState(options: {
   // An army is a list of unit types with a count of each. Every one of those
   // units is a separate piece to be placed, so each gets its own instance.
   // Numbering from 1 per type is how a unit of that type is told apart from
-  // its siblings, and `eachUnitPresentOnce` rebuilds the same list to check
+  // its siblings, and `eachUnitPresentOnce` asks for the same list to check
   // that every unit is accounted for.
   const reservedUnits = [
-    ...reserveArmy('white', whiteArmy),
-    ...reserveArmy('black', blackArmy),
+    ...createArmyUnits('white', whiteArmy.units),
+    ...createArmyUnits('black', blackArmy.units),
   ];
 
   // Every one of those units is in reserve, and the index says so by name.

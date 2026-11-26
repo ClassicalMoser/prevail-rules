@@ -55,6 +55,9 @@ export {
 // Unit instance from side, unit type, and instance number.
 export { createUnitInstance } from './unit';
 
+// Every unit an army brings, one instance per piece, numbered within its type.
+export { createArmyUnits } from './unit';
+
 // A unit's key in the game state's index: side, type id and number.
 export { createUnitIndexKey } from './unit';
 

@@ -1,7 +1,7 @@
 import type { Board, UnitCount, UnitInstance } from '@entities';
 import type { ValidationResult } from '@utils';
 import { failFromFault } from '@utils';
-import { createUnitInstance } from '@factories';
+import { createArmyUnits } from '@factories';
 import {
   getBoardCoordinates,
   getBoardSpace,
@@ -57,22 +57,10 @@ export function eachUnitPresentOnce(
     // Every piece either army brought, still to be found. A piece is struck
     // off as it is found, so whatever is left at the end is lost from the
     // record.
-    // TODO(composition): this numbering repeats `reserveArmy` in
-    // `createInitialGameState`, which is private there; that file's comment
-    // says this check rebuilds the same list. Settle by one factory, listing
-    // an army's pieces for a side, that both call.
-    const expectedUnits = new Set<UnitInstance>();
-    // Unit Instances are 1-indexed for UI purposes
-    for (const unitCount of whiteArmy) {
-      for (let i = 1; i <= unitCount.count; i++) {
-        expectedUnits.add(createUnitInstance('white', unitCount.unitType, i));
-      }
-    }
-    for (const unitCount of blackArmy) {
-      for (let i = 1; i <= unitCount.count; i++) {
-        expectedUnits.add(createUnitInstance('black', unitCount.unitType, i));
-      }
-    }
+    const expectedUnits = new Set<UnitInstance>([
+      ...createArmyUnits('white', whiteArmy),
+      ...createArmyUnits('black', blackArmy),
+    ]);
 
     // The pieces already met on the board, so a piece met a second time is
     // one piece recorded on two spaces.
