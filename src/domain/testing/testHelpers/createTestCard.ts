@@ -1,3 +1,4 @@
+import { NO_INSPIRATION_RANGE } from '@ruleValues';
 import type {
   CommandCard,
   Restrictions,
@@ -49,7 +50,7 @@ function createRestrictions(
   // No range given is no range at all: the card reaches every unit wherever
   // it stands.
   const inspirationRangeRestriction =
-    restrictions?.inspirationRangeRestriction ?? -1;
+    restrictions?.inspirationRangeRestriction ?? NO_INSPIRATION_RANGE;
 
   // A list of traits filters to units with every one of them (§4.3.4).
   if (

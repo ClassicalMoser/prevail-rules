@@ -1,3 +1,4 @@
+import { NO_INSPIRATION_RANGE } from '@ruleValues';
 import type { Command, Restrictions } from '@entities';
 
 /**
@@ -7,7 +8,7 @@ export function createTestCommand(overrides: Partial<Command> = {}): Command {
   // Any unit may be ordered, wherever it stands: no trait or type filter,
   // and no inspiration range (§4.3.4).
   const restrictions: Restrictions = {
-    inspirationRangeRestriction: -1,
+    inspirationRangeRestriction: NO_INSPIRATION_RANGE,
     restrictionType: 'none',
   };
 

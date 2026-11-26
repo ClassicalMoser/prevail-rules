@@ -30,28 +30,19 @@ export function readyToWriteMove(
   if (start.next === 'gameOver') {
     throw new Error('The game ended before the unit was named');
   }
-  const named = applyEffectsUntilChoice(
-    applyEvent(
-      createChooseMovingUnitEvent({
-        player,
-        unit: unit.unit,
-      }),
-      start.state,
-    ),
-  );
+  const naming = createChooseMovingUnitEvent({ player, unit: unit.unit });
+  const named = applyEffectsUntilChoice(applyEvent(naming, start.state));
   if (named.next === 'gameOver') {
     throw new Error('The game ended before the commitment was asked');
   }
 
   // ...then commits a card to its movement, or declines.
+  const committing = createCommitToMovementEvent({
+    committedCard: commitment,
+    player,
+  });
   const committed = applyEffectsUntilChoice(
-    applyEvent(
-      createCommitToMovementEvent({
-        committedCard: commitment,
-        player,
-      }),
-      named.state,
-    ),
+    applyEvent(committing, named.state),
   );
   if (committed.next === 'gameOver') {
     throw new Error('The game ended before the move was written');

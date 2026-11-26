@@ -30,28 +30,19 @@ export function readyToAimShot(
   if (start.next === 'gameOver') {
     throw new Error('The game ended before the shooter was named');
   }
-  const named = applyEffectsUntilChoice(
-    applyEvent(
-      createChooseShooterEvent({
-        player,
-        unit: unit.unit,
-      }),
-      start.state,
-    ),
-  );
+  const naming = createChooseShooterEvent({ player, unit: unit.unit });
+  const named = applyEffectsUntilChoice(applyEvent(naming, start.state));
   if (named.next === 'gameOver') {
     throw new Error('The game ended before the commitment was asked');
   }
 
   // ...then commits a card to the shot, or declines.
+  const committing = createCommitToRangedAttackEvent({
+    committedCard: commitment,
+    player,
+  });
   const committed = applyEffectsUntilChoice(
-    applyEvent(
-      createCommitToRangedAttackEvent({
-        committedCard: commitment,
-        player,
-      }),
-      named.state,
-    ),
+    applyEvent(committing, named.state),
   );
   if (committed.next === 'gameOver') {
     throw new Error('The game ended before the shot was aimed');
