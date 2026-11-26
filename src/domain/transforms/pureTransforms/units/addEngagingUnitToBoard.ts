@@ -1,5 +1,7 @@
-import type { Board, EngagedUnitPresence, UnitWithPlacement } from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
+import { createEngagedUnitPresence } from '@factories';
 import { getBoardSpace, hasSingleUnit, isFriendlyUnit } from '@queries';
+import { replaceBoardSpace } from '../board/replaceBoardSpace';
 
 /**
  * Sets an engaging unit down in the space of the enemy it engages, as the
@@ -34,19 +36,15 @@ export function addEngagingUnitToBoard(
   }
 
   // The engaging unit keeps its facing; the defender is turned to face it.
-  const engaged: EngagedUnitPresence = {
-    presenceType: 'engaged',
-    primaryFacing: facing,
-    primaryUnit: engaging.unit,
-    secondaryUnit: presence.unit,
-  };
-  const withPair: Board = {
-    ...board,
-    board: {
-      ...board.board,
-      [coordinate]: { ...space, unitPresence: engaged },
-    },
-  };
+  const engaged = createEngagedUnitPresence(
+    engaging.unit,
+    facing,
+    presence.unit,
+  );
+  const withPair = replaceBoardSpace(board, coordinate, {
+    ...space,
+    unitPresence: engaged,
+  });
 
   // The board with the pair engaged in that space, every other space as it was.
   return withPair;

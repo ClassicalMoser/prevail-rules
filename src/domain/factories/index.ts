@@ -45,6 +45,13 @@ export { createSetupUnitsEvent } from './playerChoices';
 // Placement from a coordinate and a facing.
 export { createUnitPlacement } from './unitLocation';
 
+// What a board space holds: nobody, one unit, or two units engaged.
+export {
+  createEngagedUnitPresence,
+  createNoneUnitPresence,
+  createSingleUnitPresence,
+} from './unitPresence';
+
 // Unit instance from side, unit type, and instance number.
 export { createUnitInstance } from './unit';
 

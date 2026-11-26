@@ -1,3 +1,6 @@
+// One space of a bare board replaced: the shared last step of the unit and
+// commander board writers.
+export { replaceBoardSpace } from './board';
 // One unit's or one commander's entry in the index, overwritten: shared
 // steps of the piece writers.
 export { fileCommanderInIndex, fileUnitInIndex } from './gameStateIndex';

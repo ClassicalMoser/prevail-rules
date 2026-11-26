@@ -2,8 +2,8 @@ import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
   createSingleUnitPresence,
-  createTestUnit,
-} from '@testing';
+} from '@factories';
+import { createTestUnit } from '@testing';
 import { hasNoUnit } from './hasNoUnit';
 
 /**

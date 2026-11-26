@@ -1,6 +1,7 @@
 import type { Board, PlayerSide } from '@entities';
 import type { Coordinate } from '@ruleValues';
 import { getBoardSpace } from '@queries';
+import { replaceBoardSpace } from '../board/replaceBoardSpace';
 
 /**
  * A board with one side's commander set down on a space. Commanders do not
@@ -35,13 +36,7 @@ export function addCommanderToBoard(
   };
 
   // Only that one space changes; the rest of the board is as it was.
-  const newBoard = {
-    ...board,
-    board: {
-      ...board.board,
-      [coordinate]: newSpace,
-    },
-  };
+  const newBoard = replaceBoardSpace(board, coordinate, newSpace);
 
   // The board with the commander standing there.
   return newBoard;

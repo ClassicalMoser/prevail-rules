@@ -1,6 +1,7 @@
 import type { Board, BoardSpace } from '@entities';
 import { coordinateLayoutMap } from '@ruleValues';
 import type { BoardType } from '@ruleValues';
+import { createNoneUnitPresence } from '../unitPresence/createNoneUnitPresence';
 
 /**
  * Creates an empty board space with default values.
@@ -18,9 +19,7 @@ function createEmptyBoardSpace(): BoardSpace {
     },
     terrainDifficulty: 1,
     groundCover: 'open',
-    unitPresence: {
-      presenceType: 'none',
-    },
+    unitPresence: createNoneUnitPresence(),
     blocking: false,
   };
 }

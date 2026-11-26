@@ -1,4 +1,4 @@
-import { createTestUnit } from '@testing/unitHelpers';
+import { createTestUnit } from '@testing';
 import { createSingleUnitPresence } from './createSingleUnitPresence';
 
 /** What a board space holds when one unit stands alone on it. */

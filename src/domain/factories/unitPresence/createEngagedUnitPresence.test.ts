@@ -1,4 +1,4 @@
-import { createTestUnit } from '@testing/unitHelpers';
+import { createTestUnit } from '@testing';
 import { createEngagedUnitPresence } from './createEngagedUnitPresence';
 
 /** What a board space holds when two enemy units are engaged in it (§2.2.1). */

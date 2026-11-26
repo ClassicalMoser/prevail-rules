@@ -1,9 +1,5 @@
-import type {
-  Board,
-  NoneUnitPresence,
-  SingleUnitPresence,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
+import { createNoneUnitPresence, createSingleUnitPresence } from '@factories';
 import {
   getBoardSpace,
   getOppositeFacing,
@@ -11,6 +7,8 @@ import {
   hasSingleUnit,
   isSameUnitInstance,
 } from '@queries';
+import { replaceBoardSpace } from '../board/replaceBoardSpace';
+
 /**
  * Pure transform to remove a unit from the board immutably with no side effects.
  *
@@ -51,17 +49,11 @@ export function removeUnitFromBoard(
     if (!isSameUnitInstance(existingUnitPresence.unit, unit.unit)) {
       throw new Error('Unit mismatch');
     }
-    const newUnitPresence: NoneUnitPresence = { presenceType: 'none' };
-    const newBoard = {
-      ...board,
-      board: {
-        ...board.board,
-        [coord]: {
-          ...space,
-          unitPresence: newUnitPresence,
-        },
-      },
-    };
+    const emptied = createNoneUnitPresence();
+    const newBoard = replaceBoardSpace(board, coord, {
+      ...space,
+      unitPresence: emptied,
+    });
 
     // The board with the space empty, every other space as it was.
     return newBoard;
@@ -85,42 +77,28 @@ export function removeUnitFromBoard(
   // fight, opposite the primary.
   if (unitIsPrimary) {
     const newFacing = getOppositeFacing(existingUnitPresence.primaryFacing);
-    const newUnitPresence: SingleUnitPresence = {
-      facing: newFacing,
-      presenceType: 'single',
-      unit: existingUnitPresence.secondaryUnit,
-    };
-    const newBoard = {
-      ...board,
-      board: {
-        ...board.board,
-        [coord]: {
-          ...space,
-          unitPresence: newUnitPresence,
-        },
-      },
-    };
+    const secondaryAlone = createSingleUnitPresence(
+      existingUnitPresence.secondaryUnit,
+      newFacing,
+    );
+    const newBoard = replaceBoardSpace(board, coord, {
+      ...space,
+      unitPresence: secondaryAlone,
+    });
 
     // The board with the secondary alone in the space.
     return newBoard;
   }
 
   // The secondary leaves: the primary stays alone, with the facing it held.
-  const newUnitPresence: SingleUnitPresence = {
-    facing: existingUnitPresence.primaryFacing,
-    presenceType: 'single',
-    unit: existingUnitPresence.primaryUnit,
-  };
-  const newBoard = {
-    ...board,
-    board: {
-      ...board.board,
-      [coord]: {
-        ...space,
-        unitPresence: newUnitPresence,
-      },
-    },
-  };
+  const primaryAlone = createSingleUnitPresence(
+    existingUnitPresence.primaryUnit,
+    existingUnitPresence.primaryFacing,
+  );
+  const newBoard = replaceBoardSpace(board, coord, {
+    ...space,
+    unitPresence: primaryAlone,
+  });
 
   // The board with the primary alone in the space.
   return newBoard;

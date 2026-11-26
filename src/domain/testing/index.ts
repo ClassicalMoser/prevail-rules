@@ -5,13 +5,6 @@ export { getUnitByTrait } from './getUnitByTrait';
 // Stand-in units, chosen by type or by the stats a spec asks for.
 export { createTestUnit, createUnitByStat } from './unitHelpers';
 
-// What a board space holds: nobody, one unit, or two units engaged.
-export {
-  createEngagedUnitPresence,
-  createNoneUnitPresence,
-  createSingleUnitPresence,
-} from './unitPresenceHelpers';
-
 // Cards, units with where they stand, and readers of what the rules offer.
 export {
   coordinatesOfSegment,

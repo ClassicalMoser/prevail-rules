@@ -1,6 +1,7 @@
 import type { Board, BoardSpace, PlayerSide } from '@entities';
 import type { Coordinate } from '@ruleValues';
 import { getBoardSpace } from '@queries';
+import { replaceBoardSpace } from '../board/replaceBoardSpace';
 /* Pure transform to remove a commander from the board immutably with no side effects. */
 
 /**
@@ -44,13 +45,7 @@ export function removeCommanderFromBoard(
   };
 
   // Only that one space changes; the rest of the board is as it was.
-  const newBoard = {
-    ...board,
-    board: {
-      ...board.board,
-      [coordinate]: newSpace,
-    },
-  };
+  const newBoard = replaceBoardSpace(board, coordinate, newSpace);
 
   // The board without the commander on that space.
   return newBoard;
