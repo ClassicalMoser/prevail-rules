@@ -1,6 +1,6 @@
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameState, ResolveMeleePhaseState } from '@game';
-import { RESOLVE_MELEE_PHASE } from '@game';
+import { createOpenedResolveMeleePhaseState } from '@factories';
+import type { GameState } from '@game';
 
 import { getCurrentPhaseState } from '@queries';
 import {
@@ -36,22 +36,10 @@ export function applyCompleteIssueCommandsPhaseEvent<S extends GameState>(
 
   // Phase 4 opens with every engaged space still to fight: none may be
   // skipped (§4.4.1), and none is chosen yet, since the first player picks
-  // the order (§4.4.2).
-  // TODO(composition): this opening of Phase 4 is written out by hand here
-  // and again by `createResolveMeleePhaseState` in `@testing`; no factory
-  // builds a phase as it opens. Settle by a factory for each phase's opening
-  // that both the applies and the fixtures call.
-  const newPhaseState: ResolveMeleePhaseState = {
-    phase: RESOLVE_MELEE_PHASE,
-    step: 'resolveMelee' as const,
-    // Initialize with undefined, resolution order is up to the player
-    // TODO(misleading): the slot starts `'pending'`, not undefined. Settle by
-    // rewording.
-    currentMeleeResolutionState: 'pending',
-    // Initialize with all engaged units on the board,
-    // Set in the event (procedure / machine-generated log)
-    remainingEngagements: event.remainingEngagements,
-  };
+  // the order (§4.4.2). The procedure listed the engaged spaces on the event.
+  const newPhaseState = createOpenedResolveMeleePhaseState(
+    event.remainingEngagements,
+  );
 
   // Phase 3 recorded as done, and the melee phase under way.
   const newState = updatePhaseState(stateWithCompletedPhase, newPhaseState);

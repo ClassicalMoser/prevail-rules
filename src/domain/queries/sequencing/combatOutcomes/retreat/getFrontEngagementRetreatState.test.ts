@@ -22,7 +22,7 @@ function stateEngaging(
 ): GameState {
   const empty = createEmptyGameState('standard');
   const movement = createMovementResolutionState(empty, { engagementState });
-  const phaseState = createIssueCommandsPhaseState(empty, {
+  const phaseState = createIssueCommandsPhaseState({
     currentCommandResolutionState: movement,
   });
   const engaging = updatePhaseState(empty, phaseState);

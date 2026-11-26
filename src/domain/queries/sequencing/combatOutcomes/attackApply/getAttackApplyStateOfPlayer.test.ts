@@ -33,7 +33,7 @@ describe('getAttackApplyStateOfPlayer function', () => {
     const apply = createAttackApplyState(target, nothingReached);
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(
           empty,
           {

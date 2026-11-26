@@ -1,10 +1,6 @@
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  MoveCommandersPhaseState,
-} from '@game';
-import { ISSUE_COMMANDS_PHASE } from '@game';
+import { createOpenedIssueCommandsPhaseState } from '@factories';
+import type { GameState, MoveCommandersPhaseState } from '@game';
 
 import { getMoveCommandersPhaseState } from '@queries';
 import {
@@ -41,16 +37,7 @@ export function applyCompleteMoveCommandersPhaseEvent<S extends GameState>(
   // Phase 3 opens with the first player issuing all their orders (§4.3).
   // No order is under way and no unit is ordered yet: each player's card in
   // play says what they may order, read when they issue.
-  // TODO(composition): this opening of Phase 3 is written out by hand here
-  // and again by `createIssueCommandsPhaseState` in `@testing`. Settle by a
-  // factory for each phase's opening that both call.
-  const newPhaseState: IssueCommandsPhaseState = {
-    currentCommandResolutionState: 'pending',
-    phase: ISSUE_COMMANDS_PHASE,
-    remainingUnitsFirstPlayer: [],
-    remainingUnitsSecondPlayer: [],
-    step: 'firstPlayerIssueCommands',
-  };
+  const newPhaseState = createOpenedIssueCommandsPhaseState();
 
   // Phase 2 recorded as done, and the first player to issue their orders.
   const issuing = updatePhaseState(stateWithCompletedPhase, newPhaseState);

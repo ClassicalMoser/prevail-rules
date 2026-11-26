@@ -29,7 +29,7 @@ export function resolvingMoveOrder(
 
   // The order's units wait their turn to move, and the other side's order is
   // still to be issued.
-  const phase = createIssueCommandsPhaseState(withOrder, {
+  const phase = createIssueCommandsPhaseState({
     currentCommandResolutionState: 'pending',
     remainingUnitsFirstPlayer: [...units],
     step: 'firstPlayerResolveCommands',

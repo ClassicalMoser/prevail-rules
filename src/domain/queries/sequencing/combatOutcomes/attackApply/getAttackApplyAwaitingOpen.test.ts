@@ -79,7 +79,7 @@ describe('getAttackApplyAwaitingOpen function', () => {
     const empty = createEmptyGameState('standard');
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(
           empty,
           { attackApplyState: apply, defendingUnit: apply.defendingUnit },

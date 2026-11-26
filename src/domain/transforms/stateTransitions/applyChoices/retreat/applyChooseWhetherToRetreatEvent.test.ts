@@ -151,7 +151,7 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
   it('throws when current command resolution is not movement', () => {
     // A shot never engages, so no defender is asked to fall back.
     const state = createEmptyGameState('standard');
-    const phaseState = createIssueCommandsPhaseState(state, {
+    const phaseState = createIssueCommandsPhaseState({
       currentCommandResolutionState: createRangedAttackResolutionState(state),
     });
     const stateInPhase = updatePhaseState(state, phaseState);

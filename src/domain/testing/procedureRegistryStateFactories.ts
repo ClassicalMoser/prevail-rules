@@ -95,7 +95,7 @@ function shootingAt(
   });
 
   // The first player carrying out that Shoot order in Phase 3.
-  const phase = createIssueCommandsPhaseState(withBoard, {
+  const phase = createIssueCommandsPhaseState({
     currentCommandResolutionState: ranged,
   });
   const shooting = updatePhaseState(withBoard, phase);
@@ -129,7 +129,7 @@ function movingInto(
   const move = createMovementResolutionState(withCard, movement);
 
   // The first player carrying out that Move order in Phase 3.
-  const phase = createIssueCommandsPhaseState(withCard, {
+  const phase = createIssueCommandsPhaseState({
     currentCommandResolutionState: move,
   });
   const moving = updatePhaseState(withCard, phase);
@@ -157,7 +157,7 @@ export const procedureRegistryStateFactories: Record<
   completeIssueCommandsPhase: (): AuthoritativeGameState => {
     // Phase 3 with both players' orders carried out.
     const base = createEmptyGameState('standard');
-    const initialPhaseState = createIssueCommandsPhaseState(base, {
+    const initialPhaseState = createIssueCommandsPhaseState({
       step: 'complete',
     });
     const state = updatePhaseState(base, initialPhaseState);

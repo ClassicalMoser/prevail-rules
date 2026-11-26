@@ -24,7 +24,7 @@ describe('getRoutState function', () => {
     });
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: resolution,
       }),
     );

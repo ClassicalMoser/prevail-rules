@@ -57,7 +57,7 @@ describe('attack apply outcome flow', () => {
     });
     // Phase 3 with that shot under way, built from the authoritative game
     // the procedure below needs.
-    const phase = createIssueCommandsPhaseState(base, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: shot,
     });
     const start = updatePhaseState(base, phase);

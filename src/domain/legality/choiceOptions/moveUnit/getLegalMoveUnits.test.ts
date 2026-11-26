@@ -50,7 +50,7 @@ function carryingOutOrder(
   );
 
   // White's resolve step, the named units still to act, none moving yet.
-  const issuing = createIssueCommandsPhaseState(withCard, {
+  const issuing = createIssueCommandsPhaseState({
     remainingUnitsFirstPlayer: remaining,
     ...phase,
   });
@@ -96,7 +96,7 @@ describe('getLegalMoveUnits function', () => {
     );
     const state = updatePhaseState(
       board,
-      createIssueCommandsPhaseState(board, {
+      createIssueCommandsPhaseState({
         remainingUnitsSecondPlayer: [blackUnit.unit],
         step: 'secondPlayerResolveCommands',
       }),

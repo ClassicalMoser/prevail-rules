@@ -26,7 +26,7 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
     );
     const state = updatePhaseState(
       engaged,
-      createIssueCommandsPhaseState(engaged, { step: 'complete' }),
+      createIssueCommandsPhaseState({ step: 'complete' }),
     );
 
     // E-5 is the one fight still to come (§4.4.1).
@@ -42,7 +42,7 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
     const empty = createEmptyGameState('standard');
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, { step: 'complete' }),
+      createIssueCommandsPhaseState({ step: 'complete' }),
     );
 
     // Nothing to fight (§4.4.4).
@@ -73,7 +73,7 @@ describe('generateCompleteIssueCommandsPhaseEvent function', () => {
     const board = replaceBoard(createEmptyGameState('standard'), withLoneUnit);
     const state = updatePhaseState(
       board,
-      createIssueCommandsPhaseState(board, { step: 'complete' }),
+      createIssueCommandsPhaseState({ step: 'complete' }),
     );
 
     // Both fights are owed; the lone unit is not one. The northern row comes

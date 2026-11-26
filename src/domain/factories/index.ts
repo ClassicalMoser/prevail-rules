@@ -58,6 +58,15 @@ export { createUnitInstance } from './unit';
 // A unit's key in the game state's index: side, type id and number.
 export { createUnitIndexKey } from './unit';
 
+// Each phase as it opens, in the order a round plays them.
+export {
+  createOpenedPlayCardsPhaseState,
+  createOpenedMoveCommandersPhaseState,
+  createOpenedIssueCommandsPhaseState,
+  createOpenedResolveMeleePhaseState,
+  createOpenedCleanupPhaseState,
+} from './phases';
+
 // The attack-apply an attack leaves behind, with each outcome due or bypassed.
 export { createAttackApplyState } from './substeps';
 

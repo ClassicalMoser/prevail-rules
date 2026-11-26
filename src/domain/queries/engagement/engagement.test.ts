@@ -40,7 +40,7 @@ describe('getEngagementStateFromMovement function', () => {
     const state = createEmptyGameState('standard');
     const stateInPhase = updatePhaseState(
       state,
-      createIssueCommandsPhaseState(state, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(state),
       }),
     );

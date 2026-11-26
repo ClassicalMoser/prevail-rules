@@ -36,7 +36,7 @@ function inIssueCommands(
   });
 
   // Phase 3, on the step the case names.
-  const phase = createIssueCommandsPhaseState(withCards, { step });
+  const phase = createIssueCommandsPhaseState({ step });
   const state = updatePhaseState(withCards, phase);
   return state;
 }

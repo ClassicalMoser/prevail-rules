@@ -36,7 +36,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     );
     const state = updatePhaseState(
       base,
-      createIssueCommandsPhaseState(base, { step: 'firstPlayerIssueCommands' }),
+      createIssueCommandsPhaseState({ step: 'firstPlayerIssueCommands' }),
     );
 
     // Ordering nobody is always a legal allocation (§4.3.2), so the player is
@@ -56,7 +56,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     );
     const state = updatePhaseState(
       base,
-      createIssueCommandsPhaseState(base, {
+      createIssueCommandsPhaseState({
         step: 'secondPlayerIssueCommands',
       }),
     );
@@ -111,7 +111,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     });
     const state = updatePhaseState(
       game,
-      createIssueCommandsPhaseState(game, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: moving,
         step: 'secondPlayerResolveCommands',
       }),
@@ -246,7 +246,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     });
     const state = updatePhaseState(
       withOrder,
-      createIssueCommandsPhaseState(withOrder, {
+      createIssueCommandsPhaseState({
         remainingUnitsSecondPlayer: [ordered.unit],
         step: 'secondPlayerResolveCommands',
       }),
@@ -265,7 +265,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     const base = createEmptyGameState('standard');
     const state = updatePhaseState(
       base,
-      createIssueCommandsPhaseState(base, { step: 'complete' }),
+      createIssueCommandsPhaseState({ step: 'complete' }),
     );
 
     // The melees are fought next (§4.4).
@@ -280,7 +280,7 @@ describe('getExpectedIssueCommandsPhaseEvent function', () => {
     const base = createEmptyGameState('standard');
     const state = updatePhaseState(
       base,
-      createIssueCommandsPhaseState(base, { step: 'invalidStep' as never }), // a step the type forbids
+      createIssueCommandsPhaseState({ step: 'invalidStep' as never }), // a step the type forbids
     );
 
     // The exhaustive default names the step it was given.

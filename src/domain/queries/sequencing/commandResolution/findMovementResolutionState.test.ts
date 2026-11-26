@@ -14,7 +14,7 @@ describe('findMovementResolutionState function', () => {
     // Phase 3, with a Move order under way.
     const empty = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(empty);
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);
@@ -26,7 +26,7 @@ describe('findMovementResolutionState function', () => {
   it('answers undefined when the order in progress is a shot', () => {
     // Phase 3, with a Shoot order under way instead.
     const empty = createEmptyGameState('standard');
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: createRangedAttackResolutionState(empty),
     });
     const state = updatePhaseState(empty, phase);

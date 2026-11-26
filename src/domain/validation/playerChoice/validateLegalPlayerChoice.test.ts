@@ -250,7 +250,7 @@ describe('validateLegalPlayerChoice function', () => {
     });
     const state = updatePhaseState(
       withCard,
-      createIssueCommandsPhaseState(withCard, {
+      createIssueCommandsPhaseState({
         step: 'firstPlayerIssueCommands',
       }),
     );

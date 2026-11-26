@@ -23,10 +23,7 @@ function issuingOn(step: IssueCommandsPhaseStep): GameState {
     createEmptyGameState('standard'),
     'black',
   );
-  const state = updatePhaseState(
-    base,
-    createIssueCommandsPhaseState(base, { step }),
-  );
+  const state = updatePhaseState(base, createIssueCommandsPhaseState({ step }));
   return state;
 }
 

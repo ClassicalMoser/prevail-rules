@@ -54,7 +54,7 @@ describe('applyCompleteRangedAttackCommandEvent function', () => {
     // under way.
     const state = updatePhaseState(
       withCards,
-      createIssueCommandsPhaseState(withCards, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: 'pending',
         remainingUnitsFirstPlayer: [attacker.unit],
         step: 'firstPlayerResolveCommands',

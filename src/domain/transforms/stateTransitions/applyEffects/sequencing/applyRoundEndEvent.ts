@@ -1,6 +1,6 @@
 import type { RoundEndEvent } from '@events';
-import type { GameState, PlayCardsPhaseState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
+import { createOpenedPlayCardsPhaseState } from '@factories';
+import type { GameState } from '@game';
 
 import { updateRoundState } from '@transforms/pureTransforms';
 
@@ -28,10 +28,7 @@ export function applyRoundEndEvent<S extends GameState>(
 
   // Create the new play cards phase state for the next round
   // Every round opens with both players choosing a card in secret (§4.1.1).
-  const newPhaseState: PlayCardsPhaseState = {
-    phase: PLAY_CARDS_PHASE,
-    step: 'chooseCards',
-  };
+  const newPhaseState = createOpenedPlayCardsPhaseState();
 
   // Update the round state
   // Nothing carries over from the round that ended but what is on the table

@@ -22,7 +22,7 @@ describe('getRemainingUnitsForPlayer function', () => {
     );
     const state = updatePhaseState(
       base,
-      createIssueCommandsPhaseState(base, {
+      createIssueCommandsPhaseState({
         remainingUnitsFirstPlayer: [blackUnit],
         remainingUnitsSecondPlayer: [whiteUnit],
       }),

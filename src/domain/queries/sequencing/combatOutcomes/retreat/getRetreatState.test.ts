@@ -33,7 +33,7 @@ describe('getRetreatState function', () => {
     });
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: resolution,
       }),
     );

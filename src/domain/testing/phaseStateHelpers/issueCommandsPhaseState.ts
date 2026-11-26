@@ -1,25 +1,21 @@
-import type { GameState, IssueCommandsPhaseState } from '@game';
-import { ISSUE_COMMANDS_PHASE } from '@game';
+import { createOpenedIssueCommandsPhaseState } from '@factories';
+import type { IssueCommandsPhaseState } from '@game';
 
 /**
- * Creates an IssueCommandsPhaseState with sensible defaults.
+ * Phase 3 on the first player carrying out their orders: the phase as it
+ * opens, moved on to the step where most Phase 3 specs stand.
  *
- * TODO(composition): the state is never read; the defaults are the same for
- * every game. Callers in some sixty specs pass one anyway. To settle: drop the
- * parameter and update the callers, or say what it is for.
+ * @param overrides - What a spec sets beyond that: the units still to act,
+ * an order under way, another step
+ * @returns The Issue Commands phase, to put in a game with `updatePhaseState`
  */
 export function createIssueCommandsPhaseState(
-  _state: GameState,
   overrides?: Partial<IssueCommandsPhaseState>,
 ): IssueCommandsPhaseState {
   const issueCommands: IssueCommandsPhaseState = {
-    // No order is under way yet; a spec about one passes it here.
-    currentCommandResolutionState: 'pending',
-    phase: ISSUE_COMMANDS_PHASE,
-    // Nobody is left waiting to act on either side's order, so a spec names
-    // the units an order still has to carry.
-    remainingUnitsFirstPlayer: [],
-    remainingUnitsSecondPlayer: [],
+    // Nobody ordered and no order under way, as the phase opens; a spec names
+    // the units an order still has to carry, or the order under way.
+    ...createOpenedIssueCommandsPhaseState(),
     // The first player carries out the orders it issued, before the second
     // player issues any (§4.3).
     step: 'firstPlayerResolveCommands',

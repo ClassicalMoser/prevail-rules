@@ -167,7 +167,7 @@ describe('getLegalRangedAttackers function', () => {
     });
     const state = updatePhaseState(
       withOrder,
-      createIssueCommandsPhaseState(withOrder, {
+      createIssueCommandsPhaseState({
         remainingUnitsSecondPlayer: [shooter.unit],
         step: 'secondPlayerResolveCommands',
       }),
@@ -199,7 +199,7 @@ describe('getLegalRangedAttackers function', () => {
     const game = createPlayableGame([], { initiative: 'black' });
     const state = updatePhaseState(
       game,
-      createIssueCommandsPhaseState(game, {
+      createIssueCommandsPhaseState({
         step: 'firstPlayerIssueCommands',
       }),
     );
@@ -217,7 +217,7 @@ describe('getLegalRangedAttackers function', () => {
     ]);
     const state = updatePhaseState(
       ordered,
-      createIssueCommandsPhaseState(ordered, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState:
           createRangedAttackResolutionState(ordered),
       }),

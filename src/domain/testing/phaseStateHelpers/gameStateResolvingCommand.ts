@@ -18,7 +18,7 @@ export function createGameStateResolvingCommand(
   base: GameState = createEmptyGameState('standard'),
 ): GameState {
   // Phase 3 on the first player's resolve step, with this order under way.
-  const phase = createIssueCommandsPhaseState(base, {
+  const phase = createIssueCommandsPhaseState({
     currentCommandResolutionState: resolution,
   });
   const resolving = updatePhaseState(base, phase);

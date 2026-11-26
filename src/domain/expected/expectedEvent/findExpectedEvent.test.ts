@@ -92,7 +92,7 @@ describe('findExpectedEvent function', () => {
     const game = createPlayableGame(armies);
     const state = updatePhaseState(
       game,
-      createIssueCommandsPhaseState(game, { step: 'complete' }),
+      createIssueCommandsPhaseState({ step: 'complete' }),
     );
 
     // The phase closes.

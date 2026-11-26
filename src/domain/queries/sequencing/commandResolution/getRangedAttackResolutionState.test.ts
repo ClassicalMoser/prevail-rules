@@ -14,7 +14,7 @@ describe('getRangedAttackResolutionState function', () => {
     // Phase 3, with a Shoot order under way.
     const empty = createEmptyGameState('standard');
     const resolution = createRangedAttackResolutionState(empty);
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);
@@ -26,7 +26,7 @@ describe('getRangedAttackResolutionState function', () => {
   it('throws when the order under way is a move', () => {
     // Phase 3, with a Move order under way instead.
     const empty = createEmptyGameState('standard');
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: createMovementResolutionState(empty),
     });
     const state = updatePhaseState(empty, phase);

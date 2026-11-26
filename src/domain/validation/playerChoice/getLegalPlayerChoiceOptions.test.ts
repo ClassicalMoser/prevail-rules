@@ -285,7 +285,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
 
     const state = updatePhaseState(
       withUnit,
-      createIssueCommandsPhaseState(withUnit, {
+      createIssueCommandsPhaseState({
         step: 'firstPlayerIssueCommands',
       }),
     );

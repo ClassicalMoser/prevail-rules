@@ -12,7 +12,7 @@ describe('getIssueCommandsPhaseState function', () => {
   it('returns the issue commands phase', () => {
     // The second player's step, so the assertion is not the factory's first step.
     const empty = createEmptyGameState('standard');
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       step: 'secondPlayerIssueCommands',
     });
     const state = updatePhaseState(empty, phase);

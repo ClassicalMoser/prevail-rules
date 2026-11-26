@@ -27,7 +27,7 @@ describe('getRearEngagementRoutState function', () => {
     });
     const full = updatePhaseState(
       state,
-      createIssueCommandsPhaseState(state, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: movement,
       }),
     );
@@ -42,7 +42,7 @@ describe('getRearEngagementRoutState function', () => {
     });
     const full = updatePhaseState(
       state,
-      createIssueCommandsPhaseState(state, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: movement,
       }),
     );
@@ -59,7 +59,7 @@ describe('getRearEngagementRoutState function', () => {
     });
     const full = updatePhaseState(
       state,
-      createIssueCommandsPhaseState(state, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: movement,
       }),
     );

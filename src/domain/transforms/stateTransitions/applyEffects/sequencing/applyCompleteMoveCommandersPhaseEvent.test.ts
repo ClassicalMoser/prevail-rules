@@ -51,7 +51,7 @@ describe('applyCompleteMoveCommandersPhaseEvent function', () => {
     const empty = createEmptyGameState('standard');
     const issuing = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         step: 'firstPlayerIssueCommands',
       }),
     );

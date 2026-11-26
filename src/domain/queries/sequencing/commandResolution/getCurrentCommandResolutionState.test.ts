@@ -14,7 +14,7 @@ describe('getCurrentCommandResolutionState function', () => {
     // Phase 3, with a Move order under way.
     const empty = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(empty);
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);
@@ -37,7 +37,7 @@ describe('getCurrentCommandResolutionState function', () => {
   it('throws between orders, before any unit has been named', () => {
     // Phase 3, with no order opened yet.
     const empty = createEmptyGameState('standard');
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: 'pending',
     });
     const state = updatePhaseState(empty, phase);

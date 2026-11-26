@@ -38,7 +38,7 @@ describe('findMeleeResolutionState function', () => {
   it('answers undefined in Phase 3, before any melee is fought', () => {
     // Orders are still being carried out.
     const empty = createEmptyGameState('standard');
-    const state = updatePhaseState(empty, createIssueCommandsPhaseState(empty));
+    const state = updatePhaseState(empty, createIssueCommandsPhaseState());
 
     // No melee is under way.
     expect(findMeleeResolutionState(state)).toBeUndefined();

@@ -56,7 +56,7 @@ function blackIssuing(
   // Phase 3, on Black's issuing step.
   const issuing = updatePhaseState(
     withCard,
-    createIssueCommandsPhaseState(withCard, {
+    createIssueCommandsPhaseState({
       step: 'firstPlayerIssueCommands',
     }),
   );

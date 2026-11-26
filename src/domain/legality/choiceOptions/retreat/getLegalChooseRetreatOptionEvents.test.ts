@@ -67,7 +67,7 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     );
     return updatePhaseState(
       withUnit,
-      createIssueCommandsPhaseState(withUnit, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(
           withUnit,
           { attackApplyState: attackApply },
@@ -120,7 +120,7 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
     const { placement, tiedPaths, withUnit } = whiteBarredFromStepBack();
     const engagementState = updatePhaseState(
       withUnit,
-      createIssueCommandsPhaseState(withUnit, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createMovementResolutionState(withUnit, {
           engagementState: createFrontEngagementState({
             defendingUnitRetreats: true,

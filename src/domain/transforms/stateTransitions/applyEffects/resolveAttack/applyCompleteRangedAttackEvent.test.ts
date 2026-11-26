@@ -72,7 +72,7 @@ describe('applyCompleteRangedAttackEvent function', () => {
     });
     const resolving = updatePhaseState(
       withCards,
-      createIssueCommandsPhaseState(withCards, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: shot,
         remainingUnitsFirstPlayer: remaining.map((entry) => entry.unit),
         step: 'firstPlayerResolveCommands',

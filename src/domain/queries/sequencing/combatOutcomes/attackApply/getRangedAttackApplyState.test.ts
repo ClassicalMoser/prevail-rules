@@ -20,7 +20,7 @@ describe('getRangedAttackApplyState function', () => {
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: apply,
     });
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);
@@ -33,7 +33,7 @@ describe('getRangedAttackApplyState function', () => {
     const resolution = createRangedAttackResolutionState(empty, {
       attackApplyState: 'pending',
     });
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);
@@ -46,7 +46,7 @@ describe('getRangedAttackApplyState function', () => {
   it('throws when the command resolution is movement', () => {
     const empty = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(empty);
-    const phase = createIssueCommandsPhaseState(empty, {
+    const phase = createIssueCommandsPhaseState({
       currentCommandResolutionState: resolution,
     });
     const state = updatePhaseState(empty, phase);

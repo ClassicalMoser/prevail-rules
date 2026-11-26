@@ -36,7 +36,7 @@ function ordersCarriedOut(): AuthoritativeGameState {
   // Phase 3 on its last step.
   const done = updatePhaseState(
     engaged,
-    createIssueCommandsPhaseState(engaged, { step: 'complete' }),
+    createIssueCommandsPhaseState({ step: 'complete' }),
   );
   return done;
 }

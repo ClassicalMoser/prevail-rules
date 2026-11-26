@@ -1,9 +1,5 @@
-import type {
-  CleanupPhaseState,
-  GameState,
-  ResolveMeleePhaseState,
-} from '@game';
-import { CLEANUP_PHASE } from '@game';
+import { createOpenedCleanupPhaseState } from '@factories';
+import type { GameState, ResolveMeleePhaseState } from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import {
   addCompletedPhase,
@@ -44,15 +40,7 @@ export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
   // Create the new cleanup phase state
   // Cleanup opens with this round's cards leaving play (§4.5.1); neither
   // player has chosen whether to rally yet.
-  // TODO(composition): this opening of Cleanup is written out by hand here
-  // and again by `createCleanupPhaseState` in `@testing`. Settle by a factory
-  // for each phase's opening that both call.
-  const newPhaseState: CleanupPhaseState = {
-    firstPlayerRallyResolutionState: 'pending',
-    phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: 'pending',
-    step: 'cardsLeavePlay',
-  };
+  const newPhaseState = createOpenedCleanupPhaseState();
 
   // Phase 4 recorded as done, and Cleanup under way.
   const cleaningUp = updatePhaseState(stateWithCompletedPhase, newPhaseState);

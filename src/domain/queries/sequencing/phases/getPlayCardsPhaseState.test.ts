@@ -21,7 +21,7 @@ describe('getPlayCardsPhaseState function', () => {
   it('throws when the phase is issue commands', () => {
     // The round has moved on to Phase 3.
     const empty = createEmptyGameState('standard');
-    const phase = createIssueCommandsPhaseState(empty);
+    const phase = createIssueCommandsPhaseState();
     const state = updatePhaseState(empty, phase);
 
     // Asking for cards here is out of turn; the message names the phase found.

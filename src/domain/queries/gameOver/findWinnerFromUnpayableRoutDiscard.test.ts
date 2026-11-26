@@ -106,7 +106,7 @@ describe('findWinnerFromUnpayableRoutDiscard function', () => {
     const empty = createEmptyGameState('standard');
     // Pending command resolution throws. That slice is not open, so the
     // discard is not pending.
-    const state = updatePhaseState(empty, createIssueCommandsPhaseState(empty));
+    const state = updatePhaseState(empty, createIssueCommandsPhaseState());
 
     expect(findWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
   });

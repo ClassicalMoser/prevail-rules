@@ -28,7 +28,7 @@ describe('findRoutAwaitingPenalty function', () => {
     const nested = createRoutState('black', defender);
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(
           empty,
           {
@@ -62,7 +62,7 @@ describe('findRoutAwaitingPenalty function', () => {
     const defender = createTestUnit('white', { attack: 2 });
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(
           empty,
           {

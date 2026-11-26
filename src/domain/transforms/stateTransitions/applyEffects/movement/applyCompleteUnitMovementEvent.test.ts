@@ -53,7 +53,7 @@ describe('applyCompleteUnitMovementEvent function', () => {
     });
     const resolving = updatePhaseState(
       base,
-      createIssueCommandsPhaseState(base, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: move,
         remainingUnitsFirstPlayer: remaining,
         step: 'firstPlayerResolveCommands',

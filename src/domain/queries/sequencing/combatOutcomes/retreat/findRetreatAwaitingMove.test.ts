@@ -182,7 +182,7 @@ describe('findRetreatAwaitingMove function', () => {
     );
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: createRangedAttackResolutionState(
           empty,
           {

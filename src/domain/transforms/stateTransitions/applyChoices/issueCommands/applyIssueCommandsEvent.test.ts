@@ -40,7 +40,7 @@ describe('applyIssueCommandsEvent function', () => {
     });
     const issuing = updatePhaseState(
       withCards,
-      createIssueCommandsPhaseState(withCards, { step }),
+      createIssueCommandsPhaseState({ step }),
     );
     return issuing;
   }

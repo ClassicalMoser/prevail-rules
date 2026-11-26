@@ -115,7 +115,7 @@ describe('applyPlayerChoiceEvent function', () => {
     const withUnit = createGameStateWithUnits([placed(unit, 'E-5', 'north')]);
     const state = updatePhaseState(
       withUnit,
-      createIssueCommandsPhaseState(withUnit, {
+      createIssueCommandsPhaseState({
         step: 'firstPlayerIssueCommands',
       }),
     );

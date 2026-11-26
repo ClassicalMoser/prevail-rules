@@ -47,7 +47,7 @@ describe('applyCompleteMovementCommandEvent function', () => {
     });
     const state = updatePhaseState(
       withCards,
-      createIssueCommandsPhaseState(withCards, {
+      createIssueCommandsPhaseState({
         remainingUnitsFirstPlayer: leftovers.black,
         remainingUnitsSecondPlayer: leftovers.white,
         step,

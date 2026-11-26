@@ -116,7 +116,7 @@ describe('applyGameEffectEvent function', () => {
     const empty = createEmptyGameState('standard');
     const state = updatePhaseState(
       empty,
-      createIssueCommandsPhaseState(empty, { step: 'complete' }),
+      createIssueCommandsPhaseState({ step: 'complete' }),
     );
     const event: CompleteIssueCommandsPhaseEvent = {
       effectType: 'completeIssueCommandsPhase',

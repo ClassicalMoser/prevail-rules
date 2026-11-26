@@ -1,6 +1,6 @@
 import type { CompletePlayCardsPhaseEvent } from '@events';
-import type { GameState, MoveCommandersPhaseState } from '@game';
-import { MOVE_COMMANDERS_PHASE } from '@game';
+import { createOpenedMoveCommandersPhaseState } from '@factories';
+import type { GameState } from '@game';
 
 import { getPlayCardsPhaseState } from '@queries';
 import {
@@ -36,13 +36,7 @@ export function applyCompletePlayCardsPhaseEvent<S extends GameState>(
 
   // The first player moves their commander first (§4.2.1). A fallen
   // commander's turn is passed over by its own effect.
-  // TODO(composition): this opening of Phase 2 is written out by hand here
-  // and again by `createMoveCommandersPhaseState` in `@testing`. Settle by a
-  // factory for each phase's opening that both call.
-  const newPhaseState: MoveCommandersPhaseState = {
-    phase: MOVE_COMMANDERS_PHASE,
-    step: 'moveFirstCommander',
-  };
+  const newPhaseState = createOpenedMoveCommandersPhaseState();
 
   // Phase 1 recorded as done, and the commanders to move.
   const moving = updatePhaseState(stateWithCompletedPhase, newPhaseState);

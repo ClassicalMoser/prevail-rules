@@ -26,7 +26,7 @@ describe('getMeleeResolutionState function', () => {
   it('throws in Phase 3, before any melee is fought', () => {
     // Orders are still being carried out.
     const empty = createEmptyGameState('standard');
-    const state = updatePhaseState(empty, createIssueCommandsPhaseState(empty));
+    const state = updatePhaseState(empty, createIssueCommandsPhaseState());
 
     // Asking for a melee here is out of turn.
     expect(() => getMeleeResolutionState(state)).toThrow(

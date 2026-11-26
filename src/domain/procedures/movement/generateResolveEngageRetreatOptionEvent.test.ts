@@ -260,7 +260,7 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
     // Black is carrying out a Move order for the engager.
     const ordered = updatePhaseState(
       withCommander,
-      createIssueCommandsPhaseState(withCommander, {
+      createIssueCommandsPhaseState({
         currentCommandResolutionState: 'pending',
         remainingUnitsFirstPlayer: [engager.unit],
         step: 'firstPlayerResolveCommands',
