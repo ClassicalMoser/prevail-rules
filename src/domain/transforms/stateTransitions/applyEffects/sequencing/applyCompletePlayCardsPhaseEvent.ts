@@ -24,10 +24,7 @@ export function applyCompletePlayCardsPhaseEvent<S extends GameState>(
   _event: CompletePlayCardsPhaseEvent,
   state: S,
 ): S {
-  // Safe type broadening: No spatial information on PlayCardsPhaseState
-  // TODO(misleading): nothing is broadened, and no phase state carries
-  // spatial information now. The line insists the game is playing cards, and
-  // throws otherwise. Settle by rewording.
+  // Only Play Cards ends here; the read throws in any other phase.
   const phaseState = getPlayCardsPhaseState(state);
 
   // Add the completed phase to the set of completed phases

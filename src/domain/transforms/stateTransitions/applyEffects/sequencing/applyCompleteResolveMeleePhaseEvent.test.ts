@@ -1,3 +1,4 @@
+import type { CompleteResolveMeleePhaseEvent } from '@events';
 import { createEmptyGameState } from '@factories';
 import { getCurrentPhaseState } from '@queries';
 import {
@@ -7,6 +8,12 @@ import {
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteResolveMeleePhaseEvent } from './applyCompleteResolveMeleePhaseEvent';
+
+/** The effect that ends Phase 4; it carries nothing. */
+const event: CompleteResolveMeleePhaseEvent = {
+  effectType: 'completeResolveMeleePhase',
+  eventType: 'gameEffect',
+};
 
 /**
  * Once every engagement has been fought (§4.4.2), Phase 4 ends and Cleanup
@@ -24,7 +31,7 @@ describe('applyCompleteResolveMeleePhaseEvent function', () => {
       }),
     );
 
-    const next = applyCompleteResolveMeleePhaseEvent(fought);
+    const next = applyCompleteResolveMeleePhaseEvent(event, fought);
 
     // Cleanup's first step, and both rallies still to choose.
     expect(getCurrentPhaseState(next)).toStrictEqual({
@@ -46,7 +53,7 @@ describe('applyCompleteResolveMeleePhaseEvent function', () => {
       }),
     );
 
-    const next = applyCompleteResolveMeleePhaseEvent(fought);
+    const next = applyCompleteResolveMeleePhaseEvent(event, fought);
 
     // No query reads the round's record of finished phases, so the field is
     // read as written. Phase 4 has one working step, so this effect is what
@@ -69,8 +76,8 @@ describe('applyCompleteResolveMeleePhaseEvent function', () => {
     );
 
     // Phase 4 ends only from Phase 4.
-    expect(() => applyCompleteResolveMeleePhaseEvent(cleaningUp)).toThrow(
-      'Expected resolveMelee phase, got cleanup',
-    );
+    expect(() =>
+      applyCompleteResolveMeleePhaseEvent(event, cleaningUp),
+    ).toThrow('Expected resolveMelee phase, got cleanup');
   });
 });

@@ -6,6 +6,7 @@ import { getCurrentPhaseState } from '@queries';
 import {
   createGameStateWithEngagedUnits,
   createIssueCommandsPhaseState,
+  createMoveCommandersPhaseState,
   createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
@@ -105,5 +106,20 @@ describe('applyCompleteIssueCommandsPhaseEvent function', () => {
         setup,
       ),
     ).toThrow('No current phase state found');
+  });
+
+  it('throws in any other phase, since only Issue Commands ends here', () => {
+    // The commanders are still moving; orders have not begun.
+    const moving = updatePhaseState(
+      createEmptyGameState('standard'),
+      createMoveCommandersPhaseState(),
+    );
+
+    expect(() =>
+      applyCompleteIssueCommandsPhaseEvent(
+        issueCommandsCompleteEvent([]),
+        moving,
+      ),
+    ).toThrow('Expected issueCommands phase, got moveCommanders');
   });
 });

@@ -39,11 +39,9 @@ import {
 
 /**
  * Routes game effect events to their corresponding apply functions.
- * Generic over the game-state **object** (`S extends GameState`): same
- * visibility member out as in — once every leaf is also `<S extends GameState>`.
- * TODO(misleading): every apply below is already generic over `S`, so "once"
- * reads as a condition still to be met. Settle by rewording to say the
- * visibility carries through because every apply is generic.
+ * Generic over the game-state **object** (`S extends GameState`): the
+ * visibility that comes in goes out, because every apply below is generic
+ * over `S` too.
  *
  * An effect is what the game owes rather than what a player chose: a
  * procedure built it from this same state, so it is trusted and carried out
@@ -92,9 +90,7 @@ export function applyGameEffectEvent<S extends GameState>(
       return applyCompleteRangedAttackCommandEvent(event, state);
     }
     case 'completeResolveMeleePhase': {
-      // Every engagement has been fought; the effect carries nothing, so its
-      // rule needs only the state.
-      return applyCompleteResolveMeleePhaseEvent(state);
+      return applyCompleteResolveMeleePhaseEvent(event, state);
     }
     case 'completeUnitMovement': {
       return applyCompleteUnitMovementEvent(event, state);

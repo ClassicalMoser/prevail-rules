@@ -23,10 +23,7 @@ export function applyCompleteMoveCommandersPhaseEvent<S extends GameState>(
   _event: CompleteMoveCommandersPhaseEvent,
   state: S,
 ): S {
-  // Safe type broadening: No spatial information on MoveCommandersPhaseState
-  // TODO(misleading): nothing is broadened, and no phase state carries
-  // spatial information now. The line insists the game is moving commanders,
-  // and throws otherwise. Settle by rewording.
+  // Only Move Commanders ends here; the read throws in any other phase.
   const currentPhaseState: MoveCommandersPhaseState =
     getMoveCommandersPhaseState(state);
 

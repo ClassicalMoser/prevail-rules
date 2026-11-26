@@ -1,3 +1,4 @@
+import type { CompleteResolveMeleePhaseEvent } from '@events';
 import { createOpenedCleanupPhaseState } from '@factories';
 import type { GameState, ResolveMeleePhaseState } from '@game';
 import { getResolveMeleePhaseState } from '@queries';
@@ -15,13 +16,12 @@ import {
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
  * log. Phase is narrowed via {@link getResolveMeleePhaseState} (throws if not `resolveMelee`).
  *
- * Takes no event, because this effect carries no payload fields; the dispatch in
- * `applyGameEffectEvent` has nothing to hand it.
- *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
+  _event: CompleteResolveMeleePhaseEvent,
   state: S,
 ): S {
   // Every engagement has been fought (§4.4.2), and the phase ends only

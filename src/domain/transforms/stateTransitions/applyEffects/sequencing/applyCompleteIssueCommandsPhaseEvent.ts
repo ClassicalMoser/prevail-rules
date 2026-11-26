@@ -2,7 +2,7 @@ import type { CompleteIssueCommandsPhaseEvent } from '@events';
 import { createOpenedResolveMeleePhaseState } from '@factories';
 import type { GameState } from '@game';
 
-import { getCurrentPhaseState } from '@queries';
+import { getIssueCommandsPhaseState } from '@queries';
 import {
   addCompletedPhase,
   updatePhaseState,
@@ -13,8 +13,8 @@ import {
  * Records the current phase state as completed and advances to resolveMelee phase.
  * Uses `remainingEngagements` from the event (procedure / machine-generated log).
  *
- * Phase and step are not re-validated here; the event is trusted from the procedure /
- * machine-generated log.
+ * Phase is narrowed via {@link getIssueCommandsPhaseState} (throws if not
+ * `issueCommands`); the step is not re-validated.
  *
  * @param event - The complete issue commands phase event to apply
  * @param state - The current game state
@@ -26,12 +26,8 @@ export function applyCompleteIssueCommandsPhaseEvent<S extends GameState>(
 ): S {
   // Both players' orders are carried out, so Phase 3 goes on the round's
   // record of finished phases.
-  // TODO(composition): its siblings insist on their own phase
-  // (`getPlayCardsPhaseState`, `getMoveCommandersPhaseState`,
-  // `getResolveMeleePhaseState`); this records whatever phase is current.
-  // Settle by `getIssueCommandsPhaseState`, which would also refuse a game
-  // outside Phase 3, or by saying why this one need not.
-  const phaseState = getCurrentPhaseState(state);
+  // Only Issue Commands ends here; the read throws in any other phase.
+  const phaseState = getIssueCommandsPhaseState(state);
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 
   // Phase 4 opens with every engaged space still to fight: none may be
