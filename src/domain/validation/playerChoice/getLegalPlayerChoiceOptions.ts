@@ -189,13 +189,9 @@ export type LegalPlayerChoiceOptions =
 function getSingleSideAsked(playerSource: PlayerSource): PlayerSide {
   // Only the card choice of Phase 1 is asked of both players at once, and
   // the router has answered that one already.
-  // TODO(composition): unreachable while the expected engine names both
-  // players only for `chooseCard` (`getExpectedPlayCardsPhaseEvent`), and no
-  // spec can reach it, since the expected event is read from the state, not
-  // passed in. `ExpectedPlayerInput` lets any choice name both players; a
-  // union that names both only for `chooseCard` would let the type rule
-  // this out and the guard go. Settled by the author deciding that shape in
-  // `@events`.
+  // `ExpectedPlayerInput` lets any choice name both players, and play names
+  // both only for `chooseCard` (`getExpectedPlayCardsPhaseEvent`). No spec
+  // reaches this throw, since the expected event is read from the state.
   if (playerSource === 'bothPlayers') {
     throw new Error(
       'Only choosing cards is asked of both players, so no single side is asked',

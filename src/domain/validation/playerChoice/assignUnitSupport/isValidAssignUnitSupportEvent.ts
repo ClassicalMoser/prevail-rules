@@ -17,10 +17,8 @@ function refusalReasonAt(
   index: number,
 ): string {
   // The place the player asked for that the legal options did not offer.
-  // TODO(composition): unreachable. `index` is the one `findIllegal` found
-  // walking these same assignments, so it always names one of them, and the
-  // throw only narrows the type. Settled by having `ChoiceRefusal` in `@utils`
-  // carry the refused part itself, so this lookup and its guard go.
+  // `index` is the one `findIllegal` found walking these same assignments,
+  // so it always names one of them; the throw only narrows the type.
   const assignment = throwIfUndefined(
     assignments[index],
     `No assignment at position ${index}`,
