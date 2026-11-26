@@ -1,8 +1,4 @@
-import type {
-  EngagementState,
-  FrontEngagementResolutionState,
-  GameState,
-} from '@game';
+import type { FrontEngagementState, GameState } from '@game';
 import { isPending } from '@utils';
 import { findMovementResolutionState } from '../sequencing/commandResolution/findMovementResolutionState';
 
@@ -15,11 +11,9 @@ import { findMovementResolutionState } from '../sequencing/commandResolution/fin
  * @param state - The game state
  * @returns The front engagement, or `undefined`
  */
-export function findFrontEngagementStateFromMovement(state: GameState):
-  | (EngagementState & {
-      engagementResolutionState: FrontEngagementResolutionState;
-    })
-  | undefined {
+export function findFrontEngagementStateFromMovement(
+  state: GameState,
+): FrontEngagementState | undefined {
   // No Move order is being carried out, so no unit has walked into anyone.
   const movement = findMovementResolutionState(state);
   // 'pending' means this movement has not reached an engagement.

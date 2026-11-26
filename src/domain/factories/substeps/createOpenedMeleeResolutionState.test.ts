@@ -7,7 +7,6 @@ import { createOpenedMeleeResolutionState } from './createOpenedMeleeResolutionS
 describe('createOpenedMeleeResolutionState function', () => {
   it('opens a melee at its space with nothing committed and nothing struck', () => {
     expect(createOpenedMeleeResolutionState('E-5')).toStrictEqual({
-      completed: false,
       attackOnFirstPlayerApplyState: 'pending',
       firstPlayerCommitment: { commitmentType: 'pending' },
       location: 'E-5',

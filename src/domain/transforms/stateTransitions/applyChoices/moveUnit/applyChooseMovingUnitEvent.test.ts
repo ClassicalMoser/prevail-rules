@@ -62,7 +62,6 @@ describe('applyChooseMovingUnitEvent function', () => {
     expect(getMovementResolutionState(named)).toStrictEqual({
       commandResolutionType: 'movement',
       commitment: { commitmentType: 'pending' },
-      completed: false,
       engagementState: 'pending',
       moveCommander: 'pending',
       movingUnit: mover.unit,

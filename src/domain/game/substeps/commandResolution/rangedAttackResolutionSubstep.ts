@@ -39,8 +39,6 @@ export interface RangedAttackResolutionState {
   attackingCommitment: Commitment;
   /** The target's commitment, for Defence or Flexibility, made once it is named. */
   defendingCommitment: Commitment;
-  /** Whether the ranged attack resolution substep is complete. */
-  completed: boolean;
 }
 
 const _rangedAttackResolutionStateSchemaObject = z
@@ -49,7 +47,6 @@ const _rangedAttackResolutionStateSchemaObject = z
     attackingCommitment: commitmentSchema,
     attackingUnit: unitInstanceSchema,
     commandResolutionType: z.literal('rangedAttack'),
-    completed: z.boolean(),
     defendingCommitment: commitmentSchema,
     defendingUnit: unitInstanceSchema.or(z.literal('pending')),
     substepType: z.literal(COMMAND_RESOLUTION_SUBSTEP_TYPE),

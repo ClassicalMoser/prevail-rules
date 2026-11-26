@@ -21,12 +21,14 @@ describe('updateCommandResolutionState function', () => {
       empty,
     );
 
-    // The move is carried out.
-    const finished = createMovementResolutionState(empty, { completed: true });
-    const after = updateCommandResolutionState(moving, finished);
+    // The move is carried on: its commander now rides along.
+    const carried = createMovementResolutionState(empty, {
+      moveCommander: true,
+    });
+    const after = updateCommandResolutionState(moving, carried);
 
-    // The move under way is the finished one.
-    expect(getCurrentCommandResolutionState(after)).toBe(finished);
+    // The move under way is the one carried on.
+    expect(getCurrentCommandResolutionState(after)).toBe(carried);
   });
 
   it('throws when no unit’s move or shot is under way, since there is nothing to carry forward', () => {

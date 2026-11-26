@@ -134,8 +134,11 @@ export type {
   EngagementResolutionState,
   EngagementState,
   FlankEngagementResolutionState,
+  FlankEngagementState,
   FrontEngagementResolutionState,
+  FrontEngagementState,
   RearEngagementResolutionState,
+  RearEngagementState,
 } from './substeps';
 // Any substep play can be inside, and the list of their kinds
 export {

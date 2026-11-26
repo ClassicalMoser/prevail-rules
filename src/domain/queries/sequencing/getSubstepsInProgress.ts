@@ -205,7 +205,7 @@ function fromEngagement(slot: EngagementState | 'pending'): SubstepState[] {
 export function getSubstepsInProgress(state: GameState): SubstepState[] {
   // Phase 3: an order being carried out, by Move or by Shoot (§4.3).
   const command = findCurrentCommandResolutionState(state);
-  if (command !== undefined && !command.completed) {
+  if (command !== undefined) {
     // A Move may start an engagement; a Shoot applies its attack's results.
     const within =
       command.commandResolutionType === 'movement'
@@ -217,7 +217,7 @@ export function getSubstepsInProgress(state: GameState): SubstepState[] {
 
   // Phase 4: a melee being fought in one space (§4.4).
   const melee = findMeleeResolutionState(state);
-  if (melee !== undefined && !melee.completed) {
+  if (melee !== undefined) {
     // Its two attacks are walked in the order their results take effect, and
     // closed in that order once every stage is done.
     const applies = getMeleeAppliesInResolutionOrder(melee);

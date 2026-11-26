@@ -1,4 +1,7 @@
-import type { EngagementState, FlankEngagementResolutionState } from '@game';
+import type {
+  FlankEngagementResolutionState,
+  FlankEngagementState,
+} from '@game';
 import {
   createOpenedEngagementState,
   createOpenedFlankEngagementResolutionState,
@@ -6,17 +9,10 @@ import {
 
 /**
  * Creates a flank EngagementState with sensible defaults.
- *
- * TODO(composition): the return type is an intersection, which STYLE.md rules
- * out. `queries/engagement/engagement.ts` spells the same flank engagement
- * state the same way, privately. To settle: declare the narrowed shape once in
- * `@game` and name it in both places.
  */
 export function createFlankEngagementState(
   overrides?: Partial<FlankEngagementResolutionState>,
-): EngagementState & {
-  engagementResolutionState: FlankEngagementResolutionState;
-} {
+): FlankEngagementState {
   // A defender struck in the flank turns to face its attacker and may not
   // fall back (§6.3.4); as it opens, it has not yet turned.
   const resolution: FlankEngagementResolutionState = {

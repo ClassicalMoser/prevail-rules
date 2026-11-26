@@ -13,7 +13,6 @@ describe('createMeleeResolutionState function', () => {
     expect(melee.location).toBe('E-5');
     expect(melee.firstPlayerCommitment.commitmentType).toBe('completed');
     expect(melee.secondPlayerCommitment.commitmentType).toBe('completed');
-    expect(melee.completed).toBe(false);
   });
 
   it('gives the first player’s slot the card of the side holding the initiative', () => {

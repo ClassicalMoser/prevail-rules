@@ -1,5 +1,8 @@
 import type { UnitInstance } from '@entities';
-import type { EngagementState, FrontEngagementResolutionState } from '@game';
+import type {
+  FrontEngagementResolutionState,
+  FrontEngagementState,
+} from '@game';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import {
   createOpenedEngagementState,
@@ -17,17 +20,10 @@ const defaultEngagingUnit = (): UnitInstance =>
 
 /**
  * Creates a front EngagementState with sensible defaults.
- *
- * TODO(composition): the return type is an intersection, which STYLE.md rules
- * out. `queries/engagement/engagement.ts` spells the same front engagement
- * state the same way, privately. To settle: declare the narrowed shape once in
- * `@game` and name it in both places.
  */
 export function createFrontEngagementState(
   overrides?: Partial<FrontEngagementResolutionState>,
-): EngagementState & {
-  engagementResolutionState: FrontEngagementResolutionState;
-} {
+): FrontEngagementState {
   // The engaging unit's Speed, by default its printed Speed: no round
   // effect or committed card counted unless the spec says otherwise.
   const resolution: FrontEngagementResolutionState = {

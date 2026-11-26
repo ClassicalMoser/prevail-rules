@@ -15,7 +15,6 @@ export function createOpenedMovementResolutionState(
   const movement: MovementResolutionState = {
     commandResolutionType: 'movement',
     commitment: { commitmentType: 'pending' },
-    completed: false,
     // Whether the move walks into an enemy is known only once it is written.
     engagementState: 'pending',
     // Whether a commander rides along is declared with the move (§4.3.10).

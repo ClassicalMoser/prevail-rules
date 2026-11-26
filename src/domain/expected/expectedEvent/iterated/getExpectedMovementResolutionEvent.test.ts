@@ -144,16 +144,4 @@ describe('getExpectedMovementResolutionEvent function', () => {
       effectType: 'resolveRout',
     });
   });
-
-  it('throws when the move is already complete', () => {
-    // A finished move expects nothing more; asking is the caller's mistake.
-    const gameState = createGameState(whiteOnTarget);
-    const resolutionState = createMovementResolutionState(gameState, {
-      completed: true,
-    });
-
-    expect(() =>
-      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
-    ).toThrow('Movement resolution state is already complete');
-  });
 });

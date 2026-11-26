@@ -1,9 +1,9 @@
 import type {
   EngagementState,
-  FlankEngagementResolutionState,
-  FrontEngagementResolutionState,
+  FlankEngagementState,
+  FrontEngagementState,
   GameState,
-  RearEngagementResolutionState,
+  RearEngagementState,
 } from '@game';
 import { getMovementResolutionState } from '../sequencing/commandResolution/getMovementResolutionState';
 import { throwIfPending } from '@utils';
@@ -26,26 +26,6 @@ export function getEngagementStateFromMovement(
     'No engagement state found in movement resolution',
   );
 }
-
-/**
- * {@link EngagementState} carries every resolution type. The type below names the one
- * member this getter proved, because the discriminant sits on the nested
- * `engagementResolutionState`.
- *
- * TODO(composition): these are intersection types, which `STYLE.md` rules out,
- * and the same three are written again on `findFrontEngagementStateFromMovement`,
- * `findRearEngagementStateFromMovement` and the `@testing` engagement fixtures.
- * Settled by declaring each narrowed engagement once, outright, in `@game`.
- */
-type FrontEngagementState = EngagementState & {
-  engagementResolutionState: FrontEngagementResolutionState;
-};
-type FlankEngagementState = EngagementState & {
-  engagementResolutionState: FlankEngagementResolutionState;
-};
-type RearEngagementState = EngagementState & {
-  engagementResolutionState: RearEngagementResolutionState;
-};
 
 /**
  * Front engagement on the current movement.

@@ -20,12 +20,14 @@ describe('updateMeleeResolutionState function', () => {
       createMeleeResolutionState(empty),
     );
 
-    // The melee is carried out.
-    const finished = createMeleeResolutionState(empty, { completed: true });
-    const after = updateMeleeResolutionState(fighting, finished);
+    // The melee is carried on: the first player has yet to commit after all.
+    const carried = createMeleeResolutionState(empty, {
+      firstPlayerCommitment: { commitmentType: 'pending' },
+    });
+    const after = updateMeleeResolutionState(fighting, carried);
 
-    // The melee being fought is the finished one.
-    expect(getMeleeResolutionState(after)).toBe(finished);
+    // The melee being fought is the one carried on.
+    expect(getMeleeResolutionState(after)).toBe(carried);
   });
 
   it('throws between melees, since there is nothing to carry forward', () => {

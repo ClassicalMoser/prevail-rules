@@ -218,16 +218,4 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       });
     });
   });
-
-  it('throws when the melee is already complete', () => {
-    // A finished melee expects nothing more; asking is the caller's mistake.
-    const gameState = createGameState([], { currentInitiative: 'black' });
-    const meleeState = createMeleeResolutionState(gameState, {
-      completed: true,
-    });
-
-    expect(() =>
-      getExpectedMeleeResolutionEvent(gameState, meleeState),
-    ).toThrow('Melee resolution state is already complete');
-  });
 });

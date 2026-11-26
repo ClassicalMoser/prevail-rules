@@ -18,7 +18,6 @@ export function createOpenedRangedAttackResolutionState(
     attackingCommitment: { commitmentType: 'pending' },
     attackingUnit,
     commandResolutionType: 'rangedAttack',
-    completed: false,
     // The target answers with its own commitment once it is named (step 5).
     defendingCommitment: { commitmentType: 'pending' },
     defendingUnit: 'pending',

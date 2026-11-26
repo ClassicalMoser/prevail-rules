@@ -19,7 +19,6 @@ describe('createMovementResolutionState function', () => {
     });
     expect(resolution.engagementState).toBe('pending');
     expect(resolution.moveCommander).toBe(false);
-    expect(resolution.completed).toBe(false);
   });
 
   it('records the commitment as made with Black’s card in play', () => {

@@ -41,8 +41,6 @@ export interface MeleeResolutionState {
   firstPlayerCommitment: Commitment;
   /** The second player's commitment. */
   secondPlayerCommitment: Commitment;
-  /** Whether the melee resolution substep is complete. */
-  completed: boolean;
 }
 
 const _meleeResolutionStateSchemaObject = z
@@ -51,7 +49,6 @@ const _meleeResolutionStateSchemaObject = z
       z.literal('pending'),
     ),
     firstPlayerCommitment: commitmentSchema,
-    completed: z.boolean(),
     location: coordinateSchema,
     substepType: z.literal(MELEE_RESOLUTION_SUBSTEP_TYPE),
     attackOnSecondPlayerApplyState: attackApplyStateSchema.or(

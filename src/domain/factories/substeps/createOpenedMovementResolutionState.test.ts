@@ -9,7 +9,6 @@ describe('createOpenedMovementResolutionState function', () => {
     expect(createOpenedMovementResolutionState(mover)).toStrictEqual({
       commandResolutionType: 'movement',
       commitment: { commitmentType: 'pending' },
-      completed: false,
       engagementState: 'pending',
       moveCommander: 'pending',
       movingUnit: mover,

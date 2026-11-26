@@ -67,7 +67,6 @@ describe('applyChooseShooterEvent function', () => {
       attackingCommitment: { commitmentType: 'pending' },
       attackingUnit: shooter.unit,
       commandResolutionType: 'rangedAttack',
-      completed: false,
       defendingCommitment: { commitmentType: 'pending' },
       defendingUnit: 'pending',
       substepType: 'commandResolution',

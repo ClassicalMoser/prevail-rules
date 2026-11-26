@@ -12,7 +12,6 @@ export function createOpenedMeleeResolutionState(
   location: Coordinate,
 ): MeleeResolutionState {
   const meleeState: MeleeResolutionState = {
-    completed: false,
     attackOnFirstPlayerApplyState: 'pending',
     firstPlayerCommitment: { commitmentType: 'pending' },
     location,

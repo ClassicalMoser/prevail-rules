@@ -144,20 +144,4 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
       effectType: 'completeRangedAttack',
     });
   });
-
-  it('throws when the shot is already complete', () => {
-    // A finished shot expects nothing more; asking is the caller's mistake.
-    const gameState = createEmptyGameState('standard');
-    const resolutionState = createRangedAttackResolutionState(gameState, {
-      completed: true,
-    });
-
-    expect(() =>
-      getExpectedRangedAttackResolutionEvent(
-        gameState,
-        resolutionState,
-        'black',
-      ),
-    ).toThrow('Ranged attack resolution state is already complete');
-  });
 });

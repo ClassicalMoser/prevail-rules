@@ -254,17 +254,6 @@ describe('getSubstepsInProgress function', () => {
     ).toStrictEqual([shot, apply]);
   });
 
-  it('is empty once the order is carried out', () => {
-    // The unit has finished moving; the next order is not yet begun.
-    const empty = createEmptyGameState('standard');
-    const move = createMovementResolutionState(empty, { completed: true });
-
-    // A finished order is not followed.
-    expect(
-      getSubstepsInProgress(createGameStateResolvingCommand(move)),
-    ).toStrictEqual([]);
-  });
-
   it('stands at a melee whose blows are not yet counted', () => {
     const empty = createEmptyGameState('standard');
     // Both players are still committing (§7.2.2), so neither unit has an
@@ -344,17 +333,6 @@ describe('getSubstepsInProgress function', () => {
     expect(
       getSubstepsInProgress(createGameStateResolvingMelee(melee)),
     ).toStrictEqual([melee, blackApply]);
-  });
-
-  it('is empty once the melee is fought', () => {
-    const empty = createEmptyGameState('standard');
-    // Both attacks are carried out and closed; the next space is not yet chosen.
-    const melee = createMeleeResolutionState(empty, { completed: true });
-
-    // A finished melee is not followed.
-    expect(
-      getSubstepsInProgress(createGameStateResolvingMelee(melee)),
-    ).toStrictEqual([]);
   });
 
   it("is empty while this round's cards leave play", () => {

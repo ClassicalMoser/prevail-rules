@@ -11,7 +11,6 @@ describe('createOpenedRangedAttackResolutionState function', () => {
       attackingCommitment: { commitmentType: 'pending' },
       attackingUnit: shooter,
       commandResolutionType: 'rangedAttack',
-      completed: false,
       defendingCommitment: { commitmentType: 'pending' },
       defendingUnit: 'pending',
       substepType: 'commandResolution',

@@ -40,15 +40,12 @@ export interface MovementResolutionState {
   commitment: Commitment;
   /** The engagement state of the movement. */
   engagementState: EngagementState | 'pending';
-  /** Whether the movement resolution substep is complete. */
-  completed: boolean;
 }
 
 const _movementResolutionStateSchemaObject = z
   .object({
     commandResolutionType: z.literal('movement'),
     commitment: commitmentSchema,
-    completed: z.boolean(),
     engagementState: engagementStateSchema.or(z.literal('pending')),
     moveCommander: z.boolean().or(z.literal('pending')),
     movingUnit: unitInstanceSchema,

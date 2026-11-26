@@ -30,16 +30,8 @@ export function getExpectedMeleeResolutionEvent(
   gameState: GameState,
   meleeState: MeleeResolutionState,
 ): ExpectedEventInfo {
-  // Fast rejection: if already completed, this is an invalid state
   // A fought melee is cleared from the phase by completeMeleeResolution, so
   // the phase sequencer never hands over one that is over.
-  // TODO(composition): nothing in play sets `completed` on a melee (the
-  // completing effect clears the slot to 'pending' instead), so this guard
-  // catches only a forged state. Deciding whether the substep keeps a
-  // `completed` flag at all would settle both the field and the guard.
-  if (meleeState.completed) {
-    throw new Error('Melee resolution state is already complete');
-  }
 
   // Each unit's results, measured on it by the other's blow; 'pending' until
   // the melee is fought.

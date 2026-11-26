@@ -23,15 +23,6 @@ export function getExpectedMovementResolutionEvent(
   resolutionState: MovementResolutionState,
   player: PlayerSide,
 ): ExpectedEventInfo {
-  // Fast rejection: if already completed, this is an invalid state
-  // TODO(composition): nothing in play sets `completed` on a move (the
-  // completing effect clears the order's slot to 'pending' instead), so this
-  // guard catches only a forged state. Deciding whether the substep keeps a
-  // `completed` flag at all would settle both the field and the guard.
-  if (resolutionState.completed) {
-    throw new Error('Movement resolution state is already complete');
-  }
-
   // Check commitment state
   // Before it moves, the moving player may commit a card for +1 Speed or
   // +1 Flexibility, or decline (§4.3.10 step 2, §8.4).

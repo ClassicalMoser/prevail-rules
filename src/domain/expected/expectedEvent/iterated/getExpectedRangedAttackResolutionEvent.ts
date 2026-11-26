@@ -28,15 +28,6 @@ export function getExpectedRangedAttackResolutionEvent(
   // sibling's. Dropping it here and in getExpectedCommandResolutionEvent would
   // settle it, unless a shot's sequence is expected to read the board.
 
-  // Fast rejection: if already completed, this is an invalid state
-  // TODO(composition): nothing in play sets `completed` on a shot (the
-  // completing effect clears the order's slot to 'pending' instead), so this
-  // guard catches only a forged state. Deciding whether the substep keeps a
-  // `completed` flag at all would settle both the field and the guard.
-  if (resolutionState.completed) {
-    throw new Error('Ranged attack resolution state is already complete');
-  }
-
   // A shot is one way (§7.4.4): the target's owner is the other player, and
   // has only the defending commitment to make.
   const defendingPlayer = getOtherPlayer(attackingPlayer);
