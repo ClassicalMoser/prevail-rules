@@ -1,0 +1,55 @@
+import { tempUnits } from '@sampleValues';
+import { createTestUnit } from './createTestUnit';
+
+/**
+ * CreateTestUnit: Creates a unit instance for testing with sensible defaults.
+ */
+describe('createTestUnit function', () => {
+  it('given no options, creates unit with default attack 3', () => {
+    const unit = createTestUnit('black');
+    expect(unit.playerSide).toBe('black');
+    expect(unit.instanceNumber).toBe(1);
+    expect(unit.unitType.stats.attack).toBe(3);
+  });
+
+  it('given use custom instance number', () => {
+    const unit = createTestUnit('white', { instanceNumber: 5 });
+    expect(unit.instanceNumber).toBe(5);
+  });
+
+  it('given provided, creates unit from unitType', () => {
+    const unitType = tempUnits[0];
+    const unit = createTestUnit('black', { unitType });
+    expect(unit.unitType).toBe(unitType);
+    expect(unit.playerSide).toBe('black');
+  });
+
+  it('given defaults, creates unit by stat value', () => {
+    const unit = createTestUnit('white', { attack: 2 });
+    expect(unit.unitType.stats.attack).toBe(2);
+  });
+
+  it('given when no unit matches specified stats, throws', () => {
+    expect(() => createTestUnit('black', { attack: 999 })).toThrow(
+      'No unit found matching all specified stats: attack=999.',
+    );
+  });
+
+  it('given defaults, creates unit by multiple stat values including range', () => {
+    const unit = createTestUnit('black', { attack: 2, range: 1 });
+    expect(unit.unitType.stats.attack).toBe(2);
+    expect(unit.unitType.stats.range).toBe(1);
+  });
+
+  it('a unit can be asked for by the Morale its rout costs', () => {
+    // Morale sits on the unit type, not among its stats (§9.3).
+    const unit = createTestUnit('white', { morale: 0 });
+    expect(unit.unitType.morale).toBe(0);
+  });
+
+  it('a Morale no catalog unit has is refused like any other value', () => {
+    expect(() => createTestUnit('black', { morale: 99 })).toThrow(
+      'No unit found matching all specified stats: morale=99.',
+    );
+  });
+});

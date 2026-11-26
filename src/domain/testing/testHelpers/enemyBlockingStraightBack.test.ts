@@ -1,4 +1,4 @@
-import { createUnitWithPlacement } from './unitWithPlacement';
+import { createUnitWithPlacement } from './createUnitWithPlacement';
 import { enemyBlockingStraightBack } from './enemyBlockingStraightBack';
 
 /**

@@ -2,8 +2,8 @@ import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import { updatePhaseState, updateRoutState } from '@transforms';
 
-import { createCleanupPhaseStateWithRallyRout } from './phaseStateHelpers/phaseStates';
-import { createRoutState } from './phaseStateHelpers/substepStates';
+import { createCleanupPhaseStateWithRallyRout } from './phaseStateHelpers/cleanupPhaseStateWithRallyRout';
+import { createRoutState } from './phaseStateHelpers/routState';
 import { createTestUnit } from './unitHelpers';
 
 /**

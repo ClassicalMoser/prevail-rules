@@ -2,7 +2,7 @@ import type { CommandCard, PlayerSide } from '@entities';
 import type { AuthoritativeGameState } from '@game';
 import type { UnitPlacementSpec } from '../bootstrapGameState/unitPlacementSpec';
 import { createGameState } from '@testing/bootstrapGameState';
-import { getCardsByCount } from '../testHelpers/cardHelpers';
+import { getCardsByCount } from '@testing/testHelpers';
 import { updatePlayerCardState } from '@transforms';
 
 /**

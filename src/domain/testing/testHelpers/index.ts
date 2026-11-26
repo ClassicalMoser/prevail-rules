@@ -1,14 +1,13 @@
-export type { CreateTestCardOptions } from './cardHelpers';
-export {
-  createTestCard,
-  createTestCommand,
-  getCards,
-  getCardsByCount,
-} from './cardHelpers';
+export type { CreateTestCardOptions } from './createTestCard';
+export { createTestCard } from './createTestCard';
+export { createTestCommand } from './createTestCommand';
+export { getCards } from './getCards';
+export { getCardsByCount } from './getCardsByCount';
 export { enemyBlockingStraightBack } from './enemyBlockingStraightBack';
 export { enemyCuttingOffRetreat } from './enemyCuttingOffRetreat';
 export { hasMove } from './hasMove';
 export { legalRetreatsOf } from './legalRetreatsOf';
 export { coordinatesOfSegment } from './lineCoordinates';
 export { updateCardState } from './updateCardState';
-export { createUnitWithPlacement, placed } from './unitWithPlacement';
+export { createUnitWithPlacement } from './createUnitWithPlacement';
+export { placed } from './placed';

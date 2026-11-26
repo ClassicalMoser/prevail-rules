@@ -1,7 +1,7 @@
 import type { UnitWithPlacement } from '@entities';
 import { createEmptyGameState } from '@factories';
 import { getOtherPlayer, findRearwardSpace } from '@queries';
-import { createUnitWithPlacement } from './unitWithPlacement';
+import { createUnitWithPlacement } from './createUnitWithPlacement';
 
 /**
  * An enemy standing directly behind a unit and facing it: the one thing

@@ -1,7 +1,7 @@
 import type { UnitInstance } from '@entities';
 import type { AuthoritativeGameState } from '@game';
 import { createIssueCommandsPhaseState } from '@testing/phaseStateHelpers';
-import { createTestCard } from '../testHelpers/cardHelpers';
+import { createTestCard } from '@testing/testHelpers';
 import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 /**

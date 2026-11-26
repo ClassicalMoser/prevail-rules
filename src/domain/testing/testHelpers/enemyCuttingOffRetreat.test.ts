@@ -1,4 +1,4 @@
-import { createUnitWithPlacement } from './unitWithPlacement';
+import { createUnitWithPlacement } from './createUnitWithPlacement';
 import { enemyCuttingOffRetreat } from './enemyCuttingOffRetreat';
 
 /** The enemy that cuts a unit's retreat stands right behind it, facing it (§9.1.5). */

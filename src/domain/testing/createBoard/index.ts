@@ -3,9 +3,7 @@ export { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 export { createBoardWithFacingRow } from './boardWithFacingRow';
 export { createBoardWithSingleUnit } from './boardWithSingleUnit';
 export { createBoardWithUnits } from './boardWithUnits';
-export {
-  createGameStateWithBoard,
-  createGameStateWithEngagedUnits,
-  createGameStateWithSingleUnit,
-  createGameStateWithUnits,
-} from './gameStateForBoard';
+export { createGameStateWithBoard } from './gameStateWithBoard';
+export { createGameStateWithEngagedUnits } from './gameStateWithEngagedUnits';
+export { createGameStateWithSingleUnit } from './gameStateWithSingleUnit';
+export { createGameStateWithUnits } from './gameStateWithUnits';
