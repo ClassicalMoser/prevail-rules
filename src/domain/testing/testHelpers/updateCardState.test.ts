@@ -3,11 +3,9 @@ import { tempCommandCards } from '@sampleValues';
 import { updateCardState } from './updateCardState';
 
 import { createEmptyGameState } from '@factories';
-/**
- * UpdateCardState: Creates a new game state with the card state updated.
- */
+/** A game's whole card state swapped, for setup; production writes one player's cards at a time. */
 describe('updateCardState function', () => {
-  it('given update card state', () => {
+  it('puts the cards a spec sets out into the game, the rest kept', () => {
     const state = createEmptyGameState('standard');
 
     const newState = updateCardState(state, {
@@ -24,7 +22,7 @@ describe('updateCardState function', () => {
     expect(newState.cardState.white).toBe(state.cardState.white);
   });
 
-  it('given not mutate the original state', () => {
+  it('leaves the game it was given as it was', () => {
     const state = createEmptyGameState('standard');
     const originalCardState = state.cardState;
 

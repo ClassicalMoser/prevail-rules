@@ -1,10 +1,8 @@
 import { createNoneUnitPresence } from './createNoneUnitPresence';
 
-/**
- * CreateNoneUnitPresence: Creates a none unit presence for testing.
- */
+/** What a board space holds when no unit stands on it. */
 describe('createNoneUnitPresence function', () => {
-  it('given context, returns none presence', () => {
+  it('is an empty space, holding no unit', () => {
     const presence = createNoneUnitPresence();
     expect(presence.presenceType).toBe('none');
   });

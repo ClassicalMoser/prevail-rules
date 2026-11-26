@@ -1,37 +1,28 @@
+import { createUnitPlacement } from '@factories';
+
 import { hasMove } from './hasMove';
 
-/**
- * HasMove: whether any legal move ends on a coordinate (and optionally a
- * facing).
- */
+/** Whether a unit may end its move on a space, in a facing when one is named. */
 describe('hasMove function', () => {
-  it('given coordinate and facing match, returns true', () => {
-    const legalMoves = new Set([
-      { placement: { coordinate: 'E-5' as const, facing: 'north' as const } },
-      { placement: { coordinate: 'E-6' as const, facing: 'south' as const } },
-    ]);
-    expect(hasMove(legalMoves, 'E-5', 'north')).toBe(true);
-    expect(hasMove(legalMoves, 'E-6', 'south')).toBe(true);
+  // A unit's legal endings: on E-5 facing north, and on E-6 facing south.
+  const endings = new Set([
+    { placement: createUnitPlacement('E-5', 'north') },
+    { placement: createUnitPlacement('E-6', 'south') },
+  ]);
+
+  it('finds a move ending on that space in that facing', () => {
+    expect(hasMove(endings, 'E-6', 'south')).toBe(true);
   });
 
-  it('given coordinate matches and facing not specified, returns true', () => {
-    const legalMoves = new Set([
-      { placement: { coordinate: 'E-5' as const, facing: 'north' as const } },
-    ]);
-    expect(hasMove(legalMoves, 'E-5')).toBe(true);
+  it('finds a move ending on that space in any facing when none is named', () => {
+    expect(hasMove(endings, 'E-5')).toBe(true);
   });
 
-  it('given coordinate not in moves, returns false', () => {
-    const legalMoves = new Set([
-      { placement: { coordinate: 'E-5' as const, facing: 'north' as const } },
-    ]);
-    expect(hasMove(legalMoves, 'E-6')).toBe(false);
+  it('finds no move ending on a space none reaches', () => {
+    expect(hasMove(endings, 'E-7')).toBe(false);
   });
 
-  it('given facing does not match, returns false', () => {
-    const legalMoves = new Set([
-      { placement: { coordinate: 'E-5' as const, facing: 'north' as const } },
-    ]);
-    expect(hasMove(legalMoves, 'E-5', 'south')).toBe(false);
+  it('finds no move ending on the space in another facing', () => {
+    expect(hasMove(endings, 'E-5', 'south')).toBe(false);
   });
 });

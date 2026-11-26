@@ -1,11 +1,15 @@
 import { MOVE_COMMANDERS_PHASE } from '@game';
+
 import { createMoveCommandersPhaseState } from './moveCommandersPhaseState';
 
+/** Phase 2 as it opens, on the first player's commander (§4.2.1). */
 describe('createMoveCommandersPhaseState function', () => {
-  it('given context, returns move commanders phase with default step', () => {
-    expect.hasAssertions();
-    const state = createMoveCommandersPhaseState();
-    expect(state.phase).toBe(MOVE_COMMANDERS_PHASE);
-    expect(state.step).toBe('moveFirstCommander');
+  it('opens Phase 2 on the first player’s commander', () => {
+    const phase = createMoveCommandersPhaseState();
+
+    expect(phase).toStrictEqual({
+      phase: MOVE_COMMANDERS_PHASE,
+      step: 'moveFirstCommander',
+    });
   });
 });

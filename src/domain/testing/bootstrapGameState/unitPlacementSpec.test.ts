@@ -7,14 +7,16 @@ import {
 } from './unitPlacementSpec';
 
 /**
- * GetExplicitInstanceNumber: Short-hand unit placement specification for bootstrapping test scenarios.
+ * A spec's shorthand for where a unit stands is read here: whether it gave a
+ * number by hand, the whole unit it stands for, and the number each unit
+ * carries.
  */
 describe('getExplicitInstanceNumber function', () => {
-  it('given tuple spec, returns undefined', () => {
+  it('finds no hand-given number in a tuple', () => {
     expect(getExplicitInstanceNumber(['E-5', 'black'])).toBeUndefined();
   });
 
-  it('given provided, returns instanceNumber for object spec', () => {
+  it('finds the number an object gives', () => {
     expect(
       getExplicitInstanceNumber({
         coord: 'E-5',
@@ -24,7 +26,7 @@ describe('getExplicitInstanceNumber function', () => {
     ).toBe(5);
   });
 
-  it('given object spec without instanceNumber, returns undefined', () => {
+  it('finds no number in an object that gives none', () => {
     expect(
       getExplicitInstanceNumber({ coord: 'E-5', player: 'black' }),
     ).toBeUndefined();
@@ -32,7 +34,7 @@ describe('getExplicitInstanceNumber function', () => {
 });
 
 describe('normalizeUnitPlacement function', () => {
-  it('given normalize tuple syntax with default facing', () => {
+  it('stands a tuple’s unit on its space for its side, facing north, with the number counted', () => {
     const result = normalizeUnitPlacement(['E-5', 'black'], 1);
     expect(result.placement.coordinate).toBe('E-5');
     expect(result.placement.facing).toBe('north');
@@ -40,12 +42,12 @@ describe('normalizeUnitPlacement function', () => {
     expect(result.unit.instanceNumber).toBe(1);
   });
 
-  it('given normalize tuple syntax with explicit facing', () => {
+  it('turns a tuple’s unit the way its third entry says', () => {
     const result = normalizeUnitPlacement(['E-5', 'white', 'south'], 1);
     expect(result.placement.facing).toBe('south');
   });
 
-  it('given normalize object syntax with unit options', () => {
+  it('chooses an object’s unit by the stats it asks for', () => {
     const result = normalizeUnitPlacement(
       { attack: 3, coord: 'E-6', player: 'white' },
       1,
@@ -54,7 +56,7 @@ describe('normalizeUnitPlacement function', () => {
     expect(result.unit.unitType.stats.attack).toBe(3);
   });
 
-  it('given use explicit instance number from object spec', () => {
+  it('lets an object’s own number win over the one counted', () => {
     const result = normalizeUnitPlacement(
       { coord: 'E-5', instanceNumber: 12, player: 'black' },
       1,
@@ -64,7 +66,7 @@ describe('normalizeUnitPlacement function', () => {
 });
 
 describe('assignInstanceNumbers function', () => {
-  it('given auto-assign sequential numbers when not specified', () => {
+  it('counts a side’s units 1, 2 in the order listed', () => {
     const result = assignInstanceNumbers([
       ['E-5', 'black'],
       ['E-6', 'black'],
@@ -73,7 +75,7 @@ describe('assignInstanceNumbers function', () => {
     expect(result[1].instanceNumber).toBe(2);
   });
 
-  it('given preserve explicit instance numbers', () => {
+  it('keeps the numbers given by hand', () => {
     const result = assignInstanceNumbers([
       { coord: 'E-5', instanceNumber: 5, player: 'black' },
       { coord: 'E-6', instanceNumber: 10, player: 'white' },
@@ -82,7 +84,7 @@ describe('assignInstanceNumbers function', () => {
     expect(result[1].instanceNumber).toBe(10);
   });
 
-  it('given allow duplicate explicit numbers', () => {
+  it('lets each side have its own unit numbered 1', () => {
     const result = assignInstanceNumbers([
       { coord: 'E-5', instanceNumber: 1, player: 'black' },
       { coord: 'E-6', instanceNumber: 1, player: 'white' },
@@ -91,7 +93,7 @@ describe('assignInstanceNumbers function', () => {
     expect(result[1].instanceNumber).toBe(1);
   });
 
-  it('given continue auto-assign after explicit', () => {
+  it('counts on past a number given by hand', () => {
     const result = assignInstanceNumbers([
       ['E-5', 'black'],
       { coord: 'E-6', instanceNumber: 12, player: 'white' },

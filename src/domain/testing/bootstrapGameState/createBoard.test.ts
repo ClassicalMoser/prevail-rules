@@ -1,32 +1,42 @@
 import { findPlayerUnitWithPosition } from '@queries';
 import { createBoard } from './createBoard';
 
+/** The board half of `createGameState`: the units a spec lists, on a standard board. */
 describe('createBoard function', () => {
-  it('given defaults, creates a board with units using tuple syntax', () => {
+  it('stands each listed unit on its space on a standard board', () => {
     const board = createBoard([
       ['E-5', 'black'],
-      ['E-6', 'white'],
+      { coord: 'E-6', facing: 'south', player: 'white' },
     ]);
+
     expect(board.boardType).toBe('standard');
-    const blackUnit = findPlayerUnitWithPosition(board, 'E-5', 'black');
-    const whiteUnit = findPlayerUnitWithPosition(board, 'E-6', 'white');
-    expect(blackUnit).toBeDefined();
-    expect(whiteUnit).toBeDefined();
+    expect(
+      findPlayerUnitWithPosition(board, 'E-5', 'black')?.placement,
+    ).toStrictEqual({ coordinate: 'E-5', facing: 'north' });
+    expect(
+      findPlayerUnitWithPosition(board, 'E-6', 'white')?.placement,
+    ).toStrictEqual({ coordinate: 'E-6', facing: 'south' });
   });
 
-  it('given defaults, creates a board with units using object syntax', () => {
+  it('chooses an object’s unit by the stats it asks for', () => {
     const board = createBoard([
-      { attack: 3, coord: 'E-5', player: 'black' },
       { coord: 'E-6', flexibility: 2, player: 'white' },
     ]);
-    const blackUnit = findPlayerUnitWithPosition(board, 'E-5', 'black');
-    const whiteUnit = findPlayerUnitWithPosition(board, 'E-6', 'white');
-    expect(blackUnit).toBeDefined();
-    expect(whiteUnit).toBeDefined();
+
+    expect(
+      findPlayerUnitWithPosition(board, 'E-6', 'white')?.unit.unitType.stats
+        .flexibility,
+    ).toBe(2);
   });
 
-  it('given no units provided, creates an empty board', () => {
+  it('with no units, is an empty standard board', () => {
     const board = createBoard([]);
+
     expect(board.boardType).toBe('standard');
+    expect(
+      Object.values(board.board).every(
+        (space) => space?.unitPresence.presenceType === 'none',
+      ),
+    ).toBe(true);
   });
 });

@@ -1,17 +1,41 @@
 import { createEmptyGameState } from '@factories';
+import { createTestCard } from '@testing/testHelpers';
+import { updatePlayerCardState } from '@transforms';
+
 import { createMovementResolutionState } from './movementResolutionState';
 
-/**
- * CreateMovementResolutionState: Creates a MovementResolutionState with sensible defaults.
- */
+/** Black's move under way, its commitment made and no enemy met yet. */
 describe('createMovementResolutionState function', () => {
-  it('given context, returns movement command resolution with unit and commitment', () => {
-    const state = createEmptyGameState('standard');
-    const resolution = createMovementResolutionState(state);
+  it('moves a Black unit toward E-6 facing north, having met nobody', () => {
+    const resolution = createMovementResolutionState(
+      createEmptyGameState('standard'),
+    );
+
     expect(resolution.commandResolutionType).toBe('movement');
-    expect(resolution.substepType).toBe('commandResolution');
     expect(resolution.movingUnit.playerSide).toBe('black');
-    expect(resolution.commitment.commitmentType).toBe('completed');
+    expect(resolution.targetPlacement).toStrictEqual({
+      coordinate: 'E-6',
+      facing: 'north',
+    });
+    expect(resolution.engagementState).toBe('pending');
+    expect(resolution.moveCommander).toBe(false);
     expect(resolution.completed).toBe(false);
+  });
+
+  it('records the commitment as made with Black’s card in play', () => {
+    // Black has a card in play this round.
+    const card = createTestCard();
+    const base = createEmptyGameState('standard');
+    const state = updatePlayerCardState(base, 'black', {
+      ...base.cardState.black,
+      inPlay: card,
+    });
+
+    const resolution = createMovementResolutionState(state);
+
+    expect(resolution.commitment).toStrictEqual({
+      card,
+      commitmentType: 'completed',
+    });
   });
 });

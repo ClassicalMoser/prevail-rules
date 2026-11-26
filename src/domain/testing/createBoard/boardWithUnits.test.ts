@@ -4,26 +4,31 @@ import { createTestUnit } from '@testing/unitHelpers';
 
 import { createBoardWithUnits } from './boardWithUnits';
 
-/**
- * CreateBoardWithUnits: Creates a board with units at specified positions.
- */
+/** Units set down one at a time on a standard board, by the board's own writer. */
 describe('createBoardWithUnits function', () => {
-  it('given place multiple units on board', () => {
-    const unit1 = createTestUnit('black');
-    const unit2 = createTestUnit('white');
+  it('stands each unit where its placement says', () => {
+    const black = createTestUnit('black');
+    const white = createTestUnit('white');
+
     const board = createBoardWithUnits([
-      placed(unit1, 'E-5', 'north'),
-      placed(unit2, 'E-6', 'south'),
+      placed(black, 'E-5', 'north'),
+      placed(white, 'E-6', 'south'),
     ]);
+
     expect(board.boardType).toBe('standard');
-    const atE5 = findPlayerUnitWithPosition(board, 'E-5', 'black');
-    const atE6 = findPlayerUnitWithPosition(board, 'E-6', 'white');
-    expect(atE5?.unit).toBe(unit1);
-    expect(atE6?.unit).toBe(unit2);
+    expect(findPlayerUnitWithPosition(board, 'E-5', 'black')?.unit).toBe(black);
+    expect(findPlayerUnitWithPosition(board, 'E-6', 'white')?.unit).toBe(white);
   });
 
-  it('given no units, returns empty board', () => {
-    const board = createBoardWithUnits([]);
-    expect(board.boardType).toBe('standard');
+  it('engages two enemy units given the same space', () => {
+    const black = createTestUnit('black');
+    const white = createTestUnit('white');
+
+    const board = createBoardWithUnits([
+      placed(black, 'E-5', 'north'),
+      placed(white, 'E-5', 'south'),
+    ]);
+
+    expect(board.board['E-5']?.unitPresence.presenceType).toBe('engaged');
   });
 });

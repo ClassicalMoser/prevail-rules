@@ -1,15 +1,36 @@
 import { ISSUE_COMMANDS_PHASE } from '@game';
-import { createIssueCommandsPhaseState } from './issueCommandsPhaseState';
 import { createEmptyGameState } from '@factories';
+import { createTestUnit } from '@testing/unitHelpers';
 
+import { createIssueCommandsPhaseState } from './issueCommandsPhaseState';
+
+/** Phase 3 on the first player carrying out its orders, before the second issues any (§4.3). */
 describe('createIssueCommandsPhaseState function', () => {
-  it('given context, returns issue commands phase with no units left to act', () => {
-    expect.hasAssertions();
-    const gameState = createEmptyGameState('standard');
-    const state = createIssueCommandsPhaseState(gameState);
-    expect(state.phase).toBe(ISSUE_COMMANDS_PHASE);
-    expect(state.step).toBe('firstPlayerResolveCommands');
-    expect(state.remainingUnitsFirstPlayer).toHaveLength(0);
-    expect(state.currentCommandResolutionState).toBe('pending');
+  it('opens on the first player’s orders, nobody waiting and no order under way', () => {
+    const phase = createIssueCommandsPhaseState(
+      createEmptyGameState('standard'),
+    );
+
+    expect(phase).toStrictEqual({
+      currentCommandResolutionState: 'pending',
+      phase: ISSUE_COMMANDS_PHASE,
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
+      step: 'firstPlayerResolveCommands',
+    });
+  });
+
+  it('carries the units a spec says are still to act', () => {
+    // Black's unit has an order and has not yet moved.
+    const waiting = createTestUnit('black');
+
+    const phase = createIssueCommandsPhaseState(
+      createEmptyGameState('standard'),
+      {
+        remainingUnitsFirstPlayer: [waiting],
+      },
+    );
+
+    expect(phase.remainingUnitsFirstPlayer).toStrictEqual([waiting]);
   });
 });

@@ -1,26 +1,34 @@
 import { createTestUnit } from '@testing/unitHelpers';
+
 import { createAttackApplyStateWithNothingDue } from './attackApplyStateWithNothingDue';
 
-/**
- * CreateAttackApplyState: Creates an AttackApplyState with sensible defaults.
- */
+/** A blow that reached no threshold leaves the defender as it stood (§7.5.1). */
 describe('createAttackApplyStateWithNothingDue function', () => {
-  it('given context, returns attackApply substep with defending unit and default result', () => {
+  it('owes no retreat, reverse or rout', () => {
     const unit = createTestUnit('black');
-    const state = createAttackApplyStateWithNothingDue(unit);
-    expect(state.substepType).toBe('attackApply');
-    expect(state.defendingUnit).toBe(unit);
-    expect(state.attackResult.unitRouted).toBe(false);
-    expect(state.attackResult.unitRetreated).toBe(false);
-    expect(state.attackResult.unitReversed).toBe(false);
-    expect(state.completed).toBe(false);
+
+    const apply = createAttackApplyStateWithNothingDue(unit);
+
+    expect(apply.defendingUnit).toBe(unit);
+    expect(apply.attackResult).toStrictEqual({
+      unitRetreated: false,
+      unitReversed: false,
+      unitRouted: false,
+    });
+    expect(apply.retreatState).toBe('bypassed');
+    expect(apply.reverseState).toBe('bypassed');
+    expect(apply.routState).toBe('bypassed');
+    expect(apply.completed).toBe(false);
   });
 
-  it('given accept overrides', () => {
-    const unit = createTestUnit('white');
-    const state = createAttackApplyStateWithNothingDue(unit, {
-      completed: true,
-    });
-    expect(state.completed).toBe(true);
+  it('takes the fields a spec overrides', () => {
+    const apply = createAttackApplyStateWithNothingDue(
+      createTestUnit('white'),
+      {
+        completed: true,
+      },
+    );
+
+    expect(apply.completed).toBe(true);
   });
 });

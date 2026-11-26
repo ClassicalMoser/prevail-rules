@@ -1,14 +1,21 @@
 import { PLAY_CARDS_PHASE } from '@game';
+
 import { createPlayCardsPhaseState } from './playCardsPhaseState';
 
-/**
- * CreatePlayCardsPhaseState: Creates a PlayCardsPhaseState with sensible defaults.
- */
+/** Phase 1 as it opens, both players about to choose a card face down (§4.1.1). */
 describe('createPlayCardsPhaseState function', () => {
-  it('given context, returns play cards phase with default step', () => {
-    expect.hasAssertions();
-    const state = createPlayCardsPhaseState();
-    expect(state.phase).toBe(PLAY_CARDS_PHASE);
-    expect(state.step).toBe('chooseCards');
+  it('opens Phase 1 on both players choosing their cards', () => {
+    const phase = createPlayCardsPhaseState();
+
+    expect(phase).toStrictEqual({
+      phase: PLAY_CARDS_PHASE,
+      step: 'chooseCards',
+    });
+  });
+
+  it('stands at the step a spec names', () => {
+    const phase = createPlayCardsPhaseState({ step: 'assignInitiative' });
+
+    expect(phase.step).toBe('assignInitiative');
   });
 });

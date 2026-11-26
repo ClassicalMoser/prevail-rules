@@ -1,16 +1,25 @@
 import { createFrontEngagementState } from './frontEngagementState';
 
-/**
- * CreateFrontEngagementState: Creates a front EngagementState with sensible defaults.
- */
+/** A defender met head on, its chance to fall back not yet offered (§6.3.2). */
 describe('createFrontEngagementState function', () => {
-  it('given context, returns engagement state with front resolution', () => {
-    const state = createFrontEngagementState();
-    expect(state.substepType).toBe('engagementResolution');
-    expect(state.engagementResolutionState.engagementType).toBe('front');
+  it('opens a front engagement with the defender’s commitment still to come', () => {
+    const engagement = createFrontEngagementState();
+
+    expect(engagement.substepType).toBe('engagementResolution');
+    expect(engagement.engagementResolutionState.engagementType).toBe('front');
     expect(
-      state.engagementResolutionState.defensiveCommitment.commitmentType,
+      engagement.engagementResolutionState.defensiveCommitment.commitmentType,
     ).toBe('pending');
-    expect(state.completed).toBe(false);
+    expect(engagement.completed).toBe(false);
+  });
+
+  it('records the defender’s choice a spec makes for it', () => {
+    const engagement = createFrontEngagementState({
+      defendingUnitRetreats: true,
+    });
+
+    expect(engagement.engagementResolutionState.defendingUnitRetreats).toBe(
+      true,
+    );
   });
 });

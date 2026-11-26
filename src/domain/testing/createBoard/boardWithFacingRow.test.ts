@@ -28,4 +28,19 @@ describe('createBoardWithFacingRow function', () => {
     expect(unitAt('E-5').placement.facing).toBe('east');
     expect(unitAt('E-5').unit.playerSide).toBe('white');
   });
+
+  it('numbers the row’s units 1, 2 along it, so no two share an identity', () => {
+    const { unitAt } = createBoardWithFacingRow({
+      coordinates: ['E-5', 'E-6'],
+    });
+
+    expect(unitAt('E-5').unit.instanceNumber).toBe(1);
+    expect(unitAt('E-6').unit.instanceNumber).toBe(2);
+  });
+
+  it('refuses to name a unit on a space the row does not hold', () => {
+    const { unitAt } = createBoardWithFacingRow({ coordinates: ['E-5'] });
+
+    expect(() => unitAt('E-6')).toThrow('Expected a unit at E-6');
+  });
 });

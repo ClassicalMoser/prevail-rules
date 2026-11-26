@@ -1,28 +1,23 @@
 import { getUnitByStatValue } from './getUnitByStatValue';
 
-/**
- * GetUnitByStatValue: Finds a unit type by matching a specific stat value.
- */
+/** A stand-in unit type reached by the one stat a spec needs. */
 describe('getUnitByStatValue function', () => {
-  it('given context, returns unit type matching attack value', () => {
+  it('finds a stand-in by its Attack', () => {
     const unitType = getUnitByStatValue('attack', 3);
-    expect(unitType).toBeDefined();
     expect(unitType.stats.attack).toBe(3);
   });
 
-  it('given context, returns unit type matching flexibility value', () => {
+  it('finds a stand-in by its Flexibility', () => {
     const unitType = getUnitByStatValue('flexibility', 2);
-    expect(unitType).toBeDefined();
     expect(unitType.stats.flexibility).toBe(2);
   });
 
-  it('given context, returns unit type matching speed value', () => {
+  it('finds a stand-in by its Speed', () => {
     const unitType = getUnitByStatValue('speed', 3);
-    expect(unitType).toBeDefined();
     expect(unitType.stats.speed).toBe(3);
   });
 
-  it('given when no unit has the given stat value, throws', () => {
+  it('refuses a value no stand-in has, naming it', () => {
     expect(() => getUnitByStatValue('attack', 999)).toThrow(
       'No unit found with attack value 999.',
     );

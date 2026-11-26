@@ -1,41 +1,39 @@
 import { tempUnits } from '@sampleValues';
 import { createTestUnit } from './createTestUnit';
 
-/**
- * CreateTestUnit: Creates a unit instance for testing with sensible defaults.
- */
+/** A stand-in unit, chosen by type or by the stats a spec asks for. */
 describe('createTestUnit function', () => {
-  it('given no options, creates unit with default attack 3', () => {
+  it('deals the side the first stand-in of Attack 3 when asked for nothing', () => {
     const unit = createTestUnit('black');
     expect(unit.playerSide).toBe('black');
     expect(unit.instanceNumber).toBe(1);
     expect(unit.unitType.stats.attack).toBe(3);
   });
 
-  it('given use custom instance number', () => {
+  it('numbers the unit as a spec asks', () => {
     const unit = createTestUnit('white', { instanceNumber: 5 });
     expect(unit.instanceNumber).toBe(5);
   });
 
-  it('given provided, creates unit from unitType', () => {
+  it('takes a unit type the spec names outright', () => {
     const unitType = tempUnits[0];
     const unit = createTestUnit('black', { unitType });
     expect(unit.unitType).toBe(unitType);
     expect(unit.playerSide).toBe('black');
   });
 
-  it('given defaults, creates unit by stat value', () => {
+  it('chooses the unit by a stat a spec asks for', () => {
     const unit = createTestUnit('white', { attack: 2 });
     expect(unit.unitType.stats.attack).toBe(2);
   });
 
-  it('given when no unit matches specified stats, throws', () => {
+  it('refuses a stat value no stand-in has, naming it', () => {
     expect(() => createTestUnit('black', { attack: 999 })).toThrow(
       'No unit found matching all specified stats: attack=999.',
     );
   });
 
-  it('given defaults, creates unit by multiple stat values including range', () => {
+  it('chooses a unit that has every stat value asked for', () => {
     const unit = createTestUnit('black', { attack: 2, range: 1 });
     expect(unit.unitType.stats.attack).toBe(2);
     expect(unit.unitType.stats.range).toBe(1);

@@ -1,15 +1,17 @@
 import { findPlayerUnitWithPosition } from '@queries';
+
 import { createGameStateWithSingleUnit } from './gameStateWithSingleUnit';
 
-/**
- * CreateGameStateWithSingleUnit: Creates a game state with a single unit at a coordinate.
- */
+/** A new standard game with one unit on its board, chosen as `createBoardWithSingleUnit` chooses it. */
 describe('createGameStateWithSingleUnit function', () => {
-  it('given context, returns game state with single unit on board', () => {
-    const state = createGameStateWithSingleUnit('E-5', 'black');
+  it('stands the one unit on its space in a new standard game', () => {
+    const state = createGameStateWithSingleUnit('E-5', 'black', {
+      facing: 'east',
+    });
+
     expect(state.boardState.boardType).toBe('standard');
     expect(
-      findPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),
-    ).toBeDefined();
+      findPlayerUnitWithPosition(state.boardState, 'E-5', 'black')?.placement,
+    ).toStrictEqual({ coordinate: 'E-5', facing: 'east' });
   });
 });

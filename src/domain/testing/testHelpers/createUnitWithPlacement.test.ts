@@ -1,17 +1,15 @@
 import { createUnitWithPlacement } from './createUnitWithPlacement';
 
-/**
- * CreateUnitWithPlacement: Creates a UnitWithPlacement for testing with sensible defaults.
- */
+/** A stand-in unit with where it stands, for a spec to put on a board. */
 describe('createUnitWithPlacement function', () => {
-  it('given no options, returns unit with default placement', () => {
+  it('stands a Black stand-in on E-5 facing north when asked for nothing', () => {
     const result = createUnitWithPlacement();
     expect(result.placement.coordinate).toBe('E-5');
     expect(result.placement.facing).toBe('north');
     expect(result.unit.playerSide).toBe('black');
   });
 
-  it('given use provided coordinate, facing, and playerSide', () => {
+  it('stands the unit of the side asked for where it is asked', () => {
     const result = createUnitWithPlacement({
       coordinate: 'D-4',
       facing: 'south',
@@ -22,7 +20,7 @@ describe('createUnitWithPlacement function', () => {
     expect(result.unit.playerSide).toBe('white');
   });
 
-  it('given pass unitOptions to createTestUnit', () => {
+  it('chooses the unit by the stats and number a spec asks for', () => {
     const result = createUnitWithPlacement({
       playerSide: 'black',
       unitOptions: { attack: 2, instanceNumber: 2 },

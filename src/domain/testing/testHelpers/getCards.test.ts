@@ -1,45 +1,26 @@
 import { tempCommandCards } from '@sampleValues';
+
 import { getCards } from './getCards';
 
-/**
- * GetCards: Gets cards from the tempCommandCards array by their indices.
- */
+/** Stand-in cards from the catalog, named by their place in it. */
 describe('getCards function', () => {
-  it('given context, returns cards at specified indices', () => {
-    const cards = getCards(0, 1, 2);
+  it('deals the catalog’s own cards in the order asked', () => {
+    const cards = getCards(2, 0);
 
-    expect(cards).toHaveLength(3);
-    expect(cards[0]).toBe(tempCommandCards[0]);
-    expect(cards[1]).toBe(tempCommandCards[1]);
-    expect(cards[2]).toBe(tempCommandCards[2]);
+    expect(cards).toStrictEqual([tempCommandCards[2], tempCommandCards[0]]);
   });
 
-  it('given no indices provided, returns empty array', () => {
-    const cards = getCards();
-
-    expect(cards).toStrictEqual([]);
+  it('deals nothing when asked for nothing', () => {
+    expect(getCards()).toStrictEqual([]);
   });
 
-  it('given one index provided, returns single card', () => {
-    const cards = getCards(0);
-
-    expect(cards).toHaveLength(1);
-    expect(cards[0]).toBe(tempCommandCards[0]);
-  });
-
-  it('given error when index is out of bounds (negative), throws', () => {
+  it('refuses a place before the first card', () => {
     expect(() => getCards(-1)).toThrow(
       'Command card index -1 is out of bounds',
     );
   });
 
-  it('given error when index is out of bounds (too large), throws', () => {
-    expect(() => getCards(tempCommandCards.length)).toThrow(
-      `Command card index ${tempCommandCards.length} is out of bounds`,
-    );
-  });
-
-  it('given error when any index is out of bounds, throws', () => {
+  it('refuses a place past the last card, wherever it comes in the list', () => {
     expect(() => getCards(0, 1, tempCommandCards.length)).toThrow(
       `Command card index ${tempCommandCards.length} is out of bounds`,
     );

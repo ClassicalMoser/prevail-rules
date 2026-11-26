@@ -2,19 +2,38 @@ import { createTestUnit } from '@testing/unitHelpers';
 
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 
-/**
- * CreateBoardWithEngagedUnits: Creates a board with engaged units at a coordinate.
- */
+/** Two enemy units sharing one space, squared up, as a move into an enemy leaves them (§6.1.1). */
 describe('createBoardWithEngagedUnits function', () => {
-  it('given defaults, creates board with engaged presence at default coord', () => {
+  it('locks the two units in E-5, the primary facing north and the secondary south', () => {
     const primary = createTestUnit('black');
     const secondary = createTestUnit('white');
+
     const board = createBoardWithEngagedUnits(primary, secondary);
-    const space = board.board['E-5'];
-    expect(space?.unitPresence.presenceType).toBe('engaged');
-    if (space?.unitPresence.presenceType === 'engaged') {
-      expect(space.unitPresence.primaryUnit).toBe(primary);
-      expect(space.unitPresence.secondaryUnit).toBe(secondary);
-    }
+
+    expect(board.board['E-5']?.unitPresence).toStrictEqual({
+      presenceType: 'engaged',
+      primaryFacing: 'north',
+      primaryUnit: primary,
+      secondaryUnit: secondary,
+    });
+  });
+
+  it('engages them on the space and facing a spec names', () => {
+    const primary = createTestUnit('black');
+    const secondary = createTestUnit('white');
+
+    const board = createBoardWithEngagedUnits(
+      primary,
+      secondary,
+      'D-4',
+      'east',
+    );
+
+    expect(board.board['D-4']?.unitPresence).toStrictEqual({
+      presenceType: 'engaged',
+      primaryFacing: 'east',
+      primaryUnit: primary,
+      secondaryUnit: secondary,
+    });
   });
 });

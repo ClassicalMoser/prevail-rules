@@ -1,17 +1,24 @@
-import { isOpenSubstep } from '@queries';
 import { createUnitWithPlacement, legalRetreatsOf } from '@testing/testHelpers';
+
 import { createAttackApplyStateWithRetreat } from './attackApplyStateWithRetreat';
 
+/** A blow that reached Retreat alone: the retreat is open, the rest bypassed. */
 describe('createAttackApplyStateWithRetreat function', () => {
-  it('given context, returns state with retreat result and retreatState', () => {
+  it('opens the retreat with the paths the engine offered', () => {
+    // A lone unit on E-5 facing north, open ground behind it.
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
-    const state = createAttackApplyStateWithRetreat(
+
+    const apply = createAttackApplyStateWithRetreat(
       unit.unit,
       legalRetreatsOf(unit),
     );
-    expect(state.attackResult.unitRetreated).toBe(true);
-    expect(
-      isOpenSubstep(state.retreatState) && state.retreatState.retreatingUnit,
-    ).toBe(unit.unit);
+
+    expect(apply.attackResult.unitRetreated).toBe(true);
+    expect(apply.retreatState).toMatchObject({
+      legalRetreatPaths: [['step']],
+      retreatingUnit: unit.unit,
+    });
+    expect(apply.reverseState).toBe('bypassed');
+    expect(apply.routState).toBe('bypassed');
   });
 });
