@@ -7,17 +7,21 @@ Folder names mirror **`applyEffects/`** and **`events/gameEffects/`** so the sam
 - **Replay**: Nondeterminism (e.g. dice, card choice) must live **on the event**, not only in procedure locals.
 - **Queries**: Prefer `@queries` / `getExpected*` (and shared helpers) over duplicating board scans or phase walks inline.
 
+## What a procedure reads
+
+- A procedure reads the state only for what its event records: a measurement, a draw, the retreats a unit may make.
+- An effect whose event carries nothing has a procedure that takes no state.
+- A procedure does not validate the state. The expected engine decides which effect is owed, and the apply narrows the state through the queries it reads, which throw where the effect cannot land.
+- A throw in a procedure is a narrowing (an empty played pile has no card to burn), not a check that the effect was owed.
+
 ## Entry points
 
-- **`procedureRegistry.ts`** — `generateEventFromProcedure(state, effectType)` dispatches to the right `generate*` function. This is the usual integration surface.
-  - TODO(misleading): the signature is now `generateEventFromProcedure(state, effectType, random)`; the `RandomSource` is passed through to the rally burn, the one procedure that draws.
-- **`index.ts`** — Public package surface: `generateEventFromProcedure` and `generateStartEngagementEvent` (cross-boundary consumers). Topic subfolder barrels still re-export every `generate*` for the registry and colocated tests; prefer the package barrel or the registry over deep imports from outside this package.
-  - TODO(misleading): the only importer of `generateStartEngagementEvent` outside this package is a spec, `applyMoveUnitEvent.test.ts`; no production code crosses the boundary for it.
+- **`procedureRegistry.ts`** — `generateEventFromProcedure(state, effectType, random)` dispatches to the right `generate*` function. This is the usual integration surface. The `RandomSource` is passed through to the rally burn, the one procedure that draws.
+- **`index.ts`** — Public package surface: `generateEventFromProcedure` and `generateStartEngagementEvent`. Topic subfolder barrels still re-export every `generate*` for the registry and colocated tests; prefer the package barrel or the registry over deep imports from outside this package. The only importer of `generateStartEngagementEvent` outside this package is a spec, `applyMoveUnitEvent.test.ts`; no production code crosses the boundary for it.
 
 ## Domain helpers (outside this folder)
 
-- **`modifiersFromCompletedCommitment`** — in **`@queries`** (`queries/modifiersFromCompletedCommitment.ts`). Used by `resolveAttack` and `movement` generators when passing optional card modifiers into stat queries.
-  - TODO(misleading): the module now lives at `queries/card/modifiersFromCompletedCommitment.ts`.
+- **`modifiersFromCompletedCommitment`** — in **`@queries`** (`queries/card/modifiersFromCompletedCommitment.ts`). Used by `resolveAttack` and `movement` generators when passing optional card modifiers into stat queries.
 
 ## Folder layout
 
@@ -35,8 +39,7 @@ Each subfolder has a small `index.ts` barrel. Co-locate each `generate*` with it
 
 - **How to write one:** [`STYLE.md`](../../../STYLE.md).
 - Every **`generate*.ts`** has a colocated **`generate*.test.ts`** (happy paths + important throws where applicable).
-- **`procedureRegistry.test.ts`** — smoke dispatch for state-independent effect types via `generateEventFromProcedure`.
-  - TODO(misleading): it now dispatches every game effect type, each from a state built for it by `procedureRegistryStateFactories` in `@testing`, and checks the event is the effect asked for.
+- **`procedureRegistry.test.ts`** — dispatches every game effect type, each from a state built for it by `procedureRegistryStateFactories` in `@testing`, and checks the event is the effect asked for.
 - Same Vitest coverage rules as the rest of `src/domain` ([`vitest.config.ts`](../../../vitest.config.ts) `include` / `exclude`).
 
 ## Related queries

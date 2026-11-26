@@ -24,7 +24,7 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 
 ## Trust model
 
-- **Procedure + log**: Legality and sequencing are enforced when generating events (`src/domain/procedures/`). Replayed events are trusted.
+- **Procedure + log**: The expected engine decides which effect is owed. The procedure measures or draws what the event records, and does not validate the state (`src/domain/procedures/`). Replayed events are trusted.
 - **Apply** maps **event payload + current state** to the next state. Avoid duplicating rule checks that the procedure already enforced.
 
 ## Throws
@@ -44,7 +44,8 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 ## Events
 
 - An apply reads only where the game is, which slot it writes, and what the state holds by identity (where a named unit stands). Anything a rule decides (legality, line membership, whether a move enters an enemy, stats, thresholds, dice) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), or, for a player choice, on the choice where validation checks it.
-- An apply does not decide what comes next. Whether units or orders are left, which step follows, and what a closed rout closes are the expected engine's to ask for.
+- An apply moves the game to the step its effect leaves it on. That changes where the game is now, not what it owes next.
+- An apply does not decide what is owed after it. Whether units or orders are left, and what a closed rout closes, are the expected engine's to ask for.
 - Which slot an effect writes to is the state's to say when the state already names it: an apply asks a `@queries` reader (`getRetreatAwaitingRout`, `getAttackApplyToClose`, `findRoutLocation`) rather than reading a context field off the event, so the event and the state cannot disagree.
 - Examples: `OpenRetreatFromAttackApplyEvent.retreatPaths` (what is legal), `ResolveMeleeEvent`'s attack results (a measurement), `ResolveRallyEvent`'s burnt card (a random draw).
 

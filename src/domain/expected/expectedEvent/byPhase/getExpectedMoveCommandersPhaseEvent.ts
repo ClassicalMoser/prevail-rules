@@ -16,11 +16,6 @@ function getExpectedCommanderTurnEvent(
   player: PlayerSide,
 ): ExpectedEventInfo {
   // A player whose commander has fallen has nothing to move (§4.2.8).
-  // TODO(composition): this read of `lostCommanders`, and the choice of whose
-  // turn a step is, are repeated in `generateSkipLostCommanderMoveEvent`.
-  // Settle with queries in `@queries` (whose commander moves on this step,
-  // as `getCommandingPlayer` answers for orders; whether a side's commander
-  // is lost) that both ask.
   if (state.lostCommanders.includes(player)) {
     const passOver: ExpectedEventInfo = {
       actionType: 'gameEffect',

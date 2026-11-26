@@ -68,7 +68,7 @@ export function generateEventFromProcedure(
     // Round 0 and every round close here, and the next begins with Phase 1
     // (§4.5.4).
     case 'roundEnd': {
-      const roundEnd = generateRoundEndEvent(state);
+      const roundEnd = generateRoundEndEvent();
       return roundEnd;
     }
 
@@ -88,21 +88,21 @@ export function generateEventFromProcedure(
 
     // Phase 1 ends and the commanders move (§4.2).
     case 'completePlayCardsPhase': {
-      const completePlayCardsPhase = generateCompletePlayCardsPhaseEvent(state);
+      const completePlayCardsPhase = generateCompletePlayCardsPhaseEvent();
       return completePlayCardsPhase;
     }
 
     // Phase 2: a player whose commander has fallen has nothing to move, so
     // their turn passes (§4.2.8).
     case 'skipLostCommanderMove': {
-      const skipLostCommanderMove = generateSkipLostCommanderMoveEvent(state);
+      const skipLostCommanderMove = generateSkipLostCommanderMoveEvent();
       return skipLostCommanderMove;
     }
 
     // Phase 2 ends and the orders begin, the first player first (§4.3).
     case 'completeMoveCommandersPhase': {
       const completeMoveCommandersPhase =
-        generateCompleteMoveCommandersPhaseEvent(state);
+        generateCompleteMoveCommandersPhaseEvent();
       return completeMoveCommandersPhase;
     }
 
@@ -145,7 +145,7 @@ export function generateEventFromProcedure(
 
     // A flank engagement turns the defender to face its attacker (§6.3.4).
     case 'resolveFlankEngagement': {
-      const resolveFlankEngagement = generateResolveFlankEngagementEvent(state);
+      const resolveFlankEngagement = generateResolveFlankEngagementEvent();
       return resolveFlankEngagement;
     }
 
@@ -193,18 +193,17 @@ export function generateEventFromProcedure(
     }
     case 'openReverseFromAttackApply': {
       const openReverseFromAttackApply =
-        generateOpenReverseFromAttackApplyEvent(state);
+        generateOpenReverseFromAttackApplyEvent();
       return openReverseFromAttackApply;
     }
     case 'openRoutFromAttackApply': {
-      const openRoutFromAttackApply =
-        generateOpenRoutFromAttackApplyEvent(state);
+      const openRoutFromAttackApply = generateOpenRoutFromAttackApplyEvent();
       return openRoutFromAttackApply;
     }
 
     // A unit that must retreat and has nowhere to go routs instead (§9.1.6).
     case 'triggerRoutFromRetreat': {
-      const triggerRoutFromRetreat = generateTriggerRoutFromRetreatEvent(state);
+      const triggerRoutFromRetreat = generateTriggerRoutFromRetreatEvent();
       return triggerRoutFromRetreat;
     }
 
@@ -230,7 +229,7 @@ export function generateEventFromProcedure(
     // Every stage an attack reached has been carried out, and its results
     // close (§7.5.2).
     case 'completeAttackApply': {
-      const completeAttackApply = generateCompleteAttackApplyEvent(state);
+      const completeAttackApply = generateCompleteAttackApplyEvent();
       return completeAttackApply;
     }
 
@@ -244,13 +243,13 @@ export function generateEventFromProcedure(
     // Phase 4 ends once no engagement is left, and Cleanup begins (§4.5).
     case 'completeResolveMeleePhase': {
       const completeResolveMeleePhase =
-        generateCompleteResolveMeleePhaseEvent(state);
+        generateCompleteResolveMeleePhaseEvent();
       return completeResolveMeleePhase;
     }
 
     // Phase 5: both cards in play go to the played piles (§4.5.1).
     case 'cardsLeavePlay': {
-      const cardsLeavePlay = generateCardsLeavePlayEvent(state);
+      const cardsLeavePlay = generateCardsLeavePlayEvent();
       return cardsLeavePlay;
     }
 

@@ -19,14 +19,6 @@ import { getBoardCoordinatesWithEngagedUnits } from '@queries';
 export function generateCompleteIssueCommandsPhaseEvent(
   state: GameState,
 ): CompleteIssueCommandsPhaseEvent {
-  // TODO(composition): the expected engine asks for this effect only once both
-  // players' orders are carried out (Issue Commands on its `complete` step),
-  // but asked anywhere else this still answers, against the rule in
-  // `DESIGN.md` that a function asked outside its gate throws.
-  // `generateCompleteMoveCommandersPhaseEvent` insists on its phase. Settle
-  // by reading the phase through `getIssueCommandsPhaseState` and refusing
-  // any step but `complete`, or by saying why this one need not.
-
   // Every engaged space fights in Phase 4, and no fight may be skipped
   // (§4.4.1). Orders are over, so no engagement can begin or end before
   // then: the spaces engaged now are the fights Phase 4 owes. The first

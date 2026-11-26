@@ -15,12 +15,9 @@ export function generateCompleteUnitMovementEvent(): CompleteUnitMovementEvent {
   // ended on open ground, or the engagement it walked into is set up (§6).
   // Either way the unit already stands where its move ends, which the board
   // holds, so the event records nothing.
-  // TODO(composition): this reads no state, so it cannot refuse while the
-  // move is unwritten or its engagement still open; only the expected
-  // engine's gate stands before it, and `applyCompleteUnitMovementEvent`
-  // checks the mover stands where its move ends. Settle by asking
-  // `getMovementResolutionState` here, or by stating that a state-free close
-  // is intended.
+  // It reads no state. The expected engine asks for it once the move is
+  // written and any engagement set up, and a procedure does not check the
+  // state it is given.
   const event: CompleteUnitMovementEvent = {
     effectType: COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,

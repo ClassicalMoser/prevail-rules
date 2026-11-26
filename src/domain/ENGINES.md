@@ -92,6 +92,11 @@ records the result.
 Procedures trust the state they are given as internally consistent. Validation
 happens before a choice is applied, not again here.
 
+A procedure reads the state only for what its event records. An effect whose
+event carries nothing has a procedure that takes no state. A procedure does not
+check that its effect is owed: the expected engine decides that, and the apply
+reads its slot through a query that throws where the effect cannot land.
+
 The event a procedure builds records what it measured or decided: an attack's
 result, the retreats a unit may make, a Morale penalty. It does not record which
 slot the effect writes to; the apply asks the state for that through the same

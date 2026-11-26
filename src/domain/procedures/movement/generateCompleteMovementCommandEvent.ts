@@ -16,11 +16,8 @@ export function generateCompleteMovementCommandEvent(): CompleteMovementCommandE
   // (§4.3.2). The expected engine decided that from the board; the units
   // left over are the ones still listed in the phase, so the event records
   // nothing.
-  // TODO(composition): this reads no state, so it cannot refuse while a unit
-  // of the order could still move; only the expected engine's gate stands
-  // before it. `generateCompleteRangedAttackCommandEvent` is the same.
-  // Settle by asking `getLegalMoveUnits` here and refusing while it lists
-  // anyone, or by stating that a state-free close is intended.
+  // It reads no state, and a procedure does not check the state it is
+  // given.
   const event: CompleteMovementCommandEvent = {
     effectType: COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,

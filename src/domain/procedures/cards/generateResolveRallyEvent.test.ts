@@ -1,5 +1,5 @@
 import type { CommandCard, PlayerSide } from '@entities';
-import type { AuthoritativeGameState, CleanupPhaseStep } from '@game';
+import type { AuthoritativeGameState } from '@game';
 import type { RandomSource } from '@utils';
 import {
   createEmptyGameState,
@@ -143,22 +143,6 @@ describe('generateResolveRallyEvent function', () => {
     // The rallying player is named.
     expect(() => generateResolveRallyEvent(state, fixedRandom(0))).toThrow(
       'Player black has no played cards to burn for rally',
-    );
-  });
-
-  it.each<CleanupPhaseStep>([
-    'firstPlayerChooseRally',
-    'secondPlayerChooseRally',
-  ])('throws when cleanup is still on %s', (step) => {
-    // The player is still deciding whether to rally, so nothing burns yet.
-    const state = updatePhaseState(
-      updateCurrentInitiative(createEmptyGameState('standard'), 'black'),
-      createCleanupPhaseState({ step }),
-    );
-
-    // The step is named.
-    expect(() => generateResolveRallyEvent(state, fixedRandom(0))).toThrow(
-      `Cleanup phase is not on a resolveRally step: ${step}`,
     );
   });
 });

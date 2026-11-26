@@ -2,7 +2,7 @@ import type { RandomSource } from '@utils';
 import type { ResolveRallyEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
-import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
+import { getRallyingPlayer } from '@queries';
 
 /**
  * Generates a ResolveRallyEvent by randomly selecting a card to burn.
@@ -16,14 +16,12 @@ import { getCleanupPhaseState, getRallyingPlayer } from '@queries';
  * @param random - The source of the draw that picks the burnt card
  * @returns A complete ResolveRallyEvent with the selected card
  * @throws Error if player has no played cards to burn
- * @throws Error if cleanup is not on a resolve-rally step
+ * @throws Error if cleanup is not on a rally step
  *
  * @example
  * ```typescript
- * // TODO(misleading): the call below omits the `random` argument the
- * // signature requires; settle by passing a source, as `generateEventFromProcedure` does.
  * // Generate event with random selection
- * const event = generateResolveRallyEvent(state);
+ * const event = generateResolveRallyEvent(state, random);
  *
  * // Apply to engine
  * const newState = applyEvent(event, state);
@@ -35,24 +33,6 @@ export function generateResolveRallyEvent(
   state: GameState,
   random: RandomSource,
 ): ResolveRallyEvent {
-  // Only a resolve step burns a card; choosing to rally burns nothing yet.
-  // TODO(composition): this step test repeats the one in
-  // `getCurrentRallyResolutionState`, with a different message, and does not
-  // check what the apply's `getRallyResolutionStateAwaitingBurn` checks (the
-  // player chose to rally, and has not burnt yet). ENGINES.md has the
-  // procedure and the apply read the slot through the same query. Settle by
-  // asking `getRallyResolutionStateAwaitingBurn` here; that adds throws and
-  // changes this message, so it is a behaviour change for the author.
-  const phaseState = getCleanupPhaseState(state);
-  if (
-    phaseState.step !== 'firstPlayerResolveRally' &&
-    phaseState.step !== 'secondPlayerResolveRally'
-  ) {
-    throw new Error(
-      `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
-    );
-  }
-
   // The first player rallies first, then the second (§10.3.1); the step says
   // whose rally this is.
   const rallyingPlayer = getRallyingPlayer(state);

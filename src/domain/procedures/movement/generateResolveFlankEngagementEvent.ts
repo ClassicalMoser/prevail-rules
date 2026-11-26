@@ -1,10 +1,8 @@
 import type { ResolveFlankEngagementEvent } from '@events';
-import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
 } from '@events';
-import { getFlankEngagementStateFromMovement } from '@queries';
 
 /**
  * Generates a ResolveFlankEngagementEvent once a move has engaged its
@@ -12,21 +10,9 @@ import { getFlankEngagementStateFromMovement } from '@queries';
  * attacker's move ends is the movement's record, the defender is the one unit
  * in that space, and setting the attacker down turns the defender to face it.
  *
- * The expected engine asks for it only during a flank engagement, so being
- * asked anywhere else is the caller's mistake and throws.
- *
- * @param state - The current game state
  * @returns A complete ResolveFlankEngagementEvent
- * @throws Error when no flank engagement is under way
  */
-export function generateResolveFlankEngagementEvent(
-  state: GameState,
-): ResolveFlankEngagementEvent {
-  // Only a flank engagement turns its defender.
-  // A front defender may fall back instead, and a rear one routs (§6.3.2,
-  // §6.3.3); asked during either, or with no engagement, the getter throws.
-  getFlankEngagementStateFromMovement(state);
-
+export function generateResolveFlankEngagementEvent(): ResolveFlankEngagementEvent {
   // The defender's new facing is directly opposite the engaging unit's
   // (§6.3.4), which the movement records, so nothing is recorded here.
   const event: ResolveFlankEngagementEvent = {

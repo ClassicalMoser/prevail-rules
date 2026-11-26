@@ -1,30 +1,17 @@
 import type { CompletePlayCardsPhaseEvent } from '@events';
-import type { GameState } from '@game';
 import {
   COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
 
 /**
- * Generates a CompletePlayCardsPhaseEvent to complete the play cards phase
- * and advance to move commanders phase.
+ * Generates a CompletePlayCardsPhaseEvent, ending Phase 1 and beginning
+ * Phase 2. Who holds the initiative, and each player's card in play, are
+ * the state's, so the event carries nothing.
  *
- * @param state - The current game state
  * @returns A complete CompletePlayCardsPhaseEvent
  */
-export function generateCompletePlayCardsPhaseEvent(
-  state: GameState,
-): CompletePlayCardsPhaseEvent {
-  // Return is independent of state, so we can ignore it
-  // TODO(composition): this takes the state only to ignore it, so asked
-  // outside Play Cards it still answers, where `DESIGN.md` has a function
-  // asked outside its gate throw. `generateCompleteMoveCommandersPhaseEvent`
-  // reads its phase to insist on it; `generateCompleteUnitMovementEvent`
-  // takes no state at all. Settle by reading the phase through
-  // `getPlayCardsPhaseState` and refusing any step but `complete`, or by
-  // dropping the parameter.
-  const _stateUnused = state;
-
+export function generateCompletePlayCardsPhaseEvent(): CompletePlayCardsPhaseEvent {
   // Both cards are face up and initiative is settled (§4.1.3, §4.1.4): who
   // holds it, and each player's card in play, are on the state, so nothing
   // is recorded. The commanders move next, the first player's first

@@ -1,35 +1,18 @@
 import type { TriggerRoutFromRetreatEvent } from '@events';
-import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
 } from '@events';
-import { getRetreatAwaitingRout, getCurrentPhaseState } from '@queries';
 
 /**
  * Builds the effect that turns a retreat with nowhere to go into a rout
  * (§9.1.6). The event carries nothing: applying it finds the retreat waiting
- * for its rout, as this does.
+ * for its rout (`getRetreatAwaitingRout`).
  *
- * @param state - A retreat with no legal path whose rout has not opened
  * @returns The event
- * @throws Error outside a shot, engagement or melee; or when no retreat is waiting to turn into a rout
  */
-export function generateTriggerRoutFromRetreatEvent(
-  state: GameState,
-): TriggerRoutFromRetreatEvent {
-  // A retreat can fall into a rout in a shot, engagement or melee only.
-  const phaseState = getCurrentPhaseState(state);
-  if (
-    phaseState.phase !== 'issueCommands' &&
-    phaseState.phase !== 'resolveMelee'
-  ) {
-    throw new Error(`Retreat rout not expected in phase: ${phaseState.phase}`);
-  }
-
-  // A retreat must be waiting to turn into a rout, or the effect is not owed.
-  getRetreatAwaitingRout(state);
-
+export function generateTriggerRoutFromRetreatEvent(): TriggerRoutFromRetreatEvent {
+  // Nothing to measure: the retreat found no legal path when it opened.
   const event: TriggerRoutFromRetreatEvent = {
     effectType: TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
     eventType: GAME_EFFECT_EVENT_TYPE,
