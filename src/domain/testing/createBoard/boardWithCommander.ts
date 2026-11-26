@@ -13,5 +13,10 @@ export function createBoardWithCommander(
   board?: Board,
 ): Board {
   const targetBoard = board ?? createEmptyStandardBoard();
-  return addCommanderToBoard(targetBoard, playerSide, coordinate);
+  const withCommander = addCommanderToBoard(
+    targetBoard,
+    playerSide,
+    coordinate,
+  );
+  return withCommander;
 }

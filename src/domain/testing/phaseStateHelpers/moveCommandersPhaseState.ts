@@ -7,9 +7,10 @@ import { MOVE_COMMANDERS_PHASE } from '@game';
 export function createMoveCommandersPhaseState(
   overrides?: Partial<MoveCommandersPhaseState>,
 ): MoveCommandersPhaseState {
-  return {
+  const moveCommanders: MoveCommandersPhaseState = {
     phase: MOVE_COMMANDERS_PHASE,
     step: 'moveFirstCommander',
     ...overrides,
   };
+  return moveCommanders;
 }

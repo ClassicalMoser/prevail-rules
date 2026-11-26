@@ -24,10 +24,11 @@ export function createTestUnits(
     morale?: number;
   },
 ): UnitInstance[] {
-  return Array.from({ length: count }, (_, i) =>
+  const units = Array.from({ length: count }, (_, i) =>
     createTestUnit(playerSide, {
       ...options,
       instanceNumber: i + 1,
     }),
   );
+  return units;
 }

@@ -7,9 +7,10 @@ import { PLAY_CARDS_PHASE } from '@game';
 export function createPlayCardsPhaseState(
   overrides?: Partial<PlayCardsPhaseState>,
 ): PlayCardsPhaseState {
-  return {
+  const playCards: PlayCardsPhaseState = {
     phase: PLAY_CARDS_PHASE,
     step: 'chooseCards',
     ...overrides,
   };
+  return playCards;
 }

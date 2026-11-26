@@ -9,8 +9,9 @@ export function completedCommitment(inPlay: CommandCard | null): {
   card: CommandCard;
   commitmentType: 'completed';
 } {
-  return {
+  const commitment = {
     card: inPlay ?? createTestCard({ modifiers: ['attack'] }),
     commitmentType: 'completed' as const,
   };
+  return commitment;
 }

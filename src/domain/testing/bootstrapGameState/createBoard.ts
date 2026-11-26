@@ -14,5 +14,6 @@ export function createBoard(units: UnitPlacementSpec[]): Board {
   const normalizedUnits = assignments.map(({ spec, instanceNumber }) =>
     normalizeUnitPlacement(spec, instanceNumber),
   );
-  return createBoardWithUnits(normalizedUnits);
+  const board = createBoardWithUnits(normalizedUnits);
+  return board;
 }

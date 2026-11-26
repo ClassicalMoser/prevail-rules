@@ -10,5 +10,6 @@ export function createReverseState(
   overrides?: Partial<ReverseState>,
 ): ReverseState {
   const opened = createOpenedReverseState(unit);
-  return { ...opened, ...overrides };
+  const reverse: ReverseState = { ...opened, ...overrides };
+  return reverse;
 }

@@ -1,5 +1,5 @@
 import type { UnitWithPlacement } from '@entities';
-import { createEmptyGameState } from '@factories';
+import { createEmptyStandardBoard } from '@factories';
 import { getOtherPlayer, findRearwardSpace } from '@queries';
 import { createUnitWithPlacement } from './createUnitWithPlacement';
 
@@ -17,7 +17,7 @@ export function enemyCuttingOffRetreat(
   unit: UnitWithPlacement,
 ): UnitWithPlacement {
   // Directly behind the unit, on the standard board.
-  const board = createEmptyGameState('standard').boardState;
+  const board = createEmptyStandardBoard();
   const behind = findRearwardSpace(
     board,
     unit.placement.coordinate,

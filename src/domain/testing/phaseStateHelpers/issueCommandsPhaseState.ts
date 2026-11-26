@@ -8,7 +8,7 @@ export function createIssueCommandsPhaseState(
   _state: GameState,
   overrides?: Partial<IssueCommandsPhaseState>,
 ): IssueCommandsPhaseState {
-  return {
+  const issueCommands: IssueCommandsPhaseState = {
     currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
     remainingUnitsFirstPlayer: [],
@@ -16,4 +16,5 @@ export function createIssueCommandsPhaseState(
     step: 'firstPlayerResolveCommands',
     ...overrides,
   };
+  return issueCommands;
 }

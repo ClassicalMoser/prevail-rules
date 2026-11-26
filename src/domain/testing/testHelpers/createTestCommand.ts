@@ -8,7 +8,7 @@ export function createTestCommand(overrides: Partial<Command> = {}): Command {
     inspirationRangeRestriction: -1,
     restrictionType: 'none',
   };
-  return {
+  const command: Command = {
     modifiers: [],
     number: 1,
     restrictions,
@@ -16,4 +16,5 @@ export function createTestCommand(overrides: Partial<Command> = {}): Command {
     type: 'movement',
     ...overrides,
   };
+  return command;
 }

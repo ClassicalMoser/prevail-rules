@@ -49,7 +49,12 @@ export function createTestUnit(
   const instanceNumber = options?.instanceNumber ?? 1;
 
   if (options?.unitType) {
-    return createUnitInstance(playerSide, options.unitType, instanceNumber);
+    const ofType = createUnitInstance(
+      playerSide,
+      options.unitType,
+      instanceNumber,
+    );
+    return ofType;
   }
 
   // Each asked-for value narrows the catalog. Stats live under `stats`; the
@@ -95,9 +100,11 @@ export function createTestUnit(
         `No unit found matching all specified stats: ${description}.`,
       );
     }
-    return createUnitInstance(playerSide, unitType, instanceNumber);
+    const matching = createUnitInstance(playerSide, unitType, instanceNumber);
+    return matching;
   }
 
   const unitType = getUnitByStatValue('attack', 3);
-  return createUnitInstance(playerSide, unitType, instanceNumber);
+  const unit = createUnitInstance(playerSide, unitType, instanceNumber);
+  return unit;
 }

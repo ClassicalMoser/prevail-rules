@@ -10,5 +10,6 @@ import { replaceBoard } from '@testing/replaceBoard';
  */
 export function createGameStateWithBoard(board: Board): AuthoritativeGameState {
   const gameState = createEmptyGameState('standard');
-  return replaceBoard(gameState, board);
+  const withBoard = replaceBoard(gameState, board);
+  return withBoard;
 }

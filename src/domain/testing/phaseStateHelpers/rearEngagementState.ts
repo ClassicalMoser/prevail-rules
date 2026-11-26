@@ -19,5 +19,6 @@ export function createRearEngagementState(
     ...overrides,
   };
   const engagement = createOpenedEngagementState(resolution);
-  return { ...engagement, engagementResolutionState: resolution };
+  const rear = { ...engagement, engagementResolutionState: resolution };
+  return rear;
 }

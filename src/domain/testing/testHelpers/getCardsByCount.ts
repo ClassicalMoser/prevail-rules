@@ -13,5 +13,6 @@ export function getCardsByCount(count: number = 1): CommandCard[] {
       `Requested ${count} cards but only ${tempCommandCards.length} are available`,
     );
   }
-  return tempCommandCards.slice(0, count);
+  const cards = tempCommandCards.slice(0, count);
+  return cards;
 }

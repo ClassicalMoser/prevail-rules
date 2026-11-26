@@ -19,5 +19,9 @@ export function placed(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): UnitWithPlacement {
-  return { placement: createUnitPlacement(coordinate, facing), unit };
+  const withPlacement: UnitWithPlacement = {
+    placement: createUnitPlacement(coordinate, facing),
+    unit,
+  };
+  return withPlacement;
 }

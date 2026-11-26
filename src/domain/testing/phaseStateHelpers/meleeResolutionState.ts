@@ -13,7 +13,7 @@ export function createMeleeResolutionState(
   // A melee as it opens, with both commitments already made so a spec can start
   // at the attack.
   const opened = createOpenedMeleeResolutionState('E-5');
-  return {
+  const melee: MeleeResolutionState = {
     ...opened,
     firstPlayerCommitment: completedCommitment(
       state.cardState[state.currentInitiative].inPlay,
@@ -23,4 +23,5 @@ export function createMeleeResolutionState(
     ),
     ...overrides,
   };
+  return melee;
 }

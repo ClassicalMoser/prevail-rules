@@ -5,7 +5,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import type { Coordinate } from '@ruleValues';
-import { createTestUnit } from '@testing/unitHelpers';
+import { createTestUnits } from '@testing/unitHelpers';
 
 import { createBoardWithUnits } from './boardWithUnits';
 
@@ -27,14 +27,13 @@ export function createBoardWithFacingRow(options: {
 } {
   const facing = options.facing ?? 'north';
   const playerSide = options.playerSide ?? 'black';
+  const units = createTestUnits(playerSide, options.coordinates.length, {
+    attack: 3,
+  });
   const placed = options.coordinates.map((coordinate, index) => {
-    const unit = createTestUnit(playerSide, {
-      attack: 3,
-      instanceNumber: index + 1,
-    });
     const withPlacement: UnitWithPlacement = {
       placement: { coordinate, facing },
-      unit,
+      unit: units[index],
     };
     return withPlacement;
   });

@@ -26,5 +26,6 @@ export function createFrontEngagementState(
     ...overrides,
   };
   const engagement = createOpenedEngagementState(resolution);
-  return { ...engagement, engagementResolutionState: resolution };
+  const front = { ...engagement, engagementResolutionState: resolution };
+  return front;
 }

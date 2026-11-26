@@ -2,8 +2,7 @@ import type { PlayerSide, UnitFacing, UnitType } from '@entities';
 import type { Coordinate } from '@ruleValues';
 import type { AuthoritativeGameState } from '@game';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
-import { createEmptyGameState } from '@factories';
-import { replaceBoard } from '@testing/replaceBoard';
+import { createGameStateWithBoard } from './gameStateWithBoard';
 
 /**
  * Creates a game state with a single unit at a coordinate.
@@ -19,7 +18,7 @@ export function createGameStateWithSingleUnit(
     instanceNumber?: number;
   },
 ): AuthoritativeGameState {
-  const gameState = createEmptyGameState('standard');
   const board = createBoardWithSingleUnit(coord, playerSide, options);
-  return replaceBoard(gameState, board);
+  const gameState = createGameStateWithBoard(board);
+  return gameState;
 }

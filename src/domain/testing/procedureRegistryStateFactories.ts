@@ -13,18 +13,17 @@ import {
  *
  * No Vitest imports.
  */
-import type { AuthoritativeGameState, IssueCommandsPhaseState } from '@game';
-import {
-  ISSUE_COMMANDS_PHASE,
-  MOVE_COMMANDERS_PHASE,
-  PLAY_CARDS_PHASE,
+import type {
+  AttackApplyState,
+  AuthoritativeGameState,
+  MovementResolutionState,
 } from '@game';
 
-import { getLegalRetreats } from '@legality';
 import { tempCommandCards } from '@sampleValues';
 
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
+import { createGameStateWithUnits } from './createBoard';
 import {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
@@ -34,22 +33,88 @@ import {
   createFlankEngagementState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
+  createMoveCommandersPhaseState,
   createMovementResolutionState,
+  createPlayCardsPhaseState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
 } from './phaseStateHelpers';
 import {
   createTestCard,
+  enemyCuttingOffRetreat,
   legalRetreatsOf,
   updateCardState,
 } from './testHelpers';
 import { createTestUnit, createUnitByStat } from './unitHelpers';
-import { replaceBoard } from './replaceBoard';
 import { withLostCommander } from './withLostCommander';
 
 /** Where the engaging moves below end: the defender's space, E-5. */
 const engagedSpace: UnitPlacement = { coordinate: 'E-5', facing: 'north' };
+
+/**
+ * The unit every shot below is aimed at: White's, alone on E-5, facing north.
+ *
+ * @returns A fresh copy of that unit where it stands
+ */
+function shotTarget(): UnitWithPlacement {
+  const target: UnitWithPlacement = {
+    placement: { coordinate: 'E-5', facing: 'north' },
+    unit: createTestUnit('white', { attack: 2 }),
+  };
+  return target;
+}
+
+/**
+ * Phase 3, with the first player's Shoot order under way at a target on the
+ * board, and the attack it struck at the point a spec needs.
+ *
+ * @param target - The unit shot at, standing where it stands
+ * @param attackApplyState - What the shot did to it, or `'pending'` before it lands
+ * @param others - Anyone else on the board
+ * @returns The game, carrying out that shot
+ */
+function shootingAt(
+  target: UnitWithPlacement,
+  attackApplyState: AttackApplyState | 'pending',
+  others: UnitWithPlacement[] = [],
+): AuthoritativeGameState {
+  const withBoard = createGameStateWithUnits([target, ...others]);
+  const ranged = createRangedAttackResolutionState(withBoard, {
+    attackApplyState,
+    defendingUnit: target.unit,
+  });
+  const phase = createIssueCommandsPhaseState(withBoard, {
+    currentCommandResolutionState: ranged,
+  });
+  const shooting = updatePhaseState(withBoard, phase);
+  return shooting;
+}
+
+/**
+ * Phase 3, with Black's Move order under way into a defender on the board,
+ * Black's card in play.
+ *
+ * @param defender - The unit moved into, standing where it stands
+ * @param movement - The move's own slots: its engagement, mover and ending
+ * @returns The game, carrying out that move
+ */
+function movingInto(
+  defender: UnitWithPlacement,
+  movement: Partial<MovementResolutionState>,
+): AuthoritativeGameState {
+  const withBoard = createGameStateWithUnits([defender]);
+  const withCard = updatePlayerCardState(withBoard, 'black', {
+    ...withBoard.cardState.black,
+    inPlay: createTestCard(),
+  });
+  const move = createMovementResolutionState(withCard, movement);
+  const phase = createIssueCommandsPhaseState(withCard, {
+    currentCommandResolutionState: move,
+  });
+  const moving = updatePhaseState(withCard, phase);
+  return moving;
+}
 
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
 export const procedureRegistryStateFactories: Record<
@@ -57,74 +122,51 @@ export const procedureRegistryStateFactories: Record<
   () => AuthoritativeGameState
 > = {
   completeAttackApply: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const stateWithUnit = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApplyState =
-      createAttackApplyStateWithNothingDue(defendingUnit);
-    const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
-      attackApplyState,
-    });
-    const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: rangedAttackState,
-    });
-    return updatePhaseState(stateWithUnit, phaseState);
+    const target = shotTarget();
+    const attackApplyState = createAttackApplyStateWithNothingDue(target.unit);
+    const state = shootingAt(target, attackApplyState);
+    return state;
   },
 
   roundEnd: (): AuthoritativeGameState => createEmptyGameState('standard'),
 
   completeIssueCommandsPhase: (): AuthoritativeGameState => {
-    const initialPhaseState: IssueCommandsPhaseState = {
-      currentCommandResolutionState: 'pending',
-      phase: ISSUE_COMMANDS_PHASE,
-      remainingUnitsFirstPlayer: [],
-      remainingUnitsSecondPlayer: [],
+    const base = createEmptyGameState('standard');
+    const initialPhaseState = createIssueCommandsPhaseState(base, {
       step: 'complete',
-    };
-    return updatePhaseState(
-      createEmptyGameState('standard'),
-      initialPhaseState,
-    );
+    });
+    const state = updatePhaseState(base, initialPhaseState);
+    return state;
   },
 
   completeMeleeResolution: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
   completeMoveCommandersPhase: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const stateWithCards = updateCardState(state, {
-      ...state.cardState,
-      black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
-      white: { ...state.cardState.white, inPlay: tempCommandCards[1] },
+    const base = createEmptyGameState('standard');
+    const stateWithCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: tempCommandCards[0] },
+      white: { ...base.cardState.white, inPlay: tempCommandCards[1] },
     });
-    return updatePhaseState(stateWithCards, {
-      phase: MOVE_COMMANDERS_PHASE,
-      step: 'complete',
-    });
+    const phase = createMoveCommandersPhaseState({ step: 'complete' });
+    const state = updatePhaseState(stateWithCards, phase);
+    return state;
   },
 
-  completePlayCardsPhase: (): AuthoritativeGameState =>
-    updatePhaseState(createEmptyGameState('standard'), {
-      phase: PLAY_CARDS_PHASE,
-      step: 'complete',
-    }),
+  completePlayCardsPhase: (): AuthoritativeGameState => {
+    const phase = createPlayCardsPhaseState({ step: 'complete' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
+    return state;
+  },
 
-  skipLostCommanderMove: (): AuthoritativeGameState =>
+  skipLostCommanderMove: (): AuthoritativeGameState => {
     // The first player's Move Commanders turn, with their commander fallen.
-    updatePhaseState(
-      withLostCommander(createEmptyGameState('standard'), 'white'),
-      { phase: MOVE_COMMANDERS_PHASE, step: 'moveFirstCommander' },
-    ),
+    const fallen = withLostCommander(createEmptyGameState('standard'), 'white');
+    const phase = createMoveCommandersPhaseState();
+    const state = updatePhaseState(fallen, phase);
+    return state;
+  },
 
   completeMovementCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
@@ -146,105 +188,50 @@ export const procedureRegistryStateFactories: Record<
 
   gameOver: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
-    return updateCardState(base, {
+    const state = updateCardState(base, {
       ...base.cardState,
       white: { ...base.cardState.white, inHand: [] },
     });
+    return state;
   },
 
   openRetreatFromAttackApply: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
+    const target = shotTarget();
     // Retreat still due: the factory leaves that slot pending until the opener runs.
-    const attackApply = createPendingAttackApply(defendingUnit, {
+    const attackApply = createPendingAttackApply(target.unit, {
       unitRetreated: true,
       unitReversed: false,
       unitRouted: false,
     });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const state = shootingAt(target, attackApply);
+    return state;
   },
 
   openReverseFromAttackApply: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
+    const target = shotTarget();
     // Reverse still due: the factory leaves that slot pending until the opener runs.
-    const attackApply = createPendingAttackApply(defendingUnit, {
+    const attackApply = createPendingAttackApply(target.unit, {
       unitRetreated: false,
       unitReversed: true,
       unitRouted: false,
     });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const state = shootingAt(target, attackApply);
+    return state;
   },
 
   openRoutFromAttackApply: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
+    const target = shotTarget();
     // Rout still due: the factory leaves that slot pending until the opener runs.
-    const attackApply = createPendingAttackApply(defendingUnit, {
+    const attackApply = createPendingAttackApply(target.unit, {
       unitRetreated: true,
       unitReversed: true,
       unitRouted: true,
     });
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const state = shootingAt(target, attackApply);
+    return state;
   },
 
   openRetreatFromEngagement: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
     // A defender engaged from the front, fast enough to get away, that has
     // chosen to fall back; its retreat is not open yet.
     const defenderWithPlacement: UnitWithPlacement = {
@@ -260,77 +247,42 @@ export const procedureRegistryStateFactories: Record<
       defendingUnitRetreats: true,
       retreatPaths: legalRetreatsOf(defenderWithPlacement),
     });
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, defenderWithPlacement),
-    );
-    const movement = createMovementResolutionState(withBoard, {
+    const state = movingInto(defenderWithPlacement, {
       engagementState: front,
       targetPlacement: engagedSpace,
     });
-    return updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    return state;
   },
 
   resolveEngageRetreatOption: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defender = createUnitByStat('white', 'speed', 4);
-    const engagementState = createFrontEngagementState();
     const defenderWithPlacement: UnitWithPlacement = {
       placement: {
         coordinate: engagedSpace.coordinate,
         facing: 'south',
       },
-      unit: defender,
+      unit: createUnitByStat('white', 'speed', 4),
     };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, defenderWithPlacement),
-    );
-    const movement = createMovementResolutionState(withBoard, {
-      engagementState,
+    const state = movingInto(defenderWithPlacement, {
+      engagementState: createFrontEngagementState(),
       movingUnit: createUnitByStat('black', 'speed', 2),
       targetPlacement: engagedSpace,
     });
-    return updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    return state;
   },
 
   resolveFlankEngagement: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defender = createTestUnit('white');
-    const flank = createFlankEngagementState();
     const defenderPlacement: UnitWithPlacement = {
       placement: {
         coordinate: engagedSpace.coordinate,
         facing: 'east',
       },
-      unit: defender,
+      unit: createTestUnit('white'),
     };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, defenderPlacement),
-    );
-    const movement = createMovementResolutionState(withBoard, {
-      engagementState: flank,
+    const state = movingInto(defenderPlacement, {
+      engagementState: createFlankEngagementState(),
       targetPlacement: engagedSpace,
     });
-    return updatePhaseState(
-      withBoard,
-      createIssueCommandsPhaseState(withBoard, {
-        currentCommandResolutionState: movement,
-      }),
-    );
+    return state;
   },
 
   resolveInitiative: (): AuthoritativeGameState => {
@@ -346,34 +298,30 @@ export const procedureRegistryStateFactories: Record<
         inPlay: createTestCard(),
       },
     });
-    return updatePhaseState(withCards, {
-      phase: PLAY_CARDS_PHASE,
-      step: 'assignInitiative',
-    });
+    const phase = createPlayCardsPhaseState({ step: 'assignInitiative' });
+    const state = updatePhaseState(withCards, phase);
+    return state;
   },
 
   resolveMelee: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
       placement: {
         coordinate: 'E-5',
         facing: 'north',
       },
-      unit: whiteUnit,
+      unit: createTestUnit('white', { attack: 2 }),
     };
     const blackWp: UnitWithPlacement = {
       placement: {
         coordinate: 'E-5',
         facing: 'south',
       },
-      unit: blackUnit,
+      unit: createTestUnit('black', { attack: 2 }),
     };
-    let s = replaceBoard(state, addUnitToBoard(state.boardState, whiteWp));
-    s = replaceBoard(s, addUnitToBoard(s.boardState, blackWp));
-    const phase = createResolveMeleePhaseState(s);
-    return updatePhaseState(s, phase);
+    const engaged = createGameStateWithUnits([whiteWp, blackWp]);
+    const phase = createResolveMeleePhaseState(engaged);
+    const state = updatePhaseState(engaged, phase);
+    return state;
   },
 
   resolveRally: (): AuthoritativeGameState => {
@@ -388,126 +336,51 @@ export const procedureRegistryStateFactories: Record<
         played: [card],
       },
     });
-    return updatePhaseState(
-      withPlayed,
-      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
-    );
+    const phase = createCleanupPhaseState({ step: 'firstPlayerResolveRally' });
+    const state = updatePhaseState(withPlayed, phase);
+    return state;
   },
 
   resolveRangedAttack: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const state = shootingAt(shotTarget(), 'pending');
+    return state;
   },
 
   resolveRetreat: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
+    const target = shotTarget();
     // On an open board the engine offers the unit one retreat, a step
     // straight back to F-5 (§9.1.3), and that path is already chosen.
-    const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
+    const legalRetreatPaths = legalRetreatsOf(target);
     const attackApply = createAttackApplyStateWithRetreat(
-      retreatingUnit,
+      target.unit,
       legalRetreatPaths,
       {
-        retreatState: createRetreatState(retreatingUnit, legalRetreatPaths, {
+        retreatState: createRetreatState(target.unit, legalRetreatPaths, {
           chosenRetreatPath: legalRetreatPaths[0],
         }),
       },
     );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit: retreatingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const state = shootingAt(target, attackApply);
+    return state;
   },
 
   resolveReverse: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApply = createAttackApplyStateWithReverse(
-      unitWithPlacement.unit,
-    );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const target = shotTarget();
+    const attackApply = createAttackApplyStateWithReverse(target.unit);
+    const state = shootingAt(target, attackApply);
+    return state;
   },
 
   resolveRout: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, unitWithPlacement),
-    );
-    const attackApply = createAttackApplyStateWithRout(defendingUnit);
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const target = shotTarget();
+    const attackApply = createAttackApplyStateWithRout(target.unit);
+    const state = shootingAt(target, attackApply);
+    return state;
   },
 
   revealCards: (): AuthoritativeGameState => {
     const base = createEmptyGameState('standard');
-    return updateCardState(base, {
+    const state = updateCardState(base, {
       ...base.cardState,
       black: {
         ...base.cardState.black,
@@ -518,68 +391,38 @@ export const procedureRegistryStateFactories: Record<
         awaitingPlay: createTestCard(),
       },
     });
+    return state;
   },
 
   startEngagement: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
-    const defender = createTestUnit('white');
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(state.boardState, {
-        placement: {
-          coordinate: 'E-6',
-          facing: 'south',
-        },
-        unit: defender,
-      }),
-    );
-    const movement = createMovementResolutionState(withBoard, {
+    const defender: UnitWithPlacement = {
+      placement: {
+        coordinate: 'E-6',
+        facing: 'south',
+      },
+      unit: createTestUnit('white'),
+    };
+    const state = movingInto(defender, {
       movingUnit: createTestUnit('black'),
       targetPlacement: {
         coordinate: 'E-6',
         facing: 'north',
       },
     });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: movement,
-    });
-    return updatePhaseState(withBoard, phase);
+    return state;
   },
 
   triggerRoutFromRetreat: (): AuthoritativeGameState => {
-    const state = createEmptyGameState('standard');
-    const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
+    const target = shotTarget();
     // An enemy directly behind, facing the unit, cuts its line of withdrawal
     // (§9.1.5): it cannot retreat, so it routs instead (§9.1.6).
-    const cuttingEnemy: UnitWithPlacement = {
-      placement: { coordinate: 'F-5', facing: 'north' },
-      unit: createTestUnit('black'),
-    };
-    const withUnit = addUnitToBoard(state.boardState, unitWithPlacement);
-    const withBoard = replaceBoard(
-      state,
-      addUnitToBoard(withUnit, cuttingEnemy),
-    );
-    const legalRetreatPaths = getLegalRetreats(unitWithPlacement, withBoard);
+    const cuttingEnemy = enemyCuttingOffRetreat(target);
+    const legalRetreatPaths = legalRetreatsOf(target, [cuttingEnemy]);
     const attackApply = createAttackApplyStateWithRetreat(
-      retreatingUnit,
+      target.unit,
       legalRetreatPaths,
     );
-    const ranged = createRangedAttackResolutionState(withBoard, {
-      attackApplyState: attackApply,
-      defendingUnit: retreatingUnit,
-    });
-    const phase = createIssueCommandsPhaseState(withBoard, {
-      currentCommandResolutionState: ranged,
-    });
-    return updatePhaseState(withBoard, phase);
+    const state = shootingAt(target, attackApply, [cuttingEnemy]);
+    return state;
   },
 };

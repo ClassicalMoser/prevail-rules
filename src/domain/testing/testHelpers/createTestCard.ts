@@ -118,7 +118,7 @@ export function createTestCard(
     restrictions: createRestrictions(roundEffectRestrictions),
   };
 
-  return {
+  const card: CommandCard = {
     command,
     id,
     initiative,
@@ -129,4 +129,5 @@ export function createTestCard(
     unitSupport,
     version,
   };
+  return card;
 }

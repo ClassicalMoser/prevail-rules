@@ -11,9 +11,10 @@ export function createSingleUnitPresence(
   unit: UnitInstance,
   facing: UnitFacing,
 ): SingleUnitPresence {
-  return {
+  const single: SingleUnitPresence = {
     facing,
     presenceType: 'single',
     unit,
   };
+  return single;
 }

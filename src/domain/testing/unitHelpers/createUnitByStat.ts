@@ -18,5 +18,6 @@ export function createUnitByStat(
   instanceNumber: number = 1,
 ): UnitInstance {
   const unitType = getUnitByStatValue(stat, value);
-  return createUnitInstance(playerSide, unitType, instanceNumber);
+  const unit = createUnitInstance(playerSide, unitType, instanceNumber);
+  return unit;
 }

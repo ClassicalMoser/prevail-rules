@@ -9,7 +9,7 @@ export function createMovementResolutionState(
   state: GameState,
   overrides?: Partial<MovementResolutionState>,
 ): MovementResolutionState {
-  return {
+  const movement: MovementResolutionState = {
     commandResolutionType: 'movement' as const,
     commitment: completedCommitment(state.cardState.black.inPlay),
     completed: false,
@@ -23,4 +23,5 @@ export function createMovementResolutionState(
     },
     ...overrides,
   };
+  return movement;
 }

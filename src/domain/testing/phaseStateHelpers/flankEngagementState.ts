@@ -17,5 +17,6 @@ export function createFlankEngagementState(
     ...overrides,
   };
   const engagement = createOpenedEngagementState(resolution);
-  return { ...engagement, engagementResolutionState: resolution };
+  const flank = { ...engagement, engagementResolutionState: resolution };
+  return flank;
 }

@@ -6,5 +6,6 @@ import type { NoneUnitPresence } from '@entities';
  * @returns A none unit presence
  */
 export function createNoneUnitPresence(): NoneUnitPresence {
-  return { presenceType: 'none' };
+  const none: NoneUnitPresence = { presenceType: 'none' };
+  return none;
 }

@@ -22,5 +22,6 @@ export function createRetreatState(
   // The retreat as the engine opens it: a single legal path is chosen at once,
   // and the rout slot follows from whether there is anywhere to fall back to.
   const opened = createOpenedRetreatState(unit, legalRetreatPaths);
-  return { ...opened, ...overrides };
+  const retreat: RetreatState = { ...opened, ...overrides };
+  return retreat;
 }

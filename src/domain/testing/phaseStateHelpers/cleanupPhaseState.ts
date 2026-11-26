@@ -6,11 +6,12 @@ import type { CleanupPhaseState } from '@game';
 export function createCleanupPhaseState(
   overrides?: Partial<CleanupPhaseState>,
 ): CleanupPhaseState {
-  return {
+  const cleanup: CleanupPhaseState = {
     firstPlayerRallyResolutionState: 'pending',
     phase: 'cleanup' as const,
     secondPlayerRallyResolutionState: 'pending',
     step: 'cardsLeavePlay',
     ...overrides,
   };
+  return cleanup;
 }

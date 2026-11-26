@@ -13,10 +13,11 @@ export function createEngagedUnitPresence(
   primaryFacing: UnitFacing,
   secondaryUnit: UnitInstance,
 ): EngagedUnitPresence {
-  return {
+  const engaged: EngagedUnitPresence = {
     presenceType: 'engaged',
     primaryFacing,
     primaryUnit,
     secondaryUnit,
   };
+  return engaged;
 }

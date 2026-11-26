@@ -8,5 +8,6 @@ export function createRallyResolutionState(
   overrides?: Partial<RallyResolutionState>,
 ): RallyResolutionState {
   const opened = createOpenedRallyResolutionState(false);
-  return { ...opened, ...overrides };
+  const rally: RallyResolutionState = { ...opened, ...overrides };
+  return rally;
 }

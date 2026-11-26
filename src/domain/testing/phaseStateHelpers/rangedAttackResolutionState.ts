@@ -9,7 +9,7 @@ export function createRangedAttackResolutionState(
   state: GameState,
   overrides?: Partial<RangedAttackResolutionState>,
 ): RangedAttackResolutionState {
-  return {
+  const rangedAttack: RangedAttackResolutionState = {
     attackApplyState: 'pending',
     attackingCommitment: completedCommitment(state.cardState.black.inPlay),
     attackingUnit: createTestUnit('black', { attack: 2 }),
@@ -21,4 +21,5 @@ export function createRangedAttackResolutionState(
     supportingUnits: [],
     ...overrides,
   };
+  return rangedAttack;
 }

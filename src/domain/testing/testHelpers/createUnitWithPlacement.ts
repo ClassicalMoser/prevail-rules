@@ -31,11 +31,12 @@ export function createUnitWithPlacement(options?: {
 }): UnitWithPlacement {
   const playerSide = options?.playerSide ?? 'black';
   const unit = createTestUnit(playerSide, options?.unitOptions);
-  return {
+  const withPlacement: UnitWithPlacement = {
     placement: {
       coordinate: options?.coordinate ?? 'E-5',
       facing: options?.facing ?? 'north',
     },
     unit,
   };
+  return withPlacement;
 }

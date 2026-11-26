@@ -11,5 +11,6 @@ export function createRoutState(
   overrides?: Partial<RoutState>,
 ): RoutState {
   const opened = createOpenedRoutState(player, [unit]);
-  return { ...opened, ...overrides };
+  const rout: RoutState = { ...opened, ...overrides };
+  return rout;
 }
