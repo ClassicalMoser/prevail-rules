@@ -10,11 +10,16 @@ export function createResolveMeleePhaseState(
   overrides?: Partial<ResolveMeleePhaseState>,
 ): ResolveMeleePhaseState {
   const resolveMelee: ResolveMeleePhaseState = {
+    // One melee under way, both commitments made, so a spec starts at the
+    // blows.
     currentMeleeResolutionState: createMeleeResolutionState(state),
     phase: RESOLVE_MELEE_PHASE,
+    // No other engaged space is waiting to fight after this one (§4.4.2).
     remainingEngagements: [],
     step: 'resolveMelee',
     ...overrides,
   };
+
+  // The phase, to put in a game with `updatePhaseState`.
   return resolveMelee;
 }

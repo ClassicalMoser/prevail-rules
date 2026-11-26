@@ -39,11 +39,16 @@ export function createAttackApplyStateWithRetreatAndReverse(
     unitReversed: true,
     unitRouted: false,
   };
+
+  // The factory marks both due. Only the retreat is opened: the reverse
+  // waits on where the retreat leaves the unit (§7.5.4).
   const apply = attackApplyFromResult(retreatingUnit, measured);
   const withRetreat: AttackApplyState = {
     ...apply,
     retreatState: createRetreatState(retreatingUnit, legalRetreatPaths),
     ...overrides,
   };
+
+  // The attack-apply, its retreat open and its reverse still pending.
   return withRetreat;
 }

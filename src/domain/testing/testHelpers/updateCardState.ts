@@ -25,6 +25,10 @@ export function updateCardState<S extends GameState>(
   state: S,
   cardState: S['cardState'],
 ): S {
+  // The whole card state is swapped by production's own writer, so the
+  // fixture cannot drift from how play stores cards.
   const updated = replaceCardState(state, cardState);
+
+  // The game with the cards the spec set out.
   return updated;
 }

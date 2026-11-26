@@ -43,5 +43,7 @@ export function resolvingShootOrder(
       step: 'firstPlayerResolveCommands',
     }),
   );
+
+  // The game, waiting for the first shooter to be named.
   return resolving;
 }

@@ -46,8 +46,12 @@ export interface CreateTestCardOptions {
 function createRestrictions(
   restrictions: TestRestrictionsInput | undefined,
 ): Restrictions {
+  // No range given is no range at all: the card reaches every unit wherever
+  // it stands.
   const inspirationRangeRestriction =
     restrictions?.inspirationRangeRestriction ?? -1;
+
+  // A list of traits filters to units with every one of them (§4.3.4).
   if (
     restrictions !== undefined &&
     'traitRestrictions' in restrictions &&
@@ -59,8 +63,12 @@ function createRestrictions(
       restrictionType: 'trait',
       traitRestrictions,
     };
+
+    // The trait filter.
     return traitResult;
   }
+
+  // A list of unit types filters to units of one of those types.
   if (
     restrictions !== undefined &&
     'unitRestrictions' in restrictions &&
@@ -72,12 +80,18 @@ function createRestrictions(
       restrictionType: 'unitType',
       unitRestrictions,
     };
+
+    // The unit-type filter.
     return unitResult;
   }
+
+  // Otherwise no filter, and an empty list is the same as none.
   const noneResult: Restrictions = {
     inspirationRangeRestriction,
     restrictionType: 'none',
   };
+
+  // No filter but the range.
   return noneResult;
 }
 
@@ -109,15 +123,21 @@ export function createTestCard(
     unitSupport = { count: 1, supportType: 'generic' },
   } = options;
 
+  // The command, with the bonuses and filters the spec asked for.
   const command = createTestCommand({
     modifiers: commandModifiers,
     restrictions: createRestrictions(commandRestrictions),
   });
+
+  // The round effect, which applies all round to every unit it reaches,
+  // ordered or not (§4.3.7).
   const roundEffect = {
     modifiers: roundEffectModifiers,
     restrictions: createRestrictions(roundEffectRestrictions),
   };
 
+  // Unit support of one place for any unit is the plainest card there is
+  // (§10.4.2); the commit stat defaults to Attack.
   const card: CommandCard = {
     command,
     id,
@@ -129,5 +149,7 @@ export function createTestCard(
     unitSupport,
     version,
   };
+
+  // The card, fresh and parseable.
   return card;
 }

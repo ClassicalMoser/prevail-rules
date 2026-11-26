@@ -1,4 +1,33 @@
-export { createGameState } from './bootstrapGameState';
+// Stand-in unit types from the catalog, reached by a stat or by traits.
+export { getUnitByStatValue } from './getUnitByStatValue';
+export { getUnitByTrait } from './getUnitByTrait';
+
+// Stand-in units, chosen by type or by the stats a spec asks for.
+export { createTestUnit, createUnitByStat } from './unitHelpers';
+
+// What a board space holds: nobody, one unit, or two units engaged.
+export {
+  createEngagedUnitPresence,
+  createNoneUnitPresence,
+  createSingleUnitPresence,
+} from './unitPresenceHelpers';
+
+// Cards, units with where they stand, and readers of what the rules offer.
+export {
+  coordinatesOfSegment,
+  createTestCard,
+  createTestCommand,
+  createUnitWithPlacement,
+  getCardsByCount,
+  hasMove,
+  enemyBlockingStraightBack,
+  enemyCuttingOffRetreat,
+  legalRetreatsOf,
+  placed,
+  updateCardState,
+} from './testHelpers';
+
+// Boards holding the units a spec sets down, and new games around them.
 export {
   createBoardWithCommander,
   createBoardWithEngagedUnits,
@@ -10,8 +39,20 @@ export {
   createGameStateWithSingleUnit,
   createGameStateWithUnits,
 } from './createBoard';
-export { getUnitByStatValue } from './getUnitByStatValue';
-export { getUnitByTrait } from './getUnitByTrait';
+
+// A new game from a shorthand list of where each unit stands.
+export { createGameState } from './bootstrapGameState';
+
+// A whole new board put into a game state, its index worked out afresh.
+export { replaceBoard } from './replaceBoard';
+
+// A game state with these units waiting in reserve, filed there.
+export { withReservedUnits } from './withReservedUnits';
+
+// A game state with one side's commander defeated.
+export { withLostCommander } from './withLostCommander';
+
+// Phase and substep shells, and games in Phase 3 or 4 around them.
 export {
   createAttackApplyStateWithNothingDue,
   createAttackApplyStateWithRetreat,
@@ -38,26 +79,11 @@ export {
   createReverseState,
   createRoutState,
 } from './phaseStateHelpers';
-export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
-export {
-  coordinatesOfSegment,
-  createTestCard,
-  createTestCommand,
-  createUnitWithPlacement,
-  getCardsByCount,
-  hasMove,
-  enemyBlockingStraightBack,
-  enemyCuttingOffRetreat,
-  legalRetreatsOf,
-  placed,
-  updateCardState,
-} from './testHelpers';
-export { createTestUnit, createUnitByStat } from './unitHelpers';
-export {
-  createEngagedUnitPresence,
-  createNoneUnitPresence,
-  createSingleUnitPresence,
-} from './unitPresenceHelpers';
+
+// A game on a player's rally, with a rout owing a known discard.
+export { withRoutOwing } from './withRoutOwing';
+
+// Playable games, played forward by the engines to the point a rule is met.
 export {
   applyEffectsUntilChoice,
   createPlayableGame,
@@ -66,11 +92,6 @@ export {
   resolvingMoveOrder,
   resolvingShootOrder,
 } from './scenario';
-// A whole new board put into a game state, its index worked out afresh.
-export { replaceBoard } from './replaceBoard';
-// A game state with one side's commander defeated.
-export { withLostCommander } from './withLostCommander';
-// A game state with these units waiting in reserve, filed there.
-export { withReservedUnits } from './withReservedUnits';
-// A game on a player's rally, with a rout owing a known discard.
-export { withRoutOwing } from './withRoutOwing';
+
+// A state for each game effect that reaches its procedure.
+export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';

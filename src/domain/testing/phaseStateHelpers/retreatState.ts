@@ -23,5 +23,7 @@ export function createRetreatState(
   // and the rout slot follows from whether there is anywhere to fall back to.
   const opened = createOpenedRetreatState(unit, legalRetreatPaths);
   const retreat: RetreatState = { ...opened, ...overrides };
+
+  // The retreat, with whatever the spec changed.
   return retreat;
 }

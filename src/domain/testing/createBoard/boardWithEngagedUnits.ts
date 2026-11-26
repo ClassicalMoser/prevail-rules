@@ -20,13 +20,21 @@ export function createBoardWithEngagedUnits(
   coord: Coordinate = 'E-5',
   primaryFacing: UnitFacing = 'north',
 ): Board {
+  // The primary unit stands alone on the space first, as the defender does
+  // before anyone walks in.
   const standing = addUnitToBoard(createEmptyStandardBoard(), {
     placement: { coordinate: coord, facing: primaryFacing },
     unit: primaryUnit,
   });
+
+  // The secondary joins it squared up, facing directly opposite. A unit
+  // entering an occupied space is an engagement (§6.1.1), so the board's
+  // writer makes the space an engaged one.
   const engaged = addUnitToBoard(standing, {
     placement: { coordinate: coord, facing: getOppositeFacing(primaryFacing) },
     unit: secondaryUnit,
   });
+
+  // The board with the two units locked in that one space.
   return engaged;
 }

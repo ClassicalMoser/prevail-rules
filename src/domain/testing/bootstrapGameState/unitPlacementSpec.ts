@@ -42,9 +42,13 @@ export type UnitPlacementSpec =
 export function getExplicitInstanceNumber(
   spec: UnitPlacementSpec,
 ): number | undefined {
+  // The tuple forms name only a space, a side and a facing, so they leave
+  // the number to be counted.
   if (Array.isArray(spec)) {
     return undefined;
   }
+
+  // The object form may carry a number a spec chose by hand.
   return spec.instanceNumber;
 }
 
@@ -55,6 +59,9 @@ export function normalizeUnitPlacement(
   spec: UnitPlacementSpec,
   instanceNumber: number,
 ): UnitWithPlacement {
+  // A tuple asks for any stand-in unit of that side. It faces north unless
+  // the spec names a facing: north is a stand-in, and a case that turns on
+  // facing says which it means.
   if (Array.isArray(spec)) {
     const [coord, player, facing = 'north'] = spec;
     const unit = createTestUnit(player, { instanceNumber });
@@ -62,9 +69,13 @@ export function normalizeUnitPlacement(
       placement: { coordinate: coord, facing },
       unit,
     };
+
+    // The unit, standing where the tuple put it.
     return withPlacement;
   }
 
+  // The object form may also ask for a unit by its stats. Those go on to
+  // the catalog lookup, and a number given by hand wins over the count.
   const {
     coord,
     player,
@@ -81,6 +92,8 @@ export function normalizeUnitPlacement(
     placement: { coordinate: coord, facing },
     unit,
   };
+
+  // The unit with the stats asked for, standing where the spec put it.
   return withPlacement;
 }
 
@@ -91,6 +104,13 @@ export function normalizeUnitPlacement(
  * side passes the limit on copies of a type. A spec that names no unit type
  * counts with the others that name none.
  * Explicitly specified numbers are preserved (duplicates allowed).
+ *
+ * TODO(wrong): a number given by hand is not counted, so it can collide with
+ * one counted for the same side and type: `{ instanceNumber: 1, player:
+ * 'black' }` followed by `['E-6', 'black']` gives two black units the same
+ * identity, and the game's index keeps only one of them. STYLE.md says setup
+ * never uses an identifier twice. To settle: decide whether a collision
+ * throws, or the count skips numbers already given by hand.
  */
 export function assignInstanceNumbers(
   specs: UnitPlacementSpec[],
@@ -100,11 +120,15 @@ export function assignInstanceNumbers(
   const result: { spec: UnitPlacementSpec; instanceNumber: number }[] = [];
 
   for (const spec of specs) {
+    // A number given by hand is kept as it is.
     const explicit = getExplicitInstanceNumber(spec);
     if (explicit !== undefined) {
       result.push({ instanceNumber: explicit, spec });
       continue;
     }
+
+    // Otherwise the unit takes the next number for its side and type: an
+    // army numbers each type's copies from 1, and so does each side.
     const [player, unitTypeId] = Array.isArray(spec)
       ? [spec[1], undefined]
       : [spec.player, spec.unitType?.id];
@@ -114,5 +138,6 @@ export function assignInstanceNumbers(
     result.push({ instanceNumber, spec });
   }
 
+  // Every spec in its given order, each with the number it will carry.
   return result;
 }

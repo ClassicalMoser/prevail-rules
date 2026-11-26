@@ -24,11 +24,14 @@ export function createTestUnits(
     morale?: number;
   },
 ): UnitInstance[] {
+  // Copies of one stand-in, numbered 1 upward, so no two share an identity.
   const units = Array.from({ length: count }, (_, i) =>
     createTestUnit(playerSide, {
       ...options,
       instanceNumber: i + 1,
     }),
   );
+
+  // The units, in number order.
   return units;
 }

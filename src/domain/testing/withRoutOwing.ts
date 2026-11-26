@@ -39,5 +39,7 @@ export function withRoutOwing<S extends GameState>(
     numberToDiscard,
   });
   const owing = updateRoutState(cleanup, owed);
+
+  // The game, waiting on the player to choose which cards to discard.
   return owing;
 }

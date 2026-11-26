@@ -10,9 +10,13 @@ import { addUnitToBoard } from '@transforms';
  * @returns A standard board with the specified units placed
  */
 export function createBoardWithUnits(units: UnitWithPlacement[]): Board {
+  // Each unit is set down in turn by the board's own writer, so a unit put
+  // where another already stands engages it, as play would make it.
   let board = createEmptyStandardBoard();
   for (const unitWithPlacement of units) {
     board = addUnitToBoard(board, unitWithPlacement);
   }
+
+  // The standard board, holding every unit given.
   return board;
 }

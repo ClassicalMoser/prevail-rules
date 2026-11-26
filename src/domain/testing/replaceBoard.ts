@@ -16,7 +16,12 @@ import { deriveGameStateIndex } from '@queries';
  * @returns The state with that board, and the index it calls for
  */
 export function replaceBoard<S extends GameState>(state: S, board: Board): S {
+  // The board goes in whole, the rest of the game as it was.
   const withBoard: S = { ...state, boardState: board };
+
+  // Every unit and commander is filed afresh where the new board has it.
   const indexed: S = { ...withBoard, index: deriveGameStateIndex(withBoard) };
+
+  // The game, its board and its index agreeing.
   return indexed;
 }

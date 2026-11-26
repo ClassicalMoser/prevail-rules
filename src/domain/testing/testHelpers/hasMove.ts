@@ -16,10 +16,14 @@ export function hasMove(
   coordinate: Coordinate,
   facing?: UnitFacing,
 ): boolean {
+  // A move counts if it ends on that space, in that facing when one was
+  // named; how it got there does not matter to the question.
   const found = [...legalMoves].some(
     (move) =>
       move.placement.coordinate === coordinate &&
       (facing === undefined || move.placement.facing === facing),
   );
+
+  // Whether the unit may end its move there.
   return found;
 }

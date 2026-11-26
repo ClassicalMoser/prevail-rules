@@ -11,6 +11,11 @@ import {
  * Phase literals use `@entities/sequence/phases` (not the `@entities` barrel) so this file
  * does not pull expected-event schemas during init.
  *
+ * TODO(misleading): there is no `@entities/sequence/phases`; the phases are in
+ * `@game`, and this file builds them through the `@testing` phase fixtures
+ * rather than from literals. To settle: say what, if anything, the file must
+ * avoid importing at init, or drop the paragraph.
+ *
  * No Vitest imports.
  */
 import type {
@@ -79,15 +84,23 @@ function shootingAt(
   attackApplyState: AttackApplyState | 'pending',
   others: UnitWithPlacement[] = [],
 ): AuthoritativeGameState {
+  // The target, and anyone else the case needs, on a standard board.
   const withBoard = createGameStateWithUnits([target, ...others]);
+
+  // A shot from the stand-in Black shooter at that target, both
+  // commitments made, with what the shot did so far.
   const ranged = createRangedAttackResolutionState(withBoard, {
     attackApplyState,
     defendingUnit: target.unit,
   });
+
+  // The first player carrying out that Shoot order in Phase 3.
   const phase = createIssueCommandsPhaseState(withBoard, {
     currentCommandResolutionState: ranged,
   });
   const shooting = updatePhaseState(withBoard, phase);
+
+  // The game, partway through the shot.
   return shooting;
 }
 
@@ -103,16 +116,25 @@ function movingInto(
   defender: UnitWithPlacement,
   movement: Partial<MovementResolutionState>,
 ): AuthoritativeGameState {
+  // The defender alone on a standard board.
   const withBoard = createGameStateWithUnits([defender]);
+
+  // Black has a Move card in play: the order this move carries out.
   const withCard = updatePlayerCardState(withBoard, 'black', {
     ...withBoard.cardState.black,
     inPlay: createTestCard(),
   });
+
+  // The move under way, holding what it met.
   const move = createMovementResolutionState(withCard, movement);
+
+  // The first player carrying out that Move order in Phase 3.
   const phase = createIssueCommandsPhaseState(withCard, {
     currentCommandResolutionState: move,
   });
   const moving = updatePhaseState(withCard, phase);
+
+  // The game, partway through the move.
   return moving;
 }
 
@@ -122,15 +144,18 @@ export const procedureRegistryStateFactories: Record<
   () => AuthoritativeGameState
 > = {
   completeAttackApply: (): AuthoritativeGameState => {
+    // A shot that reached no threshold, so its attack-apply has nothing left to do.
     const target = shotTarget();
     const attackApplyState = createAttackApplyStateWithNothingDue(target.unit);
     const state = shootingAt(target, attackApplyState);
     return state;
   },
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   roundEnd: (): AuthoritativeGameState => createEmptyGameState('standard'),
 
   completeIssueCommandsPhase: (): AuthoritativeGameState => {
+    // Phase 3 with both players' orders carried out.
     const base = createEmptyGameState('standard');
     const initialPhaseState = createIssueCommandsPhaseState(base, {
       step: 'complete',
@@ -139,10 +164,12 @@ export const procedureRegistryStateFactories: Record<
     return state;
   },
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   completeMeleeResolution: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
   completeMoveCommandersPhase: (): AuthoritativeGameState => {
+    // Phase 2 done, both players' cards in play for the round.
     const base = createEmptyGameState('standard');
     const stateWithCards = updateCardState(base, {
       ...base.cardState,
@@ -155,6 +182,7 @@ export const procedureRegistryStateFactories: Record<
   },
 
   completePlayCardsPhase: (): AuthoritativeGameState => {
+    // Phase 1 at its last step; the procedure reads nothing more.
     const phase = createPlayCardsPhaseState({ step: 'complete' });
     const state = updatePhaseState(createEmptyGameState('standard'), phase);
     return state;
@@ -168,25 +196,32 @@ export const procedureRegistryStateFactories: Record<
     return state;
   },
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   completeMovementCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   completeRangedAttack: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   completeRangedAttackCommand: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   completeResolveMeleePhase: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   completeUnitMovement: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
+  // The procedure reads nothing from the state, so an empty game reaches it.
   cardsLeavePlay: (): AuthoritativeGameState =>
     createEmptyGameState('standard'),
 
   gameOver: (): AuthoritativeGameState => {
+    // White's hand is empty, which loses the game at once (§11.1).
     const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
@@ -196,7 +231,9 @@ export const procedureRegistryStateFactories: Record<
   },
 
   openRetreatFromAttackApply: (): AuthoritativeGameState => {
+    // A shot that reached Retreat, the retreat not yet opened.
     const target = shotTarget();
+
     // Retreat still due: the factory leaves that slot pending until the opener runs.
     const attackApply = createPendingAttackApply(target.unit, {
       unitRetreated: true,
@@ -208,7 +245,9 @@ export const procedureRegistryStateFactories: Record<
   },
 
   openReverseFromAttackApply: (): AuthoritativeGameState => {
+    // A shot that reached Reverse, the reverse not yet opened.
     const target = shotTarget();
+
     // Reverse still due: the factory leaves that slot pending until the opener runs.
     const attackApply = createPendingAttackApply(target.unit, {
       unitRetreated: false,
@@ -220,7 +259,9 @@ export const procedureRegistryStateFactories: Record<
   },
 
   openRoutFromAttackApply: (): AuthoritativeGameState => {
+    // A shot that reached all three thresholds; the rout waits to open.
     const target = shotTarget();
+
     // Rout still due: the factory leaves that slot pending until the opener runs.
     const attackApply = createPendingAttackApply(target.unit, {
       unitRetreated: true,
@@ -241,6 +282,7 @@ export const procedureRegistryStateFactories: Record<
       },
       unit: createTestUnit('white'),
     };
+
     // The retreat option was resolved with a way back, and the defender chose
     // to take it.
     const front = createFrontEngagementState({
@@ -255,6 +297,8 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveEngageRetreatOption: (): AuthoritativeGameState => {
+    // A front engagement whose defender has yet to be offered the chance to
+    // fall back, as one faster than its engager may be (§6.3.2).
     const defenderWithPlacement: UnitWithPlacement = {
       placement: {
         coordinate: engagedSpace.coordinate,
@@ -271,6 +315,8 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveFlankEngagement: (): AuthoritativeGameState => {
+    // A defender facing east, struck from the flank by a mover facing north,
+    // and not yet turned to face it (§6.3.4).
     const defenderPlacement: UnitWithPlacement = {
       placement: {
         coordinate: engagedSpace.coordinate,
@@ -286,6 +332,7 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveInitiative: (): AuthoritativeGameState => {
+    // Both cards revealed, initiative still to assign (§4.1.3).
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -304,6 +351,7 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveMelee: (): AuthoritativeGameState => {
+    // Two units engaged on E-5, squared up, their melee under way in Phase 4.
     const whiteWp: UnitWithPlacement = {
       placement: {
         coordinate: 'E-5',
@@ -325,7 +373,10 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveRally: (): AuthoritativeGameState => {
+    // The first player's rally in Cleanup, a card on the played pile to burn
+    // (§10.3.3).
     const base = createEmptyGameState('standard');
+
     // The first player rallies first; White holds the initiative at the start.
     const played = base.currentInitiative;
     const card = createTestCard();
@@ -342,12 +393,14 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveRangedAttack: (): AuthoritativeGameState => {
+    // A shot aimed and committed to, not yet landed.
     const state = shootingAt(shotTarget(), 'pending');
     return state;
   },
 
   resolveRetreat: (): AuthoritativeGameState => {
     const target = shotTarget();
+
     // On an open board the engine offers the unit one retreat, a step
     // straight back to F-5 (§9.1.3), and that path is already chosen.
     const legalRetreatPaths = legalRetreatsOf(target);
@@ -365,6 +418,7 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveReverse: (): AuthoritativeGameState => {
+    // A shot that reached Reverse, its reverse open.
     const target = shotTarget();
     const attackApply = createAttackApplyStateWithReverse(target.unit);
     const state = shootingAt(target, attackApply);
@@ -372,6 +426,7 @@ export const procedureRegistryStateFactories: Record<
   },
 
   resolveRout: (): AuthoritativeGameState => {
+    // A shot that reached Rout, its rout open.
     const target = shotTarget();
     const attackApply = createAttackApplyStateWithRout(target.unit);
     const state = shootingAt(target, attackApply);
@@ -379,6 +434,7 @@ export const procedureRegistryStateFactories: Record<
   },
 
   revealCards: (): AuthoritativeGameState => {
+    // Both cards chosen face down, waiting to be turned over (§4.1.2).
     const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
@@ -395,6 +451,8 @@ export const procedureRegistryStateFactories: Record<
   },
 
   startEngagement: (): AuthoritativeGameState => {
+    // Black's move ends on E-6, where White stands facing it: the
+    // engagement it walks into is not yet set up (§6.1.1).
     const defender: UnitWithPlacement = {
       placement: {
         coordinate: 'E-6',
@@ -414,6 +472,7 @@ export const procedureRegistryStateFactories: Record<
 
   triggerRoutFromRetreat: (): AuthoritativeGameState => {
     const target = shotTarget();
+
     // An enemy directly behind, facing the unit, cuts its line of withdrawal
     // (§9.1.5): it cannot retreat, so it routs instead (§9.1.6).
     const cuttingEnemy = enemyCuttingOffRetreat(target);

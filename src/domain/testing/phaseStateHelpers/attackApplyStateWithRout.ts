@@ -36,11 +36,16 @@ export function createAttackApplyStateWithRout(
     unitReversed: false,
     unitRouted: true,
   };
+
+  // The factory marks the rout due; the rout is opened for the unit's owner,
+  // who pays its Morale (§9.3.2).
   const apply = attackApplyFromResult(defendingUnit, measured);
   const withRout: AttackApplyState = {
     ...apply,
     routState: createRoutState(defendingUnit.playerSide, defendingUnit),
     ...overrides,
   };
+
+  // The attack-apply, its rout open.
   return withRout;
 }

@@ -34,7 +34,11 @@ export function createAttackApplyStateWithNothingDue(
   defendingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
+  // The factory bypasses every step the attack did not reach, which here is
+  // all of them.
   const apply = attackApplyFromResult(defendingUnit, nothingReached);
   const unhit: AttackApplyState = { ...apply, ...overrides };
+
+  // The attack-apply, ready to be closed with nothing done.
   return unhit;
 }

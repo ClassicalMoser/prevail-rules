@@ -46,14 +46,19 @@ export function createTestUnit(
     morale?: number;
   },
 ): UnitInstance {
+  // The first of its type unless the spec numbers it, as an army numbers
+  // its copies from 1.
   const instanceNumber = options?.instanceNumber ?? 1;
 
+  // A unit type the spec named outright wins over any stat asked for.
   if (options?.unitType) {
     const ofType = createUnitInstance(
       playerSide,
       options.unitType,
       instanceNumber,
     );
+
+    // A unit of exactly that type.
     return ofType;
   }
 
@@ -90,6 +95,8 @@ export function createTestUnit(
     }
   }
 
+  // The first stand-in that has every value asked for. None having them is
+  // the spec's mistake, and the message says what it asked for.
   if (wanted.length > 0) {
     const unitType = tempUnits.find((unit) =>
       wanted.every(({ matches }) => matches(unit)),
@@ -101,10 +108,15 @@ export function createTestUnit(
       );
     }
     const matching = createUnitInstance(playerSide, unitType, instanceNumber);
+
+    // A unit with every value the spec asked for.
     return matching;
   }
 
+  // Asked for nothing, a spec gets a stand-in of Attack 3.
   const unitType = getUnitByStatValue('attack', 3);
   const unit = createUnitInstance(playerSide, unitType, instanceNumber);
+
+  // The plain stand-in unit.
   return unit;
 }

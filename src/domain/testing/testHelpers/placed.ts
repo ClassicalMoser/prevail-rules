@@ -19,9 +19,12 @@ export function placed(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): UnitWithPlacement {
+  // The unit as the spec built it, at the space and facing it chose.
   const withPlacement: UnitWithPlacement = {
     placement: createUnitPlacement(coordinate, facing),
     unit,
   };
+
+  // Ready to set on a board, or to pass to a rule that asks where it stands.
   return withPlacement;
 }

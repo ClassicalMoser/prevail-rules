@@ -31,13 +31,22 @@ export function applyEffectsUntilChoice(state: AuthoritativeGameState): {
     // A finished game expects nothing more.
     if (isResolved(current.winner)) {
       const over = { next: 'gameOver' as const, state: current };
+
+      // Play stops for good: nobody has anything left to decide.
       return over;
     }
+
+    // A player owes a decision, so the game waits for it.
     const expected = getExpectedEvent(current);
     if (expected.actionType === 'playerChoice') {
       const waiting = { next: expected, state: current };
+
+      // The state, and the choice it waits on.
       return waiting;
     }
+
+    // Otherwise the game owes an effect: its procedure builds the event and
+    // the transform applies it, as in play.
     const effect = generateEventFromProcedure(
       current,
       expected.effectType,

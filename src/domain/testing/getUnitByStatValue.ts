@@ -12,9 +12,15 @@ export function getUnitByStatValue(
   stat: UnitStatName,
   value: number,
 ): UnitType {
+  // The first stand-in with that value. Which one does not matter, since a
+  // spec asking by one stat must not lean on the others.
   const unit = tempUnits.find((u) => u.stats[stat] === value);
+
+  // No stand-in having it is the spec's mistake.
   if (!unit) {
     throw new Error(`No unit found with ${stat} value ${value}.`);
   }
+
+  // The unit type, the catalog's own copy.
   return unit;
 }

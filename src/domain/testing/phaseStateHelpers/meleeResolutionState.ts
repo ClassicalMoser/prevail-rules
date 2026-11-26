@@ -15,6 +15,8 @@ export function createMeleeResolutionState(
   const opened = createOpenedMeleeResolutionState('E-5');
   const melee: MeleeResolutionState = {
     ...opened,
+    // The first player commits first, then the second (§7.2.2), so each slot
+    // takes the card of the side that holds that place this round.
     firstPlayerCommitment: completedCommitment(
       state.cardState[state.currentInitiative].inPlay,
     ),
@@ -23,5 +25,7 @@ export function createMeleeResolutionState(
     ),
     ...overrides,
   };
+
+  // The melee, for `createResolveMeleePhaseState` to carry.
   return melee;
 }

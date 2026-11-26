@@ -22,5 +22,7 @@ export function withReservedUnits<S extends GameState>(
     ...withReserve,
     index: deriveGameStateIndex(withReserve),
   };
+
+  // The game, with those units waiting to deploy.
   return reserved;
 }

@@ -30,16 +30,24 @@ export function createAttackApplyStateWithRetreat(
   legalRetreatPaths: MoveDelta[][],
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
+  // The blow met the Retreat threshold and no other (§7.5.1).
   const measured: AttackResult = {
     unitRetreated: true,
     unitReversed: false,
     unitRouted: false,
   };
+
+  // The factory marks the retreat due and the other two bypassed.
   const apply = attackApplyFromResult(retreatingUnit, measured);
+
+  // The retreat is opened with the paths the engine offered, as the opener
+  // would write it.
   const withRetreat: AttackApplyState = {
     ...apply,
     retreatState: createRetreatState(retreatingUnit, legalRetreatPaths),
     ...overrides,
   };
+
+  // The attack-apply, its retreat open.
   return withRetreat;
 }

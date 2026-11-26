@@ -10,9 +10,14 @@ import { tempUnits } from '@sampleValues';
  * @throws {Error} If no unit in {@link tempUnits} has all of the traits
  */
 export function getUnitByTrait(...traits: Trait[]): UnitType {
+  // The first stand-in with every trait asked for, as a card's trait
+  // restriction asks for every listed trait (§4.3.4).
   const unit = tempUnits.find((u) =>
     traits.every((trait) => u.traits.includes(trait)),
   );
+
+  // No stand-in having them all is the spec's mistake; the message names
+  // the traits.
   if (!unit) {
     const traitsStr =
       traits.length === 1
@@ -20,5 +25,7 @@ export function getUnitByTrait(...traits: Trait[]): UnitType {
         : `traits [${traits.map((t) => `"${t}"`).join(', ')}]`;
     throw new Error(`No unit found with ${traitsStr}.`);
   }
+
+  // The unit type, the catalog's own copy.
   return unit;
 }

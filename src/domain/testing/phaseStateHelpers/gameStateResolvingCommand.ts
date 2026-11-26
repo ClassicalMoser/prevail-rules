@@ -22,5 +22,7 @@ export function createGameStateResolvingCommand(
     currentCommandResolutionState: resolution,
   });
   const resolving = updatePhaseState(base, phase);
+
+  // The game, the first player carrying out that order.
   return resolving;
 }

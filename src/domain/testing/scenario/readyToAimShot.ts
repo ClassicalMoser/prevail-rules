@@ -57,5 +57,6 @@ export function readyToAimShot(
     throw new Error('The game ended before the shot was aimed');
   }
 
+  // The game, waiting for the target and supporters.
   return committed.state;
 }

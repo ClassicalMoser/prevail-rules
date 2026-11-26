@@ -18,7 +18,12 @@ export function createGameStateWithSingleUnit(
     instanceNumber?: number;
   },
 ): AuthoritativeGameState {
+  // The one unit alone on a standard board, chosen by the stat asked for.
   const board = createBoardWithSingleUnit(coord, playerSide, options);
+
+  // A new standard game around that board, its index worked out from it.
   const gameState = createGameStateWithBoard(board);
+
+  // The game, with one unit alone.
   return gameState;
 }

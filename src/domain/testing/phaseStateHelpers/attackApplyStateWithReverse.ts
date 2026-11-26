@@ -29,16 +29,22 @@ export function createAttackApplyStateWithReverse(
   reversingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
+  // The blow met the Reverse threshold and no other (§7.5.1).
   const measured: AttackResult = {
     unitRetreated: false,
     unitReversed: true,
     unitRouted: false,
   };
+
+  // The factory marks the reverse due and the other two bypassed; the
+  // reverse is opened as the opener would write it.
   const apply = attackApplyFromResult(reversingUnit, measured);
   const withReverse: AttackApplyState = {
     ...apply,
     reverseState: createReverseState(reversingUnit),
     ...overrides,
   };
+
+  // The attack-apply, its reverse open.
   return withReverse;
 }

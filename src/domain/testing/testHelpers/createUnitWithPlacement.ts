@@ -29,8 +29,14 @@ export function createUnitWithPlacement(options?: {
     morale?: number;
   };
 }): UnitWithPlacement {
+  // A stand-in unit of the side asked for, Black by default, chosen from the
+  // catalog by whatever stats the spec asked for.
   const playerSide = options?.playerSide ?? 'black';
   const unit = createTestUnit(playerSide, options?.unitOptions);
+
+  // Standing on E-5 facing north unless the spec says otherwise: a space
+  // well inside the standard board, with room on every side. It is not put
+  // on a board; a spec does that.
   const withPlacement: UnitWithPlacement = {
     placement: {
       coordinate: options?.coordinate ?? 'E-5',
@@ -38,5 +44,7 @@ export function createUnitWithPlacement(options?: {
     },
     unit,
   };
+
+  // The unit with where it stands.
   return withPlacement;
 }

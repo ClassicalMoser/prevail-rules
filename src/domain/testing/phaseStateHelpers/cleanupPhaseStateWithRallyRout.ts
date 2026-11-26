@@ -17,11 +17,15 @@ export function createCleanupPhaseStateWithRallyRout(
   state: GameState,
   routState: RoutState,
 ): CleanupPhaseState {
+  // The player chose to rally and the rally has been carried out: cards
+  // burnt and taken back, support assigned, and the uncovered units routing
+  // (§10.3.2, §10.4.6). What they owe is the rout given.
   const rally = createRallyResolutionState({
     playerRallied: true,
     rallyResolved: true,
     routState,
   });
+
   // The first player rallies first (§4.5.2), the other after.
   const onRally = hasInitiative(state, routState.player)
     ? createCleanupPhaseState({
@@ -32,5 +36,7 @@ export function createCleanupPhaseStateWithRallyRout(
         secondPlayerRallyResolutionState: rally,
         step: 'secondPlayerResolveRally',
       });
+
+  // Cleanup on that player's rally, the other player's slot untouched.
   return onRally;
 }

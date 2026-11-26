@@ -25,5 +25,7 @@ export function enemyBlockingStraightBack(
       facing: getOppositeFacing(facingIt.placement.facing),
     },
   };
+
+  // The enemy, for a spec to stand on the board.
   return facingAway;
 }

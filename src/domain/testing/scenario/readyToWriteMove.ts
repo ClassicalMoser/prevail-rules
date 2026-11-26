@@ -57,5 +57,6 @@ export function readyToWriteMove(
     throw new Error('The game ended before the move was written');
   }
 
+  // The game, waiting for the move itself.
   return committed.state;
 }

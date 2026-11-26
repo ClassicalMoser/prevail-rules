@@ -23,14 +23,20 @@ export function enemyCuttingOffRetreat(
     unit.placement.coordinate,
     unit.placement.facing,
   );
+
+  // A unit with its back to the edge is already cut off and needs no enemy,
+  // so asking for one there is a spec's mistake.
   if (behind === undefined) {
     throw new Error('The unit already has its back to the board edge');
   }
+
   // Facing the way the unit faces, it looks straight at the unit's back.
   const enemy = createUnitWithPlacement({
     coordinate: behind,
     facing: unit.placement.facing,
     playerSide: getOtherPlayer(unit.unit.playerSide),
   });
+
+  // The enemy, for a spec to stand on the board.
   return enemy;
 }

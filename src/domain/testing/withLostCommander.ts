@@ -24,5 +24,7 @@ export function withLostCommander<S extends GameState>(
 
   // Defeated: off the board, among the lost, and filed as lost.
   const lost = defeatCommander(standing, side);
+
+  // The game, that side's inspiration ranges now reaching nobody (§4.2.8).
   return lost;
 }

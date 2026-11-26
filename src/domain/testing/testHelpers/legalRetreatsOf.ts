@@ -21,7 +21,10 @@ export function legalRetreatsOf(
 ): MoveDelta[][] {
   // The board holds the retreating unit and its neighbours, nothing more.
   const state = createGameStateWithUnits([retreating, ...neighbours]);
+
   // The engine, not the spec, decides what the retreat options are.
   const paths = getLegalRetreats(retreating, state);
+
+  // Every smallest retreat the rules allow (§9.1.3), for a retreat state to record.
   return paths;
 }

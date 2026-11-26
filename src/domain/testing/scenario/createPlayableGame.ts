@@ -24,13 +24,18 @@ export function createPlayableGame(
     initiative?: PlayerSide;
   },
 ): AuthoritativeGameState {
+  // The units on the board, and whoever holds the initiative this round.
   const placed = createGameState(units, {
     currentInitiative: options?.initiative,
   });
+
   // A count deals fungible stand-in cards; a list is for a scenario whose
   // rule turns on a particular card, such as one committed for Speed.
   const deal = (hand: number | CommandCard[] | undefined): CommandCard[] =>
     Array.isArray(hand) ? hand : getCardsByCount(hand ?? 3);
+
+  // Each player picks up a hand. Three cards is enough to play a few
+  // rounds without an empty hand ending the game (§11.1).
   const whiteHand = deal(options?.hands?.white);
   const blackHand = deal(options?.hands?.black);
   const withWhite = updatePlayerCardState(placed, 'white', {
@@ -41,5 +46,7 @@ export function createPlayableGame(
     ...withWhite.cardState.black,
     inHand: blackHand,
   });
+
+  // The game, both sides holding cards.
   return playable;
 }

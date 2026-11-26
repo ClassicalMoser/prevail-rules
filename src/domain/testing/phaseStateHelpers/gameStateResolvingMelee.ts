@@ -29,5 +29,7 @@ export function createGameStateResolvingMelee(
     currentMeleeResolutionState: melee,
   });
   const fighting = updatePhaseState(base, phase);
+
+  // The game, fighting that melee.
   return fighting;
 }

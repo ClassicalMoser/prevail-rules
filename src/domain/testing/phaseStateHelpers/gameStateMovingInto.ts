@@ -19,5 +19,7 @@ export function createGameStateMovingInto(
 
   // That move is the order being carried out.
   const moving = createGameStateResolvingCommand(movement, empty);
+
+  // The game, the first player carrying out that move.
   return moving;
 }
