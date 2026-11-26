@@ -16,17 +16,13 @@ function makeMiniStarterArmy(id: string, name: string): Army {
   ];
 
   // Mini asks for exactly two cards at each initiative, 1 through 4.
-  // Pick by initiative value from the sample catalog — not by printed name.
-  // TODO(wrong): picking by initiative alone takes Fearless Velites, whose
-  // unit support names Velites, which this army does not field; that card
-  // can never hold a unit at a rally's support check (§10.4). Settled by
-  // choosing cards whose support this army can use, or by deciding a dead
-  // card in a sample hand does not matter.
+  // Pick by initiative value from the sample catalog — not by printed name —
+  // and only cards whose support these units can meet at a rally (§10.4).
   const commandCards: CommandCard[] = [
-    ...cardsAtInitiative(1, 2),
-    ...cardsAtInitiative(2, 2),
-    ...cardsAtInitiative(3, 2),
-    ...cardsAtInitiative(4, 2),
+    ...cardsAtInitiative(1, 2, units),
+    ...cardsAtInitiative(2, 2, units),
+    ...cardsAtInitiative(3, 2, units),
+    ...cardsAtInitiative(4, 2, units),
   ];
 
   const army: Army = { id, name, units, commandCards };
