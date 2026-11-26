@@ -77,6 +77,8 @@ export {
   createOpenedFlankEngagementResolutionState,
   createOpenedFrontEngagementResolutionState,
   createOpenedMeleeResolutionState,
+  createOpenedMovementResolutionState,
+  createOpenedRangedAttackResolutionState,
   createOpenedRearEngagementResolutionState,
   createOpenedRallyResolutionState,
   createOpenedRetreatState,

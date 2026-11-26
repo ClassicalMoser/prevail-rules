@@ -1,8 +1,11 @@
 // The attack-apply an attack leaves behind, with each outcome due or bypassed.
 export { createAttackApplyState } from './createAttackApplyState';
 
-// Each substep as it opens, owing what the rules say is owed: a rout, an
-// engagement and its three kinds, a reverse, a rally, a melee and a retreat.
+// Each substep as it opens, owing what the rules say is owed: a move, a
+// shot, a rout, an engagement and its three kinds, a reverse, a rally, a
+// melee and a retreat.
+export { createOpenedMovementResolutionState } from './createOpenedMovementResolutionState';
+export { createOpenedRangedAttackResolutionState } from './createOpenedRangedAttackResolutionState';
 export { createOpenedRoutState } from './createOpenedRoutState';
 export { createOpenedEngagementState } from './createOpenedEngagementState';
 export { createOpenedFlankEngagementResolutionState } from './createOpenedFlankEngagementResolutionState';

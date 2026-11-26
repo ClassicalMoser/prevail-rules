@@ -1,5 +1,6 @@
 import type { ChooseMovingUnitEvent } from '@events';
-import type { GameState, MovementResolutionState } from '@game';
+import { createOpenedMovementResolutionState } from '@factories';
+import type { GameState } from '@game';
 import {
   arrayWithoutUnit,
   getRemainingUnitsForPlayer,
@@ -38,23 +39,7 @@ export function applyChooseMovingUnitEvent<S extends GameState>(
 
   // The move opens with the commitment owed and the move unwritten: the
   // owner may commit a card first, and the card counts toward the move.
-  // TODO(composition): every other substep is built as it opens by a factory
-  // in `factories/substeps` (`createOpenedMeleeResolutionState`,
-  // `createOpenedRetreatState`, ...); this one, and the shot that
-  // `applyChooseShooterEvent` opens, are written out here instead. Settled by
-  // a `createOpenedMovementResolutionState(movingUnit)` beside them.
-  const movement: MovementResolutionState = {
-    commandResolutionType: 'movement',
-    commitment: { commitmentType: 'pending' },
-    completed: false,
-    // Whether the move walks into an enemy is known only once it is written.
-    engagementState: 'pending',
-    // Whether a commander rides along is declared with the move (§4.3.10).
-    moveCommander: 'pending',
-    movingUnit: mover,
-    substepType: 'commandResolution',
-    targetPlacement: 'pending',
-  };
+  const movement = createOpenedMovementResolutionState(mover);
 
   // The unit is struck off the order's list first, so that it cannot be
   // named again this round (§4.3.6).

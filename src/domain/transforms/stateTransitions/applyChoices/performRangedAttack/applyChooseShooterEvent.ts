@@ -1,5 +1,6 @@
 import type { ChooseShooterEvent } from '@events';
-import type { GameState, RangedAttackResolutionState } from '@game';
+import { createOpenedRangedAttackResolutionState } from '@factories';
+import type { GameState } from '@game';
 import {
   arrayWithoutUnit,
   getRemainingUnitsForPlayer,
@@ -40,24 +41,7 @@ export function applyChooseShooterEvent<S extends GameState>(
   // The shot opens with the shooter's commitment owed and nothing yet aimed:
   // its owner may commit a card first, and a Range card reaches further
   // when the target is chosen (§4.3.11 step 2).
-  // TODO(composition): the opened shot is written out here, as the opened
-  // move is in `applyChooseMovingUnitEvent`, where every other substep is
-  // built as it opens by a factory in `factories/substeps`. Settled by a
-  // `createOpenedRangedAttackResolutionState(attackingUnit)` beside them.
-  const shot: RangedAttackResolutionState = {
-    // The blow is measured only once the target has committed or declined.
-    attackApplyState: 'pending',
-    attackingCommitment: { commitmentType: 'pending' },
-    attackingUnit: shooter,
-    commandResolutionType: 'rangedAttack',
-    completed: false,
-    // The target answers with its own commitment once it is named (step 5).
-    defendingCommitment: { commitmentType: 'pending' },
-    defendingUnit: 'pending',
-    substepType: 'commandResolution',
-    // Supporters are named with the target (step 4).
-    supportingUnits: 'pending',
-  };
+  const shot = createOpenedRangedAttackResolutionState(shooter);
 
   // The shooter is struck off the order's list first, so that it cannot be
   // named again or named as a supporter later (§4.3.6, §7.3.4).
